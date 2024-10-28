@@ -49,6 +49,7 @@ import {
   VerificationPolicies,
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -81,6 +82,7 @@ export type OID4VCIHolderOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
@@ -132,7 +134,7 @@ export type GetCredentialsArgs = Pick<
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
-export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
+export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'issuanceOpt'>
 export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
   'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
@@ -169,7 +171,9 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   hasher?: Hasher
+  schemaValidation?: SchemaValidation
   context: RequiredContext
 }
 
@@ -424,6 +428,7 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   credentialConfigurationId?: string // Explicit ID for a credential
   supportedBindingMethods: ManagedIdentifierMethod[]
   supportedPreferredDidMethod?: SupportedDidMethodEnum
+  schemaValidation?: SchemaValidation
   // todo: rename, now we have generic identifiers
   identifier?: ManagedIdentifierOptsOrResult
   // todo: replace by signature alg, so we can determine applicable key types instead of determining up front. Use proof_types_supported
@@ -596,6 +601,7 @@ export interface VerifyCredentialArgs {
 export type RequiredContext = IAgentContext<
   IIssuanceBranding &
     IContactManager &
+    ICredentialValidation &
     ICredentialVerifier &
     ICredentialIssuer &
     ICredentialStore &
@@ -607,4 +613,25 @@ export type RequiredContext = IAgentContext<
     ISDJwtPlugin &
     ImDLMdoc
 >
+
+export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
+
+export type VerifyEBSICredentialIssuerArgs = {
+  wrappedVc: WrappedVerifiableCredential
+  issuerType?: IssuerType[]
+}
+
+export type Attribute = {
+  hash: string
+  body: string
+  issuerType: IssuerType
+  tao: string
+  rootTao: string
+}
+
+export type VerifyEBSICredentialIssuerResult = {
+  did: string
+  attributes: Attribute[]
+}
+
 export type DidAgents = TAgent<IResolver & IDIDManager>

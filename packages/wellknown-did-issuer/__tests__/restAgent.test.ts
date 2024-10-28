@@ -13,7 +13,7 @@ import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3435
 const basePath = '/agent'
 
 let serverAgent: IAgent

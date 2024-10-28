@@ -222,7 +222,7 @@ export class EbsiSupport implements IAgentPlugin {
     console.log(`Presentation submission`, presentationSubmission)
     const tokenRequestArgs = {
       grant_type: 'vp_token',
-      vp_token: CredentialMapper.toCompactJWT(vp.verifiablePresentation),
+      vp_token: CredentialMapper.toCompactJWT(vp.verifiablePresentations[0]), // FIXME How are we going to send multiple presentations in a vp_token?
       scope,
       presentation_submission: presentationSubmission,
       apiOpts: { environment, version: 'v4' },

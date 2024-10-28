@@ -1,8 +1,8 @@
 version: 3.0
 
 constants:
-  baseUrl: http://localhost:3335
-  port: 3335
+  baseUrl: http://localhost:3435
+  port: 3435
   methods:
     - addLinkedDomainsService
     - getDidConfigurationResource
@@ -41,8 +41,8 @@ dbConnection:
         $args:
           - items:
               - $require: '@veramo/data-store?t=object#Entities'
-              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
               - $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
+              - $require: './packages/wellknown-did-issuer/dist?t=object#WellknownDidIssuerEntities'
 
 server:
   baseUrl:
