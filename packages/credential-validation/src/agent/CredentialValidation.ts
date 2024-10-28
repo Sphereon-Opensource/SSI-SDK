@@ -169,7 +169,7 @@ export class CredentialValidation implements IAgentPlugin {
 
     return {
       source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
-      result: !verification.error ?? true,
+      result: !verification.error,
       subResults: [],
       ...(verification.error && {
         error: verification.message ?? `Could not verify mdoc from issuer`,
