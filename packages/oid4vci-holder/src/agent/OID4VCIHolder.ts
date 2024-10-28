@@ -754,7 +754,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (localeBranding && localeBranding.length > 0) {
         const credential = credentialsToAccept.find(
           (credAccept) =>
-            credAccept.credentialToAccept.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter],
+            credAccept.credentialToAccept.id === credentialId || JSON.stringify(credAccept.types) === credentialId || credentialsToAccept[counter],
         )!
         counter++
         await context.agent.ibAddCredentialBranding({

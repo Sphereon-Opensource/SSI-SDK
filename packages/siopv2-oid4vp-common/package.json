@@ -21,7 +21,7 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/node": "^18.19.41",
+    "@types/node": "^20.17.1",
     "typeorm": "^0.3.20"
   },
   "files": [

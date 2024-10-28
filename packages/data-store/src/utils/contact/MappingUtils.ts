@@ -71,7 +71,7 @@ export const partyFrom = (party: PartyEntity): Party => {
   const result: Party = {
     id: party.id,
     uri: party.uri,
-    roles: [...new Set(party.identities?.flatMap((identity: IdentityEntity) => identity.roles))] ?? [],
+    roles: [...new Set(party.identities?.flatMap((identity: IdentityEntity) => identity.roles))],
     identities: party.identities ? party.identities.map((identity: IdentityEntity) => identityFrom(identity)) : [],
     electronicAddresses: party.electronicAddresses
       ? party.electronicAddresses.map((electronicAddress: ElectronicAddressEntity) => electronicAddressFrom(electronicAddress))

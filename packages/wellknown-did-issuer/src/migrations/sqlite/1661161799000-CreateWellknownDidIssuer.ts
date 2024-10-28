@@ -8,7 +8,7 @@ export class CreateWellknownDidIssuer1661161799000 implements MigrationInterface
       `CREATE TABLE "DidConfigurationResource" ("origin" varchar PRIMARY KEY NOT NULL, "context" varchar NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')))`,
     )
     await queryRunner.query(
-      `CREATE TABLE "DidConfigurationResourceCredentials" ("origin" varchar NOT NULL, "credentialHash" varchar NOT NULL)`,
+      `CREATE TABLE "DidConfigurationResourceCredentials" ("didConfigurationResourceOrigin" varchar NOT NULL, "credentialHash" varchar NOT NULL)`,
     )
   }
 
