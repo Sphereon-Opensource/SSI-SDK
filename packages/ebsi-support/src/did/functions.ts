@@ -86,7 +86,7 @@ export const formatEbsiPublicKey = (args: { key: IKey; type: TKeyType }): string
       return `0x${u8a.toString(u8a.fromString(jwkString), 'base16')}`
     }
     default:
-      throw new Error(`Unsupported key type: ${type}`)
+      throw new Error(`Unsupported EBSI key type: ${type}`)
   }
 }
 

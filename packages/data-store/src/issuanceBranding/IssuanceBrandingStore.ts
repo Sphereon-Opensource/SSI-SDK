@@ -42,7 +42,6 @@ import {
   ICredentialBrandingFilter,
 } from '../types'
 
-
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding-store')
 
 export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
@@ -211,8 +210,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return credentialBrandingLocale
       ? credentialBrandingLocale.map(
-          (credentialLocaleBranding: CredentialLocaleBrandingEntity) =>
-            localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
+          (credentialLocaleBranding: CredentialLocaleBrandingEntity) => localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
         )
       : []
   }

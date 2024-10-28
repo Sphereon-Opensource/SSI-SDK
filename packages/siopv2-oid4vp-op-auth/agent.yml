@@ -120,6 +120,9 @@ credentialStore:
         $require: './packages/data-store/dist#DigitalCredentialStore'
         $args:
           - $ref: /dbConnection
+# Credential Validation
+credentialValidation:
+  $require: ./packages/credential-validation/dist#CredentialValidation
 
 # Agent
 agent:
@@ -129,6 +132,7 @@ agent:
       plugins:
         - $ref: /didResolver
         - $ref: /credentialStore
+        - $ref: / credentialValidation
         - $require: ./packages/siopv2-oid4vp-op-auth/dist#DidAuthSiopOpAuthenticator
           $args:
             - presentationSignCallback: {}

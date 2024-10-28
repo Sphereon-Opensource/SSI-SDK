@@ -309,7 +309,7 @@ export class OID4VCIStore implements IAgentPlugin {
     return namespace ?? this.defaultNamespace
   }
 
-  private prefix({ namespace, correlationId }: { namespace?: string; correlationId: string }) {
+  private prefix({ namespace, correlationId }: { namespace?: string; correlationId: string }): string {
     return `${this.namespaceStr({ namespace })}:${correlationId}`
   }
 }
