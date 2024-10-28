@@ -5,6 +5,7 @@ import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@s
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
 import { ICreateAuthRequestWebappEndpointOpts, IRequiredContext } from './types'
+import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
 
 export function createAuthRequestWebappEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {
@@ -23,6 +24,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         baseURI: opts?.siopBaseURI,
       })
       const responseURI = uriWithBase(`/siop/definitions/${definitionId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
+      const responseRedirectURI = 'response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)
 
       const authRequestURI = await context.agent.siopCreateAuthRequestURI({
         definitionId,
@@ -32,6 +34,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         requestByReferenceURI,
         responseURIType: 'response_uri',
         responseURI,
+        ...(responseRedirectURI && { responseRedirectURI }),
       })
       const authRequestBody: GenerateAuthRequestURIResponse = {
         correlationId,
@@ -105,7 +108,10 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
         definitionId,
         lastUpdated: overallState.lastUpdated,
         ...(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED
-          ? { payload: await responseState.response.mergedPayloads(), verifiedData: responseState.verifiedData }
+          ? {
+              payload: await responseState.response.mergedPayloads({ hasher: defaultHasher }),
+              verifiedData: responseState.verifiedData,
+            }
           : {}),
       }
       console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)

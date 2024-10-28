@@ -12,28 +12,35 @@ import {
   MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, KeyManagementSystemEnum, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  IIdentifierResolution,
+  ManagedIdentifierMethod,
+  ManagedIdentifierOptsOrResult,
+  ManagedIdentifierResult,
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { SignatureAlgorithmJwa } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   Hasher,
   IVerifiableCredential,
+  JoseSignatureAlgorithm,
+  JoseSignatureAlgorithmString,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '@sphereon/ssi-types'
-import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   IAgentContext,
   ICredentialIssuer,
   ICredentialVerifier,
   IDIDManager,
-  IIdentifier,
   IKeyManager,
   IPluginMethodMap,
   IResolver,
@@ -41,9 +48,7 @@ import {
   TKeyType,
   VerificationPolicies,
 } from '@veramo/core'
-import { _ExtendedIKey } from '@veramo/utils'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -81,7 +86,7 @@ export type OID4VCIHolderOptions = {
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences?: Array<SignatureAlgorithmJwa>
+  jwtCryptographicSuitePreferences?: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   hasher?: Hasher
 }
 
@@ -101,7 +106,7 @@ export type OnCredentialStoredArgs = {
 }
 
 export type OnIdentifierCreatedArgs = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierResult
 }
 
 export type GetMachineArgs = {
@@ -135,7 +140,7 @@ export type StoreCredentialBrandingArgs = Pick<
 >
 export type StoreCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials'
+  'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState' | 'selectedCredentials' | 'issuanceOpt'
 >
 export type SendNotificationArgs = Pick<
   OID4VCIMachineContext,
@@ -419,11 +424,14 @@ export type SelectAppLocaleBrandingArgs = {
 
 export type IssuanceOpts = CredentialConfigurationSupported & {
   credentialConfigurationId?: string // Explicit ID for a credential
-  didMethod: SupportedDidMethodEnum
-  keyType: TKeyType
+  supportedBindingMethods: ManagedIdentifierMethod[]
+  supportedPreferredDidMethod?: SupportedDidMethodEnum
+  // todo: rename, now we have generic identifiers
+  identifier?: ManagedIdentifierOptsOrResult
+  // todo: replace by signature alg, so we can determine applicable key types instead of determining up front. Use proof_types_supported
+  keyType?: TKeyType
   codecName?: string
-  kid?: string
-  identifier: IIdentifier // TODO looking at the implementation, shouldn't this field be optional?
+  kms?: string
 }
 
 export type VerificationResult = {
@@ -503,7 +511,7 @@ export type GetIdentifierArgs = {
 }
 
 export type GetAuthenticationKeyArgs = {
-  identifier: IIdentifier
+  identifier: ManagedIdentifierOptsOrResult
   offlineWhenNoDIDRegistered?: boolean
   noVerificationMethodFallback?: boolean
   context: IAgentContext<IResolver & IDIDManager & IKeyManager>
@@ -525,7 +533,7 @@ export type CreateIdentifierOpts = {
 }
 
 export type CreateIdentifierCreateOpts = {
-  kms?: KeyManagementSystemEnum
+  kms?: string
   alias?: string
   options?: IdentifierProviderOpts
 }
@@ -536,7 +544,7 @@ export type GetIssuanceOptsArgs = {
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
   didMethodPreferences: Array<SupportedDidMethodEnum>
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa>
+  jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
   forceIssuanceOpt?: IssuanceOpts
 }
@@ -550,7 +558,7 @@ export type GetIssuanceDidMethodArgs = {
 export type GetIssuanceCryptoSuiteArgs = {
   credentialSupported: CredentialConfigurationSupported
   client: OpenID4VCIClient
-  jwtCryptographicSuitePreferences: Array<SignatureAlgorithmJwa>
+  jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
 }
 
@@ -570,16 +578,12 @@ export enum IdentifierAliasEnum {
   PRIMARY = 'primary',
 }
 
-export type IdentifierOpts = {
-  identifier: IIdentifier
-  key: _ExtendedIKey
-  kid: string
-}
-
 export type CredentialVerificationError = {
   error?: string
   errorDetails?: string
 }
+
+export type VerifyMdocArgs = { credential: string }
 
 export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
 
@@ -602,7 +606,8 @@ export type RequiredContext = IAgentContext<
     IDIDManager &
     IResolver &
     IKeyManager &
-    ISDJwtPlugin
+    ISDJwtPlugin &
+    ImDLMdoc
 >
 
 export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'

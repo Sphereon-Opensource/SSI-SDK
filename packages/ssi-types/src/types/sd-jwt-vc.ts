@@ -123,12 +123,19 @@ export interface SdJwtDecodedVerifiableCredential {
    * Key binding JWT
    */
   kbJwt?: {
-    compact: CompactJWT
+    header: SdJwtVcKbJwtHeader
     payload: SdJwtVcKbJwtPayload
+    compact?: CompactJWT
   }
 }
 
-interface SdJwtVcKbJwtPayload {
+export interface SdJwtVcKbJwtHeader {
+  typ: 'kb+jwt'
+  alg: string
+  [x: string]: any
+}
+
+export interface SdJwtVcKbJwtPayload {
   iat: number
   aud: string
   nonce: string
@@ -229,6 +236,7 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
+          header: kbJwt.header as SdJwtVcKbJwtHeader,
           compact: compactKeyBindingJwt,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
         },
@@ -266,8 +274,9 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
     ...(compactKeyBindingJwt &&
       kbJwt && {
         kbJwt: {
-          compact: compactKeyBindingJwt,
+          header: kbJwt.header as SdJwtVcKbJwtHeader,
           payload: kbJwt.payload as SdJwtVcKbJwtPayload,
+          compact: compactKeyBindingJwt,
         },
       }),
   }

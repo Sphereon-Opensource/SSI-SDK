@@ -1,5 +1,6 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
 import {
   CredentialPayload,
   IAgentContext,
@@ -44,15 +45,6 @@ export interface ICreateVerifiablePresentationLDArgs {
   keyRef?: string
 
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
-}
-
-export interface IIssueCredentialStatusOpts {
-  dbName?: string // TODO: remove once issuance if full plugin
-  credentialId?: string
-  statusListId?: string
-  statusListIndex?: number | string
-  statusEntryCorrelationId?: string
-  value?: string
 }
 
 /**

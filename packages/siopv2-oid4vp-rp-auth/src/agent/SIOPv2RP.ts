@@ -1,7 +1,13 @@
-import { AuthorizationRequestState, AuthorizationResponsePayload, decodeUriAsJson, VerifiedAuthorizationResponse } from '@sphereon/did-auth-siop'
-import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop/dist/types/SessionManager'
+import {
+  AuthorizationRequestState,
+  AuthorizationResponsePayload,
+  AuthorizationResponseState,
+  AuthorizationResponseStateStatus,
+  decodeUriAsJson,
+  VerifiedAuthorizationResponse,
+} from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AdditionalClaims, CredentialMapper, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
+import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
 import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
 import { IAgentPlugin } from '@veramo/core'
 import {
@@ -10,6 +16,7 @@ import {
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
   IGetAuthResponseStateArgs,
+  IGetRedirectUriArgs,
   ImportDefinitionsArgs,
   IPEXInstanceOptions,
   IRequiredContext,
@@ -25,6 +32,7 @@ import {
 import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
+import { defaultHasher } from '@sphereon/oid4vc-common'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -41,6 +49,7 @@ export class SIOPv2RP implements IAgentPlugin {
     siopDeleteAuthState: this.siopDeleteState.bind(this),
     siopVerifyAuthResponse: this.siopVerifyAuthResponse.bind(this),
     siopImportDefinitions: this.siopImportDefinitions.bind(this),
+    siopGetRedirectURI: this.siopGetRedirectURI.bind(this),
   }
 
   constructor(opts: ISiopv2RPOpts) {
@@ -51,16 +60,19 @@ export class SIOPv2RP implements IAgentPlugin {
     // We allow setting default options later, because in some cases you might want to query the agent for defaults. This cannot happen when the agent is being build (this is when the constructor is being called)
     this.opts.defaultOpts = rpDefaultOpts
     // We however do require the agent to be responsible for resolution, otherwise people might encounter strange errors, that are very hard to track down
-    if (!this.opts.defaultOpts.didOpts.resolveOpts?.resolver || typeof this.opts.defaultOpts.didOpts.resolveOpts.resolver.resolve !== 'function') {
-      this.opts.defaultOpts.didOpts.resolveOpts = {
-        ...this.opts.defaultOpts.didOpts.resolveOpts,
+    if (
+      !this.opts.defaultOpts.identifierOpts.resolveOpts?.resolver ||
+      typeof this.opts.defaultOpts.identifierOpts.resolveOpts.resolver.resolve !== 'function'
+    ) {
+      this.opts.defaultOpts.identifierOpts.resolveOpts = {
+        ...this.opts.defaultOpts.identifierOpts.resolveOpts,
         resolver: getAgentResolver(context, { uniresolverResolution: true, resolverResolution: true, localResolution: true }),
       }
     }
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {
-    return await this.getRPInstance({ definitionId: createArgs.definitionId }, context)
+    return await this.getRPInstance({ definitionId: createArgs.definitionId, responseRedirectURI: createArgs.responseRedirectURI }, context)
       .then((rp) => rp.createAuthorizationRequestURI(createArgs, context))
       .then((URI) => URI.encodedUri)
   }
@@ -91,21 +103,32 @@ export class SIOPv2RP implements IAgentPlugin {
     args: IGetAuthResponseStateArgs,
     context: IRequiredContext,
   ): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
-    const rpInstance = await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
-    )
-    if (rpInstance === undefined) {
+    const rpInstance: RPInstance = await this.getRPInstance({ definitionId: args.definitionId }, context)
+    const authorizationResponseState: AuthorizationResponseState | undefined = await rpInstance
+      .get(context)
+      .then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
+    if (authorizationResponseState === undefined) {
       return undefined
     }
 
-    const responseState = rpInstance as AuthorizationResponseStateWithVerifiedData
+    const responseState = authorizationResponseState as AuthorizationResponseStateWithVerifiedData
     if (
       responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
+      let hasher: Hasher | undefined
+      if (
+        CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) &&
+        (!rpInstance.rpOptions.credentialOpts?.hasher || typeof rpInstance.rpOptions.credentialOpts?.hasher !== 'function')
+      ) {
+        hasher = defaultHasher
+      }
+      // todo this should also include mdl-mdoc
       const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
         responseState.response.payload.vp_token as OriginalVerifiablePresentation,
+        //todo: later we want to conditionally pass in options for mdl-mdoc here
+        hasher,
       )
       const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
       switch (args.includeVerifiedData) {
@@ -194,19 +217,36 @@ export class SIOPv2RP implements IAgentPlugin {
     )
   }
 
-  async getRPInstance(args: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
-    const definitionId = args.definitionId
+  private async siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined> {
+    /*
+    FIXME: Re-anable once redirect uri is re-enabled
+    const instanceId = args.definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
+    if (this.instances.has(instanceId)) {
+      const rpInstance = this.instances.get(instanceId)
+      if (rpInstance !== undefined) {
+        const rp = await rpInstance.get(context)
+        return rp.getResponseRedirectUri({
+          correlation_id: args.correlationId,
+          correlationId: args.correlationId,
+          ...(args.state && { state: args.state }),
+        })
+      }
+    }*/
+    return undefined
+  }
+
+  async getRPInstance({ definitionId, responseRedirectURI }: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
     const instanceId = definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (!this.instances.has(instanceId)) {
       const instanceOpts = this.getInstanceOpts(definitionId)
-      const rpOpts = await this.getRPOptions(context, { definitionId })
-      if (!rpOpts.didOpts.resolveOpts?.resolver || typeof rpOpts.didOpts.resolveOpts.resolver.resolve !== 'function') {
-        if (!rpOpts.didOpts?.resolveOpts) {
-          rpOpts.didOpts = { ...rpOpts.didOpts }
-          rpOpts.didOpts.resolveOpts = { ...rpOpts.didOpts.resolveOpts }
+      const rpOpts = await this.getRPOptions(context, { definitionId, responseRedirectURI: responseRedirectURI })
+      if (!rpOpts.identifierOpts.resolveOpts?.resolver || typeof rpOpts.identifierOpts.resolveOpts.resolver.resolve !== 'function') {
+        if (!rpOpts.identifierOpts?.resolveOpts) {
+          rpOpts.identifierOpts = { ...rpOpts.identifierOpts }
+          rpOpts.identifierOpts.resolveOpts = { ...rpOpts.identifierOpts.resolveOpts }
         }
-        console.log('Using agent DID resolver for RP instance with definition id ' + args.definitionId)
-        rpOpts.didOpts.resolveOpts.resolver = getAgentResolver(context, {
+        console.log('Using agent DID resolver for RP instance with definition id ' + definitionId)
+        rpOpts.identifierOpts.resolveOpts.resolver = getAgentResolver(context, {
           uniresolverResolution: true,
           localResolution: true,
           resolverResolution: true,
@@ -214,39 +254,45 @@ export class SIOPv2RP implements IAgentPlugin {
       }
       this.instances.set(instanceId, new RPInstance({ rpOpts, pexOpts: instanceOpts }))
     }
-    return this.instances.get(instanceId)!
+    const rpInstance = this.instances.get(instanceId)!
+    if (responseRedirectURI) {
+      rpInstance.rpOptions.responseRedirectUri = responseRedirectURI
+    }
+    return rpInstance
   }
 
-  async getRPOptions(context: IRequiredContext, opts: { definitionId?: string }): Promise<IRPOptions> {
-    const definitionId = opts.definitionId
+  async getRPOptions(context: IRequiredContext, opts: { definitionId?: string; responseRedirectURI?: string }): Promise<IRPOptions> {
+    const { definitionId, responseRedirectURI: responseRedirectURI } = opts
     const options = this.getInstanceOpts(definitionId)?.rpOpts ?? this.opts.defaultOpts
     if (!options) {
       throw Error(`Could not get specific nor default options for definition ${definitionId}`)
     }
     if (this.opts.defaultOpts) {
-      if (!options.didOpts) {
-        options.didOpts = this.opts.defaultOpts?.didOpts
+      if (!options.identifierOpts) {
+        options.identifierOpts = this.opts.defaultOpts?.identifierOpts
       } else {
-        if (!options.didOpts.idOpts) {
-          options.didOpts.idOpts = this.opts.defaultOpts.didOpts.idOpts
+        if (!options.identifierOpts.idOpts) {
+          options.identifierOpts.idOpts = this.opts.defaultOpts.identifierOpts.idOpts
         }
-        if (!options.didOpts.supportedDIDMethods) {
-          options.didOpts.supportedDIDMethods = this.opts.defaultOpts.didOpts.supportedDIDMethods
+        if (!options.identifierOpts.supportedDIDMethods) {
+          options.identifierOpts.supportedDIDMethods = this.opts.defaultOpts.identifierOpts.supportedDIDMethods
         }
         if (!options.supportedVersions) {
           options.supportedVersions = this.opts.defaultOpts.supportedVersions
         }
       }
-      if (!options.didOpts.resolveOpts || typeof options.didOpts.resolveOpts.resolver?.resolve !== 'function') {
-        options.didOpts.resolveOpts = {
-          ...this.opts.defaultOpts.didOpts.resolveOpts,
+      if (!options.identifierOpts.resolveOpts || typeof options.identifierOpts.resolveOpts.resolver?.resolve !== 'function') {
+        options.identifierOpts.resolveOpts = {
+          ...this.opts.defaultOpts.identifierOpts.resolveOpts,
           resolver:
-            this.opts.defaultOpts.didOpts?.resolveOpts?.resolver ??
+            this.opts.defaultOpts.identifierOpts?.resolveOpts?.resolver ??
             getAgentResolver(context, { localResolution: true, resolverResolution: true, uniresolverResolution: true }),
         }
       }
     }
-
+    if (responseRedirectURI !== undefined && responseRedirectURI !== options.responseRedirectUri) {
+      options.responseRedirectUri = responseRedirectURI
+    }
     return options
   }
 

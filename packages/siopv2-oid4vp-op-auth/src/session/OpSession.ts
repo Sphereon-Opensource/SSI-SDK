@@ -1,17 +1,25 @@
 import {
-  CheckLinkedDomain,
+  AuthorizationResponsePayload,
+  JwksMetadataParams,
+  OP,
   PresentationDefinitionWithLocation,
   PresentationExchangeResponseOpts,
-  ResolveOpts,
+  PresentationVerificationResult,
+  RequestObjectPayload,
+  ResponseIss,
+  SupportedVersion,
   URI,
   Verification,
-  VerificationMode,
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
+import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { CredentialMapper, parseDid } from '@sphereon/ssi-types'
-import { IIdentifier, TKeyType } from '@veramo/core'
+import { encodeBase64url } from '@sphereon/ssi-sdk.core'
+import { CompactSdJwtVc, CredentialMapper, parseDid, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
+import { v4 } from 'uuid'
 import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
@@ -47,6 +55,7 @@ export class OpSession {
       this.verifiedAuthorizationRequest = await op.verifyAuthorizationRequest(this.requestJwtOrUri)
       this._nonce = await this.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty('nonce')
       this._state = await this.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty('state')
+
       // only used to ensure that we have DID methods supported
       await this.getSupportedDIDMethods()
     }
@@ -204,12 +213,80 @@ export class OpSession {
   }
 
   public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
-    return await OID4VP.init(this, args.allDIDs ?? [], args.hasher)
+    return await OID4VP.init(this, args.allIdentifiers ?? [], args.hasher)
   }
 
-  /*private async getMergedRequestPayload(): Promise<RequestObjectPayload> {
-            return await (await this.getAuthorizationRequest()).authorizationRequest.mergedPayloads()
-          }*/
+  private createPresentationVerificationCallback(context: IRequiredContext) {
+    async function presentationVerificationCallback(
+      args: W3CVerifiablePresentation | CompactSdJwtVc,
+      presentationSubmission: PresentationSubmission,
+    ): Promise<PresentationVerificationResult> {
+      let result: IVerifyResult
+      if (CredentialMapper.isSdJwtEncoded(args)) {
+        try {
+          const sdJwtResult = await context.agent.verifySdJwtPresentation({ presentation: args })
+          result = {
+            verified: 'header' in sdJwtResult,
+            error: 'header' in sdJwtResult ? undefined : { message: 'could not verify SD JWT presentation' },
+          }
+        } catch (error: any) {
+          result = {
+            verified: false,
+            error: { message: error.message },
+          }
+        }
+      } else {
+        // @ts-ignore TODO IVerifiablePresentation has too many union types for Veramo
+        result = await context.agent.verifyPresentation({ presentation: args })
+      }
+      return result
+    }
+
+    return presentationVerificationCallback
+  }
+
+  private async createJarmResponseCallback({
+    responseOpts,
+  }: {
+    responseOpts: {
+      jwtIssuer?: JwtIssuer
+      version?: SupportedVersion
+      correlationId?: string
+      audience?: string
+      issuer?: ResponseIss | string
+      verification?: Verification
+    }
+  }) {
+    const agent = this.context.agent
+    return async function jarmResponse(opts: {
+      authorizationResponsePayload: AuthorizationResponsePayload
+      requestObjectPayload: RequestObjectPayload
+      clientMetadata: JwksMetadataParams
+    }): Promise<{ response: string }> {
+      const { clientMetadata, authorizationResponsePayload: authResponse } = opts
+      const jwk = await OP.extractEncJwksFromClientMetadata(clientMetadata)
+      // @ts-ignore // FIXME: Fix jwk inference
+      const recipientKey = await agent.identifierExternalResolveByJwk({ identifier: jwk })
+
+      return await agent
+        .jwtEncryptJweCompactJwt({
+          recipientKey,
+          protectedHeader: {},
+          //FIXME. Get from metadata
+          alg: 'ECDH-ES',
+          enc: 'A256GCM',
+          apv: encodeBase64url(opts.requestObjectPayload.nonce),
+          apu: encodeBase64url(v4()),
+          payload: authResponse,
+          issuer: responseOpts.issuer,
+          audience: responseOpts.audience,
+        })
+        .then((result) => {
+          return { response: result.jwt }
+        })
+    }
+  }
+
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
@@ -221,20 +298,19 @@ export class OpSession {
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
+    //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
     const verification: Verification = {
-      mode: VerificationMode.INTERNAL,
-      checkLinkedDomain: CheckLinkedDomain.IF_PRESENT,
-      resolveOpts,
+      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
     }
 
     const request = await this.getAuthorizationRequest()
     const hasDefinitions = await this.hasPresentationDefinitions()
     if (hasDefinitions) {
-      if (
-        !request.presentationDefinitions ||
-        !args.verifiablePresentations ||
-        args.verifiablePresentations.length !== request.presentationDefinitions.length
-      ) {
+      const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
+        return sum + pd.definition.input_descriptors.length
+      }, 0)
+
+      if (!request.presentationDefinitions || !args.verifiablePresentations || args.verifiablePresentations.length !== totalInputDescriptors) {
         throw Error(
           `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
         )
@@ -259,6 +335,7 @@ export class OpSession {
       context: this.context,
     })
 
+    //TODO change this to use the new functionalities by identifier-resolver and get the jwkIssuer for the responseOpts
     let issuer = args.responseSignerOpts.issuer
     const responseOpts = {
       verification,
@@ -272,7 +349,7 @@ export class OpSession {
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)
-    const response = await op.submitAuthorizationResponse(authResponse)
+    const response = await op.submitAuthorizationResponse(authResponse, await this.createJarmResponseCallback({ responseOpts }))
 
     if (response.status >= 400) {
       throw Error(`Error ${response.status}: ${response.statusText || (await response.text())}`)

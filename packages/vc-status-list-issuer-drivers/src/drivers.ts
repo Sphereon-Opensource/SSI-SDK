@@ -10,19 +10,19 @@ import {
 import { StatusList2021EntryCredentialStatus, statusListCredentialToDetails, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { Driver } from './types'
+import { IStatusListDriver } from './types'
 
 export interface StatusListManagementOptions {
   id?: string
   correlationId?: string
   driverType: StatusListDriverType
-  driverOptions: DriverOptions
+  driverOptions?: DriverOptions
 }
 
 export type DriverOptions = TypeORMOptions
 
 export interface TypeORMOptions {
-  dbName: string
+  dbName?: string
 }
 
 export interface FilesystemOptions {
@@ -38,14 +38,31 @@ export function getOptions(args: { id?: string; correlationId?: string; dbName: 
   }
 }
 
-export async function getDriver(args: { id?: string; correlationId?: string; dbName: string }): Promise<Driver> {
-  return await AgentTypeORMDriver.init(getOptions(args), { dataSources: DataSources.singleInstance() })
+export async function getDriver(args: {
+  id?: string
+  correlationId?: string
+  dbName?: string
+  dataSource?: DataSource
+  dataSources?: DataSources
+}): Promise<IStatusListDriver> {
+  const dbName = args.dbName ?? args.dataSource?.name
+  if (!dbName) {
+    throw Error(`Please provide either a DB name or data source`)
+  }
+  const dataSources = args.dataSources ?? DataSources.singleInstance()
+  return await AgentDataSourceStatusListDriver.init(
+    getOptions({
+      ...args,
+      dbName,
+    }),
+    { dataSource: args.dataSource ?? (await dataSources.getDbConnection(dbName)), dataSources },
+  )
 }
 
-export class AgentTypeORMDriver implements Driver {
+export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   private _statusListLength: number | undefined
 
-  private constructor(
+  constructor(
     private _dataSource: DataSource,
     private _statusListStore: StatusListStore,
     private options: StatusListManagementOptions,
@@ -57,7 +74,7 @@ export class AgentTypeORMDriver implements Driver {
       dataSources?: DataSources
       dataSource?: DataSource
     },
-  ): Promise<AgentTypeORMDriver> {
+  ): Promise<AgentDataSourceStatusListDriver> {
     if (options.driverType !== StatusListDriverType.AGENT_TYPEORM) {
       throw Error(`TypeORM driver can only be used when the TypeORM driver type is selected in the configuration. Got: ${options.driverType}`)
     } else if (!options.driverOptions) {
@@ -67,18 +84,23 @@ export class AgentTypeORMDriver implements Driver {
     let statusListStore: StatusListStore
     if (dbArgs?.dataSource) {
       dataSource = dbArgs.dataSource
-    } else if (dbArgs?.dataSources) {
-      dataSource = await dbArgs.dataSources.getDbConnection(options.driverOptions.dbName)
+    } else if (options.driverOptions.dbName) {
+      if (dbArgs?.dataSources) {
+        dataSource = await dbArgs.dataSources.getDbConnection(options.driverOptions.dbName)
+      } else {
+        dataSource = await DataSources.singleInstance().getDbConnection(options.driverOptions.dbName)
+      }
     } else {
-      dataSource = await DataSources.singleInstance().getDbConnection(options.driverOptions.dbName)
+      return Promise.reject(Error(`Either a datasource or dbName needs to be provided`))
     }
+
     statusListStore = new StatusListStore(dataSource)
-    return new AgentTypeORMDriver(dataSource, statusListStore, options)
+    return new AgentDataSourceStatusListDriver(dataSource, statusListStore, options)
   }
 
   get dataSource(): DataSource {
     if (!this._dataSource) {
-      throw Error(`Datasource not available yet for ${this.options.driverOptions.dbName}`)
+      throw Error(`Datasource not available yet for ${this.options.driverOptions?.dbName}`)
     }
     return this._dataSource
   }
@@ -91,7 +113,7 @@ export class AgentTypeORMDriver implements Driver {
   }
 
   getOptions(): DriverOptions {
-    return this.options.driverOptions
+    return this.options.driverOptions ?? {}
   }
 
   getType(): StatusListDriverType {
@@ -125,7 +147,12 @@ export class AgentTypeORMDriver implements Driver {
       throw Error(`Status list ${details.id}, correlationId ${args.correlationId} already exists`)
     }
     this._statusListLength = details.length
-    await this.statusListStore.addStatusList({ ...details, credentialIdMode, correlationId, driverType: this.getType() })
+    await this.statusListStore.addStatusList({
+      ...details,
+      credentialIdMode,
+      correlationId,
+      driverType: this.getType(),
+    })
     return details
   }
 
@@ -186,6 +213,7 @@ export class AgentTypeORMDriver implements Driver {
   async getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<IStatusListEntryEntity | undefined> {
     return await this.statusListStore.getStatusListEntryByIndex(args)
   }
+
   async getRandomNewStatusListIndex(args?: { correlationId?: string }): Promise<number> {
     let result = -1
     let tries = 0

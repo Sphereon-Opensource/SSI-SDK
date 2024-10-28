@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VC_HTTP_API_AUTH_TOKEN: ${{secrets.VC_HTTP_API_AUTH_TOKEN}}
+      NODE_OPTIONS: --max_old_space_size=4096
     services:
       postgres:
         image: postgres:10.10
@@ -19,9 +20,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -47,4 +48,12 @@ jobs:
           SPHEREON_SSI_MSAL_USERNAME: ${{ secrets.SPHEREON_SSI_MSAL_USERNAME }}
           SPHEREON_SSI_MSAL_PASSWORD: ${{ secrets.SPHEREON_SSI_MSAL_PASSWORD }}
         run: pnpm test:ci
-      - run: npx codecov
+      - uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: false # optional (default = false)
+          files: ./coverage1.xml,./coverage2.xml # optional
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          token: ${{ secrets.CODECOV_TOKEN }} # required
+          verbose: true # optional (default = false)
+

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "declarationDir": "dist",
     "experimentalDecorators": true,
@@ -15,6 +16,9 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../data-store"
     },
     {
       "path": "../credential-store"

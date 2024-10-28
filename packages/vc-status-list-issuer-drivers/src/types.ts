@@ -1,3 +1,4 @@
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   IAddStatusListEntryArgs,
   IGetStatusListEntryByCredentialIdArgs,
@@ -5,7 +6,7 @@ import {
   IStatusListEntryEntity,
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
-import { StatusList2021EntryCredentialStatus, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
+import { IStatusListPlugin, StatusList2021EntryCredentialStatus, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 import { OriginalVerifiableCredential, StatusListDriverType } from '@sphereon/ssi-types'
 import {
   IAgentContext,
@@ -18,7 +19,6 @@ import {
   IResolver,
 } from '@veramo/core'
 import { DriverOptions } from './drivers'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export type IRequiredPlugins = IDataStoreORM &
   IDIDManager &
@@ -27,10 +27,11 @@ export type IRequiredPlugins = IDataStoreORM &
   ICredentialIssuer &
   ICredentialVerifier &
   ICredentialPlugin &
+  IStatusListPlugin &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
-export interface Driver {
+export interface IStatusListDriver {
   statusListStore: StatusListStore
 
   getType(): StatusListDriverType

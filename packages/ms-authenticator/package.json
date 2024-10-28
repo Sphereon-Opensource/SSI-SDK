@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.ms-authenticator",
-  "version": "0.29.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "ts-jest": "^29.2.3"
   },
   "engines": {
-    "node": ">= 16.0"
+    "node": ">= 20.0.0 < 22"
   },
   "files": [
     "dist/**/*",
@@ -45,5 +45,6 @@
     "Sphereon",
     "SSI",
     "Veramo"
-  ]
+  ],
+  "nx": {}
 }

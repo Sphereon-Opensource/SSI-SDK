@@ -11,6 +11,7 @@ import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from '../e
 import { BaseLocaleBrandingEntity } from '../entities/issuanceBranding/BaseLocaleBrandingEntity'
 import { TextAttributesEntity } from '../entities/issuanceBranding/TextAttributesEntity'
 import { AbstractIssuanceBrandingStore } from './AbstractIssuanceBrandingStore'
+import { credentialBrandingFrom, issuerBrandingFrom, localeBrandingFrom } from '../utils/issuanceBranding/MappingUtils'
 import {
   IAddCredentialBrandingArgs,
   IAddCredentialLocaleBrandingArgs,
@@ -30,7 +31,6 @@ import {
   IIssuerBrandingFilter,
   IIssuerLocaleBranding,
   IIssuerLocaleBrandingFilter,
-  ILocaleBranding,
   IRemoveCredentialBrandingArgs,
   IRemoveCredentialLocaleBrandingArgs,
   IRemoveIssuerBrandingArgs,
@@ -41,6 +41,7 @@ import {
   IUpdateIssuerLocaleBrandingArgs,
   ICredentialBrandingFilter,
 } from '../types'
+
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding-store')
 
@@ -71,7 +72,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Adding credential branding', credentialBrandingEntity)
     const createdResult: CredentialBrandingEntity = await repository.save(credentialBrandingEntity)
 
-    return this.credentialBrandingFrom(createdResult)
+    return credentialBrandingFrom(createdResult)
   }
 
   public getCredentialBranding = async (args?: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>> => {
@@ -89,7 +90,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       ...(filter && { where: filter }),
     })
 
-    return result.map((credentialBranding: CredentialBrandingEntity) => this.credentialBrandingFrom(credentialBranding))
+    return result.map((credentialBranding: CredentialBrandingEntity) => credentialBrandingFrom(credentialBranding))
   }
 
   public removeCredentialBranding = async (args: IRemoveCredentialBrandingArgs): Promise<void> => {
@@ -133,7 +134,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Updating credential branding', branding)
     const result: CredentialBrandingEntity = await repository.save(branding, { transaction: true })
 
-    return this.credentialBrandingFrom(result)
+    return credentialBrandingFrom(result)
   }
 
   public addCredentialLocaleBranding = async (args: IAddCredentialLocaleBrandingArgs): Promise<ICredentialBranding> => {
@@ -188,7 +189,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error('Unable to get updated credential branding'))
     }
 
-    return this.credentialBrandingFrom(result)
+    return credentialBrandingFrom(result)
   }
 
   public getCredentialLocaleBranding = async (args?: IGetCredentialLocaleBrandingArgs): Promise<Array<ICredentialLocaleBranding>> => {
@@ -211,7 +212,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     return credentialBrandingLocale
       ? credentialBrandingLocale.map(
           (credentialLocaleBranding: CredentialLocaleBrandingEntity) =>
-            this.localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
+            localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
         )
       : []
   }
@@ -259,7 +260,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Updating credential locale branding', localeBranding)
     const updatedResult: CredentialLocaleBrandingEntity = await repository.save(localeBranding, { transaction: true })
 
-    return this.localeBrandingFrom(updatedResult) as ICredentialLocaleBranding
+    return localeBrandingFrom(updatedResult) as ICredentialLocaleBranding
   }
 
   public addIssuerBranding = async (args: IAddIssuerBrandingArgs): Promise<IIssuerBranding> => {
@@ -281,7 +282,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Adding issuer branding', issuerBrandingEntity)
     const createdResult: IssuerBrandingEntity = await repository.save(issuerBrandingEntity)
 
-    return this.issuerBrandingFrom(createdResult)
+    return issuerBrandingFrom(createdResult)
   }
 
   public getIssuerBranding = async (args?: IGetIssuerBrandingArgs): Promise<Array<IIssuerBranding>> => {
@@ -299,7 +300,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       ...(filter && { where: filter }),
     })
 
-    return result.map((issuerBranding: IssuerBrandingEntity) => this.issuerBrandingFrom(issuerBranding))
+    return result.map((issuerBranding: IssuerBrandingEntity) => issuerBrandingFrom(issuerBranding))
   }
 
   public removeIssuerBranding = async (args: IRemoveIssuerBrandingArgs): Promise<void> => {
@@ -343,7 +344,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Updating issuer branding', branding)
     const result: IssuerBrandingEntity = await repository.save(branding, { transaction: true })
 
-    return this.issuerBrandingFrom(result)
+    return issuerBrandingFrom(result)
   }
 
   public addIssuerLocaleBranding = async (args: IAddIssuerLocaleBrandingArgs): Promise<IIssuerBranding> => {
@@ -394,7 +395,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error('Unable to get updated issuer branding'))
     }
 
-    return this.issuerBrandingFrom(result)
+    return issuerBrandingFrom(result)
   }
 
   public getIssuerLocaleBranding = async (args?: IGetIssuerLocaleBrandingArgs): Promise<Array<IIssuerLocaleBranding>> => {
@@ -416,7 +417,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return issuerLocaleBranding
       ? issuerLocaleBranding.map(
-          (issuerLocaleBranding: IssuerLocaleBrandingEntity) => this.localeBrandingFrom(issuerLocaleBranding) as IIssuerLocaleBranding,
+          (issuerLocaleBranding: IssuerLocaleBrandingEntity) => localeBrandingFrom(issuerLocaleBranding) as IIssuerLocaleBranding,
         )
       : []
   }
@@ -462,56 +463,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     debug('Updating issuer locale branding', localeBranding)
     const updatedResult: IssuerLocaleBrandingEntity = await repository.save(localeBranding, { transaction: true })
 
-    return this.localeBrandingFrom(updatedResult) as IIssuerLocaleBranding
-  }
-
-  private credentialBrandingFrom = (credentialBranding: CredentialBrandingEntity): ICredentialBranding => {
-    const result: ICredentialBranding = {
-      ...credentialBranding,
-      localeBranding: credentialBranding.localeBranding.map((localeBranding: BaseLocaleBrandingEntity) => this.localeBrandingFrom(localeBranding)),
-    }
-
-    return this.replaceNullWithUndefined(result)
-  }
-
-  private issuerBrandingFrom = (issuerBranding: IssuerBrandingEntity): IIssuerBranding => {
-    const result: IIssuerBranding = {
-      ...issuerBranding,
-      localeBranding: issuerBranding.localeBranding.map((localeBranding: BaseLocaleBrandingEntity) => this.localeBrandingFrom(localeBranding)),
-    }
-
-    return this.replaceNullWithUndefined(result)
-  }
-
-  private localeBrandingFrom = (localeBranding: BaseLocaleBrandingEntity): ILocaleBranding => {
-    const result: ILocaleBranding = {
-      ...localeBranding,
-      locale: localeBranding.locale === '' ? undefined : localeBranding.locale,
-    }
-
-    return this.replaceNullWithUndefined(result)
-  }
-
-  private replaceNullWithUndefined(obj: any): any {
-    if (obj === null) {
-      return undefined
-    }
-
-    if (typeof obj !== 'object' || obj instanceof Date) {
-      return obj
-    }
-
-    if (Array.isArray(obj)) {
-      return obj.map((value: any) => this.replaceNullWithUndefined(value))
-    }
-
-    const result: any = {}
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        result[key] = this.replaceNullWithUndefined(obj[key])
-      }
-    }
-    return result
+    return localeBrandingFrom(updatedResult) as IIssuerLocaleBranding
   }
 
   private hasDuplicateLocales = async (localeBranding: Array<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding>): Promise<boolean> => {
