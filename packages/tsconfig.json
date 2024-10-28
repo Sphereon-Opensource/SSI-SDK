@@ -46,6 +46,7 @@
     { "path": "remote-server-rest-api" },
     { "path": "sd-jwt" },
     { "path": "ebsi-support" },
-    { "path": "public-key-hosting" }
+    { "path": "public-key-hosting" },
+    { "path": "resource-resolver" }
   ]
 }

@@ -1966,6 +1966,40 @@ importers:
         specifier: ^1.6.6
         version: 1.6.6
 
+  packages/resource-resolver:
+    dependencies:
+      '@sphereon/ssi-sdk.kv-store-temp':
+        specifier: workspace:*
+        version: link:../kv-store
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8(encoding@0.1.13)
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.6
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      uint8arrays:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.19.2)
+      nock:
+        specifier: ^13.5.4
+        version: 13.5.5
+      timekeeper:
+        specifier: ^2.3.1
+        version: 2.3.1
+
   packages/sd-jwt:
     dependencies:
       '@sd-jwt/core':
@@ -5918,7 +5952,6 @@ packages:
 
   '@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.22':
     resolution: {integrity: sha512-uAZZExVy+ug9JLircejWa5eLtAZ7bnBP6xb7DO2+86LRsHNLh2k2jMWJYxp+iWtGHTsh6RYsZl14ScQLvjiQ/A==}
-    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
