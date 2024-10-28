@@ -218,8 +218,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return credentialBrandingLocale
       ? credentialBrandingLocale.map(
-          (credentialLocaleBranding: CredentialLocaleBrandingEntity) =>
-            localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
+          (credentialLocaleBranding: CredentialLocaleBrandingEntity) => localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
         )
       : []
   }

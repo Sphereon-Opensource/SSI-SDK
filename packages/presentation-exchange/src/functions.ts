@@ -49,7 +49,7 @@ export async function createPEXPresentationSignCallback(
 
     // if we only have 1 format type we can return that
     if (formats.size === 1) {
-      return formats.values().next().value
+      return formats.values().next().value!!
     }
     formats.keys().next()
     // if we can go for sd-jwt, we go for sd-jwt

@@ -1,11 +1,13 @@
-import { AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import { LoggingEventType } from '@sphereon/ssi-types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 import { AuditEventEntity } from '../../entities/eventLogger/AuditEventEntity'
-import { NonPersistedAuditLoggingEvent } from '../../types'
+import { NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../../types'
 
 export const auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
   const result: AuditLoggingEvent = {
     id: event.id,
+    type: LoggingEventType.AUDIT,
     description: event.description,
     timestamp: event.timestamp,
     level: event.level,
@@ -30,6 +32,7 @@ export const auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
 
 export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): AuditEventEntity => {
   const auditEventEntity: AuditEventEntity = new AuditEventEntity()
+  auditEventEntity.type = LoggingEventType.AUDIT
   auditEventEntity.timestamp = args.timestamp
   auditEventEntity.level = args.level
   auditEventEntity.correlationId = args.correlationId
@@ -50,4 +53,64 @@ export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): Audit
   auditEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
 
   return auditEventEntity
+}
+
+export const activityEventFrom = (event: AuditEventEntity): ActivityLoggingEvent => {
+  const result: ActivityLoggingEvent =  {
+    id: event.id,
+    type: LoggingEventType.ACTIVITY,
+    credentialType: event.credentialType!,
+    originalCredential: event.originalCredential,
+    credentialHash: event.credentialHash,
+    sharePurpose: event.sharePurpose,
+    description: event.description,
+    timestamp: event.timestamp,
+    level: event.level,
+    correlationId: event.correlationId,
+    actionType: event.actionType,
+    actionSubType: event.actionSubType,
+    initiatorType: event.initiatorType,
+    partyAlias: event.partyAlias,
+    partyCorrelationId: event.partyCorrelationId,
+    partyCorrelationType: event.partyCorrelationType,
+    subSystemType: event.subSystemType,
+    system: event.system,
+    systemAlias: event.systemAlias,
+    systemCorrelationId: event.systemCorrelationId,
+    systemCorrelationIdType: event.systemCorrelationIdType,
+    ...(event.data && { data: JSON.parse(event.data) }),
+    ...(event.diagnosticData && { diagnosticData: JSON.parse(event.diagnosticData) }),
+  }
+
+  return replaceNullWithUndefined(result)
+}
+
+export const activityEventEntityFrom = (args: NonPersistedActivityLoggingEvent): AuditEventEntity => {
+  const activityEventEntity: AuditEventEntity = new AuditEventEntity()
+  activityEventEntity.type = LoggingEventType.ACTIVITY
+  activityEventEntity.timestamp = args.timestamp
+  activityEventEntity.level = args.level
+  activityEventEntity.correlationId = args.correlationId
+  activityEventEntity.system = args.system
+  activityEventEntity.subSystemType = args.subSystemType
+  activityEventEntity.actionType = args.actionType
+  activityEventEntity.actionSubType = args.actionSubType
+  activityEventEntity.initiatorType = args.initiatorType
+  activityEventEntity.systemCorrelationIdType = args.systemCorrelationIdType
+  activityEventEntity.systemCorrelationId = args.systemCorrelationId
+  activityEventEntity.systemAlias = args.systemAlias
+  activityEventEntity.partyCorrelationType = args.partyCorrelationType
+  activityEventEntity.partyCorrelationId = args.partyCorrelationId
+  activityEventEntity.partyAlias = args.partyAlias
+  activityEventEntity.description = args.description
+  activityEventEntity.partyCorrelationType = args.partyCorrelationType
+  activityEventEntity.data = JSON.stringify(args.data)
+  activityEventEntity.sharePurpose = args.sharePurpose
+  activityEventEntity.credentialType = args.credentialType
+  activityEventEntity.originalCredential = args.originalCredential
+  activityEventEntity.credentialHash = args.credentialHash
+  activityEventEntity.parentCredentialHash = args.parentCredentialHash
+  activityEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
+
+  return activityEventEntity
 }
