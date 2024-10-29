@@ -26,7 +26,7 @@ import {
   isManagedIdentifierX5cResult,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
@@ -74,6 +74,7 @@ import {
   AddContactIdentityArgs,
   AddIssuerBrandingArgs,
   AssertValidCredentialsArgs,
+  Attribute,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
@@ -99,6 +100,8 @@ import {
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
   VerificationResult,
+  VerifyEBSICredentialIssuerArgs,
+  VerifyEBSICredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -111,6 +114,7 @@ import {
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
 
+import 'cross-fetch/polyfill'
 /**
  * {@inheritDoc IOID4VCIHolder}
  */
@@ -143,7 +147,7 @@ export function signCallback(
     if (!resolution.issuer && !jwt.payload.iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
     }
-    const header = jwt.header as JwtHeader
+    const header = jwt.header as JwsHeader
     const payload = jwt.payload
     if (nonce) {
       payload.nonce = nonce
@@ -162,6 +166,32 @@ export function signCallback(
       })
     ).jwt
   }
+}
+
+export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult> {
+  const { wrappedVc, issuerType = ['TI'] } = args
+
+  const issuer =
+    wrappedVc.decoded?.iss ??
+    (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
+
+  if (!issuer) {
+    throw Error('The issuer of the VC is required to be present')
+  }
+
+  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`
+  const response = await fetch(url)
+  if (response.status !== 200) {
+    throw Error('The issuer of the VC cannot be trusted')
+  }
+
+  const payload = await response.json()
+
+  if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
+    throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
+  }
+
+  return payload
 }
 
 export class OID4VCIHolder implements IAgentPlugin {
@@ -211,12 +241,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
       onContactIdentityCreated,
       onCredentialStored,
       onIdentifierCreated,
+      onVerifyEBSICredentialIssuer,
       vcFormatPreferences,
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
@@ -244,6 +276,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
+    this.onVerifyEBSICredentialIssuer = onVerifyEBSICredentialIssuer
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -725,13 +758,15 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]> {
-    const { credentialsToAccept } = args
+    const { credentialsToAccept, issuanceOpt } = args
 
     return await Promise.all(
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
+          onVerifyEBSICredentialIssuer: this.onVerifyEBSICredentialIssuer,
           hasher: this.hasher,
+          schemaValidation: issuanceOpt?.schemaValidation,
           context,
         }),
       ),
@@ -754,7 +789,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (localeBranding && localeBranding.length > 0) {
         const credential = credentialsToAccept.find(
           (credAccept) =>
-            credAccept.credentialToAccept.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter],
+            credAccept.credentialToAccept.id === credentialId || JSON.stringify(credAccept.types) === credentialId || credentialsToAccept[counter],
         )!
         counter++
         await context.agent.ibAddCredentialBranding({

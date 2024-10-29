@@ -225,7 +225,7 @@ export interface IVerifyResult {
       verified: boolean
       error?: IError
       log: [{ id: string; valid: boolean }]
-    }
+    },
   ]
 
   statusResult?: IVerifyStatusResult
@@ -292,7 +292,7 @@ export type StatusListIndexingDirection = 'rightToLeft'
 
 export enum StatusListDriverType {
   AGENT_TYPEORM = 'agent_typeorm',
- /* AGENT_KV_STORE = 'agent_kv_store',
+  /* AGENT_KV_STORE = 'agent_kv_store',
   GITHUB = 'github',
   AGENT_FILESYSTEM = 'agent_filesystem',*/
 }

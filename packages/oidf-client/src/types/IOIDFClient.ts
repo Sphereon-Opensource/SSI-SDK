@@ -1,20 +1,18 @@
-import {IAgentContext, IPluginMethodMap} from "@veramo/core";
-import {
-    com,
-    Nullable
-} from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
+import {IAgentContext, IPluginMethodMap} from '@veramo/core';
+// @ts-ignore // TODO fix import
+import { com, Nullable } from '@sphereon/openid-federation-client';
 import ICryptoServiceCallbackJS = com.sphereon.oid.fed.client.crypto.ICryptoServiceCallback;
 import {
     CreateJwsCompactArgs,
     IJwsValidationResult,
     IJwtService,
-    JwsCompactResult,
+    JwtCompactResult,
     VerifyJwsArgs
-} from "@sphereon/ssi-sdk-ext.jwt-service";
+} from '@sphereon/ssi-sdk-ext.jwt-service';
 
 export interface IOIDFClient extends IPluginMethodMap {
     resolveTrustChain(args: ResolveTrustChainArgs): Promise<ResolveTrustChainCallbackResult>
-    signJwt(args: CreateJwsCompactArgs, context: RequiredContext ): Promise<JwsCompactResult>
+    signJwt(args: CreateJwsCompactArgs, context: RequiredContext ): Promise<JwtCompactResult>
     verifyJwt(args: VerifyJwsArgs, context: RequiredContext): Promise<IJwsValidationResult>
 }
 

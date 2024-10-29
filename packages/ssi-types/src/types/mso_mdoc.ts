@@ -112,7 +112,7 @@ export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDe
 export const mdocDecodedCredentialToUniformCredential = (
   decoded: MdocDocument,
   // @ts-ignore
-  opts?: { maxTimeSkewInMS?: number }
+  opts?: { maxTimeSkewInMS?: number },
 ): IVerifiableCredential => {
   const mdoc = decoded.toJson()
   const json = mdoc.toJsonDTO<DocumentJson>()

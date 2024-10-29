@@ -8,7 +8,7 @@ import {
   IResolver,
   PresentationPayload,
   VerifiableCredential,
-  VerifiablePresentation
+  VerifiablePresentation,
 } from '@veramo/core'
 
 /**
@@ -46,8 +46,6 @@ export interface ICreateVerifiablePresentationLDArgs {
 
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 }
-
-
 
 /**
  * Encapsulates the parameters required to create a

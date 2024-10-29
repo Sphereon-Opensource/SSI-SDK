@@ -106,7 +106,7 @@ export class KeyValueTypeORMStoreAdapter extends EventEmitter implements KeyvSto
 
   async disconnect(): Promise<void> {
     const connection = await _getConnectedDb(this.dbConnection)
-    connection.destroy()
+    await connection.destroy()
   }
 }
 
