@@ -34,6 +34,7 @@ import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -53,6 +54,8 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
+
+  siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
 export interface ISiopv2RPOpts {
@@ -67,6 +70,7 @@ export interface ICreateAuthRequestArgs {
   correlationId: string
   responseURIType: ResponseURIType
   responseURI: string
+  responseRedirectURI?: string
   jwtIssuer?: JwtIssuer
   requestByReferenceURI?: string
   nonce?: string
@@ -115,6 +119,12 @@ export interface ImportDefinitionsArgs {
   versionControlMode?: VersionControlMode
 }
 
+export interface IGetRedirectUriArgs {
+  correlationId: string
+  definitionId?: string
+  state?: string
+}
+
 export interface IAuthorizationRequestPayloads {
   authorizationRequest: AuthorizationRequestPayload
   requestObject?: string
@@ -128,6 +138,7 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 
 export interface ISiopRPInstanceArgs {
   definitionId?: string
+  responseRedirectURI?: string
 }
 
 export interface IPEXInstanceOptions extends IPEXOptions {
@@ -142,8 +153,10 @@ export interface IRPOptions {
   expiresIn?: number
   eventEmitter?: EventEmitter
   credentialOpts?: CredentialOpts
+  verificationPolicies?: VerificationPolicies
   identifierOpts: ISIOPIdentifierOptions
   verifyJwtCallback?: VerifyJwtCallback
+  responseRedirectUri?: string
 }
 
 export interface IPEXOptions {
@@ -152,6 +165,10 @@ export interface IPEXOptions {
   definitionId: string
   version?: string
   tenantId?: string
+}
+
+export type VerificationPolicies = {
+  schemaValidation: SchemaValidation
 }
 
 export interface PerDidResolver {
@@ -195,6 +212,7 @@ export type IRequiredContext = IAgentContext<
     IKeyManager &
     IIdentifierResolution &
     ICredentialIssuer &
+    ICredentialValidation &
     ICredentialVerifier &
     IPresentationExchange &
     IPDManager &

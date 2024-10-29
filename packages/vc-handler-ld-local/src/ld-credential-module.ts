@@ -5,14 +5,7 @@ import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { IIssueCredentialStatusOpts, IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifyResult } from '@sphereon/ssi-types'
-import {
-  CredentialPayload,
-  IAgentContext,
-  IKey,
-  PresentationPayload,
-  VerifiableCredential,
-  VerifiablePresentation
-} from '@veramo/core'
+import { CredentialPayload, IAgentContext, IKey, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
@@ -86,7 +79,7 @@ export class LdCredentialModule {
       // Handle status list if enabled
       // We do some additional check to determine whether we will call the below method, as the OID4VCI or W3C-VC API could also have called the method already
       if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
-        const credentialStatusVC = await context.agent.slAddStatusToCredential({...args.credentialStatusOpts, credential})
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ ...args.credentialStatusOpts, credential })
         if (credentialStatusVC.credentialStatus) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
         }
@@ -114,7 +107,6 @@ export class LdCredentialModule {
     debug(`Issuer ${issuerDid} created VC for ${key.kid}`)
     return verifiableCredential
   }
-
 
   async signLDVerifiablePresentation(
     presentation: PresentationPayload,

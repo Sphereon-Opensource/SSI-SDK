@@ -27,7 +27,10 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(innerArgs: {format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021', presentationDefinition: IPresentationDefinition}): string {
+  function determineProofFormat(innerArgs: {
+    format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
+    presentationDefinition: IPresentationDefinition
+  }): string {
     const { format, presentationDefinition } = innerArgs
 
     const formatOptions = format ?? presentationDefinition.format ?? args.format
@@ -46,9 +49,9 @@ export async function createPEXPresentationSignCallback(
 
     // if we only have 1 format type we can return that
     if (formats.size === 1) {
-      return formats.values().next().value
+      return formats.values().next().value!!
     }
-
+    formats.keys().next()
     // if we can go for sd-jwt, we go for sd-jwt
     if (formats.has('vc+sd-jwt')) {
       return 'vc+sd-jwt'

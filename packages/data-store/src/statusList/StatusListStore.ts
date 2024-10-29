@@ -172,7 +172,7 @@ export class StatusListStore implements IStatusListStore {
     } else if (args.correlationId) {
       where.push({ correlationId: args.correlationId })
     }
-    const result = await (await this.getStatusListRepo()).findOne({where})
+    const result = await (await this.getStatusListRepo()).findOne({ where })
     if (!result) {
       throw Error(`No status list found for id ${args.id}`)
     }

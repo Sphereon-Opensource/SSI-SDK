@@ -68,7 +68,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
   async function proofOfPossessionCallbackFunction(args: Jwt, kid?: string): Promise<string> {
     const importedJwk = await importJWK(jwk)
+
     return await new SignJWT({ ...args.payload })
+      // @ts-ignore
       .setProtectedHeader({ ...args.header, kid: kid! })
       .setIssuer(identifier.did)
       .setIssuedAt()
