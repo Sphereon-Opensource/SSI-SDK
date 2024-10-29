@@ -1,7 +1,7 @@
 import { VcIssuer } from '@sphereon/oid4vci-issuer'
 import { DIDDocument } from '@veramo/core'
 import { createVciIssuerBuilder } from './functions'
-import { AuthorizationServerMetadata, IssuerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, IssuerMetadata, OpenidFederationMetadata } from '@sphereon/oid4vci-common'
 
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IIssuerOptions, IMetadataOptions, IRequiredContext } from './types/IOID4VCIIssuer'
@@ -12,22 +12,26 @@ export class IssuerInstance {
   private readonly _issuerOptions: IIssuerOptions
   private readonly _issuerMetadata: IssuerMetadata
   private readonly _authorizationServerMetadata: AuthorizationServerMetadata
+  private readonly _openidFederationMetadata: OpenidFederationMetadata
 
   public constructor({
     issuerOpts,
     metadataOpts,
     issuerMetadata,
     authorizationServerMetadata,
+    openidFederationMetadata,
   }: {
     issuerOpts: IIssuerOptions
     metadataOpts: IMetadataOptions
     issuerMetadata: IssuerMetadata
     authorizationServerMetadata: AuthorizationServerMetadata
+    openidFederationMetadata: OpenidFederationMetadata
   }) {
     this._issuerOptions = issuerOpts
     this._metadataOptions = metadataOpts
     this._issuerMetadata = issuerMetadata
     this._authorizationServerMetadata = authorizationServerMetadata
+    this._openidFederationMetadata = openidFederationMetadata
   }
 
   public async get(opts: { context: IRequiredContext; credentialDataSupplier?: CredentialDataSupplier }): Promise<VcIssuer<DIDDocument>> {
@@ -60,5 +64,9 @@ export class IssuerInstance {
 
   get authorizationServerMetadata() {
     return this._authorizationServerMetadata
+  }
+
+  get openidFederationMetadata() {
+    return this._openidFederationMetadata
   }
 }

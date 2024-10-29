@@ -14,7 +14,7 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.172",
+    "@sphereon/oid4vci-common": "0.16.1-feature.SDK.39.well.known.oidf.175",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",

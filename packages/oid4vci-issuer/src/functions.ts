@@ -5,6 +5,7 @@ import {
   Jwt,
   JwtVerifyResult,
   OID4VCICredentialFormat,
+  OpenidFederationMetadata,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -222,12 +223,13 @@ export async function createVciIssuerBuilder(
     issuerOpts: IIssuerOptions
     issuerMetadata: IssuerMetadata
     authorizationServerMetadata: AuthorizationServerMetadata
+    openidFederationMetadata?: OpenidFederationMetadata
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
 ): Promise<VcIssuerBuilder<DIDDocument>> {
-  const { issuerOpts, issuerMetadata, authorizationServerMetadata } = args
+  const { issuerOpts, issuerMetadata, authorizationServerMetadata, openidFederationMetadata } = args
 
   const builder = new VcIssuerBuilder<DIDDocument>()
   // @ts-ignore
@@ -248,6 +250,9 @@ export async function createVciIssuerBuilder(
   }
   builder.withIssuerMetadata(issuerMetadata)
   builder.withAuthorizationMetadata(authorizationServerMetadata)
+  if (openidFederationMetadata) {
+    builder.withOpenidFederationMetadata(openidFederationMetadata)
+  }
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
@@ -267,14 +272,21 @@ export async function createVciIssuer(
     issuerOpts,
     issuerMetadata,
     authorizationServerMetadata,
+    openidFederationMetadata,
     credentialDataSupplier,
   }: {
     issuerOpts: IIssuerOptions
     issuerMetadata: IssuerMetadata
     authorizationServerMetadata: AuthorizationServerMetadata
+    openidFederationMetadata?: OpenidFederationMetadata
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
 ): Promise<VcIssuer<DIDDocument>> {
-  return (await createVciIssuerBuilder({ issuerOpts, issuerMetadata, authorizationServerMetadata, credentialDataSupplier }, context)).build()
+  return (
+    await createVciIssuerBuilder(
+      { issuerOpts, issuerMetadata, authorizationServerMetadata, openidFederationMetadata, credentialDataSupplier },
+      context,
+    )
+  ).build()
 }

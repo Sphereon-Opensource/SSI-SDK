@@ -69,7 +69,7 @@ export interface IMetadataOptions {
   storeNamespace?: string
 }
 
-export type Oid4vciMetadataType = 'issuer' | 'authorizationServer'
+export type Oid4vciMetadataType = 'issuer' | 'authorizationServer' | 'openidFederation'
 
 export interface IOid4vciStoreGetArgs {
   metadataType: Oid4vciMetadataType
