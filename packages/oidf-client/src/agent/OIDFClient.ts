@@ -12,10 +12,12 @@ import {
     ResolveTrustChainArgs,
     ResolveTrustChainCallbackResult
 } from '../types/IOIDFClient';
-// @ts-ignore // TODO fix import
 import { com } from '@sphereon/openid-federation-client';
 import {schema} from '../index';
 import FederationClient = com.sphereon.oid.fed.client.FederationClient;
+import DefaultFetchJSImpl = com.sphereon.oid.fed.client.fetch.DefaultFetchJSImpl
+import DefaultTrustChainJSImpl = com.sphereon.oid.fed.client.trustchain.DefaultTrustChainJSImpl
+import DefaultCallbacks = com.sphereon.oid.fed.client.service.DefaultCallbacks
 
 export const oidfClientMethods: Array<string> = [
     'resolveTrustChain',
@@ -29,12 +31,13 @@ export class OIDFClient implements IAgentPlugin {
 
     constructor(args?: OIDFClientArgs) {
         const { cryptoServiceCallback } = { ...args }
+        DefaultCallbacks.setFetchServiceDefault(new DefaultFetchJSImpl())
+        DefaultCallbacks.setTrustChainServiceDefault(new DefaultTrustChainJSImpl())
         if (cryptoServiceCallback) {
-            this.oidfClient = new FederationClient(null, cryptoServiceCallback)
-        } else {
-            //FIXME Default Federation client crypto callback
-            this.oidfClient = new FederationClient(null, null)
+            DefaultCallbacks.setCryptoServiceDefault(cryptoServiceCallback)
         }
+        //FIXME set default Federation client crypto callback
+        this.oidfClient = new FederationClient()
     }
 
     readonly methods: IOIDFClient = {

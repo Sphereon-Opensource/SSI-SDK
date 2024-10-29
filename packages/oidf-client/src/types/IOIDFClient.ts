@@ -1,7 +1,6 @@
 import {IAgentContext, IPluginMethodMap} from '@veramo/core';
-// @ts-ignore // TODO fix import
-import { com, Nullable } from '@sphereon/openid-federation-client';
-import ICryptoServiceCallbackJS = com.sphereon.oid.fed.client.crypto.ICryptoServiceCallback;
+import { com } from '@sphereon/openid-federation-client';
+import ICryptoCallbackServiceJS = com.sphereon.oid.fed.client.crypto.ICryptoCallbackServiceJS;
 import {
     CreateJwsCompactArgs,
     IJwsValidationResult,
@@ -25,7 +24,9 @@ export type OIDFClientArgs = {
     cryptoServiceCallback?: CryptoServiceCallbackArgs
 }
 
-export type CryptoServiceCallbackArgs = ICryptoServiceCallbackJS
+export type CryptoServiceCallbackArgs = ICryptoCallbackServiceJS
+
+type Nullable<T> = T | null | undefined
 
 export type ResolveTrustChainCallbackResult = Nullable<Array<string>>
 

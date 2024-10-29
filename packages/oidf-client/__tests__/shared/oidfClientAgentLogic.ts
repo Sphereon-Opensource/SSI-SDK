@@ -1,10 +1,9 @@
 import 'cross-fetch/polyfill'
-import {createAgent, TAgent} from '@veramo/core'
-import {IOIDFClient, OIDFClient} from "../../src";
+import {TAgent} from '@veramo/core'
+import {IOIDFClient} from "../../src";
 import {mockResponses} from "./TrustChainMockResponses";
-import {IJwtService, JwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
+import {IJwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
 import nock = require('nock');
-import {importJWK, JWK, jwtVerify, JWTVerifyOptions} from "jose";
 
 type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
 
@@ -40,48 +39,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
-      //agent = testContext.getAgent()
-      agent = createAgent({
-        plugins: [
-            new JwtService(),
-            new OIDFClient({
-              // FIXME it should be fixed in the library, the function's name and the JWK object keys are mangled
-              cryptoServiceCallback: {
-                // @ts-ignore
-                q3t: async (jwt: string, key: any): Promise<boolean> => {
-                  const jwk: JWK
-                      = {
-                    kty: key.e3s_1,
-                    kid: key.f3s_1,
-                    crv: key.g3s_1,
-                    x: key.h3s_1,
-                    y: key.i3s_1,
-                    n: key.j3s_1,
-                    e: key.k3s_1,
-                    alg: key.l3s_1,
-                    use: key.m3s_1,
-                    x5u: key.n3s_1,
-                    x5c: key.o3s_1,
-                    x5t: key.p3s_1,
-                    'x5t#S256': key.q3s_1,
-                  }
-
-                  const publicKey = await importJWK(jwk)
-
-                  const now = new Date()
-                  const past = now.setDate(now.getDate() - 60)
-
-                  const options: JWTVerifyOptions = {
-                    currentDate: new Date(past)
-                  }
-
-                  const result = await jwtVerify(jwt, publicKey, options)
-                  return result !== undefined
-                }
-              }
-      }),
-        ]
-      })
+      agent = testContext.getAgent()
     })
 
     afterAll(testContext.tearDown)
