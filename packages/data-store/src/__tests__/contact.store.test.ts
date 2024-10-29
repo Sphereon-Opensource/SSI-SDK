@@ -1234,7 +1234,12 @@ describe('Contact store tests', (): void => {
 
     expect(result.roles).toBeDefined()
     expect(result.roles.length).toEqual(4)
-    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER, CredentialRole.FEDERATION_OPERATOR])
+    expect(result.roles).toEqual([
+      CredentialRole.VERIFIER,
+      CredentialRole.ISSUER,
+      CredentialRole.HOLDER,
+      CredentialRole.FEDERATION_OPERATOR
+    ])
   })
 
   it('should add relationship', async (): Promise<void> => {
