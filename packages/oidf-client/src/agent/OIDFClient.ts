@@ -2,7 +2,7 @@ import {IAgentPlugin} from "@veramo/core";
 import {
     CreateJwsCompactArgs,
     IJwsValidationResult,
-    JwsCompactResult,
+    JwtCompactResult,
     VerifyJwsArgs,
 } from '@sphereon/ssi-sdk-ext.jwt-service'
 import {
@@ -11,11 +11,10 @@ import {
     RequiredContext,
     ResolveTrustChainArgs,
     ResolveTrustChainCallbackResult
-} from "../types/IOIDFClient";
-import {
-    com
-} from "../../../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client";
-import {schema} from "../index";
+} from '../types/IOIDFClient';
+// @ts-ignore // TODO fix import
+import { com } from '@sphereon/openid-federation-client';
+import {schema} from '../index';
 import FederationClient = com.sphereon.oid.fed.client.FederationClient;
 
 export const oidfClientMethods: Array<string> = [
@@ -49,7 +48,7 @@ export class OIDFClient implements IAgentPlugin {
         return await this.oidfClient.resolveTrustChain(entityIdentifier, trustAnchors)
     }
 
-    private async signJwt(args: CreateJwsCompactArgs, context: RequiredContext): Promise<JwsCompactResult> {
+    private async signJwt(args: CreateJwsCompactArgs, context: RequiredContext): Promise<JwtCompactResult> {
         return await context.agent.jwtCreateJwsCompactSignature(args)
     }
 
