@@ -1233,7 +1233,7 @@ describe('Contact store tests', (): void => {
     const result: Party = await contactStore.getParty({ partyId: savedParty.id })
 
     expect(result.roles).toBeDefined()
-    expect(result.roles.length).toEqual(3)
+    expect(result.roles.length).toEqual(4)
     expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER, CredentialRole.FEDERATION_OPERATOR])
   })
 
