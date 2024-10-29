@@ -93,6 +93,7 @@ export enum CredentialRole {
   ISSUER = 'ISSUER',
   VERIFIER = 'VERIFIER',
   HOLDER = 'HOLDER',
+  FEDERATION_OPERATOR = 'FEDERATION OPERATOR'
 }
 
 export enum CredentialStateType {

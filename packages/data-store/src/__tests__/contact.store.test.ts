@@ -367,6 +367,15 @@ describe('Contact store tests', (): void => {
             correlationId: 'example_did3',
           },
         },
+        {
+          alias: 'test_alias4',
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.FEDERATION_OPERATOR],
+          identifier: {
+            type: CorrelationIdentifierType.DID,
+            correlationId: 'example_did4',
+          },
+        },
       ],
       electronicAddresses: [
         {
@@ -391,7 +400,7 @@ describe('Contact store tests', (): void => {
     }
     const result: Array<Party> = await contactStore.getParties(args)
 
-    expect(result[0].identities.length).toEqual(3)
+    expect(result[0].identities.length).toEqual(4)
     expect(result[0].electronicAddresses.length).toEqual(1)
   })
 
@@ -1208,6 +1217,15 @@ describe('Contact store tests', (): void => {
             correlationId: 'example_did3',
           },
         },
+        {
+          alias: 'test_alias4',
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.FEDERATION_OPERATOR],
+          identifier: {
+            type: CorrelationIdentifierType.DID,
+            correlationId: 'example_did4',
+          },
+        },
       ],
     }
 
@@ -1216,7 +1234,7 @@ describe('Contact store tests', (): void => {
 
     expect(result.roles).toBeDefined()
     expect(result.roles.length).toEqual(3)
-    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER])
+    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER, CredentialRole.FEDERATION_OPERATOR])
   })
 
   it('should add relationship', async (): Promise<void> => {
