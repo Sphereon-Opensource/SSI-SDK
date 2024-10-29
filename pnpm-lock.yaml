@@ -1461,21 +1461,21 @@ importers:
 
   packages/oidf-client:
     dependencies:
+      '@sphereon/openid-federation-client':
+        specifier: 0.1.0-unstable.2a3ea1d
+        version: 0.1.0-unstable.2a3ea1d
+      '@sphereon/openid-federation-common':
+        specifier: 0.1.0-unstable.2a3ea1d
+        version: 0.1.0-unstable.2a3ea1d
+      '@sphereon/openid-federation-open-api':
+        specifier: 0.1.0-unstable.2a3ea1d
+        version: 0.1.0-unstable.2a3ea1d
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: ^0.24.1-unstable.130
         version: 0.24.1-unstable.130(ts-node@10.9.2)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
-      openid-federation-modules-openapi:
-        specifier: link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openapi
-        version: link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openapi
-      openid-federation-modules-openid-federation-client:
-        specifier: link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client
-        version: link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client
-      openid-federation-modules-openid-federation-common:
-        specifier: link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-common
-        version: link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-common
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -7022,6 +7022,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  /@js-joda/core@3.2.0:
+    resolution: {integrity: sha512-PMqgJ0sw5B7FKb2d5bWYIoxjri+QlW/Pys7+Rw82jSH0QN3rB05jZ/VrrsUdh1w4+i2kw9JOejXGq/KhDOX7Kg==}
+    dev: false
+
   /@js-joda/core@5.6.3:
     resolution: {integrity: sha512-T1rRxzdqkEXcou0ZprN1q9yDRlvzCPLqmlNt5IIsGBzoEVgLCCYrKEwc84+TvsXuAc95VAZwtWD2zVsKPY4bcA==}
     dev: false
@@ -8996,6 +9000,48 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: false
+
+  /@sphereon/openid-federation-client@0.1.0-unstable.2a3ea1d:
+    resolution: {integrity: sha512-IpxjaFKGhoe778JJQEl3ASa+t5eOOvIaHaS43c3CtUS6PVSLs4Gk2IyhyU1n2VY+O/xyAhzMCE/ERAmSc+j4yw==}
+    dependencies:
+      '@js-joda/core': 3.2.0
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      jose: 5.9.4
+      node-fetch: 2.7.0
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /@sphereon/openid-federation-common@0.1.0-unstable.2a3ea1d:
+    resolution: {integrity: sha512-hPZ1rr26M8WHTx7fLKwGmKxzMieKx7JKIXXojDqZlZQ4cvm8aJdChWP5lRS+qpjJIgkGMFsV/CpSrrD4v2spLw==}
+    dependencies:
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      node-fetch: 2.7.0
+      typescript: 5.5.3
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /@sphereon/openid-federation-open-api@0.1.0-unstable.2a3ea1d:
+    resolution: {integrity: sha512-KF2vDCo+hjpB22W4mjs/rZCBPux3doVHKNfysiL1GPNtM5adKEjZTwW+OagXznuu3LOZi9mhDcMK6rj5JS20VA==}
+    dependencies:
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      node-fetch: 2.7.0
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
     dev: false
 
   /@sphereon/pex-models@2.3.1:
@@ -11689,6 +11735,7 @@ packages:
   /@xmldom/xmldom@0.7.13:
     resolution: {integrity: sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version is no longer supported, please update to at least 0.8.*
     optional: true
 
   /@xmldom/xmldom@0.8.10:
@@ -18034,7 +18081,6 @@ packages:
 
   /jose@5.9.4:
     resolution: {integrity: sha512-WBBl6au1qg6OHj67yCffCgFR3BADJBXN8MdRvCgJDuMv3driV2nHr7jdGvaKX9IolosAsn+M0XRArqLXUhyJHQ==}
-    dev: true
 
   /js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
@@ -24531,6 +24577,19 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  /ws@8.5.0:
+    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
 
   /xcode@3.0.1:
     resolution: {integrity: sha512-kCz5k7J7XbJtjABOvkc5lJmkiDh8VhjVCGNiqdKCscmVpdVUpEAyXv1xmCLkQJ5dsHqx3IPO4XW+NTDhU/fatA==}

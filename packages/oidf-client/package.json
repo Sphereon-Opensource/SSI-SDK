@@ -15,9 +15,9 @@
 		"generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
 	},
 	"dependencies": {
-		"openid-federation-modules-openapi": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openapi",
-		"openid-federation-modules-openid-federation-client": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-client",
-		"openid-federation-modules-openid-federation-common": "link:../../../OpenID-Federation/build/js/packages/openid-federation-modules-openid-federation-common",
+		"@sphereon/openid-federation-open-api": "0.1.0-unstable.2a3ea1d",
+		"@sphereon/openid-federation-client": "0.1.0-unstable.2a3ea1d",
+		"@sphereon/openid-federation-common": "0.1.0-unstable.2a3ea1d",
 		"@sphereon/ssi-types": "workspace:*",
 		"@sphereon/ssi-sdk-ext.jwt-service": "^0.24.1-unstable.130"
 	},
