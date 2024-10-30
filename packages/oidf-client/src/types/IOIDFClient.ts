@@ -10,7 +10,7 @@ import {
 } from '@sphereon/ssi-sdk-ext.jwt-service';
 
 export interface IOIDFClient extends IPluginMethodMap {
-    resolveTrustChain(args: ResolveTrustChainArgs): Promise<ResolveTrustChainCallbackResult>
+    resolveTrustChain(args: ResolveTrustChainArgs, context: RequiredContext): Promise<ResolveTrustChainCallbackResult>
     signJwt(args: CreateJwsCompactArgs, context: RequiredContext ): Promise<JwtCompactResult>
     verifyJwt(args: VerifyJwsArgs, context: RequiredContext): Promise<IJwsValidationResult>
 }

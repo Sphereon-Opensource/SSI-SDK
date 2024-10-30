@@ -1,8 +1,9 @@
 import 'cross-fetch/polyfill'
-import {TAgent} from '@veramo/core'
-import {IOIDFClient} from "../../src";
+import {createAgent, TAgent} from '@veramo/core'
+import {IOIDFClient, OIDFClient} from "../../src";
 import {mockResponses} from "./TrustChainMockResponses";
-import {IJwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
+import {IJwtService, JwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
+import {defaultCryptoJSImpl} from "./CryptoDefaultCallback";
 import nock = require('nock');
 
 type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
@@ -39,7 +40,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
-      agent = testContext.getAgent()
+      //agent = testContext.getAgent()
+      // FIXME Remove createAgent and uncomment the line above when the issue with the jwt-service is fixed
+      agent = createAgent({
+        plugins: [
+            new JwtService(),
+            new OIDFClient({
+              cryptoServiceCallback: defaultCryptoJSImpl
+            }),
+        ]
+      })
     })
 
     afterAll(testContext.tearDown)
