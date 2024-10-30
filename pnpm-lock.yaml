@@ -468,10 +468,10 @@ importers:
         version: 5.0.0-unstable.18
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -593,13 +593,13 @@ importers:
         version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -672,7 +672,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -867,7 +867,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -925,7 +925,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1095,13 +1095,13 @@ importers:
         version: 0.16.1-feature.jarm.sdk.146(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -1201,10 +1201,10 @@ importers:
         version: 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1277,13 +1277,13 @@ importers:
         version: 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/oid4vci-issuer-server':
         specifier: 0.16.1-feature.jarm.sdk.146
-        version: 0.16.1-feature.jarm.sdk.146(@noble/hashes@1.2.0)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        version: 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1344,7 +1344,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
@@ -1353,7 +1353,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1477,10 +1477,10 @@ importers:
         version: 0.16.1-feature.jarm.sdk.146(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1517,6 +1517,43 @@ importers:
         version: 4.1.0
       nock:
         specifier: ^13.5.4
+        version: 13.5.5
+
+  packages/oidf-client:
+    dependencies:
+      '@sphereon/openid-federation-client':
+        specifier: 0.1.0-unstable.151480d
+        version: 0.1.0-unstable.151480d(encoding@0.1.13)
+      '@sphereon/openid-federation-common':
+        specifier: 0.1.0-unstable.151480d
+        version: 0.1.0-unstable.151480d(encoding@0.1.13)
+      '@sphereon/openid-federation-open-api':
+        specifier: 0.1.0-unstable.151480d
+        version: 0.1.0-unstable.151480d(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: ^0.24.1-unstable.130
+        version: 0.24.1-unstable.138(encoding@0.1.13)
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.19.2)
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8(encoding@0.1.13)
+      jose:
+        specifier: 5.9.4
+        version: 5.9.4
+      nock:
+        specifier: ^13.5.5
         version: 13.5.5
 
   packages/pd-manager:
@@ -1696,10 +1733,10 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -1754,7 +1791,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
@@ -1763,7 +1800,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1812,7 +1849,7 @@ importers:
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -2010,13 +2047,13 @@ importers:
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -2053,7 +2090,7 @@ importers:
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -2062,7 +2099,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@types/node':
         specifier: ^20.17.1
         version: 20.17.1
@@ -2132,13 +2169,13 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -2262,13 +2299,13 @@ importers:
         version: 5.0.0-unstable.18
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2411,7 +2448,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2709,7 +2746,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
@@ -2761,7 +2798,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -2890,7 +2927,7 @@ importers:
         version: 1.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -2990,13 +3027,13 @@ importers:
         version: 0.23.0(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
@@ -3071,10 +3108,10 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3120,10 +3157,10 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3166,7 +3203,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -3256,10 +3293,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3308,10 +3345,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3357,7 +3394,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -3514,7 +3551,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -3523,7 +3560,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3760,7 +3797,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -5279,6 +5316,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
+  '@js-joda/core@3.2.0':
+    resolution: {integrity: sha512-PMqgJ0sw5B7FKb2d5bWYIoxjri+QlW/Pys7+Rw82jSH0QN3rB05jZ/VrrsUdh1w4+i2kw9JOejXGq/KhDOX7Kg==}
+
   '@js-joda/core@5.6.3':
     resolution: {integrity: sha512-T1rRxzdqkEXcou0ZprN1q9yDRlvzCPLqmlNt5IIsGBzoEVgLCCYrKEwc84+TvsXuAc95VAZwtWD2zVsKPY4bcA==}
 
@@ -5952,6 +5992,7 @@ packages:
 
   '@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.22':
     resolution: {integrity: sha512-uAZZExVy+ug9JLircejWa5eLtAZ7bnBP6xb7DO2+86LRsHNLh2k2jMWJYxp+iWtGHTsh6RYsZl14ScQLvjiQ/A==}
+    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -5986,6 +6027,15 @@ packages:
       awesome-qr:
         optional: true
 
+  '@sphereon/openid-federation-client@0.1.0-unstable.151480d':
+    resolution: {integrity: sha512-obnBjSwxDsjBpY8agT+WSCVOVVGU5ouL4rcIKU658fqig2RWXpIGbFrvUHa8GVdF4ayxc6BTyhU2zGGYW3Xaiw==}
+
+  '@sphereon/openid-federation-common@0.1.0-unstable.151480d':
+    resolution: {integrity: sha512-LKJ/wh2tt1c8EhZC6kKqtHNK8pP5MuobxxpSeKCMZmhs9OK3BPiANEkds0A4xPKxafVui2LbtwW9Eg/1fnXYKQ==}
+
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.151480d':
+    resolution: {integrity: sha512-Od0KiDsNrKhpVr+8bPbjJgzqbUucju5hibchQicz6fKhNOUNLD+d1ohvkLI2q+ZwLMOMf/8bPBWGM61W+MWARQ==}
+
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
 
@@ -5997,20 +6047,6 @@ packages:
     resolution: {integrity: sha512-mXcp3meaKbv5TpEPxItZ1ZuRqkdNf8vjx3EM+GqNVQ8QQF9pbD3jw6wQfuFRPc+8kN+m9GEiVVbd9I0m50OPBg==}
     peerDependencies:
       react-native: '>=0.67.0'
-
-  '@sphereon/ssi-express-support@0.30.1':
-    resolution: {integrity: sha512-eZMq3V6lZ3qVCO+ymRjLOmDrfIqPsAf/KHwxtK4yoZyVjsDC4f/mbLIovyv1SdK/Uf7raF7QXdTjLi+f/XeS2Q==}
-    peerDependencies:
-      '@noble/hashes': 1.2.0
-      passport-azure-ad: ^4.3.5
-      passport-http-bearer: ^1.0.1
-    peerDependenciesMeta:
-      '@noble/hashes':
-        optional: true
-      passport-azure-ad:
-        optional: true
-      passport-http-bearer:
-        optional: true
 
   '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0':
     resolution: {integrity: sha512-sUROw3bTfr8zcKO75eaDjrGvx13UAFRIKahbxXZqat+/6WiF4+XzjUd79bCoXV+o/iIhaa4X8FetPci7hcwvuQ==}
@@ -6030,17 +6066,32 @@ packages:
   '@sphereon/ssi-sdk-ext.did-resolver-key@0.25.0':
     resolution: {integrity: sha512-biWUv+gtEcuCapdN4/1iVHz7I+2rdyAwWfacMeLFoQ5zoTGxKdN9g1eqOt4qwpP6PsiG4HsBLSyJFXNnAsTIcQ==}
 
+  '@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.138':
+    resolution: {integrity: sha512-0Gvz/a+9Io3e0zXmy9BfZV0BaFeQgrGCEy9TOEMAntQmvtIptNK2DXmoImRjwgWo+bVsxuM5Qk4X+UF3lbQ0YA==}
+
   '@sphereon/ssi-sdk-ext.did-utils@0.25.0':
     resolution: {integrity: sha512-S9mOHmX4WVVp5kM5OJsfsywLTki08I93iROFwkuaycWmssjKgIo6qO30hJQKw3xpW6oA+j8tqBnTXQb8+R87IA==}
+
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.138':
+    resolution: {integrity: sha512-rvphWRMEi49BhI5Ib4OgI0JsS4J5+FKKTYK3S8b22Hrf2A3MYxRFHTS5TFhIHbif238rkJ8oH8qKNyIMMtFVXQ==}
 
   '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0':
     resolution: {integrity: sha512-lQcOWAB5bfQZWraU/LJVgSrom+Q9Vm2/volJ5Fv+lCLVZTnZQF17WfLqNncg9ESu/S0S0tXFdbz8Om3hQfEu0A==}
 
+  '@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.138':
+    resolution: {integrity: sha512-33rjilXBTMbSiwyj0gORKa5P/kcyGoqTAwgEhVrQ5cCy4U/5LMON+CwzYrJ6BDPkCUeyWdWPtCBS544vzm2COA==}
+
   '@sphereon/ssi-sdk-ext.jwt-service@0.25.0':
     resolution: {integrity: sha512-YGV/iOmfXFhz933hoZr6U9n3ZhHb844rqxH8OHq0egiFLWpZ5DMXdxZJPM8GzvZOTwg/AMkhFXR6xHp8BYk0KA==}
 
+  '@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.138':
+    resolution: {integrity: sha512-6UagjQXFVePPBKbA0QD2gwlrxifuoC18OTd8UDpr1fzgHP9TnKlqtLNRF0Loei9hxGGSVxGg3qqu6Gcg5stPew==}
+
   '@sphereon/ssi-sdk-ext.key-manager@0.25.0':
     resolution: {integrity: sha512-Gmmlmz/WgnlM+adOs/ofgpN1HMZB7DTiT6NRgppzNfG+uwpgMH3dWw8yUXdccZZAJOq6vxTaws+yNQ/DstKr4g==}
+
+  '@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.138':
+    resolution: {integrity: sha512-wH88e3DBOauHvY2xUCPcFkm3RWeelJZ7S7I27rWE+Ov405dTW9bJtoSdXvH4oPZmtTK528WI5ZX3DAqSa+Z7NQ==}
 
   '@sphereon/ssi-sdk-ext.key-utils@0.25.0':
     resolution: {integrity: sha512-AEU53x61JUkhIMK/QZD53ImuD6QR2qRsuuUdvL1rrGi54y+iIKXU3X25pxA8yAMfPU6lt/lAFO1BbYZZXv/JMA==}
@@ -6048,11 +6099,11 @@ packages:
   '@sphereon/ssi-sdk-ext.kms-local@0.25.0':
     resolution: {integrity: sha512-k6eXMrvhnANcfpFQlxg0eXXmGgw2YziPi++esxt07FdaYsTeBl+kj5REYlqBFZSDvUp8dExJ5fjs6TQXOyi5CA==}
 
+  '@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.138':
+    resolution: {integrity: sha512-uyP95nE0samaIwEEbAoRkAIzVLuXPBha8op/zChzJA/xsjXp3hkICWvISW4M46G9nrjJrd6uFieZWDVQzRjbrQ==}
+
   '@sphereon/ssi-sdk-ext.x509-utils@0.25.0':
     resolution: {integrity: sha512-eX9YiQy0Uhx9pBexwkpdW2KmulGr4DDIxA+WIrgGLYGyYj/zJ3pBfPHAkpuZPxtK+KG67tbUhk9Z3Ye6sR2N0g==}
-
-  '@sphereon/ssi-sdk.agent-config@0.30.1':
-    resolution: {integrity: sha512-8IRct+v8l9T+NACJzm78fH9LzoLiU7q+nHj8keOjFcLrV4CmdpyfuMYdRwrbFXTrLqV1rndAJQ7GGxX+UEq4JA==}
 
   '@sphereon/vc-status-list@7.0.0-next.0':
     resolution: {integrity: sha512-4GIZq12SXbEbO4vCh5TwWzWk7tviDUP8aOzRGsEw6UW2344qZ31CLsU+bHurdnG4OlLRyosv4khN1ha6OiJHZQ==}
@@ -10013,6 +10064,9 @@ packages:
   jose@5.7.0:
     resolution: {integrity: sha512-3P9qfTYDVnNn642LCAqIKbTGb9a1TBxZ9ti5zEVEr48aDdflgRjhspWFb6WM4PzAfFbGMJYC4+803v8riCRAKw==}
 
+  jose@5.9.4:
+    resolution: {integrity: sha512-WBBl6au1qg6OHj67yCffCgFR3BADJBXN8MdRvCgJDuMv3driV2nHr7jdGvaKX9IolosAsn+M0XRArqLXUhyJHQ==}
+
   jose@5.9.6:
     resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
 
@@ -13555,6 +13609,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.5.0:
+    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xcode@3.0.1:
     resolution: {integrity: sha512-kCz5k7J7XbJtjABOvkc5lJmkiDh8VhjVCGNiqdKCscmVpdVUpEAyXv1xmCLkQJ5dsHqx3IPO4XW+NTDhU/fatA==}
     engines: {node: '>=10.0.0'}
@@ -15952,6 +16018,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  '@js-joda/core@3.2.0': {}
+
   '@js-joda/core@5.6.3': {}
 
   '@js-joda/timezone@2.3.0(@js-joda/core@5.6.3)':
@@ -17358,12 +17426,12 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.jarm.sdk.146(@noble/hashes@1.2.0)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
     dependencies:
       '@sphereon/oid4vc-common': 0.16.1-feature.jarm.sdk.146
       '@sphereon/oid4vci-common': 0.16.1-feature.jarm.sdk.146(encoding@0.1.13)
       '@sphereon/oid4vci-issuer': 0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
-      '@sphereon/ssi-express-support': 0.30.1(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+      '@sphereon/ssi-express-support': link:packages/ssi-express-support
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.2
       cookie-parser: 1.4.6
@@ -17375,10 +17443,7 @@ snapshots:
     optionalDependencies:
       awesome-qr: 2.1.5-rc.0(encoding@0.1.13)
     transitivePeerDependencies:
-      - '@noble/hashes'
       - encoding
-      - passport-azure-ad
-      - passport-http-bearer
       - supports-color
 
   '@sphereon/oid4vci-issuer@0.16.1-feature.jarm.sdk.146(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
@@ -17392,6 +17457,42 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@sphereon/openid-federation-client@0.1.0-unstable.151480d(encoding@0.1.13)':
+    dependencies:
+      '@js-joda/core': 3.2.0
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      jose: 5.9.4
+      node-fetch: 2.7.0(encoding@0.1.13)
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
+  '@sphereon/openid-federation-common@0.1.0-unstable.151480d(encoding@0.1.13)':
+    dependencies:
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      node-fetch: 2.7.0(encoding@0.1.13)
+      typescript: 5.6.3
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.151480d(encoding@0.1.13)':
+    dependencies:
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      node-fetch: 2.7.0(encoding@0.1.13)
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
 
   '@sphereon/pex-models@2.3.1': {}
 
@@ -17413,32 +17514,10 @@ snapshots:
     dependencies:
       react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3)
 
-  '@sphereon/ssi-express-support@0.30.1(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
-    dependencies:
-      body-parser: 1.20.2
-      casbin: 5.30.0
-      cookie-session: 2.1.0
-      cors: 2.8.5
-      dotenv-flow: 3.3.0
-      express: 4.19.2
-      express-session: 1.18.0
-      http-terminator: 3.2.0
-      morgan: 1.10.0
-      openid-client: 5.6.5
-      passport: 0.6.0
-      qs: 6.13.0
-      uint8arrays: 3.1.1
-    optionalDependencies:
-      '@noble/hashes': 1.2.0
-      passport-azure-ad: 4.3.5
-      passport-http-bearer: 1.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0(encoding@0.1.13)':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
@@ -17449,25 +17528,8 @@ snapshots:
       did-resolver: 4.1.0
       elliptic: 6.5.4
     transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
       - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
       - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
 
   '@sphereon/ssi-sdk-ext.did-provider-key@0.25.0(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)':
     dependencies:
@@ -17539,14 +17601,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-utils@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.138(encoding@0.1.13)':
     dependencies:
       '@ethersproject/networks': 5.7.1
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk.agent-config': link:packages/agent-config
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
@@ -17557,32 +17619,36 @@ snapshots:
       elliptic: 6.5.4
       uint8arrays: 3.1.1
     transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
       - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
       - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-utils@0.25.0(encoding@0.1.13)':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.agent-config': link:packages/agent-config
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.138(encoding@0.1.13)':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.138(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk.agent-config': link:packages/agent-config
       '@sphereon/ssi-types': link:packages/ssi-types
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
@@ -17590,34 +17656,53 @@ snapshots:
       pkijs: 3.2.4
       uint8arrays: 3.1.1
     transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
       - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
       - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.jwt-service@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0(encoding@0.1.13)':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
+      '@sphereon/ssi-sdk.agent-config': link:packages/agent-config
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      debug: 4.3.6
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.138(encoding@0.1.13)':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.138(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.138(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-sdk.agent-config': link:packages/agent-config
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/random': 1.0.2
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      debug: 4.3.6
+      jose: 5.9.4
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.jwt-service@0.25.0(encoding@0.1.13)':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-manager': 0.25.0
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.agent-config': link:packages/agent-config
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/random': 1.0.2
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -17627,31 +17712,44 @@ snapshots:
       jwt-decode: 4.0.0
       uint8arrays: 3.1.1
     transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
       - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
       - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.138':
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@sphereon/ssi-sdk-ext.key-manager@0.25.0':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
       uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.138':
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.138
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@trust/keyto': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.6
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
     transitivePeerDependencies:
       - supports-color
 
@@ -17677,9 +17775,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.kms-local@0.25.0(encoding@0.1.13)':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
       '@trust/keyto': 2.0.0-alpha1
@@ -17689,25 +17787,18 @@ snapshots:
       elliptic: 6.5.4
       uint8arrays: 3.1.1
     transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
       - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
       - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.138':
+    dependencies:
+      '@trust/keyto': 1.0.1
+      debug: 4.3.6
+      js-x509-utils: 1.0.7
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@sphereon/ssi-sdk-ext.x509-utils@0.25.0':
     dependencies:
@@ -17718,34 +17809,6 @@ snapshots:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - supports-color
-
-  '@sphereon/ssi-sdk.agent-config@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
-    dependencies:
-      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
-      debug: 4.3.6
-      jsonpointer: 5.0.1
-      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
-      url-parse: 1.5.10
-      yaml: 2.5.0
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
 
   '@sphereon/vc-status-list@7.0.0-next.0(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)':
     dependencies:
@@ -23459,6 +23522,8 @@ snapshots:
 
   jose@5.7.0: {}
 
+  jose@5.9.4: {}
+
   jose@5.9.6: {}
 
   js-base64@3.7.7: {}
@@ -27541,6 +27606,8 @@ snapshots:
   ws@8.17.1: {}
 
   ws@8.18.0: {}
+
+  ws@8.5.0: {}
 
   xcode@3.0.1:
     dependencies:

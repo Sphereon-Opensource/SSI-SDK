@@ -72,6 +72,7 @@ test/*.js
 /packages/xstate-persistence/plugin.schema.json
 /packages/credential-store/plugin.schema.json
 /packages/pd-manager/plugin.schema.json
+/packages/oidf-client/plugin.schema.json
 
 **/.env.energyshr
 **/.env.local
