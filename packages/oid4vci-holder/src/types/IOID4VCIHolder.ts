@@ -50,11 +50,12 @@ import {
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { IOIDFClient } from '@sphereon/ssi-sdk.oidf-client'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
 
-  oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
+  oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine> // FIXME is using GetMachineArgs as args but the function uses OID4VCIMachineInstanceOpts
 
   oid4vciHolderStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartResult>
 
@@ -76,6 +77,8 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
 
   oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void>
+
+  oid4vciGetFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<boolean>
 }
 
 export type OID4VCIHolderOptions = {
@@ -112,6 +115,7 @@ export type OnIdentifierCreatedArgs = {
 
 export type GetMachineArgs = {
   requestData: RequestData
+  trustAnchors?: Array<string>
   authorizationRequestOpts?: AuthorizationRequestOpts
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
@@ -147,6 +151,7 @@ export type SendNotificationArgs = Pick<
   OID4VCIMachineContext,
   'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
 > & { notificationRequest?: NotificationRequest; stored: boolean }
+export type GetFederationTrustArgs = Pick<OID4VCIMachineContext, 'requestData' | 'trustAnchors' | 'serverMetadata'>
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -190,6 +195,7 @@ export type OID4VCIMachineContext = {
   accessTokenOpts?: AccessTokenOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts
+  trustAnchors: Array<string>
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
@@ -204,6 +210,7 @@ export type OID4VCIMachineContext = {
   credentialsToAccept: Array<MappedCredentialToAccept>
   verificationCode?: string // TODO WAL-672 refactor to not store verificationCode in the context
   hasContactConsent: boolean
+  isTrustedFederation?: boolean
   error?: ErrorDetails
 }
 
@@ -212,6 +219,7 @@ export enum OID4VCIMachineStates {
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
+  getFederationTrust = 'getFederationTrust',
   addContact = 'addContact',
   addIssuerBranding = 'addIssuerBranding',
   addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
@@ -278,6 +286,7 @@ export type CreateOID4VCIMachineOpts = {
   requestData: RequestData
   machineName?: string
   locale?: string
+  trustAnchors?: Array<string>
   stateDefinition?: OID4VCIMachineState
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   accessTokenOpts?: AccessTokenOpts
@@ -338,11 +347,14 @@ export enum OID4VCIMachineGuards {
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
   createContactGuard = 'oid4vciCreateContactGuard',
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
+  oid4vciIsOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
+  oid4vciHasTrustedAnchors = 'oid4vciHasTrustedAnchors'
 }
 
 export enum OID4VCIMachineServices {
   start = 'start',
   getContact = 'getContact',
+  getFederationTrust = 'getFederationTrust',
   addContactIdentity = 'addContactIdentity',
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
   addIssuerBranding = 'addIssuerBranding',
@@ -600,18 +612,19 @@ export interface VerifyCredentialArgs {
 
 export type RequiredContext = IAgentContext<
   IIssuanceBranding &
-    IContactManager &
-    ICredentialValidation &
-    ICredentialVerifier &
-    ICredentialIssuer &
-    ICredentialStore &
-    IIdentifierResolution &
-    IJwtService &
-    IDIDManager &
-    IResolver &
-    IKeyManager &
-    ISDJwtPlugin &
-    ImDLMdoc
+  IContactManager &
+  ICredentialValidation &
+  ICredentialVerifier &
+  ICredentialIssuer &
+  ICredentialStore &
+  IIdentifierResolution &
+  IJwtService &
+  IDIDManager &
+  IResolver &
+  IKeyManager &
+  ISDJwtPlugin &
+  ImDLMdoc &
+  IOIDFClient
 >
 
 export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'

@@ -83,6 +83,7 @@ import {
   GetCredentialsArgs,
   GetIssuerMetadataArgs,
   IOID4VCIHolder,
+  GetFederationTrustArgs,
   IssuanceOpts,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
@@ -101,7 +102,7 @@ import {
   StoreCredentialsArgs,
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
-  VerifyEBSICredentialIssuerResult,
+  VerifyEBSICredentialIssuerResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -215,6 +216,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreCredentialBranding: this.oid4vciHolderStoreCredentialBranding.bind(this),
     oid4vciHolderStoreCredentials: this.oid4vciHolderStoreCredentials.bind(this),
     oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this),
+    oid4vciGetFederationTrust: this.oid4vciGetFederationTrust.bind(this),
   }
 
   private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
@@ -254,8 +256,8 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher,
-    } = options ?? {}
+      hasher
+    } = { ...options }
 
     this.hasher = hasher
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -319,6 +321,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
       sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
+      getFederationTrust: (args: GetFederationTrustArgs) => this.oid4vciGetFederationTrust(args, context)
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -987,17 +990,6 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private idFromW3cCredentialSubject(wrappedIssuerVC: WrappedW3CVerifiableCredential): string | undefined {
-    if (Array.isArray(wrappedIssuerVC.credential?.credentialSubject)) {
-      if (wrappedIssuerVC.credential?.credentialSubject.length > 0) {
-        return wrappedIssuerVC.credential?.credentialSubject[0].id
-      }
-    } else {
-      return wrappedIssuerVC.credential?.credentialSubject?.id
-    }
-    return undefined
-  }
-
   private async oid4vciHolderSendNotification(args: SendNotificationArgs, context: RequiredContext): Promise<void> {
     const { serverMetadata, notificationRequest, openID4VCIClientState } = args
     const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
@@ -1014,6 +1006,34 @@ export class OID4VCIHolder implements IAgentPlugin {
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
     await client.sendNotification({ notificationEndpoint }, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
     logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
+  }
+
+  private async oid4vciGetFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<boolean> {
+    const { requestData, serverMetadata, trustAnchors } = args
+
+    if (trustAnchors.length === 0) {
+      return Promise.reject(Error('No trust anchors found'))
+    }
+
+    if (!requestData?.uri) {
+      return Promise.reject(Error('Missing request URI in context'))
+    }
+
+    if (!serverMetadata) {
+      return Promise.reject(Error('Missing serverMetadata in context'))
+    }
+
+    const url = new URL(requestData?.uri)
+    const params = new URLSearchParams(url.search)
+    const openidFederation = params.get('openid_federation')
+
+    const entityIdentifier = openidFederation ?? serverMetadata.issuer
+
+    return context.agent.resolveTrustChain({
+      entityIdentifier,
+      trustAnchors
+    })
+    .then((result) => !result || result.length === 0)
   }
 
   private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {
@@ -1046,5 +1066,16 @@ export class OID4VCIHolder implements IAgentPlugin {
         break
     }
     return [CredentialCorrelationType.URL, issuer]
+  }
+
+  private idFromW3cCredentialSubject(wrappedIssuerVC: WrappedW3CVerifiableCredential): string | undefined {
+    if (Array.isArray(wrappedIssuerVC.credential?.credentialSubject)) {
+      if (wrappedIssuerVC.credential?.credentialSubject.length > 0) {
+        return wrappedIssuerVC.credential?.credentialSubject[0].id
+      }
+    } else {
+      return wrappedIssuerVC.credential?.credentialSubject?.id
+    }
+    return undefined
   }
 }

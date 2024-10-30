@@ -22,7 +22,6 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
-
 import {
   CredentialMapper,
   IVerifiableCredential,
