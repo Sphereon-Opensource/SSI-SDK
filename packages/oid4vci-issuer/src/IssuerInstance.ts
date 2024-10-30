@@ -41,6 +41,7 @@ export class IssuerInstance {
           issuerOpts: this.issuerOptions,
           issuerMetadata: this.issuerMetadata,
           authorizationServerMetadata: this.authorizationServerMetadata,
+          openidFederationMetadata: this.openidFederationMetadata,
           credentialDataSupplier: opts?.credentialDataSupplier,
         },
         opts.context,
