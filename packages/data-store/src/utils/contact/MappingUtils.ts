@@ -71,7 +71,7 @@ export const partyFrom = (party: PartyEntity): Party => {
   const result: Party = {
     id: party.id,
     uri: party.uri,
-    roles: [...new Set(party.identities?.flatMap((identity: IdentityEntity) => identity.roles))] ?? [],
+    roles: [...new Set(party.identities?.flatMap((identity: IdentityEntity) => identity.roles))],
     identities: party.identities ? party.identities.map((identity: IdentityEntity) => identityFrom(identity)) : [],
     electronicAddresses: party.electronicAddresses
       ? party.electronicAddresses.map((electronicAddress: ElectronicAddressEntity) => electronicAddressFrom(electronicAddress))
@@ -285,7 +285,10 @@ export const identityFrom = (identity: IdentityEntity): Identity => {
   return replaceNullWithUndefined(result)
 }
 
-const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(item: NonPersistedMetadataItem<T>, EntityClass: U): InstanceType<U> | undefined => {
+const metadataItemEntityFrom = <T extends MetadataTypes, U extends { new (): any }>(
+  item: NonPersistedMetadataItem<T>,
+  EntityClass: U,
+): InstanceType<U> | undefined => {
   const { label, value } = item
 
   if (value === null || value === undefined) {

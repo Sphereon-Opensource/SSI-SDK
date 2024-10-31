@@ -52,5 +52,6 @@
     "SQLite",
     "PostgreSQL",
     "Contact Store"
-  ]
+  ],
+  "nx": {}
 }

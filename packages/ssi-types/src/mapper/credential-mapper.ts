@@ -41,7 +41,7 @@ import {
   WrappedVerifiablePresentation,
   WrappedW3CVerifiableCredential,
 } from '../types'
-import { MdocDocument } from '../types/mso_mdoc'
+import { getMdocDecodedPayload, MdocDocument } from '../types/mso_mdoc'
 import { ObjectUtils } from '../utils'
 import { com } from '@sphereon/kmp-mdl-mdoc'
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
@@ -162,7 +162,7 @@ export class CredentialMapper {
         deviceResponse = originalPresentation
       }
 
-      const mdocCredential: WrappedMdocCredential | undefined = deviceResponse.documents
+      const mdocCredential = deviceResponse.documents
         ?.map((doc) => CredentialMapper.toWrappedVerifiableCredential(doc, opts) as WrappedMdocCredential)
         .find((value) => value !== undefined)
       if (mdocCredential === undefined) {
@@ -280,7 +280,7 @@ export class CredentialMapper {
     opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
   ): WrappedVerifiableCredential {
     // MSO_MDOC
-    if (CredentialMapper.isMsoMdocDecodedCredential(verifiableCredential) || CredentialMapper.isMsoMdocDecodedCredential(verifiableCredential)) {
+    if (CredentialMapper.isMsoMdocDecodedCredential(verifiableCredential) || CredentialMapper.isMsoMdocOid4VPEncoded(verifiableCredential)) {
       let mdoc: MdocDocument
       if (CredentialMapper.isMsoMdocOid4VPEncoded(verifiableCredential)) {
         mdoc = decodeMdocIssuerSigned(verifiableCredential)
@@ -291,8 +291,8 @@ export class CredentialMapper {
         type: CredentialMapper.isMsoMdocDecodedCredential(verifiableCredential) ? OriginalType.MSO_MDOC_DECODED : OriginalType.MSO_MDOC_ENCODED,
         format: 'mso_mdoc',
         original: verifiableCredential,
-        credential: mdocDecodedCredentialToUniformCredential(mdoc),
-        decoded: mdoc,
+        credential: mdoc,
+        decoded: getMdocDecodedPayload(mdoc),
       }
     }
 
@@ -358,7 +358,7 @@ export class CredentialMapper {
     return ObjectUtils.isString(original) && !original.startsWith('ey') && ObjectUtils.isBase64(original)
   }
 
-  public static isW3cCredential(credential: ICredential | SdJwtDecodedVerifiableCredential): credential is ICredential {
+  public static isW3cCredential(credential: ICredential | SdJwtDecodedVerifiableCredential | MdocDocument): credential is ICredential {
     return typeof credential === 'object' && '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
   }
 
@@ -462,7 +462,11 @@ export class CredentialMapper {
         // We are doing this over here, as the rest of the logic around it would otherwise need to be adjusted substantially
         return false
       }
-      return firstOriginal.toJson().toJsonString() === secondOriginal.toJson().toJsonString()
+
+      // FIXME: mdoc library fails on parsing the device signed, so for now we just check whether the issuerSigned
+      // is equal, then we have a good chance it is the same credential. Once device signed parsing is fixed in mdl
+      // library we can move the .equals() to the top-level object.
+      return firstOriginal.issuerSigned.equals(secondOriginal.issuerSigned)
     } else if (CredentialMapper.isSdJwtDecodedCredential(firstOriginal) || CredentialMapper.isSdJwtDecodedCredential(secondOriginal)) {
       return firstOriginal.compactSdJwtVc === secondOriginal.compactSdJwtVc
     } else {

@@ -49,10 +49,9 @@
     "@babel/preset-typescript": "^7.24.7",
     "@types/debug": "^4.1.12",
     "@types/jest": "^27.5.2",
-    "@types/node": "^18.19.41",
+    "@types/node": "^20.17.1",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "codecov": "^3.8.3",
     "cross-fetch": "^3.1.8",
     "did-jwt": "6.11.6",
     "eslint": "^8.57.0",
@@ -67,6 +66,7 @@
     "json-schema": "^0.4.0",
     "lerna": "^8.1.6",
     "lerna-changelog": "^2.2.0",
+    "nx": "^19.8.8",
     "oas-resolver": "^2.5.6",
     "openapi-types": "^12.1.3",
     "patch-package": "^8.0.0",
@@ -76,10 +76,10 @@
     "semantic-release": "^19.0.5",
     "ts-jest": "^27.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "5.4.2"
+    "typescript": "5.6.3"
   },
   "engines": {
-    "node": ">= 20.0.0"
+    "node": ">= 20.0.0 < 22"
   },
   "prettier": {
     "endOfLine": "auto",
@@ -123,7 +123,9 @@
       "typeorm": "^0.3.20",
       "@transmute/jsonld": "^0.0.4",
       "jsonld": "npm:@digitalcredentials/jsonld@^6.0.0",
-      "node-fetch": "2.7.0"
+      "node-fetch": "2.7.0",
+      "typescript": "5.6.3",
+      "@types/node": "^20.17.1"
     },
     "patchedDependencies": {
       "@veramo/core@4.2.0": "patches/@veramo__core@4.2.0.patch",

@@ -25,6 +25,8 @@ export type MdocOid4vpMdocVpToken = string
 export type MdocIssuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor
 export type MdocDocument = com.sphereon.mdoc.data.device.DocumentCbor
 export type MdocDocumentJson = com.sphereon.mdoc.data.device.DocumentJson
+export type IssuerSignedJson = com.sphereon.mdoc.data.device.IssuerSignedJson
+export type DeviceSignedJson = com.sphereon.mdoc.data.device.DeviceSignedJson
 export type MdocDeviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export interface WrappedMdocCredential {
@@ -33,9 +35,10 @@ export interface WrappedMdocCredential {
    */
   original: MdocDocument | MdocOid4vpIssuerSigned
   /**
-   * Decoded version of the Mdoc payload. We add the record to make sure existing implementations remain happy
+   * Record where keys are the namespaces and the values are objects again with the namespace values
+   * @todo which types can be there? (it doesn't matter for matching as mdoc only matches on path)
    */
-  decoded: MdocDocument & { [key: string]: any }
+  decoded: MdocDecodedPayload
   /**
    * Type of this credential.
    */
@@ -47,7 +50,7 @@ export interface WrappedMdocCredential {
   /**
    * Internal stable representation of a Credential
    */
-  credential: IVerifiableCredential
+  credential: MdocDocument
 }
 
 export interface WrappedMdocPresentation {
@@ -84,6 +87,32 @@ export function isWrappedMdocCredential(vc: WrappedVerifiableCredential): vc is 
 export function isWrappedMdocPresentation(vp: WrappedVerifiablePresentation): vp is WrappedMdocPresentation {
   return vp.format === 'mso_mdoc'
 }
+/**
+ * Record where keys are the namespaces and the values are objects again with the namespace values
+ */
+export type MdocDecodedPayload = Record<string, Record<string, string | number | boolean>>
+export function getMdocDecodedPayload(mdoc: MdocDocument): MdocDecodedPayload {
+  const mdocJson = mdoc.toJson()
+  if (!mdocJson.issuerSigned.nameSpaces) {
+    throw Error(`Cannot access Issuer Signed items from the Mdoc`)
+  }
+
+  const issuerSignedJson = mdocJson.issuerSigned.toJsonDTO<IssuerSignedJson>()
+  const namespaces = issuerSignedJson.nameSpaces as unknown as Record<string, IssuerSignedItemJson[]>
+
+  const decodedPayload: MdocDecodedPayload = {}
+  for (const [namespace, items] of Object.entries(namespaces)) {
+    decodedPayload[namespace] = items.reduce(
+      (acc, item) => ({
+        ...acc,
+        [item.key]: item.value.value,
+      }),
+      {}
+    )
+  }
+
+  return decodedPayload
+}
 
 /**
  * Decode an Mdoc from its issuerSigned OID4VP Base64URL (string) to an object containing the disclosures,
@@ -96,6 +125,10 @@ export function decodeMdocIssuerSigned(oid4vpIssuerSigned: MdocOid4vpIssuerSigne
   // Create an mdoc from it. // Validations need to be performed by the caller after this!
   const holderMdoc: MdocDocument = issuerSigned.toDocument()
   return holderMdoc
+}
+
+export function encodeMdocIssuerSigned(issuerSigned: MdocIssuerSigned, encoding: 'base64url' = 'base64url') {
+  return encodeTo(issuerSigned.cborEncode(), Encoding.BASE64URL)
 }
 
 /**
