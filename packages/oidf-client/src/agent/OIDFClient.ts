@@ -18,6 +18,7 @@ import FederationClient = com.sphereon.oid.fed.client.FederationClient;
 import DefaultFetchJSImpl = com.sphereon.oid.fed.client.fetch.DefaultFetchJSImpl;
 import DefaultTrustChainJSImpl = com.sphereon.oid.fed.client.trustchain.DefaultTrustChainJSImpl;
 import DefaultCallbacks = com.sphereon.oid.fed.client.service.DefaultCallbacks;
+import {JWK} from "@sphereon/ssi-types";
 
 export const oidfClientMethods: Array<string> = [
     'resolveTrustChain',
@@ -56,14 +57,21 @@ export class OIDFClient implements IAgentPlugin {
     private checkAndSetDefaultCryptoService(context: RequiredContext) {
         if ((context.agent.jwtVerifyJwsSignature !== undefined &&
                 context.agent.jwtVerifyJwsSignature !== null) &&
-            (DefaultCallbacks.jwtService() === undefined || DefaultCallbacks.jwtService() === null)) {
+            (this.oidfClient === undefined || this.oidfClient === null)) {
             try {
                 DefaultCallbacks.setCryptoServiceDefault({
                     verify: async (jwt: string, key: any): Promise<boolean> => {
-                        return !(await context.agent.jwtVerifyJwsSignature({
-                            jws: jwt,
-                            jwk: key
-                        })).error
+                        const jwk: JWK = { ...key }
+                        try {
+                            console.error(`JWT: ${jwt}\nJWK: ${JSON.stringify(jwk)}`)
+                            return !(await context.agent.jwtVerifyJwsSignature({
+                                jws: jwt,
+                                jwk
+                            })).error
+                        } catch(e) {
+                            console.error(`Error verifying the JWT: ${e.message}`)
+                            return Promise.reject(e)
+                        }
                     }
                 })
                 DefaultCallbacks.setFetchServiceDefault(new DefaultFetchJSImpl())
