@@ -325,7 +325,7 @@ export const sdJwtDecodedCredentialToUniformCredential = (
   }, {} as Record<string, any>)
 
   // Add id to credentialSubject if applicable
-  if (sub || jti) {
+  if (!credentialSubject.id && (sub || jti)) {
     credentialSubject.id = sub ?? jti
   }
 
