@@ -462,7 +462,11 @@ export class CredentialMapper {
         // We are doing this over here, as the rest of the logic around it would otherwise need to be adjusted substantially
         return false
       }
-      return firstOriginal.toJson().toJsonString() === secondOriginal.toJson().toJsonString()
+
+      // FIXME: mdoc library fails on parsing the device signed, so for now we just check whether the issuerSigned
+      // is equal, then we have a good chance it is the same credential. Once device signed parsing is fixed in mdl
+      // library we can move the .equals() to the top-level object.
+      return firstOriginal.issuerSigned.equals(secondOriginal.issuerSigned)
     } else if (CredentialMapper.isSdJwtDecodedCredential(firstOriginal) || CredentialMapper.isSdJwtDecodedCredential(secondOriginal)) {
       return firstOriginal.compactSdJwtVc === secondOriginal.compactSdJwtVc
     } else {
