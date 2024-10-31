@@ -61,7 +61,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         trustAnchors:["https://oidc.registry.servizicie.interno.gov.it"]
       })
 
-      expect(trustChain).toBeDefined()
+      expect(trustChain).not.toBeNull()
       expect(trustChain).toHaveLength(4)
 
       expect(trustChain).toEqual(expect.arrayContaining([
@@ -79,7 +79,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         trustAnchors:["https://oidc.registry.servizicie.interno.gov.it"]
       })
 
-      expect(trustChain).toBeDefined()
+      expect(trustChain).not.toBeNull()
       expect(trustChain).toHaveLength(3)
 
       expect(trustChain).toEqual(expect.arrayContaining([
