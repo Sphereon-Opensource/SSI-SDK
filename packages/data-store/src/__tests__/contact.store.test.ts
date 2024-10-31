@@ -370,10 +370,10 @@ describe('Contact store tests', (): void => {
         {
           alias: 'test_alias4',
           origin: IdentityOrigin.EXTERNAL,
-          roles: [CredentialRole.FEDERATION_OPERATOR],
+          roles: [CredentialRole.FEDERATION_TRUST_ANCHOR],
           identifier: {
-            type: CorrelationIdentifierType.DID,
-            correlationId: 'example_did4',
+            type: CorrelationIdentifierType.URL,
+            correlationId: 'example_url4',
           },
         },
       ],
@@ -1220,10 +1220,10 @@ describe('Contact store tests', (): void => {
         {
           alias: 'test_alias4',
           origin: IdentityOrigin.EXTERNAL,
-          roles: [CredentialRole.FEDERATION_OPERATOR],
+          roles: [CredentialRole.FEDERATION_TRUST_ANCHOR],
           identifier: {
-            type: CorrelationIdentifierType.DID,
-            correlationId: 'example_did4',
+            type: CorrelationIdentifierType.URL,
+            correlationId: 'example_url4',
           },
         },
       ],
@@ -1238,7 +1238,7 @@ describe('Contact store tests', (): void => {
       CredentialRole.VERIFIER,
       CredentialRole.ISSUER,
       CredentialRole.HOLDER,
-      CredentialRole.FEDERATION_OPERATOR
+      CredentialRole.FEDERATION_TRUST_ANCHOR
     ])
   })
 

@@ -7,5 +7,6 @@
   "oid4vci_machine_retrieve_contact_error_title": "Ophalen contact",
   "oid4vci_machine_credential_selection_error_title": "Credential selectie",
   "oid4vci_machine_initiation_error_title": "Initiëren OID4VCI provider",
-  "oid4vci_machine_credential_verification_failed_message": "Verificatie van de credential leidde tot een fout."
+  "oid4vci_machine_credential_verification_failed_message": "Verificatie van de credential leidde tot een fout.",
+  "oid4vci_machine_retrieve_federation_trust_error_title": "Ophalen federatievertrouwen"
 }

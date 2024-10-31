@@ -305,7 +305,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.handleError,
             actions: assign({
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-                title: translate('oid4vci_machine_store_credential_error_title'), // TODO
+                title: translate('oid4vci_machine_retrieve_federation_trust_error_title'),
                 message: _event.data.message,
                 stack: _event.data.stack,
               }),
