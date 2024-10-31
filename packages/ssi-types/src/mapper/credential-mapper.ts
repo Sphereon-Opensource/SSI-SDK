@@ -358,7 +358,7 @@ export class CredentialMapper {
     return ObjectUtils.isString(original) && !original.startsWith('ey') && ObjectUtils.isBase64(original)
   }
 
-  public static isW3cCredential(credential: ICredential | SdJwtDecodedVerifiableCredential): credential is ICredential {
+  public static isW3cCredential(credential: ICredential | SdJwtDecodedVerifiableCredential | MdocDocument): credential is ICredential {
     return typeof credential === 'object' && '@context' in credential && ((credential as ICredential).type?.includes('VerifiableCredential') || false)
   }
 
