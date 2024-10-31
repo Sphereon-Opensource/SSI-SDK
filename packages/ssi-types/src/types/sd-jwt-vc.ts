@@ -324,15 +324,13 @@ export const sdJwtDecodedCredentialToUniformCredential = (
     return acc
   }, {} as Record<string, any>)
 
-  // Add id to credentialSubject if applicable
-  if (!credentialSubject.id && (sub || jti)) {
-    credentialSubject.id = sub ?? jti
-  }
-
   const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
     type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential
     '@context': [], // SDJwt has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
-    credentialSubject,
+    credentialSubject: {
+      ...credentialSubject,
+      id: credentialSubject.id ?? sub ?? jti,
+    },
     issuanceDate,
     expirationDate,
     issuer: iss,
