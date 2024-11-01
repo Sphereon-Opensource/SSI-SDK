@@ -282,27 +282,12 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
   }
 }
 
-// TODO naive implementation of mapping a sd-jwt onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
 export const sdJwtDecodedCredentialToUniformCredential = (
   decoded: SdJwtDecodedVerifiableCredential,
-  opts?: { maxTimeSkewInMS?: number },
+  opts?: { maxTimeSkewInMS?: number }
 ): IVerifiableCredential => {
-  const { decodedPayload } = decoded // fixme: other params and proof
+  const { decodedPayload } = decoded
   const { exp, nbf, iss, iat, vct, cnf, status, sub, jti } = decodedPayload
-
-  type DisclosuresAccumulator = {
-    [key: string]: any
-  }
-
-  const credentialSubject = decoded.disclosures.reduce(
-    (acc: DisclosuresAccumulator, item: { decoded: Array<any>; digest: string; encoded: string }) => {
-      const key = item.decoded[1]
-      acc[key] = item.decoded[2]
-
-      return acc
-    },
-    {},
-  )
 
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
 
@@ -324,6 +309,20 @@ export const sdJwtDecodedCredentialToUniformCredential = (
   if (!issuanceDate) {
     throw Error(`JWT issuance date is required but was not present`)
   }
+
+  // Filter out the fields we don't want in credentialSubject
+  const excludedFields = new Set(['vct', 'cnf', 'iss', 'iat', 'exp', 'nbf', 'jti', 'sub'])
+  const credentialSubject = Object.entries(decodedPayload).reduce((acc, [key, value]) => {
+    if (
+      !excludedFields.has(key) &&
+      value !== undefined &&
+      value !== '' &&
+      !(typeof value === 'object' && value !== null && Object.keys(value).length === 0)
+    ) {
+      acc[key] = value
+    }
+    return acc
+  }, {} as Record<string, any>)
 
   const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
     type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential
