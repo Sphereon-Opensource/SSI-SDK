@@ -77,8 +77,6 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
 
   oid4vciHolderStoreCredentials(args: StoreCredentialsArgs, context: RequiredContext): Promise<void>
-
-  oid4vciGetFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<boolean>
 }
 
 export type OID4VCIHolderOptions = {

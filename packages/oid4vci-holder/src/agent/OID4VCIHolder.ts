@@ -216,7 +216,6 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreCredentialBranding: this.oid4vciHolderStoreCredentialBranding.bind(this),
     oid4vciHolderStoreCredentials: this.oid4vciHolderStoreCredentials.bind(this),
     oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this),
-    oid4vciGetFederationTrust: this.oid4vciGetFederationTrust.bind(this),
   }
 
   private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
@@ -321,7 +320,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
       sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
-      getFederationTrust: (args: GetFederationTrustArgs) => this.oid4vciGetFederationTrust(args, context)
+      getFederationTrust: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context)
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -1008,7 +1007,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
   }
 
-  private async oid4vciGetFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<boolean> {
+  private async getFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<boolean> {
     const { requestData, serverMetadata, trustAnchors } = args
 
     if (trustAnchors.length === 0) {
