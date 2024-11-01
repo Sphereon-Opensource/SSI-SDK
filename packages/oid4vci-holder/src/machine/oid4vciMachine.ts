@@ -76,11 +76,6 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
 
 const oid4vciIsOIDFOriginGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   // TODO in the future we need to establish if a origin is a IDF origin. So we need to check if this metadata is on the well-known location
-  // For now we assume it is
-  return true
-}
-
-const oid4vciHasTrustedAnchors = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { trustAnchors } = _ctx
   return trustAnchors.length > 0
 }
@@ -263,7 +258,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         always: [
           {
             target: OID4VCIMachineStates.getFederationTrust,
-            cond: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard && OID4VCIMachineGuards.oid4vciHasTrustedAnchors,
+            cond: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard
           },
           {
             target: OID4VCIMachineStates.addContact,
@@ -654,7 +649,6 @@ export class OID4VCIMachine {
           oid4vciNoAuthorizationGuard,
           oid4vciHasAuthorizationResponse,
           oid4vciIsOIDFOriginGuard,
-          oid4vciHasTrustedAnchors,
           ...opts?.guards,
         },
       }),

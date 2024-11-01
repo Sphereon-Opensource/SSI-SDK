@@ -348,7 +348,6 @@ export enum OID4VCIMachineGuards {
   createContactGuard = 'oid4vciCreateContactGuard',
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
   oid4vciIsOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
-  oid4vciHasTrustedAnchors = 'oid4vciHasTrustedAnchors'
 }
 
 export enum OID4VCIMachineServices {
