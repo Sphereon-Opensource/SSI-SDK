@@ -1033,7 +1033,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       entityIdentifier,
       trustAnchors
     })
-    .then((result) => !result || result.length === 0)
+    .then((result) => Array.isArray(result) && result.length > 0)
   }
 
   private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {
