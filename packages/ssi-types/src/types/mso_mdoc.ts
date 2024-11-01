@@ -75,9 +75,10 @@ export interface WrappedMdocPresentation {
    */
   presentation: MdocDeviceResponse
   /**
-   * Wrapped Mdocs belonging to the Presentation. .
+   * Wrapped Mdocs belonging to the Presentation. There can be multiple
+   * documents in a single device response
    */
-  vcs: [WrappedMdocCredential]
+  vcs: WrappedMdocCredential[]
 }
 
 export function isWrappedMdocCredential(vc: WrappedVerifiableCredential): vc is WrappedMdocCredential {
