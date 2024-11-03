@@ -162,19 +162,19 @@ export class CredentialMapper {
         deviceResponse = originalPresentation
       }
 
-      const mdocCredential = deviceResponse.documents
+      const mdocCredentials = deviceResponse.documents
         ?.map((doc) => CredentialMapper.toWrappedVerifiableCredential(doc, opts) as WrappedMdocCredential)
-        .find((value) => value !== undefined)
-      if (mdocCredential === undefined) {
-        throw Error('mdoc credential data corruption')
+      if (!mdocCredentials || mdocCredentials.length === 0 ) {
+        throw new Error('could not extract any mdoc credentials from mdoc device response')
       }
+      
       return {
         type: CredentialMapper.isMsoMdocDecodedPresentation(originalPresentation) ? OriginalType.MSO_MDOC_DECODED : OriginalType.MSO_MDOC_ENCODED,
         format: 'mso_mdoc',
         original: originalPresentation,
         presentation: deviceResponse,
         decoded: deviceResponse,
-        vcs: [mdocCredential],
+        vcs: mdocCredentials,
       }
     }
     // SD-JWT
