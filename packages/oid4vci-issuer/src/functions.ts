@@ -184,6 +184,7 @@ export async function getCredentialSignerCallback(
         removeOriginalFields: false,
         fetchRemoteContexts: true,
         domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
+        ...(jwtVerifyResult.kid ? { header: { kid: jwtVerifyResult.kid } } : {}),
       })
       return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
     } else if (CredentialMapper.isSdJwtDecodedCredentialPayload(credential)) {
