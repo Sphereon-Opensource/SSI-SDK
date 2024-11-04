@@ -288,7 +288,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         this.onCredentialStored?.(event.data)
         break
       case OID4VCIHolderEvent.IDENTIFIER_CREATED:
-        this.onIdentifierCreated?.(event.data)
+        this.onIdentifierCreated?.({ identifier: event.data })
         break
       default:
         return Promise.reject(Error(`Event type ${event.type} not supported`))
