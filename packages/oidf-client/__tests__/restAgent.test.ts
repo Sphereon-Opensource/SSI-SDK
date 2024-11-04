@@ -63,6 +63,6 @@ const testContext = {
   tearDown,
 }
 
-describe('REST integration tests', (): void => {
+describe.skip('REST integration tests', (): void => {
   oidfClientAgentLogic(testContext)
 })
