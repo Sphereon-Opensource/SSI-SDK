@@ -17,7 +17,7 @@
     "@ethersproject/random": "^5.7.0",
     "@sphereon/did-auth-siop": "0.16.1-feature.SDK.39.well.known.oidf.187",
     "@sphereon/did-auth-siop-adapter": "0.16.1-feature.SDK.39.well.known.oidf.187",
-    "@sphereon/pex": "5.0.0-unstable.26",
+    "@sphereon/pex": "5.0.0-unstable.27",
     "@sphereon/pex-models": "^2.3.1",
     "@sphereon/ssi-sdk-ext.did-resolver-ebsi": "0.25.0",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.0",
