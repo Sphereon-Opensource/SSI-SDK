@@ -74,11 +74,17 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
   return selectedCredentials !== undefined && selectedCredentials.length > 0
 }
 
-// FIXME refactor this guard
+const oid4vciIsOIDFOriginGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  // TODO in the future we need to establish if a origin is a IDF origin. So we need to check if this metadata is on the well-known location
+  const { trustAnchors } = _ctx
+  return trustAnchors.length > 0
+}
 
 const oid4vciNoAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   return !oid4vciHasAuthorizationResponse(ctx, _event)
 }
+
+// FIXME refactor this guard
 const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { openID4VCIClientState } = ctx
 
@@ -111,6 +117,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
     accessTokenOpts: opts?.accessTokenOpts,
     requestData: opts?.requestData,
+    trustAnchors: opts?.trustAnchors ?? [],
     issuanceOpt: opts?.issuanceOpt,
     didMethodPreferences: opts?.didMethodPreferences,
     locale: opts?.locale,
@@ -139,7 +146,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.hasContactGuard }
         | { type: OID4VCIMachineGuards.createContactGuard }
         | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard }
-        | { type: OID4VCIMachineGuards.hasAuthorizationResponse },
+        | { type: OID4VCIMachineGuards.hasAuthorizationResponse }
+        | { type: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard },
       services: {} as {
         [OID4VCIMachineServices.start]: {
           data: StartResult
@@ -167,6 +175,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         }
         [OID4VCIMachineServices.storeCredentials]: {
           data: void
+        }
+        [OID4VCIMachineServices.getFederationTrust]: {
+          data: boolean
         }
       },
     },
@@ -246,6 +257,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         id: OID4VCIMachineStates.transitionFromSetup,
         always: [
           {
+            target: OID4VCIMachineStates.getFederationTrust,
+            cond: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard
+          },
+          {
             target: OID4VCIMachineStates.addContact,
             cond: OID4VCIMachineGuards.hasNoContactGuard,
           },
@@ -268,6 +283,28 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         on: {
           [OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL]: {
             actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data }),
+          },
+        },
+      },
+      [OID4VCIMachineStates.getFederationTrust]: {
+        id: OID4VCIMachineStates.getFederationTrust,
+        invoke: {
+          src: OID4VCIMachineServices.getFederationTrust,
+          onDone: {
+            target: OID4VCIMachineStates.addContact,
+            actions: assign({
+              isTrustedFederation: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<boolean>) => _event.data
+            })
+          },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_retrieve_federation_trust_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
           },
         },
       },
@@ -523,7 +560,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
         },
       },
-
       [OID4VCIMachineStates.storeCredentialBranding]: {
         id: OID4VCIMachineStates.storeCredentialBranding,
         invoke: {
@@ -612,6 +648,7 @@ export class OID4VCIMachine {
           oid4vciRequireAuthorizationGuard,
           oid4vciNoAuthorizationGuard,
           oid4vciHasAuthorizationResponse,
+          oid4vciIsOIDFOriginGuard,
           ...opts?.guards,
         },
       }),
