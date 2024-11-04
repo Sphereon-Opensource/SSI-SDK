@@ -12,8 +12,7 @@ import {
 } from 'typeorm'
 import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from './CredentialLocaleBrandingEntity'
-import { IBasicCredentialBranding, IBasicCredentialLocaleBranding } from '../../types'
+import { CredentialLocaleBrandingEntity } from './CredentialLocaleBrandingEntity'
 
 @Entity('CredentialBranding')
 @Index('IDX_CredentialBrandingEntity_vcHash', ['vcHash'])
@@ -65,15 +64,4 @@ export class CredentialBrandingEntity extends BaseEntity {
     }
     return
   }
-}
-
-export const credentialBrandingEntityFrom = (args: IBasicCredentialBranding): CredentialBrandingEntity => {
-  const credentialBrandingEntity: CredentialBrandingEntity = new CredentialBrandingEntity()
-  credentialBrandingEntity.issuerCorrelationId = args.issuerCorrelationId
-  credentialBrandingEntity.vcHash = args.vcHash
-  credentialBrandingEntity.localeBranding = args.localeBranding.map((localeBranding: IBasicCredentialLocaleBranding) =>
-    credentialLocaleBrandingEntityFrom(localeBranding),
-  )
-
-  return credentialBrandingEntity
 }
