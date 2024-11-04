@@ -1,17 +1,25 @@
+import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, DeleteResult, In, Not, Repository } from 'typeorm'
-import { OrPromise } from '@sphereon/ssi-types'
+import {
+  credentialBrandingEntityFrom,
+  credentialBrandingFrom,
+  credentialLocaleBrandingEntityFrom,
+  issuerBrandingEntityFrom,
+  issuerBrandingFrom,
+  issuerLocaleBrandingEntityFrom,
+  localeBrandingFrom
+} from '../utils/issuanceBranding/MappingUtils'
 import { BackgroundAttributesEntity } from '../entities/issuanceBranding/BackgroundAttributesEntity'
 import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
 import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
-import { IssuerBrandingEntity, issuerBrandingEntityFrom } from '../entities/issuanceBranding/IssuerBrandingEntity'
-import { CredentialBrandingEntity, credentialBrandingEntityFrom } from '../entities/issuanceBranding/CredentialBrandingEntity'
-import { CredentialLocaleBrandingEntity, credentialLocaleBrandingEntityFrom } from '../entities/issuanceBranding/CredentialLocaleBrandingEntity'
-import { IssuerLocaleBrandingEntity, issuerLocaleBrandingEntityFrom } from '../entities/issuanceBranding/IssuerLocaleBrandingEntity'
+import { IssuerBrandingEntity } from '../entities/issuanceBranding/IssuerBrandingEntity'
+import { CredentialBrandingEntity } from '../entities/issuanceBranding/CredentialBrandingEntity'
+import { CredentialLocaleBrandingEntity } from '../entities/issuanceBranding/CredentialLocaleBrandingEntity'
+import { IssuerLocaleBrandingEntity } from '../entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { BaseLocaleBrandingEntity } from '../entities/issuanceBranding/BaseLocaleBrandingEntity'
 import { TextAttributesEntity } from '../entities/issuanceBranding/TextAttributesEntity'
 import { AbstractIssuanceBrandingStore } from './AbstractIssuanceBrandingStore'
-import { credentialBrandingFrom, issuerBrandingFrom, localeBrandingFrom } from '../utils/issuanceBranding/MappingUtils'
 import {
   IAddCredentialBrandingArgs,
   IAddCredentialLocaleBrandingArgs,

@@ -4,12 +4,9 @@ import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, Syste
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations'
-import {
-  activityEventEntityFrom,
-  auditEventEntityFrom,
-  AuditEventEntity
-} from '../entities/eventLogger/AuditEventEntity'
+import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import { NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../types'
+import { activityEventEntityFrom, auditEventEntityFrom } from '../utils/eventLogger/MappingUtils'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -80,7 +77,7 @@ describe('Database entities tests', (): void => {
   })
 
   it('should save activity event to database', async (): Promise<void> => {
-    const auditEvent: NonPersistedActivityLoggingEvent = {
+    const activityEvent: NonPersistedActivityLoggingEvent = {
       timestamp: new Date(),
       level: LogLevel.DEBUG,
       originalCredential: 'test_credential_string',
@@ -104,28 +101,31 @@ describe('Database entities tests', (): void => {
       diagnosticData: { data: 'test_data_string' },
     }
 
-    const activityEventEntity: AuditEventEntity = activityEventEntityFrom(auditEvent)
+    const activityEventEntity: AuditEventEntity = activityEventEntityFrom(activityEvent)
     const fromDb: AuditEventEntity = await dbConnection.getRepository(AuditEventEntity).save(activityEventEntity)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.id).not.toBeNull()
     expect(fromDb?.type).toEqual(LoggingEventType.ACTIVITY)
-    expect(fromDb?.timestamp).toEqual(auditEvent.timestamp)
-    expect(fromDb?.level).toEqual(auditEvent.level)
-    expect(fromDb?.correlationId).toEqual(auditEvent.correlationId)
-    expect(fromDb?.system).toEqual(auditEvent.system)
-    expect(fromDb?.subSystemType).toEqual(auditEvent.subSystemType)
-    expect(fromDb?.actionType).toEqual(auditEvent.actionType)
-    expect(fromDb?.actionSubType).toEqual(auditEvent.actionSubType)
-    expect(fromDb?.initiatorType).toEqual(auditEvent.initiatorType)
-    expect(fromDb?.systemCorrelationIdType).toEqual(auditEvent.systemCorrelationIdType)
-    expect(fromDb?.systemCorrelationId).toEqual(auditEvent.systemCorrelationId)
-    expect(fromDb?.systemAlias).toEqual(auditEvent.systemAlias)
-    expect(fromDb?.partyCorrelationType).toEqual(auditEvent.partyCorrelationType)
-    expect(fromDb?.partyCorrelationId).toEqual(auditEvent.partyCorrelationId)
-    expect(fromDb?.partyAlias).toEqual(auditEvent.partyAlias)
-    expect(fromDb?.description).toEqual(auditEvent.description)
-    expect(fromDb?.data).toEqual(JSON.stringify(auditEvent.data))
-    expect(fromDb?.diagnosticData).toEqual(JSON.stringify(auditEvent.diagnosticData))
+    expect(fromDb?.timestamp).toEqual(activityEvent.timestamp)
+    expect(fromDb?.level).toEqual(activityEvent.level)
+    expect(fromDb?.correlationId).toEqual(activityEvent.correlationId)
+    expect(fromDb?.system).toEqual(activityEvent.system)
+    expect(fromDb?.subSystemType).toEqual(activityEvent.subSystemType)
+    expect(fromDb?.actionType).toEqual(activityEvent.actionType)
+    expect(fromDb?.actionSubType).toEqual(activityEvent.actionSubType)
+    expect(fromDb?.initiatorType).toEqual(activityEvent.initiatorType)
+    expect(fromDb?.systemCorrelationIdType).toEqual(activityEvent.systemCorrelationIdType)
+    expect(fromDb?.systemCorrelationId).toEqual(activityEvent.systemCorrelationId)
+    expect(fromDb?.systemAlias).toEqual(activityEvent.systemAlias)
+    expect(fromDb?.partyCorrelationType).toEqual(activityEvent.partyCorrelationType)
+    expect(fromDb?.partyCorrelationId).toEqual(activityEvent.partyCorrelationId)
+    expect(fromDb?.partyAlias).toEqual(activityEvent.partyAlias)
+    expect(fromDb?.description).toEqual(activityEvent.description)
+    expect(fromDb?.data).toEqual(JSON.stringify(activityEvent.data))
+    expect(fromDb?.diagnosticData).toEqual(JSON.stringify(activityEvent.diagnosticData))
+    expect(fromDb?.credentialHash).toEqual(activityEvent.credentialHash)
+    expect(fromDb?.parentCredentialHash).toEqual(activityEvent.parentCredentialHash)
+    expect(fromDb?.credentialType).toEqual(activityEvent.credentialType)
   })
 })
