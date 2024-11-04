@@ -1522,14 +1522,14 @@ importers:
   packages/oidf-client:
     dependencies:
       '@sphereon/openid-federation-client':
-        specifier: 0.1.0-unstable.151480d
-        version: 0.1.0-unstable.151480d(encoding@0.1.13)
+        specifier: 0.1.0-unstable.d8421f6
+        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
       '@sphereon/openid-federation-common':
-        specifier: 0.1.0-unstable.151480d
-        version: 0.1.0-unstable.151480d(encoding@0.1.13)
+        specifier: 0.1.0-unstable.d8421f6
+        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
       '@sphereon/openid-federation-open-api':
-        specifier: 0.1.0-unstable.151480d
-        version: 0.1.0-unstable.151480d(encoding@0.1.13)
+        specifier: 0.1.0-unstable.d8421f6
+        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: ^0.24.1-unstable.130
         version: 0.24.1-unstable.138(encoding@0.1.13)
@@ -6027,14 +6027,14 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.151480d':
-    resolution: {integrity: sha512-obnBjSwxDsjBpY8agT+WSCVOVVGU5ouL4rcIKU658fqig2RWXpIGbFrvUHa8GVdF4ayxc6BTyhU2zGGYW3Xaiw==}
+  '@sphereon/openid-federation-client@0.1.0-unstable.d8421f6':
+    resolution: {integrity: sha512-curfKYSn08zmMrOmRNhs+0ubtSMiX1blNjOpGsr7jrLg56RKgATHAuJQRPu0+28oIavrgjUqXEUnlJZi/mdjpw==}
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.151480d':
-    resolution: {integrity: sha512-LKJ/wh2tt1c8EhZC6kKqtHNK8pP5MuobxxpSeKCMZmhs9OK3BPiANEkds0A4xPKxafVui2LbtwW9Eg/1fnXYKQ==}
+  '@sphereon/openid-federation-common@0.1.0-unstable.d8421f6':
+    resolution: {integrity: sha512-ybCgk8iiRfHbyiANCrca577KL2b2JD+OLya56gpcetHXdJlW8eMlde/nkDa0fIwWUDl+lhp97NgFLuZ4tkGMfA==}
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.151480d':
-    resolution: {integrity: sha512-Od0KiDsNrKhpVr+8bPbjJgzqbUucju5hibchQicz6fKhNOUNLD+d1ohvkLI2q+ZwLMOMf/8bPBWGM61W+MWARQ==}
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.d8421f6':
+    resolution: {integrity: sha512-BoY0WKnxF/O2504Xw0HKA8C6bfPCnF1Nsj0/pMs6OZv+firszpqxlO5wIxbetEfJ449Q32GpUNrp76W3p5uvvw==}
 
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
@@ -17458,7 +17458,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.151480d(encoding@0.1.13)':
+  '@sphereon/openid-federation-client@0.1.0-unstable.d8421f6(encoding@0.1.13)':
     dependencies:
       '@js-joda/core': 3.2.0
       abort-controller: 3.0.0
@@ -17471,7 +17471,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.151480d(encoding@0.1.13)':
+  '@sphereon/openid-federation-common@0.1.0-unstable.d8421f6(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
@@ -17483,7 +17483,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.151480d(encoding@0.1.13)':
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.d8421f6(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
