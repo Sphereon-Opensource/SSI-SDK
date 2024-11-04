@@ -213,18 +213,12 @@ export class OID4VCIIssuer implements IAgentPlugin {
     context: IRequiredContext,
   ): Promise<OpenidFederationMetadata> {
     const metadataOpts = await this.getMetadataOpts(opts, context)
-    const metadata = (await context.agent.oid4vciStoreGetMetadata({
+    return (await context.agent.oid4vciStoreGetMetadata({
       metadataType: 'openidFederation',
       correlationId: metadataOpts.credentialIssuer,
       namespace: metadataOpts.storeNamespace,
       storeId: metadataOpts.storeId,
     })) as OpenidFederationMetadata
-    if (!metadata) {
-      throw Error(
-        `OpenID Federation metadata for issuer ${opts.credentialIssuer}  not found for namespace ${opts.namespace} and store ${opts.storeId}`,
-      )
-    }
-    return metadata
   }
 
   private async storeId(opts?: { storeId?: string }, context?: IRequiredContext): Promise<string> {
