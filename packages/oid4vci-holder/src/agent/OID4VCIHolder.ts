@@ -1007,7 +1007,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
   }
 
-  private async getFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<boolean> {
+  private async getFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<Array<string>> {
     const { requestData, serverMetadata, trustAnchors } = args
 
     if (trustAnchors.length === 0) {
@@ -1025,14 +1025,21 @@ export class OID4VCIHolder implements IAgentPlugin {
     const url = new URL(requestData?.uri)
     const params = new URLSearchParams(url.search)
     const openidFederation = params.get('openid_federation')
-
     const entityIdentifier = openidFederation ?? serverMetadata.issuer
 
-    return context.agent.resolveTrustChain({
-      entityIdentifier,
-      trustAnchors
-    })
-    .then((result) => Array.isArray(result) && result.length > 0)
+    const trustedAnchors = []
+    for (const trustAnchor of trustAnchors) {
+        const resolveResult = await context.agent.resolveTrustChain({
+          entityIdentifier,
+          trustAnchors: [trustAnchor]
+        })
+
+        if (Array.isArray(resolveResult) && resolveResult.length > 0) {
+          trustedAnchors.push(trustAnchor)
+        }
+    }
+
+    return trustedAnchors
   }
 
   private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {

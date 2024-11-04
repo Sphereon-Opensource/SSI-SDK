@@ -208,7 +208,7 @@ export type OID4VCIMachineContext = {
   credentialsToAccept: Array<MappedCredentialToAccept>
   verificationCode?: string // TODO WAL-672 refactor to not store verificationCode in the context
   hasContactConsent: boolean
-  isTrustedFederation?: boolean
+  trustedAnchors?: Array<string>
   error?: ErrorDetails
 }
 

@@ -177,7 +177,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           data: void
         }
         [OID4VCIMachineServices.getFederationTrust]: {
-          data: boolean
+          data: Array<string>
         }
       },
     },
@@ -293,7 +293,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           onDone: {
             target: OID4VCIMachineStates.addContact,
             actions: assign({
-              isTrustedFederation: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<boolean>) => _event.data
+              trustedAnchors: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<string>>) => _event.data
             })
           },
           onError: {
