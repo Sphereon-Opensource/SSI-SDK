@@ -90,7 +90,7 @@ export type IIssuerOptsImportArgs = IIssuerOptsPersistArgs
 
 export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs {
   metadataType: Oid4vciMetadataType
-  metadata: IssuerMetadata | AuthorizationServerMetadata // The actual metadata
+  metadata: IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata // FIXME remove OpenidFederationMetadata
 }
 
 export interface IIssuerOptsPersistArgs extends Ioid4vciStorePersistArgs {

@@ -232,6 +232,7 @@ export class OID4VCIStore implements IAgentPlugin {
   private async oid4vciStorePersistMetadata(
     args: IMetadataPersistArgs,
   ): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata>> {
+    // FIXME remove OpenidFederationMetadata
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
     const { correlationId, metadata, ttl, metadataType } = args
