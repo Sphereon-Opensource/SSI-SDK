@@ -268,7 +268,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
       offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:'),
     })
     if (created) {
-      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, identifier)
+      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
     }
   } else if (supportedBindingMethods.includes('jwk')) {
     // todo: we probably should do something similar as with DIDs for re-use/new keys
