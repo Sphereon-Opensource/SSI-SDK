@@ -1,14 +1,14 @@
 import 'cross-fetch/polyfill'
 // @ts-ignore
-import express, {Router} from 'express'
-import {Server} from 'http'
-import {createAgent, IAgent, IAgentOptions} from '@veramo/core'
-import {AgentRestClient} from '@veramo/remote-client'
-import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
+import express, { Router } from 'express'
+import { Server } from 'http'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
+import { AgentRestClient } from '@veramo/remote-client'
+import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import oidfClientAgentLogic from './shared/oidfClientAgentLogic'
-import {createObjects, getConfig} from '../../agent-config/dist'
-import {IOIDFClient} from "../src";
-import {IJwtService} from "@sphereon/ssi-sdk-ext.jwt-service";
+import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
+import { IOIDFClient } from '../src'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 jest.setTimeout(60000)
 
@@ -29,7 +29,6 @@ const getAgent = (options?: IAgentOptions) =>
       }),
     ],
   })
-
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/oidf-client/agent.yml')
