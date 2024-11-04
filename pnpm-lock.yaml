@@ -29,7 +29,7 @@ overrides:
   '@veramo/url-handler': 4.2.0
   '@sphereon/ssi-types': workspace:*
   '@sphereon/ssi-sdk.core': workspace:*
-  '@sphereon/pex': 5.0.0-unstable.19
+  '@sphereon/pex': 5.0.0-unstable.26
   '@sphereon/pex-models': ^2.3.1
   '@noble/hashes': 1.2.0
   debug: ^4.3.5
@@ -372,8 +372,8 @@ importers:
   packages/credential-store:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -464,8 +464,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
         version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
@@ -583,8 +583,8 @@ importers:
         specifier: 0.16.1-feature.SDK.39.well.known.oidf.187
         version: 0.16.1-feature.SDK.39.well.known.oidf.187(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -860,8 +860,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1337,8 +1337,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1522,8 +1522,8 @@ importers:
   packages/pd-manager:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1689,8 +1689,8 @@ importers:
   packages/presentation-exchange:
     dependencies:
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -2125,8 +2125,8 @@ importers:
         specifier: 0.16.1-feature.SDK.39.well.known.oidf.187
         version: 0.16.1-feature.SDK.39.well.known.oidf.187
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -2258,8 +2258,8 @@ importers:
         specifier: 0.16.1-feature.SDK.39.well.known.oidf.187
         version: 0.16.1-feature.SDK.39.well.known.oidf.187
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
         version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
@@ -2404,8 +2404,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/pex':
-        specifier: 5.0.0-unstable.19
-        version: 5.0.0-unstable.19
+        specifier: 5.0.0-unstable.26
+        version: 5.0.0-unstable.26
       '@sphereon/pex-models':
         specifier: ^2.3.1
         version: 2.3.1
@@ -5990,8 +5990,8 @@ packages:
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
 
-  '@sphereon/pex@5.0.0-unstable.19':
-    resolution: {integrity: sha512-5+xz2c6b3mMGtqkS4gj3im8ugfJYfqQUNZitoMR+fUR859dd0l+4V6z1IbDqB1YaWiucaoaw3TzA1Z0EkUGPEw==}
+  '@sphereon/pex@5.0.0-unstable.26':
+    resolution: {integrity: sha512-GTTctvtFAzj9951PtqO7ifebggTYaf7AiTFcrArhEy4VR5xTm2DTcRyzBpVJAb4Eb8qqRXXEQCxilZ/AD/ikQg==}
     engines: {node: '>=18'}
 
   '@sphereon/react-native-argon2@2.0.9':
@@ -17238,7 +17238,7 @@ snapshots:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/jarm': 0.16.1-feature.SDK.39.well.known.oidf.187(typescript@5.6.3)
       '@sphereon/oid4vc-common': 0.16.1-feature.SDK.39.well.known.oidf.187
-      '@sphereon/pex': 5.0.0-unstable.19
+      '@sphereon/pex': 5.0.0-unstable.26
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.0.0(encoding@0.1.13)
@@ -17393,7 +17393,7 @@ snapshots:
 
   '@sphereon/pex-models@2.3.1': {}
 
-  '@sphereon/pex@5.0.0-unstable.19':
+  '@sphereon/pex@5.0.0-unstable.26':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sd-jwt/decode': 0.7.2
