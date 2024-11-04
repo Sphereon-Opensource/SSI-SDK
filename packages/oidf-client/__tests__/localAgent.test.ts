@@ -1,5 +1,5 @@
 import oidfClientAgentLogic from './shared/oidfClientAgentLogic'
-import {createObjects, getConfig} from '../../agent-config/dist'
+import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
 
 jest.setTimeout(60000)
 
