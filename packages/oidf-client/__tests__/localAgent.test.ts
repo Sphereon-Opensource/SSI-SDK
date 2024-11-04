@@ -24,6 +24,6 @@ const testContext = {
   tearDown,
 }
 
-describe.skip('Local integration tests', (): void => {
+describe('Local integration tests', (): void => {
   oidfClientAgentLogic(testContext)
 })
