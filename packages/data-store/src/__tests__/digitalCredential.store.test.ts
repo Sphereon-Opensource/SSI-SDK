@@ -13,7 +13,7 @@ import {
   DocumentType,
   DigitalCredential,
   GetCredentialsArgs,
-  GetCredentialsResponse,
+  GetCredentialsResponse
 } from '../types'
 
 describe('Database entities tests', (): void => {

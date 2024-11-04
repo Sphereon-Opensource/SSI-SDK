@@ -3,12 +3,13 @@ import { LoggingEventType, OrPromise } from '@sphereon/ssi-types'
 import Debug, { Debugger } from 'debug'
 import { DataSource } from 'typeorm'
 import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
+import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import {
   activityEventEntityFrom,
-  AuditEventEntity,
-  auditEventEntityFrom
-} from '../entities/eventLogger/AuditEventEntity'
-import { activityEventFrom, auditEventFrom } from '../utils/eventLogger/MappingUtils'
+  activityEventFrom,
+  auditEventEntityFrom,
+  auditEventFrom
+} from '../utils/eventLogger/MappingUtils'
 import {
   GetActivityEventsArgs,
   GetAuditEventsArgs,
