@@ -74,6 +74,7 @@ test/*.js
 /packages/pd-manager/plugin.schema.json
 /packages/event-logger/plugin.schema.json
 /packages/credential-validation/plugin.schema.json
+/packages/oidf-client/plugin.schema.json
 
 **/.env.energyshr
 **/.env.local

@@ -37,6 +37,9 @@
     },
     {
       "path": "../xstate-persistence"
+    },
+    {
+      "path": "../oidf-client"
     }
   ]
 }
