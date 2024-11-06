@@ -9,15 +9,17 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
     "@sphereon/ssi-express-support": "workspace:*",
-    "express": "^4.21.1",
+    "@sphereon/ssi-sdk.oid4vci-issuer-store": "workspace:*",
     "debug": "^4.3.5",
+    "express": "^4.19.2",
     "semver": "^7.6.3"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@types/semver": "^7.5.8"
+    "@types/semver": "^7.5.8",
+    "@types/express": "^4.17.21",
+    "express-serve-static-core": "^0.1.1"
   },
   "files": [
     "dist/**/*",

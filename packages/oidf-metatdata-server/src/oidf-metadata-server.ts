@@ -1,19 +1,19 @@
 import { FederationEndpoints, IOID4MetadataServerOpts, IRequiredContext, OpenidFederationMetadata } from './types'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
-import express, { Express } from 'express'
+import express, { Request, Response, Express, Router } from 'express'
 
-export class OIDFMetadataServer {
-  private readonly _expressSupport: ExpressSupport
-  private readonly _router: express.Router
+export default class OIDFMetadataServer {
+  private readonly _routers: Map<string, express.Router>
   private readonly _context: IRequiredContext
   private readonly _opts?: IOID4MetadataServerOpts
+  private readonly _app: Express
 
   constructor(args: { context: IRequiredContext; expressSupport: ExpressSupport; opts?: IOID4MetadataServerOpts }) {
     const { context, expressSupport, opts } = args
     this._context = context
-    this._expressSupport = expressSupport
     this._opts = opts
-    this._router = express.Router()
+    this._app = expressSupport.express
+    this._routers = new Map()
   }
 
   public async up() {
@@ -27,9 +27,50 @@ export class OIDFMetadataServer {
     this.hostEndpoints(filteredEndpoints)
   }
 
+  private getHostAndPath(url: string): { hostname: string; basePath: string } {
+    const urlObj = new URL(url)
+    return {
+      hostname: urlObj.hostname,
+      basePath: urlObj.pathname.replace(/\/+$/, ''), // Remove trailing slashes
+    }
+  }
+
   private hostEndpoints = (metadataEndpoints: Array<OpenidFederationMetadata>) => {
-    metadataEndpoints.forEach((metadataEndpoint) => {
-      this._router.get(metadataEndpoint.subjectBaseUrl + FederationEndpoints.WELL_KNOWN_OPENID_FEDERATION)
+    // Group endpoints by hostname
+    const endpointsByHost = new Map<string, Array<{ basePath: string; endpoint: OpenidFederationMetadata }>>()
+
+    metadataEndpoints.forEach((endpoint) => {
+      const { hostname, basePath } = this.getHostAndPath(endpoint.subjectBaseUrl)
+
+      if (!endpointsByHost.has(hostname)) {
+        endpointsByHost.set(hostname, [])
+      }
+      endpointsByHost.get(hostname)?.push({ basePath, endpoint })
+    })
+
+    // Create and configure routers for each hostname
+    endpointsByHost.forEach((endpoints, hostname) => {
+      const router: Router = express.Router()
+      this._routers.set(hostname, router)
+
+      endpoints.forEach(({ basePath, endpoint }) => {
+        const federationPath = basePath + FederationEndpoints.WELL_KNOWN_OPENID_FEDERATION
+
+        router.get(federationPath, async (request: Request, response: Response) => {
+          const asciiData = Buffer.from(endpoint.jwt, 'ascii')
+          response.setHeader('Content-Type', 'application/entity-statement+jwt')
+          return response.send(asciiData)
+        })
+      })
+
+      // Mount the router for this hostname
+      this._app.use((request: Request, response: Response, next: express.NextFunction) => {
+        if (request.hostname === hostname) {
+          router(request, response, next)
+        } else {
+          next()
+        }
+      })
     })
   }
 
@@ -40,7 +81,7 @@ export class OIDFMetadataServer {
   }): Promise<OIDFMetadataServer> {
     const { context, expressSupport, opts } = args
     const oidfMetadataServer = new OIDFMetadataServer({ context, expressSupport, opts })
-    oidfMetadataServer.up()
+    await oidfMetadataServer.up()
     return oidfMetadataServer
   }
 }
