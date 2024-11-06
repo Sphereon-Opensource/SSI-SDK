@@ -27,6 +27,11 @@ export interface IOID4VCIStore extends IPluginMethodMap {
     storeId,
     namespace,
   }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined>
+  oid4vciStoreListMetadata({
+    metadataType,
+    storeId,
+    namespace,
+  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined>>
   oid4vciStoreHasMetadata({ metadataType, correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean>
   oid4vciStorePersistMetadata(
     args: IMetadataPersistArgs,
@@ -74,11 +79,14 @@ export interface IMetadataOptions {
 
 export type Oid4vciMetadataType = 'issuer' | 'authorizationServer' | 'openidFederation'
 
-export interface IOid4vciStoreGetArgs {
+export interface IOid4vciStoreListArgs {
   metadataType: Oid4vciMetadataType
-  correlationId: string
   storeId?: string
   namespace?: string
+}
+
+export interface IOid4vciStoreGetArgs extends IOid4vciStoreListArgs {
+  correlationId: string
 }
 
 export type Ioid4vciStoreExistsArgs = IOid4vciStoreGetArgs
