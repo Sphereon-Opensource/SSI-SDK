@@ -1126,6 +1126,9 @@ importers:
       '@sphereon/ssi-sdk.mdl-mdoc':
         specifier: workspace:*
         version: link:../mdl-mdoc
+      '@sphereon/ssi-sdk.oidf-client':
+        specifier: workspace:*
+        version: link:../oidf-client
       '@sphereon/ssi-sdk.sd-jwt':
         specifier: workspace:*
         version: link:../sd-jwt
@@ -1517,6 +1520,43 @@ importers:
         version: 4.1.0
       nock:
         specifier: ^13.5.4
+        version: 13.5.5
+
+  packages/oidf-client:
+    dependencies:
+      '@sphereon/openid-federation-client':
+        specifier: 0.1.0-unstable.d8421f6
+        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
+      '@sphereon/openid-federation-common':
+        specifier: 0.1.0-unstable.d8421f6
+        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
+      '@sphereon/openid-federation-open-api':
+        specifier: 0.1.0-unstable.d8421f6
+        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: 0.25.0
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.19.2)
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.1.8(encoding@0.1.13)
+      jose:
+        specifier: 5.9.4
+        version: 5.9.4
+      nock:
+        specifier: ^13.5.5
         version: 13.5.5
 
   packages/pd-manager:
@@ -5279,6 +5319,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
+  '@js-joda/core@3.2.0':
+    resolution: {integrity: sha512-PMqgJ0sw5B7FKb2d5bWYIoxjri+QlW/Pys7+Rw82jSH0QN3rB05jZ/VrrsUdh1w4+i2kw9JOejXGq/KhDOX7Kg==}
+
   '@js-joda/core@5.6.3':
     resolution: {integrity: sha512-T1rRxzdqkEXcou0ZprN1q9yDRlvzCPLqmlNt5IIsGBzoEVgLCCYrKEwc84+TvsXuAc95VAZwtWD2zVsKPY4bcA==}
 
@@ -5986,6 +6029,15 @@ packages:
     peerDependenciesMeta:
       awesome-qr:
         optional: true
+
+  '@sphereon/openid-federation-client@0.1.0-unstable.d8421f6':
+    resolution: {integrity: sha512-curfKYSn08zmMrOmRNhs+0ubtSMiX1blNjOpGsr7jrLg56RKgATHAuJQRPu0+28oIavrgjUqXEUnlJZi/mdjpw==}
+
+  '@sphereon/openid-federation-common@0.1.0-unstable.d8421f6':
+    resolution: {integrity: sha512-ybCgk8iiRfHbyiANCrca577KL2b2JD+OLya56gpcetHXdJlW8eMlde/nkDa0fIwWUDl+lhp97NgFLuZ4tkGMfA==}
+
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.d8421f6':
+    resolution: {integrity: sha512-BoY0WKnxF/O2504Xw0HKA8C6bfPCnF1Nsj0/pMs6OZv+firszpqxlO5wIxbetEfJ449Q32GpUNrp76W3p5uvvw==}
 
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
@@ -10014,8 +10066,8 @@ packages:
   jose@5.7.0:
     resolution: {integrity: sha512-3P9qfTYDVnNn642LCAqIKbTGb9a1TBxZ9ti5zEVEr48aDdflgRjhspWFb6WM4PzAfFbGMJYC4+803v8riCRAKw==}
 
-  jose@5.9.6:
-    resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
+  jose@5.9.4:
+    resolution: {integrity: sha512-WBBl6au1qg6OHj67yCffCgFR3BADJBXN8MdRvCgJDuMv3driV2nHr7jdGvaKX9IolosAsn+M0XRArqLXUhyJHQ==}
 
   js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
@@ -13556,6 +13608,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.5.0:
+    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xcode@3.0.1:
     resolution: {integrity: sha512-kCz5k7J7XbJtjABOvkc5lJmkiDh8VhjVCGNiqdKCscmVpdVUpEAyXv1xmCLkQJ5dsHqx3IPO4XW+NTDhU/fatA==}
     engines: {node: '>=10.0.0'}
@@ -15953,6 +16017,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  '@js-joda/core@3.2.0': {}
+
   '@js-joda/core@5.6.3': {}
 
   '@js-joda/timezone@2.3.0(@js-joda/core@5.6.3)':
@@ -17394,6 +17460,42 @@ snapshots:
       - encoding
       - supports-color
 
+  '@sphereon/openid-federation-client@0.1.0-unstable.d8421f6(encoding@0.1.13)':
+    dependencies:
+      '@js-joda/core': 3.2.0
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      jose: 5.9.4
+      node-fetch: 2.7.0(encoding@0.1.13)
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
+  '@sphereon/openid-federation-common@0.1.0-unstable.d8421f6(encoding@0.1.13)':
+    dependencies:
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      node-fetch: 2.7.0(encoding@0.1.13)
+      typescript: 5.6.3
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.d8421f6(encoding@0.1.13)':
+    dependencies:
+      abort-controller: 3.0.0
+      format-util: 1.0.5
+      node-fetch: 2.7.0(encoding@0.1.13)
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
   '@sphereon/pex-models@2.3.1': {}
 
   '@sphereon/pex@5.0.0-unstable.19':
@@ -17624,7 +17726,7 @@ snapshots:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
       debug: 4.3.6
-      jose: 5.9.6
+      jose: 5.9.4
       jwt-decode: 4.0.0
       uint8arrays: 3.1.1
     transitivePeerDependencies:
@@ -23460,7 +23562,7 @@ snapshots:
 
   jose@5.7.0: {}
 
-  jose@5.9.6: {}
+  jose@5.9.4: {}
 
   js-base64@3.7.7: {}
 
@@ -27542,6 +27644,8 @@ snapshots:
   ws@8.17.1: {}
 
   ws@8.18.0: {}
+
+  ws@8.5.0: {}
 
   xcode@3.0.1:
     dependencies:

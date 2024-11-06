@@ -7,7 +7,7 @@ export class CreateDigitalCredential1708525189001 implements MigrationInterface 
     await queryRunner.query(`CREATE TYPE "digital_document_type" AS ENUM('VC', 'VP', 'C', 'P')`)
     await queryRunner.query(`CREATE TYPE "digital_regulation_type" AS ENUM('PID', 'QEAA', 'EAA', 'NON_REGULATED')`)
     await queryRunner.query(`CREATE TYPE "digital_credential_document_format" AS ENUM('JSON_LD', 'JWT', 'SD_JWT', 'MSO_MDOC')`)
-    await queryRunner.query(`CREATE TYPE "digital_credential_credential_role" AS ENUM('ISSUER', 'VERIFIER', 'HOLDER')`)
+    await queryRunner.query(`CREATE TYPE "digital_credential_credential_role" AS ENUM('ISSUER', 'VERIFIER', 'HOLDER', 'FEDERATION_TRUST_ANCHOR')`)
     await queryRunner.query(`CREATE TYPE "digital_credential_correlation_type" AS ENUM('DID', 'KID', 'URL', 'X509_SAN')`)
     await queryRunner.query(`CREATE TYPE "digital_credential_state_type" AS ENUM('REVOKED', 'VERIFIED', 'EXPIRED')`)
 

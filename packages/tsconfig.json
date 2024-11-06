@@ -47,6 +47,7 @@
     { "path": "sd-jwt" },
     { "path": "ebsi-support" },
     { "path": "public-key-hosting" },
-    { "path": "resource-resolver" }
+    { "path": "resource-resolver" },
+	{ "path":  "oidf-client" }
   ]
 }

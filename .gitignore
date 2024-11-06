@@ -72,12 +72,16 @@ test/*.js
 /packages/xstate-persistence/plugin.schema.json
 /packages/credential-store/plugin.schema.json
 /packages/pd-manager/plugin.schema.json
+/packages/event-logger/plugin.schema.json
+/packages/credential-validation/plugin.schema.json
+/packages/oidf-client/plugin.schema.json
 
 **/.env.energyshr
 **/.env.local
 /packages/web3-provider-headless/__tests__/config.json
-/packages/event-logger/plugin.schema.json
+
 /packages/public-key-hosting/__tests__/database/test.sqlite
+/__tests__/database/test.sqlite
 
 .nx/cache
 .nx/workspace-data
