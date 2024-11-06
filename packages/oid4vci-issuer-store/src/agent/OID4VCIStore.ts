@@ -10,6 +10,7 @@ import {
   Ioid4vciStoreClearArgs,
   Ioid4vciStoreExistsArgs,
   IOid4vciStoreGetArgs,
+  IOid4vciStoreListArgs,
   IOID4VCIStoreOpts,
   Ioid4vciStoreRemoveArgs,
 } from '../index'
@@ -47,6 +48,7 @@ export class OID4VCIStore implements IAgentPlugin {
     oid4vciStoreClearAllIssuerOpts: this.oid4vciStoreClearAllIssuerOpts.bind(this),
 
     oid4vciStoreGetMetadata: this.oid4vciStoreGetMetadata.bind(this),
+    oid4vciStoreListMetadata: this.oid4vciStoreListMetadata.bind(this),
     oid4vciStoreHasMetadata: this.oid4vciStoreHasMetadata.bind(this),
     oid4vciStorePersistMetadata: this.oid4vciStorePersistMetadata.bind(this),
     oid4vciStoreRemoveMetadata: this.oid4vciStoreRemoveMetadata.bind(this),
@@ -206,6 +208,30 @@ export class OID4VCIStore implements IAgentPlugin {
           stores: this._openidFederationMetadataStores,
           storeId,
         }).get(this.prefix({ namespace, correlationId }))
+    }
+  }
+
+  private async oid4vciStoreListMetadata({
+    metadataType,
+    storeId,
+    namespace,
+  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined>> {
+    switch (metadataType) {
+      case 'authorizationServer':
+        return this.store<AuthorizationServerMetadata>({
+          stores: this._authorizationServerMetadataStores,
+          storeId,
+        }).getMany([`${this.namespaceStr({ namespace })}`])
+      case 'issuer':
+        return this.store<IssuerMetadata>({
+          stores: this._issuerMetadataStores,
+          storeId,
+        }).getMany([`${this.namespaceStr({ namespace })}`])
+      case 'openidFederation':
+        return this.store<OpenidFederationMetadata>({
+          stores: this._openidFederationMetadataStores,
+          storeId,
+        }).getMany([`${this.namespaceStr({ namespace })}`])
     }
   }
 

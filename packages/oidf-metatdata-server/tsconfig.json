@@ -11,6 +11,9 @@
       "path": "../oid4vci-issuer-store"
     },
     {
+      "path": "../ssi-express-support"
+    },
+    {
       "path": "../agent-config"
     }
   ]
