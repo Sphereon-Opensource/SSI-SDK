@@ -271,7 +271,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     }
   } else if (supportedBindingMethods.includes('jwk')) {
     // todo: we probably should do something similar as with DIDs for re-use/new keys
-    const key = await context.agent.keyManagerCreate({ type: keyType, kms })
+    const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
     // } else if (supportedBindingMethods.includes('cose_key')) {
