@@ -3,7 +3,7 @@ import { ExpressBuilder, ExpressSupport } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
 import { IOIDFMetadataStore } from '../src'
 import { DataSource } from 'typeorm'
-import oidfMetadataServerAgentLogic from './shared/oidf-metadata-server.test'
+import oidfMetadataServerAgentLogic from './shared/OidfMetadataServerAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: TAgent<IOIDFMetadataStore>
