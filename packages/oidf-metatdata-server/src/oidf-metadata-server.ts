@@ -1,12 +1,21 @@
 import { FederationEndpoints, IOID4MetadataServerOpts, IRequiredContext, OpenidFederationMetadata } from './types'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import express, { Request, Response, Express, Router } from 'express'
+import { IAgentPlugin } from '@veramo/core'
 
-export default class OIDFMetadataServer {
+export default class OIDFMetadataServer implements IAgentPlugin {
   private readonly _routers: Map<string, express.Router>
   private readonly _context: IRequiredContext
   private readonly _opts?: IOID4MetadataServerOpts
   private readonly _app: Express
+
+  // map the methods your plugin is declaring to their implementation
+  readonly methods: ISDJwtPlugin = {
+    createSdJwtVc: this.createSdJwtVc.bind(this),
+    createSdJwtPresentation: this.createSdJwtPresentation.bind(this),
+    verifySdJwtVc: this.verifySdJwtVc.bind(this),
+    verifySdJwtPresentation: this.verifySdJwtPresentation.bind(this),
+  }
 
   constructor(args: { context: IRequiredContext; expressSupport: ExpressSupport; opts?: IOID4MetadataServerOpts }) {
     const { context, expressSupport, opts } = args

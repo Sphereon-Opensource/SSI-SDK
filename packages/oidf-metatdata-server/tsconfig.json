@@ -8,7 +8,7 @@
   },
   "references": [
     {
-      "path": "../oid4vci-issuer-store"
+      "path": "../kv-store"
     },
     {
       "path": "../ssi-express-support"
