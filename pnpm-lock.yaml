@@ -207,9 +207,6 @@ importers:
 
   packages/anomaly-detection:
     dependencies:
-      '@sphereon/ssi-sdk.resource-resolver':
-        specifier: workspace:*
-        version: link:../resource-resolver
       cross-fetch:
         specifier: ^3.1.8
         version: 3.1.8(encoding@0.1.13)

@@ -1,5 +1,4 @@
 import {IAgentContext, IPluginMethodMap} from '@veramo/core'
-import {IResourceResolver} from "@sphereon/ssi-sdk.resource-resolver";
 
 export interface IAnomalyDetection extends IPluginMethodMap {
   lookupLocation(args: LookupLocationArgs, context: IRequiredContext): Promise<LookupLocationResult>
@@ -14,4 +13,4 @@ export type LookupLocationResult = {
   country?: string
 } | null
 
-export type IRequiredContext = IAgentContext<IResourceResolver>
+export type IRequiredContext = IAgentContext<never>

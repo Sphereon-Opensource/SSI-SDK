@@ -14,7 +14,6 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
     "mmdb-lib": "^2.1.1",
