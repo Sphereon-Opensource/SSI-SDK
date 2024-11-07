@@ -1,4 +1,4 @@
-import { IssuerMetadata, CredentialIssuerMetadataOpts, AuthorizationServerMetadata, OpenidFederationMetadata } from '@sphereon/oid4vci-common'
+import { IssuerMetadata, CredentialIssuerMetadataOpts, AuthorizationServerMetadata } from '@sphereon/oid4vci-common'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
@@ -26,16 +26,14 @@ export interface IOID4VCIStore extends IPluginMethodMap {
     correlationId,
     storeId,
     namespace,
-  }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined>
+  }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | undefined>
   oid4vciStoreListMetadata({
     metadataType,
     storeId,
     namespace,
-  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined>>
+  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | undefined>>
   oid4vciStoreHasMetadata({ metadataType, correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean>
-  oid4vciStorePersistMetadata(
-    args: IMetadataPersistArgs,
-  ): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata>>
+  oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata>>
   oid4vciStoreRemoveMetadata({ metadataType, storeId, correlationId, namespace }: Ioid4vciStoreRemoveArgs): Promise<boolean>
   oid4vciStoreClearAllMetadata({ metadataType, storeId }: Ioid4vciStoreClearArgs): Promise<boolean>
 }
@@ -45,7 +43,6 @@ export interface IOID4VCIStoreOpts {
   defaultNamespace?: string
   issuerMetadataStores?: Map<string, IKeyValueStore<IssuerMetadata>> | IKeyValueStore<IssuerMetadata>
   authorizationServerMetadataStores?: Map<string, IKeyValueStore<AuthorizationServerMetadata>> | IKeyValueStore<AuthorizationServerMetadata>
-  openidFederationMetadataStores?: Map<string, IKeyValueStore<OpenidFederationMetadata>> | IKeyValueStore<OpenidFederationMetadata>
   issuerOptsStores?: Map<string, IKeyValueStore<IIssuerOptions>> | IKeyValueStore<IIssuerOptions>
   importMetadatas?: IMetadataImportArgs[]
   importIssuerOpts?: IIssuerOptsImportArgs[]
@@ -77,7 +74,7 @@ export interface IMetadataOptions {
   storeNamespace?: string
 }
 
-export type Oid4vciMetadataType = 'issuer' | 'authorizationServer' | 'openidFederation'
+export type Oid4vciMetadataType = 'issuer' | 'authorizationServer'
 
 export interface IOid4vciStoreListArgs {
   metadataType: Oid4vciMetadataType
@@ -98,7 +95,7 @@ export type IIssuerOptsImportArgs = IIssuerOptsPersistArgs
 
 export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs {
   metadataType: Oid4vciMetadataType
-  metadata: IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata // FIXME remove OpenidFederationMetadata
+  metadata: IssuerMetadata | AuthorizationServerMetadata
 }
 
 export interface IIssuerOptsPersistArgs extends Ioid4vciStorePersistArgs {

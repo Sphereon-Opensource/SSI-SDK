@@ -1,4 +1,4 @@
-import { AuthorizationServerMetadata, IssuerMetadata, OpenidFederationMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { IKeyValueStore, IValueData, KeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
 import {
@@ -28,7 +28,6 @@ export class OID4VCIStore implements IAgentPlugin {
 
   private readonly _issuerMetadataStores: Map<string, IKeyValueStore<IssuerMetadata>>
   private readonly _authorizationServerMetadataStores: Map<string, IKeyValueStore<AuthorizationServerMetadata>>
-  private readonly _openidFederationMetadataStores: Map<string, IKeyValueStore<OpenidFederationMetadata>>
   private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions>>
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
@@ -84,19 +83,6 @@ export class OID4VCIStore implements IAgentPlugin {
         new KeyValueStore({
           namespace: this.defaultNamespace,
           store: new Map<string, AuthorizationServerMetadata>(),
-        }),
-      )
-    }
-    if (opts?.openidFederationMetadataStores && opts.openidFederationMetadataStores instanceof Map) {
-      this._openidFederationMetadataStores = opts.openidFederationMetadataStores
-    } else if (opts?.openidFederationMetadataStores) {
-      this._openidFederationMetadataStores = new Map().set(this.defaultStoreId, opts.openidFederationMetadataStores)
-    } else {
-      this._openidFederationMetadataStores = new Map().set(
-        this.defaultStoreId,
-        new KeyValueStore({
-          namespace: this.defaultNamespace,
-          store: new Map<string, OpenidFederationMetadata>(),
         }),
       )
     }
@@ -191,7 +177,7 @@ export class OID4VCIStore implements IAgentPlugin {
     correlationId,
     storeId,
     namespace,
-  }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined> {
+  }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | undefined> {
     switch (metadataType) {
       case 'authorizationServer':
         return this.store<AuthorizationServerMetadata>({
@@ -201,11 +187,6 @@ export class OID4VCIStore implements IAgentPlugin {
       case 'issuer':
         return this.store<IssuerMetadata>({
           stores: this._issuerMetadataStores,
-          storeId,
-        }).get(this.prefix({ namespace, correlationId }))
-      case 'openidFederation':
-        return this.store<OpenidFederationMetadata>({
-          stores: this._openidFederationMetadataStores,
           storeId,
         }).get(this.prefix({ namespace, correlationId }))
     }
@@ -215,7 +196,7 @@ export class OID4VCIStore implements IAgentPlugin {
     metadataType,
     storeId,
     namespace,
-  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata | undefined>> {
+  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | undefined>> {
     switch (metadataType) {
       case 'authorizationServer':
         return this.store<AuthorizationServerMetadata>({
@@ -225,11 +206,6 @@ export class OID4VCIStore implements IAgentPlugin {
       case 'issuer':
         return this.store<IssuerMetadata>({
           stores: this._issuerMetadataStores,
-          storeId,
-        }).getMany([`${this.namespaceStr({ namespace })}`])
-      case 'openidFederation':
-        return this.store<OpenidFederationMetadata>({
-          stores: this._openidFederationMetadataStores,
           storeId,
         }).getMany([`${this.namespaceStr({ namespace })}`])
     }
@@ -247,17 +223,10 @@ export class OID4VCIStore implements IAgentPlugin {
           stores: this._issuerMetadataStores,
           storeId,
         }).has(this.prefix({ namespace, correlationId }))
-      case 'openidFederation':
-        return this.store<OpenidFederationMetadata>({
-          stores: this._openidFederationMetadataStores,
-          storeId,
-        }).has(this.prefix({ namespace, correlationId }))
     }
   }
 
-  private async oid4vciStorePersistMetadata(
-    args: IMetadataPersistArgs,
-  ): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata | OpenidFederationMetadata>> {
+  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata>> {
     // FIXME remove OpenidFederationMetadata
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
@@ -294,19 +263,6 @@ export class OID4VCIStore implements IAgentPlugin {
           }).set(this.prefix({ namespace, correlationId }), metadata as IssuerMetadata, ttl)
         }
         return existingIssuer
-      case 'openidFederation':
-        const existingOpenIdFederation = await this.store<OpenidFederationMetadata>({
-          stores: this._openidFederationMetadataStores,
-          storeId,
-        }).getAsValueData(this.prefix({ namespace, correlationId }))
-
-        if (!existingOpenIdFederation.value || (existingOpenIdFederation.value && args.overwriteExisting !== false)) {
-          return await this.store<OpenidFederationMetadata>({
-            stores: this._openidFederationMetadataStores,
-            storeId,
-          }).set(this.prefix({ namespace, correlationId }), metadata as OpenidFederationMetadata, ttl)
-        }
-        return existingOpenIdFederation
     }
   }
 
@@ -325,11 +281,6 @@ export class OID4VCIStore implements IAgentPlugin {
           stores: this._issuerMetadataStores,
           storeId,
         }).delete(this.prefix({ namespace, correlationId: args.correlationId }))
-      case 'openidFederation':
-        return this.store<OpenidFederationMetadata>({
-          stores: this._openidFederationMetadataStores,
-          storeId,
-        }).delete(this.prefix({ namespace, correlationId: args.correlationId }))
     }
   }
 
@@ -345,13 +296,6 @@ export class OID4VCIStore implements IAgentPlugin {
       case 'issuer':
         return await this.store<IssuerMetadata>({
           stores: this._issuerMetadataStores,
-          storeId,
-        })
-          .clear()
-          .then(() => true)
-      case 'openidFederation':
-        return await this.store<OpenidFederationMetadata>({
-          stores: this._openidFederationMetadataStores,
           storeId,
         })
           .clear()

@@ -110,12 +110,17 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     )
   }
 
-  _getKeyPrefix(key: string): string {
-    return `${this.opts.namespace}:${key}`
+  _getKeyPrefix(key: string, forMany = false): string {
+    if (forMany) {
+      // We can list all keys on the default namespace using :key
+      return key.startsWith(':') ? `${this.opts.namespace}${key}:` : `${key}:`
+    }
+
+    return key.includes(':') ? key : `${this.opts.namespace}:${key}`
   }
 
   _getKeyPrefixArray(keys: string[]): string[] {
-    return keys.map((key) => this._getKeyPrefix(key))
+    return keys.map((key) => this._getKeyPrefix(key, true))
   }
 
   _getKeyUnprefix(key: string): string {
@@ -126,8 +131,11 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     const keyPrefixed = this._getKeyPrefixArray(keys)
     let promise: Promise<Array<KeyvStoredData<Value>>>
     if (this.store.getMany !== undefined) {
-      promise = this.store.getMany(keyPrefixed, options) as Promise<KeyvStoredData<Value>[]> //.then(value => !!value ? value.values() : undefined)
       // todo: Probably wise to check expired ValueData here, if the getMany does not implement this feature itself!
+      promise = this.store.getMany(keyPrefixed, options) as Promise<KeyvStoredData<Value>[]>
+    } else if (this.isMapWithEntries(this.store)) {
+      // Handle Map-based stores with prefix matching
+      promise = this.getFromMapWithPrefix(keyPrefixed[0], options)
     } else {
       promise = Promise.all(keyPrefixed.map((k) => this.store.get(k, options) as Promise<KeyvStoredData<Value>>))
     }
@@ -136,13 +144,12 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
 
     return Promise.resolve(allValues)
       .then((all) => {
-        keys.forEach((key, index) => {
-          const data = all[index]
-
+        const entries = Array.isArray(all) ? all : [all]
+        entries.forEach((data, index) => {
           let result = typeof data === 'string' ? this.deserialize(data) : !!data && this.opts.compression ? this.deserialize(data) : data
 
           if (result && typeof result === 'object' && 'expires' in result && typeof result.expires === 'number' && Date.now() > result.expires) {
-            this.delete(key)
+            this.delete(keys[index])
             result = undefined
           }
 
@@ -154,6 +161,26 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
         })
       })
       .then(() => Promise.all(results))
+  }
+
+  private isMapWithEntries(store: any): store is Map<string, Value> {
+    return store instanceof Map && typeof store.entries === 'function'
+  }
+
+  private async getFromMapWithPrefix(prefix: string, options?: { raw?: boolean }): Promise<Array<KeyvStoredData<Value>>> {
+    if (!this.isMapWithEntries(this.store)) {
+      return []
+    }
+
+    const results: KeyvStoredData<Value>[] = []
+
+    for (const [key, value] of this.store.entries()) {
+      if (key.startsWith(prefix)) {
+        results.push(value as KeyvStoredData<Value>)
+      }
+    }
+
+    return results
   }
 
   async get(

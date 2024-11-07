@@ -1559,14 +1559,17 @@ importers:
         specifier: ^13.5.5
         version: 13.5.5
 
-  packages/oidf-metatdata-server:
+  packages/oidf-metadata-server:
     dependencies:
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
-      '@sphereon/ssi-sdk.oid4vci-issuer-store':
+      '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
-        version: link:../oid4vci-issuer-store
+        version: link:../kv-store
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
       debug:
         specifier: ^4.3.5
         version: 4.3.6
@@ -1586,9 +1589,15 @@ importers:
       '@types/express-serve-static-core':
         specifier: ^4.19.5
         version: 4.19.5
+      '@types/http-terminator':
+        specifier: ^2.0.5
+        version: 2.0.5
       '@types/semver':
         specifier: ^7.5.8
         version: 7.5.8
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
 
   packages/pd-manager:
     dependencies:
