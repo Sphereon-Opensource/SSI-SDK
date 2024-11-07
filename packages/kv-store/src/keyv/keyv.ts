@@ -110,17 +110,12 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     )
   }
 
-  _getKeyPrefix(key: string, forMany = false): string {
-    if (forMany) {
-      // We can list all keys on the default namespace using :key
-      return key.startsWith(':') ? `${this.opts.namespace}${key}:` : `${key}:`
-    }
-
-    return key.includes(':') ? key : `${this.opts.namespace}:${key}`
+  _getKeyPrefix(key: string): string {
+    return `${this.opts.namespace}:${key}`
   }
 
   _getKeyPrefixArray(keys: string[]): string[] {
-    return keys.map((key) => this._getKeyPrefix(key, true))
+    return keys.map((key) => this._getKeyPrefix(key))
   }
 
   _getKeyUnprefix(key: string): string {
@@ -135,7 +130,7 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
       promise = this.store.getMany(keyPrefixed, options) as Promise<KeyvStoredData<Value>[]>
     } else if (this.isMapWithEntries(this.store)) {
       // Handle Map-based stores with prefix matching
-      promise = this.getFromMapWithPrefix(keyPrefixed[0], options)
+      promise = this.getFromMapWithPrefix(keyPrefixed, options)
     } else {
       promise = Promise.all(keyPrefixed.map((k) => this.store.get(k, options) as Promise<KeyvStoredData<Value>>))
     }
@@ -167,20 +162,34 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     return store instanceof Map && typeof store.entries === 'function'
   }
 
-  private async getFromMapWithPrefix(prefix: string, options?: { raw?: boolean }): Promise<Array<KeyvStoredData<Value>>> {
+  private async getFromMapWithPrefix(
+    prefixes: Array<string>,
+    options?: {
+      raw?: boolean
+    },
+  ): Promise<Array<KeyvStoredData<Value>>> {
     if (!this.isMapWithEntries(this.store)) {
       return []
     }
 
-    const results: KeyvStoredData<Value>[] = []
+    const map = this.store as Map<string, Value>
+    const entries = Array.from(map.entries())
 
-    for (const [key, value] of this.store.entries()) {
-      if (key.startsWith(prefix)) {
-        results.push(value as KeyvStoredData<Value>)
+    const result = []
+    for (const prefix of prefixes) {
+      let found: boolean = false
+      for (const [key, value] of entries) {
+        console.debug('key, value', key, value)
+        if (key.startsWith(prefix)) {
+          found = true
+          result.push(value as KeyvStoredData<Value>)
+        }
+      }
+      if (!found) {
+        result.push(undefined)
       }
     }
-
-    return results
+    return result
   }
 
   async get(
