@@ -1,5 +1,10 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
-import { Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import {
+  IBasicIssuerLocaleBranding,
+  Identity,
+  IIssuerLocaleBranding,
+  Party
+} from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
 import {
@@ -158,7 +163,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         [OID4VCIMachineServices.getContact]: {
           data: Party | undefined
         }
-        [OID4VCIMachineServices.addIssuerBranding]: {
+        [OID4VCIMachineServices.storeIssuerBranding]: {
           data: void
         }
         [OID4VCIMachineServices.getCredentials]: {
@@ -178,6 +183,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         }
         [OID4VCIMachineServices.getFederationTrust]: {
           data: Array<string>
+        },
+        [OID4VCIMachineServices.getIssuerBranding]: {
+          data: Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>
         }
       },
     },
@@ -238,7 +246,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         invoke: {
           src: OID4VCIMachineServices.getContact,
           onDone: {
-            target: OID4VCIMachineStates.transitionFromSetup,
+            target: OID4VCIMachineStates.getIssuerBranding,
             actions: assign({ contact: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Party>) => _event.data }),
           },
           onError: {
@@ -250,6 +258,18 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
                 stack: _event.data.stack,
               }),
             }),
+          },
+        },
+      },
+      [OID4VCIMachineStates.getIssuerBranding]: {
+        id: OID4VCIMachineStates.getIssuerBranding,
+        invoke: {
+          src: OID4VCIMachineServices.getIssuerBranding,
+          onDone: {
+            target: OID4VCIMachineStates.transitionFromSetup,
+            actions: assign({
+              issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
+            })
           },
         },
       },
@@ -334,16 +354,16 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           [OID4VCIMachineAddContactStates.idle]: {},
           [OID4VCIMachineAddContactStates.next]: {
             always: {
-              target: `#${OID4VCIMachineStates.addIssuerBranding}`,
+              target: `#${OID4VCIMachineStates.storeIssuerBranding}`,
               cond: OID4VCIMachineGuards.hasContactGuard,
             },
           },
         },
       },
-      [OID4VCIMachineStates.addIssuerBranding]: {
-        id: OID4VCIMachineStates.addIssuerBranding,
+      [OID4VCIMachineStates.storeIssuerBranding]: {
+        id: OID4VCIMachineStates.storeIssuerBranding,
         invoke: {
-          src: OID4VCIMachineServices.addIssuerBranding,
+          src: OID4VCIMachineServices.storeIssuerBranding,
           onDone: {
             target: OID4VCIMachineStates.transitionFromContactSetup,
           },
@@ -540,7 +560,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
       [OID4VCIMachineStates.addIssuerBrandingAfterIdentity]: {
         id: OID4VCIMachineStates.addIssuerBrandingAfterIdentity,
         invoke: {
-          src: OID4VCIMachineServices.addIssuerBranding,
+          src: OID4VCIMachineServices.storeIssuerBranding,
           onDone: {
             target: OID4VCIMachineStates.reviewCredentials,
           },
