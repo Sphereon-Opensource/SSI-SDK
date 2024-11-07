@@ -261,14 +261,14 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
         },
       },
     })
-    if (created) {
-      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { result })
-    }
     identifier = await context.agent.identifierManagedGetByDid({
       identifier: result,
       keyType,
       offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:'),
     })
+    if (created) {
+      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
+    }
   } else if (supportedBindingMethods.includes('jwk')) {
     // todo: we probably should do something similar as with DIDs for re-use/new keys
     const key = await context.agent.keyManagerCreate({ type: keyType, kms })
