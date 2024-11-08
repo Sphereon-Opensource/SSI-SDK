@@ -1,5 +1,6 @@
 import { TAgent } from '@veramo/core'
 import {
+  FederationMetadataImportArgs,
   IFederationMetadataPersistArgs,
   IOIDFMetadataStore,
   OIDFMetadataServer,
@@ -10,6 +11,7 @@ import 'cross-fetch/polyfill'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { HttpTerminator } from 'http-terminator'
 import { IRequiredContext } from '../../src/types/metadata-server'
+import { IMetadataImportArgs } from '@sphereon/ssi-types/dist'
 
 type ConfiguredAgent = TAgent<IOIDFMetadataStore>
 
@@ -154,13 +156,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const mockMetadatas: Array<OpenidFederationMetadata> = [
         {
-          subjectBaseUrl: `http://127.0.0.1:3333`,
+          subjectBaseUrl: `http://127.0.0.1:3333/oid4vci`,
           jwt: 'eyJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwidHlwIjoiZW50aXR5LXN0YXRlbWVudCtqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJtZXRhZGF0YSI6e30sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1JNMXI5S3d0cXRzWVdiTGJPdmIzQ1ZxWF9iTm9vTlJORkRrRTQzSlpZQSIsInkiOiJZbUVYNWY4VndFOS1KYms3aHhwdnMzdlhUc3hOUVhHR2pZRE11SjhUYmlzIiwiYWxnIjoiRVMyNTYiLCJ1c2UiOiJzaWcifV19LCJpc3MiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9mZWRlcmF0aW9uLmRlbW8uc3BoZXJlb24uY29tIl0sImV4cCI6MTc2MjI3MjY1MywiaWF0IjoxNzMwNzM2NjUzfQ.Vet8M8FZe3VSn8AsqeJyMvGP_6gC9DAOSHVxqzOYytzfCQrF2TmSjRb8ICRzFiP3Vt53S-KScJUr65F-eDiyDw',
           enabled: true,
         },
         {
-          subjectBaseUrl: `http://localhost:3333`,
-          jwt: 'eyJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwidHlwIjoiZW50aXR5LXN0YXRlbWVudCtqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJtZXRhZGF0YSI6e30sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1JNMXI5S3d0cXRzWVdiTGJPdmIzQ1ZxWF9iTm9vTlJORkRrRTQzSlpZQSIsInkiOiJZbUVYNWY4VndFOS1KYms3aHhwdnMzdlhUc3hOUVhHR2pZRE11SjhUYmlzIiwiYWxnIjoiRVMyNTYiLCJ1c2UiOiJzaWcifV19LCJpc3MiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9mZWRlcmF0aW9uLmRlbW8uc3BoZXJlb24uY29tIl0sImV4cCI6MTc2MjI3MjY1MywiaWF0IjoxNzMwNzM2NjUzfQ.Vet8M8FZe3VSn8AsqeJyMvGP_6gC9DAOSHVxqzOYytzfCQrF2TmSjRb8ICRzFiP3Vt53S-KScJUr65F-eDiyDw',
+          subjectBaseUrl: `http://localhost:3333/siop`,
+          jwt: 'eyJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwidHlwIjoiZW50aXR5LXN0YXRlbWVudCtqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJtZXRhZGF0YSI6e30sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1JNMXI5S3d0cXRzWVdiTGJPdmIzQ1ZxWF9iTm9vTlJORkRrRTQzSlpZQSIsInkiOiJZbUVYNWY4VndFOS1KYms3aHhwdnMzdlhUc3hOUVhHR2pZRE11SjhUYmlzIiwiYWxnIjoiRVMyNTYiLCJ1c2UiOiJzaWcifV19LCJpc3MiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9mZWRlcmF0aW9uLmRlbW8uc3BoZXJlb24uY29tIl0sImV4cCI6MTc2MjI3MjY1MywiaWF0IjoxNzMwNzM2NjUzfQ.Vet8M8FZe3VSn8AsqeJyMvGP_6gC9DAOSHVxqzOYytzfCQrF2TmSjRb8ICRzFiP3Vt53S-KScJUr65F-eDiyDwsiop',
           enabled: true,
         },
       ]
@@ -172,32 +174,28 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
 
       it('should serve federation metadata over HTTP', async () => {
-        await Promise.all(
-          mockMetadatas.map(async (mockMetadata, index) => {
-            return agent.oidfStorePersistMetadata({
-              metadataType: 'openidFederation',
-              correlationId: `test-endpoint-${index}`,
-              metadata: mockMetadata,
-            })
-          }),
-        )
+        const importArgList: Array<FederationMetadataImportArgs> = mockMetadatas.map((mockMetadata: OpenidFederationMetadata, index: number) => ({
+          metadataType: 'openidFederation',
+          correlationId: `test-endpoint-${index}`,
+          metadata: mockMetadata,
+        }))
+        await agent.oidfStoreImportMetadatas(importArgList as Array<IMetadataImportArgs>)
 
         // reload updated config
         await server.up()
 
-        const response = await fetch('http://127.0.0.1:3333/.well-known/openid-federation', {
-          headers: { Host: '127.0.0.1:3333' },
-        })
+        const response = await fetch('http://127.0.0.1:3333/oid4vci/.well-known/openid-federation')
 
         expect(response.status).toBe(200)
         expect(response.headers.get('content-type')).toBe('application/entity-statement+jwt')
-        expect(await response.text()).toBe(mockMetadata.jwt)
+        expect(await response.text()).toBe(mockMetadatas[0].jwt)
 
-        const response2 = await fetch('http://localhost:3333/.well-known/openid-federation', {
-          headers: { Host: '127.0.0.1:3333' },
-        })
-
+        const response2 = await fetch('http://localhost:3333/siop/.well-known/openid-federation')
+        expect(await response2.text()).toBe(mockMetadatas[1].jwt)
         expect(response2.status).toBe(200)
+
+        const response3 = await fetch('http://localhost:3333/oid4vci/.well-known/openid-federation')
+        expect(response3.status).toBe(404)
       })
     })
   })
