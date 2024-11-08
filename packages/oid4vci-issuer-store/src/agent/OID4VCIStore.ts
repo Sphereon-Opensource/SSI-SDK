@@ -13,6 +13,8 @@ import {
   IOid4vciStoreListArgs,
   IOID4VCIStoreOpts,
   Ioid4vciStoreRemoveArgs,
+  OptionalIssuerMetadata,
+  OptionalIssuerMetadataValue,
 } from '../index'
 
 import { IOID4VCIStore } from '../types/IOID4VCIStore'
@@ -190,13 +192,10 @@ export class OID4VCIStore implements IAgentPlugin {
           storeId,
         }).get(this.prefix({ namespace, correlationId }))
     }
+    return undefined
   }
 
-  private async oid4vciStoreListMetadata({
-    metadataType,
-    storeId,
-    namespace,
-  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | undefined>> {
+  private async oid4vciStoreListMetadata({ metadataType, storeId, namespace }: IOid4vciStoreListArgs): Promise<Array<OptionalIssuerMetadata>> {
     switch (metadataType) {
       case 'authorizationServer':
         return this.store<AuthorizationServerMetadata>({
@@ -209,6 +208,7 @@ export class OID4VCIStore implements IAgentPlugin {
           storeId,
         }).getMany([`${this.namespaceStr({ namespace })}`])
     }
+    return []
   }
 
   private async oid4vciStoreHasMetadata({ metadataType, correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
@@ -224,9 +224,10 @@ export class OID4VCIStore implements IAgentPlugin {
           storeId,
         }).has(this.prefix({ namespace, correlationId }))
     }
+    return false
   }
 
-  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata>> {
+  private async oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<OptionalIssuerMetadataValue> {
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
     const { correlationId, metadata, ttl, metadataType } = args
@@ -263,6 +264,7 @@ export class OID4VCIStore implements IAgentPlugin {
         }
         return existingIssuer
     }
+    return undefined
   }
 
   private async oid4vciStoreRemoveMetadata(args: Ioid4vciStoreRemoveArgs): Promise<boolean> {
@@ -281,6 +283,7 @@ export class OID4VCIStore implements IAgentPlugin {
           storeId,
         }).delete(this.prefix({ namespace, correlationId: args.correlationId }))
     }
+    return false
   }
 
   private async oid4vciStoreClearAllMetadata({ metadataType, storeId }: Ioid4vciStoreClearArgs): Promise<boolean> {
@@ -300,6 +303,7 @@ export class OID4VCIStore implements IAgentPlugin {
           .clear()
           .then(() => true)
     }
+    return false
   }
 
   private oid4vciStoreIssuerOptions(): Promise<IKeyValueStore<IIssuerOptions>> {

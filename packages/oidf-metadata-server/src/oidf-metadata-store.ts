@@ -27,6 +27,7 @@ export class OIDFMetadataStore implements IAgentPlugin {
     oidfStoreListMetadata: this.oidfStoreListMetadata.bind(this),
     oidfStoreHasMetadata: this.oidfStoreHasMetadata.bind(this),
     oidfStorePersistMetadata: this.oidfStorePersistMetadata.bind(this),
+    oidfStoreImportMetadatas: this.oidfStoreImportMetadatas.bind(this),
     oidfStoreRemoveMetadata: this.oidfStoreRemoveMetadata.bind(this),
     oidfStoreClearAllMetadata: this.oidfStoreClearAllMetadata.bind(this),
   }
@@ -101,6 +102,14 @@ export class OIDFMetadataStore implements IAgentPlugin {
       }).set(this.prefix({ namespace, correlationId }), metadata as OpenidFederationMetadata, ttl)
     }
     return existingOpenIdFederation
+  }
+
+  async oidfStoreImportMetadatas(items: Array<FederationMetadataPersistArgs>) {
+    await Promise.all(
+      items.map((args) => {
+        return this.oidfStorePersistMetadata(args)
+      }),
+    )
   }
 
   async oidfStoreRemoveMetadata(args: FederationMetadataRemoveArgs): Promise<boolean> {

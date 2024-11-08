@@ -9,6 +9,9 @@ export type MetadataTypeMap = {
   authorizationServer: AuthorizationServerMetadata
 }
 
+export type OptionalIssuerMetadata = IssuerMetadata | AuthorizationServerMetadata | undefined
+export type OptionalIssuerMetadataValue = IValueData<IssuerMetadata | AuthorizationServerMetadata> | undefined
+
 export interface IOID4VCIStore extends IPluginMethodMap {
   oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadata>>
   oid4vciStoreDefaultIssuerOptions(): Promise<IKeyValueStore<IIssuerOptions>>
@@ -27,13 +30,9 @@ export interface IOID4VCIStore extends IPluginMethodMap {
     storeId,
     namespace,
   }: IOid4vciStoreGetArgs): Promise<IssuerMetadata | AuthorizationServerMetadata | undefined>
-  oid4vciStoreListMetadata({
-    metadataType,
-    storeId,
-    namespace,
-  }: IOid4vciStoreListArgs): Promise<Array<IssuerMetadata | AuthorizationServerMetadata | undefined>>
+  oid4vciStoreListMetadata({ metadataType, storeId, namespace }: IOid4vciStoreListArgs): Promise<Array<OptionalIssuerMetadata>>
   oid4vciStoreHasMetadata({ metadataType, correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean>
-  oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<IValueData<IssuerMetadata | AuthorizationServerMetadata>>
+  oid4vciStorePersistMetadata(args: IMetadataPersistArgs): Promise<OptionalIssuerMetadataValue>
   oid4vciStoreRemoveMetadata({ metadataType, storeId, correlationId, namespace }: Ioid4vciStoreRemoveArgs): Promise<boolean>
   oid4vciStoreClearAllMetadata({ metadataType, storeId }: Ioid4vciStoreClearArgs): Promise<boolean>
 }
@@ -74,10 +73,10 @@ export interface IMetadataOptions {
   storeNamespace?: string
 }
 
-export type Oid4vciMetadataType = 'issuer' | 'authorizationServer'
+export type MetadataType = 'issuer' | 'authorizationServer' | 'openidFederation' // we do not have ssi-types here
 
 export interface IOid4vciStoreListArgs {
-  metadataType: Oid4vciMetadataType
+  metadataType: MetadataType
   storeId?: string
   namespace?: string
 }
@@ -94,7 +93,7 @@ export type IMetadataImportArgs = IMetadataPersistArgs
 export type IIssuerOptsImportArgs = IIssuerOptsPersistArgs
 
 export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs {
-  metadataType: Oid4vciMetadataType
+  metadataType: MetadataType
   metadata: IssuerMetadata | AuthorizationServerMetadata
 }
 
@@ -111,7 +110,7 @@ export interface Ioid4vciStorePersistArgs {
 }
 
 export interface Ioid4vciStoreClearArgs {
-  metadataType: Oid4vciMetadataType
+  metadataType: MetadataType
   storeId?: string
   // namespace?: string
 }

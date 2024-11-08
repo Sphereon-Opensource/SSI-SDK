@@ -1,5 +1,6 @@
 import { IPluginMethodMap } from '@veramo/core'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
+import { MetadataType } from '@sphereon/ssi-types'
 
 export type OpenidFederationMetadata = {
   subjectBaseUrl: string
@@ -10,7 +11,6 @@ export type OpenidFederationMetadata = {
 export type OptionalOpenidFederationMetadata = OpenidFederationMetadata | undefined
 export type OpenidFederationValueData = IValueData<OpenidFederationMetadata>
 export type OptionalOpenidFederationValueData = IValueData<OpenidFederationMetadata> | undefined
-export type OpenidFederationMetadataType = 'openidFederation'
 
 export interface IOIDFMetadataStore extends IPluginMethodMap {
   oidfStoreGetMetadata({ correlationId, storeId, namespace }: FederationMetadataGetArgs): Promise<OptionalOpenidFederationMetadata>
@@ -21,6 +21,8 @@ export interface IOIDFMetadataStore extends IPluginMethodMap {
 
   oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData>
 
+  oidfStoreImportMetadatas(args: Array<FederationMetadataPersistArgs>): Promise<void>
+
   oidfStoreRemoveMetadata({ storeId, correlationId, namespace }: FederationMetadataRemoveArgs): Promise<boolean>
 
   oidfStoreClearAllMetadata({ storeId }: FederationMetadataClearArgs): Promise<boolean>
@@ -29,12 +31,11 @@ export interface IOIDFMetadataStore extends IPluginMethodMap {
 export interface FederationMetadataStoreOpts {
   defaultStoreId?: string
   defaultNamespace?: string
-  importMetadatas?: FederationMetadataImportArgs[]
   openidFederationMetadataStores?: Map<string, IKeyValueStore<OpenidFederationMetadata>> | IKeyValueStore<OpenidFederationMetadata>
 }
 
 export interface FederationMetadataPersistArgs {
-  metadataType: OpenidFederationMetadataType
+  metadataType: MetadataType
   correlationId: string
   metadata: OpenidFederationMetadata
   overwriteExisting?: boolean
