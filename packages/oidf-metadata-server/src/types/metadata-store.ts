@@ -9,6 +9,8 @@ export type OpenidFederationMetadata = {
 
 export type OptionalOpenidFederationMetadata = OpenidFederationMetadata | undefined
 export type OpenidFederationValueData = IValueData<OpenidFederationMetadata>
+export type OptionalOpenidFederationValueData = IValueData<OpenidFederationMetadata> | undefined
+export type OpenidFederationMetadataType = 'openidFederation'
 
 export interface IOIDFMetadataStore extends IPluginMethodMap {
   oidfStoreGetMetadata({ correlationId, storeId, namespace }: FederationMetadataGetArgs): Promise<OptionalOpenidFederationMetadata>
@@ -17,7 +19,7 @@ export interface IOIDFMetadataStore extends IPluginMethodMap {
 
   oidfStoreHasMetadata({ correlationId, storeId, namespace }: FederationMetadataExistsArgs): Promise<boolean>
 
-  oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<OpenidFederationValueData>
+  oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData>
 
   oidfStoreRemoveMetadata({ storeId, correlationId, namespace }: FederationMetadataRemoveArgs): Promise<boolean>
 
@@ -32,6 +34,7 @@ export interface FederationMetadataStoreOpts {
 }
 
 export interface FederationMetadataPersistArgs {
+  metadataType: OpenidFederationMetadataType
   correlationId: string
   metadata: OpenidFederationMetadata
   overwriteExisting?: boolean

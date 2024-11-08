@@ -1,8 +1,7 @@
 import { TAgent } from '@veramo/core'
-import { IOIDFMetadataStore, OIDFMetadataServer, OpenidFederationMetadata } from '../../src'
+import { FederationMetadataPersistArgs, IOIDFMetadataStore, OIDFMetadataServer, OpenidFederationMetadata, OpenidFederationValueData } from '../../src'
 import 'cross-fetch/polyfill'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { HttpTerminator } from 'http-terminator'
 import { IRequiredContext } from '../../src/types/metadata-server'
 
@@ -36,14 +35,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     describe('Metadata Store Operations', () => {
       it('should persist and retrieve metadata', async () => {
-        const persistArgs = {
+        const persistArgs: FederationMetadataPersistArgs = {
+          metadataType: 'openidFederation',
           correlationId: 'test-correlation-id',
           metadata: mockMetadata,
           overwriteExisting: true,
         }
 
-        const persistedData: IValueData<OpenidFederationMetadata> = await agent.oidfStorePersistMetadata(persistArgs)
-        expect(persistedData).toBeDefined()
+        const persistedData = (await agent.oidfStorePersistMetadata(persistArgs)) as OpenidFederationValueData
         expect(persistedData?.value).toBeDefined()
         expect(persistedData?.value?.jwt).toBe(mockMetadata.jwt)
 
@@ -60,13 +59,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         const metadata2 = { ...mockMetadata, subjectBaseUrl: 'http://127.0.0.1:3333/entity2' }
 
         await agent.oidfStorePersistMetadata({
+          metadataType: 'openidFederation',
           correlationId: 'test-id-1',
           metadata: metadata1,
-        })
+        } satisfies FederationMetadataPersistArgs)
         await agent.oidfStorePersistMetadata({
+          metadataType: 'openidFederation',
           correlationId: 'test-id-2',
           metadata: metadata2,
-        })
+        } satisfies FederationMetadataPersistArgs)
 
         const retrievedMetadata1 = await agent.oidfStoreGetMetadata({
           correlationId: 'test-id-1',
@@ -87,6 +88,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       it('should check if metadata exists', async () => {
         await agent.oidfStorePersistMetadata({
+          metadataType: 'openidFederation',
           correlationId: 'test-exists-id',
           metadata: mockMetadata,
         })
@@ -104,6 +106,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       it('should remove metadata', async () => {
         await agent.oidfStorePersistMetadata({
+          metadataType: 'openidFederation',
           correlationId: 'test-remove-id',
           metadata: mockMetadata,
         })
@@ -122,10 +125,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       it('should clear all metadata', async () => {
         await agent.oidfStorePersistMetadata({
+          metadataType: 'openidFederation',
           correlationId: 'test-id-1',
           metadata: mockMetadata,
         })
         await agent.oidfStorePersistMetadata({
+          metadataType: 'openidFederation',
           correlationId: 'test-id-2',
           metadata: mockMetadata,
         })
@@ -164,6 +169,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         await Promise.all(
           mockMetadatas.map(async (mockMetadata, index) => {
             return agent.oidfStorePersistMetadata({
+              metadataType: 'openidFederation',
               correlationId: `test-endpoint-${index}`,
               metadata: mockMetadata,
             })

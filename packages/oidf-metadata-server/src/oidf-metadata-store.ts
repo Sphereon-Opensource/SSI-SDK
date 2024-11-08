@@ -9,8 +9,9 @@ import {
   IOIDFMetadataStore,
   OpenidFederationMetadata,
   OptionalOpenidFederationMetadata,
+  OptionalOpenidFederationValueData,
 } from './types/metadata-store'
-import { IKeyValueStore, IValueData, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
+import { IKeyValueStore, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
 
 import { schema } from './index'
@@ -80,10 +81,13 @@ export class OIDFMetadataStore implements IAgentPlugin {
     }).has(this.prefix({ namespace, correlationId }))
   }
 
-  async oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<IValueData<OpenidFederationMetadata>> {
+  async oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData> {
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
-    const { correlationId, metadata, ttl } = args
+    const { metadataType, correlationId, metadata, ttl } = args
+    if (metadataType !== 'openidFederation') {
+      return undefined
+    }
 
     const existingOpenIdFederation = await this.store({
       stores: this._openidFederationMetadataStores,
