@@ -63,8 +63,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
 
       it('should list all metadata', async () => {
-        const metadata1 = { ...mockMetadata, subjectBaseUrl: 'http://127.0.0.1:3333/entity1' }
-        const metadata2 = { ...mockMetadata, subjectBaseUrl: 'http://127.0.0.1:3333/entity2' }
+        const metadata1 = { ...mockMetadata, baseUrl: 'http://127.0.0.1:3333/entity1' } satisfies OpenidFederationMetadata
+        const metadata2 = { ...mockMetadata, baseUrl: 'http://127.0.0.1:3333/entity2' } satisfies OpenidFederationMetadata
 
         await agent.oidfStorePersistMetadata({
           metadataType: 'openidFederation',
@@ -90,8 +90,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         const metadataList = await agent.oidfStoreListMetadata({})
 
         expect(metadataList).toHaveLength(2)
-        expect(metadataList.map((m) => m?.baseUrl)).toContain(metadata1.subjectBaseUrl)
-        expect(metadataList.map((m) => m?.baseUrl)).toContain(metadata2.subjectBaseUrl)
+        expect(metadataList.map((m) => m?.baseUrl)).toContain(metadata1.baseUrl)
+        expect(metadataList.map((m) => m?.baseUrl)).toContain(metadata2.baseUrl)
       })
 
       it('should check if metadata exists', async () => {
