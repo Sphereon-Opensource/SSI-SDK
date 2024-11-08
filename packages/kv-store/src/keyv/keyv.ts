@@ -179,7 +179,6 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     for (const prefix of prefixes) {
       let found: boolean = false
       for (const [key, value] of entries) {
-        console.debug('key, value', key, value)
         if (key.startsWith(prefix)) {
           found = true
           result.push(value as KeyvStoredData<Value>)
