@@ -4,6 +4,8 @@
   "oid4vci_machine_store_credential_error_title": "Opslaan credential",
   "oid4vci_machine_add_contact_identity_error_title": "Toevoegen identiteit contact",
   "oid4vci_machine_retrieve_credentials_error_title": "Ophalen credential",
+  "oid4vci_machine_retrieve_issuer_branding_error_title": "Ophalen issuer branding",
+  "oid4vci_machine_store_issuer_branding_error_title": "Opslaan issuer branding",
   "oid4vci_machine_retrieve_contact_error_title": "Ophalen contact",
   "oid4vci_machine_credential_selection_error_title": "Credential selectie",
   "oid4vci_machine_initiation_error_title": "Initiëren OID4VCI provider",
