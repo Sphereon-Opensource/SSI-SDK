@@ -22,7 +22,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let terminator: HttpTerminator
 
     const mockMetadata: OpenidFederationMetadata = {
-      subjectBaseUrl: `http://localhost:3333/test-entity`,
+      baseUrl: `http://localhost:3333/test-entity`,
       jwt: 'eyJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwidHlwIjoiZW50aXR5LXN0YXRlbWVudCtqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJtZXRhZGF0YSI6e30sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1JNMXI5S3d0cXRzWVdiTGJPdmIzQ1ZxWF9iTm9vTlJORkRrRTQzSlpZQSIsInkiOiJZbUVYNWY4VndFOS1KYms3aHhwdnMzdlhUc3hOUVhHR2pZRE11SjhUYmlzIiwiYWxnIjoiRVMyNTYiLCJ1c2UiOiJzaWcifV19LCJpc3MiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9mZWRlcmF0aW9uLmRlbW8uc3BoZXJlb24uY29tIl0sImV4cCI6MTc2MjI3MjY1MywiaWF0IjoxNzMwNzM2NjUzfQ.Vet8M8FZe3VSn8AsqeJyMvGP_6gC9DAOSHVxqzOYytzfCQrF2TmSjRb8ICRzFiP3Vt53S-KScJUr65F-eDiyDw',
       enabled: true,
     }
@@ -90,8 +90,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         const metadataList = await agent.oidfStoreListMetadata({})
 
         expect(metadataList).toHaveLength(2)
-        expect(metadataList.map((m) => m?.subjectBaseUrl)).toContain(metadata1.subjectBaseUrl)
-        expect(metadataList.map((m) => m?.subjectBaseUrl)).toContain(metadata2.subjectBaseUrl)
+        expect(metadataList.map((m) => m?.baseUrl)).toContain(metadata1.subjectBaseUrl)
+        expect(metadataList.map((m) => m?.baseUrl)).toContain(metadata2.subjectBaseUrl)
       })
 
       it('should check if metadata exists', async () => {
@@ -156,12 +156,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const mockMetadatas: Array<OpenidFederationMetadata> = [
         {
-          subjectBaseUrl: `http://127.0.0.1:3333/oid4vci`,
+          baseUrl: `http://127.0.0.1:3333/oid4vci`,
           jwt: 'eyJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwidHlwIjoiZW50aXR5LXN0YXRlbWVudCtqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJtZXRhZGF0YSI6e30sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1JNMXI5S3d0cXRzWVdiTGJPdmIzQ1ZxWF9iTm9vTlJORkRrRTQzSlpZQSIsInkiOiJZbUVYNWY4VndFOS1KYms3aHhwdnMzdlhUc3hOUVhHR2pZRE11SjhUYmlzIiwiYWxnIjoiRVMyNTYiLCJ1c2UiOiJzaWcifV19LCJpc3MiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9mZWRlcmF0aW9uLmRlbW8uc3BoZXJlb24uY29tIl0sImV4cCI6MTc2MjI3MjY1MywiaWF0IjoxNzMwNzM2NjUzfQ.Vet8M8FZe3VSn8AsqeJyMvGP_6gC9DAOSHVxqzOYytzfCQrF2TmSjRb8ICRzFiP3Vt53S-KScJUr65F-eDiyDw',
           enabled: true,
         },
         {
-          subjectBaseUrl: `http://localhost:3333/siop`,
+          baseUrl: `http://localhost:3333/siop`,
           jwt: 'eyJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwidHlwIjoiZW50aXR5LXN0YXRlbWVudCtqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJtZXRhZGF0YSI6e30sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJraWQiOiIwY0tSTlpnV0FqWjVBcTcyYnpSVFhDOHBCbU1DRG0tNlA0NWFHbURveVU0IiwiY3J2IjoiUC0yNTYiLCJ4IjoiS1JNMXI5S3d0cXRzWVdiTGJPdmIzQ1ZxWF9iTm9vTlJORkRrRTQzSlpZQSIsInkiOiJZbUVYNWY4VndFOS1KYms3aHhwdnMzdlhUc3hOUVhHR2pZRE11SjhUYmlzIiwiYWxnIjoiRVMyNTYiLCJ1c2UiOiJzaWcifV19LCJpc3MiOiJodHRwczovL2FnZW50LmZpbmR5bmV0LmRlbW8uc3BoZXJlb24uY29tL29pZDR2Y2kiLCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9mZWRlcmF0aW9uLmRlbW8uc3BoZXJlb24uY29tIl0sImV4cCI6MTc2MjI3MjY1MywiaWF0IjoxNzMwNzM2NjUzfQ.Vet8M8FZe3VSn8AsqeJyMvGP_6gC9DAOSHVxqzOYytzfCQrF2TmSjRb8ICRzFiP3Vt53S-KScJUr65F-eDiyDwsiop',
           enabled: true,
         },

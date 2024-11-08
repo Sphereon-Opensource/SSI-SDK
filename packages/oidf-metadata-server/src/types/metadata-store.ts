@@ -3,7 +3,7 @@ import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IMetadataImportArgs } from '@sphereon/ssi-types'
 
 export type OpenidFederationMetadata = {
-  subjectBaseUrl: string
+  baseUrl: string
   jwt: string
   enabled: boolean | undefined
 }

@@ -67,7 +67,7 @@ export class OIDFMetadataServer {
     const endpointsByHost = new Map<string, Array<{ basePath: string; endpoint: OpenidFederationMetadata }>>()
 
     metadataEndpoints.forEach((endpoint) => {
-      const { hostname, basePath } = this.getHostAndPath(endpoint.subjectBaseUrl)
+      const { hostname, basePath } = this.getHostAndPath(endpoint.baseUrl)
 
       if (!endpointsByHost.has(hostname)) {
         endpointsByHost.set(hostname, [])
