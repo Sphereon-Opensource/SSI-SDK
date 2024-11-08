@@ -3,9 +3,11 @@ import { IKeyValueStore, IValueData, KeyValueStore, ValueStoreType } from '@sphe
 import { IAgentPlugin } from '@veramo/core'
 import {
   IIssuerDefaultOpts,
+  IIssuerMetadataImportArgs,
   IIssuerOptions,
   IIssuerOptsImportArgs,
   IIssuerOptsPersistArgs,
+  IMetadataImportArgs,
   IMetadataPersistArgs,
   Ioid4vciStoreClearArgs,
   Ioid4vciStoreExistsArgs,
@@ -88,17 +90,19 @@ export class OID4VCIStore implements IAgentPlugin {
         }),
       )
     }
+
     if (opts && Array.isArray(opts?.importMetadatas)) {
-      opts.importMetadatas.forEach((meta) =>
-        this.oid4vciStorePersistMetadata({
+      opts.importMetadatas.forEach((metaImport: IMetadataImportArgs) => {
+        const meta = metaImport as IIssuerMetadataImportArgs
+        void this.oid4vciStorePersistMetadata({
           metadataType: meta.metadataType,
           metadata: meta.metadata,
           storeId: meta.storeId ?? this.defaultStoreId,
           correlationId: meta.correlationId,
           namespace: meta.namespace ?? this.defaultNamespace,
           overwriteExisting: meta.overwriteExisting === undefined ? true : meta.overwriteExisting,
-        }),
-      )
+        })
+      })
     }
 
     if (opts?.issuerOptsStores && opts.issuerOptsStores instanceof Map) {

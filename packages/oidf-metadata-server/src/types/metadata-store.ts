@@ -1,6 +1,6 @@
 import { IPluginMethodMap } from '@veramo/core'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
-import { MetadataType } from '@sphereon/ssi-types'
+import { IMetadataImportArgs } from '@sphereon/ssi-types'
 
 export type OpenidFederationMetadata = {
   subjectBaseUrl: string
@@ -13,29 +13,28 @@ export type OpenidFederationValueData = IValueData<OpenidFederationMetadata>
 export type OptionalOpenidFederationValueData = IValueData<OpenidFederationMetadata> | undefined
 
 export interface IOIDFMetadataStore extends IPluginMethodMap {
-  oidfStoreGetMetadata({ correlationId, storeId, namespace }: FederationMetadataGetArgs): Promise<OptionalOpenidFederationMetadata>
+  oidfStoreGetMetadata({ correlationId, storeId, namespace }: IFederationMetadataGetArgs): Promise<OptionalOpenidFederationMetadata>
 
-  oidfStoreListMetadata({ storeId, namespace }: FederationMetadataListArgs): Promise<Array<OpenidFederationMetadata>>
+  oidfStoreListMetadata({ storeId, namespace }: IFederationMetadataListArgs): Promise<Array<OpenidFederationMetadata>>
 
   oidfStoreHasMetadata({ correlationId, storeId, namespace }: FederationMetadataExistsArgs): Promise<boolean>
 
-  oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData>
+  oidfStorePersistMetadata(args: IFederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData>
 
-  oidfStoreImportMetadatas(args: Array<FederationMetadataPersistArgs>): Promise<void>
+  oidfStoreImportMetadatas(args: Array<IMetadataImportArgs>): Promise<boolean>
 
   oidfStoreRemoveMetadata({ storeId, correlationId, namespace }: FederationMetadataRemoveArgs): Promise<boolean>
 
-  oidfStoreClearAllMetadata({ storeId }: FederationMetadataClearArgs): Promise<boolean>
+  oidfStoreClearAllMetadata({ storeId }: IFederationMetadataClearArgs): Promise<boolean>
 }
 
-export interface FederationMetadataStoreOpts {
+export interface IFederationMetadataStoreOpts {
   defaultStoreId?: string
   defaultNamespace?: string
   openidFederationMetadataStores?: Map<string, IKeyValueStore<OpenidFederationMetadata>> | IKeyValueStore<OpenidFederationMetadata>
 }
 
-export interface FederationMetadataPersistArgs {
-  metadataType: MetadataType
+export interface IFederationMetadataPersistArgs extends IMetadataImportArgs {
   correlationId: string
   metadata: OpenidFederationMetadata
   overwriteExisting?: boolean
@@ -45,20 +44,20 @@ export interface FederationMetadataPersistArgs {
   namespace?: string
 }
 
-export type FederationMetadataImportArgs = FederationMetadataPersistArgs
+export type FederationMetadataImportArgs = IFederationMetadataPersistArgs
 
-export interface FederationMetadataListArgs {
+export interface IFederationMetadataListArgs {
   storeId?: string
   namespace?: string
 }
 
-export interface FederationMetadataGetArgs extends FederationMetadataListArgs {
+export interface IFederationMetadataGetArgs extends IFederationMetadataListArgs {
   correlationId: string
 }
 
-export type FederationMetadataExistsArgs = FederationMetadataGetArgs
-export type FederationMetadataRemoveArgs = FederationMetadataGetArgs
+export type FederationMetadataExistsArgs = IFederationMetadataGetArgs
+export type FederationMetadataRemoveArgs = IFederationMetadataGetArgs
 
-export interface FederationMetadataClearArgs {
+export interface IFederationMetadataClearArgs {
   storeId?: string
 }

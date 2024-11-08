@@ -1,20 +1,22 @@
 import {
-  FederationMetadataClearArgs,
+  IFederationMetadataClearArgs,
   FederationMetadataExistsArgs,
-  FederationMetadataGetArgs,
-  FederationMetadataListArgs,
-  FederationMetadataPersistArgs,
+  IFederationMetadataGetArgs,
+  IFederationMetadataListArgs,
+  IFederationMetadataPersistArgs,
   FederationMetadataRemoveArgs,
-  FederationMetadataStoreOpts,
+  IFederationMetadataStoreOpts,
   IOIDFMetadataStore,
   OpenidFederationMetadata,
   OptionalOpenidFederationMetadata,
   OptionalOpenidFederationValueData,
+  FederationMetadataImportArgs,
 } from './types/metadata-store'
 import { IKeyValueStore, KeyValueStore } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
 
 import { schema } from './index'
+import { IMetadataImportArgs } from '@sphereon/ssi-types'
 
 export class OIDFMetadataStore implements IAgentPlugin {
   private readonly defaultStoreId: string
@@ -32,7 +34,7 @@ export class OIDFMetadataStore implements IAgentPlugin {
     oidfStoreClearAllMetadata: this.oidfStoreClearAllMetadata.bind(this),
   }
 
-  constructor(options?: FederationMetadataStoreOpts) {
+  constructor(options?: IFederationMetadataStoreOpts) {
     this.defaultStoreId = options?.defaultStoreId ?? '_default'
     this.defaultNamespace = options?.defaultNamespace ?? 'oidFederation'
 
@@ -60,14 +62,14 @@ export class OIDFMetadataStore implements IAgentPlugin {
     return store
   }
 
-  async oidfStoreGetMetadata({ correlationId, storeId, namespace }: FederationMetadataGetArgs): Promise<OptionalOpenidFederationMetadata> {
+  async oidfStoreGetMetadata({ correlationId, storeId, namespace }: IFederationMetadataGetArgs): Promise<OptionalOpenidFederationMetadata> {
     return this.store({
       stores: this._openidFederationMetadataStores,
       storeId,
     }).get(this.prefix({ namespace, correlationId }))
   }
 
-  async oidfStoreListMetadata({ storeId, namespace }: FederationMetadataListArgs): Promise<Array<OpenidFederationMetadata>> {
+  async oidfStoreListMetadata({ storeId, namespace }: IFederationMetadataListArgs): Promise<Array<OpenidFederationMetadata>> {
     const result = await this.store({
       stores: this._openidFederationMetadataStores,
       storeId,
@@ -82,7 +84,7 @@ export class OIDFMetadataStore implements IAgentPlugin {
     }).has(this.prefix({ namespace, correlationId }))
   }
 
-  async oidfStorePersistMetadata(args: FederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData> {
+  async oidfStorePersistMetadata(args: IFederationMetadataPersistArgs): Promise<OptionalOpenidFederationValueData> {
     const namespace = this.namespaceStr(args)
     const storeId = this.storeIdStr(args)
     const { metadataType, correlationId, metadata, ttl } = args
@@ -104,12 +106,14 @@ export class OIDFMetadataStore implements IAgentPlugin {
     return existingOpenIdFederation
   }
 
-  async oidfStoreImportMetadatas(items: Array<FederationMetadataPersistArgs>) {
+  async oidfStoreImportMetadatas(items: Array<IMetadataImportArgs>): Promise<boolean> {
     await Promise.all(
       items.map((args) => {
-        return this.oidfStorePersistMetadata(args)
+        const fedArgs = args as FederationMetadataImportArgs
+        return this.oidfStorePersistMetadata(fedArgs)
       }),
     )
+    return true
   }
 
   async oidfStoreRemoveMetadata(args: FederationMetadataRemoveArgs): Promise<boolean> {
@@ -122,7 +126,7 @@ export class OIDFMetadataStore implements IAgentPlugin {
     }).delete(this.prefix({ namespace, correlationId: args.correlationId }))
   }
 
-  async oidfStoreClearAllMetadata({ storeId }: FederationMetadataClearArgs): Promise<boolean> {
+  async oidfStoreClearAllMetadata({ storeId }: IFederationMetadataClearArgs): Promise<boolean> {
     return await this.store({
       stores: this._openidFederationMetadataStores,
       storeId,

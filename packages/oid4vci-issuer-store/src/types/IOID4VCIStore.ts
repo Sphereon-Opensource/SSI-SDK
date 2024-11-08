@@ -1,4 +1,4 @@
-import { IssuerMetadata, CredentialIssuerMetadataOpts, AuthorizationServerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, CredentialIssuerMetadataOpts, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
@@ -89,11 +89,14 @@ export type Ioid4vciStoreExistsArgs = IOid4vciStoreGetArgs
 // export type Ioid4vciStoreClearArgs = Ioid4vciStoreGetArgs
 export type Ioid4vciStoreRemoveArgs = IOid4vciStoreGetArgs
 
-export type IMetadataImportArgs = IMetadataPersistArgs
+export interface IMetadataImportArgs {
+  // Global version from ssi-types
+  metadataType: MetadataType
+}
+export type IIssuerMetadataImportArgs = IMetadataPersistArgs
 export type IIssuerOptsImportArgs = IIssuerOptsPersistArgs
 
-export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs {
-  metadataType: MetadataType
+export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs, IMetadataImportArgs {
   metadata: IssuerMetadata | AuthorizationServerMetadata
 }
 

@@ -1,5 +1,11 @@
 import { TAgent } from '@veramo/core'
-import { FederationMetadataPersistArgs, IOIDFMetadataStore, OIDFMetadataServer, OpenidFederationMetadata, OpenidFederationValueData } from '../../src'
+import {
+  IFederationMetadataPersistArgs,
+  IOIDFMetadataStore,
+  OIDFMetadataServer,
+  OpenidFederationMetadata,
+  OpenidFederationValueData,
+} from '../../src'
 import 'cross-fetch/polyfill'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { HttpTerminator } from 'http-terminator'
@@ -35,7 +41,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     describe('Metadata Store Operations', () => {
       it('should persist and retrieve metadata', async () => {
-        const persistArgs: FederationMetadataPersistArgs = {
+        const persistArgs: IFederationMetadataPersistArgs = {
           metadataType: 'openidFederation',
           correlationId: 'test-correlation-id',
           metadata: mockMetadata,
@@ -62,12 +68,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           metadataType: 'openidFederation',
           correlationId: 'test-id-1',
           metadata: metadata1,
-        } satisfies FederationMetadataPersistArgs)
+        } satisfies IFederationMetadataPersistArgs)
         await agent.oidfStorePersistMetadata({
           metadataType: 'openidFederation',
           correlationId: 'test-id-2',
           metadata: metadata2,
-        } satisfies FederationMetadataPersistArgs)
+        } satisfies IFederationMetadataPersistArgs)
 
         const retrievedMetadata1 = await agent.oidfStoreGetMetadata({
           correlationId: 'test-id-1',
