@@ -81,8 +81,8 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
 
 const oid4vciIsOIDFOriginGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   // TODO in the future we need to establish if a origin is a IDF origin. So we need to check if this metadata is on the well-known location
-  const { trustAnchors } = _ctx
-  return trustAnchors.length > 0
+  const { trustAnchors, contact } = _ctx
+  return trustAnchors.length > 0 && contact === undefined
 }
 
 const oid4vciNoAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
@@ -271,11 +271,22 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
             })
           },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_retrieve_issuer_branding_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
+          },
         },
       },
       [OID4VCIMachineStates.transitionFromSetup]: {
         id: OID4VCIMachineStates.transitionFromSetup,
         always: [
+          // TODO improve getFederationTrust machine logic and where we call this in the machine. we only need this for new contacts, as it is only displayed on the add contact screen
           {
             target: OID4VCIMachineStates.getFederationTrust,
             cond: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard
@@ -366,6 +377,16 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           src: OID4VCIMachineServices.storeIssuerBranding,
           onDone: {
             target: OID4VCIMachineStates.transitionFromContactSetup,
+          },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_store_issuer_branding_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
           },
         },
       },
