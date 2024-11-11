@@ -1,5 +1,5 @@
 import {IAgentPlugin} from "@veramo/core";
-import {IAnomalyDetection, IRequiredContext, LookupLocationArgs, LookupLocationResult, schema} from "../index";
+import {IAnomalyDetection, LookupLocationArgs, LookupLocationResult, schema} from "../index";
 import * as fs from 'fs';
 import * as dns from 'dns'
 import * as mmdb from 'mmdb-lib'
@@ -19,12 +19,12 @@ export class AnomalyDetection implements IAgentPlugin {
     lookupLocation: this.lookupLocation.bind(this)
   }
 
-  constructor(args: { geoIpDBPath: string }) {
-    const { geoIpDBPath } = { ...args }
+  constructor(args?: { geoIpDBPath: string }) {
+    const { geoIpDBPath='/opt/GeoLite2-Country.mmdb' } = { ...args }
     this.db = fs.readFileSync(geoIpDBPath)
   }
 
-  private async lookupLocation(args: LookupLocationArgs, context: IRequiredContext): Promise<LookupLocationResult> {
+  private async lookupLocation(args: LookupLocationArgs): Promise<LookupLocationResult> {
     const { ipOrHostname } = { ...args }
     const reader = new mmdb.Reader<CountryResponse>(this.db)
     const ipv4Reg = "(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"

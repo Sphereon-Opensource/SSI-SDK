@@ -1,7 +1,7 @@
-import {IAgentContext, IPluginMethodMap} from '@veramo/core'
+import {IPluginMethodMap} from '@veramo/core'
 
 export interface IAnomalyDetection extends IPluginMethodMap {
-  lookupLocation(args: LookupLocationArgs, context: IRequiredContext): Promise<LookupLocationResult>
+  lookupLocation(args: LookupLocationArgs): Promise<LookupLocationResult>
 }
 
 export type LookupLocationArgs = {
@@ -12,5 +12,3 @@ export type LookupLocationResult = {
   continent?: string
   country?: string
 } | null
-
-export type IRequiredContext = IAgentContext<never>

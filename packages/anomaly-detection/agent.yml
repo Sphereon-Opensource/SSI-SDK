@@ -82,4 +82,4 @@ agent:
       plugins:
         - $require: ./packages/anomaly-detection/dist#AnomalyDetection
           $args:
-            - geoIpDBPath: '<path_to_database_file>/GeoLite2-Country.mmdb'
+            - geoIpDBPath: './packages/anomaly-detection/__tests__/shared/GeoLite2-Country.mmdb'
