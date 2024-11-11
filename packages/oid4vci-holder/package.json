@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
-    "@sphereon/oid4vci-client": "0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.172",
-    "@sphereon/oid4vci-common": "0.16.1-feature.sdk.38.rfc8414.auth.server.metadata.172",
+    "@sphereon/oid4vci-client": "0.16.1-next.187",
+    "@sphereon/oid4vci-common": "0.16.1-next.187",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.0",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.25.0",
