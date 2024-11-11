@@ -1,3 +1,4 @@
+import { typeormDate, typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import {
   CredentialCorrelationType,
@@ -8,7 +9,6 @@ import {
   DocumentType,
   RegulationType,
 } from '../../types'
-import { typeormDate, typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 @Entity('DigitalCredential')
 export class DigitalCredentialEntity extends BaseEntity implements DigitalCredential {

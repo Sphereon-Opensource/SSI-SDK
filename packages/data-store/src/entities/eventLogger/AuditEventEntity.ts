@@ -1,8 +1,7 @@
 import { ActionSubType, ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../../types'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 //TODO this entity, also contains some optional fields that are related to another event type (Activity) later we might want to refactor and reorganize this.
 // For now I've added a discriminator value called eventType that can be one of the three types of events: 1. General, 2. Audit, and 3. Activity
@@ -85,59 +84,4 @@ export class AuditEventEntity extends BaseEntity {
 
   @UpdateDateColumn({ name: 'last_updated_at', nullable: false, type: typeOrmDateTime() })
   lastUpdatedAt!: Date
-}
-
-export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): AuditEventEntity => {
-  const auditEventEntity: AuditEventEntity = new AuditEventEntity()
-  auditEventEntity.type = LoggingEventType.AUDIT
-  auditEventEntity.timestamp = args.timestamp
-  auditEventEntity.level = args.level
-  auditEventEntity.correlationId = args.correlationId
-  auditEventEntity.system = args.system
-  auditEventEntity.subSystemType = args.subSystemType
-  auditEventEntity.actionType = args.actionType
-  auditEventEntity.actionSubType = args.actionSubType
-  auditEventEntity.initiatorType = args.initiatorType
-  auditEventEntity.systemCorrelationIdType = args.systemCorrelationIdType
-  auditEventEntity.systemCorrelationId = args.systemCorrelationId
-  auditEventEntity.systemAlias = args.systemAlias
-  auditEventEntity.partyCorrelationType = args.partyCorrelationType
-  auditEventEntity.partyCorrelationId = args.partyCorrelationId
-  auditEventEntity.partyAlias = args.partyAlias
-  auditEventEntity.description = args.description
-  auditEventEntity.partyCorrelationType = args.partyCorrelationType
-  auditEventEntity.data = JSON.stringify(args.data)
-  auditEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
-
-  return auditEventEntity
-}
-
-export const activityEventEntityFrom = (args: NonPersistedActivityLoggingEvent): AuditEventEntity => {
-  const activityEventEntity: AuditEventEntity = new AuditEventEntity()
-  activityEventEntity.type = LoggingEventType.ACTIVITY
-  activityEventEntity.timestamp = args.timestamp
-  activityEventEntity.level = args.level
-  activityEventEntity.correlationId = args.correlationId
-  activityEventEntity.system = args.system
-  activityEventEntity.subSystemType = args.subSystemType
-  activityEventEntity.actionType = args.actionType
-  activityEventEntity.actionSubType = args.actionSubType
-  activityEventEntity.initiatorType = args.initiatorType
-  activityEventEntity.systemCorrelationIdType = args.systemCorrelationIdType
-  activityEventEntity.systemCorrelationId = args.systemCorrelationId
-  activityEventEntity.systemAlias = args.systemAlias
-  activityEventEntity.partyCorrelationType = args.partyCorrelationType
-  activityEventEntity.partyCorrelationId = args.partyCorrelationId
-  activityEventEntity.partyAlias = args.partyAlias
-  activityEventEntity.description = args.description
-  activityEventEntity.partyCorrelationType = args.partyCorrelationType
-  activityEventEntity.data = JSON.stringify(args.data)
-  activityEventEntity.sharePurpose = args.sharePurpose
-  activityEventEntity.credentialType = args.credentialType
-  activityEventEntity.originalCredential = args.originalCredential
-  activityEventEntity.credentialHash = args.credentialHash
-  activityEventEntity.parentCredentialHash = args.parentCredentialHash
-  activityEventEntity.diagnosticData = JSON.stringify(args.diagnosticData)
-
-  return activityEventEntity
 }

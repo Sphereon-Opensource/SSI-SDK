@@ -8,5 +8,6 @@
   "oid4vci_machine_credential_selection_error_title": "Credential selection",
   "oid4vci_machine_initiation_error_title": "Initiate OID4VCI provider",
   "oid4vci_machine_credential_verification_failed_message": "The credential verification resulted in an error.",
-  "oid4vci_machine_credential_verification_schema_failed_message": "The credential schema verification resulted in an error."
+  "oid4vci_machine_credential_verification_schema_failed_message": "The credential schema verification resulted in an error.",
+  "oid4vci_machine_retrieve_federation_trust_error_title": "Retrieve federation trust"
 }

@@ -309,8 +309,12 @@ export class OpSession {
       const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
         return sum + pd.definition.input_descriptors.length
       }, 0)
+      const totalVCs = args.verifiablePresentations?.reduce((sum, vp) => {
+        const uvp = CredentialMapper.toUniformPresentation(vp)
+        return sum + (uvp.verifiableCredential?.length ?? 0)
+      }, 0)
 
-      if (!request.presentationDefinitions || !args.verifiablePresentations || args.verifiablePresentations.length !== totalInputDescriptors) {
+      if (!request.presentationDefinitions || !args.verifiablePresentations || totalVCs !== totalInputDescriptors) {
         throw Error(
           `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
         )
