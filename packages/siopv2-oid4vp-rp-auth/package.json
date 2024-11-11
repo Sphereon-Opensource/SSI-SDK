@@ -14,9 +14,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.SDK.39.well.known.oidf.189",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.SDK.39.well.known.oidf.189",
-    "@sphereon/oid4vc-common": "0.16.1-feature.SDK.39.well.known.oidf.189",
+    "@sphereon/did-auth-siop": "0.16.1-next.187",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-next.187",
+    "@sphereon/oid4vc-common": "0.16.1-next.187",
     "@sphereon/pex": "5.0.0-unstable.27",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.0",
