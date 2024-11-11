@@ -191,7 +191,7 @@ export class OID4VP {
     }).createVerifiablePresentation(vcs.definition.definition, verifiableCredentials, signCallback, {
       proofOptions,
       // fixme: Update to newer siop-vp to not require dids here. But when Veramo is creating the VP it's still looking at this field to pass into didManagerGet
-      ...(identifier && isManagedIdentifierDidResult(identifier) && { holderDID: identifier.kid }),
+      ...(identifier && isManagedIdentifierDidResult(identifier) && { holderDID: identifier.did }),
     })
 
     const verifiablePresentations = presentationResult.verifiablePresentations.map((verifiablePresentation) =>

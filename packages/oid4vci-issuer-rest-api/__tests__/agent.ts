@@ -6,7 +6,7 @@ import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import { IMetadataImportArgs, OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
   CredentialHandlerLDLocal,
   LdDefaultContexts,
@@ -110,6 +110,7 @@ const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new S
 
 let importMetadatas = [
   {
+    metadataType: 'issuer',
     correlationId: `${baseUrl}/sphereon`,
     overwriteExisting: true,
     // @ts-ignore
@@ -163,8 +164,9 @@ let importMetadatas = [
       ],
     } as IssuerMetadata,
   },
-
   {
+    metadataType: 'issuer',
+
     correlationId: `${baseUrl}/dbc2023`,
     overwriteExisting: true,
     // @ts-ignore
@@ -290,6 +292,7 @@ let importMetadatas = [
     } as IssuerMetadata,
   },
   {
+    metadataType: 'issuer',
     correlationId: `${baseUrl}/fma2023`,
     overwriteExisting: true,
     // @ts-ignore
@@ -431,6 +434,7 @@ let importMetadatas = [
     } as IssuerMetadata,
   },
   {
+    metadataType: 'issuer',
     correlationId: `${baseUrl}/triall2023`,
     overwriteExisting: true,
     // @ts-ignore
@@ -571,7 +575,7 @@ let importMetadatas = [
       ],
     } as IssuerMetadata,
   },
-]
+] satisfies Array<IMetadataImportArgs>
 
 console.log(JSON.stringify(importMetadatas, null, 2))
 

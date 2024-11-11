@@ -1,6 +1,6 @@
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IIdentifier } from '@veramo/core'
-import { ILocaleBranding } from '../issuanceBranding/issuanceBranding'
+import { IIssuerLocaleBranding } from '../issuanceBranding/issuanceBranding'
 import { CredentialRole } from '../digitalCredential/digitalCredential'
 
 export type MetadataTypes = string | number | Date | boolean | undefined
@@ -26,7 +26,7 @@ export type Party = {
   contact: Contact
   partyType: PartyType
   /**
-   * TODO: Integrate branding logic here in the future.
+   * TODO: Integrate branding logic here in the future. What we should do is make the issuance branding plugin part of the contact-manager and retrieve any branding there is.
    *
    * Currently, we are only defining the branding type within the SDK without implementing the associated logic. This is because:
    * 1. We are combining two types from the SSI-SDK to create a new type that will be used across multiple places in the wallets (web & mobile).
@@ -35,7 +35,7 @@ export type Party = {
    *
    * For now, we are defining the type here and will use it in the mobile wallet has the logic for it. This is a temporary solution until we have the resources to integrate the branding logic fully.
    */
-  branding?: ILocaleBranding
+  branding?: IIssuerLocaleBranding
   relationships: Array<PartyRelationship>
   createdAt: Date
   lastUpdatedAt: Date

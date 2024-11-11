@@ -1,4 +1,11 @@
-import { CredentialRequest, IssuerMetadata, Jwt, JwtVerifyResult, OID4VCICredentialFormat } from '@sphereon/oid4vci-common'
+import {
+  AuthorizationServerMetadata,
+  CredentialRequest,
+  IssuerMetadata,
+  Jwt,
+  JwtVerifyResult,
+  OID4VCICredentialFormat,
+} from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
@@ -119,8 +126,7 @@ export async function getAccessTokenSignerCallback(
     if (!issuer) {
       throw Error('No issuer configured for access tokens')
     }
-    const result = await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, typ: 'JWT' })
-    return result
+    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, typ: 'JWT' })
   }
 
   return accessTokenSignerCallback
@@ -177,6 +183,7 @@ export async function getCredentialSignerCallback(
         removeOriginalFields: false,
         fetchRemoteContexts: true,
         domain: typeof credential.issuer === 'object' ? credential.issuer.id : credential.issuer,
+        ...(jwtVerifyResult.kid && { header: { kid: jwtVerifyResult.kid } }),
       })
       return (proofFormat === 'jwt' && 'jwt' in result.proof ? result.proof.jwt : result) as W3CVerifiableCredential
     } else if (CredentialMapper.isSdJwtDecodedCredentialPayload(credential)) {
@@ -214,13 +221,14 @@ export async function getCredentialSignerCallback(
 export async function createVciIssuerBuilder(
   args: {
     issuerOpts: IIssuerOptions
-    metadata: IssuerMetadata
+    issuerMetadata: IssuerMetadata
+    authorizationServerMetadata: AuthorizationServerMetadata
     resolver?: Resolvable
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
 ): Promise<VcIssuerBuilder<DIDDocument>> {
-  const { issuerOpts, metadata } = args
+  const { issuerOpts, issuerMetadata, authorizationServerMetadata } = args
 
   const builder = new VcIssuerBuilder<DIDDocument>()
   // @ts-ignore
@@ -237,9 +245,10 @@ export async function createVciIssuerBuilder(
     ...issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
     ...args?.issuerOpts?.resolveOpts?.jwtVerifyOpts,
     resolver,
-    audience: metadata.credential_issuer as string, // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
+    audience: issuerMetadata.credential_issuer as string, // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
   }
-  builder.withIssuerMetadata(metadata)
+  builder.withIssuerMetadata(issuerMetadata)
+  builder.withAuthorizationMetadata(authorizationServerMetadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
@@ -257,14 +266,16 @@ export async function createVciIssuerBuilder(
 export async function createVciIssuer(
   {
     issuerOpts,
-    metadata,
+    issuerMetadata,
+    authorizationServerMetadata,
     credentialDataSupplier,
   }: {
     issuerOpts: IIssuerOptions
-    metadata: IssuerMetadata
+    issuerMetadata: IssuerMetadata
+    authorizationServerMetadata: AuthorizationServerMetadata
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
 ): Promise<VcIssuer<DIDDocument>> {
-  return (await createVciIssuerBuilder({ issuerOpts, metadata, credentialDataSupplier }, context)).build()
+  return (await createVciIssuerBuilder({ issuerOpts, issuerMetadata, authorizationServerMetadata, credentialDataSupplier }, context)).build()
 }
