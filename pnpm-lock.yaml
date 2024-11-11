@@ -91,7 +91,7 @@ importers:
         version: 27.5.2
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.62.0
         version: 5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.6.3))(eslint@8.57.0)(typescript@5.6.3)
@@ -124,7 +124,7 @@ importers:
         version: 4.19.2
       jest:
         specifier: ^27.5.1
-        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-environment-node:
         specifier: 27.5.1
         version: 27.5.1
@@ -166,10 +166,10 @@ importers:
         version: 19.0.5(encoding@0.1.13)
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3)
+        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -187,7 +187,7 @@ importers:
         version: 5.0.1
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       url-parse:
         specifier: ^1.5.10
         version: 1.5.10
@@ -218,7 +218,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -322,7 +322,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -334,7 +334,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -364,10 +364,10 @@ importers:
         version: 1.0.1
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/credential-store:
     dependencies:
@@ -388,7 +388,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -449,7 +449,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     devDependencies:
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -468,10 +468,10 @@ importers:
         version: 5.0.0-unstable.27
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -501,7 +501,7 @@ importers:
         version: 2.4.11
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     devDependencies:
       '@types/sha.js':
         specifier: ^2.4.4
@@ -517,10 +517,10 @@ importers:
     dependencies:
       '@microsoft/api-extractor':
         specifier: ^7.47.2
-        version: 7.47.7(@types/node@20.17.1)
+        version: 7.47.7(@types/node@20.17.4)
       '@microsoft/api-extractor-model':
         specifier: ^7.29.3
-        version: 7.29.6(@types/node@20.17.1)
+        version: 7.29.6(@types/node@20.17.4)
       commander:
         specifier: ^10.0.1
         version: 10.0.1
@@ -593,13 +593,13 @@ importers:
         version: 0.25.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -672,7 +672,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -696,7 +696,7 @@ importers:
         version: 4.19.5
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/qs':
         specifier: ^6.9.15
         version: 6.9.15
@@ -705,7 +705,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -726,7 +726,7 @@ importers:
         version: 5.7.0
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/event-logger:
     dependencies:
@@ -760,10 +760,10 @@ importers:
         version: 4.2.0(encoding@0.1.13)(express@4.19.2)
       jest:
         specifier: ^27.5.1
-        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -781,7 +781,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -809,7 +809,7 @@ importers:
         version: 3.0.1
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -867,7 +867,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -925,7 +925,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -949,7 +949,7 @@ importers:
         version: 4.19.5
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/qs':
         specifier: ^6.9.15
         version: 6.9.15
@@ -958,7 +958,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/key-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -979,7 +979,7 @@ importers:
         version: 5.7.0
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/ms-authenticator:
     dependencies:
@@ -1004,13 +1004,13 @@ importers:
         version: 3.0.6
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
       ts-jest:
         specifier: ^29.2.3
-        version: 29.2.4(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3)
+        version: 29.2.4(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3)
 
   packages/ms-request-api:
     dependencies:
@@ -1041,13 +1041,13 @@ importers:
         version: 27.5.2
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -1062,7 +1062,7 @@ importers:
         version: 1.18.0
       jest:
         specifier: ^27.5.1
-        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -1071,10 +1071,10 @@ importers:
         version: 5.1.7
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3)
+        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -1095,13 +1095,13 @@ importers:
         version: 0.16.1-next.187(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -1143,7 +1143,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -1189,7 +1189,7 @@ importers:
         version: 13.5.5
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -1204,10 +1204,10 @@ importers:
         version: 0.16.1-next.187(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1286,7 +1286,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1347,7 +1347,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
@@ -1356,7 +1356,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1386,13 +1386,13 @@ importers:
         version: 1.6.6
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1428,10 +1428,10 @@ importers:
         version: 13.5.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       web-did-resolver:
         specifier: ^2.0.27
         version: 2.0.27(encoding@0.1.13)
@@ -1456,7 +1456,7 @@ importers:
         version: link:../dev
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -1468,7 +1468,7 @@ importers:
         version: 13.5.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -1480,10 +1480,10 @@ importers:
         version: 0.16.1-next.187(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1535,7 +1535,7 @@ importers:
         version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1581,7 +1581,7 @@ importers:
         version: 7.6.3
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
@@ -1679,7 +1679,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -1691,7 +1691,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1721,10 +1721,10 @@ importers:
         version: 1.0.1
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/presentation-exchange:
     dependencies:
@@ -1736,10 +1736,10 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -1794,7 +1794,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
@@ -1803,7 +1803,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1852,7 +1852,7 @@ importers:
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -1885,7 +1885,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -1897,7 +1897,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -1924,10 +1924,10 @@ importers:
         version: 4.3.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/qr-code-generator:
     dependencies:
@@ -1970,7 +1970,7 @@ importers:
         version: 8.8.0(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))
       jest:
         specifier: ^27.5.1
-        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-environment-jsdom:
         specifier: ^27.5.1
         version: 27.5.1(canvas@2.11.2(encoding@0.1.13))
@@ -1982,7 +1982,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3)
+        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3)
 
   packages/remote-server-rest-api:
     dependencies:
@@ -2019,7 +2019,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -2050,13 +2050,13 @@ importers:
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -2093,7 +2093,7 @@ importers:
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -2102,10 +2102,10 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -2114,7 +2114,7 @@ importers:
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2126,7 +2126,7 @@ importers:
         version: 4.1.0
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -2148,10 +2148,10 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/siopv2-oid4vp-op-auth:
     dependencies:
@@ -2172,13 +2172,13 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -2302,13 +2302,13 @@ importers:
         version: 5.0.0-unstable.27
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2451,7 +2451,7 @@ importers:
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2484,7 +2484,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -2496,7 +2496,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2541,10 +2541,10 @@ importers:
         version: 1.0.1
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/siopv2-oid4vp-rp-rest-client:
     dependencies:
@@ -2563,7 +2563,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       did-resolver:
         specifier: ^4.1.0
         version: 4.1.0
@@ -2572,7 +2572,7 @@ importers:
         version: 13.5.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -2725,19 +2725,19 @@ importers:
         version: 27.5.2
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       jest:
         specifier: ^27.5.1
-        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3)
+        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -2749,7 +2749,7 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
@@ -2801,7 +2801,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -2837,7 +2837,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -2849,7 +2849,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -2894,10 +2894,10 @@ importers:
         version: 4.3.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       web-did-resolver:
         specifier: ^2.0.27
         version: 2.0.27(encoding@0.1.13)
@@ -2930,7 +2930,7 @@ importers:
         version: 1.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
         specifier: 0.25.0
         version: 0.25.0
@@ -3030,13 +3030,13 @@ importers:
         version: 0.23.0(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.25.0
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
@@ -3045,7 +3045,7 @@ importers:
         version: 11.1.0
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@typescript-eslint/eslint-plugin':
         specifier: ^4.33.0
         version: 4.33.0(@typescript-eslint/parser@4.33.0(eslint@8.57.0)(typescript@5.6.3))(eslint@8.57.0)(typescript@5.6.3)
@@ -3060,7 +3060,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3096,7 +3096,7 @@ importers:
         version: 13.5.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -3111,10 +3111,10 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3135,7 +3135,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3160,10 +3160,10 @@ importers:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3193,7 +3193,7 @@ importers:
         version: 0.1.14
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3206,7 +3206,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -3245,7 +3245,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -3257,7 +3257,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3296,10 +3296,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3326,7 +3326,7 @@ importers:
         version: 4.3.6
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3336,7 +3336,7 @@ importers:
         version: 4.1.12
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -3348,10 +3348,10 @@ importers:
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3384,7 +3384,7 @@ importers:
         version: 0.1.14
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uint8arrays:
         specifier: ^3.1.1
         version: 3.1.1
@@ -3397,7 +3397,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -3433,7 +3433,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -3445,7 +3445,7 @@ importers:
         version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3554,7 +3554,7 @@ importers:
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.0
         version: 0.25.0
@@ -3563,7 +3563,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3596,7 +3596,7 @@ importers:
         version: 1.9.9
       '@types/node':
         specifier: ^20.17.1
-        version: 20.17.1
+        version: 20.17.4
       '@types/passport':
         specifier: ^1.0.16
         version: 1.0.16
@@ -3608,7 +3608,7 @@ importers:
         version: 9.0.8
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3656,10 +3656,10 @@ importers:
         version: 4.3.5
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
 
   packages/w3c-vc-api-issuer-rest-client:
     dependencies:
@@ -3678,7 +3678,7 @@ importers:
     devDependencies:
       '@veramo/cli':
         specifier: 4.2.0
-        version: 4.2.0(@types/node@20.17.1)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(@types/node@20.17.4)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -3700,7 +3700,7 @@ importers:
         version: link:../dev
       '@veramo/cli':
         specifier: 4.2.0
-        version: 4.2.0(@types/node@20.17.1)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(@types/node@20.17.4)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -3800,7 +3800,7 @@ importers:
         version: 0.25.0
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -3839,7 +3839,7 @@ importers:
         version: 4.1.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -3860,7 +3860,7 @@ importers:
         version: 0.1.3(encoding@0.1.13)
       '@veramo/data-store':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
@@ -3875,7 +3875,7 @@ importers:
         version: 3.1.3
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -3974,10 +3974,10 @@ importers:
         version: 4.2.0(encoding@0.1.13)(express@4.19.2)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+        version: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
       typeorm:
         specifier: ^0.3.20
-        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -6567,8 +6567,8 @@ packages:
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
-  '@types/node@20.17.1':
-    resolution: {integrity: sha512-j2VlPv1NnwPJbaCNv69FO/1z4lId0QmGvpT41YxitRtWlg96g/j8qcv2RKsLKe2F6OJgyXhupN1Xo17b2m139Q==}
+  '@types/node@20.17.4':
+    resolution: {integrity: sha512-Fi1Bj8qTJr4f1FDdHFR7oMlOawEYSzkHNdBJK+aRjcDDNHwEV3jPPjuZP2Lh2QNgXeqzM8Y+U6b6urKAog2rZw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -10068,9 +10068,6 @@ packages:
 
   jose@5.9.4:
     resolution: {integrity: sha512-WBBl6au1qg6OHj67yCffCgFR3BADJBXN8MdRvCgJDuMv3driV2nHr7jdGvaKX9IolosAsn+M0XRArqLXUhyJHQ==}
-
-  jose@5.9.6:
-    resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
 
   js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
@@ -15667,7 +15664,7 @@ snapshots:
   '@jest/console@27.5.1':
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       jest-message-util: 27.5.1
       jest-util: 27.5.1
@@ -15676,27 +15673,27 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
       slash: 3.0.0
 
-  '@jest/core@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@jest/core@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
       '@jest/console': 27.5.1
       '@jest/reporters': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.8.1
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 27.5.1
-      jest-config: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-config: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-haste-map: 27.5.1
       jest-message-util: 27.5.1
       jest-regex-util: 27.5.1
@@ -15719,21 +15716,21 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  '@jest/core@29.7.0(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@jest/core@29.7.0(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
       '@jest/console': 29.7.0
       '@jest/reporters': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-config: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -15762,14 +15759,14 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-mock: 27.5.1
 
   '@jest/environment@29.7.0':
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-mock: 29.7.0
 
   '@jest/expect-utils@29.7.0':
@@ -15787,7 +15784,7 @@ snapshots:
     dependencies:
       '@jest/types': 27.5.1
       '@sinonjs/fake-timers': 8.1.0
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-message-util: 27.5.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
@@ -15796,7 +15793,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -15823,7 +15820,7 @@ snapshots:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -15854,7 +15851,7 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -15972,7 +15969,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       '@types/yargs': 15.0.19
       chalk: 4.1.2
 
@@ -15980,7 +15977,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       '@types/yargs': 16.0.9
       chalk: 4.1.2
 
@@ -15989,7 +15986,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -16255,23 +16252,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@microsoft/api-extractor-model@7.29.6(@types/node@20.17.1)':
+  '@microsoft/api-extractor-model@7.29.6(@types/node@20.17.4)':
     dependencies:
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-      '@rushstack/node-core-library': 5.7.0(@types/node@20.17.1)
+      '@rushstack/node-core-library': 5.7.0(@types/node@20.17.4)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.47.7(@types/node@20.17.1)':
+  '@microsoft/api-extractor@7.47.7(@types/node@20.17.4)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.29.6(@types/node@20.17.1)
+      '@microsoft/api-extractor-model': 7.29.6(@types/node@20.17.4)
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-      '@rushstack/node-core-library': 5.7.0(@types/node@20.17.1)
+      '@rushstack/node-core-library': 5.7.0(@types/node@20.17.4)
       '@rushstack/rig-package': 0.5.3
-      '@rushstack/terminal': 0.14.0(@types/node@20.17.1)
-      '@rushstack/ts-command-line': 4.22.6(@types/node@20.17.1)
+      '@rushstack/terminal': 0.14.0(@types/node@20.17.4)
+      '@rushstack/ts-command-line': 4.22.6(@types/node@20.17.4)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -17059,7 +17056,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -17069,7 +17066,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@rushstack/node-core-library@5.7.0(@types/node@20.17.1)':
+  '@rushstack/node-core-library@5.7.0(@types/node@20.17.4)':
     dependencies:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
@@ -17080,23 +17077,23 @@ snapshots:
       resolve: 1.22.8
       semver: 7.5.4
     optionalDependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@rushstack/rig-package@0.5.3':
     dependencies:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.14.0(@types/node@20.17.1)':
+  '@rushstack/terminal@0.14.0(@types/node@20.17.4)':
     dependencies:
-      '@rushstack/node-core-library': 5.7.0(@types/node@20.17.1)
+      '@rushstack/node-core-library': 5.7.0(@types/node@20.17.4)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
-  '@rushstack/ts-command-line@4.22.6(@types/node@20.17.1)':
+  '@rushstack/ts-command-line@4.22.6(@types/node@20.17.4)':
     dependencies:
-      '@rushstack/terminal': 0.14.0(@types/node@20.17.1)
+      '@rushstack/terminal': 0.14.0(@types/node@20.17.4)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -17538,10 +17535,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
@@ -17642,14 +17639,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-utils@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-utils@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
       '@ethersproject/networks': 5.7.1
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
@@ -17680,12 +17677,12 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-types': link:packages/ssi-types
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
@@ -17713,20 +17710,20 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.jwt-service@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.jwt-service@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager': 0.25.0
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
-      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/random': 1.0.2
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
       debug: 4.3.6
-      jose: 5.9.6
+      jose: 5.9.4
       jwt-decode: 4.0.0
       uint8arrays: 3.1.1
     transitivePeerDependencies:
@@ -17780,9 +17777,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.kms-local@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
       '@trust/keyto': 2.0.0-alpha1
@@ -17822,12 +17819,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk.agent-config@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk.agent-config@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       debug: 4.3.6
       jsonpointer: 5.0.1
-      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       url-parse: 1.5.10
       yaml: 2.5.0
     transitivePeerDependencies:
@@ -18401,7 +18398,7 @@ snapshots:
 
   '@types/accepts@1.3.7':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/argparse@1.0.38': {}
 
@@ -18430,16 +18427,16 @@ snapshots:
 
   '@types/blessed@0.1.25':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/content-disposition@0.5.8': {}
 
@@ -18457,11 +18454,11 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/cors@2.8.17':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/crypto-js@3.1.47': {}
 
@@ -18477,7 +18474,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -18502,7 +18499,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/http-assert@1.5.5': {}
 
@@ -18510,7 +18507,7 @@ snapshots:
 
   '@types/http-terminator@2.0.5':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/i18n-js@3.8.9': {}
 
@@ -18570,7 +18567,7 @@ snapshots:
       '@types/http-errors': 2.0.4
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/lodash.memoize@4.1.9':
     dependencies:
@@ -18586,7 +18583,7 @@ snapshots:
 
   '@types/morgan@1.9.9':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/ms@0.7.34': {}
 
@@ -18598,9 +18595,9 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
-  '@types/node@20.17.1':
+  '@types/node@20.17.4':
     dependencies:
       undici-types: 6.19.8
 
@@ -18649,17 +18646,17 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       '@types/send': 0.17.4
 
   '@types/sha.js@2.4.4':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/stack-utils@2.0.3': {}
 
@@ -18674,7 +18671,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/url-parse@1.4.11': {}
 
@@ -18684,7 +18681,7 @@ snapshots:
 
   '@types/ws@8.5.3':
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -18900,17 +18897,17 @@ snapshots:
       - react-native
       - web-streams-polyfill
 
-  '@veramo/cli@4.2.0(@types/node@20.17.1)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)':
+  '@veramo/cli@4.2.0(@types/node@20.17.4)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@microsoft/api-extractor': 7.47.7(@types/node@20.17.1)
-      '@microsoft/api-extractor-model': 7.29.6(@types/node@20.17.1)
+      '@microsoft/api-extractor': 7.47.7(@types/node@20.17.4)
+      '@microsoft/api-extractor-model': 7.29.6(@types/node@20.17.4)
       '@types/blessed': 0.1.25
       '@types/swagger-ui-express': 4.1.6
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/credential-eip712': 4.2.0(encoding@0.1.13)
       '@veramo/credential-ld': 4.2.0(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/credential-w3c': 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
-      '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@veramo/data-store': 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@veramo/did-comm': 4.2.0(encoding@0.1.13)
       '@veramo/did-discovery': 4.2.0
       '@veramo/did-jwt': 4.2.0
@@ -18954,7 +18951,7 @@ snapshots:
       sqlite3: 5.1.7
       swagger-ui-express: 4.6.3(express@4.19.2)
       ts-json-schema-generator: 1.5.1
-      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       url-parse: 1.5.10
       web-did-resolver: 2.0.27(encoding@0.1.13)
       ws: 8.18.0
@@ -19063,7 +19060,7 @@ snapshots:
       - supports-color
       - web-streams-polyfill
 
-  '@veramo/data-store@4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@veramo/data-store@4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-discovery': 4.2.0
@@ -19071,7 +19068,7 @@ snapshots:
       '@veramo/key-manager': 4.2.0
       '@veramo/utils': 4.2.0(encoding@0.1.13)
       debug: 4.3.6
-      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
@@ -20241,7 +20238,7 @@ snapshots:
 
   chrome-launcher@0.15.2:
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -20250,7 +20247,7 @@ snapshots:
 
   chromium-edge-launcher@0.2.0:
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -20669,13 +20666,13 @@ snapshots:
       safe-buffer: 5.2.1
       sha.js: 2.4.11
 
-  create-jest@29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  create-jest@29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
       '@jest/types': 29.6.3
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-config: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -21435,7 +21432,7 @@ snapshots:
       '@adraffy/ens-normalize': 1.10.1
       '@noble/curves': 1.2.0
       '@noble/hashes': 1.2.0
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       aes-js: 4.0.0-beta.5
       tslib: 2.4.0
       ws: 8.17.1
@@ -22884,7 +22881,7 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -22909,7 +22906,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -22929,16 +22926,16 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  jest-cli@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
-      '@jest/core': 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@jest/core': 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.2.0
-      jest-config: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-config: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-util: 27.5.1
       jest-validate: 27.5.1
       prompts: 2.4.2
@@ -22950,16 +22947,16 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  jest-cli@29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  jest-cli@29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      create-jest: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       exit: 0.1.2
       import-local: 3.2.0
-      jest-config: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-config: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -22969,7 +22966,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  jest-config@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
       '@babel/core': 7.25.2
       '@jest/test-sequencer': 27.5.1
@@ -22996,14 +22993,14 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      ts-node: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+      ts-node: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
     transitivePeerDependencies:
       - bufferutil
       - canvas
       - supports-color
       - utf-8-validate
 
-  jest-config@29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  jest-config@29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
       '@babel/core': 7.25.2
       '@jest/test-sequencer': 29.7.0
@@ -23028,8 +23025,8 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      '@types/node': 20.17.1
-      ts-node: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+      '@types/node': 20.17.4
+      ts-node: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -23043,7 +23040,7 @@ snapshots:
 
   jest-diff@29.7.0:
     dependencies:
-      chalk: 4.1.2
+      chalk: 4.1.0
       diff-sequences: 29.6.3
       jest-get-type: 29.6.3
       pretty-format: 29.7.0
@@ -23077,7 +23074,7 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-mock: 27.5.1
       jest-util: 27.5.1
       jsdom: 16.7.0(canvas@2.11.2(encoding@0.1.13))
@@ -23092,7 +23089,7 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-mock: 27.5.1
       jest-util: 27.5.1
 
@@ -23101,7 +23098,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -23120,7 +23117,7 @@ snapshots:
     dependencies:
       '@jest/types': 27.5.1
       '@types/graceful-fs': 4.1.9
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -23137,7 +23134,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -23155,7 +23152,7 @@ snapshots:
       '@jest/source-map': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       co: 4.6.0
       expect: 27.5.1
@@ -23222,12 +23219,12 @@ snapshots:
   jest-mock@27.5.1:
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
 
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@27.5.1):
@@ -23289,7 +23286,7 @@ snapshots:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       emittery: 0.8.1
       graceful-fs: 4.2.11
@@ -23318,7 +23315,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -23373,7 +23370,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       cjs-module-lexer: 1.3.1
       collect-v8-coverage: 1.0.2
@@ -23393,7 +23390,7 @@ snapshots:
 
   jest-serializer@27.5.1:
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       graceful-fs: 4.2.11
 
   jest-snapshot@27.5.1:
@@ -23451,7 +23448,7 @@ snapshots:
   jest-util@27.5.1:
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -23460,7 +23457,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -23488,7 +23485,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       jest-util: 27.5.1
@@ -23498,7 +23495,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -23507,22 +23504,22 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
-      '@jest/core': 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@jest/core': 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       import-local: 3.2.0
-      jest-cli: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-cli: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -23530,12 +23527,12 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  jest@29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  jest@29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       '@jest/types': 29.6.3
       import-local: 3.2.0
-      jest-cli: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest-cli: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -23563,8 +23560,6 @@ snapshots:
   jose@5.7.0: {}
 
   jose@5.9.4: {}
-
-  jose@5.9.6: {}
 
   js-base64@3.7.7: {}
 
@@ -24815,7 +24810,7 @@ snapshots:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.1.2
+      minimatch: 3.0.5
 
   mute-stream@0.0.8: {}
 
@@ -26933,11 +26928,11 @@ snapshots:
   ts-interface-checker@0.1.13:
     optional: true
 
-  ts-jest@27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3):
+  ts-jest@27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(jest@27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest: 27.5.1(canvas@2.11.2(encoding@0.1.13))(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-util: 27.5.1
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -26950,12 +26945,12 @@ snapshots:
       '@types/jest': 27.5.2
       babel-jest: 27.5.1(@babel/core@7.25.2)
 
-  ts-jest@29.2.4(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)))(typescript@5.6.3):
+  ts-jest@29.2.4(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)))(typescript@5.6.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.17.1)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      jest: 29.7.0(@types/node@20.17.4)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -26990,14 +26985,14 @@ snapshots:
       tslib: 2.6.3
       typescript: 5.6.3
 
-  ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3):
+  ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.17.1
+      '@types/node': 20.17.4
       acorn: 8.12.1
       acorn-walk: 8.3.3
       arg: 4.1.3
@@ -27143,7 +27138,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3)):
+  typeorm@0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3)):
     dependencies:
       '@sqltools/formatter': 1.2.5
       app-root-path: 3.1.0
@@ -27163,7 +27158,7 @@ snapshots:
     optionalDependencies:
       pg: 8.12.0
       sqlite3: 5.1.7
-      ts-node: 10.9.2(@types/node@20.17.1)(typescript@5.6.3)
+      ts-node: 10.9.2(@types/node@20.17.4)(typescript@5.6.3)
     transitivePeerDependencies:
       - supports-color
 
