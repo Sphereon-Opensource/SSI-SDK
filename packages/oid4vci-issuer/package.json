@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-feature.SDK.39.well.known.oidf.187",
-    "@sphereon/oid4vci-issuer": "0.16.1-feature.SDK.39.well.known.oidf.187",
+    "@sphereon/oid4vci-common": "0.16.1-next.187",
+    "@sphereon/oid4vci-issuer": "0.16.1-next.187",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
