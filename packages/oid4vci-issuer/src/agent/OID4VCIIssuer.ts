@@ -1,10 +1,4 @@
-import {
-  AccessTokenResponse,
-  AuthorizationServerMetadata,
-  CredentialResponse,
-  IssuerMetadata,
-  OpenidFederationMetadata,
-} from '@sphereon/oid4vci-common'
+import { AccessTokenResponse, AuthorizationServerMetadata, CredentialResponse, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { assertValidAccessTokenRequest, createAccessTokenResponse, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
@@ -95,7 +89,6 @@ export class OID4VCIIssuer implements IAgentPlugin {
     const metadataOpts = await this.getMetadataOpts({ ...args, credentialIssuer }, context)
     const issuerMetadata = await this.getIssuerMetadata({ ...args, credentialIssuer }, context)
     const authorizationServerMetadata = await this.getAuthorizationServerMetadata({ ...args, credentialIssuer }, context)
-    const openidFederationMetadata = await this.getOpenidFederationMetadata({ ...args, credentialIssuer }, context)
     const issuerOpts = await this.getIssuerOpts({ ...args, credentialIssuer }, context)
     if (!issuerOpts.resolveOpts) {
       issuerOpts.resolveOpts = { ...issuerOpts.didOpts?.resolveOpts, ...this._opts.resolveOpts }
@@ -110,7 +103,6 @@ export class OID4VCIIssuer implements IAgentPlugin {
         metadataOpts,
         issuerMetadata,
         authorizationServerMetadata,
-        openidFederationMetadata,
       }),
     )
     return this.oid4vciGetInstance(args, context)
@@ -204,23 +196,6 @@ export class OID4VCIIssuer implements IAgentPlugin {
       throw Error(`Credential issuer ${opts.credentialIssuer} metadata  not found for namespace ${opts.namespace} and store ${opts.storeId}`)
     }
     return metadata
-  }
-
-  private async getOpenidFederationMetadata(
-    opts: {
-      credentialIssuer: string
-      storeId?: string
-      namespace?: string
-    },
-    context: IRequiredContext,
-  ): Promise<OpenidFederationMetadata> {
-    const metadataOpts = await this.getMetadataOpts(opts, context)
-    return (await context.agent.oid4vciStoreGetMetadata({
-      metadataType: 'openidFederation',
-      correlationId: metadataOpts.credentialIssuer,
-      namespace: metadataOpts.storeNamespace,
-      storeId: metadataOpts.storeId,
-    })) as OpenidFederationMetadata
   }
 
   private async storeId(opts?: { storeId?: string }, context?: IRequiredContext): Promise<string> {
