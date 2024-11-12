@@ -81,5 +81,3 @@ agent:
     - schemaValidation: false
       plugins:
         - $require: ./packages/anomaly-detection/dist#AnomalyDetection
-          $args:
-            - geoIpDBPath: './packages/anomaly-detection/__tests__/shared/GeoLite2-Country.mmdb'

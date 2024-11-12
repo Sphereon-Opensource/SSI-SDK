@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as dns from 'dns'
 import * as mmdb from 'mmdb-lib'
 import {CountryResponse} from 'mmdb-lib'
+import {GEO_IP_DB_PATH} from "./environment";
 
 export const anomalyDetectionMethods: Array<string> = [
 'lookupLocation'
@@ -19,9 +20,11 @@ export class AnomalyDetection implements IAgentPlugin {
     lookupLocation: this.lookupLocation.bind(this)
   }
 
-  constructor(args?: { geoIpDBPath: string }) {
-    const { geoIpDBPath='/opt/GeoLite2-Country.mmdb' } = { ...args }
-    this.db = fs.readFileSync(geoIpDBPath)
+  constructor() {
+    if (!GEO_IP_DB_PATH) {
+      throw new Error('The GEO_IP_DB_PATH environment variable is required')
+    }
+    this.db = fs.readFileSync(GEO_IP_DB_PATH)
   }
 
   private async lookupLocation(args: LookupLocationArgs): Promise<LookupLocationResult> {
