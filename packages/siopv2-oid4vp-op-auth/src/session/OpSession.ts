@@ -314,7 +314,7 @@ export class OpSession {
       }, 0)
       const totalVCs = args.verifiablePresentations?.reduce((sum, vp) => {
         const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: args.hasher ?? this.options.hasher })
-        return sum + (uvp.verifiableCredential?.length ?? 0)
+        return sum + ((uvp.verifiableCredential?.length ?? CredentialMapper.isSdJwtDecodedCredential(uvp)) ? 1 : 0)
       }, 0)
 
       if (!request.presentationDefinitions || !args.verifiablePresentations || totalVCs !== totalInputDescriptors) {
