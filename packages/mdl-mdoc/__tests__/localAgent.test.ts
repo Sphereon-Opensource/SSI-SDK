@@ -30,6 +30,6 @@ const testContext = {
 }
 
 describe.skip('Local integration tests', (): void => {
-  // FIXME test holds expired certificates
+  // FIXME SDK-42 test holds expired certificates
   mdlMdocLogic(testContext)
 })

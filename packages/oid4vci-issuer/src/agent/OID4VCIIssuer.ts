@@ -1,6 +1,5 @@
-import { AccessTokenResponse, CredentialResponse } from '@sphereon/oid4vci-common'
-import { assertValidAccessTokenRequest, createAccessTokenResponse } from '@sphereon/oid4vci-issuer'
-import { VcIssuer } from '@sphereon/oid4vci-issuer'
+import { AccessTokenResponse, AuthorizationServerMetadata, CredentialResponse, IssuerMetadata } from '@sphereon/oid4vci-common'
+import { assertValidAccessTokenRequest, createAccessTokenResponse, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { DIDDocument, IAgentPlugin } from '@veramo/core'
@@ -88,7 +87,8 @@ export class OID4VCIIssuer implements IAgentPlugin {
     //todo: prob doesn't make sense as credentialIssuer is mandatory anyway
 
     const metadataOpts = await this.getMetadataOpts({ ...args, credentialIssuer }, context)
-    const metadata = await this.getIssuerMetadata({ ...args, credentialIssuer }, context)
+    const issuerMetadata = await this.getIssuerMetadata({ ...args, credentialIssuer }, context)
+    const authorizationServerMetadata = await this.getAuthorizationServerMetadata({ ...args, credentialIssuer }, context)
     const issuerOpts = await this.getIssuerOpts({ ...args, credentialIssuer }, context)
     if (!issuerOpts.resolveOpts) {
       issuerOpts.resolveOpts = { ...issuerOpts.didOpts?.resolveOpts, ...this._opts.resolveOpts }
@@ -96,7 +96,15 @@ export class OID4VCIIssuer implements IAgentPlugin {
     if (!issuerOpts.resolveOpts?.resolver) {
       issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
-    this.instances.set(credentialIssuer, new IssuerInstance({ issuerOpts, metadataOpts, metadata }))
+    this.instances.set(
+      credentialIssuer,
+      new IssuerInstance({
+        issuerOpts,
+        metadataOpts,
+        issuerMetadata,
+        authorizationServerMetadata,
+      }),
+    )
     return this.oid4vciGetInstance(args, context)
   }
 
@@ -121,6 +129,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     const storeId = await this.storeId(opts, context)
     const namespace = await this.namespace(opts, context)
     const options = await context.agent.oid4vciStoreGetIssuerOpts({
+      metadataType: 'authorizationServer',
       correlationId: credentialIssuer,
       storeId,
       namespace,
@@ -152,13 +161,37 @@ export class OID4VCIIssuer implements IAgentPlugin {
       namespace?: string
     },
     context: IRequiredContext,
-  ) {
+  ): Promise<IssuerMetadata> {
     const metadataOpts = await this.getMetadataOpts(opts, context)
-    let metadata = await context.agent.oid4vciStoreGetMetadata({
+    const metadata = (await context.agent.oid4vciStoreGetMetadata({
+      metadataType: 'issuer',
       correlationId: metadataOpts.credentialIssuer,
       namespace: metadataOpts.storeNamespace,
       storeId: metadataOpts.storeId,
-    })
+    })) as IssuerMetadata
+    if (!metadata) {
+      throw Error(
+        `Authorization server metadata not found for issuer ${opts.credentialIssuer}, namespace ${opts.namespace} and store ${opts.storeId}`,
+      )
+    }
+    return metadata
+  }
+
+  private async getAuthorizationServerMetadata(
+    opts: {
+      credentialIssuer: string
+      storeId?: string
+      namespace?: string
+    },
+    context: IRequiredContext,
+  ): Promise<AuthorizationServerMetadata> {
+    const metadataOpts = await this.getMetadataOpts(opts, context)
+    const metadata = (await context.agent.oid4vciStoreGetMetadata({
+      metadataType: 'authorizationServer',
+      correlationId: metadataOpts.credentialIssuer,
+      namespace: metadataOpts.storeNamespace,
+      storeId: metadataOpts.storeId,
+    })) as AuthorizationServerMetadata
     if (!metadata) {
       throw Error(`Credential issuer ${opts.credentialIssuer} metadata  not found for namespace ${opts.namespace} and store ${opts.storeId}`)
     }

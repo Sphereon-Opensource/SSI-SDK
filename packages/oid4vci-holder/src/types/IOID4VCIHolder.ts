@@ -12,7 +12,11 @@ import {
   MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import {
+  CreateOrGetIdentifierOpts,
+  IdentifierProviderOpts,
+  SupportedDidMethodEnum
+} from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   ManagedIdentifierMethod,
@@ -22,7 +26,14 @@ import {
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import {
+  DigitalCredential,
+  IBasicCredentialLocaleBranding,
+  IBasicIssuerLocaleBranding,
+  Identity,
+  IIssuerLocaleBranding,
+  Party
+} from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
@@ -72,7 +83,11 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 
   oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity>
 
-  oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]>
+  oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<Array<VerificationResult>>
+
+  oid4vciHolderGetIssuerBranding(args: GetIssuerBrandingArgs, context: RequiredContext): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>
+
+  oid4vciHolderStoreIssuerBranding(args: StoreIssuerBrandingArgs, context: RequiredContext): Promise<void>
 
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
 
@@ -135,7 +150,8 @@ export type GetCredentialsArgs = Pick<
   'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
-export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
+export type GetIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact' >
+export type StoreIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'issuerBranding' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'issuanceOpt'>
 export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
@@ -197,6 +213,7 @@ export type OID4VCIMachineContext = {
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
+  issuerBranding?: Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata?: EndpointMetadataResult
@@ -219,7 +236,8 @@ export enum OID4VCIMachineStates {
   transitionFromSetup = 'transitionFromSetup',
   getFederationTrust = 'getFederationTrust',
   addContact = 'addContact',
-  addIssuerBranding = 'addIssuerBranding',
+  getIssuerBranding = 'getIssuerBranding',
+  storeIssuerBranding = 'storeIssuerBranding',
   addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
   transitionFromContactSetup = 'transitionFromContactSetup',
   selectCredentials = 'selectCredentials',
@@ -354,7 +372,8 @@ export enum OID4VCIMachineServices {
   getFederationTrust = 'getFederationTrust',
   addContactIdentity = 'addContactIdentity',
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
-  addIssuerBranding = 'addIssuerBranding',
+  getIssuerBranding = 'getIssuerBranding',
+  storeIssuerBranding = 'storeIssuerBranding',
   createCredentialSelection = 'createCredentialSelection',
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
@@ -492,7 +511,7 @@ export type GetCredentialBrandingArgs = {
   context: RequiredContext
 }
 
-export type GetIssuerBrandingArgs = {
+export type GetBasicIssuerLocaleBrandingArgs = {
   display: MetadataDisplay[]
   context: RequiredContext
 }
