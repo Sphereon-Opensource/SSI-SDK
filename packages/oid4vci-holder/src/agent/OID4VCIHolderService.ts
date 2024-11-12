@@ -45,7 +45,7 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
-  GetIssuerBrandingArgs,
+  GetBasicIssuerLocaleBrandingArgs,
   GetPreferredCredentialFormatsArgs,
   IssuanceOpts,
   MapCredentialToAcceptArgs,
@@ -81,7 +81,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => { //IBasicIssuerLocaleBranding
   const { display, context } = args
   return await Promise.all(
     display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
