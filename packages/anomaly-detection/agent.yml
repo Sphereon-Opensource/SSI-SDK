@@ -81,3 +81,6 @@ agent:
     - schemaValidation: false
       plugins:
         - $require: ./packages/anomaly-detection/dist#AnomalyDetection
+          $args:
+            - geoIpDBPath:
+                $env: GEO_IP_DB_PATH
