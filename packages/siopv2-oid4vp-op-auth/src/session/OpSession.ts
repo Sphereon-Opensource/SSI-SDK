@@ -213,10 +213,6 @@ export class OpSession {
   }
 
   public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
-    if (args.hasher && !this.options.hasher) {
-      // capture hasher when possible and not present, can be useful for existing implementations
-      this.options.hasher = args.hasher
-    }
     return await OID4VP.init(this, args.allIdentifiers ?? [], args.hasher)
   }
 
