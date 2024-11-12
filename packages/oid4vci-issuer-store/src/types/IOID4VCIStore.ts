@@ -1,13 +1,8 @@
-import { IssuerMetadata, CredentialIssuerMetadataOpts, AuthorizationServerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, CredentialIssuerMetadataOpts, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IPluginMethodMap } from '@veramo/core'
-
-export type MetadataTypeMap = {
-  issuer: IssuerMetadata
-  authorizationServer: AuthorizationServerMetadata
-}
 
 export interface IOID4VCIStore extends IPluginMethodMap {
   oid4vciStoreDefaultMetadata(): Promise<IKeyValueStore<IssuerMetadata>>
@@ -69,13 +64,16 @@ export interface IMetadataOptions {
   storeNamespace?: string
 }
 
-export type Oid4vciMetadataType = 'issuer' | 'authorizationServer'
+export type Oid4vciMetadataType = 'issuer' | 'authorizationServer' | 'openidFederation'
 
-export interface IOid4vciStoreGetArgs {
+export interface IOid4vciStoreListArgs {
   metadataType: Oid4vciMetadataType
-  correlationId: string
   storeId?: string
   namespace?: string
+}
+
+export interface IOid4vciStoreGetArgs extends IOid4vciStoreListArgs {
+  correlationId: string
 }
 
 export type Ioid4vciStoreExistsArgs = IOid4vciStoreGetArgs
@@ -87,7 +85,7 @@ export type IIssuerOptsImportArgs = IIssuerOptsPersistArgs
 
 export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs {
   metadataType: Oid4vciMetadataType
-  metadata: IssuerMetadata | AuthorizationServerMetadata // The actual metadata
+  metadata: IssuerMetadata | AuthorizationServerMetadata
 }
 
 export interface IIssuerOptsPersistArgs extends Ioid4vciStorePersistArgs {

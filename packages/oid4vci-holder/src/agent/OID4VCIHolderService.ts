@@ -45,7 +45,7 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
-  GetIssuerBrandingArgs,
+  GetBasicIssuerLocaleBrandingArgs,
   GetPreferredCredentialFormatsArgs,
   IssuanceOpts,
   MapCredentialToAcceptArgs,
@@ -81,7 +81,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => { //IBasicIssuerLocaleBranding
   const { display, context } = args
   return await Promise.all(
     display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
@@ -271,7 +271,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     }
   } else if (supportedBindingMethods.includes('jwk')) {
     // todo: we probably should do something similar as with DIDs for re-use/new keys
-    const key = await context.agent.keyManagerCreate({ type: keyType, kms })
+    const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
     // } else if (supportedBindingMethods.includes('cose_key')) {

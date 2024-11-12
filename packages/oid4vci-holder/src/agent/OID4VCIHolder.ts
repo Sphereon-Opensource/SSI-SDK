@@ -38,9 +38,9 @@ import {
   IBasicIssuerLocaleBranding,
   Identity,
   IdentityOrigin,
-  IIssuerBranding,
+  IIssuerLocaleBranding,
   NonPersistedIdentity,
-  Party,
+  Party
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -72,7 +72,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
-  AddIssuerBrandingArgs,
+  StoreIssuerBrandingArgs,
   AssertValidCredentialsArgs,
   Attribute,
   createCredentialsToSelectFromArgs,
@@ -102,7 +102,8 @@ import {
   StoreCredentialsArgs,
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
-  VerifyEBSICredentialIssuerResult
+  VerifyEBSICredentialIssuerResult,
+  GetIssuerBrandingArgs
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -216,6 +217,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreCredentialBranding: this.oid4vciHolderStoreCredentialBranding.bind(this),
     oid4vciHolderStoreCredentials: this.oid4vciHolderStoreCredentials.bind(this),
     oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this),
+    oid4vciHolderGetIssuerBranding: this.oid4vciHolderGetIssuerBranding.bind(this),
+    oid4vciHolderStoreIssuerBranding: this.oid4vciHolderStoreIssuerBranding.bind(this),
   }
 
   private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
@@ -312,10 +315,10 @@ export class OID4VCIHolder implements IAgentPlugin {
         ),
       createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
-      getCredentials: (args: GetCredentialsArgs) =>
-        this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
+      getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
       addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
-      addIssuerBranding: (args: AddIssuerBrandingArgs) => this.oid4vciHolderAddIssuerBranding(args, context),
+      getIssuerBranding: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
+      storeIssuerBranding: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
@@ -455,10 +458,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHoldercreateCredentialsToSelectFrom(
-    args: createCredentialsToSelectFromArgs,
-    context: RequiredContext,
-  ): Promise<Array<CredentialToSelectFromResult>> {
+  private async oid4vciHoldercreateCredentialsToSelectFrom(args: createCredentialsToSelectFromArgs, context: RequiredContext): Promise<Array<CredentialToSelectFromResult>> {
     const { credentialBranding, locale, selectedCredentials /*, openID4VCIClientState*/, credentialsSupported } = args
 
     // const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
@@ -730,33 +730,50 @@ export class OID4VCIHolder implements IAgentPlugin {
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
   }
 
-  private async oid4vciHolderAddIssuerBranding(args: AddIssuerBrandingArgs, context: RequiredContext): Promise<void> {
+  private async oid4vciHolderGetIssuerBranding(args: GetIssuerBrandingArgs, context: RequiredContext): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>> {
     const { serverMetadata, contact } = args
-    if (!contact) {
-      return logger.warning('Missing contact in context, so cannot get issuer branding')
-    }
 
-    if (serverMetadata?.credentialIssuerMetadata?.display) {
-      const issuerCorrelationId: string =
-        contact.identities
-          .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
-          .map((identity) => identity.identifier.correlationId)[0] ?? undefined
+    // Here we are fetching issuer branding for a contact. If no contact is found that means we encounter this contact for the first time. This also means we do not have any branding for the contact.
+    const issuerCorrelationId = contact?.identities
+      .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
+      .map((identity) => identity.identifier.correlationId)[0]
 
-      const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
-      // todo: Probably wise to look at last updated at and update in case it has been a while
-      if (!brandings || brandings.length === 0) {
-        const basicIssuerLocaleBrandings: IBasicIssuerLocaleBranding[] = await getBasicIssuerLocaleBranding({
-          display: serverMetadata.credentialIssuerMetadata.display,
-          context,
-        })
-        if (basicIssuerLocaleBrandings && basicIssuerLocaleBrandings.length > 0) {
-          await context.agent.ibAddIssuerBranding({
-            localeBranding: basicIssuerLocaleBrandings,
-            issuerCorrelationId,
-          })
-        }
+    if (issuerCorrelationId) {
+      const branding = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
+      if (branding.length > 0) {
+        return branding[0].localeBranding
       }
     }
+
+    // We should have serverMetadata in the context else something went wrong
+    if (!serverMetadata) {
+      return Promise.reject(Error('Missing serverMetadata in context'));
+    }
+
+    return getBasicIssuerLocaleBranding({
+      display: serverMetadata.credentialIssuerMetadata?.display ?? [],
+      context,
+    })
+  }
+
+  private async oid4vciHolderStoreIssuerBranding(args: StoreIssuerBrandingArgs, context: RequiredContext): Promise<void> {
+    const { issuerBranding, contact } = args
+    if (!issuerBranding || issuerBranding.length === 0 || (<Array<IIssuerLocaleBranding>>issuerBranding)[0].id) { // FIXME we need better separation between a contact(issuer) we encountered before and it's branding vs a new contact and it's branding
+      return
+    }
+
+    if (!contact) {
+      return Promise.reject(Error('Missing contact in context'));
+    }
+
+    const issuerCorrelationId = contact?.identities
+      .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
+      .map((identity) => identity.identifier.correlationId)[0]
+
+    await context.agent.ibAddIssuerBranding({
+      localeBranding: issuerBranding as Array<IBasicIssuerLocaleBranding>,
+      issuerCorrelationId,
+    })
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]> {

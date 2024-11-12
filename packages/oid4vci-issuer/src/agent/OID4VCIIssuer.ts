@@ -96,7 +96,15 @@ export class OID4VCIIssuer implements IAgentPlugin {
     if (!issuerOpts.resolveOpts?.resolver) {
       issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
-    this.instances.set(credentialIssuer, new IssuerInstance({ issuerOpts, metadataOpts, issuerMetadata, authorizationServerMetadata }))
+    this.instances.set(
+      credentialIssuer,
+      new IssuerInstance({
+        issuerOpts,
+        metadataOpts,
+        issuerMetadata,
+        authorizationServerMetadata,
+      }),
+    )
     return this.oid4vciGetInstance(args, context)
   }
 
@@ -162,7 +170,9 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId: metadataOpts.storeId,
     })) as IssuerMetadata
     if (!metadata) {
-      throw Error(`Credential issuer ${opts.credentialIssuer} metadata  not found for namespace ${opts.namespace} and store ${opts.storeId}`)
+      throw Error(
+        `Authorization server metadata not found for issuer ${opts.credentialIssuer}, namespace ${opts.namespace} and store ${opts.storeId}`,
+      )
     }
     return metadata
   }

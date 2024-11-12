@@ -4,6 +4,8 @@
   "oid4vci_machine_store_credential_error_title": "Store credential",
   "oid4vci_machine_add_contact_identity_error_title": "Add contact identity",
   "oid4vci_machine_retrieve_credentials_error_title": "Retrieve credentials",
+  "oid4vci_machine_retrieve_issuer_branding_error_title": "Retrieve issuer branding",
+  "oid4vci_machine_store_issuer_branding_error_title": "Store issuer branding",
   "oid4vci_machine_retrieve_contact_error_title": "Retrieve contact",
   "oid4vci_machine_credential_selection_error_title": "Credential selection",
   "oid4vci_machine_initiation_error_title": "Initiate OID4VCI provider",
