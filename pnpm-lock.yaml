@@ -1553,14 +1553,14 @@ importers:
   packages/oidf-client:
     dependencies:
       '@sphereon/openid-federation-client':
-        specifier: 0.1.0-unstable.d8421f6
-        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
+        specifier: 0.1.0-unstable.8663d94
+        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
       '@sphereon/openid-federation-common':
-        specifier: 0.1.0-unstable.d8421f6
-        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
+        specifier: 0.1.0-unstable.8663d94
+        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
       '@sphereon/openid-federation-open-api':
-        specifier: 0.1.0-unstable.d8421f6
-        version: 0.1.0-unstable.d8421f6(encoding@0.1.13)
+        specifier: 0.1.0-unstable.8663d94
+        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
         version: 0.25.0(encoding@0.1.13)
@@ -3915,8 +3915,8 @@ importers:
         specifier: workspace:*
         version: link:../agent-config
       '@types/express':
-        specifier: 4.17.13
-        version: 4.17.13
+        specifier: ^4.17.21
+        version: 4.17.21
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -6061,14 +6061,14 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.d8421f6':
-    resolution: {integrity: sha512-curfKYSn08zmMrOmRNhs+0ubtSMiX1blNjOpGsr7jrLg56RKgATHAuJQRPu0+28oIavrgjUqXEUnlJZi/mdjpw==}
+  '@sphereon/openid-federation-client@0.1.0-unstable.8663d94':
+    resolution: {integrity: sha512-XA6tvTBmPo44SSjF9oIDjkyjFSKNDlbJerGTAzNIKDRaSFWMutfg+zL6yeJlk26YwlDikoAa2BWqKlNbETXaZQ==}
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.d8421f6':
-    resolution: {integrity: sha512-ybCgk8iiRfHbyiANCrca577KL2b2JD+OLya56gpcetHXdJlW8eMlde/nkDa0fIwWUDl+lhp97NgFLuZ4tkGMfA==}
+  '@sphereon/openid-federation-common@0.1.0-unstable.8663d94':
+    resolution: {integrity: sha512-LfyuA/4kJ1+dltp7/HvGInmgj3cCjkICQivuZ3wG8NHLN2kgygVGElhfccGRTk6Q80TQI6dzFNiMPsk1Qo5y6w==}
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.d8421f6':
-    resolution: {integrity: sha512-BoY0WKnxF/O2504Xw0HKA8C6bfPCnF1Nsj0/pMs6OZv+firszpqxlO5wIxbetEfJ449Q32GpUNrp76W3p5uvvw==}
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.8663d94':
+    resolution: {integrity: sha512-6CMhgUkrqW7o6mmQ7Kiwo5NW7boi5j9bezQhm3Fm6j+I4xWvc+9Mimn6fnbhENlgeGhtQ1mABdoy2R9b8FZzFQ==}
 
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
@@ -6489,9 +6489,6 @@ packages:
 
   '@types/express-session@1.18.0':
     resolution: {integrity: sha512-27JdDRgor6PoYlURY+Y5kCakqp5ulC0kmf7y+QwaY+hv9jEFuQOThgkjyA53RP3jmKuBsH5GR6qEfFmvb8mwOA==}
-
-  '@types/express@4.17.13':
-    resolution: {integrity: sha512-6bSZTPaTIACxn48l50SR+axgrqm6qXFIxrdAKaG6PaJk3+zuUr35hBlgT7vOmJcum+OEaIBLtHV/qloEAFITeA==}
 
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
@@ -17472,7 +17469,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.d8421f6(encoding@0.1.13)':
+  '@sphereon/openid-federation-client@0.1.0-unstable.8663d94(encoding@0.1.13)':
     dependencies:
       '@js-joda/core': 3.2.0
       abort-controller: 3.0.0
@@ -17485,7 +17482,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.d8421f6(encoding@0.1.13)':
+  '@sphereon/openid-federation-common@0.1.0-unstable.8663d94(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
@@ -17497,7 +17494,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.d8421f6(encoding@0.1.13)':
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.8663d94(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
@@ -18362,13 +18359,6 @@ snapshots:
   '@types/express-session@1.18.0':
     dependencies:
       '@types/express': 4.17.21
-
-  '@types/express@4.17.13':
-    dependencies:
-      '@types/body-parser': 1.19.5
-      '@types/express-serve-static-core': 4.19.5
-      '@types/qs': 6.9.15
-      '@types/serve-static': 1.15.7
 
   '@types/express@4.17.21':
     dependencies:
