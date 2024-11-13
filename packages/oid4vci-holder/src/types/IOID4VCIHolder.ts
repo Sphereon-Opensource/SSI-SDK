@@ -235,6 +235,7 @@ export enum OID4VCIMachineStates {
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
   getFederationTrust = 'getFederationTrust',
+  reviewContact = 'reviewContact',
   addContact = 'addContact',
   getIssuerBranding = 'getIssuerBranding',
   storeIssuerBranding = 'storeIssuerBranding',
@@ -363,7 +364,8 @@ export enum OID4VCIMachineGuards {
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
   createContactGuard = 'oid4vciCreateContactGuard',
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
-  oid4vciIsOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
+  isOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
+  contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard'
 }
 
 export enum OID4VCIMachineServices {

@@ -45,6 +45,11 @@ const oid4vciHasContactGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMach
   return contact !== undefined
 }
 
+const oid4vciContactHasLowTrustGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  const { contact, trustedAnchors } = _ctx
+  return contact !== undefined && trustedAnchors !== undefined && trustedAnchors.length === 0
+}
+
 const oid4vciCredentialsToSelectRequiredGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { credentialToSelectFrom } = _ctx
   return credentialToSelectFrom && credentialToSelectFrom.length > 1
@@ -81,8 +86,8 @@ const oid4vciHasSelectedCredentialsGuard = (_ctx: OID4VCIMachineContext, _event:
 
 const oid4vciIsOIDFOriginGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   // TODO in the future we need to establish if a origin is a IDF origin. So we need to check if this metadata is on the well-known location
-  const { trustAnchors, contact } = _ctx
-  return trustAnchors.length > 0 && contact === undefined
+  const { trustAnchors } = _ctx
+  return trustAnchors.length > 0
 }
 
 const oid4vciNoAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
@@ -152,7 +157,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.createContactGuard }
         | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard }
         | { type: OID4VCIMachineGuards.hasAuthorizationResponse }
-        | { type: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard },
+        | { type: OID4VCIMachineGuards.isOIDFOriginGuard }
+        | { type: OID4VCIMachineGuards.contactHasLowTrustGuard },
       services: {} as {
         [OID4VCIMachineServices.start]: {
           data: StartResult
@@ -265,12 +271,21 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         id: OID4VCIMachineStates.getIssuerBranding,
         invoke: {
           src: OID4VCIMachineServices.getIssuerBranding,
-          onDone: {
-            target: OID4VCIMachineStates.transitionFromSetup,
-            actions: assign({
-              issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
-            })
-          },
+          onDone: [
+            {
+              target: OID4VCIMachineStates.getFederationTrust,
+              cond: OID4VCIMachineGuards.isOIDFOriginGuard,
+              actions: assign({
+                issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
+              })
+            },
+            {
+              target: OID4VCIMachineStates.transitionFromSetup,
+              actions: assign({
+                issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
+              })
+            }
+          ],
           onError: {
             target: OID4VCIMachineStates.handleError,
             actions: assign({
@@ -283,17 +298,38 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
         },
       },
+      [OID4VCIMachineStates.getFederationTrust]: {
+        id: OID4VCIMachineStates.getFederationTrust,
+        invoke: {
+          src: OID4VCIMachineServices.getFederationTrust,
+          onDone: {
+            target: OID4VCIMachineStates.transitionFromSetup,
+            actions: assign({
+              trustedAnchors: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<string>>) => _event.data
+            })
+          },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_retrieve_federation_trust_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
+          },
+        },
+      },
       [OID4VCIMachineStates.transitionFromSetup]: {
         id: OID4VCIMachineStates.transitionFromSetup,
         always: [
-          // TODO improve getFederationTrust machine logic and where we call this in the machine. we only need this for new contacts, as it is only displayed on the add contact screen
-          {
-            target: OID4VCIMachineStates.getFederationTrust,
-            cond: OID4VCIMachineGuards.oid4vciIsOIDFOriginGuard
-          },
           {
             target: OID4VCIMachineStates.addContact,
             cond: OID4VCIMachineGuards.hasNoContactGuard,
+          },
+          {
+            target: OID4VCIMachineStates.reviewContact,
+            cond: OID4VCIMachineGuards.contactHasLowTrustGuard,
           },
           {
             target: OID4VCIMachineStates.selectCredentials,
@@ -314,28 +350,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         on: {
           [OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL]: {
             actions: assign({ authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: SetAuthorizationCodeURLEvent) => _event.data }),
-          },
-        },
-      },
-      [OID4VCIMachineStates.getFederationTrust]: {
-        id: OID4VCIMachineStates.getFederationTrust,
-        invoke: {
-          src: OID4VCIMachineServices.getFederationTrust,
-          onDone: {
-            target: OID4VCIMachineStates.addContact,
-            actions: assign({
-              trustedAnchors: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<string>>) => _event.data
-            })
-          },
-          onError: {
-            target: OID4VCIMachineStates.handleError,
-            actions: assign({
-              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-                title: translate('oid4vci_machine_retrieve_federation_trust_error_title'),
-                message: _event.data.message,
-                stack: _event.data.stack,
-              }),
-            }),
           },
         },
       },
@@ -368,6 +382,20 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               target: `#${OID4VCIMachineStates.storeIssuerBranding}`,
               cond: OID4VCIMachineGuards.hasContactGuard,
             },
+          },
+        },
+      },
+      [OID4VCIMachineStates.reviewContact]: {
+        id: OID4VCIMachineStates.reviewContact,
+        on: {
+          [OID4VCIMachineEvents.NEXT]: {
+            target: OID4VCIMachineStates.transitionFromContactSetup,
+          },
+          [OID4VCIMachineEvents.DECLINE]: {
+            target: OID4VCIMachineStates.declined,
+          },
+          [OID4VCIMachineEvents.PREVIOUS]: {
+            target: OID4VCIMachineStates.aborted,
           },
         },
       },
@@ -585,6 +613,16 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           onDone: {
             target: OID4VCIMachineStates.reviewCredentials,
           },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_store_issuer_branding_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
+          },
         },
       },
       [OID4VCIMachineStates.reviewCredentials]: {
@@ -690,6 +728,7 @@ export class OID4VCIMachine {
           oid4vciNoAuthorizationGuard,
           oid4vciHasAuthorizationResponse,
           oid4vciIsOIDFOriginGuard,
+          oid4vciContactHasLowTrustGuard,
           ...opts?.guards,
         },
       }),
