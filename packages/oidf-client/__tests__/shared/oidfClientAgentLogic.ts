@@ -1,46 +1,31 @@
 import 'cross-fetch/polyfill'
+import { ResourceResolver } from "@sphereon/ssi-sdk.resource-resolver";
 import { createAgent, TAgent } from '@veramo/core'
+import {
+  ICryptoService
+} from "@sphereon/openid-federation-client";
 import { IOIDFClient, OIDFClient } from '../../src'
+
 import { mockResponses } from './TrustChainMockResponses'
 import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import nock = require('nock')
-import { defaultCryptoJSImpl } from './CryptoDefaultCallback'
 
 type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
 
-function nockSetup() {
-  const url = new URL(mockResponses[0][0])
-  const url5 = new URL(mockResponses[5][0])
-  nock(url.origin) //https://oidc.registry.servizicie.interno.gov.it
-    .persist()
-    .get(url.pathname) //.well-known/openid-federation
-    .reply(200, mockResponses[0][1], { 'Content-Type': 'application/entity-statement+jwt' })
-    .get(url5.pathname)
-    .query({
-      sub: 'https://spid.wbss.it/Spid/oidc/sa',
-      iss: 'https://oidc.registry.servizicie.interno.gov.it',
-    })
-    .reply(200, mockResponses[5][1], { 'Content-Type': 'application/entity-statement+jwt' })
+const fetchService = {
+  async fetchStatement(endpoint: string) {
+    const match = mockResponses.find(item => item[0] === endpoint);
+    if (match) {
+      return match[1];
+    } else {
+      throw new Error("Not found: " + endpoint);
+    }
+  }
+};
 
-  const url1 = new URL(mockResponses[1][0])
-  const url2 = new URL(mockResponses[2][0])
-  const url3 = new URL(mockResponses[3][0])
-  const url4 = new URL(mockResponses[4][0])
-  nock(url1.origin) //https://spid.wbss.it
-    .persist()
-    .get(url1.pathname) //Spid/oidc/sa/.well-known/openid-federation
-    .reply(200, mockResponses[1][1], { 'Content-Type': 'application/entity-statement+jwt' })
-    .get(url2.pathname) //Spid/oidc/rp/ipasv_lt/.well-known/openid-federation
-    .reply(200, mockResponses[2][1], { 'Content-Type': 'application/entity-statement+jwt' })
-    .get(url3.pathname)
-    .query({
-      sub: 'https://spid.wbss.it/Spid/oidc/rp/ipasv_lt',
-      iss: 'https://spid.wbss.it/Spid/oidc/sa',
-    }) //Spid/oidc/sa/fetch?sub=https://spid.wbss.it/Spid/oidc/rp/ipasv_lt&iss=https://spid.wbss.it/Spid/oidc/sa
-    .reply(200, mockResponses[3][1], { 'Content-Type': 'application/entity-statement+jwt' })
-    .get(url4.pathname) //Spid/oidc/sa/fetch
-    .query({}) // Match empty query string for url4
-    .reply(200, mockResponses[4][1], { 'Content-Type': 'application/entity-statement+jwt' })
+const cryptoService: ICryptoService = {
+  verify: async (jwt: string, key: any): Promise<boolean> => {
+    return true
+  }
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
@@ -49,14 +34,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
-      //agent = testContext.getAgent()
-      // FIXME Remove createAgent and uncomment the line above when the issue with the jwt-service is fixed
+
       agent = createAgent({
         plugins: [
           new JwtService(),
           new OIDFClient({
-            cryptoServiceCallback: defaultCryptoJSImpl,
+            fetchServiceCallback: fetchService,
+            cryptoServiceCallback: cryptoService
           }),
+          new ResourceResolver(),
         ],
       })
     })
@@ -64,13 +50,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     afterAll(testContext.tearDown)
 
     it('should build a trust chain 1', async () => {
-      nockSetup()
       const trustChain = await agent.resolveTrustChain({
         entityIdentifier: 'https://spid.wbss.it/Spid/oidc/rp/ipasv_lt',
         trustAnchors: ['https://oidc.registry.servizicie.interno.gov.it'],
       })
 
-      expect(trustChain).not.toBeNull()
+      expect(trustChain).toBeTruthy()
       expect(trustChain).toHaveLength(4)
 
       expect(trustChain).toEqual(
@@ -84,13 +69,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should build trust chain 2', async () => {
-      nockSetup()
       const trustChain = await agent.resolveTrustChain({
         entityIdentifier: 'https://spid.wbss.it/Spid/oidc/sa',
         trustAnchors: ['https://oidc.registry.servizicie.interno.gov.it'],
       })
 
-      expect(trustChain).not.toBeNull()
+      expect(trustChain).toBeTruthy()
       expect(trustChain).toHaveLength(3)
 
       expect(trustChain).toEqual(

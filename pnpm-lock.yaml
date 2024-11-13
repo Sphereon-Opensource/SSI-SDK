@@ -1525,14 +1525,14 @@ importers:
   packages/oidf-client:
     dependencies:
       '@sphereon/openid-federation-client':
-        specifier: 0.1.0-unstable.8663d94
-        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
+        specifier: 0.1.0-unstable.b945ca8
+        version: 0.1.0-unstable.b945ca8(encoding@0.1.13)
       '@sphereon/openid-federation-common':
-        specifier: 0.1.0-unstable.8663d94
-        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
+        specifier: 0.1.0-unstable.b945ca8
+        version: 0.1.0-unstable.b945ca8(encoding@0.1.13)
       '@sphereon/openid-federation-open-api':
-        specifier: 0.1.0-unstable.8663d94
-        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
+        specifier: 0.1.0-unstable.b945ca8
+        version: 0.1.0-unstable.b945ca8(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
         version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
@@ -1543,52 +1543,15 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
+      '@sphereon/ssi-sdk.resource-resolver':
+        specifier: workspace:*
+        version: link:../resource-resolver
       '@veramo/remote-client':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
       '@veramo/remote-server':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)(express@4.21.1)
-      cross-fetch:
-        specifier: ^3.1.8
-        version: 3.1.8(encoding@0.1.13)
-      jose:
-        specifier: 5.9.4
-        version: 5.9.4
-      nock:
-        specifier: ^13.5.5
-        version: 13.5.5
-
-  packages/oidf-metatdata-server:
-    dependencies:
-      '@sphereon/ssi-express-support':
-        specifier: workspace:*
-        version: link:../ssi-express-support
-      '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: workspace:*
-        version: link:../oid4vci-issuer-store
-      debug:
-        specifier: ^4.3.5
-        version: 4.3.6
-      express:
-        specifier: ^4.19.2
-        version: 4.21.1
-      semver:
-        specifier: ^7.6.3
-        version: 7.6.3
-    devDependencies:
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/express-serve-static-core':
-        specifier: ^4.19.5
-        version: 4.19.5
-      '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
 
   packages/pd-manager:
     dependencies:
@@ -6053,14 +6016,14 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.8663d94':
-    resolution: {integrity: sha512-XA6tvTBmPo44SSjF9oIDjkyjFSKNDlbJerGTAzNIKDRaSFWMutfg+zL6yeJlk26YwlDikoAa2BWqKlNbETXaZQ==}
+  '@sphereon/openid-federation-client@0.1.0-unstable.b945ca8':
+    resolution: {integrity: sha512-0CyGyOEqU8Zj1dT+cSMLhbEN4ZRf/kzzEZk9+WznEdVjCjyjbB/xyEpHdK+dYHvXY3I60YHUHvH7HQ0nUFQN1Q==}
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.8663d94':
-    resolution: {integrity: sha512-LfyuA/4kJ1+dltp7/HvGInmgj3cCjkICQivuZ3wG8NHLN2kgygVGElhfccGRTk6Q80TQI6dzFNiMPsk1Qo5y6w==}
+  '@sphereon/openid-federation-common@0.1.0-unstable.b945ca8':
+    resolution: {integrity: sha512-73POR6qS85xkO+Pw1GyWW3lRM49kbz4Hk651TDFVtYHk0eM6Vfb9ciVQ/8yRrZZpAUaQ0QmIa9GzQpaoBwqDoA==}
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.8663d94':
-    resolution: {integrity: sha512-6CMhgUkrqW7o6mmQ7Kiwo5NW7boi5j9bezQhm3Fm6j+I4xWvc+9Mimn6fnbhENlgeGhtQ1mABdoy2R9b8FZzFQ==}
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.b945ca8':
+    resolution: {integrity: sha512-Dj/OmW+8ECunMQL2mdqiIpqzETjRq60eENNPVcVr7OLVLjcvJcXty7AQ3KIc0ijQlEWiRKCZrHLkl314JRo2eg==}
 
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
@@ -17484,7 +17447,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.8663d94(encoding@0.1.13)':
+  '@sphereon/openid-federation-client@0.1.0-unstable.b945ca8(encoding@0.1.13)':
     dependencies:
       '@js-joda/core': 3.2.0
       abort-controller: 3.0.0
@@ -17497,7 +17460,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.8663d94(encoding@0.1.13)':
+  '@sphereon/openid-federation-common@0.1.0-unstable.b945ca8(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
@@ -17509,7 +17472,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.8663d94(encoding@0.1.13)':
+  '@sphereon/openid-federation-open-api@0.1.0-unstable.b945ca8(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
