@@ -5,11 +5,13 @@ import {
 } from '@sphereon/ssi-sdk-ext.jwt-service';
 import { ICryptoService, IFetchService } from '@sphereon/openid-federation-client'
 
-export type IRequiredPlugins = IJwtService
+export type IRequiredPlugins = IJwtService & IResourceResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
+type Nullable<T> = T | null | undefined
+
 export interface IOIDFClient extends IPluginMethodMap {
-    resolveTrustChain(args: ResolveTrustChainArgs, context: RequiredContext): Promise<ResolveTrustChainCallbackResult>
+    resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<ResolveTrustChainCallbackResult>
 }
 
 export type ResolveTrustChainArgs = {
@@ -18,15 +20,8 @@ export type ResolveTrustChainArgs = {
 }
 
 export type OIDFClientArgs = {
-    fetchServiceCallback?: FetchServiceCallbackArgs
-    cryptoServiceCallback?: CryptoServiceCallbackArgs
+    fetchServiceCallback?: IFetchService
+    cryptoServiceCallback?: ICryptoService
 }
 
-export type CryptoServiceCallbackArgs = ICryptoService
-export type FetchServiceCallbackArgs = IFetchService
-
-type Nullable<T> = T | null | undefined
-
 export type ResolveTrustChainCallbackResult = Nullable<Array<string>>
-
-export type RequiredContext = IAgentContext<IJwtService & IResourceResolver>

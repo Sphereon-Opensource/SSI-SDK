@@ -2,13 +2,12 @@ import {FederationClient, ICryptoService, IFetchService} from '@sphereon/openid-
 import {JWK} from "@sphereon/ssi-types";
 import {IAgentPlugin} from '@veramo/core'
 import {Request} from "cross-fetch";
-import {schema} from '../index'
+import {ResolveTrustChainCallbackResult, schema} from '../index'
 import {
   IOIDFClient,
   OIDFClientArgs,
-  RequiredContext,
-  ResolveTrustChainArgs,
-  ResolveTrustChainCallbackResult
+  IRequiredContext,
+  ResolveTrustChainArgs
 } from '../types/IOIDFClient'
 
 export const oidfClientMethods: Array<string> = ['resolveTrustChain']
@@ -28,7 +27,7 @@ export class OIDFClient implements IAgentPlugin {
     this.cryptoServiceCallback = cryptoServiceCallback
   }
 
-  private defaultCryptoJSImpl(context: RequiredContext): ICryptoService {
+  private defaultCryptoJSImpl(context: IRequiredContext): ICryptoService {
     return {
       verify: async (jwt: string, key: JWK): Promise<boolean> => {
         const verification = await context.agent.jwtVerifyJwsSignature({jws: jwt, jwk: key})
@@ -37,7 +36,7 @@ export class OIDFClient implements IAgentPlugin {
     }
   }
 
-  private defaultFetchJSImpl(context: RequiredContext): IFetchService {
+  private defaultFetchJSImpl(context: IRequiredContext): IFetchService {
     return {
       async fetchStatement(endpoint: string): Promise<string> {
         const requestInfo = new Request(endpoint, {
@@ -54,14 +53,14 @@ export class OIDFClient implements IAgentPlugin {
     }
   }
 
-  private getOIDFClient(context: RequiredContext): FederationClient {
+  private getOIDFClient(context: IRequiredContext): FederationClient {
     return new FederationClient(
       this.fetchServiceCallback || this.defaultFetchJSImpl(context),
       this.cryptoServiceCallback || this.defaultCryptoJSImpl(context)
     )
   }
 
-  private async resolveTrustChain(args: ResolveTrustChainArgs, context: RequiredContext): Promise<ResolveTrustChainCallbackResult> {
+  private async resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<ResolveTrustChainCallbackResult> {
     const { entityIdentifier, trustAnchors } = args
 
     const oidfClient = this.getOIDFClient(context)
