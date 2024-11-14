@@ -1,4 +1,4 @@
-import {FederationClient, ICryptoService, IFetchService} from '@sphereon/openid-federation-client'
+import {FederationClient, ICryptoService, IFetchService, TrustChainResolveResponse} from '@sphereon/openid-federation-client'
 import {JWK} from "@sphereon/ssi-types";
 import {IAgentPlugin} from '@veramo/core'
 import {Request} from "cross-fetch";
@@ -7,8 +7,7 @@ import {
   IOIDFClient,
   OIDFClientArgs,
   IRequiredContext,
-  ResolveTrustChainArgs,
-  ResolveTrustChainCallbackResult
+  ResolveTrustChainArgs
 } from '../types/IOIDFClient'
 
 export const oidfClientMethods: Array<string> = ['resolveTrustChain']
@@ -21,7 +20,7 @@ export class OIDFClient implements IAgentPlugin {
   }
   readonly schema = schema.IOIDFClient
 
-  constructor(args: OIDFClientArgs) {
+  constructor(args?: OIDFClientArgs) {
     const {fetchServiceCallback, cryptoServiceCallback} = {...args}
 
     this.fetchServiceCallback = fetchServiceCallback
@@ -65,7 +64,7 @@ export class OIDFClient implements IAgentPlugin {
     )
   }
 
-  private async resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<ResolveTrustChainCallbackResult> {
+  private async resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<TrustChainResolveResponse> {
     const { entityIdentifier, trustAnchors } = args
 
     const oidfClient = this.getOIDFClient(context)
