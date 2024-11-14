@@ -16,13 +16,22 @@ import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeBase64url } from '@sphereon/ssi-sdk.core'
-import { CompactSdJwtVc, CredentialMapper, parseDid, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  CompactSdJwtVc,
+  CredentialMapper,
+  Hasher,
+  OriginalVerifiableCredential,
+  parseDid,
+  PresentationSubmission,
+  W3CVerifiablePresentation,
+} from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
 import { v4 } from 'uuid'
 import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
+import { PEX } from '@sphereon/pex'
 
 const debug = Debug(`sphereon:sdk:siop:op-session`)
 
@@ -302,17 +311,13 @@ export class OpSession {
     const verification: Verification = {
       presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
     }
-
     const request = await this.getAuthorizationRequest()
     const hasDefinitions = await this.hasPresentationDefinitions()
     if (hasDefinitions) {
       const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
         return sum + pd.definition.input_descriptors.length
       }, 0)
-      const totalVCs = args.verifiablePresentations?.reduce((sum, vp) => {
-        const uvp = CredentialMapper.toUniformPresentation(vp)
-        return sum + (uvp.verifiableCredential?.length ?? 0)
-      }, 0)
+      const totalVCs = args.verifiablePresentations ? this.countVCsInAllVPs(args.verifiablePresentations, args.hasher) : 0
 
       if (!request.presentationDefinitions || !args.verifiablePresentations || totalVCs !== totalInputDescriptors) {
         throw Error(
@@ -360,6 +365,19 @@ export class OpSession {
     } else {
       return response
     }
+  }
+
+  private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[], hasher?: Hasher) {
+    return verifiablePresentations.reduce((sum, vp) => {
+      const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: hasher ?? this.options.hasher })
+      if (uvp.verifiableCredential?.length) {
+        return sum + uvp.verifiableCredential?.length
+      }
+      if (!PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>)) {
+        return sum + 1
+      }
+      return sum
+    }, 0)
   }
 }
 

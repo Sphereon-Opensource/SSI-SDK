@@ -1559,37 +1559,6 @@ importers:
         specifier: ^13.5.5
         version: 13.5.5
 
-  packages/oidf-metatdata-server:
-    dependencies:
-      '@sphereon/ssi-express-support':
-        specifier: workspace:*
-        version: link:../ssi-express-support
-      '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: workspace:*
-        version: link:../oid4vci-issuer-store
-      debug:
-        specifier: ^4.3.5
-        version: 4.3.6
-      express:
-        specifier: ^4.19.2
-        version: 4.21.1
-      semver:
-        specifier: ^7.6.3
-        version: 7.6.3
-    devDependencies:
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/express-serve-static-core':
-        specifier: ^4.19.5
-        version: 4.19.5
-      '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
-
   packages/pd-manager:
     dependencies:
       '@sphereon/pex':
