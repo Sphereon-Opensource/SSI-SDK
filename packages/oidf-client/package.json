@@ -18,9 +18,9 @@
 	"dependencies": {
 		"@sphereon/ssi-types": "workspace:*",
 		"@sphereon/ssi-sdk.resource-resolver": "workspace:*",
-		"@sphereon/openid-federation-open-api": "0.1.0-unstable.c303a90",
-		"@sphereon/openid-federation-client": "0.1.0-unstable.c303a90",
-		"@sphereon/openid-federation-common": "0.1.0-unstable.c303a90",
+		"@sphereon/openid-federation-open-api": "0.1.1-unstable.49c7542",
+		"@sphereon/openid-federation-client": "0.1.1-unstable.49c7542",
+		"@sphereon/openid-federation-common": "0.1.1-unstable.49c7542",
 		"@sphereon/ssi-sdk-ext.jwt-service": "0.25.0"
 	},
 	"devDependencies": {
