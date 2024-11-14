@@ -2,12 +2,13 @@ import {FederationClient, ICryptoService, IFetchService} from '@sphereon/openid-
 import {JWK} from "@sphereon/ssi-types";
 import {IAgentPlugin} from '@veramo/core'
 import {Request} from "cross-fetch";
-import {ResolveTrustChainCallbackResult, schema} from '../index'
+import {schema} from '../'
 import {
   IOIDFClient,
   OIDFClientArgs,
   IRequiredContext,
-  ResolveTrustChainArgs
+  ResolveTrustChainArgs,
+  ResolveTrustChainCallbackResult
 } from '../types/IOIDFClient'
 
 export const oidfClientMethods: Array<string> = ['resolveTrustChain']
@@ -47,6 +48,10 @@ export class OIDFClient implements IAgentPlugin {
           input: requestInfo,
           resourceType: 'application/entity-statement+jwt',
         })
+
+        if (response.status != 200) {
+            throw new Error(`Failed to fetch statement from ${endpoint}`)
+        }
 
         return await response.text()
       }

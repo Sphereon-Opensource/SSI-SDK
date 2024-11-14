@@ -1,4 +1,3 @@
-import 'cross-fetch/polyfill'
 import { ResourceResolver } from "@sphereon/ssi-sdk.resource-resolver";
 import { createAgent, TAgent } from '@veramo/core'
 import {
