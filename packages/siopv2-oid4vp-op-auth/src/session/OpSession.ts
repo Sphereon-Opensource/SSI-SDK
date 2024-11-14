@@ -376,7 +376,7 @@ export class OpSession {
       if (!PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>)) {
         return sum + 1
       }
-      return 0
+      return sum
     }, 0)
   }
 }
