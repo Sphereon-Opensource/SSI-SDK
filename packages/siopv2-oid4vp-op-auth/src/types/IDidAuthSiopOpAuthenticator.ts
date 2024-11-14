@@ -122,6 +122,7 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
+  hasher?: Hasher
 }
 
 export enum events {
@@ -158,6 +159,7 @@ export interface IOPOptions {
   presentationSignCallback?: PresentationSignCallback
 
   resolveOpts?: ResolveOpts
+  hasher?: Hasher
 }
 
 /*

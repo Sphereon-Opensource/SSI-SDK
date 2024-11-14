@@ -162,12 +162,13 @@ export class CredentialMapper {
         deviceResponse = originalPresentation
       }
 
-      const mdocCredentials = deviceResponse.documents
-        ?.map((doc) => CredentialMapper.toWrappedVerifiableCredential(doc, opts) as WrappedMdocCredential)
-      if (!mdocCredentials || mdocCredentials.length === 0 ) {
+      const mdocCredentials = deviceResponse.documents?.map(
+        (doc) => CredentialMapper.toWrappedVerifiableCredential(doc, opts) as WrappedMdocCredential
+      )
+      if (!mdocCredentials || mdocCredentials.length === 0) {
         throw new Error('could not extract any mdoc credentials from mdoc device response')
       }
-      
+
       return {
         type: CredentialMapper.isMsoMdocDecodedPresentation(originalPresentation) ? OriginalType.MSO_MDOC_DECODED : OriginalType.MSO_MDOC_ENCODED,
         format: 'mso_mdoc',
@@ -616,7 +617,7 @@ export class CredentialMapper {
 
   static toUniformPresentation(
     presentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean }
+    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean; hasher?: Hasher }
   ): IVerifiablePresentation {
     if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       throw new Error('Converting SD-JWT VC to uniform VP is not supported.')
@@ -631,7 +632,7 @@ export class CredentialMapper {
         'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof'
       )
     }
-    const decoded = CredentialMapper.decodeVerifiablePresentation(original)
+    const decoded = CredentialMapper.decodeVerifiablePresentation(original, opts?.hasher)
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedPresentation(original)
     const uniformPresentation =
