@@ -373,7 +373,11 @@ export class OpSession {
       if (uvp.verifiableCredential?.length) {
         return sum + uvp.verifiableCredential?.length
       }
-      if (!PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>)) {
+      const isSdJWT = CredentialMapper.isSdJwtDecodedCredential(uvp)
+      if (
+        isSdJWT ||
+        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>))
+      ) {
         return sum + 1
       }
       return sum
