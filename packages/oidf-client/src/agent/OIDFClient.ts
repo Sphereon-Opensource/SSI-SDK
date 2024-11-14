@@ -32,7 +32,7 @@ export class OIDFClient implements IAgentPlugin {
     return {
       verify: async (jwt: string, key: JWK): Promise<boolean> => {
         const verification = await context.agent.jwtVerifyJwsSignature({jws: jwt, jwk: key})
-        return verification.error === undefined
+        return !verification.error
       }
     }
   }
