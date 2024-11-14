@@ -16,13 +16,21 @@ import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeBase64url } from '@sphereon/ssi-sdk.core'
-import { CompactSdJwtVc, CredentialMapper, parseDid, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  CompactSdJwtVc,
+  CredentialMapper,
+  OriginalVerifiableCredential,
+  parseDid,
+  PresentationSubmission,
+  W3CVerifiablePresentation,
+} from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
 import { v4 } from 'uuid'
 import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
+import { PEX } from '@sphereon/pex'
 
 const debug = Debug(`sphereon:sdk:siop:op-session`)
 
@@ -308,10 +316,7 @@ export class OpSession {
       const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
         return sum + pd.definition.input_descriptors.length
       }, 0)
-      const totalVCs = args.verifiablePresentations?.reduce((sum, vp) => {
-        const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: args.hasher ?? this.options.hasher })
-        return sum + ((uvp.verifiableCredential?.length ?? CredentialMapper.isSdJwtDecodedCredential(uvp)) ? 1 : 0)
-      }, 0)
+      const totalVCs = this.countVCsInAllVPs(args)
 
       if (!request.presentationDefinitions || !args.verifiablePresentations || totalVCs !== totalInputDescriptors) {
         throw Error(
@@ -359,6 +364,19 @@ export class OpSession {
     } else {
       return response
     }
+  }
+
+  private countVCsInAllVPs(args: IOpsSendSiopAuthorizationResponseArgs) {
+    return args.verifiablePresentations?.reduce((sum, vp) => {
+      const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: args.hasher ?? this.options.hasher })
+      if (uvp.verifiableCredential?.length) {
+        return sum + uvp.verifiableCredential?.length
+      }
+      if (!PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>)) {
+        return sum + 1
+      }
+      return 0
+    }, 0)
   }
 }
 
