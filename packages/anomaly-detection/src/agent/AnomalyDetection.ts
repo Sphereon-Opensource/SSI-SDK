@@ -1,8 +1,8 @@
 import {IAgentPlugin} from "@veramo/core";
 import {IAnomalyDetection, LookupLocationArgs, LookupLocationResult, schema} from "../index";
+import * as dns from 'dns'
 import * as mmdb from 'mmdb-lib'
 import {CountryResponse} from 'mmdb-lib'
-import {lookupTxt} from "dns-query";
 
 export const anomalyDetectionMethods: Array<string> = [
 'lookupLocation'
@@ -34,8 +34,8 @@ export class AnomalyDetection implements IAgentPlugin {
     let result: CountryResponse | null
 
     if (!new RegExp(ipv4Reg).test(ipOrHostname) && !new RegExp(ipv6Reg).test(ipOrHostname)) {
-      const txtResult = await lookupTxt(ipOrHostname, { endpoints: ['8.8.8.8', '8.8.4.4'] })
-      result = reader.get(txtResult.endpoint)
+      const ip = await this.dnsLookupPromise({ hostname: ipOrHostname })
+      result = reader.get(ip)
     } else {
       result = reader.get(ipOrHostname)
     }
@@ -49,15 +49,15 @@ export class AnomalyDetection implements IAgentPlugin {
     return null
   }
 
-  // private async dnsLookupPromise(args: { hostname: string }): Promise<string> {
-  //   const { hostname } = { ...args }
-  //   return new Promise((resolve, reject) => {
-  //     dns.lookup(hostname, (error, ip) => {
-  //       if (error) {
-  //         reject(error)
-  //       }
-  //       resolve(ip)
-  //     })
-  //   })
-  // }
+  private async dnsLookupPromise(args: { hostname: string }): Promise<string> {
+    const { hostname } = { ...args }
+    return new Promise((resolve, reject) => {
+      dns.lookup(hostname, (error, ip) => {
+        if (error) {
+          reject(error)
+        }
+        resolve(ip)
+      })
+    })
+  }
 }
