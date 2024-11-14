@@ -19,6 +19,7 @@ import { encodeBase64url } from '@sphereon/ssi-sdk.core'
 import {
   CompactSdJwtVc,
   CredentialMapper,
+  Hasher,
   OriginalVerifiableCredential,
   parseDid,
   PresentationSubmission,
@@ -316,7 +317,7 @@ export class OpSession {
       const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
         return sum + pd.definition.input_descriptors.length
       }, 0)
-      const totalVCs = this.countVCsInAllVPs(args)
+      const totalVCs = this.countVCsInAllVPs(args.verifiablePresentations, args.hasher)
 
       if (!request.presentationDefinitions || !args.verifiablePresentations || totalVCs !== totalInputDescriptors) {
         throw Error(
@@ -366,9 +367,9 @@ export class OpSession {
     }
   }
 
-  private countVCsInAllVPs(args: IOpsSendSiopAuthorizationResponseArgs) {
-    return args.verifiablePresentations?.reduce((sum, vp) => {
-      const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: args.hasher ?? this.options.hasher })
+  private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[] | undefined, hasher: Hasher | undefined) {
+    return verifiablePresentations?.reduce((sum, vp) => {
+      const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: hasher ?? this.options.hasher })
       if (uvp.verifiableCredential?.length) {
         return sum + uvp.verifiableCredential?.length
       }
