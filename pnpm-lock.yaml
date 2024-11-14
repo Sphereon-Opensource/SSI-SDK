@@ -213,6 +213,9 @@ importers:
       debug:
         specifier: ^4.3.5
         version: 4.3.6
+      dns-query:
+        specifier: ^0.11.2
+        version: 0.11.2
       mmdb-lib:
         specifier: ^2.1.1
         version: 2.1.1
@@ -5376,6 +5379,20 @@ packages:
   '@keyv/test-suite@1.9.5':
     resolution: {integrity: sha512-TYMfykWn9mi9+XQl7Dc2I4i6rsHp9ZZyci9n0iMUCJ/wi7htJGl6Nw5eMXtqqJxjCJW1T82v22YayJPHrVraCw==}
 
+  '@leichtgewicht/base64-codec@1.0.0':
+    resolution: {integrity: sha512-0cgP4lRBzh3F4tlpTfs7F+PJyBN8j5yUC9KrQFWp/bREswgzZVHE8T1rNyRDWgvALwwpPtnJDQfqWUmxI33Epg==}
+
+  '@leichtgewicht/dns-packet@6.0.3':
+    resolution: {integrity: sha512-qmVHhFBFiBvPsk/wJ/EdoWHb+tGkzY4haybmDPukhF6w0+8wpEbrHTIRE9LzeUu2P0bAbmrK8WOXt5V5QN6jQg==}
+    engines: {node: '>=6'}
+
+  '@leichtgewicht/dns-socket@5.0.0':
+    resolution: {integrity: sha512-Sbrn/OG0HTTPGSkwIDCHy8/tUI6UglIzFsMNjzZn/Na1/i5owSm6rVi9CfKNNjRcUlYEzICELYW6EoZdjwVY2A==}
+    engines: {node: '>=6'}
+
+  '@leichtgewicht/ip-codec@2.0.5':
+    resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
+
   '@lerna/create@8.1.8':
     resolution: {integrity: sha512-wi72R01tgjBjzG2kjRyTHl4yCTKDfDMIXRyKz9E/FBa9SkFvUOAE4bdyY9MhEsRZmSWL7+CYE8Flv/HScRpBbA==}
     engines: {node: '>=18.0.0'}
@@ -6026,7 +6043,6 @@ packages:
 
   '@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.22':
     resolution: {integrity: sha512-uAZZExVy+ug9JLircejWa5eLtAZ7bnBP6xb7DO2+86LRsHNLh2k2jMWJYxp+iWtGHTsh6RYsZl14ScQLvjiQ/A==}
-    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -7527,6 +7543,9 @@ packages:
     resolution: {integrity: sha512-tUkzZWK0M/qdoLEqikxBWe4kumyuwjl3HO6zHTr4yEI23EojPtLYXdG1+AQY7MN0cGyNDvEaJ8wiYQm6P2bPxg==}
     engines: {node: '>=12.17'}
 
+  bytes.js@0.0.2:
+    resolution: {integrity: sha512-KrLm4hv5Qs9w6b0U7h1bCdqxrsf+e9QMsfHeyQFzAz94x/5Aqa+FTEUSNBtt5d2VuV3Hfiea3c4ti74RZDDYkg==}
+
   bytes@3.0.0:
     resolution: {integrity: sha512-pMhOfFDPiv9t5jjIXkHosWmkSyQbvsgEVNkz0ERHbuLh2T/7j4Mqqpz523Fe8MVY89KC6Sh/QfS2sM+SjgFDcw==}
     engines: {node: '>= 0.8'}
@@ -8302,6 +8321,10 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
+  dns-query@0.11.2:
+    resolution: {integrity: sha512-zF8qxQpqCB467o4A63DLpQClo77H642JEKMx0Ra9GFww7Rx0234Fo8NoG0LBoSBZxamWkXfLxhzDG19bTBHvXQ==}
+    hasBin: true
+
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
@@ -8598,6 +8621,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -13283,6 +13307,18 @@ packages:
   url-parse@1.5.10:
     resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
 
+  utf8-bytes@0.0.1:
+    resolution: {integrity: sha512-GifWmJAx2qAXT+lZLhbkWhBsy7pr6xWHiPWlVToDiELdWgZwt4Ogjf9tlgvKuALzTFR/d+EPQQI9ogJV3957Jg==}
+
+  utf8-codec@1.0.0:
+    resolution: {integrity: sha512-S/QSLezp3qvG4ld5PUfXiH7mCFxLKjSVZRFkB3DOjgwHuJPFDkInAXc/anf7BAbHt/D38ozDzL+QMZ6/7gsI6w==}
+
+  utf8-length@0.0.1:
+    resolution: {integrity: sha512-j/XH2ftofBiobnyApxlN/J6j/ixwT89WEjDcjT66d2i0+GIn9RZfzt8lpEXXE4jUe4NsjBSUq70kS2euQ4nnMw==}
+
+  utf8-string-bytes@1.0.3:
+    resolution: {integrity: sha512-i/I1Omf6lADjVBlwJpQifZOePV15snHny9w04+lc71+3t8PyWuLC/7clyoOSHOBNGXFe2PAGxmTiZ+Z4HWsPyw==}
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -16067,6 +16103,23 @@ snapshots:
     transitivePeerDependencies:
       - bluebird
       - supports-color
+
+  '@leichtgewicht/base64-codec@1.0.0': {}
+
+  '@leichtgewicht/dns-packet@6.0.3':
+    dependencies:
+      '@leichtgewicht/ip-codec': 2.0.5
+      bytes.js: 0.0.2
+      utf8-bytes: 0.0.1
+      utf8-codec: 1.0.0
+      utf8-length: 0.0.1
+      utf8-string-bytes: 1.0.3
+
+  '@leichtgewicht/dns-socket@5.0.0':
+    dependencies:
+      '@leichtgewicht/dns-packet': 6.0.3
+
+  '@leichtgewicht/ip-codec@2.0.5': {}
 
   '@lerna/create@8.1.8(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
@@ -19937,6 +19990,8 @@ snapshots:
 
   byte-size@8.1.1: {}
 
+  bytes.js@0.0.2: {}
+
   bytes@3.0.0: {}
 
   bytes@3.1.2: {}
@@ -20834,6 +20889,14 @@ snapshots:
   dir-glob@3.0.1:
     dependencies:
       path-type: 4.0.0
+
+  dns-query@0.11.2:
+    dependencies:
+      '@leichtgewicht/base64-codec': 1.0.0
+      '@leichtgewicht/dns-packet': 6.0.3
+      '@leichtgewicht/dns-socket': 5.0.0
+      '@leichtgewicht/ip-codec': 2.0.5
+      utf8-codec: 1.0.0
 
   doctrine@2.1.0:
     dependencies:
@@ -27149,6 +27212,14 @@ snapshots:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
+
+  utf8-bytes@0.0.1: {}
+
+  utf8-codec@1.0.0: {}
+
+  utf8-length@0.0.1: {}
+
+  utf8-string-bytes@1.0.3: {}
 
   util-deprecate@1.0.2: {}
 
