@@ -33,6 +33,7 @@ const getAgent = (options?: IAgentOptions) =>
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/anomaly-detection/agent.yml')
+  config.agent.$args[0].plugins[0].$args[0].geoIpDB.$args[0].path = process.env.GEO_IP_DB_PATH
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db

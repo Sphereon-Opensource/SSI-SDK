@@ -1,6 +1,5 @@
 import {IAgentPlugin} from "@veramo/core";
 import {IAnomalyDetection, LookupLocationArgs, LookupLocationResult, schema} from "../index";
-import * as fs from 'fs';
 import * as dns from 'dns'
 import * as mmdb from 'mmdb-lib'
 import {CountryResponse} from 'mmdb-lib'
@@ -19,12 +18,12 @@ export class AnomalyDetection implements IAgentPlugin {
     lookupLocation: this.lookupLocation.bind(this)
   }
 
-  constructor(args: { geoIpDBPath: string }) {
-    const { geoIpDBPath } = { ...args }
-    if (geoIpDBPath === undefined || geoIpDBPath === null) {
-      throw new Error('The geoIpDBPath argument is required')
+  constructor(args: { geoIpDB: Buffer }) {
+    const { geoIpDB } = { ...args }
+    if (geoIpDB === undefined || geoIpDB === null) {
+      throw new Error('The geoIpDB argument is required')
     }
-    this.db = fs.readFileSync(geoIpDBPath)
+    this.db = geoIpDB
   }
 
   private async lookupLocation(args: LookupLocationArgs): Promise<LookupLocationResult> {

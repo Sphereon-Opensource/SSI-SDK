@@ -82,5 +82,8 @@ agent:
       plugins:
         - $require: ./packages/anomaly-detection/dist#AnomalyDetection
           $args:
-            - geoIpDBPath:
-                $env: GEO_IP_DB_PATH
+            - geoIpDB:
+                $require: 'fs?t=function#readFileSync'
+                $args:
+                  - path:
+                    $env: GEO_IP_DB_PATH
