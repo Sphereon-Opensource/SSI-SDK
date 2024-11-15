@@ -17,6 +17,7 @@
   "dependencies": {
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
+    "dns-query": "^0.11.2",
     "mmdb-lib": "^2.1.1",
     "typeorm": "^0.3.20"
   },
