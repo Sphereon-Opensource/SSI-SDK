@@ -40,7 +40,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should lookup the location of a hostname', async () => {
       await expect(
         agent.lookupLocation({
-          ipOrHostname: 'localhost',
+          ipOrHostname: 'sphereon.com',
         }),
       ).resolves.toEqual({
         continent: 'EU',
