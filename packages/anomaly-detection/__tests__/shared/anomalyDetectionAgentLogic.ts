@@ -16,29 +16,35 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     afterAll(testContext.tearDown)
 
     it('should lookup the location of an IPv4 address', async () => {
-      await expect(agent.lookupLocation({
-        ipOrHostname: '77.247.248.1'
-      })).resolves.toEqual({
+      await expect(
+        agent.lookupLocation({
+          ipOrHostname: '77.247.248.1',
+        }),
+      ).resolves.toEqual({
         continent: 'EU',
-        country: 'AL'
+        country: 'AL',
       })
     })
 
     it('should lookup the location of an IPv6 address', async () => {
-      await expect(agent.lookupLocation({
-        ipOrHostname: '2001:4860:7:27f::f5'
-      })).resolves.toEqual({
+      await expect(
+        agent.lookupLocation({
+          ipOrHostname: '2001:4860:7:27f::f5',
+        }),
+      ).resolves.toEqual({
         continent: 'NA',
-        country: 'US'
+        country: 'US',
       })
     })
 
     it('should lookup the location of a hostname', async () => {
-      await expect(agent.lookupLocation({
-        ipOrHostname: 'sphereon.com'
-      })).resolves.toEqual({
+      await expect(
+        agent.lookupLocation({
+          ipOrHostname: 'localhost',
+        }),
+      ).resolves.toEqual({
         continent: 'EU',
-        country: 'DE'
+        country: 'DE',
       })
     })
   })
