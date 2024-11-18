@@ -1,5 +1,6 @@
 {
 	"name": "@sphereon/ssi-sdk.oidf-client",
+	"type": "module",
 	"version": "0.30.1",
 	"source": "src/index.ts",
 	"main": "dist/index.js",
@@ -16,18 +17,16 @@
 	},
 	"dependencies": {
 		"@sphereon/ssi-types": "workspace:*",
-		"@sphereon/openid-federation-open-api": "0.1.0-unstable.8663d94",
-		"@sphereon/openid-federation-client": "0.1.0-unstable.8663d94",
-		"@sphereon/openid-federation-common": "0.1.0-unstable.8663d94",
+		"@sphereon/ssi-sdk.resource-resolver": "workspace:*",
+		"@sphereon/openid-federation-open-api": "0.1.1-unstable.0647eb6",
+		"@sphereon/openid-federation-client": "0.1.1-unstable.0647eb6",
+		"@sphereon/openid-federation-common": "0.1.1-unstable.0647eb6",
 		"@sphereon/ssi-sdk-ext.jwt-service": "0.25.0"
 	},
 	"devDependencies": {
 		"@sphereon/ssi-sdk.agent-config": "workspace:*",
 		"@veramo/remote-client": "4.2.0",
-		"@veramo/remote-server": "4.2.0",
-		"jose": "5.9.4",
-		"nock": "^13.5.5",
-		"cross-fetch": "^3.1.8"
+		"@veramo/remote-server": "4.2.0"
 	},
 	"files": [
 		"dist/**/*",

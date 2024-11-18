@@ -1,18 +1,15 @@
+import {IResourceResolver} from "@sphereon/ssi-sdk.resource-resolver";
 import {IAgentContext, IPluginMethodMap} from '@veramo/core';
-import { com } from '@sphereon/openid-federation-client';
-import ICryptoCallbackServiceJS = com.sphereon.oid.fed.client.crypto.ICryptoCallbackServiceJS;
 import {
-    CreateJwsCompactArgs,
-    IJwsValidationResult,
     IJwtService,
-    JwtCompactResult,
-    VerifyJwsArgs
 } from '@sphereon/ssi-sdk-ext.jwt-service';
+import {ICryptoService, IFetchService, TrustChainResolveResponse} from '@sphereon/openid-federation-client'
+
+export type IRequiredPlugins = IJwtService & IResourceResolver
+export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface IOIDFClient extends IPluginMethodMap {
-    resolveTrustChain(args: ResolveTrustChainArgs, context: RequiredContext): Promise<ResolveTrustChainCallbackResult>
-    signJwt(args: CreateJwsCompactArgs, context: RequiredContext ): Promise<JwtCompactResult>
-    verifyJwt(args: VerifyJwsArgs, context: RequiredContext): Promise<IJwsValidationResult>
+    resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<TrustChainResolveResponse>
 }
 
 export type ResolveTrustChainArgs = {
@@ -21,13 +18,6 @@ export type ResolveTrustChainArgs = {
 }
 
 export type OIDFClientArgs = {
-    cryptoServiceCallback?: CryptoServiceCallbackArgs
+    fetchServiceCallback?: IFetchService
+    cryptoServiceCallback?: ICryptoService
 }
-
-export type CryptoServiceCallbackArgs = ICryptoCallbackServiceJS
-
-type Nullable<T> = T | null | undefined
-
-export type ResolveTrustChainCallbackResult = Nullable<Array<string>>
-
-export type RequiredContext = IAgentContext<IJwtService>
