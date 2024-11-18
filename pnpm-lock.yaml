@@ -1525,17 +1525,20 @@ importers:
   packages/oidf-client:
     dependencies:
       '@sphereon/openid-federation-client':
-        specifier: 0.1.0-unstable.8663d94
-        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
+        specifier: 0.1.1-unstable.0647eb6
+        version: 0.1.1-unstable.0647eb6(encoding@0.1.13)
       '@sphereon/openid-federation-common':
-        specifier: 0.1.0-unstable.8663d94
-        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
+        specifier: 0.1.1-unstable.0647eb6
+        version: 0.1.1-unstable.0647eb6(encoding@0.1.13)
       '@sphereon/openid-federation-open-api':
-        specifier: 0.1.0-unstable.8663d94
-        version: 0.1.0-unstable.8663d94(encoding@0.1.13)
+        specifier: 0.1.1-unstable.0647eb6
+        version: 0.1.1-unstable.0647eb6(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.25.0
         version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.resource-resolver':
+        specifier: workspace:*
+        version: link:../resource-resolver
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1549,15 +1552,6 @@ importers:
       '@veramo/remote-server':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)(express@4.21.1)
-      cross-fetch:
-        specifier: ^3.1.8
-        version: 3.1.8(encoding@0.1.13)
-      jose:
-        specifier: 5.9.4
-        version: 5.9.4
-      nock:
-        specifier: ^13.5.5
-        version: 13.5.5
 
   packages/oidf-metadata-server:
     dependencies:
@@ -6062,14 +6056,14 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.8663d94':
-    resolution: {integrity: sha512-XA6tvTBmPo44SSjF9oIDjkyjFSKNDlbJerGTAzNIKDRaSFWMutfg+zL6yeJlk26YwlDikoAa2BWqKlNbETXaZQ==}
+  '@sphereon/openid-federation-client@0.1.1-unstable.0647eb6':
+    resolution: {integrity: sha512-CdGb9Ha55h8achnuwuQYk7LUtR8jITdcS0Jred3ZUzkt1+Gv4sF2HyTq4Tv6uzHQEL5X7TiLg6Gx/sQvYFslDQ==}
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.8663d94':
-    resolution: {integrity: sha512-LfyuA/4kJ1+dltp7/HvGInmgj3cCjkICQivuZ3wG8NHLN2kgygVGElhfccGRTk6Q80TQI6dzFNiMPsk1Qo5y6w==}
+  '@sphereon/openid-federation-common@0.1.1-unstable.0647eb6':
+    resolution: {integrity: sha512-63/k6jjcamIZXNBSJy0Xdpb0RRmTZUdEgTNpNVaUMlUHMhH929on8Pdw7sJhJMgjP+woVUwP9jEfngFGOZDVKQ==}
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.8663d94':
-    resolution: {integrity: sha512-6CMhgUkrqW7o6mmQ7Kiwo5NW7boi5j9bezQhm3Fm6j+I4xWvc+9Mimn6fnbhENlgeGhtQ1mABdoy2R9b8FZzFQ==}
+  '@sphereon/openid-federation-open-api@0.1.1-unstable.0647eb6':
+    resolution: {integrity: sha512-Ozt1pIWigATtcQzfXdUTdL5iHqOUB0I86lf4X+KDl+ucnuV5daAY/T0kkDBWitoPGxxeu0fx2IF9qBpBs2ULmQ==}
 
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
@@ -17493,7 +17487,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/openid-federation-client@0.1.0-unstable.8663d94(encoding@0.1.13)':
+  '@sphereon/openid-federation-client@0.1.1-unstable.0647eb6(encoding@0.1.13)':
     dependencies:
       '@js-joda/core': 3.2.0
       abort-controller: 3.0.0
@@ -17506,7 +17500,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-common@0.1.0-unstable.8663d94(encoding@0.1.13)':
+  '@sphereon/openid-federation-common@0.1.1-unstable.0647eb6(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
@@ -17518,7 +17512,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@sphereon/openid-federation-open-api@0.1.0-unstable.8663d94(encoding@0.1.13)':
+  '@sphereon/openid-federation-open-api@0.1.1-unstable.0647eb6(encoding@0.1.13)':
     dependencies:
       abort-controller: 3.0.0
       format-util: 1.0.5
