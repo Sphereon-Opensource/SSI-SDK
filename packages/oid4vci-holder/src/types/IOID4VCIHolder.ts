@@ -11,6 +11,8 @@ import {
   ExperimentalSubjectIssuance,
   MetadataDisplay,
   NotificationRequest,
+  CredentialsSupportedDisplay,
+  IssuerCredentialSubject,
 } from '@sphereon/oid4vci-common'
 import {
   CreateOrGetIdentifierOpts,
@@ -28,6 +30,7 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import {
   DigitalCredential,
+  IBasicCredentialClaim,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
   Identity,
@@ -661,6 +664,37 @@ export type Attribute = {
 export type VerifyEBSICredentialIssuerResult = {
   did: string
   attributes: Attribute[]
+}
+
+export type CredentialLocaleBrandingFromArgs = {
+  credentialDisplay: CredentialsSupportedDisplay
+}
+
+export type IssuerCredentialSubjectLocaleBrandingFromArgs = {
+  issuerCredentialSubject: IssuerCredentialSubject
+  locale?: string
+}
+
+export type IssuerLocaleBrandingFromArgs = {
+  issuerDisplay: MetadataDisplay
+}
+
+export type CredentialBrandingFromArgs = {
+  credentialDisplay?: Array<CredentialsSupportedDisplay>
+  issuerCredentialSubject?: IssuerCredentialSubject
+}
+
+export type CredentialDisplayLocalesFromArgs = {
+  credentialDisplay: Array<CredentialsSupportedDisplay>
+}
+
+export type IssuerCredentialSubjectLocalesFromArgs = {
+  issuerCredentialSubject: IssuerCredentialSubject
+}
+
+export type CombineLocalesFromArgs = {
+  credentialDisplayLocales?: Map<string, CredentialsSupportedDisplay>
+  issuerCredentialSubjectLocales?: Map<string, Array<IBasicCredentialClaim>>
 }
 
 export type DidAgents = TAgent<IResolver & IDIDManager>
