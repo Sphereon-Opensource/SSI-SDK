@@ -66,7 +66,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
       const mappedLocaleBranding = await getCredentialBrandingFrom({
         credentialDisplay: credentialsConfigSupported.display,
-        // @ts-ignore // FIXME add proper support for type recognition as claim display can be located elsewhere for v13
+        // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
         issuerCredentialSubject: credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject
       })
 
