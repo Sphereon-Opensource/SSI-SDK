@@ -22,6 +22,10 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`,
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`)
+    await queryRunner.query(`CREATE TABLE "CredentialClaims" ("id" varchar PRIMARY KEY NOT NULL, "key" varchar(255) NOT NULL, "name" varchar(255) NOT NULL, "credentialLocaleBrandingId" varchar)`)
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale" ON "CredentialClaims" ("credentialLocaleBrandingId", "key")`
+    )
     await queryRunner.query(
       `CREATE TABLE "CredentialBranding" ("id" varchar PRIMARY KEY NOT NULL, "vcHash" varchar(255) NOT NULL, "issuerCorrelationId" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_vcHash" UNIQUE ("vcHash"))`,
     )
@@ -108,6 +112,8 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     await queryRunner.query(`DROP INDEX "IDX_CredentialBrandingEntity_issuerCorrelationId"`)
     await queryRunner.query(`DROP TABLE "CredentialBranding"`)
     await queryRunner.query(`DROP INDEX "IDX_BaseLocaleBranding_type"`)
+    await queryRunner.query(`DROP INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale"`)
+    await queryRunner.query(`DROP TABLE "CredentialClaims"`)
     await queryRunner.query(`DROP INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale"`)
     await queryRunner.query(`DROP INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale"`)
     await queryRunner.query(`DROP TABLE "BaseLocaleBranding"`)

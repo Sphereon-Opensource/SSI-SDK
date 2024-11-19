@@ -52,17 +52,29 @@ export interface IImageDimensions {
 export interface IBasicImageDimensions extends Omit<IImageDimensions, 'id'> {}
 export interface IPartialImageDimensions extends Partial<IImageDimensions> {}
 
-export interface ICredentialLocaleBranding extends ILocaleBranding {}
+export interface ICredentialClaim {
+  id: string
+  key: string
+  name: string
+}
+export interface IBasicCredentialClaim extends Omit<ICredentialClaim, 'id'> {}
+export interface IPartialCredentialClaim extends Partial<ICredentialClaim> {}
+
+export interface ICredentialLocaleBranding extends ILocaleBranding {
+  claims?: Array<ICredentialClaim>
+}
 export interface IBasicCredentialLocaleBranding
-  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text' | 'claims'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
+  claims?: Array<IBasicCredentialClaim>
 }
-export interface IPartialCredentialLocaleBranding extends Partial<Omit<ICredentialLocaleBranding, 'logo' | 'background' | 'text'>> {
+export interface IPartialCredentialLocaleBranding extends Partial<Omit<ICredentialLocaleBranding, 'logo' | 'background' | 'text' | 'claims'>> {
   logo?: IPartialImageAttributes
   background?: IPartialBackgroundAttributes
   text?: IPartialTextAttributes
+  claims?: IPartialCredentialClaim
 }
 
 export interface ICredentialBranding {
