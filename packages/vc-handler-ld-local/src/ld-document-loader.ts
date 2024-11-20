@@ -92,11 +92,11 @@ export class LdDocumentLoader {
         }
 
         const origUrl = url
-        if (url.indexOf('#') > 0 && didDoc && typeof didDoc === 'object' && '@context' in didDoc! && url.indexOf('did:oyd:') > 0) {
+        if (url.indexOf('#') > 0 && didDoc && typeof didDoc === 'object' && '@context' in didDoc && url.startsWith('did:oyd:')) {
           // Apparently we got a whole DID document, but we are looking for a verification method
           // We use origUrl here, as that is how it was used in the VM
           const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: origUrl })
-          debug('Component stringified:')
+          debug('OYD DID component:')
           debug(JSON.stringify(component))
           if (component && typeof component !== 'string' && component.id) {
             // We have to provide a context
