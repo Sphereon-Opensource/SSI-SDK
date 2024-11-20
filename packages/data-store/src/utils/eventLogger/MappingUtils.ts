@@ -62,6 +62,7 @@ export const activityEventFrom = (event: AuditEventEntity): ActivityLoggingEvent
     credentialType: event.credentialType!,
     originalCredential: event.originalCredential,
     credentialHash: event.credentialHash,
+    parentCredentialHash: event.parentCredentialHash,
     sharePurpose: event.sharePurpose,
     description: event.description,
     timestamp: event.timestamp,
