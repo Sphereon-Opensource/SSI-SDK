@@ -11,9 +11,9 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-next.187",
-    "@sphereon/oid4vci-issuer": "0.16.1-next.187",
-    "@sphereon/oid4vci-issuer-server": "0.16.1-next.187",
+    "@sphereon/oid4vci-common": "0.16.1-feature.SDK.39.well.known.oidf.221",
+    "@sphereon/oid4vci-issuer": "0.16.1-feature.SDK.39.well.known.oidf.221",
+    "@sphereon/oid4vci-issuer-server": "0.16.1-feature.SDK.39.well.known.oidf.221",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.1-feature.SDK.41.oidf.support.13",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",

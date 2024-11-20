@@ -40,7 +40,7 @@ import {
   IdentityOrigin,
   IIssuerLocaleBranding,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -72,7 +72,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
-  StoreIssuerBrandingArgs,
   AssertValidCredentialsArgs,
   Attribute,
   createCredentialsToSelectFromArgs,
@@ -81,9 +80,10 @@ import {
   GetContactArgs,
   GetCredentialArgs,
   GetCredentialsArgs,
+  GetFederationTrustArgs,
+  GetIssuerBrandingArgs,
   GetIssuerMetadataArgs,
   IOID4VCIHolder,
-  GetFederationTrustArgs,
   IssuanceOpts,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
@@ -100,10 +100,10 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
+  StoreIssuerBrandingArgs,
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
   VerifyEBSICredentialIssuerResult,
-  GetIssuerBrandingArgs
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -117,6 +117,7 @@ import {
 } from './OID4VCIHolderService'
 
 import 'cross-fetch/polyfill'
+
 /**
  * {@inheritDoc IOID4VCIHolder}
  */
@@ -258,7 +259,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher
+      hasher,
     } = { ...options }
 
     this.hasher = hasher
@@ -315,7 +316,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         ),
       createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
-      getCredentials: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
+      getCredentials: (args: GetCredentialsArgs) =>
+        this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
       addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
       getIssuerBranding: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
       storeIssuerBranding: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
@@ -323,7 +325,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
       sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
-      getFederationTrust: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context)
+      getFederationTrust: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context),
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -458,7 +460,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHoldercreateCredentialsToSelectFrom(args: createCredentialsToSelectFromArgs, context: RequiredContext): Promise<Array<CredentialToSelectFromResult>> {
+  private async oid4vciHoldercreateCredentialsToSelectFrom(
+    args: createCredentialsToSelectFromArgs,
+    context: RequiredContext,
+  ): Promise<Array<CredentialToSelectFromResult>> {
     const { credentialBranding, locale, selectedCredentials /*, openID4VCIClientState*/, credentialsSupported } = args
 
     // const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState! }) // TODO see if we need the check openID4VCIClientState defined
@@ -730,7 +735,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
   }
 
-  private async oid4vciHolderGetIssuerBranding(args: GetIssuerBrandingArgs, context: RequiredContext): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>> {
+  private async oid4vciHolderGetIssuerBranding(
+    args: GetIssuerBrandingArgs,
+    context: RequiredContext,
+  ): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>> {
     const { serverMetadata, contact } = args
 
     // Here we are fetching issuer branding for a contact. If no contact is found that means we encounter this contact for the first time. This also means we do not have any branding for the contact.
@@ -747,7 +755,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     // We should have serverMetadata in the context else something went wrong
     if (!serverMetadata) {
-      return Promise.reject(Error('Missing serverMetadata in context'));
+      return Promise.reject(Error('Missing serverMetadata in context'))
     }
 
     return getBasicIssuerLocaleBranding({
@@ -758,12 +766,13 @@ export class OID4VCIHolder implements IAgentPlugin {
 
   private async oid4vciHolderStoreIssuerBranding(args: StoreIssuerBrandingArgs, context: RequiredContext): Promise<void> {
     const { issuerBranding, contact } = args
-    if (!issuerBranding || issuerBranding.length === 0 || (<Array<IIssuerLocaleBranding>>issuerBranding)[0].id) { // FIXME we need better separation between a contact(issuer) we encountered before and it's branding vs a new contact and it's branding
+    if (!issuerBranding || issuerBranding.length === 0 || (<Array<IIssuerLocaleBranding>>issuerBranding)[0].id) {
+      // FIXME we need better separation between a contact(issuer) we encountered before and it's branding vs a new contact and it's branding
       return
     }
 
     if (!contact) {
-      return Promise.reject(Error('Missing contact in context'));
+      return Promise.reject(Error('Missing contact in context'))
     }
 
     const issuerCorrelationId = contact?.identities
@@ -1050,19 +1059,13 @@ export class OID4VCIHolder implements IAgentPlugin {
     const openidFederation = params.get('openid_federation')
     const entityIdentifier = openidFederation ?? serverMetadata.issuer
 
-    const trustedAnchors = []
-    for (const trustAnchor of trustAnchors) {
-        const resolveResult = await context.agent.resolveTrustChain({
-          entityIdentifier,
-          trustAnchors: [trustAnchor]
-        })
+    const result = await context.agent.identifierExternalResolveByOIDFEntityId({
+      method: 'entity_id',
+      trustAnchors: trustAnchors,
+      identifier: entityIdentifier,
+    })
 
-        if (!resolveResult.error) {
-          trustedAnchors.push(trustAnchor)
-        }
-    }
-
-    return trustedAnchors
+    return Object.keys(result.trustedAnchors)
   }
 
   private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {

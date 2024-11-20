@@ -186,7 +186,7 @@ export async function createRPBuilder(args: {
 
   const oidfOpts = identifierOpts.oidfOpts
   if (oidfOpts && isExternalIdentifierOIDFEntityIdOpts(oidfOpts)) {
-    builder.withClientId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT).withClientIdScheme('entity_id', PropertyTarget.REQUEST_OBJECT)
+    builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT).withClientIdScheme('entity_id', PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
     builder
