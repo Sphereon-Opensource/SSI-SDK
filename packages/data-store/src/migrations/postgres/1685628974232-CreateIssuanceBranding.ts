@@ -28,6 +28,12 @@ export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`,
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`)
+
+    await queryRunner.query(`CREATE TABLE "CredentialClaims" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "key" character varying(255) NOT NULL, "name" character varying(255) NOT NULL, "credentialLocaleBrandingId" character varying, CONSTRAINT "PK_CredentialClaims_id" PRIMARY KEY ("id"))`)
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale" ON "CredentialClaims" ("credentialLocaleBrandingId", "key")`
+    )
+
     await queryRunner.query(
       `CREATE TABLE "CredentialBranding" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "vcHash" character varying(255) NOT NULL, "issuerCorrelationId" character varying(255) NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_vcHash" UNIQUE ("vcHash"), CONSTRAINT "PK_CredentialBranding_id" PRIMARY KEY ("id"))`,
     )
@@ -76,6 +82,8 @@ export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP INDEX "IDX_BaseLocaleBranding_type"`)
     await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale"`)
     await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" DROP INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale"`)
+    await queryRunner.query(`ALTER TABLE "CredentialClaims" DROP INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale"`)
+    await queryRunner.query(`DROP TABLE "CredentialClaims"`)
     await queryRunner.query(`DROP TABLE "BaseLocaleBranding"`)
     await queryRunner.query(`DROP TABLE "TextAttributes"`)
     await queryRunner.query(`DROP TABLE "BackgroundAttributes"`)

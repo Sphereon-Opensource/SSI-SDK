@@ -62,6 +62,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             text: {
               color: '#000000',
             },
+            claims: [
+              {
+                key: 'given_name',
+                name: 'Given Name'
+              },
+              {
+                key: 'family_name',
+                name: 'Surname'
+              }
+            ]
           },
         ],
       }
@@ -76,6 +86,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result?.localeBranding[0].background?.image?.dataUri).toBeUndefined()
       expect(result?.localeBranding[0].background?.image?.mediaType).toBeDefined()
       expect(result?.localeBranding[0].background?.image?.dimensions).toBeDefined()
+      expect(result?.localeBranding[0].claims).toBeDefined()
+      expect(result?.localeBranding[0].claims?.length).toEqual(credentialBranding.localeBranding[0].claims?.length)
     })
 
     it('should add credential branding with no images', async (): Promise<void> => {
@@ -138,6 +150,16 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             text: {
               color: '#000000',
             },
+            claims: [
+              {
+                key: 'given_name',
+                name: 'Given Name'
+              },
+              {
+                key: 'family_name',
+                name: 'Surname'
+              }
+            ]
           },
         ],
       }
@@ -159,6 +181,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result[0].localeBranding[0].background?.image?.mediaType).toBeDefined()
       expect(result[0].localeBranding[0].createdAt).toBeDefined()
       expect(result[0].localeBranding[0].lastUpdatedAt).toBeDefined()
+      expect(result[0].localeBranding[0].claims).toBeDefined()
+      expect(result[0].localeBranding[0].claims?.length).toEqual(credentialBranding.localeBranding[0].claims?.length)
     })
 
     it('should get no credential branding with no matching filter', async (): Promise<void> => {
