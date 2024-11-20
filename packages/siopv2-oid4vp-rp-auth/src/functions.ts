@@ -37,6 +37,7 @@ import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
+import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -141,7 +142,6 @@ export async function createRPBuilder(args: {
     passBy: PassBy.VALUE,
   }
 
-  const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
   const resolver =
     rpOpts.identifierOpts.resolveOpts?.resolver ??
     getAgentResolver(context, {
@@ -154,18 +154,11 @@ export async function createRPBuilder(args: {
   if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
     hasher = (data, algorithm) => createHash(algorithm).update(data).digest()
   }
+
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
     .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
-    .withClientId(
-      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-      PropertyTarget.REQUEST_OBJECT,
-    )
-    .withClientIdScheme(
-      (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
-      PropertyTarget.REQUEST_OBJECT,
-    )
     // todo: move to options fill/correct method
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
@@ -190,6 +183,22 @@ export async function createRPBuilder(args: {
     )
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(identifierOpts.idOpts, context))
+
+  const oidfOpts = identifierOpts.oidfOpts
+  if (oidfOpts && isExternalIdentifierOIDFEntityIdOpts(oidfOpts)) {
+    builder.withClientId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT).withClientIdScheme('entity_id', PropertyTarget.REQUEST_OBJECT)
+  } else {
+    const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
+    builder
+      .withClientId(
+        resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
+        PropertyTarget.REQUEST_OBJECT,
+      )
+      .withClientIdScheme(
+        (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
+        PropertyTarget.REQUEST_OBJECT,
+      )
+  }
 
   if (hasher) {
     builder.withHasher(hasher)

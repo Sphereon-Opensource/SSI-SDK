@@ -240,7 +240,7 @@ export async function createVciIssuerBuilder(
   if (!resolver) {
     throw Error('A Resolver is necessary to verify DID JWTs')
   }
-  const idOpts = legacyKeyRefsToIdentifierOpts({ ...issuerOpts.didOpts, ...issuerOpts.idOpts })
+  const idOpts = legacyKeyRefsToIdentifierOpts({ didOpts: issuerOpts.didOpts, idOpts: issuerOpts.idOpts })
   const jwtVerifyOpts: JWTVerifyOptions = {
     ...issuerOpts?.didOpts?.resolveOpts?.jwtVerifyOpts,
     ...args?.issuerOpts?.resolveOpts?.jwtVerifyOpts,
