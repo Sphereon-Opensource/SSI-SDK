@@ -49,6 +49,7 @@
     { "path": "public-key-hosting" },
     { "path": "resource-resolver" },
 	{ "path":  "oidf-client" },
-    { "path": "anomaly-detection" }
+    { "path": "anomaly-detection" },
+    { "path": "anomaly-detection-store" }
   ]
 }

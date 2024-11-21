@@ -11,9 +11,6 @@
     },
     {
       "path": "../kv-store"
-    },
-    {
-      "path": "../anomaly-detection-store"
     }
   ]
 }

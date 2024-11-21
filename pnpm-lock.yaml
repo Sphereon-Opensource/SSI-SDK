@@ -207,6 +207,9 @@ importers:
 
   packages/anomaly-detection:
     dependencies:
+      '@sphereon/ssi-sdk.anomaly-detection-store':
+        specifier: workspace:*
+        version: link:../anomaly-detection-store
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -225,6 +228,25 @@ importers:
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.4)(typescript@5.6.3))
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@types/node':
+        specifier: ^20.17.1
+        version: 20.17.4
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.19.2)
+
+  packages/anomaly-detection-store:
+    dependencies:
+      '@sphereon/ssi-sdk.kv-store-temp':
+        specifier: workspace:*
+        version: link:../kv-store
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*

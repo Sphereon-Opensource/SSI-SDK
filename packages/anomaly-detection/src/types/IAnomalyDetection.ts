@@ -1,27 +1,16 @@
-import {IPluginMethodMap} from '@veramo/core'
+import {IAgentContext, IPluginMethodMap} from '@veramo/core'
+import {AnomalyDetectionStoreArgs, IAnomalyDetectionStore} from "@sphereon/ssi-sdk.anomaly-detection-store";
+import {Optional} from "nx/src/project-graph/plugins";
 
 export interface IAnomalyDetection extends IPluginMethodMap {
-  anomalyDetectionLookupLocation(args: AnomalyDetectionLookupLocationArgs): Promise<AnomalyDetectionLookupLocationResult>
+  anomalyDetectionLookupLocation(args: AnomalyDetectionLookupLocationArgs, context: IRequiredContext): Promise<AnomalyDetectionLookupLocationResult>
 }
 
-export type AnomalyDetectionLookupLocationArgs = {
-  ipOrHostname: string,
-}
+export type AnomalyDetectionLookupLocationArgs = Optional<AnomalyDetectionStoreArgs, 'storeId' | 'namespace'>
 
 export type AnomalyDetectionLookupLocationResult = {
   continent?: string
   country?: string
 }
 
-export type AnomalyDetectionPersistArgs = {
-  locationId: string
-  overwriteExisting?: boolean
-  validation?: boolean
-  ttl?: number
-  storeId?: string
-  namespace?: string
-}
-
-export type AnomalyDetectionLocationPersistArgs = AnomalyDetectionPersistArgs & {
-  locationArgs: { continent?: string; country?: string }
-}
+export type IRequiredContext = IAgentContext<IAnomalyDetectionStore>
