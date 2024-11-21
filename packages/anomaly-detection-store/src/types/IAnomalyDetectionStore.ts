@@ -2,7 +2,7 @@ import {IPluginMethodMap} from '@veramo/core'
 import {IKeyValueStore, IValueData} from "@sphereon/ssi-sdk.kv-store-temp";
 
 export interface IAnomalyDetectionStore extends IPluginMethodMap {
-  anomalyDetectionStoreDefaultLocation(): Promise<AnomalyDetectionStoreLocationResult>
+  anomalyDetectionStoreDefaultLocationStore(): Promise<AnomalyDetectionStoreLocationResult>
   anomalyDetectionStorePersistLocation(args: AnomalyDetectionStoreLocationPersistArgs): Promise<AnomalyDetectionStoreLocationResultIValueData>
   anomalyDetectionStoreHasLocation(args: AnomalyDetectionStoreArgs): Promise<boolean>
   anomalyDetectionStoreRemoveLocation(args: AnomalyDetectionStoreArgs): Promise<boolean>

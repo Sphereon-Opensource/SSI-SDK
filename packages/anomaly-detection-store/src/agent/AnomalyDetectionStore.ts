@@ -19,7 +19,7 @@ export const anomalyDetectionStoreMethods: Array<string> = [
   'anomalyDetectionStoreRemoveLocation',
   'anomalyDetectionStoreClearAllLocations',
   'anomalyDetectionStoreGetLocation',
-  'anomalyDetectionStoreDefaultLocation'
+  'anomalyDetectionStoreDefaultLocationStore'
 ]
 
 /**
@@ -37,18 +37,18 @@ export class AnomalyDetectionStore implements IAgentPlugin {
     anomalyDetectionStoreRemoveLocation: this.anomalyDetectionStoreRemoveLocation.bind(this),
     anomalyDetectionStoreClearAllLocations: this.anomalyDetectionStoreClearAllLocations.bind(this),
     anomalyDetectionStoreGetLocation: this.anomalyDetectionStoreGetLocation.bind(this),
-    anomalyDetectionStoreDefaultLocation: this.anomalyDetectionStoreDefaultLocation.bind(this)
+    anomalyDetectionStoreDefaultLocationStore: this.anomalyDetectionStoreDefaultLocationStore.bind(this)
   }
 
   constructor(args: {
-    defaultStoreId: string;
-    defaultNamespace: string;
+    defaultStoreId?: string;
+    defaultNamespace?: string;
     dnsLookupStore?: Map<string, IKeyValueStore<AnomalyDetectionStoreLocation>> | IKeyValueStore<AnomalyDetectionStoreLocation>
   }) {
-    this.defaultStoreId = args.defaultStoreId ?? '_default'
-    this.defaultNamespace = args.defaultNamespace ?? 'oid4vci'
+    this.defaultStoreId = args?.defaultStoreId ?? '_default'
+    this.defaultNamespace = args?.defaultNamespace ?? 'anomaly-detection'
 
-    if (args?.dnsLookupStore && args.dnsLookupStore instanceof Map) {
+    if (args?.dnsLookupStore !== undefined && args?.dnsLookupStore !== null && args.dnsLookupStore instanceof Map) {
       this._dnsLookupStore = args.dnsLookupStore
     } else {
       this._dnsLookupStore = new Map().set(
@@ -126,7 +126,7 @@ export class AnomalyDetectionStore implements IAgentPlugin {
     return storeId ?? this.defaultStoreId
   }
 
-  private anomalyDetectionStoreDefaultLocation(): Promise<AnomalyDetectionStoreLocationResult> {
+  private anomalyDetectionStoreDefaultLocationStore(): Promise<AnomalyDetectionStoreLocationResult> {
     return Promise.resolve(this.store({ stores: this._dnsLookupStore, storeId: this.defaultStoreId }))
   }
 
