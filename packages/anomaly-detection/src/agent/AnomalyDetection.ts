@@ -1,6 +1,13 @@
-import { IAgentPlugin } from '@veramo/core'
-import { IAnomalyDetection, LookupLocationArgs, LookupLocationResult, schema } from '../index'
-import { CountryResponse, Reader } from 'mmdb-lib'
+import {IAgentPlugin} from '@veramo/core'
+import {
+  AnomalyDetectionLocationPersistArgs,
+  AnomalyDetectionLookupLocationArgs,
+  AnomalyDetectionLookupLocationResult,
+  IAnomalyDetection,
+  schema
+} from '../index'
+import {CountryResponse, Reader} from 'mmdb-lib'
+import {IKeyValueStore, KeyValueStore, ValueStoreType} from "@sphereon/ssi-sdk.kv-store-temp";
 
 type DnsLookupFn = (hostname: string) => Promise<string>
 
@@ -13,20 +20,45 @@ export class AnomalyDetection implements IAgentPlugin {
   readonly schema = schema.IAnomalyDetection
   private readonly db: Buffer
   private readonly dnsLookup?: DnsLookupFn
+  private readonly defaultStoreId: string
+  private readonly defaultNamespace: string
+  private readonly _dnsLookupStore: Map<string, IKeyValueStore<AnomalyDetectionLookupLocationResult>>
+
   readonly methods: IAnomalyDetection = {
-    lookupLocation: this.lookupLocation.bind(this),
+    anomalyDetectionLookupLocation: this.anomalyDetectionLookupLocation.bind(this),
   }
 
-  constructor(args: { geoIpDB: Buffer; dnsLookupCallback?: DnsLookupFn }) {
+  constructor(args: {
+    geoIpDB: Buffer;
+    dnsLookupCallback?: DnsLookupFn;
+    defaultStoreId: string;
+    defaultNamespace: string;
+    dnsLookupStore?: Map<string, IKeyValueStore<AnomalyDetectionLookupLocationResult>> | IKeyValueStore<AnomalyDetectionLookupLocationResult>
+  }) {
     const { geoIpDB, dnsLookupCallback } = { ...args }
     if (geoIpDB === undefined || geoIpDB === null) {
       throw new Error('The geoIpDB argument is required')
     }
     this.db = geoIpDB
     this.dnsLookup = dnsLookupCallback
+
+    this.defaultStoreId = args.defaultStoreId ?? '_default'
+    this.defaultNamespace = args.defaultNamespace ?? 'oid4vci'
+
+    if (args?.dnsLookupStore && args.dnsLookupStore instanceof Map) {
+      this._dnsLookupStore = args.dnsLookupStore
+    } else {
+      this._dnsLookupStore = new Map().set(
+          this.defaultStoreId,
+          new KeyValueStore({
+            namespace: this.defaultNamespace,
+            store: new Map<string, AnomalyDetectionLookupLocationResult>(),
+          }),
+      )
+    }
   }
 
-  private async lookupLocation(args: LookupLocationArgs): Promise<LookupLocationResult> {
+  private async anomalyDetectionLookupLocation(args: AnomalyDetectionLookupLocationArgs): Promise<AnomalyDetectionLookupLocationResult> {
     const { ipOrHostname } = { ...args }
     const reader = new Reader<CountryResponse>(this.db)
     const ipv4Reg = '(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])'
@@ -41,13 +73,67 @@ export class AnomalyDetection implements IAgentPlugin {
       result = reader.get(ipOrHostname)
     }
 
-    if (result !== undefined && result !== null) {
-      return Promise.resolve({
-        continent: result?.continent?.code,
-        country: result?.country?.iso_code,
-      })
+    const lookupResult = {
+      continent: result?.continent?.code,
+      country: result?.country?.iso_code,
     }
-    return null
+
+    await this.anomalyDetectionPersistLocation({
+      locationId: ipOrHostname,
+      storeId: this.defaultStoreId,
+      namespace: this.defaultNamespace,
+      locationArgs: lookupResult,
+    })
+
+    return lookupResult
+  }
+
+  private async anomalyDetectionPersistLocation(args: AnomalyDetectionLocationPersistArgs) {
+    const storeId = this.storeIdStr(args)
+    const namespace = this.namespaceStr(args)
+    const { locationId, locationArgs, ttl } = args
+
+    if (args?.validation !== false) {
+      // TODO
+    }
+    const existing = await this.store({ stores: this._dnsLookupStore, storeId }).getAsValueData(
+        this.prefix({
+          namespace,
+          locationId,
+        }),
+    )
+    if (!existing.value || (existing.value && args?.overwriteExisting !== false)) {
+      return await this.store({ stores: this._dnsLookupStore, storeId }).set(
+          this.prefix({
+            namespace,
+            locationId,
+          }),
+          locationArgs,
+          ttl,
+      )
+    }
+    return existing
+  }
+
+  private store<T extends ValueStoreType>(args: { stores: Map<string, IKeyValueStore<T>>; storeId?: string }): IKeyValueStore<T> {
+    const storeId = this.storeIdStr({ storeId: args.storeId })
+    const store = args.stores.get(storeId)
+    if (!store) {
+      throw Error(`Could not get issuer metadata store: ${storeId}`)
+    }
+    return store
+  }
+
+  private storeIdStr({ storeId }: { storeId?: string }): string {
+    return storeId ?? this.defaultStoreId
+  }
+
+  private namespaceStr({ namespace }: { namespace?: string }): string {
+    return namespace ?? this.defaultNamespace
+  }
+
+  private prefix({ namespace, locationId }: { namespace?: string; locationId: string }): string {
+    return `${this.namespaceStr({ namespace })}:${locationId}`
   }
 
   private async resolveDns(hostname: string): Promise<string> {

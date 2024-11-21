@@ -17,7 +17,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should lookup the location of an IPv4 address', async () => {
       await expect(
-        agent.lookupLocation({
+        agent.anomalyDetectionLookupLocation({
           ipOrHostname: '77.247.248.1',
         }),
       ).resolves.toEqual({
@@ -28,7 +28,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should lookup the location of an IPv6 address', async () => {
       await expect(
-        agent.lookupLocation({
+        agent.anomalyDetectionLookupLocation({
           ipOrHostname: '2001:4860:7:27f::f5',
         }),
       ).resolves.toEqual({
@@ -39,7 +39,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should lookup the location of a hostname', async () => {
       await expect(
-        agent.lookupLocation({
+        agent.anomalyDetectionLookupLocation({
           ipOrHostname: 'sphereon.com',
         }),
       ).resolves.toEqual({

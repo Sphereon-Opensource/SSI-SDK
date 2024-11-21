@@ -145,7 +145,7 @@ export class ResourceResolver implements IAgentPlugin {
     } else {
       throw Error(`input type is required to be RequestInfo | URL`)
     }
-    return await context.agent.lookupLocation({
+    return await context.agent.anomalyDetectionLookupLocation({
       ipOrHostname: url.hostname
     })
   }
