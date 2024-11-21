@@ -162,33 +162,20 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     return store instanceof Map && typeof store.entries === 'function'
   }
 
-  private async getFromMapWithPrefix(
-    prefixes: Array<string>,
-    options?: {
-      raw?: boolean
-    },
-  ): Promise<Array<KeyvStoredData<Value>>> {
+  private async getFromMapWithPrefix(prefixes: string[]): Promise<Array<KeyvStoredData<Value> | undefined>> {
     if (!this.isMapWithEntries(this.store)) {
       return []
     }
 
     const map = this.store as Map<string, Value>
-    const entries = Array.from(map.entries())
 
-    const result = []
-    for (const prefix of prefixes) {
-      let found: boolean = false
-      for (const [key, value] of entries) {
-        if (key.startsWith(prefix)) {
-          found = true
-          result.push(value as KeyvStoredData<Value>)
-        }
-      }
-      if (!found) {
-        result.push(undefined)
-      }
-    }
-    return result
+    return prefixes.flatMap((prefix) => {
+      const matchedValues = Array.from(map.entries())
+        .filter(([key]) => key.startsWith(prefix))
+        .map(([, value]) => value as KeyvStoredData<Value>)
+
+      return matchedValues.length > 0 ? matchedValues : [undefined]
+    })
   }
 
   async get(
