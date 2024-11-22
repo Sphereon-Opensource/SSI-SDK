@@ -32,7 +32,7 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/anomaly-detection-store/agent.yml')
+  const config = await getConfig('packages/geolocation-store/agent.yml')
   const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
   serverAgent = agent
   dbConnection = db
