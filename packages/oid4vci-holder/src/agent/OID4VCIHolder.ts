@@ -1058,7 +1058,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           trustAnchors: [trustAnchor]
         })
 
-        if (Array.isArray(resolveResult) && resolveResult.length > 0) {
+        if (!resolveResult.error) {
           trustedAnchors.push(trustAnchor)
         }
     }
