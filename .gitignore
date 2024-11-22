@@ -75,6 +75,8 @@ test/*.js
 /packages/event-logger/plugin.schema.json
 /packages/credential-validation/plugin.schema.json
 /packages/oidf-client/plugin.schema.json
+/packages/anomaly-detection/plugin.schema.json
+/packages/anomaly-detection-store/plugin.schema.json
 
 **/.env.energyshr
 **/.env.local

@@ -1,0 +1,49 @@
+{
+  "name": "@sphereon/ssi-sdk.anomaly-detection-store",
+  "version": "0.30.1",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IAnomalyDetectionStore": "./src/types/IAnomalyDetectionStore.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk.kv-store-temp": "workspace:*"
+  },
+  "devDependencies": {
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@types/node": "^20.17.1",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "typeorm": "^0.3.20"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "plugin.schema.json",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "Anomaly Detection",
+    "Anomaly Detection Store"
+  ],
+  "nx": {}
+}

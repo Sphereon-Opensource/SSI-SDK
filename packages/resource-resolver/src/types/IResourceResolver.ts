@@ -1,5 +1,6 @@
-import { IKeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import {IKeyValueStore, ValueStoreType} from '@sphereon/ssi-sdk.kv-store-temp'
+import {IAgentContext, IPluginMethodMap} from '@veramo/core'
+import {IAnomalyDetection} from "@sphereon/ssi-sdk.anomaly-detection";
 
 export interface IResourceResolver extends IPluginMethodMap {
   resourceResolve(args: ResolveArgs, context: RequiredContext): Promise<Response>
@@ -14,6 +15,7 @@ export type ResourceResolverOptions = {
   defaultNamespace?: string
   resourceStores?: Map<string, IKeyValueStore<Resource>> | IKeyValueStore<Resource>
   ttl?: number
+  detectLocation?: boolean
 }
 
 export type ResolveArgs = {
@@ -71,7 +73,13 @@ export type StoreArgs<T extends ValueStoreType> = {
   storeId?: string
 }
 
+export type Location = {
+  continent?: string
+  country?: string
+}
+
 export type Resource = {
+  location?: Location | null
   response: SerializedResponse
   resourceType: ResourceType
   insertedAt: number
@@ -85,4 +93,4 @@ export type SerializedResponse = {
   body: string
 }
 
-export type RequiredContext = IAgentContext<never>
+export type RequiredContext = IAgentContext<IAnomalyDetection>

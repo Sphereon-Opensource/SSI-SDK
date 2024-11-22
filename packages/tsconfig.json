@@ -49,6 +49,8 @@
     { "path": "public-key-hosting" },
     { "path": "resource-resolver" },
 	{ "path": "oidf-client" },
-	{ "path": "oidf-metatdata-server" }
+    { "path": "oidf-metatdata-server" },
+    { "path": "anomaly-detection" },
+    { "path": "anomaly-detection-store" },
   ]
 }

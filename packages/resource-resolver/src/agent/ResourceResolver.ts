@@ -44,6 +44,7 @@ export class ResourceResolver implements IAgentPlugin {
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
   private readonly defaultTtl: number
+  private readonly detectLocation: boolean
   private readonly _resourceStores: Map<string, IKeyValueStore<Resource>>
 
   constructor(options?: ResourceResolverOptions) {
@@ -51,12 +52,14 @@ export class ResourceResolver implements IAgentPlugin {
       defaultStore,
       defaultNamespace,
       resourceStores,
-      ttl
+      ttl,
+      detectLocation
     } = options ?? {}
 
     this.defaultStoreId = defaultStore ?? '_default'
     this.defaultNamespace = defaultNamespace ?? 'resources'
     this.defaultTtl = ttl ?? 3600
+    this.detectLocation = detectLocation ?? false
 
     if (resourceStores && resourceStores instanceof Map) {
       this._resourceStores = resourceStores
@@ -101,10 +104,16 @@ export class ResourceResolver implements IAgentPlugin {
       });
     }
 
+    let location
+    if (this.detectLocation) {
+      location = await this.retrieveLocation(input, context)
+    }
+
     const response = await fetch(input, init)
     if (!resolveOpts?.skipPersistence && (response.status >= 200 && response.status < 300)) {
       const serializedResponse = await serializeResponse(response);
-      const resource = {
+      const resource: Resource = {
+        location,
         response: serializedResponse,
         resourceType,
         insertedAt: Date.now(),
@@ -125,6 +134,20 @@ export class ResourceResolver implements IAgentPlugin {
     }
 
     return response
+  }
+
+  private async retrieveLocation(input: RequestInfo | URL, context: RequiredContext) {
+    let url: URL
+    if (input instanceof Request && input.url !== undefined && input.url !== null) {
+      url = new URL(input.url)
+    } else if (input instanceof URL) {
+      url = input
+    } else {
+      throw Error(`input type is required to be RequestInfo | URL`)
+    }
+    return await context.agent.anomalyDetectionLookupLocation({
+      ipOrHostname: url.hostname
+    })
   }
 
   /** {@inheritDoc IResourceResolver.resourceClearAllResources} */

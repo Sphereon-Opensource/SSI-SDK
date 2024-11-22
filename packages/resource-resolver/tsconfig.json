@@ -11,6 +11,9 @@
       "path": "../agent-config"
     },
     {
+      "path": "../anomaly-detection"
+    },
+    {
       "path": "../kv-store"
     }
   ]
