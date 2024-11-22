@@ -92,8 +92,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
 export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => { //IBasicIssuerLocaleBranding
   const { display, context } = args
   return await Promise.all(
-    display.map(async (metadataDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
-      const branding = await issuerLocaleBrandingFrom({ issuerDisplay: metadataDisplay })
+    display.map(async (issuerDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      const branding = await issuerLocaleBrandingFrom({ issuerDisplay })
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
   )
