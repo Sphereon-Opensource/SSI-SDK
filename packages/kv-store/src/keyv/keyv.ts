@@ -130,7 +130,7 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
       promise = this.store.getMany(keyPrefixed, options) as Promise<KeyvStoredData<Value>[]>
     } else if (this.isMapWithEntries(this.store)) {
       // Handle Map-based stores with prefix matching
-      promise = this.getFromMapWithPrefix(keyPrefixed, options)
+      promise = this.getFromMapWithPrefix(keyPrefixed)
     } else {
       promise = Promise.all(keyPrefixed.map((k) => this.store.get(k, options) as Promise<KeyvStoredData<Value>>))
     }
