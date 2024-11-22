@@ -20,6 +20,8 @@ import {
   VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 
+import { ExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+
 import { Resolvable } from 'did-resolver'
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { EventEmitter } from 'events'
@@ -193,6 +195,7 @@ export interface IPresentationWithDefinition {
 export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
   // we replace the legacy idOpts with the Managed Identifier opts from the identifier resolution module
   idOpts: ManagedIdentifierOptsOrResult
+  oidfOpts?: ExternalIdentifierOIDFEntityIdOpts
   checkLinkedDomains?: CheckLinkedDomain
   wellknownDIDVerifyCallback?: VerifyCallback
 }

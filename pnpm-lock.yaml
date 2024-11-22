@@ -236,11 +236,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -467,11 +467,11 @@ importers:
         specifier: 5.0.0-unstable.27
         version: 5.0.0-unstable.27
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -577,11 +577,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.27
         version: 5.0.0-unstable.27
@@ -589,20 +589,20 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-resolver-ebsi':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -659,20 +659,20 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -854,8 +854,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdl-mdoc':
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
@@ -866,14 +866,14 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.x509-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -912,20 +912,20 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1088,23 +1088,23 @@ importers:
         specifier: 0.2.0-SNAPSHOT.22
         version: 0.2.0-SNAPSHOT.22
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -1170,8 +1170,8 @@ importers:
         specifier: 0.16.1-next.187
         version: 0.16.1-next.187
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@types/i18n-js':
         specifier: ^3.8.9
         version: 3.8.9
@@ -1200,17 +1200,17 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1276,20 +1276,20 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(@noble/hashes@1.2.0)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(@noble/hashes@1.2.0)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1349,17 +1349,17 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1442,8 +1442,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1479,14 +1479,14 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1537,8 +1537,8 @@ importers:
         specifier: 0.1.1-unstable.0647eb6
         version: 0.1.1-unstable.0647eb6(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.resource-resolver':
         specifier: workspace:*
         version: link:../resource-resolver
@@ -1555,6 +1555,46 @@ importers:
       '@veramo/remote-server':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)(express@4.21.1)
+
+  packages/oidf-metadata-server:
+    dependencies:
+      '@sphereon/ssi-express-support':
+        specifier: workspace:*
+        version: link:../ssi-express-support
+      '@sphereon/ssi-sdk.kv-store-temp':
+        specifier: workspace:*
+        version: link:../kv-store
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.6
+      express:
+        specifier: ^4.19.2
+        version: 4.21.1
+      semver:
+        specifier: ^7.6.3
+        version: 7.6.3
+    devDependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/express-serve-static-core':
+        specifier: ^4.19.5
+        version: 4.19.5
+      '@types/http-terminator':
+        specifier: ^2.0.5
+        version: 2.0.5
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
 
   packages/pd-manager:
     dependencies:
@@ -1732,11 +1772,11 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -1790,17 +1830,17 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1848,11 +1888,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2046,17 +2086,17 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2089,17 +2129,17 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@types/node':
         specifier: ^20.17.1
         version: 20.17.1
@@ -2131,8 +2171,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2153,14 +2193,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224
       '@sphereon/pex':
         specifier: 5.0.0-unstable.27
         version: 5.0.0-unstable.27
@@ -2168,14 +2208,14 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -2244,8 +2284,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2286,26 +2326,26 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224
       '@sphereon/pex':
         specifier: 5.0.0-unstable.27
         version: 5.0.0-unstable.27
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2374,8 +2414,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2447,8 +2487,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2745,14 +2785,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2797,11 +2837,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2926,11 +2966,11 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3020,20 +3060,20 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
         specifier: 0.23.0
         version: 0.23.0(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
@@ -3107,11 +3147,11 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3156,11 +3196,11 @@ importers:
   packages/vc-status-list-issuer:
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3202,11 +3242,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3292,11 +3332,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3344,11 +3384,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3393,11 +3433,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3477,8 +3517,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-next.224
+        version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3544,23 +3584,23 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-provider-oyd':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3793,11 +3833,11 @@ importers:
         version: 2.0.6
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.25.0
-        version: 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+        specifier: 0.25.1-feature.SDK.41.oidf.support.20
+        version: 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -5950,16 +5990,16 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-next.187':
-    resolution: {integrity: sha512-h1UuemCO+V9XwosFYzx9ERVMb9l3fHyYtK84e+WJds2wFPKCUli8WMYsbMp1rjh5ld7ovXqvlQr3M2nNxAO+0Q==}
+  '@sphereon/did-auth-siop-adapter@0.16.1-next.224':
+    resolution: {integrity: sha512-99Nt6YX39dpvBjVCqsZwqUQ/SUOwu1WuM7AQcvWsEK+JV2COtyP2IaJUhv9VcLLQ1Ju9DZeKUUDAq+zQi3Hpzg==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-auth-siop@0.16.1-next.187':
-    resolution: {integrity: sha512-L3HA5+5tr+OLQOlJF+i5t9MJryzQyM+p1MuQjKj/fdGkTTcXKCZhHm4ymW06QxJFOJ/LZwkQfNSRsBbUKGgNLg==}
+  '@sphereon/did-auth-siop@0.16.1-next.224':
+    resolution: {integrity: sha512-3Tx9sXiEJHquaDMx1JSzE++gX9+LcshgLbfI5oaM06kmSM5LE0at5KruADrMoLqiWjlCzo5LxeePz8his8euxg==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-provider-oyd@0.25.0':
-    resolution: {integrity: sha512-K9BC2wrBDWvAY4C+MrAb54tBtJyNQiinRMPv8OnXLT2XqbEoC2ADP1gJLlNB9xvL6lyql6cwlzh+LaknYPi97A==}
+  '@sphereon/did-provider-oyd@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-Y3R779dkEvsFxxlGtpZETK2/TqQpHoyCc+es/epNBQZejKp+hH8D0E2nTCtYVeVKdKOPbwYFp92N67SSp2gjBA==}
 
   '@sphereon/did-uni-client@0.4.0':
     resolution: {integrity: sha512-PJr0xi46iEMtQ7vJW6rAoc2T+gPT8P7q0FjVcOVI3l8so4XJ+iY+wkeF2osEFGmjVS/Q76uhcDCBXTXxPDFdcQ==}
@@ -5978,8 +6018,8 @@ packages:
       '@sphereon/react-native-argon2': ^2.0.9
       react-native: '>=0.60.0'
 
-  '@sphereon/jarm@0.16.1-next.187':
-    resolution: {integrity: sha512-rN06MBRYjtXcGBB/LL5PL7zZ0I0T+yNqE4G9rZkKqcFUHCifAuDVV5iKaPZOVaYgdJ1xCPCeoNyDhmyij7OMCw==}
+  '@sphereon/jarm@0.16.1-next.224':
+    resolution: {integrity: sha512-9cxNd9gZ0WIlNdfjtJv5sL3W+7WUizyzsm7R3Meg8xTEmXp0kExnl9+CLFF8gzX0v08GHl8r2NCYQL8l43nO2w==}
     engines: {node: '>=18'}
 
   '@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.22':
@@ -5993,16 +6033,20 @@ packages:
     resolution: {integrity: sha512-OYOT3Z3moNb6JyGHYX9tcaOcrCAUn9opNKQ9wuKoiSyckXS6RZXinuDlGETISnMCf3cQZCWAHOc6ctfHv1eHDw==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-client@0.16.1-next.187':
-    resolution: {integrity: sha512-a3V4gXVkD4Evg9OYPjNOYb2uhBCljo5iS1m8cQJ1KhEurx34aF8X7fWxKzdebBFOLiwA6fiRvfN4i+yL8L8yoQ==}
+  '@sphereon/oid4vc-common@0.16.1-next.224':
+    resolution: {integrity: sha512-g+8aKZN7e7D4/doKCPPnojewyN5l9A6bwVOTzCChmBijtzYOQCljL5CnxULdss/1HgycTCwcfyLipCplGVpYYg==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-common@0.16.1-next.187':
-    resolution: {integrity: sha512-7mWnxVHMm6Sm3ukQUb9N0SerHPu02W+8damFSN1hIQNgI/vSYCVfZcFL8YOPanxh0KAO9JYA5+QuVDMxp0WQyw==}
+  '@sphereon/oid4vci-client@0.16.1-next.224':
+    resolution: {integrity: sha512-clE0ZmScc6d6cC0057UVFzyy88eDKlTSnGKUw77TRxLWpCRHwAi7jvkRPqBe62DZukk+oAm7xF4HIP7vMq7H6g==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-next.187':
-    resolution: {integrity: sha512-PWyEVhyyTIfLh0c73IzuwUGHJRDiE6wd3fqAaSJZv2A2Pc6WJyOgo/stQtLPJd5TuqSLBRaDgcr5dW50WEA7QQ==}
+  '@sphereon/oid4vci-common@0.16.1-next.224':
+    resolution: {integrity: sha512-AWfdb4y0viVFhvSyTgzd7E/KgEUkK7qdJ8sKT4AdvCxqGz2koaFmWwKXMLQvzwrOWV2B01Ac03suB+coa8bhtQ==}
+    engines: {node: '>=18'}
+
+  '@sphereon/oid4vci-issuer-server@0.16.1-next.224':
+    resolution: {integrity: sha512-uNFwjoOO9cq3qgFzRH9kWD+QTX3dFjcQxqgjEDMGCurnm+Xunyl2Me1+iyy1OdiUnqd1fsfgfJROfnlJ7+uIPA==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6010,8 +6054,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.16.1-next.187':
-    resolution: {integrity: sha512-B2EAiaOJVWzonA/rPTlwl24eRvQ86P2/+ew7TWRgiaqKOO779kOzYPUgQeuljr7Jrl5+U2z2gQYBHtGKt4NkBA==}
+  '@sphereon/oid4vci-issuer@0.16.1-next.224':
+    resolution: {integrity: sha512-5hWdh46FME0wlfCRgcpSZ2F4Yk/VhT4ZVXlLReRQF/Ra+9vTN/WVIyPPaghbw38ifVorCIrKghHknJoDshqIGw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6040,8 +6084,8 @@ packages:
     peerDependencies:
       react-native: '>=0.67.0'
 
-  '@sphereon/ssi-express-support@0.30.1':
-    resolution: {integrity: sha512-eZMq3V6lZ3qVCO+ymRjLOmDrfIqPsAf/KHwxtK4yoZyVjsDC4f/mbLIovyv1SdK/Uf7raF7QXdTjLi+f/XeS2Q==}
+  '@sphereon/ssi-express-support@0.30.2-next.279':
+    resolution: {integrity: sha512-FtIj3bTBfbaeiZ6UGAXTOjA8KixFlzZ3wmg5zTFNOfv3POtEaS6x8xyZJANNW+G+hU2ZWpGKdWp5AVINdrEsLg==}
     peerDependencies:
       '@noble/hashes': 1.2.0
       passport-azure-ad: ^4.3.5
@@ -6054,47 +6098,77 @@ packages:
       passport-http-bearer:
         optional: true
 
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0':
-    resolution: {integrity: sha512-sUROw3bTfr8zcKO75eaDjrGvx13UAFRIKahbxXZqat+/6WiF4+XzjUd79bCoXV+o/iIhaa4X8FetPci7hcwvuQ==}
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-rx0OC7h7J/OEI7g8fL6AIppy1Npv6qOZlc59BE1TjWFkJikOuJUSLwyEp55jdt6rbrN4180WRG+ozdu1Hc9EEg==}
 
-  '@sphereon/ssi-sdk-ext.did-provider-key@0.25.0':
-    resolution: {integrity: sha512-8nC438qK2DKlOBhlV1mvQcKvIa1CfnRGJo6i5uL2Dmdve0O1ZbKT+H6C7AGL8iEEf0USrGmbzGISxYwUSMvg2A==}
+  '@sphereon/ssi-sdk-ext.did-provider-key@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-GoXWbiEyGW9BfjxPSdTF7hRI4Refm8yX1PloRl2+LQNKSUAgzXL7qbFRC2dx+9UAKiX92WP4zMZv/nqRVWlj2A==}
 
   '@sphereon/ssi-sdk-ext.did-provider-lto@0.23.0':
     resolution: {integrity: sha512-PxG20HB72+VGdawqpO7Vl/uZIVLOEoNv+mngplSTMErhkF1S7V/X4TFaSfZciWg/dYoXRVkDqxZNRIj6Hq9sug==}
 
-  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.25.0':
-    resolution: {integrity: sha512-HFDKHQOyrMot0MiHkZt0FdM5qWRmZWtt0fF85DA1dK6foN9PXlYH6VPgHscwTIwgxsSrL/zlsYhMDUK+5vQVLA==}
+  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-QnwJDe8hCaQsQc49uyg//xxKF2fs435SFc4xNmDEfKVdk6yYPM2pzmAE7FbDaVjf/qOgOJS/cEosOMTlaxrR2g==}
 
-  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.25.0':
-    resolution: {integrity: sha512-Diqwsf4RA5p/RNXBjIk4numKp/erbhhaJOny1uvGpYsgMRQjzcpHbmAoe2mPkoCNHpob/aaFlivpzHlma1AIOw==}
+  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-FQWU+ewd20QJ2ouAmCLvtf1Dpm79S7vxO7wGmVVFy33rDuK9f+E8cZHsGzP72MZ0H4as6HlDomIKOfviy2wMpA==}
 
-  '@sphereon/ssi-sdk-ext.did-resolver-key@0.25.0':
-    resolution: {integrity: sha512-biWUv+gtEcuCapdN4/1iVHz7I+2rdyAwWfacMeLFoQ5zoTGxKdN9g1eqOt4qwpP6PsiG4HsBLSyJFXNnAsTIcQ==}
+  '@sphereon/ssi-sdk-ext.did-resolver-key@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-X1/1jJ+VdIJBXAGhLsSW7xHp7oRcffSYS956Wfcra/GgooGQ+fWyqzo9Emy+3xdXk758xxOuamS60CUNGDVN6g==}
 
   '@sphereon/ssi-sdk-ext.did-utils@0.25.0':
     resolution: {integrity: sha512-S9mOHmX4WVVp5kM5OJsfsywLTki08I93iROFwkuaycWmssjKgIo6qO30hJQKw3xpW6oA+j8tqBnTXQb8+R87IA==}
 
+  '@sphereon/ssi-sdk-ext.did-utils@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-JvHA1G8ktkOZCPmDeC4jwHcnYtt4DyhjNFQydIfjaKWEBoGkd4tfdAUx/+oSprfrL0A9cHjrpfJD3YLzMTQ8fg==}
+
   '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0':
     resolution: {integrity: sha512-lQcOWAB5bfQZWraU/LJVgSrom+Q9Vm2/volJ5Fv+lCLVZTnZQF17WfLqNncg9ESu/S0S0tXFdbz8Om3hQfEu0A==}
+
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-/D6gewNu2+Z4ySBa4QNvJ1giH9Xi4+GMiN7wKC5+5ur7XgPO8cmeIJXt0ZRgAQ2Ew/gug5RtCPanaRKtzhptFQ==}
 
   '@sphereon/ssi-sdk-ext.jwt-service@0.25.0':
     resolution: {integrity: sha512-YGV/iOmfXFhz933hoZr6U9n3ZhHb844rqxH8OHq0egiFLWpZ5DMXdxZJPM8GzvZOTwg/AMkhFXR6xHp8BYk0KA==}
 
+  '@sphereon/ssi-sdk-ext.jwt-service@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-EAwZ92tATHjXaei3iJ4YsX8oxpAyQ9Db1jHNrLYxYg/ekS2zOT5HcFCPQQBA6Mcz+yjQrs2+GvzgHVonhmtH5g==}
+
   '@sphereon/ssi-sdk-ext.key-manager@0.25.0':
     resolution: {integrity: sha512-Gmmlmz/WgnlM+adOs/ofgpN1HMZB7DTiT6NRgppzNfG+uwpgMH3dWw8yUXdccZZAJOq6vxTaws+yNQ/DstKr4g==}
+
+  '@sphereon/ssi-sdk-ext.key-manager@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-1nRWxLNVfGu1b4GryK+IRmP4ZOk5BnKirDCU6R68HhbiojOlgx6KTv9noyl3irdbSr+YJEWx5CK65jJmmW2Urg==}
 
   '@sphereon/ssi-sdk-ext.key-utils@0.25.0':
     resolution: {integrity: sha512-AEU53x61JUkhIMK/QZD53ImuD6QR2qRsuuUdvL1rrGi54y+iIKXU3X25pxA8yAMfPU6lt/lAFO1BbYZZXv/JMA==}
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.25.0':
-    resolution: {integrity: sha512-k6eXMrvhnANcfpFQlxg0eXXmGgw2YziPi++esxt07FdaYsTeBl+kj5REYlqBFZSDvUp8dExJ5fjs6TQXOyi5CA==}
+  '@sphereon/ssi-sdk-ext.key-utils@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-GPaKR5IKSV17PeSn6UW+NRx6NRIIdQwpRwJnRaESmvUQzI6YKTozBalHVBnqsaZee5F47hulO4zmhF08xFq3PQ==}
+
+  '@sphereon/ssi-sdk-ext.kms-local@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-Xsw/SZ1BDaRIvlQ91YNQuhWmfrygHP38Oz2SiS5FvfePO9S7gKWMQy5W/ODb0/9SFvlqYzfiWd54CTOzJifWmA==}
 
   '@sphereon/ssi-sdk-ext.x509-utils@0.25.0':
     resolution: {integrity: sha512-eX9YiQy0Uhx9pBexwkpdW2KmulGr4DDIxA+WIrgGLYGyYj/zJ3pBfPHAkpuZPxtK+KG67tbUhk9Z3Ye6sR2N0g==}
 
+  '@sphereon/ssi-sdk-ext.x509-utils@0.25.1-feature.SDK.41.oidf.support.20':
+    resolution: {integrity: sha512-73UNVNC1kyUowGxZdQE7sOXqEi/2iF+Q0iTa6w5CBzKdQFoUd+sU1xZGn4zLVuGE3uqE+qaIJKMyoI6GDCUdUg==}
+
   '@sphereon/ssi-sdk.agent-config@0.30.1':
     resolution: {integrity: sha512-8IRct+v8l9T+NACJzm78fH9LzoLiU7q+nHj8keOjFcLrV4CmdpyfuMYdRwrbFXTrLqV1rndAJQ7GGxX+UEq4JA==}
+
+  '@sphereon/ssi-sdk.agent-config@0.30.2-feature.SDK.41.oidf.support.286':
+    resolution: {integrity: sha512-BcwsVjuU+6A643MMVmagx+gobtaWPe7KJ7suhrUY3TSDZIFNIBeLnDBQpf1MYBNKJKg+VSjB6nWATQpVGX2BWA==}
+
+  '@sphereon/ssi-sdk.kv-store-temp@0.30.2-feature.SDK.41.oidf.support.286':
+    resolution: {integrity: sha512-vZagjPwkqccw2ofDDcOoOz+SZz+5iGfrTKFYINkKQGpqk4opD72asZD4+SxZRgk2xZPpPTCpiTsVWx3bxzPK1Q==}
+
+  '@sphereon/ssi-sdk.oidf-client@0.30.2-feature.SDK.41.oidf.support.286':
+    resolution: {integrity: sha512-JqYSeoDhEzrNQmy8gORWlbqMUjYScqfFFZtsS6Wteakr/fX7Chtq/nMhf9v74YnAS24p2amYSBGMuaJGO8orGg==}
+
+  '@sphereon/ssi-sdk.resource-resolver@0.30.2-feature.SDK.41.oidf.support.286':
+    resolution: {integrity: sha512-xnepbkI+ydLSREK4UodCDHYkn1VD9eKgfFw0HgN2LdawfOfRVIAkXYXEMQNyIxUFxTnmyI0P68lUdoPc8HKOKg==}
 
   '@sphereon/vc-status-list@7.0.0-next.0':
     resolution: {integrity: sha512-4GIZq12SXbEbO4vCh5TwWzWk7tviDUP8aOzRGsEw6UW2344qZ31CLsU+bHurdnG4OlLRyosv4khN1ha6OiJHZQ==}
@@ -17279,11 +17353,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop-adapter@0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.16.1-next.187
+      '@sphereon/oid4vc-common': 0.16.1-next.224
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -17292,11 +17366,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.16.1-next.187(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop@0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/jarm': 0.16.1-next.187(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.16.1-next.187
+      '@sphereon/jarm': 0.16.1-next.224(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.16.1-next.224
       '@sphereon/pex': 5.0.0-unstable.27
       '@sphereon/pex-models': 2.3.1
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17313,7 +17387,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-provider-oyd@0.25.0(encoding@0.1.13)':
+  '@sphereon/did-provider-oyd@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -17357,9 +17431,9 @@ snapshots:
       react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3)
       uint8arrays: 3.1.1
 
-  '@sphereon/jarm@0.16.1-next.187(typescript@5.6.3)':
+  '@sphereon/jarm@0.16.1-next.224(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.187
+      '@sphereon/oid4vc-common': 0.16.1-next.224
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
@@ -17391,10 +17465,18 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vci-client@0.16.1-next.187(encoding@0.1.13)':
+  '@sphereon/oid4vc-common@0.16.1-next.224':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.187
-      '@sphereon/oid4vci-common': 0.16.1-next.187(encoding@0.1.13)
+      '@sphereon/ssi-types': link:packages/ssi-types
+      jwt-decode: 4.0.0
+      sha.js: 2.4.11
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
+
+  '@sphereon/oid4vci-client@0.16.1-next.224(encoding@0.1.13)':
+    dependencies:
+      '@sphereon/oid4vc-common': 0.16.1-next.224
+      '@sphereon/oid4vci-common': 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.6
@@ -17402,9 +17484,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.16.1-next.187(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.16.1-next.224(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.187
+      '@sphereon/oid4vc-common': 0.16.1-next.224
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.6
@@ -17415,12 +17497,12 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-next.187(@noble/hashes@1.2.0)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.16.1-next.224(@noble/hashes@1.2.0)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.187
-      '@sphereon/oid4vci-common': 0.16.1-next.187(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.16.1-next.187(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
-      '@sphereon/ssi-express-support': 0.30.1(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+      '@sphereon/oid4vc-common': 0.16.1-next.224
+      '@sphereon/oid4vci-common': 0.16.1-next.224(encoding@0.1.13)
+      '@sphereon/oid4vci-issuer': 0.16.1-next.224(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+      '@sphereon/ssi-express-support': 0.30.2-next.279(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.3
       cookie-parser: 1.4.6
@@ -17438,10 +17520,10 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.16.1-next.187(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
+  '@sphereon/oid4vci-issuer@0.16.1-next.224(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.187
-      '@sphereon/oid4vci-common': 0.16.1-next.187(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-next.224
+      '@sphereon/oid4vci-common': 0.16.1-next.224(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     optionalDependencies:
@@ -17506,7 +17588,7 @@ snapshots:
     dependencies:
       react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3)
 
-  '@sphereon/ssi-express-support@0.30.1(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/ssi-express-support@0.30.2-next.279(@noble/hashes@1.2.0)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
       body-parser: 1.20.3
       casbin: 5.30.0
@@ -17528,11 +17610,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -17562,10 +17644,10 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.did-provider-key@0.25.0(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)':
+  '@sphereon/ssi-sdk-ext.did-provider-key@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.25.0
-      '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
       '@transmute/did-key-bls12381': 0.3.0-unstable.10(encoding@0.1.13)(expo@51.0.29(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(encoding@0.1.13))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.4)(encoding@0.1.13)(react@18.3.1)(typescript@5.6.3))(web-streams-polyfill@3.3.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -17598,7 +17680,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.25.0(encoding@0.1.13)':
+  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)':
     dependencies:
       cross-fetch: 3.1.8(encoding@0.1.13)
       did-resolver: 4.1.0
@@ -17606,7 +17688,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.25.0':
+  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.25.1-feature.SDK.41.oidf.support.20':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -17616,9 +17698,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-resolver-key@0.25.0':
+  '@sphereon/ssi-sdk-ext.did-resolver-key@0.25.1-feature.SDK.41.oidf.support.20':
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -17640,6 +17722,44 @@ snapshots:
       '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
       '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
       '@sphereon/ssi-sdk.agent-config': 0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk-ext.did-utils@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk.agent-config': 0.30.2-feature.SDK.41.oidf.support.286(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
@@ -17703,6 +17823,42 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk.agent-config': 0.30.2-feature.SDK.41.oidf.support.286(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.oidf-client': 0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      debug: 4.3.6
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - utf-8-validate
+
   '@sphereon/ssi-sdk-ext.jwt-service@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
@@ -17740,7 +17896,54 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
+  '@sphereon/ssi-sdk-ext.jwt-service@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-manager': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk.agent-config': 0.30.2-feature.SDK.41.oidf.support.286(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/random': 1.0.2
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      debug: 4.3.6
+      jose: 5.9.4
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - utf-8-validate
+
   '@sphereon/ssi-sdk-ext.key-manager@0.25.0':
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/key-manager': 4.2.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.key-manager@0.25.1-feature.SDK.41.oidf.support.20':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -17770,11 +17973,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.key-utils@0.25.1-feature.SDK.41.oidf.support.20':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.25.0
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.0
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-types': link:packages/ssi-types
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@trust/keyto': 1.0.1
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      base64url: 3.0.1
+      debug: 4.3.6
+      did-resolver: 4.1.0
+      elliptic: 6.5.4
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.kms-local@0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.25.1-feature.SDK.41.oidf.support.20(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.25.1-feature.SDK.41.oidf.support.20
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.25.1-feature.SDK.41.oidf.support.20
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -17812,6 +18037,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@sphereon/ssi-sdk-ext.x509-utils@0.25.1-feature.SDK.41.oidf.support.20':
+    dependencies:
+      '@trust/keyto': 1.0.1
+      debug: 4.3.6
+      js-x509-utils: 1.0.7
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@sphereon/ssi-sdk.agent-config@0.30.1(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -17824,6 +18059,122 @@ snapshots:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
       - better-sqlite3
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk.agent-config@0.30.2-feature.SDK.41.oidf.support.286(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      debug: 4.3.6
+      jsonpointer: 5.0.1
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      url-parse: 1.5.10
+      yaml: 2.5.0
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk.kv-store-temp@0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@veramo/utils': 4.2.0(encoding@0.1.13)
+      debug: 4.3.6
+      events: 3.3.0
+      json-buffer: 3.0.1
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk.oidf-client@0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@sphereon/openid-federation-client': 0.1.1-unstable.0647eb6(encoding@0.1.13)
+      '@sphereon/openid-federation-common': 0.1.1-unstable.0647eb6(encoding@0.1.13)
+      '@sphereon/openid-federation-open-api': 0.1.1-unstable.0647eb6(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.25.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.resource-resolver': 0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      '@sphereon/ssi-types': link:packages/ssi-types
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - bufferutil
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - utf-8-validate
+
+  '@sphereon/ssi-sdk.resource-resolver@0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))':
+    dependencies:
+      '@sphereon/ssi-sdk.kv-store-temp': 0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      cross-fetch: 3.1.8(encoding@0.1.13)
+      debug: 4.3.6
+      typeorm: 0.3.20(pg@8.12.0)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.1)(typescript@5.6.3))
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
       - hdb-pool
       - ioredis
       - mongodb

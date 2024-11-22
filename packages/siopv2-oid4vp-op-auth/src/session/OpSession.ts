@@ -369,6 +369,10 @@ export class OpSession {
 
   private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[], hasher?: Hasher) {
     return verifiablePresentations.reduce((sum, vp) => {
+      if (CredentialMapper.isMsoMdocDecodedPresentation(vp) || CredentialMapper.isMsoMdocOid4VPEncoded(vp)) {
+        return sum + 1
+      }
+
       const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: hasher ?? this.options.hasher })
       if (uvp.verifiableCredential?.length) {
         return sum + uvp.verifiableCredential?.length

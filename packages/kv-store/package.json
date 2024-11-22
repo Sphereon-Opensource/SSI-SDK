@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
     "@veramo/utils": "4.2.0",

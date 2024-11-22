@@ -15,11 +15,7 @@ import {
   IssuerCredentialSubject,
 } from '@sphereon/oid4vci-common'
 import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
-import {
-  CreateOrGetIdentifierOpts,
-  IdentifierProviderOpts,
-  SupportedDidMethodEnum
-} from '@sphereon/ssi-sdk-ext.did-utils'
+import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
   ManagedIdentifierMethod,
@@ -36,7 +32,7 @@ import {
   IBasicIssuerLocaleBranding,
   Identity,
   IIssuerLocaleBranding,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
@@ -65,7 +61,6 @@ import {
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
-import { IOIDFClient } from '@sphereon/ssi-sdk.oidf-client'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -89,7 +84,10 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 
   oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<Array<VerificationResult>>
 
-  oid4vciHolderGetIssuerBranding(args: GetIssuerBrandingArgs, context: RequiredContext): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>
+  oid4vciHolderGetIssuerBranding(
+    args: GetIssuerBrandingArgs,
+    context: RequiredContext,
+  ): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>
 
   oid4vciHolderStoreIssuerBranding(args: StoreIssuerBrandingArgs, context: RequiredContext): Promise<void>
 
@@ -154,7 +152,7 @@ export type GetCredentialsArgs = Pick<
   'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
-export type GetIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact' >
+export type GetIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
 export type StoreIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'issuerBranding' | 'contact'>
 export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'issuanceOpt'>
 export type StoreCredentialBrandingArgs = Pick<
@@ -369,7 +367,7 @@ export enum OID4VCIMachineGuards {
   createContactGuard = 'oid4vciCreateContactGuard',
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
   isOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
-  contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard'
+  contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard',
 }
 
 export enum OID4VCIMachineServices {
@@ -635,19 +633,18 @@ export interface VerifyCredentialArgs {
 
 export type RequiredContext = IAgentContext<
   IIssuanceBranding &
-  IContactManager &
-  ICredentialValidation &
-  ICredentialVerifier &
-  ICredentialIssuer &
-  ICredentialStore &
-  IIdentifierResolution &
-  IJwtService &
-  IDIDManager &
-  IResolver &
-  IKeyManager &
-  ISDJwtPlugin &
-  ImDLMdoc &
-  IOIDFClient
+    IContactManager &
+    ICredentialValidation &
+    ICredentialVerifier &
+    ICredentialIssuer &
+    ICredentialStore &
+    IIdentifierResolution &
+    IJwtService &
+    IDIDManager &
+    IResolver &
+    IKeyManager &
+    ISDJwtPlugin &
+    ImDLMdoc
 >
 
 export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
