@@ -7,8 +7,8 @@ import {createAgent, IAgent, IAgentOptions} from '@veramo/core'
 import {AgentRestClient} from '@veramo/remote-client'
 import {AgentRouter, RequestWithAgentRouter} from '@veramo/remote-server'
 import {createObjects, getConfig} from '../../agent-config/dist'
-import {IAnomalyDetectionStore} from '../src'
-import anomalyDetectionStoreAgentLogic from './shared/anomalyDetectionAgentStoreLogic'
+import {IGeolocationStore} from '../src'
+import geolocationStoreAgentLogic from './shared/geolocationStoreAgentStoreLogic'
 
 jest.setTimeout(60000)
 
@@ -20,7 +20,7 @@ let restServer: Server
 let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IAnomalyDetectionStore>({
+  createAgent<IGeolocationStore>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -67,5 +67,5 @@ const testContext = {
 }
 
 describe('REST integration tests', (): void => {
-  anomalyDetectionStoreAgentLogic(testContext)
+  geolocationStoreAgentLogic(testContext)
 })

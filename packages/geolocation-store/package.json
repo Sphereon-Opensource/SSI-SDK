@@ -1,5 +1,5 @@
 {
-  "name": "@sphereon/ssi-sdk.anomaly-detection-store",
+  "name": "@sphereon/ssi-sdk.geolocation-store",
   "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",

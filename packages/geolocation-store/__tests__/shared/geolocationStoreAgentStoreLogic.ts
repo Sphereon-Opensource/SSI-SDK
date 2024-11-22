@@ -1,8 +1,8 @@
 import { TAgent } from '@veramo/core'
 
-import { IAnomalyDetectionStore } from '../../src'
+import { IGeolocationStore } from '../../src'
 
-type ConfiguredAgent = TAgent<IAnomalyDetectionStore>
+type ConfiguredAgent = TAgent<IGeolocationStore>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Anomaly Detection Store Agent Plugin', (): void => {
