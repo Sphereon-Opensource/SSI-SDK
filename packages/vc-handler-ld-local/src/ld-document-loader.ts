@@ -70,7 +70,7 @@ export class LdDocumentLoader {
           uniresolverResolution: this.uniresolverResolution,
         }).resolve(url)
         // context.agent.resolveDid({didUrl: url})
-        const didDoc: DIDDocument | null = resolutionResult.didDocument
+        let didDoc: DIDDocument | null = resolutionResult.didDocument
         if (!didDoc) {
           throw new Error(`Could not fetch DID document with url: ${url}. Did you enable the the driver?`)
         }
@@ -91,27 +91,18 @@ export class LdDocumentLoader {
           delete didDoc.publicKey
         }
 
-        // const origUrl = url
-        /*if (url.indexOf('#') > 0 && didDoc && typeof didDoc === 'object' && '@context' in didDoc!) {
-          if (origUrl !== url) {
-            // Make sure we replace the result URLs with the original URLs, so framing keeps working
-            didDoc = JSON.parse(JSON.stringify(didDoc).replace(url, origUrl)) as DIDDocument
-            debug('CHANGED:')
-            debug(didDoc)
-          }
-
+        const origUrl = url
+        if (url.indexOf('#') > 0 && didDoc && typeof didDoc === 'object' && '@context' in didDoc && url.startsWith('did:oyd:')) {
           // Apparently we got a whole DID document, but we are looking for a verification method
           // We use origUrl here, as that is how it was used in the VM
           const component = await context.agent.getDIDComponentById({ didDocument: didDoc, didUrl: origUrl })
-          debug('Component:')
-          debug(component)
-          debug('Component stringified:')
+          debug('OYD DID component:')
           debug(JSON.stringify(component))
           if (component && typeof component !== 'string' && component.id) {
             // We have to provide a context
             const contexts = this.ldSuiteLoader
               .getAllSignatureSuites()
-              .filter((x) => x.getSupportedVerificationType() === component.type /!* || component.type === 'Ed25519VerificationKey2018'*!/)
+              .filter((x) => x.getSupportedVerificationType() === component.type)
               .filter((value, index, self) => self.indexOf(value) === index)
               .map((value) => value.getContext())
             const fragment = { ...component, '@context': contexts }
@@ -123,7 +114,7 @@ export class LdDocumentLoader {
             }
           }
         }
-*/
+
         return {
           contextUrl: null,
           documentUrl: url,

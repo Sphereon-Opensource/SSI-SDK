@@ -1,81 +1,74 @@
-import { IAgentPlugin } from '@veramo/core'
-import { CreateJwsCompactArgs, IJwsValidationResult, JwtCompactResult, VerifyJwsArgs } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { IOIDFClient, OIDFClientArgs, RequiredContext, ResolveTrustChainArgs, ResolveTrustChainCallbackResult } from '../types/IOIDFClient'
-import { com } from '@sphereon/openid-federation-client'
-import { schema } from '../index'
-import { JWK } from '@sphereon/ssi-types'
-import FederationClient = com.sphereon.oid.fed.client.FederationClient
-import DefaultFetchJSImpl = com.sphereon.oid.fed.client.fetch.DefaultFetchJSImpl
-import DefaultTrustChainJSImpl = com.sphereon.oid.fed.client.trustchain.DefaultTrustChainJSImpl
-import DefaultCallbacks = com.sphereon.oid.fed.client.service.DefaultCallbacks
+import {FederationClient, ICryptoService, IFetchService, TrustChainResolveResponse} from '@sphereon/openid-federation-client'
+import {JWK} from "@sphereon/ssi-types";
+import {IAgentPlugin} from '@veramo/core'
+import {Request} from "cross-fetch";
+import {schema} from '../'
+import {
+  IOIDFClient,
+  OIDFClientArgs,
+  IRequiredContext,
+  ResolveTrustChainArgs
+} from '../types/IOIDFClient'
 
-export const oidfClientMethods: Array<string> = ['resolveTrustChain', 'signJwt', 'verifyJwt']
+export const oidfClientMethods: Array<string> = ['resolveTrustChain']
 
 export class OIDFClient implements IAgentPlugin {
-  private oidfClient?: FederationClient
+  private readonly fetchServiceCallback?: IFetchService
+  private readonly cryptoServiceCallback?: ICryptoService
+  readonly methods: IOIDFClient = {
+    resolveTrustChain: this.resolveTrustChain.bind(this),
+  }
   readonly schema = schema.IOIDFClient
 
   constructor(args?: OIDFClientArgs) {
-    const { cryptoServiceCallback } = { ...args }
+    const {fetchServiceCallback, cryptoServiceCallback} = {...args}
 
-    if (cryptoServiceCallback !== undefined && cryptoServiceCallback !== null) {
-      DefaultCallbacks.setCryptoServiceDefault(cryptoServiceCallback)
-      DefaultCallbacks.setFetchServiceDefault(new DefaultFetchJSImpl())
-      // Depends on the crypto and fetch services, thus it must be the last one to be set
-      DefaultCallbacks.setTrustChainServiceDefault(new DefaultTrustChainJSImpl())
-      this.oidfClient = new FederationClient()
-    }
+    this.fetchServiceCallback = fetchServiceCallback
+    this.cryptoServiceCallback = cryptoServiceCallback
   }
 
-  readonly methods: IOIDFClient = {
-    resolveTrustChain: this.resolveTrustChain.bind(this),
-    signJwt: this.signJwt.bind(this),
-    verifyJwt: this.verifyJwt.bind(this),
-  }
-
-  private async resolveTrustChain(args: ResolveTrustChainArgs, context: RequiredContext): Promise<ResolveTrustChainCallbackResult> {
-    const { entityIdentifier, trustAnchors } = args
-    this.checkAndSetDefaultCryptoService(context)
-    return await this.oidfClient?.resolveTrustChain(entityIdentifier, trustAnchors)
-  }
-
-  private checkAndSetDefaultCryptoService(context: RequiredContext) {
-    if (
-      context.agent.jwtVerifyJwsSignature !== undefined &&
-      context.agent.jwtVerifyJwsSignature !== null &&
-      (this.oidfClient === undefined || this.oidfClient === null)
-    ) {
-      try {
-        DefaultCallbacks.setCryptoServiceDefault({
-          verify: async (jwt: string, key: any): Promise<boolean> => {
-            const jwk: JWK = { ...key }
-            try {
-              return !(
-                await context.agent.jwtVerifyJwsSignature({
-                  jws: jwt,
-                  jwk,
-                })
-              ).error
-            } catch (e) {
-              console.error(`Error verifying the JWT: ${e.message}`)
-              return Promise.reject(e)
-            }
-          },
-        })
-        DefaultCallbacks.setFetchServiceDefault(new DefaultFetchJSImpl())
-        DefaultCallbacks.setTrustChainServiceDefault(new DefaultTrustChainJSImpl())
-        this.oidfClient = new FederationClient()
-      } catch (error) {
-        throw Error(`Could not initialize the federation client: ${error.message}`)
+  private defaultCryptoJSImpl(context: IRequiredContext): ICryptoService {
+    return {
+      verify: async (jwt: string, key: JWK): Promise<boolean> => {
+        const verification = await context.agent.jwtVerifyJwsSignature({jws: jwt, jwk: key})
+        return !verification.error
       }
     }
   }
 
-  private async signJwt(args: CreateJwsCompactArgs, context: RequiredContext): Promise<JwtCompactResult> {
-    return await context.agent.jwtCreateJwsCompactSignature(args)
+  private defaultFetchJSImpl(context: IRequiredContext): IFetchService {
+    return {
+      async fetchStatement(endpoint: string): Promise<string> {
+        const requestInfo = new Request(endpoint, {
+          method: 'GET'
+        })
+
+        const response = await context.agent.resourceResolve({
+          input: requestInfo,
+          resourceType: 'application/entity-statement+jwt',
+        })
+
+        if (response.status != 200) {
+            throw new Error(`Failed to fetch statement from ${endpoint}`)
+        }
+
+        return await response.text()
+      }
+    }
   }
 
-  private async verifyJwt(args: VerifyJwsArgs, context: RequiredContext): Promise<IJwsValidationResult> {
-    return await context.agent.jwtVerifyJwsSignature(args)
+  private getOIDFClient(context: IRequiredContext): FederationClient {
+    return new FederationClient(
+      this.fetchServiceCallback || this.defaultFetchJSImpl(context),
+      this.cryptoServiceCallback || this.defaultCryptoJSImpl(context)
+    )
+  }
+
+  private async resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<TrustChainResolveResponse> {
+    const { entityIdentifier, trustAnchors } = args
+
+    const oidfClient = this.getOIDFClient(context)
+
+    return await oidfClient.resolveTrustChain(entityIdentifier, trustAnchors, 10)
   }
 }

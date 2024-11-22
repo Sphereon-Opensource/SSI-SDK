@@ -126,8 +126,11 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
     const keyPrefixed = this._getKeyPrefixArray(keys)
     let promise: Promise<Array<KeyvStoredData<Value>>>
     if (this.store.getMany !== undefined) {
-      promise = this.store.getMany(keyPrefixed, options) as Promise<KeyvStoredData<Value>[]> //.then(value => !!value ? value.values() : undefined)
       // todo: Probably wise to check expired ValueData here, if the getMany does not implement this feature itself!
+      promise = this.store.getMany(keyPrefixed, options) as Promise<KeyvStoredData<Value>[]>
+    } else if (this.isMapWithEntries(this.store)) {
+      // Handle Map-based stores with prefix matching
+      promise = this.getFromMapWithPrefix(keyPrefixed)
     } else {
       promise = Promise.all(keyPrefixed.map((k) => this.store.get(k, options) as Promise<KeyvStoredData<Value>>))
     }
@@ -136,13 +139,12 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
 
     return Promise.resolve(allValues)
       .then((all) => {
-        keys.forEach((key, index) => {
-          const data = all[index]
-
+        const entries = Array.isArray(all) ? all : [all]
+        entries.forEach((data, index) => {
           let result = typeof data === 'string' ? this.deserialize(data) : !!data && this.opts.compression ? this.deserialize(data) : data
 
           if (result && typeof result === 'object' && 'expires' in result && typeof result.expires === 'number' && Date.now() > result.expires) {
-            this.delete(key)
+            this.delete(keys[index])
             result = undefined
           }
 
@@ -154,6 +156,26 @@ export class Keyv<Value = any> extends EventEmitter implements KeyvStore<Value> 
         })
       })
       .then(() => Promise.all(results))
+  }
+
+  private isMapWithEntries(store: any): store is Map<string, Value> {
+    return store instanceof Map && typeof store.entries === 'function'
+  }
+
+  private async getFromMapWithPrefix(prefixes: string[]): Promise<Array<KeyvStoredData<Value> | undefined>> {
+    if (!this.isMapWithEntries(this.store)) {
+      return []
+    }
+
+    const map = this.store as Map<string, Value>
+
+    return prefixes.flatMap((prefix) => {
+      const matchedValues = Array.from(map.entries())
+        .filter(([key]) => key.startsWith(prefix))
+        .map(([, value]) => value as KeyvStoredData<Value>)
+
+      return matchedValues.length > 0 ? matchedValues : [undefined]
+    })
   }
 
   async get(

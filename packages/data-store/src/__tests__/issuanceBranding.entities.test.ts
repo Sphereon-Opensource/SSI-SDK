@@ -74,6 +74,16 @@ describe('Database entities tests', (): void => {
           text: {
             color: '#000000',
           },
+          claims: [
+            {
+              key: 'given_name',
+              name: 'Given Name'
+            },
+            {
+              key: 'family_name',
+              name: 'Surname'
+            }
+          ]
         },
       ],
     }
@@ -112,6 +122,8 @@ describe('Database entities tests', (): void => {
     )
     expect(fromDb?.localeBranding[0].text).toBeDefined()
     expect(fromDb?.localeBranding[0].text!.color).toEqual(credentialBranding.localeBranding[0].text!.color)
+    expect(fromDb?.localeBranding[0].claims).toBeDefined()
+    expect(fromDb?.localeBranding[0].claims.length).toEqual(credentialBranding.localeBranding[0].claims!.length)
     expect(fromDb?.createdAt).toBeDefined()
     expect(fromDb?.lastUpdatedAt).toBeDefined()
   })
@@ -302,8 +314,8 @@ describe('Database entities tests', (): void => {
 
     const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = credentialLocaleBrandingEntityFrom(localeBranding)
     const fromDb: CredentialLocaleBrandingEntity = await dbConnection
-      .getRepository(CredentialLocaleBrandingEntity)
-      .save(credentialLocaleBrandingEntity)
+    .getRepository(CredentialLocaleBrandingEntity)
+    .save(credentialLocaleBrandingEntity)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.alias).toEqual(localeBranding.alias)
@@ -453,11 +465,120 @@ describe('Database entities tests', (): void => {
     }
 
     const result: CredentialLocaleBrandingEntity = await dbConnection
-      .getRepository(CredentialLocaleBrandingEntity)
-      .save(updatedCredentialLocaleBranding)
+    .getRepository(CredentialLocaleBrandingEntity)
+    .save(updatedCredentialLocaleBranding)
 
     expect(result).toBeDefined()
     expect(result?.lastUpdatedAt).not.toEqual(fromDb?.localeBranding[0].lastUpdatedAt)
+  })
+
+  it('Should save only claims branding to database', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          claims: [
+            {
+              key: 'given_name',
+              name: 'Given Name'
+            },
+            {
+              key: 'family_name',
+              name: 'Surname'
+            }
+          ]
+        },
+      ],
+    }
+
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+    const fromDb: CredentialBrandingEntity = await dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb?.id).toBeDefined()
+    expect(fromDb?.issuerCorrelationId).toEqual(credentialBranding.issuerCorrelationId)
+    expect(fromDb?.vcHash).toEqual(credentialBranding.vcHash)
+    expect(fromDb?.localeBranding).toBeDefined()
+    expect(fromDb?.localeBranding.length).toEqual(1)
+    expect(fromDb?.localeBranding[0].claims).toBeDefined()
+    expect(fromDb?.localeBranding[0].claims.length).toEqual(credentialBranding.localeBranding[0].claims!.length)
+    expect(fromDb?.createdAt).toBeDefined()
+    expect(fromDb?.lastUpdatedAt).toBeDefined()
+  })
+
+  it('Should enforce unique locale for a credential claim key', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          locale: 'en-US',
+          claims: [
+            {
+              key: 'given_name',
+              name: 'Given Name'
+            },
+            {
+              key: 'given_name',
+              name: 'Given Name'
+            },
+          ],
+        }
+      ],
+    }
+
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+
+    await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
+      'SQLITE_CONSTRAINT: UNIQUE constraint failed: CredentialClaims.credentialLocaleBrandingId, CredentialClaims.key',
+    )
+  })
+
+  it('should throw error when saving credential branding with blank claim key', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          claims: [
+            {
+              key: '',
+              name: 'Given Name'
+            }
+          ]
+        },
+      ],
+    }
+
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+
+    await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
+      'Blank claim keys are not allowed',
+    )
+  })
+
+  it('should throw error when saving credential branding with blank claim name', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          claims: [
+            {
+              key: 'given_name',
+              name: ''
+            }
+          ]
+        },
+      ],
+    }
+
+    const credentialBrandingEntity: CredentialBrandingEntity = credentialBrandingEntityFrom(credentialBranding)
+
+    await expect(dbConnection.getRepository(CredentialBrandingEntity).save(credentialBrandingEntity)).rejects.toThrowError(
+      'Blank claim names are not allowed',
+    )
   })
 
   // Issuer tests

@@ -369,11 +369,19 @@ export class OpSession {
 
   private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[], hasher?: Hasher) {
     return verifiablePresentations.reduce((sum, vp) => {
+      if (CredentialMapper.isMsoMdocDecodedPresentation(vp) || CredentialMapper.isMsoMdocOid4VPEncoded(vp)) {
+        return sum + 1
+      }
+
       const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: hasher ?? this.options.hasher })
       if (uvp.verifiableCredential?.length) {
         return sum + uvp.verifiableCredential?.length
       }
-      if (!PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>)) {
+      const isSdJWT = CredentialMapper.isSdJwtDecodedCredential(uvp)
+      if (
+        isSdJWT ||
+        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>))
+      ) {
         return sum + 1
       }
       return sum
