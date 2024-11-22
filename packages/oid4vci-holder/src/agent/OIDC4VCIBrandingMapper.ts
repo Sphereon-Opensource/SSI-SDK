@@ -63,22 +63,29 @@ export const credentialLocaleBrandingFrom = async (args: CredentialLocaleBrandin
   }
 }
 
+// TODO since dynamicRegistrationClientMetadata can also be on a RP, we should start using this mapper in a more general way
 export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArgs): Promise<IBasicIssuerLocaleBranding> => {
-  const { issuerDisplay } = args
+  const { issuerDisplay, dynamicRegistrationClientMetadata } = args
 
   return {
+    ...(dynamicRegistrationClientMetadata?.client_name && {
+      alias: dynamicRegistrationClientMetadata.client_name
+    }),
     ...(issuerDisplay.name && {
       alias: issuerDisplay.name,
     }),
     ...(issuerDisplay.locale && {
       locale: issuerDisplay.locale,
     }),
-    ...(issuerDisplay.logo && {
+    ...((issuerDisplay.logo || dynamicRegistrationClientMetadata?.logo_uri) && {
       logo: {
-        ...((issuerDisplay.logo.url || <string>issuerDisplay.logo.uri) && {
-          uri: issuerDisplay.logo?.url ?? <string>issuerDisplay.logo.uri,
+        ...(dynamicRegistrationClientMetadata?.logo_uri && {
+          uri: dynamicRegistrationClientMetadata?.logo_uri
         }),
-        ...(issuerDisplay.logo.alt_text && {
+        ...((issuerDisplay.logo?.url || <string>issuerDisplay.logo?.uri) && {
+          uri: issuerDisplay.logo?.url ?? <string>issuerDisplay.logo?.uri,
+        }),
+        ...(issuerDisplay.logo?.alt_text && {
           alt: issuerDisplay.logo?.alt_text,
         }),
       },
@@ -90,6 +97,18 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
       text: {
         color: issuerDisplay.text_color,
       },
+    }),
+    ...(dynamicRegistrationClientMetadata?.client_uri && {
+      clientUri: dynamicRegistrationClientMetadata.client_uri
+    }),
+    ...(dynamicRegistrationClientMetadata?.tos_uri && {
+      tosUri: dynamicRegistrationClientMetadata.tos_uri
+    }),
+    ...(dynamicRegistrationClientMetadata?.policy_uri && {
+      policyUri: dynamicRegistrationClientMetadata.policy_uri
+    }),
+    ...(dynamicRegistrationClientMetadata?.contacts && {
+      contacts: dynamicRegistrationClientMetadata.contacts
     }),
   }
 }
