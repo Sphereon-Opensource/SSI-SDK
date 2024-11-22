@@ -12,7 +12,7 @@ import geolocationStoreAgentLogic from './shared/geolocationStoreAgentStoreLogic
 
 jest.setTimeout(60000)
 
-const port = 4212
+const port = 4105
 const basePath = '/agent'
 
 let serverAgent: IAgent
