@@ -69,7 +69,7 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
 
   return {
     ...(dynamicRegistrationClientMetadata?.client_name && {
-      alias: dynamicRegistrationClientMetadata?.client_name
+      alias: dynamicRegistrationClientMetadata.client_name
     }),
     ...(issuerDisplay.name && {
       alias: issuerDisplay.name,
@@ -99,16 +99,16 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
       },
     }),
     ...(dynamicRegistrationClientMetadata?.client_uri && {
-      clientUri: dynamicRegistrationClientMetadata?.client_uri
+      clientUri: dynamicRegistrationClientMetadata.client_uri
     }),
     ...(dynamicRegistrationClientMetadata?.tos_uri && {
-      tosUri: dynamicRegistrationClientMetadata?.tos_uri
+      tosUri: dynamicRegistrationClientMetadata.tos_uri
     }),
     ...(dynamicRegistrationClientMetadata?.policy_uri && {
-      policyUri: dynamicRegistrationClientMetadata?.policy_uri
+      policyUri: dynamicRegistrationClientMetadata.policy_uri
     }),
     ...(dynamicRegistrationClientMetadata?.contacts && {
-      contacts: dynamicRegistrationClientMetadata?.contacts
+      contacts: dynamicRegistrationClientMetadata.contacts
     }),
   }
 }

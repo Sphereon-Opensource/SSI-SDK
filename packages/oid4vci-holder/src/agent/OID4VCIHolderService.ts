@@ -89,7 +89,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => { //IBasicIssuerLocaleBranding
+export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
   const { display, dynamicRegistrationClientMetadata, context } = args
   return await Promise.all(
     display.map(async (issuerDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
