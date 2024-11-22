@@ -3,7 +3,6 @@ import {
   CredentialConfigurationSupported,
   CredentialOfferFormatV1_0_11,
   CredentialResponse,
-  CredentialsSupportedDisplay,
   getSupportedCredentials,
   getTypesFromCredentialSupported,
   getTypesFromObject,
@@ -55,17 +54,26 @@ import {
   VerificationResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
-import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import {
+  getCredentialBrandingFrom,
+  issuerLocaleBrandingFrom
+} from './OIDC4VCIBrandingMapper'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
-      const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-        (credentialsConfigSupported.display ?? []).map(
-          async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
+      const mappedLocaleBranding = await getCredentialBrandingFrom({
+        credentialDisplay: credentialsConfigSupported.display,
+        // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
+        issuerCredentialSubject: credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject
+      })
+
+      // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use
+      const localeBranding = await Promise.all(
+        (mappedLocaleBranding ?? []).map(async (localeBranding): Promise<IBasicCredentialLocaleBranding> =>
+            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding }),
         ),
       )
 
@@ -81,11 +89,12 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => { //IBasicIssuerLocaleBranding
-  const { display, context } = args
+export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+  const { display, dynamicRegistrationClientMetadata, context } = args
   return await Promise.all(
-    display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
-      const branding = await issuerLocaleBrandingFrom(displayItem)
+    display.map(async (issuerDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      // FIXME for now we do not have locale support for dynamicRegistrationClientMetadata, so we add all the metadata to every locale
+      const branding = await issuerLocaleBrandingFrom({ issuerDisplay, dynamicRegistrationClientMetadata })
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
   )

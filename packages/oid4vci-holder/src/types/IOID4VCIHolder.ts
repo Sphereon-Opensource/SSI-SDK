@@ -11,7 +11,10 @@ import {
   ExperimentalSubjectIssuance,
   MetadataDisplay,
   NotificationRequest,
+  CredentialsSupportedDisplay,
+  IssuerCredentialSubject,
 } from '@sphereon/oid4vci-common'
+import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
 import {
   CreateOrGetIdentifierOpts,
   IdentifierProviderOpts,
@@ -28,6 +31,7 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import {
   DigitalCredential,
+  IBasicCredentialClaim,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
   Identity,
@@ -235,6 +239,7 @@ export enum OID4VCIMachineStates {
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
   getFederationTrust = 'getFederationTrust',
+  reviewContact = 'reviewContact',
   addContact = 'addContact',
   getIssuerBranding = 'getIssuerBranding',
   storeIssuerBranding = 'storeIssuerBranding',
@@ -363,7 +368,8 @@ export enum OID4VCIMachineGuards {
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
   createContactGuard = 'oid4vciCreateContactGuard',
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
-  oid4vciIsOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
+  isOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
+  contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard'
 }
 
 export enum OID4VCIMachineServices {
@@ -513,6 +519,7 @@ export type GetCredentialBrandingArgs = {
 
 export type GetBasicIssuerLocaleBrandingArgs = {
   display: MetadataDisplay[]
+  dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
   context: RequiredContext
 }
 
@@ -662,5 +669,34 @@ export type VerifyEBSICredentialIssuerResult = {
   did: string
   attributes: Attribute[]
 }
+
+export type CredentialLocaleBrandingFromArgs = {
+  credentialDisplay: CredentialsSupportedDisplay
+}
+
+export type IssuerLocaleBrandingFromArgs = {
+  issuerDisplay: MetadataDisplay
+  dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
+}
+
+export type CredentialBrandingFromArgs = {
+  credentialDisplay?: Array<CredentialsSupportedDisplay>
+  issuerCredentialSubject?: IssuerCredentialSubject
+}
+
+export type CredentialDisplayLocalesFromArgs = {
+  credentialDisplay: Array<CredentialsSupportedDisplay>
+}
+
+export type IssuerCredentialSubjectLocalesFromArgs = {
+  issuerCredentialSubject: IssuerCredentialSubject
+}
+
+export type CombineLocalesFromArgs = {
+  credentialDisplayLocales?: Map<string, CredentialsSupportedDisplay>
+  issuerCredentialSubjectLocales?: Map<string, Array<IBasicCredentialClaim>>
+}
+
+export type DynamicRegistrationClientMetadataDisplay = Pick<DynamicRegistrationClientMetadata, 'client_name' | 'client_uri' | 'contacts' | 'tos_uri' | 'policy_uri' | 'logo_uri'>
 
 export type DidAgents = TAgent<IResolver & IDIDManager>

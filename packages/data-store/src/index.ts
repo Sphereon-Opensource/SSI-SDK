@@ -26,6 +26,12 @@ import { OrganizationEntity } from './entities/contact/OrganizationEntity'
 import { NaturalPersonEntity } from './entities/contact/NaturalPersonEntity'
 import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEntity'
 import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity'
+import { AuditEventEntity } from './entities/eventLogger/AuditEventEntity'
+import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
+import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
+import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
+import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
+
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractDigitalCredentialStore } from './digitalCredential/AbstractDigitalCredentialStore'
@@ -33,17 +39,12 @@ export { DigitalCredentialStore } from './digitalCredential/DigitalCredentialSto
 export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
 export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
 export { StatusListStore } from './statusList/StatusListStore'
-import { AuditEventEntity } from './entities/eventLogger/AuditEventEntity'
-import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
-import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
-import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
 export { MachineStateStore } from './machineState/MachineStateStore'
 export { AbstractPDStore } from './presentationDefinition/AbstractPDStore'
 export { PDStore } from './presentationDefinition/PDStore'
-
 export {
   DataStoreMigrations,
   DataStoreEventLoggerMigrations,
@@ -91,6 +92,7 @@ export const DataStoreIssuanceBrandingEntities = [
   TextAttributesEntity,
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
+  CredentialClaimsEntity
 ]
 
 export const DataStorePresentationDefinitionEntities = [PresentationDefinitionItemEntity]
@@ -144,4 +146,5 @@ export {
   MachineStateInfoEntity,
   PresentationDefinitionItemEntity,
   ContactMetadataItemEntity,
+  CredentialClaimsEntity
 }

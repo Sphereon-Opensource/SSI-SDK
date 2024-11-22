@@ -752,6 +752,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     return getBasicIssuerLocaleBranding({
       display: serverMetadata.credentialIssuerMetadata?.display ?? [],
+      dynamicRegistrationClientMetadata: serverMetadata.credentialIssuerMetadata,
       context,
     })
   }
@@ -769,6 +770,12 @@ export class OID4VCIHolder implements IAgentPlugin {
     const issuerCorrelationId = contact?.identities
       .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
       .map((identity) => identity.identifier.correlationId)[0]
+
+    // we check for issuer branding as adding an identity might also trigger storing the issuer branding
+    const branding = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
+    if (branding.length > 0) {
+      return
+    }
 
     await context.agent.ibAddIssuerBranding({
       localeBranding: issuerBranding as Array<IBasicIssuerLocaleBranding>,

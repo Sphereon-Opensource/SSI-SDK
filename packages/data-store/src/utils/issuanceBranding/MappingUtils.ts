@@ -9,9 +9,10 @@ import { TextAttributesEntity } from '../../entities/issuanceBranding/TextAttrib
 import { IssuerLocaleBrandingEntity } from '../../entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { CredentialLocaleBrandingEntity } from '../../entities/issuanceBranding/CredentialLocaleBrandingEntity'
 import { ImageDimensionsEntity } from '../../entities/issuanceBranding/ImageDimensionsEntity'
+import { CredentialClaimsEntity } from '../../entities/issuanceBranding/CredentialClaimsEntity'
 import {
   IBasicBackgroundAttributes,
-  IBasicCredentialBranding,
+  IBasicCredentialBranding, IBasicCredentialClaim,
   IBasicCredentialLocaleBranding,
   IBasicImageAttributes,
   IBasicImageDimensions,
@@ -94,6 +95,9 @@ export const credentialLocaleBrandingEntityFrom = (args: IBasicCredentialLocaleB
   credentialLocaleBrandingEntity.description = isEmptyString(args.description) ? undefined : args.description
   credentialLocaleBrandingEntity.background = args.background ? backgroundAttributesEntityFrom(args.background) : undefined
   credentialLocaleBrandingEntity.text = args.text ? textAttributesEntityFrom(args.text) : undefined
+  credentialLocaleBrandingEntity.claims = args.claims
+      ? args.claims.map((claim) => credentialClaimsEntityFrom(claim))
+      : []
 
   return credentialLocaleBrandingEntity
 }
@@ -133,3 +137,12 @@ export const textAttributesEntityFrom = (args: IBasicTextAttributes): TextAttrib
 
   return textAttributesEntity
 }
+
+export const credentialClaimsEntityFrom = (args: IBasicCredentialClaim): CredentialClaimsEntity => {
+  const credentialClaimsEntity: CredentialClaimsEntity = new CredentialClaimsEntity()
+  credentialClaimsEntity.key = args.key
+  credentialClaimsEntity.name = args.name
+
+  return credentialClaimsEntity
+}
+
