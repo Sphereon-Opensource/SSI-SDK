@@ -43,6 +43,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
+    "@sphereon/oid4vc-common": "0.16.1-next.187",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.25.1-feature.SDK.41.oidf.support.20",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",

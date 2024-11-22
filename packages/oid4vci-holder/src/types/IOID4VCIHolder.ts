@@ -14,6 +14,7 @@ import {
   CredentialsSupportedDisplay,
   IssuerCredentialSubject,
 } from '@sphereon/oid4vci-common'
+import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
@@ -516,6 +517,7 @@ export type GetCredentialBrandingArgs = {
 
 export type GetBasicIssuerLocaleBrandingArgs = {
   display: MetadataDisplay[]
+  dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
   context: RequiredContext
 }
 
@@ -669,13 +671,9 @@ export type CredentialLocaleBrandingFromArgs = {
   credentialDisplay: CredentialsSupportedDisplay
 }
 
-export type IssuerCredentialSubjectLocaleBrandingFromArgs = {
-  issuerCredentialSubject: IssuerCredentialSubject
-  locale?: string
-}
-
 export type IssuerLocaleBrandingFromArgs = {
   issuerDisplay: MetadataDisplay
+  dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
 }
 
 export type CredentialBrandingFromArgs = {
@@ -695,5 +693,7 @@ export type CombineLocalesFromArgs = {
   credentialDisplayLocales?: Map<string, CredentialsSupportedDisplay>
   issuerCredentialSubjectLocales?: Map<string, Array<IBasicCredentialClaim>>
 }
+
+export type DynamicRegistrationClientMetadataDisplay = Pick<DynamicRegistrationClientMetadata, 'client_name' | 'client_uri' | 'contacts' | 'tos_uri' | 'policy_uri' | 'logo_uri'>
 
 export type DidAgents = TAgent<IResolver & IDIDManager>

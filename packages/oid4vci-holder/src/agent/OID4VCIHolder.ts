@@ -760,6 +760,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     return getBasicIssuerLocaleBranding({
       display: serverMetadata.credentialIssuerMetadata?.display ?? [],
+      dynamicRegistrationClientMetadata: serverMetadata.credentialIssuerMetadata,
       context,
     })
   }

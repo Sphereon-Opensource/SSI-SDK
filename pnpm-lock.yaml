@@ -1166,6 +1166,9 @@ importers:
         specifier: ^4.38.3
         version: 4.38.3
     devDependencies:
+      '@sphereon/oid4vc-common':
+        specifier: 0.16.1-next.187
+        version: 0.16.1-next.187
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.25.1-feature.SDK.41.oidf.support.20
         version: 0.25.1-feature.SDK.41.oidf.support.20

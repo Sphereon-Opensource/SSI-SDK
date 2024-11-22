@@ -89,11 +89,12 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => { //IBasicIssuerLocaleBranding
-  const { display, context } = args
+export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+  const { display, dynamicRegistrationClientMetadata, context } = args
   return await Promise.all(
-    display.map(async (metadataDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
-      const branding = await issuerLocaleBrandingFrom({ issuerDisplay: metadataDisplay })
+    display.map(async (issuerDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      // FIXME for now we do not have locale support for dynamicRegistrationClientMetadata, so we add all the metadata to every locale
+      const branding = await issuerLocaleBrandingFrom({ issuerDisplay, dynamicRegistrationClientMetadata })
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
   )
