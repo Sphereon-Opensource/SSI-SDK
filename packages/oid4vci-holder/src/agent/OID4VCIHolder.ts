@@ -233,6 +233,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly didMethodPreferences: Array<SupportedDidMethodEnum> = [
     SupportedDidMethodEnum.DID_JWK, // FIXME prefer JWK until we devise a method to detect when to use EBSI/jcs for did:key and when not
     SupportedDidMethodEnum.DID_KEY,
+    SupportedDidMethodEnum.DID_OYD,
     SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
