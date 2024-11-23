@@ -43,7 +43,7 @@ import {
 } from '../types'
 import { getMdocDecodedPayload, MdocDocument } from '../types/mso_mdoc'
 import { ObjectUtils } from '../utils'
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export class CredentialMapper {

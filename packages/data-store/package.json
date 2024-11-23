@@ -14,7 +14,7 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.8",
     "@sphereon/pex": "5.0.0-unstable.27",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.1-next.22",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.1-next.22",

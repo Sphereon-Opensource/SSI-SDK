@@ -14,7 +14,7 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.8",
     "@sphereon/oid4vci-client": "0.16.1-next.224",
     "@sphereon/oid4vci-common": "0.16.1-next.224",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.1-next.22",

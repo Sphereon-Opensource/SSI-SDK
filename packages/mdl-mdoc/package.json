@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@sphereon/did-auth-siop": "0.16.1-next.224",
-    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.8",
     "@sphereon/pex": "5.0.0-unstable.27",
     "@sphereon/pex-models": "^2.3.1",
     "@sphereon/ssi-sdk-ext.did-utils": "0.25.1-next.22",

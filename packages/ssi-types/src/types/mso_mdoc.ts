@@ -5,7 +5,7 @@
  * for sd-jwts
  */
 
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
 import { IProofPurpose, IProofType } from './did'
 import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
 import { IVerifiableCredential } from './w3c-vc'

@@ -18,7 +18,7 @@ import {
   decodeMdocDeviceResponse,
 } from '../src'
 
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

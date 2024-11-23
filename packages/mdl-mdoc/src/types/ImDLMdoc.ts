@@ -1,4 +1,4 @@
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
 import { PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
 import { CertificateInfo, SubjectAlternativeGeneralName, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
@@ -6,8 +6,8 @@ import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
-import IVerifyResults = com.sphereon.crypto.IVerifyResults
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
+import IVerifyResults = com.sphereon.crypto.generic.IVerifyResults
+import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 
 export interface ImDLMdoc extends IPluginMethodMap {
@@ -48,6 +48,7 @@ export type KeyType = ICoseKeyJson
 export type MdocVerifyIssuerSignedArgs = {
   input: CoseSign1Json
   keyInfo?: IKeyInfo<KeyType>
+  requireX5Chain?: boolean
 }
 
 export interface MdocOid4VPPresentationAuth {
@@ -56,7 +57,7 @@ export interface MdocOid4VPPresentationAuth {
 }
 
 export interface MdocOid4vpPresentArgs {
-  mdocHex: string
+  mdocBase64Url: string
   presentationDefinition: PresentationDefinitionV2
   trustAnchors?: string[]
   verifications?: VerificationOptions
@@ -64,6 +65,7 @@ export interface MdocOid4vpPresentArgs {
 
 export type VerificationOptions = {
   allowExpiredDocuments?: boolean
+  verificationTime?: Date
 }
 
 export type DocumentVerifyResult = { document: DocumentJson; validations: IVerifyResults<ICoseKeyCbor> }
