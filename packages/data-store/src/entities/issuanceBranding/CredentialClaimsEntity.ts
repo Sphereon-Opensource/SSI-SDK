@@ -1,13 +1,4 @@
-import {
-  BaseEntity,
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  PrimaryGeneratedColumn
-} from 'typeorm'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { CredentialLocaleBrandingEntity } from './CredentialLocaleBrandingEntity'
 import { validate, Validate, ValidationError } from 'class-validator'
 import { IsNonEmptyStringConstraint } from '../validators'
@@ -28,7 +19,7 @@ export class CredentialClaimsEntity extends BaseEntity {
 
   @ManyToOne(() => CredentialLocaleBrandingEntity, (credentialLocaleBranding: CredentialLocaleBrandingEntity) => credentialLocaleBranding.claims, {
     cascade: ['insert', 'update'],
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   credentialLocaleBranding!: CredentialLocaleBrandingEntity
 

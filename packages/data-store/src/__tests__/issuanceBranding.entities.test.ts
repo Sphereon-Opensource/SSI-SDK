@@ -77,13 +77,13 @@ describe('Database entities tests', (): void => {
           claims: [
             {
               key: 'given_name',
-              name: 'Given Name'
+              name: 'Given Name',
             },
             {
               key: 'family_name',
-              name: 'Surname'
-            }
-          ]
+              name: 'Surname',
+            },
+          ],
         },
       ],
     }
@@ -314,8 +314,8 @@ describe('Database entities tests', (): void => {
 
     const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = credentialLocaleBrandingEntityFrom(localeBranding)
     const fromDb: CredentialLocaleBrandingEntity = await dbConnection
-    .getRepository(CredentialLocaleBrandingEntity)
-    .save(credentialLocaleBrandingEntity)
+      .getRepository(CredentialLocaleBrandingEntity)
+      .save(credentialLocaleBrandingEntity)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.alias).toEqual(localeBranding.alias)
@@ -465,8 +465,8 @@ describe('Database entities tests', (): void => {
     }
 
     const result: CredentialLocaleBrandingEntity = await dbConnection
-    .getRepository(CredentialLocaleBrandingEntity)
-    .save(updatedCredentialLocaleBranding)
+      .getRepository(CredentialLocaleBrandingEntity)
+      .save(updatedCredentialLocaleBranding)
 
     expect(result).toBeDefined()
     expect(result?.lastUpdatedAt).not.toEqual(fromDb?.localeBranding[0].lastUpdatedAt)
@@ -481,13 +481,13 @@ describe('Database entities tests', (): void => {
           claims: [
             {
               key: 'given_name',
-              name: 'Given Name'
+              name: 'Given Name',
             },
             {
               key: 'family_name',
-              name: 'Surname'
-            }
-          ]
+              name: 'Surname',
+            },
+          ],
         },
       ],
     }
@@ -517,14 +517,14 @@ describe('Database entities tests', (): void => {
           claims: [
             {
               key: 'given_name',
-              name: 'Given Name'
+              name: 'Given Name',
             },
             {
               key: 'given_name',
-              name: 'Given Name'
+              name: 'Given Name',
             },
           ],
-        }
+        },
       ],
     }
 
@@ -544,9 +544,9 @@ describe('Database entities tests', (): void => {
           claims: [
             {
               key: '',
-              name: 'Given Name'
-            }
-          ]
+              name: 'Given Name',
+            },
+          ],
         },
       ],
     }
@@ -567,9 +567,9 @@ describe('Database entities tests', (): void => {
           claims: [
             {
               key: 'given_name',
-              name: ''
-            }
-          ]
+              name: '',
+            },
+          ],
         },
       ],
     }

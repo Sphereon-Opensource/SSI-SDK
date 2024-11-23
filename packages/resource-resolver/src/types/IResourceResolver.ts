@@ -1,6 +1,6 @@
-import {IKeyValueStore, ValueStoreType} from '@sphereon/ssi-sdk.kv-store-temp'
-import {IAgentContext, IPluginMethodMap} from '@veramo/core'
-import {IAnomalyDetection} from "@sphereon/ssi-sdk.anomaly-detection";
+import { IKeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { IAnomalyDetection } from '@sphereon/ssi-sdk.anomaly-detection'
 
 export interface IResourceResolver extends IPluginMethodMap {
   resourceResolve(args: ResolveArgs, context: RequiredContext): Promise<Response>
@@ -64,7 +64,7 @@ export type NamespaceStrArgs = {
 }
 
 export type PrefixArgs = {
-  namespace?: string;
+  namespace?: string
   resourceIdentifier: string
 }
 

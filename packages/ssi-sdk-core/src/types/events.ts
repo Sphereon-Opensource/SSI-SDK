@@ -21,7 +21,7 @@ export enum PartyCorrelationType {
 
 export type AuditLoggingEvent = Omit<SimpleLogEvent, 'type' | 'data'> & {
   id: string
-  type: LoggingEventType.AUDIT,
+  type: LoggingEventType.AUDIT
   // timestamp: Date
   // level: LogLevel
   correlationId: string
@@ -52,7 +52,7 @@ export enum CredentialType {
 // create a general type that can be shared between AuditLoggingEvent and ActivityLoggingEvent
 export type ActivityLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
   id: string
-  type: LoggingEventType.ACTIVITY,
+  type: LoggingEventType.ACTIVITY
   originalCredential?: string
   credentialHash?: string
   parentCredentialHash?: string

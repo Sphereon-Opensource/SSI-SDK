@@ -56,7 +56,7 @@ export const auditEventEntityFrom = (args: NonPersistedAuditLoggingEvent): Audit
 }
 
 export const activityEventFrom = (event: AuditEventEntity): ActivityLoggingEvent => {
-  const result: ActivityLoggingEvent =  {
+  const result: ActivityLoggingEvent = {
     id: event.id,
     type: LoggingEventType.ACTIVITY,
     credentialType: event.credentialType!,

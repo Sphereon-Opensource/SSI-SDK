@@ -21,7 +21,8 @@ A Veramo resource resolver plugin. This plugin has the option to cache resources
 - resourceDefaultStoreId
 - resourceDefaultNamespace
 - resourceDefaultTtl
-- 
+-
+
 ## Usage
 
 ```typescript
@@ -42,8 +43,8 @@ const dbConnection = createConnection({
 const agent = createAgent<IResourceResolver>({
   plugins: [
     new ResourceResolver({
-      resourceStores: new KeyValueStore({ 
-        store: new KeyValueTypeORMStoreAdapter({ dbConnection })
+      resourceStores: new KeyValueStore({
+        store: new KeyValueTypeORMStoreAdapter({ dbConnection }),
       }),
     }),
   ],

@@ -11,7 +11,9 @@ describe('Serialization', (): void => {
 
   it('should decode and encode ISO Test Vector', async () => {
     const coseKey = CoseKeyJson.Static.fromJsonDTO({
-    kty: CoseKeyType.EC2, alg: CoseAlgorithm.ES256 })
+      kty: CoseKeyType.EC2,
+      alg: CoseAlgorithm.ES256,
+    })
     // const asIKey = coseKey as IKey
     console.log(coseKey.toDto())
     console.log(coseKey.toJsonString())

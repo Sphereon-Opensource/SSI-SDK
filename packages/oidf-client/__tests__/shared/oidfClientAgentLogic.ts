@@ -1,8 +1,6 @@
-import { ResourceResolver } from "@sphereon/ssi-sdk.resource-resolver";
+import { ResourceResolver } from '@sphereon/ssi-sdk.resource-resolver'
 import { createAgent, TAgent } from '@veramo/core'
-import {
-  ICryptoService
-} from "@sphereon/openid-federation-client";
+import { ICryptoService } from '@sphereon/openid-federation-client'
 import { IOIDFClient, OIDFClient } from '../../src'
 
 import { mockResponses } from './TrustChainMockResponses'
@@ -12,19 +10,19 @@ type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
 
 const fetchService = {
   async fetchStatement(endpoint: string) {
-    const match = mockResponses.find(item => item[0] === endpoint);
+    const match = mockResponses.find((item) => item[0] === endpoint)
     if (match) {
-      return match[1];
+      return match[1]
     } else {
-      throw new Error("Not found: " + endpoint);
+      throw new Error('Not found: ' + endpoint)
     }
-  }
-};
+  },
+}
 
 const cryptoService: ICryptoService = {
   verify: async (jwt: string, key: any): Promise<boolean> => {
     return true
-  }
+  },
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
@@ -39,7 +37,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           new JwtService(),
           new OIDFClient({
             fetchServiceCallback: fetchService,
-            cryptoServiceCallback: cryptoService
+            cryptoServiceCallback: cryptoService,
           }),
           new ResourceResolver(),
         ],

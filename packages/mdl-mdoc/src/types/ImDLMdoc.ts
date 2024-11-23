@@ -9,6 +9,7 @@ import IKeyInfo = com.sphereon.crypto.IKeyInfo
 import IVerifyResults = com.sphereon.crypto.generic.IVerifyResults
 import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
+import DocumentCbor = com.sphereon.mdoc.data.device.DocumentCbor
 
 export interface ImDLMdoc extends IPluginMethodMap {
   // TODO: Extract cert methods to its own plugin
@@ -57,10 +58,14 @@ export interface MdocOid4VPPresentationAuth {
 }
 
 export interface MdocOid4vpPresentArgs {
-  mdocBase64Url: string
+  mdocs: DocumentCbor[]
+  mdocHolderNonce?: string
   presentationDefinition: PresentationDefinitionV2
   trustAnchors?: string[]
   verifications?: VerificationOptions
+  clientId: string
+  responseUri: string
+  authorizationRequestNonce: string
 }
 
 export type VerificationOptions = {

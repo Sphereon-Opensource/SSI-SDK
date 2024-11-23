@@ -38,7 +38,7 @@ const agent = createAgent<IAnomalyDetectionStore>({
 
 ```typescript
 const result = await agent.lookupLocation({
-    ipOrHostname: '2001:0000:130F:0000:0000:09C0:876A:130B'
+  ipOrHostname: '2001:0000:130F:0000:0000:09C0:876A:130B',
 })
 ```
 

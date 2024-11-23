@@ -13,7 +13,7 @@ import Encoding = com.sphereon.kmp.Encoding
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
 import Oid4VPPresentationSubmission = com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
-import ValidationsJS = com.sphereon.mdoc.ValidationsJS
+import MdocValidations = com.sphereon.mdoc.data.MdocValidations
 
 describe('Issuer Auth', (): void => {
   const coseCrypto = new CoseCryptoServiceJS(new CoseCryptoService())
@@ -25,7 +25,9 @@ describe('Issuer Auth', (): void => {
     expect(encodeTo(coseSign.cborEncode(), Encoding.HEX)).toEqual(iso18013_5_IssuerAuthTestVector)
     expect(encodeTo(coseSign.toSignature1Structure().cborEncode(), Encoding.HEX)).toEqual(iso18013_5_SignatureStructureTestVector)
     // @ts-ignore // because of the null arg
-    expect(coseSign.toBeSignedJson(null, SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(encodeTo(decodeFrom(iso18013_5_SignatureStructureTestVector, Encoding.HEX), Encoding.BASE64URL))
+    expect(coseSign.toBeSignedJson(null, SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(
+      encodeTo(decodeFrom(iso18013_5_SignatureStructureTestVector, Encoding.HEX), Encoding.BASE64URL),
+    )
   })
 
   it('test', () => {
@@ -34,7 +36,7 @@ describe('Issuer Auth', (): void => {
       kid: '11',
       crv: 'P-256',
       x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
-      y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4'
+      y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
       // "d":"V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM" // No private key, as we check for them explicitly
     })
     const cbor = jwk.jwkToCoseKeyCbor()
@@ -52,20 +54,24 @@ describe('Issuer Auth', (): void => {
     expect(issuerAuth.signature.encodeTo(Encoding.HEX)).toEqual(ietfSignature)
 
     await expect(
-      coseCrypto.verify1(issuerAuth, new KeyInfo(null,
+      coseCrypto.verify1(
+        issuerAuth,
+        new KeyInfo(
+          null,
           Jwk.Static.fromDTO({
             kty: 'EC',
             kid: '11',
             crv: 'P-256',
             x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
-            y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4'
+            y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
             // 'd': 'V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM'  // do not pass in the private key, as we check for that
-          }).jwkToCoseKeyCbor()
+          }).jwkToCoseKeyCbor(),
         ),
-        false)
+        false,
+      ),
     ).resolves.toMatchObject({
       critical: true,
-      error: false
+      error: false,
     })
   })
 
@@ -76,7 +82,7 @@ describe('Issuer Auth', (): void => {
     await expect(coseCrypto.verify1(issuerSigned.issuerAuth, null, true)).resolves.toMatchObject({
       critical: true,
       error: false,
-      message: 'Signature of \'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer\' was valid'
+      message: "Signature of 'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer' was valid",
     })
   })
 
@@ -85,7 +91,7 @@ describe('Issuer Auth', (): void => {
     await expect(coseCrypto.verify1(issuerSigned.issuerAuth, null, true)).resolves.toMatchObject({
       critical: true,
       error: false,
-      message: 'Signature of \'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer\' was valid'
+      message: "Signature of 'C=DE,O=Bundesdruckerei GmbH,OU=I,CN=SPRIND Funke EUDI Wallet Prototype Issuer' was valid",
     })
     console.log(JSON.stringify(issuerSigned.toJson(), null, 2))
   })
@@ -97,7 +103,7 @@ describe('Issuer Auth', (): void => {
     const holderMdoc = issuerSigned.toDocument()
 
     // Let's perform the validations. Since our IsserSigned is not valid anymore we expect 1 error in the result
-    const validations = await ValidationsJS.fromDocumentAsync(holderMdoc, null, [sphereonCA, funkeTestCA])
+    const validations = await MdocValidations.fromDocumentAsync(holderMdoc, null, [sphereonCA, funkeTestCA])
     expect(validations.error).toEqual(true)
     const errors = validations.verifications.filter((ver) => ver.error)
     expect(1).toEqual(errors.length)

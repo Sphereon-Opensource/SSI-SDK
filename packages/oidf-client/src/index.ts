@@ -1,4 +1,4 @@
-import {Loggers} from '@sphereon/ssi-types'
+import { Loggers } from '@sphereon/ssi-types'
 
 /**
  * @public

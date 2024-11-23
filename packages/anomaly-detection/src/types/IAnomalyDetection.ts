@@ -1,5 +1,5 @@
-import {IAgentContext, IPluginMethodMap} from '@veramo/core'
-import {AnomalyDetectionStoreArgs, IAnomalyDetectionStore} from "@sphereon/ssi-sdk.anomaly-detection-store";
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { AnomalyDetectionStoreArgs, IAnomalyDetectionStore } from '@sphereon/ssi-sdk.anomaly-detection-store'
 
 export interface IAnomalyDetection extends IPluginMethodMap {
   anomalyDetectionLookupLocation(args: AnomalyDetectionLookupLocationArgs, context: IRequiredContext): Promise<AnomalyDetectionLookupLocationResult>

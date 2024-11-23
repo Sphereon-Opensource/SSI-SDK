@@ -1,4 +1,4 @@
-import {IAgentPlugin} from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import {
   AnomalyDetectionStoreArgs,
   AnomalyDetectionStoreClearAllLocationsArgs,
@@ -8,10 +8,10 @@ import {
   AnomalyDetectionStoreLocationResultIValueData,
   AnomalyDetectionStoreLocationResultOrUndefined,
   IAnomalyDetectionStore,
-  schema
+  schema,
 } from '../index'
 
-import {IKeyValueStore, KeyValueStore, ValueStoreType} from "@sphereon/ssi-sdk.kv-store-temp";
+import { IKeyValueStore, KeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
 
 export const anomalyDetectionStoreMethods: Array<string> = [
   'anomalyDetectionStorePersistLocation',
@@ -19,7 +19,7 @@ export const anomalyDetectionStoreMethods: Array<string> = [
   'anomalyDetectionStoreRemoveLocation',
   'anomalyDetectionStoreClearAllLocations',
   'anomalyDetectionStoreGetLocation',
-  'anomalyDetectionStoreDefaultLocationStore'
+  'anomalyDetectionStoreDefaultLocationStore',
 ]
 
 /**
@@ -37,12 +37,12 @@ export class AnomalyDetectionStore implements IAgentPlugin {
     anomalyDetectionStoreRemoveLocation: this.anomalyDetectionStoreRemoveLocation.bind(this),
     anomalyDetectionStoreClearAllLocations: this.anomalyDetectionStoreClearAllLocations.bind(this),
     anomalyDetectionStoreGetLocation: this.anomalyDetectionStoreGetLocation.bind(this),
-    anomalyDetectionStoreDefaultLocationStore: this.anomalyDetectionStoreDefaultLocationStore.bind(this)
+    anomalyDetectionStoreDefaultLocationStore: this.anomalyDetectionStoreDefaultLocationStore.bind(this),
   }
 
   constructor(args: {
-    defaultStoreId?: string;
-    defaultNamespace?: string;
+    defaultStoreId?: string
+    defaultNamespace?: string
     dnsLookupStore?: Map<string, IKeyValueStore<AnomalyDetectionStoreLocation>> | IKeyValueStore<AnomalyDetectionStoreLocation>
   }) {
     this.defaultStoreId = args?.defaultStoreId ?? '_default'
@@ -52,16 +52,18 @@ export class AnomalyDetectionStore implements IAgentPlugin {
       this._dnsLookupStore = args.dnsLookupStore
     } else {
       this._dnsLookupStore = new Map().set(
-          this.defaultStoreId,
-          new KeyValueStore({
-            namespace: this.defaultNamespace,
-            store: new Map<string, AnomalyDetectionStoreLocation>(),
-          }),
+        this.defaultStoreId,
+        new KeyValueStore({
+          namespace: this.defaultNamespace,
+          store: new Map<string, AnomalyDetectionStoreLocation>(),
+        }),
       )
     }
   }
 
-  private async anomalyDetectionStorePersistLocation(args: AnomalyDetectionStoreLocationPersistArgs): Promise<AnomalyDetectionStoreLocationResultIValueData> {
+  private async anomalyDetectionStorePersistLocation(
+    args: AnomalyDetectionStoreLocationPersistArgs,
+  ): Promise<AnomalyDetectionStoreLocationResultIValueData> {
     const storeId = this.storeIdStr(args)
     const namespace = this.namespaceStr(args)
     const { ipOrHostname, locationArgs, ttl } = args
@@ -70,26 +72,26 @@ export class AnomalyDetectionStore implements IAgentPlugin {
       // TODO
     }
     const existing = await this.store({ stores: this._dnsLookupStore, storeId }).getAsValueData(
+      this.prefix({
+        namespace,
+        ipOrHostname,
+      }),
+    )
+    if (!existing.value || (existing.value && args?.overwriteExisting !== false)) {
+      return await this.store({ stores: this._dnsLookupStore, storeId }).set(
         this.prefix({
           namespace,
           ipOrHostname,
         }),
-    )
-    if (!existing.value || (existing.value && args?.overwriteExisting !== false)) {
-      return await this.store({ stores: this._dnsLookupStore, storeId }).set(
-          this.prefix({
-            namespace,
-            ipOrHostname,
-          }),
-          locationArgs,
-          ttl,
+        locationArgs,
+        ttl,
       )
     }
     return existing
   }
 
   private async anomalyDetectionStoreHasLocation(args: AnomalyDetectionStoreArgs): Promise<boolean> {
-    const { storeId, namespace, ipOrHostname  } = { ...args }
+    const { storeId, namespace, ipOrHostname } = { ...args }
     return this.store({ stores: this._dnsLookupStore, storeId }).has(this.prefix({ namespace, ipOrHostname }))
   }
 
@@ -101,12 +103,12 @@ export class AnomalyDetectionStore implements IAgentPlugin {
   private async anomalyDetectionStoreClearAllLocations(args: AnomalyDetectionStoreClearAllLocationsArgs): Promise<boolean> {
     const { storeId } = { ...args }
     return await this.store({ stores: this._dnsLookupStore, storeId })
-        .clear()
-        .then(() => true)
+      .clear()
+      .then(() => true)
   }
 
   private async anomalyDetectionStoreGetLocation(args: AnomalyDetectionStoreArgs): Promise<AnomalyDetectionStoreLocationResultOrUndefined> {
-    const { storeId, namespace, ipOrHostname } = { ... args }
+    const { storeId, namespace, ipOrHostname } = { ...args }
     return this.store<AnomalyDetectionStoreLocation>({
       stores: this._dnsLookupStore,
       storeId,

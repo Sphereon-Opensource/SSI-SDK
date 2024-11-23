@@ -5,7 +5,7 @@ import {
   getSubjectDN,
   pemOrDerToX509Certificate,
   validateX509CertificateChain,
-  X509ValidationResult
+  X509ValidationResult,
 } from '@sphereon/ssi-sdk-ext.x509-utils'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
@@ -28,14 +28,22 @@ import KeyInfo = com.sphereon.crypto.KeyInfo
 import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import Encoding = com.sphereon.kmp.Encoding
+import LocalDateTimeKMP = com.sphereon.kmp.LocalDateTimeKMP
+import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
   async signAsync<CborType>(input: ToBeSignedCbor, requireX5Chain: Nullable<boolean>): Promise<Int8Array> {
     throw new Error('Method not implemented.')
   }
 
-  async verify1Async<CborType>(input: CoseSign1Cbor<CborType>, keyInfo: IKeyInfo<ICoseKeyCbor>, requireX5Chain: Nullable<boolean>): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
-    const getCertAndKey = async (x5c: Nullable<Array<string>>): Promise<{
+  async verify1Async<CborType>(
+    input: CoseSign1Cbor<CborType>,
+    keyInfo: IKeyInfo<ICoseKeyCbor>,
+    requireX5Chain: Nullable<boolean>,
+  ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
+    const getCertAndKey = async (
+      x5c: Nullable<Array<string>>,
+    ): Promise<{
       issuerCert?: Certificate
       issuerPublicKey: CryptoKey
     }> => {
@@ -66,9 +74,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
     let issuerCert: Certificate | undefined
     let kid = keyInfo?.kid ?? sign1Json.protectedHeader.kid ?? sign1Json.unprotectedHeader?.kid
     // Please note this method does not perform chain validation. The MDL-MSO_MDOC library already performed this before this step
-    const x5c = keyInfo?.key?.getX509CertificateChain() ??
-      sign1Json.protectedHeader?.x5chain ??
-      sign1Json.unprotectedHeader?.x5chain
+    const x5c = keyInfo?.key?.getX509CertificateChain() ?? sign1Json.protectedHeader?.x5chain ?? sign1Json.unprotectedHeader?.x5chain
     if (!keyInfo || !keyInfo?.key || keyInfo?.key?.x5chain) {
       const certAndKey = await getCertAndKey(x5c)
       issuerPublicKey = certAndKey.issuerPublicKey
@@ -91,14 +97,14 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
           crv,
           ...(jwk.x5c && { x5c: jwk.x5c }),
           ...(jwk.x && { x: jwk.x }),
-          ...(jwk.y && { y: jwk.y })
+          ...(jwk.y && { y: jwk.y }),
         } satisfies JsonWebKey,
         {
           name: keyAlg.value === 'EC' ? 'ECDSA' : keyAlg.value,
-          namedCurve: crv
+          namedCurve: crv,
         },
         true,
-        ['verify']
+        ['verify'],
       )
     }
 
@@ -110,11 +116,11 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
     const valid = await crypto.subtle.verify(
       {
         ...issuerPublicKey.algorithm,
-        hash: crv?.includes('-') ? `SHA-${crv.split('-')[1]}` : 'SHA-256' // todo: this needs to be more robust
+        hash: crv?.includes('-') ? `SHA-${crv.split('-')[1]}` : 'SHA-256', // todo: this needs to be more robust
       },
       issuerPublicKey,
       decodeFrom(sign1Json.signature, Encoding.BASE64URL),
-      decodeFrom(recalculatedToBeSigned.base64UrlValue, Encoding.BASE64URL)
+      decodeFrom(recalculatedToBeSigned.base64UrlValue, Encoding.BASE64URL),
     )
 
     return {
@@ -122,11 +128,13 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       critical: true,
       error: !valid,
       message: `Signature of '${issuerCert ? getSubjectDN(issuerCert).DN : kid}' was ${valid ? '' : 'in'}valid`,
-      keyInfo: coseKeyInfo
+      keyInfo: coseKeyInfo,
     } satisfies IVerifySignatureResult<ICoseKeyCbor>
   }
 
-  resolvePublicKeyAsync<KT extends com.sphereon.crypto.IKey>(keyInfo: com.sphereon.crypto.IKeyInfo<KT>): Promise<com.sphereon.crypto.IResolvedKeyInfo<KT>> {
+  resolvePublicKeyAsync<KT extends com.sphereon.crypto.IKey>(
+    keyInfo: com.sphereon.crypto.IKeyInfo<KT>,
+  ): Promise<com.sphereon.crypto.IResolvedKeyInfo<KT>> {
     if (keyInfo.key) {
       return Promise.resolve(CoseJoseKeyMappingService.toResolvedKeyInfo(keyInfo, keyInfo.key))
     }
@@ -155,16 +163,16 @@ export class X509CallbackService implements IX509ServiceJS {
    * @param verificationTime
    */
   async verifyCertificateChain({
-                                 chain,
-                                 trustAnchors = this.getTrustedCerts(),
-                                 verificationTime,
-                                 opts
-                               }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
+    chain,
+    trustAnchors = this.getTrustedCerts(),
+    verificationTime,
+    opts,
+  }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
     return await validateX509CertificateChain({
       chain,
       trustAnchors,
       verificationTime,
-      opts
+      opts,
     })
   }
 
@@ -175,8 +183,10 @@ export class X509CallbackService implements IX509ServiceJS {
     chainDER: Nullable<Int8Array[]>,
     chainPEM: Nullable<string[]>,
     trustedCerts: Nullable<string[]>,
-    verificationProfile?: X509VerificationProfile | undefined
+    verificationProfile?: X509VerificationProfile | undefined,
+    verificationTime?: Nullable<LocalDateTimeKMP>,
   ): Promise<IX509VerificationResult<KeyType>> {
+    const verificationAt = verificationTime ?? DateTimeUtils.Static.DEFAULT.dateTimeLocal()
     let chain: Array<string | Uint8Array> = []
     if (chainDER && chainDER.length > 0) {
       chain = chainDER.map((der) => Uint8Array.from(der))
@@ -187,7 +197,8 @@ export class X509CallbackService implements IX509ServiceJS {
     const result = await validateX509CertificateChain({
       chain: chain, // The function will handle an empty array
       trustAnchors: trustedCerts ?? this.getTrustedCerts(),
-      opts: { trustRootWhenNoAnchors: true }
+      verificationTime: new Date(verificationAt.toEpochSeconds().toULong() * 1000),
+      opts: { trustRootWhenNoAnchors: true },
     })
 
     const cert: CertificateInfo | undefined = result.certificateChain ? result.certificateChain[result.certificateChain.length - 1] : undefined
@@ -198,7 +209,8 @@ export class X509CallbackService implements IX509ServiceJS {
       name: 'x.509',
       critical: result.critical,
       message: result.message,
-      error: result.error
+      error: result.error,
+      verificationTime: verificationAt,
     } satisfies IX509VerificationResult<KeyType>
   }
 

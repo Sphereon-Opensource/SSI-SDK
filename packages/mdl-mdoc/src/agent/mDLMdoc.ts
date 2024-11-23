@@ -1,18 +1,7 @@
 import { com } from '@sphereon/kmp-mdoc-core'
-import {
-  CertificateInfo,
-  getCertificateInfo,
-  pemOrDerToX509Certificate,
-  X509ValidationResult
-} from '@sphereon/ssi-sdk-ext.x509-utils'
+import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentPlugin } from '@veramo/core'
-import {
-  MdocOid4vpPresentArgs,
-  MdocOid4VPPresentationAuth,
-  MdocOid4vpRPVerifyArgs,
-  MdocOid4vpRPVerifyResult,
-  schema
-} from '..'
+import { MdocOid4vpPresentArgs, MdocOid4VPPresentationAuth, MdocOid4vpRPVerifyArgs, MdocOid4vpRPVerifyResult, schema } from '..'
 import { CoseCryptoService, X509CallbackService } from '../functions'
 import {
   GetX509CertificateInfoArgs,
@@ -20,20 +9,23 @@ import {
   IRequiredContext,
   KeyType,
   MdocVerifyIssuerSignedArgs,
-  VerifyCertificateChainArgs
+  VerifyCertificateChainArgs,
 } from '../types/ImDLMdoc'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
+import CoseCryptoServiceJS = com.sphereon.crypto.CoseCryptoServiceJS
 import CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
 import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
+import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import encodeTo = com.sphereon.kmp.encodeTo
 import Encoding = com.sphereon.kmp.Encoding
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 import DocumentCbor = com.sphereon.mdoc.data.device.DocumentCbor
+import MdocValidations = com.sphereon.mdoc.data.MdocValidations
+import DocumentDescriptorMatchResult = com.sphereon.mdoc.oid4vp.DocumentDescriptorMatchResult
 import IOid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
+import MdocOid4vpService = com.sphereon.mdoc.oid4vp.MdocOid4vpServiceJs
 import Oid4VPPresentationSubmission = com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
-import ValidationsJS = com.sphereon.mdoc.ValidationsJS
-import CoseCryptoServiceJS = com.sphereon.crypto.CoseCryptoServiceJS
 
 export const mdocSupportMethods: Array<string> = [
   'x509VerifyCertificateChain',
@@ -88,20 +80,44 @@ export class MDLMdoc implements IAgentPlugin {
    * @return {Promise<MdocOid4VPPresentationAuth>} A promise that resolves to an object containing vp_token and presentation_submission.
    */
   private async mdocOid4vpHolderPresent(args: MdocOid4vpPresentArgs, _context: IRequiredContext): Promise<MdocOid4VPPresentationAuth> {
-    const { mdocBase64Url, presentationDefinition, trustAnchors, verifications } = args
-    const mdoc = DocumentCbor.Static.cborDecode(decodeFrom(mdocBase64Url, Encoding.BASE64URL))
-    const validations = await ValidationsJS.fromDocumentAsync(mdoc, null, trustAnchors ?? this.trustAnchors, verifications?.allowExpiredDocuments)
-    if (validations.error) {
-      return Promise.reject(
-        Error(
-          `Validation for the MSO_MDOC failed. ${validations.verifications
-            .filter((ver) => ver.error)
-            .map((ver) => `${ver.name}(critical${ver.critical}): ${ver.message}`)
-            .join(',')}`,
-        ),
+    const { mdocs, presentationDefinition, trustAnchors, verifications, mdocHolderNonce, authorizationRequestNonce, responseUri, clientId } = args
+
+    const oid4vpService = new MdocOid4vpService()
+    // const mdoc = DocumentCbor.Static.cborDecode(decodeFrom(mdocBase64Url, Encoding.BASE64URL))
+    const validate = async (mdoc: DocumentCbor) => {
+      return await MdocValidations.fromDocumentAsync(
+        mdoc,
+        null,
+        trustAnchors ?? this.trustAnchors,
+        DateTimeUtils.Static.DEFAULT.dateTimeLocal((verifications?.verificationTime?.getTime() ?? Date.now()) / 1000),
+        verifications?.allowExpiredDocuments,
       )
     }
-    const deviceResponse = mdoc.toSingleDocDeviceResponse(presentationDefinition as IOid4VPPresentationDefinition)
+
+    const allMatches: DocumentDescriptorMatchResult[] = oid4vpService.matchDocumentsAndDescriptors(
+      mdocHolderNonce,
+      mdocs,
+      presentationDefinition as IOid4VPPresentationDefinition,
+    )
+    const docsAndDescriptors: DocumentDescriptorMatchResult[] = []
+    for (const match of allMatches) {
+      if (match.document) {
+        const result = await validate(match.document)
+        if (!result.error) {
+          docsAndDescriptors.push(match)
+        }
+      }
+    }
+    if (docsAndDescriptors.length === 0) {
+      return Promise.reject(Error('No matching documents found'))
+    }
+    const deviceResponse = await oid4vpService.createDeviceResponse(
+      docsAndDescriptors,
+      presentationDefinition as IOid4VPPresentationDefinition,
+      clientId,
+      responseUri,
+      authorizationRequestNonce,
+    )
     const vp_token = encodeTo(deviceResponse.cborEncode(), Encoding.BASE64URL)
     const presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(
       presentationDefinition as IOid4VPPresentationDefinition,
@@ -126,7 +142,7 @@ export class MDLMdoc implements IAgentPlugin {
     let error = false
     const documents = await Promise.all(
       deviceResponse.documents.map(async (document) => {
-        const validations = await ValidationsJS.fromDocumentAsync(document, null, trustAnchors ?? this.trustAnchors)
+        const validations = await MdocValidations.fromDocumentAsync(document, null, trustAnchors ?? this.trustAnchors)
         if (!validations || validations.error) {
           error = true
         }
@@ -155,8 +171,12 @@ export class MDLMdoc implements IAgentPlugin {
   private async mdocVerifyIssuerSigned(args: MdocVerifyIssuerSignedArgs, context: IRequiredContext): Promise<IVerifySignatureResult<KeyType>> {
     const { input, keyInfo, requireX5Chain } = args
     const coseKeyInfo = keyInfo && CoseJoseKeyMappingService.toCoseKeyInfo(keyInfo)
-    const verification =  await new CoseCryptoServiceJS(new CoseCryptoService()).verify1(CoseSign1Json.Static.fromDTO(input).toCbor(), coseKeyInfo, requireX5Chain )
-    return {...verification, keyInfo: keyInfo}
+    const verification = await new CoseCryptoServiceJS(new CoseCryptoService()).verify1(
+      CoseSign1Json.Static.fromDTO(input).toCbor(),
+      coseKeyInfo,
+      requireX5Chain,
+    )
+    return { ...verification, keyInfo: keyInfo }
   }
 
   /**

@@ -4,18 +4,8 @@ import Debug, { Debugger } from 'debug'
 import { DataSource } from 'typeorm'
 import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
 import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
-import {
-  activityEventEntityFrom,
-  activityEventFrom,
-  auditEventEntityFrom,
-  auditEventFrom
-} from '../utils/eventLogger/MappingUtils'
-import {
-  GetActivityEventsArgs,
-  GetAuditEventsArgs,
-  StoreActivityEventArgs,
-  StoreAuditEventArgs
-} from '../types'
+import { activityEventEntityFrom, activityEventFrom, auditEventEntityFrom, auditEventFrom } from '../utils/eventLogger/MappingUtils'
+import { GetActivityEventsArgs, GetAuditEventsArgs, StoreActivityEventArgs, StoreAuditEventArgs } from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
 
@@ -38,7 +28,7 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
     const connection = await this.dbConnection
     debug('Getting audit events', args)
     const result = await connection.getRepository(AuditEventEntity).find({
-      where: auditEventsFilter
+      where: auditEventsFilter,
     })
 
     return result.map((event: AuditEventEntity) => auditEventFrom(event))
@@ -66,7 +56,7 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
     const connection = await this.dbConnection
     debug('Getting activity events', args)
     const result = await connection.getRepository(AuditEventEntity).find({
-      where: activityEventsFilter
+      where: activityEventsFilter,
     })
 
     return result.map((event: AuditEventEntity) => activityEventFrom(event))

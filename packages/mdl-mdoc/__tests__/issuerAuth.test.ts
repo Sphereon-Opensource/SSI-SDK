@@ -86,7 +86,9 @@ describe('Issuer Auth', (): void => {
     expect(encodeTo(coseSign.toSignature1Structure().cborEncode(), Encoding.HEX)).toEqual(iso18013_5_SignatureStructureTestVector)
 
     //@ts-ignore // because of null value passed in
-    expect(coseSign.toBeSignedJson(null, SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(encodeTo(decodeFrom(iso18013_5_SignatureStructureTestVector, Encoding.HEX), Encoding.BASE64URL))
+    expect(coseSign.toBeSignedJson(null, SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(
+      encodeTo(decodeFrom(iso18013_5_SignatureStructureTestVector, Encoding.HEX), Encoding.BASE64URL),
+    )
   })
 
   it('test', () => {
@@ -115,15 +117,20 @@ describe('Issuer Auth', (): void => {
 
     // We use a key as the vector has no x5c and we do not extract the cose key yet in case no x5c is present
     await expect(
-      coseCrypto.verify1(issuerAuth, new KeyInfo('11', Jwk.Static.fromDTO({
-          kty: 'EC',
-          kid: '11',
-          crv: 'P-256',
-          x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
-          y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
-          // 'd': 'V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM'  // do not pass in the private key, as we check for that
-        }).jwkToCoseKeyCbor())
-        , false
+      coseCrypto.verify1(
+        issuerAuth,
+        new KeyInfo(
+          '11',
+          Jwk.Static.fromDTO({
+            kty: 'EC',
+            kid: '11',
+            crv: 'P-256',
+            x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
+            y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
+            // 'd': 'V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM'  // do not pass in the private key, as we check for that
+          }).jwkToCoseKeyCbor(),
+        ),
+        false,
       ),
     ).resolves.toMatchObject({
       critical: true,

@@ -1,5 +1,5 @@
-import {createObjects, getConfig} from '../../agent-config/dist'
-import {DataSource} from 'typeorm'
+import { createObjects, getConfig } from '../../agent-config/dist'
+import { DataSource } from 'typeorm'
 import anomalyDetectionStoreAgentLogic from './shared/anomalyDetectionAgentStoreLogic'
 
 jest.setTimeout(60000)
