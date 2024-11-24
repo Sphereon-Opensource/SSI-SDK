@@ -35,9 +35,9 @@
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/pex": "5.0.0-unstable.27",
+    "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.1",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.25.1-next.22",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.25.1-next.23",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@types/body-parser": "^1.19.5",

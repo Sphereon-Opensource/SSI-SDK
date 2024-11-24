@@ -113,7 +113,7 @@
       "@veramo/url-handler": "4.2.0",
       "@sphereon/ssi-types": "workspace:*",
       "@sphereon/ssi-sdk.core": "workspace:*",
-      "@sphereon/pex": "5.0.0-unstable.27",
+      "@sphereon/pex": "5.0.0-unstable.28",
       "@sphereon/pex-models": "^2.3.1",
       "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.10",
       "@noble/hashes": "1.2.0",

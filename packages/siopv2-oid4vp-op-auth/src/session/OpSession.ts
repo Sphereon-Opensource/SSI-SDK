@@ -96,12 +96,17 @@ export class OpSession {
     return this
   }
 
-  public async getSupportedDIDMethods(didPrefix?: boolean) {
+  public async getSupportedDIDMethods(didPrefix?: boolean): Promise<string[]> {
     const agentMethods = this.getAgentDIDMethodsSupported({ didPrefix })
     let rpMethods = await this.getRPDIDMethodsSupported({ didPrefix, agentMethods })
+    debug(`RP supports subject syntax types: ${JSON.stringify(this.getSubjectSyntaxTypesSupported())}`)
+    if (rpMethods.dids.length === 0) {
+      debug(`RP does not support DIDs. Supported: ${JSON.stringify(this.getSubjectSyntaxTypesSupported())}`)
+      return []
+    }
 
     let intersection: string[]
-    if (rpMethods.dids.length === 0 || rpMethods.dids.includes('did')) {
+    if (rpMethods.dids.includes('did')) {
       intersection =
         agentMethods && agentMethods.length > 0
           ? agentMethods
@@ -123,6 +128,12 @@ export class OpSession {
     return agentMethods
   }
 
+  private async getSubjectSyntaxTypesSupported(): Promise<string[]> {
+    const authReq = await this.getAuthorizationRequest()
+    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported
+    return subjectSyntaxTypesSupported ?? []
+  }
+
   private async getRPDIDMethodsSupported(opts: { didPrefix?: boolean; agentMethods?: string[] }) {
     let keyType: TKeyType | undefined
     const agentMethods =
@@ -131,7 +142,7 @@ export class OpSession {
     const authReq = await this.getAuthorizationRequest()
     const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
       convertDidMethod(method, opts.didPrefix),
-    )
+    ).filter(val => !val.startsWith('did'))
     debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
