@@ -1,6 +1,6 @@
 import {createObjects, getConfig} from '../../agent-config/dist'
 import {DataSource} from 'typeorm'
-import anomalyDetectionStoreAgentLogic from './shared/anomalyDetectionAgentStoreLogic'
+import geolocationStoreAgentLogic from './shared/geolocationStoreAgentStoreLogic'
 
 jest.setTimeout(60000)
 
@@ -8,7 +8,7 @@ let dbConnection: Promise<DataSource>
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/anomaly-detection-store/agent.yml')
+  const config = await getConfig('packages/geolocation-store/agent.yml')
   const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent
   dbConnection = db
@@ -29,5 +29,5 @@ const testContext = {
 }
 
 describe('Local integration tests', (): void => {
-  anomalyDetectionStoreAgentLogic(testContext)
+  geolocationStoreAgentLogic(testContext)
 })
