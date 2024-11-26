@@ -2819,6 +2819,9 @@ importers:
       jwt-decode:
         specifier: ^3.1.2
         version: 3.1.2
+      uint8arrays:
+        specifier: 3.1.1
+        version: 3.1.1
     devDependencies:
       '@types/jest':
         specifier: ^27.5.2
@@ -6101,6 +6104,7 @@ packages:
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.14':
     resolution: {integrity: sha512-hd7FRQnokRpKxVjQ9sKVgogL7udPUBc76fLJm2I1qi5ZZI9Cb0fLqBdZXU8iISU+Kkikg7jz0NB1Sx5mkizedg==}
+    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
