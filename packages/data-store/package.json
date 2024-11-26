@@ -14,10 +14,10 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.14",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.15",
     "@sphereon/pex": "5.0.0-unstable.28",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.25.1-next.25",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.25.1-next.25",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.26.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",

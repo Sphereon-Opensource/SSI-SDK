@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@sd-jwt/decode": "^0.7.2",
-    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.14",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.15",
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "uint8arrays": "3.1.1",
