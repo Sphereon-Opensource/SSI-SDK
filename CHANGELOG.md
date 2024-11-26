@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.1...v0.31.0) (2024-11-26)
+
+### Bug Fixes
+
+- After dropping DB agent would throw exception as we removed the data source ([ab9c1c8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ab9c1c8a0e81431c38f5c74633535c0292c85c81))
+- check mdoc original are equal ([804fb14](https://github.com/Sphereon-Opensource/SSI-SDK/commit/804fb14d38308b2daf1df697457aa8fad7518d9b))
+- Fix broken tests ([74e1d46](https://github.com/Sphereon-Opensource/SSI-SDK/commit/74e1d46e18460f30457181e86f38d8494f43d07b))
+- Fixed broken test cases ([705edad](https://github.com/Sphereon-Opensource/SSI-SDK/commit/705edad7cede0f3fe7ca7877efb120eea4812fba))
+- Fixed broken tests ([56ce96f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/56ce96fdbe83941955c609c6aa637010a0c90d4e))
+- Fixed the non-null expectation of the tests ([f95af05](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f95af05f72393507a73689ddf30cd23f880fe66f))
+- Fixed typos in the comments ([485b689](https://github.com/Sphereon-Opensource/SSI-SDK/commit/485b68978752723ef013beac3c2208786912cbb4))
+- getFederationTrust fix ([2c02455](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2c02455c403fbd57aaae6e9f55169477f139e005))
+- Implemented temporary cryptoServiceCallback verify function ([6fe01f4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6fe01f48d1cb38871a019feab126755a125a6d06))
+- mdoc parsing ([774aeeb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/774aeeb931e3872a7f9c85dfd54d046906f4bff4))
+- pass hasher to cvVerifySchema ([a12b845](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a12b845aa544e2f97e8a49663b95f4fa289e4224))
+- remove unused interfaces ([954967a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/954967a220b3993d189774912ece01a53b740d07))
+- resolution fixes ([d1fddfc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d1fddfcc5ac002b56ff6b5c19ed4fda5800e2f18))
+- return null as undefined in store DTO's ([9d0e24b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9d0e24bbba8621b0397016c749a6452087c6a22b))
+
+### Features
+
+- Add JARM response support ([8e9cb20](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8e9cb20066bd4784d210a4e125a015e5f81a8a0a))
+- add support for credential claim branding ([1d5c7ce](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1d5c7cee277420a28bab0e131a647bb090d62a70))
+- added activity logs to eventlogger, plus fixed a bug on deleting parent of child credentials ([91ce056](https://github.com/Sphereon-Opensource/SSI-SDK/commit/91ce056ebb39db54bfb888073c4ae55737068a60))
+- added additional issuer branding properties ([c22d9d4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c22d9d45f55d653b0c8a8faa0b374ba34597c2ec))
+- added dynamicRegistrationClientMetadata to issuer locale branding ([aa98150](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa981508f2af7729a8380d0f340c32bf3eaf2b31))
+- added issuer credential subject branding support ([2caa509](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2caa509e5a868dfe636abb9815dae0952e5fbc6d))
+- added new module CredentialValidation ([6464fac](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6464facffe47aae80b369e503910f20291d55624))
+- added resource resolver plugin ([68b88d8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/68b88d808d74da18b356a87ba0ab5a1ec16475aa))
+- added review contact state when contact has low level of trust ([d2c6c75](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d2c6c750b57a80561e60c55402757d4629374f98))
+- added validation against vc schema and test cases for validating the vc against the schema plus some bugfixes. also made checking vc against the schema optional ([b75f952](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b75f952564dbd3a4ef72a07e555c499cfd5da099))
+- Created an issuer verification of an EBSI issued credential ([333b395](https://github.com/Sphereon-Opensource/SSI-SDK/commit/333b3951ae23b445d9ef353b9b75ce5d0bfd3d37))
+- Implemented OIDF client SDK plugin ([31c8608](https://github.com/Sphereon-Opensource/SSI-SDK/commit/31c86086db41a3098620709111a4e3b6475c6ec4))
+- JWKS hosting for all keys when Sphereon Key Manager is used ([1cac215](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1cac21546a090f36b02d24ae3b2290a2398c73c2))
+- mdoc device response multiple documents ([c9adac8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c9adac8cc5089af6beebcbdf4de8dc8d3534c006))
+- **nx-cloud:** setup nx cloud workspace ([511af20](https://github.com/Sphereon-Opensource/SSI-SDK/commit/511af2000e46da3e6d7760a38aecbe33004d6114))
+- updated oid4vci-holder and siopv2-rp to use credential-validation module for verifying credentials. ([87081e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/87081e53893ee1e1b3e2cdc6cf42b667bb76374e))
+- updated oid4vci-holder and siopv2-rp to use credential-validation module for verifying credentials. ([b25b66e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b25b66edef79864d5b4d0fadfacf8786cab28707))
+- upgrade oidf client package ([3cfbcdf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3cfbcdf8d387f69308dd82b3a89e5b480292bb03))
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 ### Bug Fixes

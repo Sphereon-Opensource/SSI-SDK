@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.1...v0.31.0) (2024-11-26)
+
+### Features
+
+- Add JARM response support ([8e9cb20](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8e9cb20066bd4784d210a4e125a015e5f81a8a0a))
+- updated oid4vci-holder and siopv2-rp to use credential-validation module for verifying credentials. ([87081e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/87081e53893ee1e1b3e2cdc6cf42b667bb76374e))
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 ### Bug Fixes

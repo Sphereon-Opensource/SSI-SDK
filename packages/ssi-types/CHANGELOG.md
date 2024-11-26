@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.30.1...v0.31.0) (2024-11-26)
+
+### Bug Fixes
+
+- After dropping DB agent would throw exception as we removed the data source ([ab9c1c8](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/ab9c1c8a0e81431c38f5c74633535c0292c85c81))
+- check mdoc original are equal ([804fb14](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/804fb14d38308b2daf1df697457aa8fad7518d9b))
+- mdoc parsing ([774aeeb](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/774aeeb931e3872a7f9c85dfd54d046906f4bff4))
+
+### Features
+
+- added activity logs to eventlogger, plus fixed a bug on deleting parent of child credentials ([91ce056](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/91ce056ebb39db54bfb888073c4ae55737068a60))
+- mdoc device response multiple documents ([c9adac8](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/c9adac8cc5089af6beebcbdf4de8dc8d3534c006))
+
 ## [0.30.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-types

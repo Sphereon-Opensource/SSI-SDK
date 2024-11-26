@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.1...v0.31.0) (2024-11-26)
+
+### Bug Fixes
+
+- After dropping DB agent would throw exception as we removed the data source ([ab9c1c8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ab9c1c8a0e81431c38f5c74633535c0292c85c81))
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.agent-config
