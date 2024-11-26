@@ -1,7 +1,8 @@
 import { com } from '@sphereon/kmp-mdoc-core'
 import { PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
+import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { CertificateInfo, SubjectAlternativeGeneralName, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { IAgentContext, IDIDManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
@@ -24,7 +25,7 @@ export interface ImDLMdoc extends IPluginMethodMap {
   mdocOid4vpRPVerify(args: MdocOid4vpRPVerifyArgs, _context: IRequiredContext): Promise<MdocOid4vpRPVerifyResult>
 }
 
-export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IResolver>
+export type IRequiredContext = IAgentContext<ISphereonKeyManager & IDIDManager & IResolver>
 export type VerifyCertificateChainArgs = {
   chain: Array<string | Uint8Array>
   trustAnchors?: string[]
