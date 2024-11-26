@@ -80,4 +80,4 @@ agent:
   $args:
     - schemaValidation: false
       plugins:
-        - $require: ./packages/anomaly-detection-store/dist#AnomalyDetectionStore
+        - $require: ./packages/geolocation-store/dist#GeolocationStore

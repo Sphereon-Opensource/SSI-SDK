@@ -12,7 +12,7 @@ import anomalyDetectionAgentLogic from './shared/anomalyDetectionAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 4212
+const port = 4104
 const basePath = '/agent'
 
 let serverAgent: IAgent

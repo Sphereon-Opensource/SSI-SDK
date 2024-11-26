@@ -1,49 +1,49 @@
 import {IAgentPlugin} from '@veramo/core'
 import {
-  AnomalyDetectionStoreArgs,
-  AnomalyDetectionStoreClearAllLocationsArgs,
-  AnomalyDetectionStoreLocation,
-  AnomalyDetectionStoreLocationPersistArgs,
-  AnomalyDetectionStoreLocationResult,
-  AnomalyDetectionStoreLocationResultIValueData,
-  AnomalyDetectionStoreLocationResultOrUndefined,
-  IAnomalyDetectionStore,
+  GeolocationStoreArgs,
+  GeolocationStoreClearAllLocationsArgs,
+  GeolocationStoreLocation,
+  GeolocationStoreLocationPersistArgs,
+  GeolocationStoreLocationResult,
+  GeolocationStoreLocationResultIValueData,
+  GeolocationStoreLocationResultOrUndefined,
+  IGeolocationStore,
   schema
 } from '../index'
 
 import {IKeyValueStore, KeyValueStore, ValueStoreType} from "@sphereon/ssi-sdk.kv-store-temp";
 
-export const anomalyDetectionStoreMethods: Array<string> = [
-  'anomalyDetectionStorePersistLocation',
-  'anomalyDetectionStoreHasLocation',
-  'anomalyDetectionStoreRemoveLocation',
-  'anomalyDetectionStoreClearAllLocations',
-  'anomalyDetectionStoreGetLocation',
-  'anomalyDetectionStoreDefaultLocationStore'
+export const geolocationStoreMethods: Array<string> = [
+  'geolocationStorePersistLocation',
+  'geolocationStoreHasLocation',
+  'geolocationStoreRemoveLocation',
+  'geolocationStoreClearAllLocations',
+  'geolocationStoreGetLocation',
+  'geolocationStoreDefaultLocationStore'
 ]
 
 /**
- * {@inheritDoc IAnomalyDetectionStore}
+ * {@inheritDoc IGeolocationStore}
  */
-export class AnomalyDetectionStore implements IAgentPlugin {
+export class GeolocationStore implements IAgentPlugin {
   readonly schema = schema.IAnomalyDetectionStore
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
-  private readonly _dnsLookupStore: Map<string, IKeyValueStore<AnomalyDetectionStoreLocation>>
+  private readonly _dnsLookupStore: Map<string, IKeyValueStore<GeolocationStoreLocation>>
 
-  readonly methods: IAnomalyDetectionStore = {
-    anomalyDetectionStorePersistLocation: this.anomalyDetectionStorePersistLocation.bind(this),
-    anomalyDetectionStoreHasLocation: this.anomalyDetectionStoreHasLocation.bind(this),
-    anomalyDetectionStoreRemoveLocation: this.anomalyDetectionStoreRemoveLocation.bind(this),
-    anomalyDetectionStoreClearAllLocations: this.anomalyDetectionStoreClearAllLocations.bind(this),
-    anomalyDetectionStoreGetLocation: this.anomalyDetectionStoreGetLocation.bind(this),
-    anomalyDetectionStoreDefaultLocationStore: this.anomalyDetectionStoreDefaultLocationStore.bind(this)
+  readonly methods: IGeolocationStore = {
+    geolocationStorePersistLocation: this.geolocationStorePersistLocation.bind(this),
+    geolocationStoreHasLocation: this.geolocationStoreHasLocation.bind(this),
+    geolocationStoreRemoveLocation: this.geolocationStoreRemoveLocation.bind(this),
+    geolocationStoreClearAllLocations: this.geolocationStoreClearAllLocations.bind(this),
+    geolocationStoreGetLocation: this.geolocationStoreGetLocation.bind(this),
+    geolocationStoreDefaultLocationStore: this.geolocationStoreDefaultLocationStore.bind(this)
   }
 
   constructor(args: {
     defaultStoreId?: string;
     defaultNamespace?: string;
-    dnsLookupStore?: Map<string, IKeyValueStore<AnomalyDetectionStoreLocation>> | IKeyValueStore<AnomalyDetectionStoreLocation>
+    dnsLookupStore?: Map<string, IKeyValueStore<GeolocationStoreLocation>> | IKeyValueStore<GeolocationStoreLocation>
   }) {
     this.defaultStoreId = args?.defaultStoreId ?? '_default'
     this.defaultNamespace = args?.defaultNamespace ?? 'anomaly-detection'
@@ -55,13 +55,13 @@ export class AnomalyDetectionStore implements IAgentPlugin {
           this.defaultStoreId,
           new KeyValueStore({
             namespace: this.defaultNamespace,
-            store: new Map<string, AnomalyDetectionStoreLocation>(),
+            store: new Map<string, GeolocationStoreLocation>(),
           }),
       )
     }
   }
 
-  private async anomalyDetectionStorePersistLocation(args: AnomalyDetectionStoreLocationPersistArgs): Promise<AnomalyDetectionStoreLocationResultIValueData> {
+  private async geolocationStorePersistLocation(args: GeolocationStoreLocationPersistArgs): Promise<GeolocationStoreLocationResultIValueData> {
     const storeId = this.storeIdStr(args)
     const namespace = this.namespaceStr(args)
     const { ipOrHostname, locationArgs, ttl } = args
@@ -88,26 +88,26 @@ export class AnomalyDetectionStore implements IAgentPlugin {
     return existing
   }
 
-  private async anomalyDetectionStoreHasLocation(args: AnomalyDetectionStoreArgs): Promise<boolean> {
+  private async geolocationStoreHasLocation(args: GeolocationStoreArgs): Promise<boolean> {
     const { storeId, namespace, ipOrHostname  } = { ...args }
     return this.store({ stores: this._dnsLookupStore, storeId }).has(this.prefix({ namespace, ipOrHostname }))
   }
 
-  private async anomalyDetectionStoreRemoveLocation(args: AnomalyDetectionStoreArgs): Promise<boolean> {
+  private async geolocationStoreRemoveLocation(args: GeolocationStoreArgs): Promise<boolean> {
     const { storeId, namespace, ipOrHostname } = { ...args }
     return this.store({ stores: this._dnsLookupStore, storeId }).delete(this.prefix({ namespace, ipOrHostname }))
   }
 
-  private async anomalyDetectionStoreClearAllLocations(args: AnomalyDetectionStoreClearAllLocationsArgs): Promise<boolean> {
+  private async geolocationStoreClearAllLocations(args: GeolocationStoreClearAllLocationsArgs): Promise<boolean> {
     const { storeId } = { ...args }
     return await this.store({ stores: this._dnsLookupStore, storeId })
         .clear()
         .then(() => true)
   }
 
-  private async anomalyDetectionStoreGetLocation(args: AnomalyDetectionStoreArgs): Promise<AnomalyDetectionStoreLocationResultOrUndefined> {
+  private async geolocationStoreGetLocation(args: GeolocationStoreArgs): Promise<GeolocationStoreLocationResultOrUndefined> {
     const { storeId, namespace, ipOrHostname } = { ... args }
-    return this.store<AnomalyDetectionStoreLocation>({
+    return this.store<GeolocationStoreLocation>({
       stores: this._dnsLookupStore,
       storeId,
     }).get(this.prefix({ namespace, ipOrHostname }))
@@ -117,7 +117,7 @@ export class AnomalyDetectionStore implements IAgentPlugin {
     const storeId = this.storeIdStr({ storeId: args.storeId })
     const store = args.stores.get(storeId)
     if (!store) {
-      throw Error(`Could not get issuer metadata store: ${storeId}`)
+      throw Error(`Could not get geolocation store: ${storeId}`)
     }
     return store
   }
@@ -126,7 +126,7 @@ export class AnomalyDetectionStore implements IAgentPlugin {
     return storeId ?? this.defaultStoreId
   }
 
-  private anomalyDetectionStoreDefaultLocationStore(): Promise<AnomalyDetectionStoreLocationResult> {
+  private geolocationStoreDefaultLocationStore(): Promise<GeolocationStoreLocationResult> {
     return Promise.resolve(this.store({ stores: this._dnsLookupStore, storeId: this.defaultStoreId }))
   }
 

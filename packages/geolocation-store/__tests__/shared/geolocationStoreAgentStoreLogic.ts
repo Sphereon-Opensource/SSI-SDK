@@ -1,8 +1,8 @@
 import { TAgent } from '@veramo/core'
 
-import { IAnomalyDetectionStore } from '../../src'
+import { IGeolocationStore } from '../../src'
 
-type ConfiguredAgent = TAgent<IAnomalyDetectionStore>
+type ConfiguredAgent = TAgent<IGeolocationStore>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('Anomaly Detection Store Agent Plugin', (): void => {
@@ -21,13 +21,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should persist location', async () => {
       await expect(
-        agent.anomalyDetectionStorePersistLocation({
+        agent.geolocationStorePersistLocation({
           ipOrHostname: ip,
           locationArgs: location
         }),
       ).resolves.toEqual({ value: location })
 
-      await expect(agent.anomalyDetectionStoreHasLocation({
+      await expect(agent.geolocationStoreHasLocation({
         ipOrHostname: ip,
         storeId: '_default',
         namespace: 'anomaly-detection'
@@ -35,7 +35,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should have a location persisted', async () => {
-      await expect(agent.anomalyDetectionStoreGetLocation({
+      await expect(agent.geolocationStoreGetLocation({
         ipOrHostname: ip,
         storeId: '_default',
         namespace: 'anomaly-detection'}
@@ -48,12 +48,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         continent: 'NA',
         country: 'US',
       }
-      await agent.anomalyDetectionStorePersistLocation({
+      await agent.geolocationStorePersistLocation({
         ipOrHostname: ipv6,
         locationArgs: ipv6Location
       })
 
-      await expect(agent.anomalyDetectionStoreGetLocation({
+      await expect(agent.geolocationStoreGetLocation({
         storeId: '_default',
         namespace: 'anomaly-detection',
         ipOrHostname: ipv6
@@ -66,12 +66,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         continent: 'EU',
         country: 'DE',
       }
-      await agent.anomalyDetectionStorePersistLocation({
+      await agent.geolocationStorePersistLocation({
         ipOrHostname: hostname,
         locationArgs: hostnameLocation
       })
 
-      await expect(agent.anomalyDetectionStoreRemoveLocation({
+      await expect(agent.geolocationStoreRemoveLocation({
         ipOrHostname: ip,
         storeId: '_default',
         namespace: 'anomaly-detection'
@@ -79,11 +79,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should remove all locations', async () => {
-      await expect(agent.anomalyDetectionStoreClearAllLocations()).resolves.toBeTruthy()
+      await expect(agent.geolocationStoreClearAllLocations()).resolves.toBeTruthy()
     })
 
     it('should retrieve the default location store', async () => {
-      await expect(agent.anomalyDetectionStoreDefaultLocationStore()).resolves.toBeDefined()
+      await expect(agent.geolocationStoreDefaultLocationStore()).resolves.toBeDefined()
       })
     })
 }

@@ -12,7 +12,7 @@
 
 ---
 
-A Veramo anomaly detection plugin. This plugin identifies the location of an URL
+A Sphereon anomaly detection plugin. This plugin identifies the location of an URL
 
 ## Available functions
 
@@ -45,7 +45,7 @@ const result = await agent.lookupLocation({
 ## Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.contact-manager
+yarn add @sphereon/ssi-sdk.anomaly-detection
 ```
 
 ## Build
