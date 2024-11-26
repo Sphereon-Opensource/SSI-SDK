@@ -1,10 +1,4 @@
-import {
-  InitiatorType,
-  LoggingEventType,
-  LogLevel,
-  SubSystem,
-  System
-} from '@sphereon/ssi-types'
+import { InitiatorType, LoggingEventType, LogLevel, SubSystem, System } from '@sphereon/ssi-types'
 import {
   AuditLoggingEvent,
   CredentialType,

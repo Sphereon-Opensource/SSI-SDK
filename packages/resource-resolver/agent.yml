@@ -93,4 +93,4 @@ agent:
                       $require: './packages/kv-store/dist#KeyValueTypeORMStoreAdapter'
                       $args:
                         - dbConnection:
-                           $ref: /dbConnection
+                            $ref: /dbConnection

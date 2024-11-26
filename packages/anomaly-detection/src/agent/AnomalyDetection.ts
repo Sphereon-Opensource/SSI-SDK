@@ -1,11 +1,6 @@
-import {IAgentPlugin} from '@veramo/core'
-import {
-  IAnomalyDetection,
-  AnomalyDetectionLookupLocationArgs,
-  schema,
-  AnomalyDetectionLookupLocationResult, IRequiredContext
-} from '../index'
-import {CountryResponse, Reader} from 'mmdb-lib'
+import { IAgentPlugin } from '@veramo/core'
+import { IAnomalyDetection, AnomalyDetectionLookupLocationArgs, schema, AnomalyDetectionLookupLocationResult, IRequiredContext } from '../index'
+import { CountryResponse, Reader } from 'mmdb-lib'
 
 type DnsLookupFn = (hostname: string) => Promise<string>
 
@@ -31,7 +26,10 @@ export class AnomalyDetection implements IAgentPlugin {
     this.dnsLookup = dnsLookupCallback
   }
 
-  private async anomalyDetectionLookupLocation(args: AnomalyDetectionLookupLocationArgs, context: IRequiredContext): Promise<AnomalyDetectionLookupLocationResult> {
+  private async anomalyDetectionLookupLocation(
+    args: AnomalyDetectionLookupLocationArgs,
+    context: IRequiredContext,
+  ): Promise<AnomalyDetectionLookupLocationResult> {
     const { ipOrHostname, storeId, namespace } = { ...args }
     const reader = new Reader<CountryResponse>(this.db)
     const ipv4Reg = '(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])'

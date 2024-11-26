@@ -29,9 +29,11 @@ export class CreateIssuanceBranding1685628974232 implements MigrationInterface {
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`)
 
-    await queryRunner.query(`CREATE TABLE "CredentialClaims" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "key" character varying(255) NOT NULL, "name" character varying(255) NOT NULL, "credentialLocaleBrandingId" character varying, CONSTRAINT "PK_CredentialClaims_id" PRIMARY KEY ("id"))`)
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale" ON "CredentialClaims" ("credentialLocaleBrandingId", "key")`
+      `CREATE TABLE "CredentialClaims" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "key" character varying(255) NOT NULL, "name" character varying(255) NOT NULL, "credentialLocaleBrandingId" character varying, CONSTRAINT "PK_CredentialClaims_id" PRIMARY KEY ("id"))`,
+    )
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale" ON "CredentialClaims" ("credentialLocaleBrandingId", "key")`,
     )
 
     await queryRunner.query(

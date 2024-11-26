@@ -18,7 +18,11 @@ export function getAllJWKSEndpoint(router: Router, context: IRequiredContext, op
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       if (!contextHasPlugin<ISphereonKeyManager>(context, 'keyManagerListKeys')) {
-        return sendErrorResponse(response, 500, 'Key manager plugin that can list keys is not found. Please enable the Sphereon Key Manager plugin if you want to use this endpoint')
+        return sendErrorResponse(
+          response,
+          500,
+          'Key manager plugin that can list keys is not found. Please enable the Sphereon Key Manager plugin if you want to use this endpoint',
+        )
       }
       response.statusCode = 202
       const keys = await context.agent.keyManagerListKeys()

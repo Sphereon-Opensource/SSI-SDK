@@ -1,14 +1,6 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
-import {
-  ConnectionType,
-  DataStoreContactEntities,
-  DataStoreMigrations,
-  IdentityOrigin,
-  MetadataItem,
-  MetadataTypes,
-  PartyOrigin
-} from '../index'
+import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
@@ -1266,12 +1258,7 @@ describe('Contact store tests', (): void => {
 
     expect(result.roles).toBeDefined()
     expect(result.roles.length).toEqual(4)
-    expect(result.roles).toEqual([
-      CredentialRole.VERIFIER,
-      CredentialRole.ISSUER,
-      CredentialRole.HOLDER,
-      CredentialRole.FEDERATION_TRUST_ANCHOR
-    ])
+    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER, CredentialRole.FEDERATION_TRUST_ANCHOR])
   })
 
   it('should add relationship', async (): Promise<void> => {

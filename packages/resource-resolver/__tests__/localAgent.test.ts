@@ -9,7 +9,7 @@ let agent: any
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/resource-resolver/agent.yml')
-  const { localAgent, db  } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
+  const { localAgent, db } = await createObjects(config, { localAgent: '/agent', db: '/dbConnection' })
   agent = localAgent
   dbConnection = db
 

@@ -23,11 +23,11 @@ import {
 import fetch from 'cross-fetch'
 import Ajv2020 from 'ajv/dist/2020'
 import addFormats from 'ajv-formats'
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
+import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 
 // Exposing the methods here for any REST implementation
 export const credentialValidationMethods: Array<string> = [

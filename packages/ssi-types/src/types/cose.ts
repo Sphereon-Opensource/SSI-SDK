@@ -1,3 +1,8 @@
+import { com } from '@sphereon/kmp-mdoc-core'
+import SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
+import KeyType = com.sphereon.crypto.generic.KeyType
+import KeyOperations = com.sphereon.crypto.generic.KeyOperations
+
 /**
  * See our mdl-mdoc and crypto library for more information
  * https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform
@@ -17,6 +22,14 @@ export interface ICoseKeyJson {
   y?: string
   d?: string
   x5chain?: Array<string>
+  getSignatureAlgorithm(): SignatureAlgorithm
+  getKty(): KeyType
+  getKeyOperations(): Array<KeyOperations>
+  getX509CertificateChain(): Array<string> | undefined
+  toPublicKey(): ICoseKeyJson
+  getKidAsString(): string | undefined
+  getXAsString(): string
+  getYAsString(): string
 
   [k: string]: unknown
 }

@@ -11,11 +11,7 @@ import {
   System,
 } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
-import {
-  EventLoggerArgs,
-  LogEventType,
-  LoggingEvent
-} from '../../types'
+import { EventLoggerArgs, LogEventType, LoggingEvent } from '../../types'
 
 class EventLogger {
   private readonly context?: IAgentContext<any>

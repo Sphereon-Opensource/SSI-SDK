@@ -54,10 +54,7 @@ import {
   VerificationResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
-import {
-  getCredentialBrandingFrom,
-  issuerLocaleBrandingFrom
-} from './OIDC4VCIBrandingMapper'
+import { getCredentialBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -66,14 +63,15 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
       const mappedLocaleBranding = await getCredentialBrandingFrom({
         credentialDisplay: credentialsConfigSupported.display,
-        // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
-        issuerCredentialSubject: credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject
+        issuerCredentialSubject:
+          // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
+          credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
       })
 
       // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use
       const localeBranding = await Promise.all(
-        (mappedLocaleBranding ?? []).map(async (localeBranding): Promise<IBasicCredentialLocaleBranding> =>
-            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding }),
+        (mappedLocaleBranding ?? []).map(
+          async (localeBranding): Promise<IBasicCredentialLocaleBranding> => await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding }),
         ),
       )
 

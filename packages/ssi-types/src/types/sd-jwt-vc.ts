@@ -284,7 +284,7 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
 
 export const sdJwtDecodedCredentialToUniformCredential = (
   decoded: SdJwtDecodedVerifiableCredential,
-  opts?: { maxTimeSkewInMS?: number }
+  opts?: { maxTimeSkewInMS?: number },
 ): IVerifiableCredential => {
   const { decodedPayload } = decoded
   const { exp, nbf, iss, iat, vct, cnf, status, sub, jti } = decodedPayload
@@ -312,17 +312,20 @@ export const sdJwtDecodedCredentialToUniformCredential = (
 
   // Filter out the fields we don't want in credentialSubject
   const excludedFields = new Set(['vct', 'cnf', 'iss', 'iat', 'exp', 'nbf', 'jti', 'sub'])
-  const credentialSubject = Object.entries(decodedPayload).reduce((acc, [key, value]) => {
-    if (
-      !excludedFields.has(key) &&
-      value !== undefined &&
-      value !== '' &&
-      !(typeof value === 'object' && value !== null && Object.keys(value).length === 0)
-    ) {
-      acc[key] = value
-    }
-    return acc
-  }, {} as Record<string, any>)
+  const credentialSubject = Object.entries(decodedPayload).reduce(
+    (acc, [key, value]) => {
+      if (
+        !excludedFields.has(key) &&
+        value !== undefined &&
+        value !== '' &&
+        !(typeof value === 'object' && value !== null && Object.keys(value).length === 0)
+      ) {
+        acc[key] = value
+      }
+      return acc
+    },
+    {} as Record<string, any>,
+  )
 
   const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
     type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential

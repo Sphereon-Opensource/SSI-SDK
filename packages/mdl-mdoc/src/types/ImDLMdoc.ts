@@ -1,14 +1,16 @@
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
 import { PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
+import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { CertificateInfo, SubjectAlternativeGeneralName, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { IAgentContext, IDIDManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
-import IVerifyResults = com.sphereon.crypto.IVerifyResults
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
+import IVerifyResults = com.sphereon.crypto.generic.IVerifyResults
+import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
+import DocumentCbor = com.sphereon.mdoc.data.device.DocumentCbor
 
 export interface ImDLMdoc extends IPluginMethodMap {
   // TODO: Extract cert methods to its own plugin
@@ -23,7 +25,7 @@ export interface ImDLMdoc extends IPluginMethodMap {
   mdocOid4vpRPVerify(args: MdocOid4vpRPVerifyArgs, _context: IRequiredContext): Promise<MdocOid4vpRPVerifyResult>
 }
 
-export type IRequiredContext = IAgentContext<IKeyManager & IDIDManager & IResolver>
+export type IRequiredContext = IAgentContext<ISphereonKeyManager & IDIDManager & IResolver>
 export type VerifyCertificateChainArgs = {
   chain: Array<string | Uint8Array>
   trustAnchors?: string[]
@@ -48,6 +50,7 @@ export type KeyType = ICoseKeyJson
 export type MdocVerifyIssuerSignedArgs = {
   input: CoseSign1Json
   keyInfo?: IKeyInfo<KeyType>
+  requireX5Chain?: boolean
 }
 
 export interface MdocOid4VPPresentationAuth {
@@ -56,14 +59,19 @@ export interface MdocOid4VPPresentationAuth {
 }
 
 export interface MdocOid4vpPresentArgs {
-  mdocHex: string
+  mdocs: DocumentCbor[]
+  mdocHolderNonce?: string
   presentationDefinition: PresentationDefinitionV2
   trustAnchors?: string[]
   verifications?: VerificationOptions
+  clientId: string
+  responseUri: string
+  authorizationRequestNonce: string
 }
 
 export type VerificationOptions = {
   allowExpiredDocuments?: boolean
+  verificationTime?: Date
 }
 
 export type DocumentVerifyResult = { document: DocumentJson; validations: IVerifyResults<ICoseKeyCbor> }
