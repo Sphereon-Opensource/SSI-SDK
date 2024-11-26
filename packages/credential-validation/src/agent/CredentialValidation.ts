@@ -72,7 +72,11 @@ export class CredentialValidation implements IAgentPlugin {
   private async cvVerifyCredential(args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
     const { credential, hasher, policies } = args
     // defaulting the schema validation to when_present
-    const schemaResult = await this.cvVerifySchema({ credential, validationPolicy: policies?.schemaValidation ?? SchemaValidation.WHEN_PRESENT })
+    const schemaResult = await this.cvVerifySchema({
+      credential,
+      validationPolicy: policies?.schemaValidation ?? SchemaValidation.WHEN_PRESENT,
+      hasher,
+    })
     if (!schemaResult.result) {
       return schemaResult
     }
