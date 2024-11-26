@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.resource-resolver",
-  "version": "0.31.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.anomaly-detection": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
+    "@sphereon/ssi-sdk.anomaly-detection": "workspace:*",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
     "typeorm": "^0.3.20",

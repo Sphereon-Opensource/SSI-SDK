@@ -3,12 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.31.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.30.1...v0.31.0) (2024-11-26)
-
-### Features
-
-- added activity logs to eventlogger, plus fixed a bug on deleting parent of child credentials ([91ce056](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/91ce056ebb39db54bfb888073c4ae55737068a60))
-
 ## [0.30.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.core

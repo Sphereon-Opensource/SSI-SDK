@@ -3,16 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.31.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.1...v0.31.0) (2024-11-26)
-
-### Bug Fixes
-
-- resolution fixes ([d1fddfc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d1fddfcc5ac002b56ff6b5c19ed4fda5800e2f18))
-
-### Features
-
-- Add JARM response support ([8e9cb20](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8e9cb20066bd4784d210a4e125a015e5f81a8a0a))
-
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.oid4vci-issuer
