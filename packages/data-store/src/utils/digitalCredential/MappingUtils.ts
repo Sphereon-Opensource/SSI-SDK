@@ -18,6 +18,7 @@ import {
   NonPersistedDigitalCredential,
   RegulationType,
 } from '../../types'
+import { replaceNullWithUndefined } from '../FormattingUtils'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)
@@ -150,9 +151,11 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
 }
 
 export const digitalCredentialFrom = (credentialEntity: DigitalCredentialEntity): DigitalCredential => {
-  return {
+  const result: DigitalCredential = {
     ...credentialEntity,
   }
+
+  return replaceNullWithUndefined(result)
 }
 
 export const digitalCredentialsFrom = (credentialEntities: Array<DigitalCredentialEntity>): DigitalCredential[] => {

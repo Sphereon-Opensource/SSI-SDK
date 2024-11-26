@@ -11,6 +11,7 @@ export enum LogLevel {
 
 export enum LoggingEventType {
   AUDIT = 'audit',
+  ACTIVITY = 'activity',
   GENERAL = 'general',
 }
 

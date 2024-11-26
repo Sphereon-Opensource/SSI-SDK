@@ -1,10 +1,11 @@
+import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import { LoggingEventType, OrPromise } from '@sphereon/ssi-types'
 import Debug, { Debugger } from 'debug'
 import { DataSource } from 'typeorm'
-import { AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
-import { OrPromise } from '@sphereon/ssi-types'
 import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
-import { AuditEventEntity, auditEventEntityFrom } from '../entities/eventLogger/AuditEventEntity'
-import { GetAuditEventsArgs, StoreAuditEventArgs } from '../types'
+import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
+import { activityEventEntityFrom, activityEventFrom, auditEventEntityFrom, auditEventFrom } from '../utils/eventLogger/MappingUtils'
+import { GetActivityEventsArgs, GetAuditEventsArgs, StoreActivityEventArgs, StoreAuditEventArgs } from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
 
@@ -17,46 +18,58 @@ export class EventLoggerStore extends AbstractEventLoggerStore {
   }
 
   getAuditEvents = async (args?: GetAuditEventsArgs): Promise<Array<AuditLoggingEvent>> => {
-    const connection: DataSource = await this.dbConnection // TODO apply everywhere
+    const { filter = [] } = args ?? {}
+
+    const auditEventsFilter = filter.map((item) => ({ ...item, type: LoggingEventType.AUDIT }))
+    if (auditEventsFilter.length === 0) {
+      auditEventsFilter.push({ type: LoggingEventType.AUDIT })
+    }
+
+    const connection = await this.dbConnection
     debug('Getting audit events', args)
-    const result: Array<AuditEventEntity> = await connection.getRepository(AuditEventEntity).find({
-      ...(args?.filter && { where: args?.filter }),
+    const result = await connection.getRepository(AuditEventEntity).find({
+      where: auditEventsFilter,
     })
 
-    return result.map((event: AuditEventEntity) => this.auditEventFrom(event))
+    return result.map((event: AuditEventEntity) => auditEventFrom(event))
   }
 
   storeAuditEvent = async (args: StoreAuditEventArgs): Promise<AuditLoggingEvent> => {
     const { event } = args
 
-    const auditEventEntity: AuditEventEntity = auditEventEntityFrom(event)
-    const connection: DataSource = await this.dbConnection
+    const auditEventEntity = auditEventEntityFrom(event)
+    const connection = await this.dbConnection
     debug('Storing audit event', auditEventEntity)
-    const createdResult: AuditEventEntity = await connection.getRepository(AuditEventEntity).save(auditEventEntity)
+    const createdResult = await connection.getRepository(AuditEventEntity).save(auditEventEntity)
 
-    return this.auditEventFrom(createdResult)
+    return auditEventFrom(createdResult)
   }
 
-  private auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
-    return {
-      id: event.id,
-      description: event.description,
-      timestamp: event.timestamp,
-      level: event.level,
-      correlationId: event.correlationId,
-      actionType: event.actionType,
-      actionSubType: event.actionSubType,
-      initiatorType: event.initiatorType,
-      partyAlias: event.partyAlias,
-      partyCorrelationId: event.partyCorrelationId,
-      partyCorrelationType: event.partyCorrelationType,
-      subSystemType: event.subSystemType,
-      system: event.system,
-      systemAlias: event.systemAlias,
-      systemCorrelationId: event.systemCorrelationId,
-      systemCorrelationIdType: event.systemCorrelationIdType,
-      ...(event.data && { data: JSON.parse(event.data) }),
-      ...(event.diagnosticData && { diagnosticData: JSON.parse(event.diagnosticData) }),
+  getActivityEvents = async (args?: GetActivityEventsArgs): Promise<Array<ActivityLoggingEvent>> => {
+    const { filter = [] } = args ?? {}
+
+    const activityEventsFilter = filter.map((item) => ({ ...item, type: LoggingEventType.ACTIVITY }))
+    if (activityEventsFilter.length === 0) {
+      activityEventsFilter.push({ type: LoggingEventType.ACTIVITY })
     }
+
+    const connection = await this.dbConnection
+    debug('Getting activity events', args)
+    const result = await connection.getRepository(AuditEventEntity).find({
+      where: activityEventsFilter,
+    })
+
+    return result.map((event: AuditEventEntity) => activityEventFrom(event))
+  }
+
+  storeActivityEvent = async (args: StoreActivityEventArgs): Promise<ActivityLoggingEvent> => {
+    const { event } = args
+
+    const activityEventEntity = activityEventEntityFrom(event)
+    const connection = await this.dbConnection
+    debug('Storing activity event', activityEventEntity)
+    const createdResult = await connection.getRepository(AuditEventEntity).save(activityEventEntity)
+
+    return activityEventFrom(createdResult)
   }
 }

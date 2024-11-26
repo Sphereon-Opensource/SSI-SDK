@@ -1,0 +1,88 @@
+{
+  "IResourceResolver": {
+    "components": {
+      "schemas": {
+        "ResourceResolverOptions": {
+          "type": "object",
+          "properties": {}
+        },
+        "ResolveArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "ResolveOptions": {
+          "type": "object",
+          "properties": {}
+        },
+        "ResourceType": {
+          "type": "object",
+          "properties": {}
+        },
+        "ClearAllResourcesArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "PersistResourceArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "GetResourceArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "StoreIdStrArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "NamespaceStrArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "PrefixArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "StoreArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "Resource": {
+          "type": "object",
+          "properties": {}
+        },
+        "SerializedResponse": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "methods": {
+        "resourceResolve": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ResolveArgs"
+          },
+          "returnType": {}
+        },
+        "resourceClearAllResources": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ClearAllResourcesArgs"
+          },
+          "returnType": {}
+        },
+        "resourceDefaultStoreId": {
+          "description": "",
+          "returnType": {}
+        },
+        "resourceDefaultNamespace": {
+          "description": "",
+          "returnType": {}
+        },
+        "resourceDefaultTtl": {
+          "description": "",
+          "returnType": {}
+        }
+      }
+    }
+  }
+}

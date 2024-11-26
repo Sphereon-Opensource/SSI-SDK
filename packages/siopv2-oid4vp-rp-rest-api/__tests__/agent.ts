@@ -28,6 +28,7 @@ import { CheckLinkedDomain } from '@sphereon/did-auth-siop'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
 import Debug from 'debug'
 import { createHash } from 'crypto'
+import { SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -137,6 +138,9 @@ const agent = createAgent<
           definitionId: entraAndSphereonCompatibleDef.id,
           definition: entraAndSphereonCompatibleDef,
           rpOpts: {
+            verificationPolicies: {
+              schemaValidation: SchemaValidation.WHEN_PRESENT,
+            },
             credentialOpts: {
               hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),
             },

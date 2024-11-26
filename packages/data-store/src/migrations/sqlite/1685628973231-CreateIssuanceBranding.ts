@@ -13,7 +13,7 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     )
     await queryRunner.query(`CREATE TABLE "TextAttributes" ("id" varchar PRIMARY KEY NOT NULL, "color" varchar(255))`)
     await queryRunner.query(
-      `CREATE TABLE "BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"))`,
+      `CREATE TABLE "BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, "client_uri" varchar, "tos_uri" varchar, "policy_uri" varchar, "contacts" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"))`,
     )
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale" ON "BaseLocaleBranding" ("credentialBrandingId", "locale")`,
@@ -22,6 +22,12 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`,
     )
     await queryRunner.query(`CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`)
+    await queryRunner.query(
+      `CREATE TABLE "CredentialClaims" ("id" varchar PRIMARY KEY NOT NULL, "key" varchar(255) NOT NULL, "name" varchar(255) NOT NULL, "credentialLocaleBrandingId" varchar)`,
+    )
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale" ON "CredentialClaims" ("credentialLocaleBrandingId", "key")`,
+    )
     await queryRunner.query(
       `CREATE TABLE "CredentialBranding" ("id" varchar PRIMARY KEY NOT NULL, "vcHash" varchar(255) NOT NULL, "issuerCorrelationId" varchar(255) NOT NULL, "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_vcHash" UNIQUE ("vcHash"))`,
     )
@@ -51,7 +57,7 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     await queryRunner.query(`DROP INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale"`)
     await queryRunner.query(`DROP INDEX "IDX_BaseLocaleBranding_type"`)
     await queryRunner.query(
-      `CREATE TABLE "temporary_BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"), CONSTRAINT "FK_BaseLocaleBranding_logoId" FOREIGN KEY ("logoId") REFERENCES "ImageAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_backgroundId" FOREIGN KEY ("backgroundId") REFERENCES "BackgroundAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_textId" FOREIGN KEY ("textId") REFERENCES "TextAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_credentialBrandingId" FOREIGN KEY ("credentialBrandingId") REFERENCES "CredentialBranding" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_issuerBrandingId" FOREIGN KEY ("issuerBrandingId") REFERENCES "IssuerBranding" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
+      `CREATE TABLE "temporary_BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, "client_uri" varchar, "tos_uri" varchar, "policy_uri" varchar, "contacts" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"), CONSTRAINT "FK_BaseLocaleBranding_logoId" FOREIGN KEY ("logoId") REFERENCES "ImageAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_backgroundId" FOREIGN KEY ("backgroundId") REFERENCES "BackgroundAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_textId" FOREIGN KEY ("textId") REFERENCES "TextAttributes" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_credentialBrandingId" FOREIGN KEY ("credentialBrandingId") REFERENCES "CredentialBranding" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_BaseLocaleBranding_issuerBrandingId" FOREIGN KEY ("issuerBrandingId") REFERENCES "IssuerBranding" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
     )
     await queryRunner.query(
       `INSERT INTO "temporary_BaseLocaleBranding"("id", "alias", "locale", "description", "created_at", "last_updated_at", "credentialBrandingId", "issuerBrandingId", "type", "logoId", "backgroundId", "textId") SELECT "id", "alias", "locale", "description", "created_at", "last_updated_at", "credentialBrandingId", "issuerBrandingId", "type", "logoId", "backgroundId", "textId" FROM "BaseLocaleBranding"`,
@@ -73,7 +79,7 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     await queryRunner.query(`DROP INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale"`)
     await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" RENAME TO "temporary_BaseLocaleBranding"`)
     await queryRunner.query(
-      `CREATE TABLE "BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"))`,
+      `CREATE TABLE "BaseLocaleBranding" ("id" varchar PRIMARY KEY NOT NULL, "alias" varchar(255), "locale" varchar(255) NOT NULL, "description" varchar(255), "created_at" datetime NOT NULL DEFAULT (datetime('now')), "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')), "credentialBrandingId" varchar, "issuerBrandingId" varchar, "type" varchar NOT NULL, "logoId" varchar, "backgroundId" varchar, "textId" varchar, "client_uri" varchar, "tos_uri" varchar, "policy_uri" varchar, "contacts" varchar, CONSTRAINT "UQ_logoId" UNIQUE ("logoId"), CONSTRAINT "UQ_backgroundId" UNIQUE ("backgroundId"), CONSTRAINT "UQ_textId" UNIQUE ("textId"))`,
     )
     await queryRunner.query(
       `INSERT INTO "BaseLocaleBranding"("id", "alias", "locale", "description", "created_at", "last_updated_at", "credentialBrandingId", "issuerBrandingId", "type", "logoId", "backgroundId", "textId") SELECT "id", "alias", "locale", "description", "created_at", "last_updated_at", "credentialBrandingId", "issuerBrandingId", "type", "logoId", "backgroundId", "textId" FROM "BaseLocaleBranding"`,
@@ -108,6 +114,8 @@ export class CreateIssuanceBranding1685628973231 implements MigrationInterface {
     await queryRunner.query(`DROP INDEX "IDX_CredentialBrandingEntity_issuerCorrelationId"`)
     await queryRunner.query(`DROP TABLE "CredentialBranding"`)
     await queryRunner.query(`DROP INDEX "IDX_BaseLocaleBranding_type"`)
+    await queryRunner.query(`DROP INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale"`)
+    await queryRunner.query(`DROP TABLE "CredentialClaims"`)
     await queryRunner.query(`DROP INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale"`)
     await queryRunner.query(`DROP INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale"`)
     await queryRunner.query(`DROP TABLE "BaseLocaleBranding"`)

@@ -11,7 +11,10 @@ import {
   ExperimentalSubjectIssuance,
   MetadataDisplay,
   NotificationRequest,
+  CredentialsSupportedDisplay,
+  IssuerCredentialSubject,
 } from '@sphereon/oid4vci-common'
+import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
@@ -22,7 +25,15 @@ import {
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import { DigitalCredential, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import {
+  DigitalCredential,
+  IBasicCredentialClaim,
+  IBasicCredentialLocaleBranding,
+  IBasicIssuerLocaleBranding,
+  Identity,
+  IIssuerLocaleBranding,
+  Party,
+} from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
@@ -49,11 +60,12 @@ import {
   VerificationPolicies,
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
 
-  oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine>
+  oid4vciHolderGetMachineInterpreter(args: GetMachineArgs, context: RequiredContext): Promise<OID4VCIMachine> // FIXME is using GetMachineArgs as args but the function uses OID4VCIMachineInstanceOpts
 
   oid4vciHolderStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartResult>
 
@@ -70,7 +82,14 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
 
   oid4vciHolderAddContactIdentity(args: AddContactIdentityArgs, context: RequiredContext): Promise<Identity>
 
-  oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]>
+  oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<Array<VerificationResult>>
+
+  oid4vciHolderGetIssuerBranding(
+    args: GetIssuerBrandingArgs,
+    context: RequiredContext,
+  ): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>
+
+  oid4vciHolderStoreIssuerBranding(args: StoreIssuerBrandingArgs, context: RequiredContext): Promise<void>
 
   oid4vciHolderStoreCredentialBranding(args: StoreCredentialBrandingArgs, context: RequiredContext): Promise<void>
 
@@ -81,6 +100,7 @@ export type OID4VCIHolderOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   vcFormatPreferences?: Array<string>
   jsonldCryptographicSuitePreferences?: Array<string>
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
@@ -110,6 +130,7 @@ export type OnIdentifierCreatedArgs = {
 
 export type GetMachineArgs = {
   requestData: RequestData
+  trustAnchors?: Array<string>
   authorizationRequestOpts?: AuthorizationRequestOpts
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
@@ -131,8 +152,9 @@ export type GetCredentialsArgs = Pick<
   'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
-export type AddIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
-export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept'>
+export type GetIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
+export type StoreIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'issuerBranding' | 'contact'>
+export type AssertValidCredentialsArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'issuanceOpt'>
 export type StoreCredentialBrandingArgs = Pick<
   OID4VCIMachineContext,
   'serverMetadata' | 'credentialBranding' | 'selectedCredentials' | 'credentialsToAccept'
@@ -145,6 +167,7 @@ export type SendNotificationArgs = Pick<
   OID4VCIMachineContext,
   'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
 > & { notificationRequest?: NotificationRequest; stored: boolean }
+export type GetFederationTrustArgs = Pick<OID4VCIMachineContext, 'requestData' | 'trustAnchors' | 'serverMetadata'>
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -169,7 +192,9 @@ export enum SupportedLanguage {
 
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
+  onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
   hasher?: Hasher
+  schemaValidation?: SchemaValidation
   context: RequiredContext
 }
 
@@ -186,9 +211,11 @@ export type OID4VCIMachineContext = {
   accessTokenOpts?: AccessTokenOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts
+  trustAnchors: Array<string>
   requestData?: RequestData // TODO WAL-673 fix type as this is not always a qr code (deeplink)
   locale?: string
   authorizationCodeURL?: string
+  issuerBranding?: Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata?: EndpointMetadataResult
@@ -200,6 +227,7 @@ export type OID4VCIMachineContext = {
   credentialsToAccept: Array<MappedCredentialToAccept>
   verificationCode?: string // TODO WAL-672 refactor to not store verificationCode in the context
   hasContactConsent: boolean
+  trustedAnchors?: Array<string>
   error?: ErrorDetails
 }
 
@@ -208,8 +236,11 @@ export enum OID4VCIMachineStates {
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
   getContact = 'getContact',
   transitionFromSetup = 'transitionFromSetup',
+  getFederationTrust = 'getFederationTrust',
+  reviewContact = 'reviewContact',
   addContact = 'addContact',
-  addIssuerBranding = 'addIssuerBranding',
+  getIssuerBranding = 'getIssuerBranding',
+  storeIssuerBranding = 'storeIssuerBranding',
   addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
   transitionFromContactSetup = 'transitionFromContactSetup',
   selectCredentials = 'selectCredentials',
@@ -274,6 +305,7 @@ export type CreateOID4VCIMachineOpts = {
   requestData: RequestData
   machineName?: string
   locale?: string
+  trustAnchors?: Array<string>
   stateDefinition?: OID4VCIMachineState
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   accessTokenOpts?: AccessTokenOpts
@@ -334,14 +366,18 @@ export enum OID4VCIMachineGuards {
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
   createContactGuard = 'oid4vciCreateContactGuard',
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
+  isOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
+  contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard',
 }
 
 export enum OID4VCIMachineServices {
   start = 'start',
   getContact = 'getContact',
+  getFederationTrust = 'getFederationTrust',
   addContactIdentity = 'addContactIdentity',
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
-  addIssuerBranding = 'addIssuerBranding',
+  getIssuerBranding = 'getIssuerBranding',
+  storeIssuerBranding = 'storeIssuerBranding',
   createCredentialSelection = 'createCredentialSelection',
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
@@ -424,6 +460,7 @@ export type IssuanceOpts = CredentialConfigurationSupported & {
   credentialConfigurationId?: string // Explicit ID for a credential
   supportedBindingMethods: ManagedIdentifierMethod[]
   supportedPreferredDidMethod?: SupportedDidMethodEnum
+  schemaValidation?: SchemaValidation
   // todo: rename, now we have generic identifiers
   identifier?: ManagedIdentifierOptsOrResult
   // todo: replace by signature alg, so we can determine applicable key types instead of determining up front. Use proof_types_supported
@@ -478,8 +515,9 @@ export type GetCredentialBrandingArgs = {
   context: RequiredContext
 }
 
-export type GetIssuerBrandingArgs = {
+export type GetBasicIssuerLocaleBrandingArgs = {
   display: MetadataDisplay[]
+  dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
   context: RequiredContext
 }
 
@@ -596,6 +634,7 @@ export interface VerifyCredentialArgs {
 export type RequiredContext = IAgentContext<
   IIssuanceBranding &
     IContactManager &
+    ICredentialValidation &
     ICredentialVerifier &
     ICredentialIssuer &
     ICredentialStore &
@@ -607,4 +646,57 @@ export type RequiredContext = IAgentContext<
     ISDJwtPlugin &
     ImDLMdoc
 >
+
+export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
+
+export type VerifyEBSICredentialIssuerArgs = {
+  wrappedVc: WrappedVerifiableCredential
+  issuerType?: IssuerType[]
+}
+
+export type Attribute = {
+  hash: string
+  body: string
+  issuerType: IssuerType
+  tao: string
+  rootTao: string
+}
+
+export type VerifyEBSICredentialIssuerResult = {
+  did: string
+  attributes: Attribute[]
+}
+
+export type CredentialLocaleBrandingFromArgs = {
+  credentialDisplay: CredentialsSupportedDisplay
+}
+
+export type IssuerLocaleBrandingFromArgs = {
+  issuerDisplay: MetadataDisplay
+  dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
+}
+
+export type CredentialBrandingFromArgs = {
+  credentialDisplay?: Array<CredentialsSupportedDisplay>
+  issuerCredentialSubject?: IssuerCredentialSubject
+}
+
+export type CredentialDisplayLocalesFromArgs = {
+  credentialDisplay: Array<CredentialsSupportedDisplay>
+}
+
+export type IssuerCredentialSubjectLocalesFromArgs = {
+  issuerCredentialSubject: IssuerCredentialSubject
+}
+
+export type CombineLocalesFromArgs = {
+  credentialDisplayLocales?: Map<string, CredentialsSupportedDisplay>
+  issuerCredentialSubjectLocales?: Map<string, Array<IBasicCredentialClaim>>
+}
+
+export type DynamicRegistrationClientMetadataDisplay = Pick<
+  DynamicRegistrationClientMetadata,
+  'client_name' | 'client_uri' | 'contacts' | 'tos_uri' | 'policy_uri' | 'logo_uri'
+>
+
 export type DidAgents = TAgent<IResolver & IDIDManager>

@@ -1,6 +1,6 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
-import { DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
+import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
@@ -367,6 +367,27 @@ describe('Contact store tests', (): void => {
             correlationId: 'example_did3',
           },
         },
+        {
+          alias: 'test_alias4',
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.FEDERATION_TRUST_ANCHOR],
+          connection: {
+            type: ConnectionType.OPENID_CONNECT,
+            config: {
+              clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
+              clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
+              scopes: ['auth'],
+              issuer: 'https://example.com/app-test',
+              redirectUrl: 'app:/callback',
+              dangerouslyAllowInsecureHttpRequests: true,
+              clientAuthMethod: <const>'post',
+            },
+          },
+          identifier: {
+            type: CorrelationIdentifierType.URL,
+            correlationId: 'example_url4',
+          },
+        },
       ],
       electronicAddresses: [
         {
@@ -391,7 +412,7 @@ describe('Contact store tests', (): void => {
     }
     const result: Array<Party> = await contactStore.getParties(args)
 
-    expect(result[0].identities.length).toEqual(3)
+    expect(result[0].identities.length).toEqual(4)
     expect(result[0].electronicAddresses.length).toEqual(1)
   })
 
@@ -1208,6 +1229,27 @@ describe('Contact store tests', (): void => {
             correlationId: 'example_did3',
           },
         },
+        {
+          alias: 'test_alias4',
+          origin: IdentityOrigin.EXTERNAL,
+          roles: [CredentialRole.FEDERATION_TRUST_ANCHOR],
+          connection: {
+            type: ConnectionType.OPENID_CONNECT,
+            config: {
+              clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
+              clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
+              scopes: ['auth'],
+              issuer: 'https://example.com/app-test',
+              redirectUrl: 'app:/callback',
+              dangerouslyAllowInsecureHttpRequests: true,
+              clientAuthMethod: <const>'post',
+            },
+          },
+          identifier: {
+            type: CorrelationIdentifierType.URL,
+            correlationId: 'example_url4',
+          },
+        },
       ],
     }
 
@@ -1215,8 +1257,8 @@ describe('Contact store tests', (): void => {
     const result: Party = await contactStore.getParty({ partyId: savedParty.id })
 
     expect(result.roles).toBeDefined()
-    expect(result.roles.length).toEqual(3)
-    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER])
+    expect(result.roles.length).toEqual(4)
+    expect(result.roles).toEqual([CredentialRole.VERIFIER, CredentialRole.ISSUER, CredentialRole.HOLDER, CredentialRole.FEDERATION_TRUST_ANCHOR])
   })
 
   it('should add relationship', async (): Promise<void> => {

@@ -3,16 +3,10 @@ import { DataSource } from 'typeorm'
 import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
-import {
-  CredentialCorrelationType,
-  CredentialDocumentFormat,
-  DocumentType,
-  NonPersistedDigitalCredential,
-} from '../types/digitalCredential/digitalCredential'
 import { computeEntryHash } from '@veramo/utils'
-import { AddCredentialArgs } from '../types/digitalCredential/IAbstractDigitalCredentialStore'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
 import { createHash } from 'crypto'
+import { AddCredentialArgs, CredentialCorrelationType, CredentialDocumentFormat, DocumentType, NonPersistedDigitalCredential } from '../types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

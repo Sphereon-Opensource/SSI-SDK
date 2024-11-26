@@ -49,6 +49,10 @@ export enum DefaultActionSubType {
   DID_SERVICE_UPDATE = 'DID service update',
   VC_ISSUE = 'VC issue',
   VC_VERIFY = 'VC verify',
+  VC_SHARE = 'VC share',
+  VC_DELETE = 'VC delete',
+  VC_ISSUE_DECLINE = 'VC issue decline',
+  VC_SHARE_DECLINE = 'VC share decline',
 }
 
 export type ActionSubType = DefaultActionSubType | string
@@ -169,9 +173,9 @@ export class EventManager {
           emitters.map((emitter) => {
             return { emitter, enabled: true }
           }),
-          filter
-        ).flatMap((emitter) => emitter.emitter.listeners(filter.eventName))
-      )
+          filter,
+        ).flatMap((emitter) => emitter.emitter.listeners(filter.eventName)),
+      ),
     )
   }
 
@@ -180,7 +184,7 @@ export class EventManager {
     filter?: {
       eventName?: string | symbol
       onlyEnabled?: boolean
-    }
+    },
   ): Array<EmitterInstance> {
     const { eventName } = filter ?? {}
     if (!eventName) {

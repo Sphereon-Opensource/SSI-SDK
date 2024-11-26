@@ -12,7 +12,7 @@ export class CreateDigitalCredential1708525189002 implements MigrationInterface 
                 "document_type" varchar CHECK( "document_type" IN ('VC', 'VP', 'C', 'P') ) NOT NULL,
                 "regulation_type" varchar CHECK( "regulation_type" IN ('PID', 'QEAA', 'EAA', 'NON_REGULATED') ) NOT NULL DEFAULT 'NON_REGULATED',
                 "document_format" varchar CHECK( "document_format" IN ('JSON_LD', 'JWT', 'SD_JWT', 'MSO_MDOC') ) NOT NULL,
-                "credential_role" varchar CHECK( "credential_role" IN ('ISSUER', 'VERIFIER', 'HOLDER') ) NOT NULL,
+                "credential_role" varchar CHECK( "credential_role" IN ('ISSUER', 'VERIFIER', 'HOLDER', 'FEDERATION_TRUST_ANCHOR') ) NOT NULL,
                 "raw_document" text NOT NULL,
                 "uniform_document" text NOT NULL,
                 "credential_id" text,

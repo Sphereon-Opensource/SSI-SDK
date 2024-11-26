@@ -26,7 +26,7 @@ import {
   isManagedIdentifierX5cResult,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IJwtService, JwtHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CorrelationIdentifierType,
@@ -38,7 +38,7 @@ import {
   IBasicIssuerLocaleBranding,
   Identity,
   IdentityOrigin,
-  IIssuerBranding,
+  IIssuerLocaleBranding,
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
@@ -72,14 +72,16 @@ import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machine/oid4vciMachine'
 import {
   AddContactIdentityArgs,
-  AddIssuerBrandingArgs,
   AssertValidCredentialsArgs,
+  Attribute,
   createCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
   GetContactArgs,
   GetCredentialArgs,
   GetCredentialsArgs,
+  GetFederationTrustArgs,
+  GetIssuerBrandingArgs,
   GetIssuerMetadataArgs,
   IOID4VCIHolder,
   IssuanceOpts,
@@ -98,7 +100,10 @@ import {
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
+  StoreIssuerBrandingArgs,
   VerificationResult,
+  VerifyEBSICredentialIssuerArgs,
+  VerifyEBSICredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -110,6 +115,8 @@ import {
   selectCredentialLocaleBranding,
   verifyCredentialToAccept,
 } from './OID4VCIHolderService'
+
+import 'cross-fetch/polyfill'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -143,7 +150,7 @@ export function signCallback(
     if (!resolution.issuer && !jwt.payload.iss) {
       return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
     }
-    const header = jwt.header as JwtHeader
+    const header = jwt.header as JwsHeader
     const payload = jwt.payload
     if (nonce) {
       payload.nonce = nonce
@@ -162,6 +169,32 @@ export function signCallback(
       })
     ).jwt
   }
+}
+
+export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssuerArgs): Promise<VerifyEBSICredentialIssuerResult> {
+  const { wrappedVc, issuerType = ['TI'] } = args
+
+  const issuer =
+    wrappedVc.decoded?.iss ??
+    (typeof wrappedVc.decoded?.vc?.issuer === 'string' ? wrappedVc.decoded?.vc?.issuer : wrappedVc.decoded?.vc?.issuer?.existingInstanceId)
+
+  if (!issuer) {
+    throw Error('The issuer of the VC is required to be present')
+  }
+
+  const url = `https://api-conformance.ebsi.eu/trusted-issuers-registry/v4/issuers/${issuer}`
+  const response = await fetch(url)
+  if (response.status !== 200) {
+    throw Error('The issuer of the VC cannot be trusted')
+  }
+
+  const payload = await response.json()
+
+  if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
+    throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
+  }
+
+  return payload
 }
 
 export class OID4VCIHolder implements IAgentPlugin {
@@ -185,6 +218,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreCredentialBranding: this.oid4vciHolderStoreCredentialBranding.bind(this),
     oid4vciHolderStoreCredentials: this.oid4vciHolderStoreCredentials.bind(this),
     oid4vciHolderSendNotification: this.oid4vciHolderSendNotification.bind(this),
+    oid4vciHolderGetIssuerBranding: this.oid4vciHolderGetIssuerBranding.bind(this),
+    oid4vciHolderStoreIssuerBranding: this.oid4vciHolderStoreIssuerBranding.bind(this),
   }
 
   private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
@@ -196,8 +231,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     // "JcsEd25519Signature2020"
   ]
   private readonly didMethodPreferences: Array<SupportedDidMethodEnum> = [
+    SupportedDidMethodEnum.DID_JWK, // FIXME prefer JWK until we devise a method to detect when to use EBSI/jcs for did:key and when not
     SupportedDidMethodEnum.DID_KEY,
-    SupportedDidMethodEnum.DID_JWK,
+    SupportedDidMethodEnum.DID_OYD,
     SupportedDidMethodEnum.DID_EBSI,
     SupportedDidMethodEnum.DID_ION,
   ]
@@ -211,19 +247,21 @@ export class OID4VCIHolder implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onCredentialStored?: (args: OnCredentialStoredArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  private readonly onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
 
   constructor(options?: OID4VCIHolderOptions) {
     const {
       onContactIdentityCreated,
       onCredentialStored,
       onIdentifierCreated,
+      onVerifyEBSICredentialIssuer,
       vcFormatPreferences,
       jsonldCryptographicSuitePreferences,
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
       hasher,
-    } = options ?? {}
+    } = { ...options }
 
     this.hasher = hasher
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
@@ -244,6 +282,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onCredentialStored = onCredentialStored
     this.onIdentifierCreated = onIdentifierCreated
+    this.onVerifyEBSICredentialIssuer = onVerifyEBSICredentialIssuer
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -281,11 +320,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       getCredentials: (args: GetCredentialsArgs) =>
         this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
       addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
-      addIssuerBranding: (args: AddIssuerBrandingArgs) => this.oid4vciHolderAddIssuerBranding(args, context),
+      getIssuerBranding: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
+      storeIssuerBranding: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
       assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
       storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
       storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
       sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
+      getFederationTrust: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context),
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -695,43 +736,73 @@ export class OID4VCIHolder implements IAgentPlugin {
     return context.agent.cmAddIdentity({ contactId: contact.id, identity })
   }
 
-  private async oid4vciHolderAddIssuerBranding(args: AddIssuerBrandingArgs, context: RequiredContext): Promise<void> {
+  private async oid4vciHolderGetIssuerBranding(
+    args: GetIssuerBrandingArgs,
+    context: RequiredContext,
+  ): Promise<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>> {
     const { serverMetadata, contact } = args
-    if (!contact) {
-      return logger.warning('Missing contact in context, so cannot get issuer branding')
-    }
 
-    if (serverMetadata?.credentialIssuerMetadata?.display) {
-      const issuerCorrelationId: string =
-        contact.identities
-          .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
-          .map((identity) => identity.identifier.correlationId)[0] ?? undefined
+    // Here we are fetching issuer branding for a contact. If no contact is found that means we encounter this contact for the first time. This also means we do not have any branding for the contact.
+    const issuerCorrelationId = contact?.identities
+      .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
+      .map((identity) => identity.identifier.correlationId)[0]
 
-      const brandings: IIssuerBranding[] = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
-      // todo: Probably wise to look at last updated at and update in case it has been a while
-      if (!brandings || brandings.length === 0) {
-        const basicIssuerLocaleBrandings: IBasicIssuerLocaleBranding[] = await getBasicIssuerLocaleBranding({
-          display: serverMetadata.credentialIssuerMetadata.display,
-          context,
-        })
-        if (basicIssuerLocaleBrandings && basicIssuerLocaleBrandings.length > 0) {
-          await context.agent.ibAddIssuerBranding({
-            localeBranding: basicIssuerLocaleBrandings,
-            issuerCorrelationId,
-          })
-        }
+    if (issuerCorrelationId) {
+      const branding = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
+      if (branding.length > 0) {
+        return branding[0].localeBranding
       }
     }
+
+    // We should have serverMetadata in the context else something went wrong
+    if (!serverMetadata) {
+      return Promise.reject(Error('Missing serverMetadata in context'))
+    }
+
+    return getBasicIssuerLocaleBranding({
+      display: serverMetadata.credentialIssuerMetadata?.display ?? [],
+      dynamicRegistrationClientMetadata: serverMetadata.credentialIssuerMetadata,
+      context,
+    })
+  }
+
+  private async oid4vciHolderStoreIssuerBranding(args: StoreIssuerBrandingArgs, context: RequiredContext): Promise<void> {
+    const { issuerBranding, contact } = args
+    if (!issuerBranding || issuerBranding.length === 0 || (<Array<IIssuerLocaleBranding>>issuerBranding)[0].id) {
+      // FIXME we need better separation between a contact(issuer) we encountered before and it's branding vs a new contact and it's branding
+      return
+    }
+
+    if (!contact) {
+      return Promise.reject(Error('Missing contact in context'))
+    }
+
+    const issuerCorrelationId = contact?.identities
+      .filter((identity) => identity.roles.includes(CredentialRole.ISSUER))
+      .map((identity) => identity.identifier.correlationId)[0]
+
+    // we check for issuer branding as adding an identity might also trigger storing the issuer branding
+    const branding = await context.agent.ibGetIssuerBranding({ filter: [{ issuerCorrelationId }] })
+    if (branding.length > 0) {
+      return
+    }
+
+    await context.agent.ibAddIssuerBranding({
+      localeBranding: issuerBranding as Array<IBasicIssuerLocaleBranding>,
+      issuerCorrelationId,
+    })
   }
 
   private async oid4vciHolderAssertValidCredentials(args: AssertValidCredentialsArgs, context: RequiredContext): Promise<VerificationResult[]> {
-    const { credentialsToAccept } = args
+    const { credentialsToAccept, issuanceOpt } = args
 
     return await Promise.all(
       credentialsToAccept.map((credentialToAccept) =>
         verifyCredentialToAccept({
           mappedCredential: credentialToAccept,
+          onVerifyEBSICredentialIssuer: this.onVerifyEBSICredentialIssuer,
           hasher: this.hasher,
+          schemaValidation: issuanceOpt?.schemaValidation,
           context,
         }),
       ),
@@ -754,7 +825,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (localeBranding && localeBranding.length > 0) {
         const credential = credentialsToAccept.find(
           (credAccept) =>
-            credAccept.credentialToAccept.id === credentialId ?? JSON.stringify(credAccept.types) === credentialId ?? credentialsToAccept[counter],
+            credAccept.credentialToAccept.id === credentialId || JSON.stringify(credAccept.types) === credentialId || credentialsToAccept[counter],
         )!
         counter++
         await context.agent.ibAddCredentialBranding({
@@ -952,17 +1023,6 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private idFromW3cCredentialSubject(wrappedIssuerVC: WrappedW3CVerifiableCredential): string | undefined {
-    if (Array.isArray(wrappedIssuerVC.credential?.credentialSubject)) {
-      if (wrappedIssuerVC.credential?.credentialSubject.length > 0) {
-        return wrappedIssuerVC.credential?.credentialSubject[0].id
-      }
-    } else {
-      return wrappedIssuerVC.credential?.credentialSubject?.id
-    }
-    return undefined
-  }
-
   private async oid4vciHolderSendNotification(args: SendNotificationArgs, context: RequiredContext): Promise<void> {
     const { serverMetadata, notificationRequest, openID4VCIClientState } = args
     const notificationEndpoint = serverMetadata?.credentialIssuerMetadata?.notification_endpoint
@@ -979,6 +1039,35 @@ export class OID4VCIHolder implements IAgentPlugin {
     const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
     await client.sendNotification({ notificationEndpoint }, notificationRequest, openID4VCIClientState?.accessTokenResponse?.access_token)
     logger.log(`Notification to ${notificationEndpoint} has been dispatched`)
+  }
+
+  private async getFederationTrust(args: GetFederationTrustArgs, context: RequiredContext): Promise<Array<string>> {
+    const { requestData, serverMetadata, trustAnchors } = args
+
+    if (trustAnchors.length === 0) {
+      return Promise.reject(Error('No trust anchors found'))
+    }
+
+    if (!requestData?.uri) {
+      return Promise.reject(Error('Missing request URI in context'))
+    }
+
+    if (!serverMetadata) {
+      return Promise.reject(Error('Missing serverMetadata in context'))
+    }
+
+    const url = new URL(requestData?.uri)
+    const params = new URLSearchParams(url.search)
+    const openidFederation = params.get('openid_federation')
+    const entityIdentifier = openidFederation ?? serverMetadata.issuer
+
+    const result = await context.agent.identifierExternalResolveByOIDFEntityId({
+      method: 'entity_id',
+      trustAnchors: trustAnchors,
+      identifier: entityIdentifier,
+    })
+
+    return result.trustedAnchors
   }
 
   private async oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult> {
@@ -1011,5 +1100,16 @@ export class OID4VCIHolder implements IAgentPlugin {
         break
     }
     return [CredentialCorrelationType.URL, issuer]
+  }
+
+  private idFromW3cCredentialSubject(wrappedIssuerVC: WrappedW3CVerifiableCredential): string | undefined {
+    if (Array.isArray(wrappedIssuerVC.credential?.credentialSubject)) {
+      if (wrappedIssuerVC.credential?.credentialSubject.length > 0) {
+        return wrappedIssuerVC.credential?.credentialSubject[0].id
+      }
+    } else {
+      return wrappedIssuerVC.credential?.credentialSubject?.id
+    }
+    return undefined
   }
 }

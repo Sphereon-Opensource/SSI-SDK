@@ -1,6 +1,6 @@
 import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IIdentifierResolution, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { JoseSignatureAlgorithm } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
@@ -86,6 +86,8 @@ export interface ICreateSdJwtVcArgs {
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   disclosureFrame?: IDisclosureFrame
+
+  resolution?: ManagedIdentifierResult
 }
 
 /**
@@ -195,12 +197,13 @@ export type IVerifySdJwtPresentationResult = {
 export type SignKeyArgs = {
   identifier: string
   vmRelationship: DIDDocumentSection
+  resolution?: ManagedIdentifierResult
 }
 
 export type SignKeyResult = {
   alg: JoseSignatureAlgorithm
   key: {
-    kid: string
+    kid?: string
     kmsKeyRef: string
     x5c?: string[]
     jwkThumbprint?: string

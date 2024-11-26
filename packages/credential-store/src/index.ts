@@ -20,4 +20,4 @@ export {
 } from '@sphereon/ssi-sdk.data-store'
 export * from './types/ICredentialStore'
 export * from './types/claims'
-export * from './types/filters'
+export * from './utils/filters'

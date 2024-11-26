@@ -17,10 +17,11 @@ import {
   IIssuerLocaleBranding,
   ILocaleBranding,
 } from '@sphereon/ssi-sdk.data-store'
-import { IDeletionResult, schema } from '../index'
+import { schema } from '../index'
 import {
   IAddCredentialBrandingArgs,
   IAdditionalImageAttributes,
+  IDeletionResult,
   IIssuanceBranding,
   IRequiredContext,
   IRemoveCredentialBrandingArgs,

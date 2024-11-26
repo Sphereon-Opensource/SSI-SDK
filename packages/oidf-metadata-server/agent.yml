@@ -1,0 +1,53 @@
+version: 3.0
+
+constants:
+  baseUrl: http://localhost:3335
+  port: 3335
+  methods:
+    - oidfStoreGetMetadata
+    - oidfStoreListMetadata
+    - oidfStoreHasMetadata
+    - oidfStorePersistMetadata
+    - oidfStoreRemoveMetadata
+    - oidfStoreClearAllMetadata
+
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: false
+
+server:
+  baseUrl:
+    $ref: /constants/baseUrl
+  port:
+    $ref: /constants/port
+  use:
+    # CORS
+    - - $require: 'cors'
+
+    # Add agent to the request object
+    - - $require: '@veramo/remote-server?t=function#RequestWithAgentRouter'
+        $args:
+          - agent:
+              $ref: /agent
+
+    # API base path
+    - - /agent
+      - $require: '@veramo/remote-server?t=function#apiKeyAuth'
+        $args:
+          - apiKey: test123
+      - $require: '@veramo/remote-server?t=function#AgentRouter'
+        $args:
+          - exposedMethods:
+              $ref: /constants/methods
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $require: ./packages/oidf-metadata-server/dist#OIDFMetadataStore

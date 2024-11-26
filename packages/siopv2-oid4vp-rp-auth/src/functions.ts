@@ -25,10 +25,10 @@ import {
   isManagedIdentifierX5cOpts,
   ManagedIdentifierOptsOrResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { JwsCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { SigningAlgo } from '@sphereon/oid4vc-common'
-import { CredentialMapper, Hasher, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
@@ -37,6 +37,7 @@ import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
+import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -49,8 +50,11 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
   return siopIdentifierOpts.wellknownDIDVerifyCallback
     ? siopIdentifierOpts.wellknownDIDVerifyCallback
     : async (args: IVerifyCallbackArgs): Promise<IVerifyCredentialResult> => {
-        const result = await context.agent.verifyCredential({ credential: args.credential, fetchRemoteContexts: true })
-        return { verified: result.verified }
+        const result = await context.agent.cvVerifyCredential({
+          credential: args.credential as OriginalVerifiableCredential,
+          fetchRemoteContexts: true,
+        })
+        return { verified: result.result }
       }
 }
 
@@ -138,7 +142,6 @@ export async function createRPBuilder(args: {
     passBy: PassBy.VALUE,
   }
 
-  const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
   const resolver =
     rpOpts.identifierOpts.resolveOpts?.resolver ??
     getAgentResolver(context, {
@@ -151,18 +154,11 @@ export async function createRPBuilder(args: {
   if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
     hasher = (data, algorithm) => createHash(algorithm).update(data).digest()
   }
+
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
     .withScope('openid', PropertyTarget.REQUEST_OBJECT)
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
     .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
-    .withClientId(
-      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-      PropertyTarget.REQUEST_OBJECT,
-    )
-    .withClientIdScheme(
-      (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
-      PropertyTarget.REQUEST_OBJECT,
-    )
     // todo: move to options fill/correct method
     .withSupportedVersions(
       rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
@@ -187,6 +183,23 @@ export async function createRPBuilder(args: {
     )
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(identifierOpts.idOpts, context))
+
+  const oidfOpts = identifierOpts.oidfOpts
+  if (oidfOpts && isExternalIdentifierOIDFEntityIdOpts(oidfOpts)) {
+    builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT).withClientIdScheme('entity_id', PropertyTarget.REQUEST_OBJECT)
+  } else {
+    const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
+    builder
+      .withClientId(
+        resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
+        PropertyTarget.REQUEST_OBJECT,
+      )
+      .withClientIdScheme(
+        (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
+        PropertyTarget.REQUEST_OBJECT,
+      )
+  }
+
   if (hasher) {
     builder.withHasher(hasher)
   }
@@ -200,6 +213,10 @@ export async function createRPBuilder(args: {
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
+  }
+
+  if (rpOpts.responseRedirectUri) {
+    builder.withResponseRedirectUri(rpOpts.responseRedirectUri)
   }
 
   //const key = resolution.key
@@ -229,7 +246,7 @@ export function signCallback(
     if (!(isManagedIdentifierDidOpts(idOpts) || isManagedIdentifierX5cOpts(idOpts))) {
       return Promise.reject(Error(`JWT issuer method ${jwtIssuer.method} not yet supported`))
     }
-    const result: JwsCompactResult = await context.agent.jwtCreateJwsCompactSignature({
+    const result: JwtCompactResult = await context.agent.jwtCreateJwsCompactSignature({
       // FIXME fix cose-key inference
       // @ts-ignore
       issuer: { identifier: idOpts.identifier, kmsKeyRef: idOpts.kmsKeyRef, noIdentifierInHeader: false },

@@ -1,4 +1,5 @@
 // import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+import { getDidOydResolver, OydDIDProvider } from '@sphereon/did-provider-oyd'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
@@ -12,13 +13,12 @@ import {
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
-  SphereonBbsBlsSignature2020,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStore, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
+import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -30,10 +30,12 @@ import { SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
 
+// @ts-ignore
 import passport from 'passport'
 import { ITokenPayload, VerifyCallback } from 'passport-azure-ad/common'
 import { VcApiServer } from '../src'
 
+// @ts-ignore
 import config from './config.json'
 import { DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
 
@@ -50,6 +52,7 @@ export enum KeyManagementSystemEnum {
 export enum SupportedDidMethodEnum {
   DID_ETHR = 'ethr',
   DID_KEY = 'key',
+  DID_OYD = 'oyd',
   // DID_LTO = 'lto',
   DID_ION = 'ion',
   // DID_FACTOM = 'factom',
@@ -76,6 +79,7 @@ export const resolver = new Resolver({
   ...getDidKeyResolver(),
   ...getDidJwkResolver(),
   ...getDidIonResolver(),
+  ...getDidOydResolver(),
 })
 
 export const didProviders = {
@@ -90,6 +94,9 @@ export const didProviders = {
     defaultKms: KeyManagementSystemEnum.LOCAL,
   }),
   [`${DID_PREFIX}:${SupportedDidMethodEnum.DID_JWK}`]: new JwkDIDProvider({
+    defaultKms: KeyManagementSystemEnum.LOCAL,
+  }),
+  [`${DID_PREFIX}:${SupportedDidMethodEnum.DID_OYD}`]: new OydDIDProvider({
     defaultKms: KeyManagementSystemEnum.LOCAL,
   }),
 }
@@ -127,7 +134,6 @@ const agent = createAgent<
       suites: [
         new SphereonEd25519Signature2018(),
         new SphereonEd25519Signature2020(),
-        new SphereonBbsBlsSignature2020(),
         new SphereonJsonWebSignature2020(),
         new SphereonEcdsaSecp256k1RecoverySignature2020(),
       ],
@@ -204,6 +210,7 @@ agent
       .withSessionOptions({ secret: '1234', name: 'oidc-session' })
     const expressSupport = builder.build()
 
+    // @ts-ignore
     new VcApiServer({
       opts: {
         endpointOpts: {
@@ -223,6 +230,7 @@ agent
         },
       },
       expressSupport,
+      // @ts-ignore
       agent,
     })
     expressSupport.start()

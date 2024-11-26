@@ -1,10 +1,8 @@
-import { com } from '@sphereon/kmp-mdl-mdoc'
 import { LOG } from '@sphereon/oid4vci-client'
 import {
   CredentialConfigurationSupported,
   CredentialOfferFormatV1_0_11,
   CredentialResponse,
-  CredentialsSupportedDisplay,
   getSupportedCredentials,
   getTypesFromCredentialSupported,
   getTypesFromObject,
@@ -23,13 +21,9 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
-
-import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
-  ICoseKeyJson,
   IVerifiableCredential,
-  IVerifyResult,
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
   mdocDecodedCredentialToUniformCredential,
@@ -39,11 +33,9 @@ import {
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import { IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import { translate } from '../localization/Localization'
 import {
-  CredentialVerificationError,
   DidAgents,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
@@ -52,37 +44,34 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
-  GetIssuerBrandingArgs,
+  GetBasicIssuerLocaleBrandingArgs,
   GetPreferredCredentialFormatsArgs,
   IssuanceOpts,
   MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
-  RequiredContext,
   SelectAppLocaleBrandingArgs,
   VerificationResult,
-  VerificationSubResult,
-  VerifyCredentialArgs,
   VerifyCredentialToAcceptArgs,
-  VerifyMdocArgs,
-  VerifySDJWTCredentialArgs,
 } from '../types/IOID4VCIHolder'
-import { credentialLocaleBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
-
-export const DID_PREFIX = 'did'
+import { getCredentialBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
-      const localeBranding: Array<IBasicCredentialLocaleBranding> = await Promise.all(
-        (credentialsConfigSupported.display ?? []).map(
-          async (display: CredentialsSupportedDisplay): Promise<IBasicCredentialLocaleBranding> =>
-            await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding: await credentialLocaleBrandingFrom(display) }),
+      const mappedLocaleBranding = await getCredentialBrandingFrom({
+        credentialDisplay: credentialsConfigSupported.display,
+        issuerCredentialSubject:
+          // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
+          credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
+      })
+
+      // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use
+      const localeBranding = await Promise.all(
+        (mappedLocaleBranding ?? []).map(
+          async (localeBranding): Promise<IBasicCredentialLocaleBranding> => await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding }),
         ),
       )
 
@@ -98,11 +87,12 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   return credentialBranding
 }
 
-export const getBasicIssuerLocaleBranding = async (args: GetIssuerBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
-  const { display, context } = args
+export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
+  const { display, dynamicRegistrationClientMetadata, context } = args
   return await Promise.all(
-    display.map(async (displayItem: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
-      const branding = await issuerLocaleBrandingFrom(displayItem)
+    display.map(async (issuerDisplay: MetadataDisplay): Promise<IBasicIssuerLocaleBranding> => {
+      // FIXME for now we do not have locale support for dynamicRegistrationClientMetadata, so we add all the metadata to every locale
+      const branding = await issuerLocaleBrandingFrom({ issuerDisplay, dynamicRegistrationClientMetadata })
       return context.agent.ibIssuerLocaleBrandingFrom({ localeBranding: branding })
     }),
   )
@@ -135,7 +125,7 @@ export const selectCredentialLocaleBranding = async (
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
-  const { mappedCredential, hasher, context } = args
+  const { mappedCredential, hasher, onVerifyEBSICredentialIssuer, schemaValidation, context } = args
 
   const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
   if (!credential) {
@@ -150,131 +140,40 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
       : wrappedVC.decoded?.vc?.issuer?.existingInstanceId?.includes('did:ebsi:'))
   ) {
     // TODO: Skipping VC validation for EBSI conformance issued credential, as their Issuer is not present in the ledger (sigh)
+    // just calling the verifySchema functionality for ebsi credentials
+    await context.agent.cvVerifySchema({ credential, hasher, validationPolicy: schemaValidation })
     if (JSON.stringify(wrappedVC.decoded).includes('vc:ebsi:conformance')) {
       return { source: wrappedVC, error: undefined, result: true, subResults: [] } satisfies VerificationResult
     }
+
+    if (onVerifyEBSICredentialIssuer) {
+      try {
+        await onVerifyEBSICredentialIssuer({
+          wrappedVc: wrappedVC,
+        })
+      } catch (e) {
+        return { source: wrappedVC, error: e.message, result: true, subResults: [] } satisfies VerificationResult
+      }
+    }
   }
 
-  const verificationResult: VerificationResult = await verifyCredential(
-    {
-      credential,
-      hasher,
-      // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
-      fetchRemoteContexts: true,
-      policies: {
-        credentialStatus: false,
-        expirationDate: false,
-        issuanceDate: false,
-      },
+  const verificationResult: VerificationResult = await context.agent.cvVerifyCredential({
+    credential,
+    hasher,
+    // TODO WAL-675 we might want to allow these types of options as part of the context, now we have state machines. Allows us to pre-determine whether these policies apply and whether remote context should be fetched
+    fetchRemoteContexts: true,
+    policies: {
+      schemaValidation: schemaValidation,
+      credentialStatus: false,
+      expirationDate: false,
+      issuanceDate: false,
     },
-    context,
-  )
+  })
 
   if (!verificationResult.result || verificationResult.error) {
     return Promise.reject(Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')))
   }
   return verificationResult
-}
-
-export const verifyCredential = async (args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  const { credential, hasher } = args
-
-  if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
-    return await verifyMdoc({ credential }, context)
-  } else if (CredentialMapper.isSdJwtEncoded(credential)) {
-    return await verifySDJWTCredential({ credential, hasher }, context)
-  } else {
-    return await verifyW3CCredential({ ...args, credential: credential as VeramoW3CVerifiableCredential }, context)
-  }
-}
-
-export const verifyMdoc = async (args: VerifyMdocArgs, context: RequiredContext): Promise<VerificationResult> => {
-  const { credential } = args
-
-  const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, com.sphereon.kmp.Encoding.BASE64URL))
-
-  const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
-    return {
-      name: 'mdoc',
-      critical: true,
-      error: true,
-      message: error.message ?? 'SD-JWT VC could not be verified',
-    } satisfies IVerifySignatureResult<ICoseKeyJson>
-  })
-
-  return {
-    source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
-    result: !verification.error ?? true,
-    subResults: [],
-    ...(verification.error && {
-      error: verification.message ?? `Could not verify mdoc from issuer`,
-    }),
-  }
-}
-
-export const verifyW3CCredential = async (args: IVerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  // We also allow/add boolean, because 4.x Veramo returns a boolean for JWTs. 5.X will return better results
-  const { credential, policies } = args
-
-  const result: IVerifyResult | boolean = (await context.agent.verifyCredential(args)) as IVerifyResult | boolean
-
-  if (typeof result === 'boolean') {
-    return {
-      // FIXME the source is never used, need to start using this as the source of truth
-      source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
-      result,
-      ...(!result && {
-        error: 'Invalid JWT VC',
-        errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`,
-      }),
-      subResults: [],
-    }
-  } else {
-    // TODO look at what this is doing and make it simple and readable
-    let error: string | undefined
-    let errorDetails: string | undefined
-    const subResults: Array<VerificationSubResult> = []
-    if (result.error) {
-      error = result.error?.message ?? ''
-      errorDetails = result.error?.details?.code ?? ''
-      errorDetails = (errorDetails !== '' ? `${errorDetails}, ` : '') + (result.error?.details?.url ?? '')
-      if (result.error?.errors) {
-        error = (error !== '' ? `${error}, ` : '') + result.error?.errors?.map((error) => error.message ?? error.name).join(', ')
-        errorDetails =
-          (errorDetails !== '' ? `${errorDetails}, ` : '') +
-          result.error?.errors?.map((error) => (error?.details?.code ? `${error.details.code}, ` : '') + (error?.details?.url ?? '')).join(', ')
-      }
-    }
-
-    return {
-      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
-      result: result.verified,
-      subResults,
-      error,
-      errorDetails,
-    }
-  }
-}
-
-export const verifySDJWTCredential = async (args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> => {
-  const { credential, hasher } = args
-
-  const verification: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
-    .verifySdJwtVc({ credential })
-    .catch((error: Error): CredentialVerificationError => {
-      return {
-        error: 'Invalid SD-JWT VC',
-        errorDetails: error.message ?? 'SD-JWT VC could not be verified',
-      }
-    })
-
-  const result = 'header' in verification && 'payload' in verification
-  return {
-    source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
-    result,
-    subResults: [],
-    ...(!result && { ...verification }),
-  }
 }
 
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
@@ -369,17 +268,17 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
         },
       },
     })
-    if (created) {
-      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { result })
-    }
     identifier = await context.agent.identifierManagedGetByDid({
       identifier: result,
       keyType,
       offlineWhenNoDIDRegistered: result.did.startsWith('did:ebsi:'),
     })
+    if (created) {
+      await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
+    }
   } else if (supportedBindingMethods.includes('jwk')) {
     // todo: we probably should do something similar as with DIDs for re-use/new keys
-    const key = await context.agent.keyManagerCreate({ type: keyType, kms })
+    const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
     // } else if (supportedBindingMethods.includes('cose_key')) {

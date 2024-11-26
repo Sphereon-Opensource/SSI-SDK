@@ -14,14 +14,15 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-unstable.91",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-unstable.91",
-    "@sphereon/oid4vc-common": "0.16.1-unstable.91",
-    "@sphereon/pex": "5.0.0-unstable.9",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.24.1-unstable.130",
+    "@sphereon/did-auth-siop": "0.16.1-next.224",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-next.224",
+    "@sphereon/oid4vc-common": "0.16.1-next.224",
+    "@sphereon/pex": "5.0.0-unstable.28",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.26.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.0",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.26.0",
     "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.credential-validation": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
     "@sphereon/ssi-sdk.pd-manager": "workspace:*",
@@ -70,5 +71,6 @@
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"
-  ]
+  ],
+  "nx": {}
 }

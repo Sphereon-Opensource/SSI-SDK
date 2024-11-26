@@ -1,7 +1,7 @@
 import { AuthorizationRequest, SupportedVersion } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
-import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
@@ -19,6 +19,7 @@ import {
 } from '../types'
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
+import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -83,25 +84,59 @@ export const siopSendAuthorizationResponse = async (
     if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
       return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
     }
+
     let identifier: ManagedIdentifierOptsOrResult
     const digitalCredential = firstUniqueDC.digitalCredential
-    switch (digitalCredential.subjectCorrelationType) {
-      case 'DID':
-        identifier = await session.context.agent.identifierManagedGetByDid({
-          identifier: digitalCredential.subjectCorrelationId,
-          kmsKeyRef: digitalCredential.kmsKeyRef,
-        })
-        break
-      default:
-        identifier = await session.context.agent.identifierManagedGetByKid({
-          identifier: digitalCredential.kmsKeyRef,
-          kmsKeyRef: digitalCredential.kmsKeyRef,
-        })
+    const firstVC = firstUniqueDC.uniformVerifiableCredential
+    const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
+      ? firstVC.decodedPayload.cnf?.jwk
+        ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+          //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
+          `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+        : firstVC.decodedPayload.sub
+      : Array.isArray(firstVC.credentialSubject)
+        ? firstVC.credentialSubject[0].id
+        : firstVC.credentialSubject.id
+    if (!digitalCredential.kmsKeyRef) {
+      // In case the store does not have the kmsKeyRef lets search for the holder
+
+      if (!holder) {
+        return Promise.reject(`No holder found and no kmsKeyRef in DB. Cannot determine identifier to use`)
+      }
+      try {
+        identifier = await session.context.agent.identifierManagedGet({ identifier: holder })
+      } catch (e) {
+        logger.debug(`Holder DID not found: ${holder}`)
+        throw e
+      }
+    } else if (isOID4VCIssuerIdentifier(digitalCredential.kmsKeyRef)) {
+      identifier = await session.context.agent.identifierManagedGetByOID4VCIssuer({
+        identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+      })
+    } else {
+      switch (digitalCredential.subjectCorrelationType) {
+        case 'DID':
+          identifier = await session.context.agent.identifierManagedGetByDid({
+            identifier: digitalCredential.subjectCorrelationId ?? holder,
+            kmsKeyRef: digitalCredential.kmsKeyRef,
+          })
+          break
+        // TODO other implementations?
+        default:
+          // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
+          identifier = await session.context.agent.identifierManagedGetByKid({
+            identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
+            kmsKeyRef: digitalCredential.kmsKeyRef,
+          })
+      }
     }
 
     if (identifier === undefined && idOpts !== undefined && (await hasEbsiClient(request.authorizationRequest))) {
       identifier = await createEbsiIdentifier(agentContext)
     }
+    logger.debug(`Identifier`, identifier)
+
+    // TODO Add mdoc support
 
     presentationsAndDefs = await oid4vp.createVerifiablePresentations(CredentialRole.HOLDER, credentialsAndDefinitions, {
       idOpts: identifier,
@@ -119,10 +154,11 @@ export const siopSendAuthorizationResponse = async (
     idOpts = presentationsAndDefs[0].idOpts
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
   }
-  logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentation, null, 2))
+  logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentations, null, 2))
   logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
+  const mergedVerifiablePresentations = presentationsAndDefs?.flatMap((pd) => pd.verifiablePresentations) || []
   return await session.sendAuthorizationResponse({
-    ...(presentationsAndDefs && { verifiablePresentations: presentationsAndDefs?.map((pd) => pd.verifiablePresentation) }),
+    ...(presentationsAndDefs && { verifiablePresentations: mergedVerifiablePresentations }),
     ...(presentationSubmission && { presentationSubmission }),
     // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
     responseSignerOpts: idOpts!,

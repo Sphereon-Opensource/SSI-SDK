@@ -1,11 +1,7 @@
-import { ChildEntity, Column, JoinColumn, ManyToOne, Index } from 'typeorm'
-import { IBasicCredentialLocaleBranding } from '../../types'
-import { backgroundAttributesEntityFrom } from './BackgroundAttributesEntity'
+import { ChildEntity, Column, JoinColumn, ManyToOne, Index, OneToMany } from 'typeorm'
 import { CredentialBrandingEntity } from './CredentialBrandingEntity'
-import { imageAttributesEntityFrom } from './ImageAttributesEntity'
 import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
-import { textAttributesEntityFrom } from './TextAttributesEntity'
-import { isEmptyString } from '../validators'
+import { CredentialClaimsEntity } from './CredentialClaimsEntity'
 
 @ChildEntity('CredentialLocaleBranding')
 @Index('IDX_CredentialLocaleBrandingEntity_credentialBranding_locale', ['credentialBranding', 'locale'], { unique: true })
@@ -16,18 +12,15 @@ export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   @JoinColumn({ name: 'credentialBrandingId' })
   credentialBranding!: CredentialBrandingEntity
 
+  @OneToMany(() => CredentialClaimsEntity, (claims: CredentialClaimsEntity) => claims.credentialLocaleBranding, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn({ name: 'claim_id' })
+  claims!: Array<CredentialClaimsEntity>
+
   @Column('text', { name: 'credentialBrandingId', nullable: false })
   credentialBrandingId!: string
-}
-
-export const credentialLocaleBrandingEntityFrom = (args: IBasicCredentialLocaleBranding): CredentialLocaleBrandingEntity => {
-  const credentialLocaleBrandingEntity: CredentialLocaleBrandingEntity = new CredentialLocaleBrandingEntity()
-  credentialLocaleBrandingEntity.alias = isEmptyString(args.alias) ? undefined : args.alias
-  credentialLocaleBrandingEntity.locale = args.locale ? args.locale : ''
-  credentialLocaleBrandingEntity.logo = args.logo ? imageAttributesEntityFrom(args.logo) : undefined
-  credentialLocaleBrandingEntity.description = isEmptyString(args.description) ? undefined : args.description
-  credentialLocaleBrandingEntity.background = args.background ? backgroundAttributesEntityFrom(args.background) : undefined
-  credentialLocaleBrandingEntity.text = args.text ? textAttributesEntityFrom(args.text) : undefined
-
-  return credentialLocaleBrandingEntity
 }

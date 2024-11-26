@@ -52,17 +52,29 @@ export interface IImageDimensions {
 export interface IBasicImageDimensions extends Omit<IImageDimensions, 'id'> {}
 export interface IPartialImageDimensions extends Partial<IImageDimensions> {}
 
-export interface ICredentialLocaleBranding extends ILocaleBranding {}
+export interface ICredentialClaim {
+  id: string
+  key: string
+  name: string
+}
+export interface IBasicCredentialClaim extends Omit<ICredentialClaim, 'id'> {}
+export interface IPartialCredentialClaim extends Partial<ICredentialClaim> {}
+
+export interface ICredentialLocaleBranding extends ILocaleBranding {
+  claims?: Array<ICredentialClaim>
+}
 export interface IBasicCredentialLocaleBranding
-  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
+  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text' | 'claims'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
+  claims?: Array<IBasicCredentialClaim>
 }
-export interface IPartialCredentialLocaleBranding extends Partial<Omit<ICredentialLocaleBranding, 'logo' | 'background' | 'text'>> {
+export interface IPartialCredentialLocaleBranding extends Partial<Omit<ICredentialLocaleBranding, 'logo' | 'background' | 'text' | 'claims'>> {
   logo?: IPartialImageAttributes
   background?: IPartialBackgroundAttributes
   text?: IPartialTextAttributes
+  claims?: IPartialCredentialClaim
 }
 
 export interface ICredentialBranding {
@@ -80,17 +92,23 @@ export interface IPartialCredentialBranding extends Partial<Omit<ICredentialBran
   localeBranding?: IPartialCredentialLocaleBranding
 }
 
-export interface IIssuerLocaleBranding extends ILocaleBranding {}
+export interface IIssuerLocaleBranding extends ILocaleBranding {
+  clientUri?: string
+  tosUri?: string
+  policyUri?: string
+  contacts?: Array<string>
+}
 export interface IBasicIssuerLocaleBranding
   extends Omit<IIssuerLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
 }
-export interface IPartialIssuerLocaleBranding extends Partial<Omit<IIssuerLocaleBranding, 'logo' | 'background' | 'text'>> {
+export interface IPartialIssuerLocaleBranding extends Partial<Omit<IIssuerLocaleBranding, 'logo' | 'background' | 'text' | 'contacts'>> {
   logo?: IPartialImageAttributes
   background?: IPartialBackgroundAttributes
   text?: IPartialTextAttributes
+  contacts?: string
 }
 
 export interface IIssuerBranding {
@@ -103,7 +121,7 @@ export interface IIssuerBranding {
 export interface IBasicIssuerBranding extends Omit<IIssuerBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
   localeBranding: Array<IBasicIssuerLocaleBranding>
 }
-export interface IPartialIssuerBranding extends Partial<Omit<ICredentialBranding, 'localeBranding'>> {
+export interface IPartialIssuerBranding extends Partial<Omit<IIssuerBranding, 'localeBranding'>> {
   localeBranding?: IPartialIssuerLocaleBranding
 }
 
