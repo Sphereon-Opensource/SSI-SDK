@@ -138,10 +138,6 @@ export class MDLMdoc implements IAgentPlugin {
       presentationDefinition as IOid4VPPresentationDefinition
     )
     const docsAndDescriptors: DocumentDescriptorMatchResult[] = []
-    console.log("Device key infos from descriptors:")
-    console.log(JSON.stringify(docsAndDescriptors[0].deviceKeyInfo, null, 2))
-    console.log("Agent keys:")
-    console.log(JSON.stringify(await _context.agent.keyManagerListKeys(), null, 2))
     var lastError: com.sphereon.crypto.generic.IVerifyResults<com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
     for (const match of allMatches) {
       if (match.document) {
