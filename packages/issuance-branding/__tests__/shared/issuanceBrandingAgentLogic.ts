@@ -65,13 +65,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             claims: [
               {
                 key: 'given_name',
-                name: 'Given Name'
+                name: 'Given Name',
               },
               {
                 key: 'family_name',
-                name: 'Surname'
-              }
-            ]
+                name: 'Surname',
+              },
+            ],
           },
         ],
       }
@@ -153,13 +153,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             claims: [
               {
                 key: 'given_name',
-                name: 'Given Name'
+                name: 'Given Name',
               },
               {
                 key: 'family_name',
-                name: 'Surname'
-              }
-            ]
+                name: 'Surname',
+              },
+            ],
           },
         ],
       }
@@ -813,7 +813,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       const result: IIssuerBranding = await agent.ibAddIssuerBranding(issuerBranding)
-
 
       expect(result).toBeDefined()
       expect(result?.localeBranding.length).toEqual(1)

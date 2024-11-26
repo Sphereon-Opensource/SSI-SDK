@@ -1,16 +1,12 @@
 import { CredentialsSupportedDisplay, NameAndLocale } from '@sphereon/oid4vci-common'
-import {
-  IBasicCredentialClaim,
-  IBasicCredentialLocaleBranding,
-  IBasicIssuerLocaleBranding
-} from '@sphereon/ssi-sdk.data-store'
+import { IBasicCredentialClaim, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialLocaleBrandingFromArgs,
   IssuerLocaleBrandingFromArgs,
   CredentialBrandingFromArgs,
   CredentialDisplayLocalesFromArgs,
   IssuerCredentialSubjectLocalesFromArgs,
-  CombineLocalesFromArgs
+  CombineLocalesFromArgs,
 } from '../types/IOID4VCIHolder'
 
 // FIXME should we not move this to the branding plugin?
@@ -69,7 +65,7 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
 
   return {
     ...(dynamicRegistrationClientMetadata?.client_name && {
-      alias: dynamicRegistrationClientMetadata.client_name
+      alias: dynamicRegistrationClientMetadata.client_name,
     }),
     ...(issuerDisplay.name && {
       alias: issuerDisplay.name,
@@ -80,7 +76,7 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
     ...((issuerDisplay.logo || dynamicRegistrationClientMetadata?.logo_uri) && {
       logo: {
         ...(dynamicRegistrationClientMetadata?.logo_uri && {
-          uri: dynamicRegistrationClientMetadata?.logo_uri
+          uri: dynamicRegistrationClientMetadata?.logo_uri,
         }),
         ...((issuerDisplay.logo?.url || <string>issuerDisplay.logo?.uri) && {
           uri: issuerDisplay.logo?.url ?? <string>issuerDisplay.logo?.uri,
@@ -99,16 +95,16 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
       },
     }),
     ...(dynamicRegistrationClientMetadata?.client_uri && {
-      clientUri: dynamicRegistrationClientMetadata.client_uri
+      clientUri: dynamicRegistrationClientMetadata.client_uri,
     }),
     ...(dynamicRegistrationClientMetadata?.tos_uri && {
-      tosUri: dynamicRegistrationClientMetadata.tos_uri
+      tosUri: dynamicRegistrationClientMetadata.tos_uri,
     }),
     ...(dynamicRegistrationClientMetadata?.policy_uri && {
-      policyUri: dynamicRegistrationClientMetadata.policy_uri
+      policyUri: dynamicRegistrationClientMetadata.policy_uri,
     }),
     ...(dynamicRegistrationClientMetadata?.contacts && {
-      contacts: dynamicRegistrationClientMetadata.contacts
+      contacts: dynamicRegistrationClientMetadata.contacts,
     }),
   }
 }
@@ -125,63 +121,64 @@ export const getCredentialBrandingFrom = async (args: CredentialBrandingFromArgs
 const credentialDisplayLocalesFrom = async (args: CredentialDisplayLocalesFromArgs): Promise<Map<string, CredentialsSupportedDisplay>> => {
   const { credentialDisplay } = args
   return credentialDisplay.reduce((localeDisplays, display) => {
-    const localeKey = display.locale || '';
-    localeDisplays.set(localeKey, display);
-    return localeDisplays;
-  }, new Map<string, CredentialsSupportedDisplay>());
+    const localeKey = display.locale || ''
+    localeDisplays.set(localeKey, display)
+    return localeDisplays
+  }, new Map<string, CredentialsSupportedDisplay>())
 }
 
-const issuerCredentialSubjectLocalesFrom = async (args: IssuerCredentialSubjectLocalesFromArgs): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
+const issuerCredentialSubjectLocalesFrom = async (
+  args: IssuerCredentialSubjectLocalesFromArgs,
+): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
   const { issuerCredentialSubject } = args
-  const localeClaims = new Map<string, Array<IBasicCredentialClaim>>();
+  const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
 
   const processClaimObject = (claim: any, parentKey: string = ''): void => {
     Object.entries(claim).forEach(([key, value]): void => {
       if (key === 'mandatory' || key === 'value_type') {
-        return;
+        return
       }
 
       if (key === 'display' && Array.isArray(value)) {
         value.forEach(({ name, locale }: NameAndLocale): void => {
           if (!name) {
-            return;
+            return
           }
 
-          const localeKey = locale || '';
+          const localeKey = locale || ''
           if (!localeClaims.has(localeKey)) {
-            localeClaims.set(localeKey, []);
+            localeClaims.set(localeKey, [])
           }
-          localeClaims.get(localeKey)!.push({ key: parentKey, name });
-        });
+          localeClaims.get(localeKey)!.push({ key: parentKey, name })
+        })
       } else if (typeof value === 'object' && value !== null) {
-        processClaimObject(value, parentKey ? `${parentKey}.${key}` : key);
+        processClaimObject(value, parentKey ? `${parentKey}.${key}` : key)
       }
-    });
-  };
+    })
+  }
 
-  processClaimObject(issuerCredentialSubject);
-  return localeClaims;
-};
+  processClaimObject(issuerCredentialSubject)
+  return localeClaims
+}
 
 const combineDisplayLocalesFrom = async (args: CombineLocalesFromArgs): Promise<Array<IBasicCredentialLocaleBranding>> => {
   const {
     credentialDisplayLocales = new Map<string, CredentialsSupportedDisplay>(),
-    issuerCredentialSubjectLocales = new Map<string, Array<IBasicCredentialClaim>>()
+    issuerCredentialSubjectLocales = new Map<string, Array<IBasicCredentialClaim>>(),
   } = args
 
-  const locales: Array<string> = Array.from(new Set([
-    ...issuerCredentialSubjectLocales.keys(),
-    ...credentialDisplayLocales.keys()
-  ]));
+  const locales: Array<string> = Array.from(new Set([...issuerCredentialSubjectLocales.keys(), ...credentialDisplayLocales.keys()]))
 
-  return Promise.all(locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-    const display = credentialDisplayLocales.get(locale)
-    const claims = issuerCredentialSubjectLocales.get(locale)
+  return Promise.all(
+    locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
+      const display = credentialDisplayLocales.get(locale)
+      const claims = issuerCredentialSubjectLocales.get(locale)
 
-    return {
-      ...(display && await credentialLocaleBrandingFrom({ credentialDisplay: display })),
-      ...(locale.length > 0 && { locale }),
-      claims
-    }
-  }))
+      return {
+        ...(display && (await credentialLocaleBrandingFrom({ credentialDisplay: display }))),
+        ...(locale.length > 0 && { locale }),
+        claims,
+      }
+    }),
+  )
 }

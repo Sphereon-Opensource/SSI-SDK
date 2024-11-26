@@ -23,12 +23,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resource: 'test_value',
       }
 
-      nock(url.origin).get(url.pathname)
-        .reply(200, responseBody)
+      nock(url.origin).get(url.pathname).reply(200, responseBody)
 
       const response = await agent.resourceResolve({
         input: url.toString(),
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response).toBeDefined()
       const responseData = await response.json()
@@ -43,12 +42,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resource: 'test_value',
       }
 
-      nock(url.origin).get(url.pathname)
-        .reply(200, responseBody)
+      nock(url.origin).get(url.pathname).reply(200, responseBody)
 
       const response = await agent.resourceResolve({
         input: url,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response).toBeDefined()
       const responseData = await response.json()
@@ -63,15 +61,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resource: 'test_value',
       }
       const requestInfo = new Request(url.toString(), {
-        method: 'GET'
+        method: 'GET',
       })
 
-      nock(url.origin).get(url.pathname)
-        .reply(200, responseBody)
+      nock(url.origin).get(url.pathname).reply(200, responseBody)
 
       const response = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response).toBeDefined()
       const responseData = await response.json()
@@ -87,11 +84,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
       const requestInfo = new Request(url.toString(), {
         method: 'POST',
-        body: JSON.stringify({ test_field: 'test_value' })
+        body: JSON.stringify({ test_field: 'test_value' }),
       })
 
       let called = 0
-      nock(url.origin).post(url.pathname, { test_field: 'test_value' })
+      nock(url.origin)
+        .post(url.pathname, { test_field: 'test_value' })
         .times(2)
         .reply(200, () => {
           called++
@@ -100,13 +98,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -123,11 +121,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
       const requestInfo = new Request(url.toString(), {
         method: 'PUT',
-        body: JSON.stringify({ test_field: 'test_value' })
+        body: JSON.stringify({ test_field: 'test_value' }),
       })
 
       let called = 0
-      nock(url.origin).put(url.pathname, { test_field: 'test_value' })
+      nock(url.origin)
+        .put(url.pathname, { test_field: 'test_value' })
         .times(2)
         .reply(200, () => {
           called++
@@ -136,13 +135,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -159,11 +158,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
       const requestInfo = new Request(url.toString(), {
         method: 'DELETE',
-        body: JSON.stringify({ test_field: 'test_value' })
+        body: JSON.stringify({ test_field: 'test_value' }),
       })
 
       let called = 0
-      nock(url.origin).delete(url.pathname, { test_field: 'test_value' })
+      nock(url.origin)
+        .delete(url.pathname, { test_field: 'test_value' })
         .times(2)
         .reply(200, () => {
           called++
@@ -172,13 +172,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -191,11 +191,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get resource with HEAD request', async (): Promise<void> => {
       const url = new URL('https://example.com/head')
       const requestInfo = new Request(url.toString(), {
-        method: 'HEAD'
+        method: 'HEAD',
       })
 
       let called = 0
-      nock(url.origin).head(url.pathname)
+      nock(url.origin)
+        .head(url.pathname)
         .times(2)
         .reply(200, () => {
           called++
@@ -203,13 +204,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
 
@@ -224,11 +225,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
       const requestInfo = new Request(url.toString(), {
         method: 'OPTIONS',
-        body: JSON.stringify({ test_field: 'test_value' })
+        body: JSON.stringify({ test_field: 'test_value' }),
       })
 
       let called = 0
-      nock(url.origin).options(url.pathname, { test_field: 'test_value' })
+      nock(url.origin)
+        .options(url.pathname, { test_field: 'test_value' })
         .times(2)
         .reply(200, () => {
           called++
@@ -237,13 +239,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -256,7 +258,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get resource with CONNECT request', async (): Promise<void> => {
       const url = new URL('https://example.com/connect')
       const requestInfo = new Request(url.toString(), {
-        method: 'CONNECT'
+        method: 'CONNECT',
       })
 
       let called = 0
@@ -269,13 +271,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
 
@@ -286,7 +288,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get resource with TRACE request', async (): Promise<void> => {
       const url = new URL('https://example.com/trace')
       const requestInfo = new Request(url.toString(), {
-        method: 'TRACE'
+        method: 'TRACE',
       })
 
       let called = 0
@@ -299,13 +301,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
 
@@ -320,11 +322,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
       const requestInfo = new Request(url.toString(), {
         method: 'PATCH',
-        body: JSON.stringify({ test_field: 'test_value' })
+        body: JSON.stringify({ test_field: 'test_value' }),
       })
 
       let called = 0
-      nock(url.origin).patch(url.pathname, { test_field: 'test_value' })
+      nock(url.origin)
+        .patch(url.pathname, { test_field: 'test_value' })
         .times(2)
         .reply(200, () => {
           called++
@@ -333,13 +336,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: requestInfo,
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -356,7 +359,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       let called = 0
-      nock(url.origin).get(url.pathname)
+      nock(url.origin)
+        .get(url.pathname)
         .times(2)
         .reply(200, () => {
           called++
@@ -365,7 +369,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: url.toString(),
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
@@ -373,8 +377,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
-          maxAgeMs: 1
-        }
+          maxAgeMs: 1,
+        },
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -391,7 +395,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       let called = 0
-      nock(url.origin).get(url.pathname)
+      nock(url.origin)
+        .get(url.pathname)
         .times(1)
         .reply(200, () => {
           called++
@@ -400,7 +405,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: url.toString(),
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
@@ -408,8 +413,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
-          maxAgeMs: 10000
-        }
+          maxAgeMs: 10000,
+        },
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -425,9 +430,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resource: 'test_value',
       }
 
-      nock(url.origin).get(url.pathname)
-        .times(1)
-        .reply(200, responseBody)
+      nock(url.origin).get(url.pathname).times(1).reply(200, responseBody)
 
       const response1 = await agent.resourceResolve({
         input: url.toString(),
@@ -439,8 +442,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
-          onlyCache: true
-        }
+          onlyCache: true,
+        },
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -453,8 +456,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: 'https://example.com/cache_only_error',
         resourceType: 'test_type',
         resolveOpts: {
-          onlyCache: true
-        }
+          onlyCache: true,
+        },
       })
       expect(response).toBeDefined()
       const responseData = await response.json()
@@ -472,7 +475,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       let called = 0
-      nock(url.origin).get(url.pathname)
+      nock(url.origin)
+        .get(url.pathname)
         .times(1)
         .reply(200, () => {
           called++
@@ -482,14 +486,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const response1 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
-        namespace
+        namespace,
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
-        namespace
+        namespace,
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -505,7 +509,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       let called = 0
-      nock(url.origin).get(url.pathname)
+      nock(url.origin)
+        .get(url.pathname)
         .times(2)
         .reply(200, () => {
           called++
@@ -515,14 +520,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const response1 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
-        namespace: 'test_namespace1'
+        namespace: 'test_namespace1',
       })
       expect(response1).toBeDefined()
 
       const response2 = await agent.resourceResolve({
         input: url.toString(),
         resourceType: 'test_type',
-        namespace: 'test_namespace2'
+        namespace: 'test_namespace2',
       })
       expect(response2).toBeDefined()
       const responseData = await response2.json()
@@ -538,7 +543,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       let called = 0
-      nock(url.origin).get(url.pathname)
+      nock(url.origin)
+        .get(url.pathname)
         .times(2)
         .reply(500, () => {
           called++
@@ -547,7 +553,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const response1 = await agent.resourceResolve({
         input: url.toString(),
-        resourceType: 'test_type'
+        resourceType: 'test_type',
       })
       expect(response1).toBeDefined()
 
@@ -567,7 +573,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       }
 
       let called = 0
-      nock(url.origin).get(url.pathname)
+      nock(url.origin)
+        .get(url.pathname)
         .times(2)
         .reply(200, () => {
           called++
@@ -578,8 +585,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
-          skipPersistence: true
-        }
+          skipPersistence: true,
+        },
       })
       expect(response1).toBeDefined()
 
@@ -587,8 +594,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         input: url.toString(),
         resourceType: 'test_type',
         resolveOpts: {
-          skipPersistence: true
-        }
+          skipPersistence: true,
+        },
       })
       expect(response2).toBeDefined()
 

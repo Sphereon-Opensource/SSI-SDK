@@ -694,6 +694,9 @@ export type CombineLocalesFromArgs = {
   issuerCredentialSubjectLocales?: Map<string, Array<IBasicCredentialClaim>>
 }
 
-export type DynamicRegistrationClientMetadataDisplay = Pick<DynamicRegistrationClientMetadata, 'client_name' | 'client_uri' | 'contacts' | 'tos_uri' | 'policy_uri' | 'logo_uri'>
+export type DynamicRegistrationClientMetadataDisplay = Pick<
+  DynamicRegistrationClientMetadata,
+  'client_name' | 'client_uri' | 'contacts' | 'tos_uri' | 'policy_uri' | 'logo_uri'
+>
 
 export type DidAgents = TAgent<IResolver & IDIDManager>

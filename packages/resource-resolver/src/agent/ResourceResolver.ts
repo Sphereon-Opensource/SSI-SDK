@@ -1,18 +1,8 @@
-import {
-  IKeyValueStore,
-  IValueData,
-  KeyValueStore,
-  ValueStoreType
-} from '@sphereon/ssi-sdk.kv-store-temp'
+import { IKeyValueStore, IValueData, KeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IAgentPlugin } from '@veramo/core'
 import fetch, { Response, Headers } from 'cross-fetch'
 import { schema } from '../index'
-import {
-  deserializeResponse,
-  getResourceIdentifier,
-  isCacheWithinMaxAge,
-  serializeResponse
-} from '../utils/ResourceResolverUtils'
+import { deserializeResponse, getResourceIdentifier, isCacheWithinMaxAge, serializeResponse } from '../utils/ResourceResolverUtils'
 import {
   ClearAllResourcesArgs,
   ResolveArgs,
@@ -25,7 +15,7 @@ import {
   ResourceResolverOptions,
   StoreArgs,
   StoreIdStrArgs,
-  Resource
+  Resource,
 } from '../types/IResourceResolver'
 
 /**
@@ -48,13 +38,7 @@ export class ResourceResolver implements IAgentPlugin {
   private readonly _resourceStores: Map<string, IKeyValueStore<Resource>>
 
   constructor(options?: ResourceResolverOptions) {
-    const {
-      defaultStore,
-      defaultNamespace,
-      resourceStores,
-      ttl,
-      detectLocation
-    } = options ?? {}
+    const { defaultStore, defaultNamespace, resourceStores, ttl, detectLocation } = options ?? {}
 
     this.defaultStoreId = defaultStore ?? '_default'
     this.defaultNamespace = defaultNamespace ?? 'resources'
@@ -71,37 +55,29 @@ export class ResourceResolver implements IAgentPlugin {
         new KeyValueStore({
           namespace: this.defaultNamespace,
           store: new Map<string, Resource>(),
-          ttl: this.defaultTtl
-        })
+          ttl: this.defaultTtl,
+        }),
       )
     }
   }
 
   /** {@inheritDoc IResourceResolver.resourceResolve} */
   private async resourceResolve(args: ResolveArgs, context: RequiredContext): Promise<Response> {
-    const {
-      input,
-      init,
-      resourceType,
-      resolveOpts,
-      partyCorrelationId,
-      storeId,
-      namespace
-    } = args
+    const { input, init, resourceType, resolveOpts, partyCorrelationId, storeId, namespace } = args
 
     const resourceIdentifier = getResourceIdentifier(input)
 
     const cachedResource = await this.getResource({ resourceIdentifier, storeId, namespace })
     if (cachedResource.value && isCacheWithinMaxAge(cachedResource.value, resolveOpts)) {
-      return deserializeResponse(cachedResource.value.response);
+      return deserializeResponse(cachedResource.value.response)
     }
 
     if (resolveOpts?.onlyCache) {
       return new Response(JSON.stringify({ error: 'Resource not found' }), {
         status: 404,
         statusText: 'Not Found',
-        headers: new Headers({ 'Content-Type': 'application/json' })
-      });
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+      })
     }
 
     let location
@@ -110,20 +86,20 @@ export class ResourceResolver implements IAgentPlugin {
     }
 
     const response = await fetch(input, init)
-    if (!resolveOpts?.skipPersistence && (response.status >= 200 && response.status < 300)) {
-      const serializedResponse = await serializeResponse(response);
+    if (!resolveOpts?.skipPersistence && response.status >= 200 && response.status < 300) {
+      const serializedResponse = await serializeResponse(response)
       const resource: Resource = {
         location,
         response: serializedResponse,
         resourceType,
         insertedAt: Date.now(),
-        partyCorrelationId
+        partyCorrelationId,
       }
       const cachedResource = await this.persistResource({
         resource,
         resourceIdentifier,
         namespace,
-        storeId
+        storeId,
       })
 
       if (!cachedResource.value) {
@@ -146,7 +122,7 @@ export class ResourceResolver implements IAgentPlugin {
       throw Error(`input type is required to be RequestInfo | URL`)
     }
     return await context.agent.anomalyDetectionLookupLocation({
-      ipOrHostname: url.hostname
+      ipOrHostname: url.hostname,
     })
   }
 
@@ -178,7 +154,7 @@ export class ResourceResolver implements IAgentPlugin {
     return this.store({ stores: this._resourceStores, storeId }).getAsValueData(
       this.prefix({
         namespace,
-        resourceIdentifier
+        resourceIdentifier,
       }),
     )
   }
@@ -221,6 +197,4 @@ export class ResourceResolver implements IAgentPlugin {
     const { namespace, resourceIdentifier } = args
     return `${this.namespaceStr({ namespace })}:${resourceIdentifier}`
   }
-
 }
-

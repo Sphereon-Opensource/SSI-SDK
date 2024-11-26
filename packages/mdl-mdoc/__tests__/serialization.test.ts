@@ -1,7 +1,7 @@
-import { com } from '@sphereon/kmp-mdl-mdoc'
+import { com } from '@sphereon/kmp-mdoc-core'
+import CoseAlgorithm = com.sphereon.crypto.cose.CoseAlgorithm
 import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
 import CoseKeyType = com.sphereon.crypto.cose.CoseKeyType
-import CoseSignatureAlgorithm = com.sphereon.crypto.cose.CoseSignatureAlgorithm
 import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
 import IOid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
 import Oid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.Oid4VPPresentationDefinition
@@ -10,14 +10,17 @@ describe('Serialization', (): void => {
   beforeAll(async (): Promise<void> => {})
 
   it('should decode and encode ISO Test Vector', async () => {
-    const coseKey = CoseKeyJson.Static.fromDTO({ kty: CoseKeyType.EC2, alg: CoseSignatureAlgorithm.ES256 })
+    const coseKey = CoseKeyJson.Static.fromJsonDTO({
+      kty: CoseKeyType.EC2,
+      alg: CoseAlgorithm.ES256,
+    })
     // const asIKey = coseKey as IKey
     console.log(coseKey.toDto())
     console.log(coseKey.toJsonString())
     console.log(coseKey.toJsonDTO())
     const json: ICoseKeyJson = coseKey.toJsonDTO()
     console.log(json)
-    console.log(CoseKeyJson.Static.fromDTO(json).alg)
+    console.log(CoseKeyJson.Static.fromJsonDTO(json).alg)
   })
 
   it('should decode and encode Presentation Definition', async () => {

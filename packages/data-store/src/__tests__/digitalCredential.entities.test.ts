@@ -6,13 +6,7 @@ import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCr
 import { computeEntryHash } from '@veramo/utils'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
 import { createHash } from 'crypto'
-import {
-  AddCredentialArgs,
-  CredentialCorrelationType,
-  CredentialDocumentFormat,
-  DocumentType,
-  NonPersistedDigitalCredential,
-} from '../types'
+import { AddCredentialArgs, CredentialCorrelationType, CredentialDocumentFormat, DocumentType, NonPersistedDigitalCredential } from '../types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

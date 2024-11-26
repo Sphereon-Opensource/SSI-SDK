@@ -29,7 +29,6 @@ const testContext = {
   tearDown,
 }
 
-describe.skip('Local integration tests', (): void => {
-  // FIXME SDK-42 test holds expired certificates
+describe('Local integration tests', (): void => {
   mdlMdocLogic(testContext)
 })

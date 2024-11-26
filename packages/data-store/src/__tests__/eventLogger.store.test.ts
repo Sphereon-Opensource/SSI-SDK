@@ -1,29 +1,11 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import {
-  ActivityLoggingEvent,
-  AuditLoggingEvent,
-  CredentialType,
-  PartyCorrelationType
-} from '@sphereon/ssi-sdk.core'
-import {
-  ActionType,
-  InitiatorType,
-  LoggingEventType,
-  LogLevel,
-  SubSystem,
-  System,
-  SystemCorrelationIdType
-} from '@sphereon/ssi-types'
+import { ActivityLoggingEvent, AuditLoggingEvent, CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
+import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations'
 import { DataStoreEventLoggerEntities } from '../index'
 import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
-import {
-  GetActivityEventsArgs,
-  GetAuditEventsArgs,
-  NonPersistedAuditLoggingEvent,
-  NonPersistedActivityLoggingEvent
-} from '../types'
+import { GetActivityEventsArgs, GetAuditEventsArgs, NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -467,12 +449,12 @@ describe('Database entities tests', (): void => {
     const args: GetActivityEventsArgs = {
       filter: [
         {
-          credentialHash: parentCredentialHash
+          credentialHash: parentCredentialHash,
         },
         {
-          parentCredentialHash
-        }
-      ]
+          parentCredentialHash,
+        },
+      ],
     }
 
     const result: Array<ActivityLoggingEvent> = await eventLoggerStore.getActivityEvents(args)
@@ -591,17 +573,16 @@ describe('Database entities tests', (): void => {
       filter: [
         {
           credentialHash: parentCredentialHash,
-          actionSubType: 'Share credential'
+          actionSubType: 'Share credential',
         },
         {
           parentCredentialHash,
-          actionSubType: 'Share credential'
-        }
-      ]
+          actionSubType: 'Share credential',
+        },
+      ],
     }
 
     const result: Array<ActivityLoggingEvent> = await eventLoggerStore.getActivityEvents(args)
     expect(result.length).toEqual(2)
   })
-
 })

@@ -1,48 +1,96 @@
-import { com, Nullable } from '@sphereon/kmp-mdl-mdoc'
+import { com, Nullable } from '@sphereon/kmp-mdoc-core'
 import {
   CertificateInfo,
   derToPEM,
   getSubjectDN,
   pemOrDerToX509Certificate,
   validateX509CertificateChain,
-  X509ValidationResult,
+  X509ValidationResult
 } from '@sphereon/ssi-sdk-ext.x509-utils'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
-import { VerifyCertificateChainArgs } from '../types/ImDLMdoc'
-import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
+import { IRequiredContext, VerifyCertificateChainArgs } from '../types/ImDLMdoc'
+import CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
 import CoseSign1Cbor = com.sphereon.crypto.cose.CoseSign1Cbor
-import CoseSign1InputCbor = com.sphereon.crypto.cose.CoseSign1InputCbor
 import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
-import CryptoServiceJS = com.sphereon.crypto.CryptoServiceJS
+import ToBeSignedCbor = com.sphereon.crypto.cose.ToBeSignedCbor
+import CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
+import DefaultCallbacks = com.sphereon.crypto.DefaultCallbacks
+import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
+import SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
 import ICoseCryptoCallbackJS = com.sphereon.crypto.ICoseCryptoCallbackJS
 import IKey = com.sphereon.crypto.IKey
 import IKeyInfo = com.sphereon.crypto.IKeyInfo
-import IVerifySignatureResult = com.sphereon.crypto.IVerifySignatureResult
 import IX509ServiceJS = com.sphereon.crypto.IX509ServiceJS
 import IX509VerificationResult = com.sphereon.crypto.IX509VerificationResult
 import Jwk = com.sphereon.crypto.jose.Jwk
+import KeyInfo = com.sphereon.crypto.KeyInfo
+import ResolvedKeyInfo = com.sphereon.crypto.ResolvedKeyInfo
 import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
+import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
 import decodeFrom = com.sphereon.kmp.decodeFrom
+import encodeTo = com.sphereon.kmp.encodeTo
 import Encoding = com.sphereon.kmp.Encoding
+import LocalDateTimeKMP = com.sphereon.kmp.LocalDateTimeKMP
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
-  async sign1<CborType>(input: CoseSign1InputCbor, keyInfo?: IKeyInfo<ICoseKeyCbor>): Promise<CoseSign1Cbor<CborType>> {
-    throw new Error('Method not implemented.')
+
+  constructor(private context?: IRequiredContext) {
   }
 
-  async verify1<CborType>(input: CoseSign1Cbor<CborType>, keyInfo?: IKeyInfo<ICoseKeyCbor>): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
-    async function getCertAndKey(x5c: Nullable<Array<string>>): Promise<{
-      issuerCert: Certificate
+  setContext(context: IRequiredContext) {
+    this.context = context
+  }
+
+  async signAsync(input: ToBeSignedCbor, requireX5Chain: Nullable<boolean>): Promise<Int8Array> {
+    if (!this.context) {
+      throw Error('No context provided. Please provide a context with the setContext method or constructor')
+    }
+    const { keyInfo, alg, value } = input
+    let kmsKeyRef = keyInfo.kmsKeyRef ?? undefined
+    if (!kmsKeyRef) {
+      const key = keyInfo.key
+      if (key == null) {
+        return Promise.reject(Error('No key present in keyInfo. This implementation cannot sign without a key!'))
+      }
+      const resolvedKeyInfo = ResolvedKeyInfo.Static.fromKeyInfo(keyInfo, key)
+      const jwkKeyInfo: ResolvedKeyInfo<Jwk> = CoseJoseKeyMappingService.toResolvedJwkKeyInfo(resolvedKeyInfo)
+      const kid = jwkKeyInfo.kid ?? key.getKidAsString(true) ?? undefined
+      if (!kid) {
+        return Promise.reject(Error('No kid present'))
+      }
+      kmsKeyRef = kid
+    }
+    const result = await this.context.agent.keyManagerSign({
+      algorithm: alg.jose!!.value,
+      data: encodeTo(value, Encoding.UTF8),
+      encoding: 'utf-8',
+      keyRef: kmsKeyRef!!
+    })
+    return decodeFrom(result, Encoding.UTF8)
+
+  }
+
+  async verify1Async<CborType>(
+    input: CoseSign1Cbor<CborType>,
+    keyInfo: IKeyInfo<ICoseKeyCbor>,
+    requireX5Chain: Nullable<boolean>
+  ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
+    const getCertAndKey = async (
+      x5c: Nullable<Array<string>>
+    ): Promise<{
+      issuerCert?: Certificate
       issuerPublicKey: CryptoKey
-    }> {
-      if (!x5c || x5c.length === 0) {
+    }> => {
+      if (requireX5Chain && (!x5c || x5c.length === 0)) {
         // We should not be able to get here anyway, as the MLD-mdoc library already validated at this point. But let's make sure
         return Promise.reject(new Error(`No x5chain was present in the CoseSign headers!`))
       }
       // TODO: According to the IETF spec there should be a x5t in case the x5chain is in the protected headers. In the Funke this does not seem to be done/used!
-      issuerCert = pemOrDerToX509Certificate(x5c[0])
-      issuerPublicKey = await issuerCert.getPublicKey()
+      issuerCert = x5c ? pemOrDerToX509Certificate(x5c[0]) : undefined
+      if (issuerCert) {
+        issuerPublicKey = await issuerCert.getPublicKey()
+      }
       return { issuerCert, issuerPublicKey }
     }
 
@@ -61,22 +109,17 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
     let issuerCert: Certificate | undefined
     let kid = keyInfo?.kid ?? sign1Json.protectedHeader.kid ?? sign1Json.unprotectedHeader?.kid
     // Please note this method does not perform chain validation. The MDL-MSO_MDOC library already performed this before this step
-    const x5c =
-      keyInfo?.key?.x5chain?.value?.asJsArrayView()?.map((x509) => x509.encodeTo(Encoding.BASE64)) ??
-      sign1Json.protectedHeader?.x5chain ??
-      sign1Json.unprotectedHeader?.x5chain
+    const x5c = keyInfo?.key?.getX509CertificateChain() ?? sign1Json.protectedHeader?.x5chain ?? sign1Json.unprotectedHeader?.x5chain
     if (!keyInfo || !keyInfo?.key || keyInfo?.key?.x5chain) {
       const certAndKey = await getCertAndKey(x5c)
       issuerPublicKey = certAndKey.issuerPublicKey
       issuerCert = certAndKey.issuerCert
     } else {
-      if (!keyInfo?.key) {
+      const jwkKeyInfo = CoseJoseKeyMappingService.toJwkKeyInfo(keyInfo)
+      if (!jwkKeyInfo?.key) {
         return Promise.reject(Error(`Either a x5c needs to be in the headers, or you need to provide a key for verification`))
       }
-      const key = keyInfo.key
-
-      // todo: Workaround as the Agent only works with cosekey json objects and we do not support conversion of these from Json to cbor yet
-      const jwk = typeof key.x === 'string' ? Jwk.Static.fromCoseKeyJson(keyInfo.key as unknown as CoseKeyJson) : Jwk.Static.fromCoseKey(keyInfo.key)
+      const jwk = jwkKeyInfo.key
       if (kid === null) {
         kid = jwk.kid
       }
@@ -89,29 +132,30 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
           crv,
           ...(jwk.x5c && { x5c: jwk.x5c }),
           ...(jwk.x && { x: jwk.x }),
-          ...(jwk.y && { y: jwk.y }),
+          ...(jwk.y && { y: jwk.y })
         } satisfies JsonWebKey,
         {
           name: keyAlg.value === 'EC' ? 'ECDSA' : keyAlg.value,
-          namedCurve: crv,
+          namedCurve: crv
         },
         true,
-        ['verify'],
+        ['verify']
       )
     }
 
     const exportedJwk = await crypto.subtle.exportKey('jwk', issuerPublicKey)
     const crv = exportedJwk.crv
-    const coseKey = Jwk.Static.fromJson(exportedJwk).jwkToCoseKeyJson()
-    const recalculatedToBeSigned = input.toBeSignedJson(coseKey, coseAlg)
+    const coseKey = Jwk.Static.fromDTO(exportedJwk).jwkToCoseKeyJson()
+    const coseKeyInfo = CoseJoseKeyMappingService.toCoseKeyInfo(keyInfo ?? new KeyInfo<CoseKeyCbor>(kid, coseKey.toCbor()))
+    const recalculatedToBeSigned = input.toBeSignedJson(coseKeyInfo, SignatureAlgorithm.Static.fromCose(coseAlg))
     const valid = await crypto.subtle.verify(
       {
         ...issuerPublicKey.algorithm,
-        hash: crv?.includes('-') ? `SHA-${crv.split('-')[1]}` : 'SHA-256', // todo: this needs to be more robust
+        hash: crv?.includes('-') ? `SHA-${crv.split('-')[1]}` : 'SHA-256' // todo: this needs to be more robust
       },
       issuerPublicKey,
       decodeFrom(sign1Json.signature, Encoding.BASE64URL),
-      decodeFrom(recalculatedToBeSigned.hexValue, Encoding.HEX),
+      decodeFrom(recalculatedToBeSigned.base64UrlValue, Encoding.BASE64URL)
     )
 
     return {
@@ -119,8 +163,17 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       critical: true,
       error: !valid,
       message: `Signature of '${issuerCert ? getSubjectDN(issuerCert).DN : kid}' was ${valid ? '' : 'in'}valid`,
-      keyInfo: keyInfo ?? ({ kid, key: coseKey.toCbor() } satisfies IKeyInfo<ICoseKeyCbor>),
+      keyInfo: coseKeyInfo
     } satisfies IVerifySignatureResult<ICoseKeyCbor>
+  }
+
+  resolvePublicKeyAsync<KT extends com.sphereon.crypto.IKey>(
+    keyInfo: com.sphereon.crypto.IKeyInfo<KT>
+  ): Promise<com.sphereon.crypto.IResolvedKeyInfo<KT>> {
+    if (keyInfo.key) {
+      return Promise.resolve(CoseJoseKeyMappingService.toResolvedKeyInfo(keyInfo, keyInfo.key))
+    }
+    return Promise.reject(Error('No key present in keyInfo. This implementation cannot resolve public keys on its own currently!'))
   }
 }
 
@@ -145,16 +198,16 @@ export class X509CallbackService implements IX509ServiceJS {
    * @param verificationTime
    */
   async verifyCertificateChain({
-    chain,
-    trustAnchors = this.getTrustedCerts(),
-    verificationTime,
-    opts,
-  }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
+                                 chain,
+                                 trustAnchors = this.getTrustedCerts(),
+                                 verificationTime,
+                                 opts
+                               }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
     return await validateX509CertificateChain({
       chain,
       trustAnchors,
       verificationTime,
-      opts,
+      opts
     })
   }
 
@@ -166,7 +219,9 @@ export class X509CallbackService implements IX509ServiceJS {
     chainPEM: Nullable<string[]>,
     trustedCerts: Nullable<string[]>,
     verificationProfile?: X509VerificationProfile | undefined,
+    verificationTime?: Nullable<LocalDateTimeKMP>
   ): Promise<IX509VerificationResult<KeyType>> {
+    const verificationAt = verificationTime ?? DateTimeUtils.Static.DEFAULT.dateTimeLocal()
     let chain: Array<string | Uint8Array> = []
     if (chainDER && chainDER.length > 0) {
       chain = chainDER.map((der) => Uint8Array.from(der))
@@ -177,7 +232,8 @@ export class X509CallbackService implements IX509ServiceJS {
     const result = await validateX509CertificateChain({
       chain: chain, // The function will handle an empty array
       trustAnchors: trustedCerts ?? this.getTrustedCerts(),
-      opts: { trustRootWhenNoAnchors: true },
+      verificationTime: new Date(verificationAt.toEpochSeconds().toULong() * 1000),
+      opts: { trustRootWhenNoAnchors: true }
     })
 
     const cert: CertificateInfo | undefined = result.certificateChain ? result.certificateChain[result.certificateChain.length - 1] : undefined
@@ -189,6 +245,7 @@ export class X509CallbackService implements IX509ServiceJS {
       critical: result.critical,
       message: result.message,
       error: result.error,
+      verificationTime: verificationAt
     } satisfies IX509VerificationResult<KeyType>
   }
 
@@ -231,6 +288,6 @@ const defaultCryptoEngine = () => {
 
 defaultCryptoEngine()
 
-// We register the services with the mDL/mdoc library
-CryptoServiceJS.X509.register(new X509CallbackService())
-CryptoServiceJS.COSE.register(new CoseCryptoService())
+// We register the services with the mDL/mdoc library. Please note that the context is not passed in, meaning we cannot sign by default.
+DefaultCallbacks.setCoseCryptoDefault(new CoseCryptoService())
+DefaultCallbacks.setX509Default(new X509CallbackService())

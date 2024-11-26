@@ -8,7 +8,7 @@ import {
   issuerBrandingEntityFrom,
   issuerBrandingFrom,
   issuerLocaleBrandingEntityFrom,
-  localeBrandingFrom
+  localeBrandingFrom,
 } from '../utils/issuanceBranding/MappingUtils'
 import { BackgroundAttributesEntity } from '../entities/issuanceBranding/BackgroundAttributesEntity'
 import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'

@@ -1,10 +1,5 @@
 import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
-import {
-  IBasicIssuerLocaleBranding,
-  Identity,
-  IIssuerLocaleBranding,
-  Party
-} from '@sphereon/ssi-sdk.data-store'
+import { IBasicIssuerLocaleBranding, Identity, IIssuerLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
 import {
@@ -189,7 +184,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         }
         [OID4VCIMachineServices.getFederationTrust]: {
           data: Array<string>
-        },
+        }
         [OID4VCIMachineServices.getIssuerBranding]: {
           data: Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>
         }
@@ -276,15 +271,17 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               target: OID4VCIMachineStates.getFederationTrust,
               cond: OID4VCIMachineGuards.isOIDFOriginGuard,
               actions: assign({
-                issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
-              })
+                issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) =>
+                  _event.data,
+              }),
             },
             {
               target: OID4VCIMachineStates.transitionFromSetup,
               actions: assign({
-                issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) => _event.data
-              })
-            }
+                issuerBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>>) =>
+                  _event.data,
+              }),
+            },
           ],
           onError: {
             target: OID4VCIMachineStates.handleError,
@@ -305,8 +302,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           onDone: {
             target: OID4VCIMachineStates.transitionFromSetup,
             actions: assign({
-              trustedAnchors: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<string>>) => _event.data
-            })
+              trustedAnchors: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Array<string>>) => _event.data,
+            }),
           },
           onError: {
             target: OID4VCIMachineStates.handleError,

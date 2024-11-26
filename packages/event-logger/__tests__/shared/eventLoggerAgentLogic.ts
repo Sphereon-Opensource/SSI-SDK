@@ -1,26 +1,7 @@
-import {
-  ActionType,
-  InitiatorType,
-  LoggingEventType,
-  LogLevel,
-  SubSystem,
-  System,
-  SystemCorrelationIdType
-} from '@sphereon/ssi-types'
-import {
-  ActivityLoggingEvent,
-  AuditLoggingEvent,
-  CredentialType,
-  PartyCorrelationType
-} from '@sphereon/ssi-sdk.core'
+import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
+import { ActivityLoggingEvent, AuditLoggingEvent, CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { TAgent } from '@veramo/core'
-import {
-  GetActivityEventsArgs,
-  GetAuditEventsArgs,
-  IEventLogger,
-  NonPersistedActivityLoggingEvent,
-  NonPersistedAuditLoggingEvent
-} from '../../src'
+import { GetActivityEventsArgs, GetAuditEventsArgs, IEventLogger, NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../../src'
 
 type ConfiguredAgent = TAgent<IEventLogger>
 
