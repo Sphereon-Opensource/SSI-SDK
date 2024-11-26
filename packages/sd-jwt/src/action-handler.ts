@@ -7,7 +7,7 @@ import { IAgentPlugin } from '@veramo/core'
 import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
-import { sphereonCA, funkeTestCA } from './trustAnchors'
+import { funkeTestCA, sphereonCA } from './trustAnchors'
 import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import {
   Claims,
@@ -23,6 +23,7 @@ import {
   IVerifySdJwtVcResult,
   SdJWTImplementation,
 } from './types'
+import { ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
@@ -69,7 +70,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   }
 
   private async getSignerForIdentifier(
-    { identifier }: { identifier: string },
+    { identifier, resolution }: { identifier: string; resolution?: ManagedIdentifierResult },
     context: IRequiredContext,
   ): Promise<{
     signer: Signer
@@ -81,7 +82,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     } else if (typeof this._defaultSigner === 'function') {
       return { signer: this._defaultSigner }
     }
-    const signingKey = await this.getSignKey({ identifier, vmRelationship: 'assertionMethod' }, context)
+    const signingKey = await this.getSignKey({ identifier, vmRelationship: 'assertionMethod', resolution }, context)
     const { key, alg } = signingKey
 
     const signer: Signer = async (data: string): Promise<string> => {
@@ -102,7 +103,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     if (!issuer) {
       throw new Error('credential.issuer must not be empty')
     }
-    const { alg, signer, signingKey } = await this.getSignerForIdentifier({ identifier: issuer }, context)
+    const { alg, signer, signingKey } = await this.getSignerForIdentifier({ identifier: issuer, resolution: args.resolution }, context)
     const sdjwt = new SDJwtVcInstance({
       signer,
       hasher: this.registeredImplementations.hasher,
@@ -114,6 +115,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
       header: {
         ...(signingKey?.key.kid !== undefined && { kid: signingKey.key.kid }),
+        ...(signingKey?.key.x5c !== undefined && { x5c: signingKey.key.x5c }),
       },
     })
 
@@ -128,8 +130,24 @@ export class SDJwtPlugin implements IAgentPlugin {
    */
   async getSignKey(args: SignKeyArgs, context: IRequiredContext): Promise<SignKeyResult> {
     // TODO Using identifierManagedGetByDid now (new managed identifier resolution). Evaluate of we need to implement more identifier types here
-    const { identifier } = { ...args }
-    if (identifier.startsWith('did:')) {
+    const { identifier, resolution } = { ...args }
+    if (resolution) {
+      const key = resolution.key
+      const alg = await signatureAlgorithmFromKey({ key })
+      switch (resolution.method) {
+        case 'did':
+          debug(`Signing key ${key.publicKeyHex} found for identifier ${identifier}`)
+          return { alg, key: { ...key, kmsKeyRef: resolution.kmsKeyRef, kid: resolution.kid } }
+        default:
+          if (key.meta?.x509 && key.meta.x509.x5c) {
+            return { alg, key: { kid: resolution.kid, kmsKeyRef: resolution.kmsKeyRef, x5c: key.meta.x509.x5c as string[] } }
+          } else if (key.meta?.jwkThumbprint) {
+            return { alg, key: { kid: resolution.kid, kmsKeyRef: resolution.kmsKeyRef, jwkThumbprint: key.meta.jwkThumbprint } }
+          } else {
+            return { alg, key: { kid: resolution.kid, kmsKeyRef: resolution.kmsKeyRef } }
+          }
+      }
+    } else if (identifier.startsWith('did:')) {
       const didIdentifier = await context.agent.identifierManagedGetByDid({ identifier })
       if (!didIdentifier) {
         throw new Error(`No identifier found with the given did: ${identifier}`)
