@@ -154,5 +154,6 @@ export const revertMigration = async (dataSource: DataSource): Promise<void> => 
 }
 export const resetDatabase = async (dbName: string): Promise<void> => {
   await dropDatabase(dbName)
-  await getDbConnection(dbName)
+  const connection = await getDbConnection(dbName)
+  await connection.runMigrations()
 }
