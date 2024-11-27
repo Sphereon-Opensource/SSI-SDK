@@ -278,7 +278,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = header.jwk
     if (x5c) {
-      // FIXME Funke id out why valadation does not work against our SphereonCA and reenable
+      // FIXME Funke id out why valdation does not work against our SphereonCA and reenable
       /*  const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
