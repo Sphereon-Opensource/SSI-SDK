@@ -61,19 +61,19 @@ export class JsonWebSignature {
       algorithm: 'URDNA2015',
       format: 'application/n-quads',
       documentLoader,
-      expansionMap,
+      expansionMap: skipExpansion ? undefined : expansionMap,
       skipExpansion,
       useNative: this.useNativeCanonize,
     })
   }
 
-  async canonizeProof(proof: any, { documentLoader, expansionMap }: any) {
+  async canonizeProof(proof: any, { documentLoader, expansionMap, skipExpansion }: any) {
     // `jws`,`signatureValue`,`proofValue` must not be included in the proof
     const proofInput = { ...proof }
     delete proofInput.jws
     return this.canonize(proofInput, {
       documentLoader,
-      expansionMap,
+      expansionMap: skipExpansion ? undefined : expansionMap,
       skipExpansion: false,
     })
   }

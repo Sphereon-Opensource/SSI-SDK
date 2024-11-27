@@ -4,7 +4,7 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - lookupLocation
+    - anomalyDetectionLookupLocation
 
 dbConnection:
   $require: typeorm?t=function#createConnection
