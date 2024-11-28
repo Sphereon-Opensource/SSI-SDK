@@ -99,7 +99,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     // FIXME SDK-42 test holds expired certificates
-    it.skip('should be verified for Sphereon issued cert from CA', async () => {
+    it('should be verified for Sphereon issued cert from CA', async () => {
       await expect(
         agent.x509VerifyCertificateChain({
           chain: [sphereonTest, sphereonCA],
@@ -164,22 +164,22 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
               attributes: { C: 'NL', CN: 'ca.sphereon.com', O: 'Sphereon International B.V.', OU: 'IT' },
             },
           },
-          notAfter: new Date('2024-11-04T22:16:12.000Z'),
-          notBefore: new Date('2024-08-06T20:16:12.000Z'),
+          notAfter: new Date('2025-02-24T21:49:32.000Z'),
+          notBefore: new Date('2024-11-26T19:49:32.000Z'),
           publicKeyJWK: {
             crv: 'P-256',
             ext: true,
             key_ops: ['verify'],
             kty: 'EC',
-            x: 'pyVHVR7IdgWmG_TLb3-K_4dg3XC6GQQWDB61Lna15ns',
-            y: 'OcVNCBD0kMmqEaKjbczwd2GvbV1AOxgE7AKsa3L0zxM',
+            x: '3wh96udvMQg6UwhwHdW4I4ecMrYFNKlihuFzooR06V8',
+            y: 'IVb1u52ZbA4WKhE4htLHWY3oSfwTnrRCOVnNGScjM7M',
           },
           subject: {
             dn: {
-              DN: 'CN=test123.test.sphereon.com',
-              attributes: { CN: 'test123.test.sphereon.com' },
+              DN: 'C=NL,ST=Noord-Holland,L=Amsterdam,O=Sphereon International B.V.,OU=IT,CN=funke.demo.sphereon.com',
+              attributes: { CN: 'funke.demo.sphereon.com' },
             },
-            subjectAlternativeNames: [{ type: 2, value: 'test123.test.sphereon.com' }],
+            subjectAlternativeNames: [{ type: 2, value: 'funke.demo.sphereon.com' }],
           },
         },
       ])

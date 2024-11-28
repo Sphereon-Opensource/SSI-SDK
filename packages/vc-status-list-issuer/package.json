@@ -15,8 +15,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk-ext.did-utils": "0.26.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.26.1-next.4",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.1-next.4",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.26.0",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.26.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.0",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.26.1-next.4",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.26.1-next.4",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.1-next.4",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
