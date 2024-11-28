@@ -8,6 +8,7 @@ import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
+import { funkeTestCA, sphereonCA } from './trustAnchors'
 import {
   Claims,
   ICreateSdJwtPresentationArgs,
@@ -278,8 +279,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = header.jwk
     if (x5c) {
-      // FIXME Funke id out why valdation does not work against our SphereonCA and reenable
-      /*  const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
+      const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
         trustAnchors.add(funkeTestCA)
@@ -293,11 +293,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         return Promise.reject(Error(`Certificate chain validation failed. ${certificateValidationResult.message}`))
       }
       const certInfo = certificateValidationResult.certificateChain[0]
-      jwk = certInfo.publicKeyJWK as JWK*/
-      const certInfo = await context.agent.x509GetCertificateInfo({
-        certificates: x5c,
-      })
-      jwk = certInfo[0].publicKeyJWK as JWK
+      jwk = certInfo.publicKeyJWK as JWK
     }
 
     if (!jwk && header.kid?.includes('did:')) {
