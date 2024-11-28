@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-common",
-  "version": "0.30.1",
+  "version": "0.31.0",
   "description": "Common SIOPv2 and OID4VP types between modules",
   "source": "src/index.ts",
   "main": "dist/index.js",

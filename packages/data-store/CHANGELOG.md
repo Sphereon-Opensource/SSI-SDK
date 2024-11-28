@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.31.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.1...v0.31.0) (2024-11-26)
+
+### Bug Fixes
+
+- return null as undefined in store DTO's ([9d0e24b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9d0e24bbba8621b0397016c749a6452087c6a22b))
+
+### Features
+
+- add support for credential claim branding ([1d5c7ce](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1d5c7cee277420a28bab0e131a647bb090d62a70))
+- added activity logs to eventlogger, plus fixed a bug on deleting parent of child credentials ([91ce056](https://github.com/Sphereon-Opensource/SSI-SDK/commit/91ce056ebb39db54bfb888073c4ae55737068a60))
+- added additional issuer branding properties ([c22d9d4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c22d9d45f55d653b0c8a8faa0b374ba34597c2ec))
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.data-store
