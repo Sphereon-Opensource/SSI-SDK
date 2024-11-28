@@ -3,23 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.31.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.1...v0.31.0) (2024-11-26)
-
-### Bug Fixes
-
-- getFederationTrust fix ([2c02455](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2c02455c403fbd57aaae6e9f55169477f139e005))
-
-### Features
-
-- Add JARM response support ([8e9cb20](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8e9cb20066bd4784d210a4e125a015e5f81a8a0a))
-- added dynamicRegistrationClientMetadata to issuer locale branding ([aa98150](https://github.com/Sphereon-Opensource/SSI-SDK/commit/aa981508f2af7729a8380d0f340c32bf3eaf2b31))
-- added issuer credential subject branding support ([2caa509](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2caa509e5a868dfe636abb9815dae0952e5fbc6d))
-- added review contact state when contact has low level of trust ([d2c6c75](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d2c6c750b57a80561e60c55402757d4629374f98))
-- added validation against vc schema and test cases for validating the vc against the schema plus some bugfixes. also made checking vc against the schema optional ([b75f952](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b75f952564dbd3a4ef72a07e555c499cfd5da099))
-- Created an issuer verification of an EBSI issued credential ([333b395](https://github.com/Sphereon-Opensource/SSI-SDK/commit/333b3951ae23b445d9ef353b9b75ce5d0bfd3d37))
-- updated oid4vci-holder and siopv2-rp to use credential-validation module for verifying credentials. ([87081e5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/87081e53893ee1e1b3e2cdc6cf42b667bb76374e))
-- updated oid4vci-holder and siopv2-rp to use credential-validation module for verifying credentials. ([b25b66e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b25b66edef79864d5b4d0fadfacf8786cab28707))
-
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.oid4vci-holder
