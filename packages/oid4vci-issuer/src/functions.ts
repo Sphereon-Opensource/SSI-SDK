@@ -42,35 +42,18 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       if (!jwkInfo) {
         return Promise.reject(Error(`the identifier of type ${identifier.method} is missing jwks (ExternalJwkInfo)`))
       }
-      const { alg, kid } = jwkInfo.jwk
+      const { alg } = jwkInfo.jwk
       if (!alg) {
         return Promise.reject(Error(`the ExternalJwkInfo of identifier of type ${identifier.method} is missing alg in its jwk`))
       }
 
-      const verifyResult: Partial<JwtVerifyResult<DIDDocument>> = {
-        alg,
-        kid,
-      }
-
-      if (identifier.method === 'did') {
-        const decodedJwt = (await decodeJWT(args.jwt)) as Jwt
-        const jwtKid = args.kid ?? decodedJwt.header.kid
-        if (!jwtKid) {
-          throw Error('No kid value found')
-        }
-        const did = jwtKid.split('#')[0]
-        const didResolution = await resolver.resolve(did)
-        if (!didResolution || !didResolution.didDocument) {
-          throw Error(`Could not resolve did: ${did}, metadata: ${didResolution?.didResolutionMetadata}`)
-        }
-        verifyResult.did = did
-        verifyResult.didDocument = didResolution.didDocument
-      }
-
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
-      verifyResult.jwt = { header, payload }
-      return verifyResult as JwtVerifyResult<DIDDocument>
+      return {
+        alg,
+        ...{ identifier },
+        jwt: { header, payload },
+      } as JwtVerifyResult<DIDDocument>
     } else {
       const result = await verifyJWT(args.jwt, verifyOpts)
       if (!result.verified) {
