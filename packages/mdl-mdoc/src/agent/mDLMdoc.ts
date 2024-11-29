@@ -254,10 +254,10 @@ export class MDLMdoc implements IAgentPlugin {
   private async x509VerifyCertificateChain(args: VerifyCertificateChainArgs, _context: IRequiredContext): Promise<X509ValidationResult> {
     const mergedAnchors: string[] = [...this.trustAnchors, ...(args.trustAnchors ?? [])]
     const trustAnchors = new Set<string>(mergedAnchors)
-    return await new X509CallbackService().verifyCertificateChain({
+    return await new X509CallbackService(Array.from(mergedAnchors)).verifyCertificateChain({
       ...args,
       trustAnchors: Array.from(trustAnchors),
-      opts: args?.opts ?? this.opts
+      opts: {...args?.opts, ...this.opts}
     })
   }
 
