@@ -27,6 +27,7 @@
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
+    "jwt-decode": "^3.1.2",
     "@types/uuid": "^9.0.8",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",

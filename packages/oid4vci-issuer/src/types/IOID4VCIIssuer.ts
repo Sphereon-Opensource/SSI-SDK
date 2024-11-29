@@ -17,6 +17,7 @@ import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { ICredential } from '@sphereon/ssi-types/dist'
 import { IAgentContext, ICredentialIssuer, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { IssuerInstance } from '../IssuerInstance'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.identifier-resolution/src/types/IJwtService'
 
 export type IssuerCredentialDefinition = JsonLdIssuerCredentialDefinition
 
@@ -96,4 +97,6 @@ export type ICreateCredentialOfferURIResult = {
   userPinLength?: number
 }
 
-export type IRequiredContext = IAgentContext<IIdentifierResolution & IDIDManager & IResolver & IKeyManager & ICredentialIssuer & IOID4VCIStore>
+export type IRequiredContext = IAgentContext<
+  IIdentifierResolution & IDIDManager & IResolver & IKeyManager & ICredentialIssuer & IOID4VCIStore & IJwtService
+>
