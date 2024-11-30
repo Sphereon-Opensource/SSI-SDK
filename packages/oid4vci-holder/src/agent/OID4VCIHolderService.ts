@@ -471,7 +471,7 @@ export const getIssuanceOpts = async (args: GetIssuanceOptsArgs): Promise<Array<
           supportedPreferredDidMethod: didMethod,
           supportedBindingMethods: methods,
           format: credentialSupported.format,
-          keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ suite: cryptographicSuite }),
+          keyType: client.isEBSI() ? 'Secp256r1' : keyTypeFromCryptographicSuite({ crv: cryptographicSuite }),
           ...(client.isEBSI() && { codecName: 'EBSI' }),
         } satisfies IssuanceOpts)
     const identifier = await getIdentifierOpts({ issuanceOpt, context })
