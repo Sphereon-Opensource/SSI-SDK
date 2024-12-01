@@ -19,7 +19,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
-    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.16",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.22",
     "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",

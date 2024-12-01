@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.26.1-next.20",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.1-next.20",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.26.1-next.23",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.1-next.23",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
