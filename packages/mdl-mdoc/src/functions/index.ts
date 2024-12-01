@@ -1,5 +1,5 @@
 import { com, Nullable } from '@sphereon/kmp-mdoc-core'
-import { verifyRawSignature } from '@sphereon/ssi-sdk-ext.key-utils'
+import { globalCrypto, verifyRawSignature } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CertificateInfo,
   derToPEM,
@@ -262,10 +262,9 @@ const defaultCryptoEngine = () => {
     setEngine(name, new CryptoEngine({ name, crypto: nodeCrypto }))
   } else {
     // @ts-ignore
-    if (typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined') {
-      const name = 'crypto'
-      setEngine(name, new CryptoEngine({ name, crypto: crypto }))
-    }
+    const name = 'crypto'
+    setEngine(name, new CryptoEngine({ name, crypto: globalCrypto(false) }))
+
   }
 }
 

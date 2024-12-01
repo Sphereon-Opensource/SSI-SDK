@@ -1,4 +1,5 @@
 // import crypto from '@sphereon/isomorphic-webcrypto'
+import { globalCrypto } from '@sphereon/ssi-sdk-ext.key-utils'
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { JWS, Verifier } from '@transmute/jose-ld'
 import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'
@@ -162,7 +163,7 @@ export class JsonWebKey {
     const KeyPair = getKeyPairForKtyAndCrv(options.kty, options.crv)
     if (!options.secureRandom) {
       options.secureRandom = () => {
-        return crypto.getRandomValues(new Uint8Array(32))
+        return globalCrypto(false).getRandomValues(new Uint8Array(32))
       }
     }
     const kp = await KeyPair.generate({
