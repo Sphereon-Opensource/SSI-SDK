@@ -8,48 +8,48 @@ interface SdJwtTypeMetadata {
   /**
    * REQUIRED. The VC type URI.
    */
-  vct: string;
+  vct: string
 
   /**
    * OPTIONAL. A human-readable name for the type.
    */
-  name?: string;
+  name?: string
 
   /**
    * OPTIONAL. A human-readable description for the type.
    */
-  description?: string;
+  description?: string
 
   /**
    * OPTIONAL. A URI of another type that this type extends.
    */
-  extends?: string;
+  extends?: string
 
   /**
    * OPTIONAL. Integrity metadata string for the 'extends' field.
    */
-  ['extends#integrity']?: string;
+  ['extends#integrity']?: string
 
   /**
    * OPTIONAL. URL pointing towards a JSON Schema document describing the VC's structure.
    */
-  schema_uri?: string;
+  schema_uri?: string
 
   /**
    * OPTIONAL. Integrity metadata string for the 'schema_uri' field.
    */
-  ['schema_uri#integrity']?: string;
+  ['schema_uri#integrity']?: string
 
   /**
    * OPTIONAL. Display metadata for various languages.
    */
-  display?: Array<SdJwtTypeDisplayMetadata>;
+  display?: Array<SdJwtTypeDisplayMetadata>
 
   /**
    * OPTIONAL. Metadata for the claims within the VC.
    */
   // TODO:
-  claims?: Array<any>;
+  claims?: Array<any>
 }
 
 /**
@@ -59,22 +59,22 @@ interface SdJwtTypeDisplayMetadata {
   /**
    * REQUIRED. Language tag for the display information.
    */
-  lang: string;
+  lang: string
 
   /**
    * REQUIRED. Human-readable name for the type.
    */
-  name: string;
+  name: string
 
   /**
    * OPTIONAL. Human-readable description for the type.
    */
-  description?: string;
+  description?: string
 
   /**
    * OPTIONAL. Rendering metadata for the type.
    */
-  rendering?: SdJwtTypeRenderingMetadata;
+  rendering?: SdJwtTypeRenderingMetadata
 }
 
 /**
@@ -84,12 +84,12 @@ interface SdJwtTypeRenderingMetadata {
   /**
    * OPTIONAL. Simple rendering method metadata.
    */
-  simple?: SdJwtSimpleRenderingMetadata;
+  simple?: SdJwtSimpleRenderingMetadata
 
   /**
    * OPTIONAL. Metadata for SVG templates.
    */
-  svg_template?: Array<SdJwtSVGTemplateMetadata>;
+  svg_template?: Array<SdJwtSVGTemplateMetadata>
 }
 
 /**
@@ -99,17 +99,17 @@ interface SdJwtSimpleRenderingMetadata {
   /**
    * OPTIONAL. Metadata for the logo image.
    */
-  logo?: SdJwtLogoMetadata;
+  logo?: SdJwtLogoMetadata
 
   /**
    * OPTIONAL. Background color for the credential.
    */
-  background_color?: string;
+  background_color?: string
 
   /**
    * OPTIONAL. Text color for the credential.
    */
-  text_color?: string;
+  text_color?: string
 }
 
 /**
@@ -119,17 +119,17 @@ interface SdJwtLogoMetadata {
   /**
    * REQUIRED. URI pointing to the logo image.
    */
-  uri: string;
+  uri: string
 
   /**
    * OPTIONAL. Integrity metadata string for the 'uri' field.
    */
-  ['uri#integrity']?: string;
+  ['uri#integrity']?: string
 
   /**
    * OPTIONAL. Alternative text for the logo image.
    */
-  alt_text?: string;
+  alt_text?: string
 }
 
 /**
@@ -139,17 +139,17 @@ interface SdJwtSVGTemplateMetadata {
   /**
    * REQUIRED. URI pointing to the SVG template.
    */
-  uri: string;
+  uri: string
 
   /**
    * OPTIONAL. Integrity metadata string for the 'uri' field.
    */
-  ['uri#integrity']?: string;
+  ['uri#integrity']?: string
 
   /**
    * OPTIONAL. Properties for the SVG template.
    */
-  properties?: SdJwtSVGTemplateProperties;
+  properties?: SdJwtSVGTemplateProperties
 }
 
 /**
@@ -159,14 +159,13 @@ interface SdJwtSVGTemplateProperties {
   /**
    * OPTIONAL. The orientation for which the SVG template is optimized.
    */
-  orientation?: string;
+  orientation?: string
 
   /**
    * OPTIONAL. The color scheme for which the SVG template is optimized.
    */
-  color_scheme?: string;
+  color_scheme?: string
 }
-
 
 // Helper function to fetch API with error handling
 async function fetchUrlWithErrorHandling(url: string): Promise<Response> {
@@ -185,7 +184,7 @@ async function validateIntegrity(input: any, integrityValue: string, hasher: Asy
 }
 
 // Fetch and validate Type Metadata
-export async function fetchSdJwtTypeMetadataFromVctUrl(vct: string, opts?: { hasher?: AsyncHasher, integrity?: string }): Promise<SdJwtTypeMetadata> {
+export async function fetchSdJwtTypeMetadataFromVctUrl(vct: string, opts?: { hasher?: AsyncHasher; integrity?: string }): Promise<SdJwtTypeMetadata> {
   const url = new URL(vct)
   const wellKnownUrl = `${url.origin}/.well-known/vct${url.pathname}`
 
@@ -193,7 +192,7 @@ export async function fetchSdJwtTypeMetadataFromVctUrl(vct: string, opts?: { has
   const metadata: SdJwtTypeMetadata = await response.json()
   assertValidTypeMetadata(metadata, vct)
   if (opts?.integrity && opts.hasher) {
-    if (!await validateIntegrity(metadata, opts.integrity, opts.hasher)) {
+    if (!(await validateIntegrity(metadata, opts.integrity, opts.hasher))) {
       throw new Error('Integrity check failed')
     }
   }
@@ -206,7 +205,6 @@ function assertValidTypeMetadata(metadata: SdJwtTypeMetadata, vct: string): void
   }
 }
 
-
 /*
 // Example usage
   try {
@@ -217,4 +215,3 @@ function assertValidTypeMetadata(metadata: SdJwtTypeMetadata, vct: string): void
     console.error('Error fetching type metadata:', error.message)
   }
 */
-

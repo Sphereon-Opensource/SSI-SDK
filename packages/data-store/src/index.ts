@@ -61,7 +61,6 @@ export * from './utils/digitalCredential/MappingUtils'
 export * from './utils/eventLogger/MappingUtils'
 export * from './utils/issuanceBranding/MappingUtils'
 export * from './utils/presentationDefinition/MappingUtils'
-export * from './utils/hasher'
 
 export const DataStoreContactEntities = [
   BaseConfigEntity,

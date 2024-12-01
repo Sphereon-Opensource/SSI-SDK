@@ -51,6 +51,6 @@
     { "path": "oidf-client" },
     { "path": "oidf-metatdata-server" },
     { "path": "anomaly-detection" },
-    { "path": "geolocation-store"},
+    { "path": "geolocation-store" }
   ]
 }

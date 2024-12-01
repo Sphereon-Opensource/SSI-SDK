@@ -4,8 +4,8 @@ import {
   UpdateCredentialStateArgs,
   DocumentType,
   parseRawDocument,
-  defaultHasher,
 } from '@sphereon/ssi-sdk.data-store'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { schema, logger } from '../index'

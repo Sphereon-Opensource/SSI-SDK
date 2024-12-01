@@ -140,9 +140,9 @@ export class OpSession {
       (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) => convertDidMethod(method, opts.didPrefix)) ?? []
     debug(`agent methods supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
-    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
-      convertDidMethod(method, opts.didPrefix),
-    ).filter(val => !val.startsWith('did'))
+    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported
+      ?.map((method) => convertDidMethod(method, opts.didPrefix))
+      .filter((val) => !val.startsWith('did'))
     debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []

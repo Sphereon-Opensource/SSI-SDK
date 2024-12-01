@@ -14,7 +14,9 @@ import { JsonWebKey } from './JsonWebKeyWithRSASupport'
 
 // import { getJwaAlgFromJwk } from '@transmute/web-crypto-key-pair/dist/signatures/jws'
 
-const subtle = crypto.subtle
+const subtle = (typeof crypto !== 'undefined' ? crypto : typeof
+  global?.crypto !== 'undefined' ? global.crypto : typeof global?.window?.crypto !== 'undefined' ? global.window.crypto : require('crypto')).subtle
+
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 

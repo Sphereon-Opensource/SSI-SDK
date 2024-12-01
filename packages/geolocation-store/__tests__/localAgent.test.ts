@@ -1,5 +1,5 @@
-import {createObjects, getConfig} from '../../agent-config/dist'
-import {DataSource} from 'typeorm'
+import { createObjects, getConfig } from '../../agent-config/dist'
+import { DataSource } from 'typeorm'
 import geolocationStoreAgentLogic from './shared/geolocationStoreAgentStoreLogic'
 
 jest.setTimeout(60000)

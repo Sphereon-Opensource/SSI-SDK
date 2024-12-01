@@ -8,7 +8,7 @@ import {
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
-import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
+import { OriginalVerifiablePresentation } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
   AuthorizationResponseStateWithVerifiedData,
@@ -32,7 +32,7 @@ import {
 import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import { defaultHasher } from '@sphereon/oid4vc-common'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts

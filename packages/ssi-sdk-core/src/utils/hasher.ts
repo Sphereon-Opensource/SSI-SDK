@@ -1,19 +1,15 @@
 import { Hasher } from '@sphereon/ssi-types'
-import sha from 'sha.js'
+import { sha256, sha384, sha512 } from '@noble/hashes/sha2'
+import * as u8a from 'uint8arrays'
 
 const supportedAlgorithms = ['sha256', 'sha384', 'sha512'] as const
 type SupportedAlgorithms = (typeof supportedAlgorithms)[number]
 
-// FIXME this is a weird place for this, but it does have good reach in ssi-sdk cunlike the copy in oid4vc-common
-export const defaultHasher: Hasher = (data, algorithm) => {
+export const shaHasher: Hasher = (data, algorithm) => {
   const sanitizedAlgorithm = algorithm.toLowerCase().replace(/[-_]/g, '')
   if (!supportedAlgorithms.includes(sanitizedAlgorithm as SupportedAlgorithms)) {
     throw new Error(`Unsupported hashing algorithm ${algorithm}`)
   }
-
-  return new Uint8Array(
-    sha(sanitizedAlgorithm as SupportedAlgorithms)
-      .update(data)
-      .digest(),
-  )
+  const hasher = sanitizedAlgorithm === 'sha384' ? sha384 : sanitizedAlgorithm === 'sha512' ? sha512 : sha256
+  return hasher(u8a.fromString(data))
 }

@@ -11,6 +11,9 @@
       "path": "../data-store"
     },
     {
+      "path": "../ssi-sdk-core"
+    },
+    {
       "path": "../ssi-types"
     },
     {
