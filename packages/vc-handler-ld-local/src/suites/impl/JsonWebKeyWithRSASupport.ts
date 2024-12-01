@@ -10,8 +10,15 @@ import Debug from 'debug'
 import { JsonWebKey as JWK } from 'did-resolver'
 import { RequiredAgentMethods } from '../../ld-suites'
 
-const subtle = (typeof crypto !== 'undefined' ? crypto : typeof
-  global?.crypto !== 'undefined' ? global.crypto : typeof global?.window?.crypto !== 'undefined' ? global.window.crypto : require('crypto')).subtle
+const subtle = (
+  typeof crypto !== 'undefined'
+    ? crypto
+    : typeof global?.crypto !== 'undefined'
+      ? global.crypto
+      : typeof global?.window?.crypto !== 'undefined'
+        ? global.window.crypto
+        : require('crypto')
+).subtle
 
 export { JsonWebKey2020 }
 
@@ -157,8 +164,8 @@ export class JsonWebKey {
     options: any = {
       kty: 'OKP',
       crv: 'Ed25519',
-      detached: true
-    }
+      detached: true,
+    },
   ) => {
     const KeyPair = getKeyPairForKtyAndCrv(options.kty, options.crv)
     if (!options.secureRandom) {
@@ -169,7 +176,7 @@ export class JsonWebKey {
     const kp = await KeyPair.generate({
       kty: options.kty,
       crvOrSize: options.crv,
-      secureRandom: options.secureRandom
+      secureRandom: options.secureRandom,
     })
     const { detached } = options
     return useJwa(kp, { detached })
@@ -177,7 +184,7 @@ export class JsonWebKey {
 
   static from = async (
     k: JsonWebKey2020 | P256Key2021 | P384Key2021 | P521Key2021 | Ed25519VerificationKey2018 | EcdsaSecp256k1VerificationKey2019,
-    options: any = { detached: true }
+    options: any = { detached: true },
   ) => {
     let kp: any | undefined
     const context: IAgentContext<RequiredAgentMethods> = options.context
@@ -193,24 +200,24 @@ export class JsonWebKey {
             name: 'RSA-PSS',
             // modulusLength: 2048,
             saltLength: 32,
-            hash: 'SHA-256'
+            hash: 'SHA-256',
             // publicExponent: new Uint8Array([1, 0, 1]),
           } as RsaHashedImportParams,
           true,
-          ['sign', 'verify']
+          ['sign', 'verify'],
         )
 
         kp = new WebCryptoKey({
           id: k.id,
           type: 'JsonWebKey2020',
           controller: k.controller,
-          publicKey
+          publicKey,
         })
         verifier = {
           // returns a JWS detached
           verify: async (args: any): Promise<boolean> => {
             return await context.agent.keyManagerVerify(args)
-          }
+          },
         }
       }
     }

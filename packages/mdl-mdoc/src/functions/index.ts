@@ -7,7 +7,7 @@ import {
   getSubjectDN,
   pemOrDerToX509Certificate,
   validateX509CertificateChain,
-  X509ValidationResult
+  X509ValidationResult,
 } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
 import * as crypto from 'crypto'
@@ -38,8 +38,7 @@ import Encoding = com.sphereon.kmp.Encoding
 import LocalDateTimeKMP = com.sphereon.kmp.LocalDateTimeKMP
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
-  constructor(private context?: IRequiredContext) {
-  }
+  constructor(private context?: IRequiredContext) {}
 
   setContext(context: IRequiredContext) {
     this.context = context
@@ -68,7 +67,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       algorithm: alg.jose!!.value,
       data: encodeTo(value, Encoding.UTF8),
       encoding: 'utf-8',
-      keyRef: kmsKeyRef!!
+      keyRef: kmsKeyRef!!,
     })
     return decodeFrom(result, Encoding.UTF8)
   }
@@ -76,10 +75,10 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
   async verify1Async<CborType>(
     input: CoseSign1Cbor<CborType>,
     keyInfo: IKeyInfo<ICoseKeyCbor>,
-    requireX5Chain: Nullable<boolean>
+    requireX5Chain: Nullable<boolean>,
   ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
     const getCertAndKey = async (
-      x5c: Nullable<Array<string>>
+      x5c: Nullable<Array<string>>,
     ): Promise<{
       issuerCert?: Certificate
       issuerJwk?: Jwk
@@ -131,27 +130,36 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       issuerCoseKey = CoseKeyCbor.Static.fromDTO(coseKeyInfo.key)
     }
 
-    const issuerCoseKeyInfo = new KeyInfo<CoseKeyCbor>(kid, issuerCoseKey, coseKeyInfo.opts, coseKeyInfo.keyVisibility, issuerCoseKey.getSignatureAlgorithm() ?? coseKeyInfo.signatureAlgorithm, x5c, coseKeyInfo.kmsKeyRef, coseKeyInfo.kms, coseKeyInfo.keyType ?? issuerCoseKey.getKty())
+    const issuerCoseKeyInfo = new KeyInfo<CoseKeyCbor>(
+      kid,
+      issuerCoseKey,
+      coseKeyInfo.opts,
+      coseKeyInfo.keyVisibility,
+      issuerCoseKey.getSignatureAlgorithm() ?? coseKeyInfo.signatureAlgorithm,
+      x5c,
+      coseKeyInfo.kmsKeyRef,
+      coseKeyInfo.kms,
+      coseKeyInfo.keyType ?? issuerCoseKey.getKty(),
+    )
     const recalculatedToBeSigned = input.toBeSignedJson(issuerCoseKeyInfo, SignatureAlgorithm.Static.fromCose(coseAlg))
     const key = CoseJoseKeyMappingService.toJoseJwk(issuerCoseKeyInfo.key!).toJsonDTO<JWK>()
     const valid = await verifyRawSignature({
       data: u8a.fromString(recalculatedToBeSigned.base64UrlValue, 'base64url'),
       signature: u8a.fromString(sign1Json.signature, 'base64url'),
-      key
+      key,
     })
-
 
     return {
       name: 'mdoc',
       critical: true,
       error: !valid,
       message: `Signature of '${issuerCert ? getSubjectDN(issuerCert).DN : kid}' was ${valid ? '' : 'in'}valid`,
-      keyInfo: issuerCoseKeyInfo
+      keyInfo: issuerCoseKeyInfo,
     } satisfies IVerifySignatureResult<ICoseKeyCbor>
   }
 
   resolvePublicKeyAsync<KT extends com.sphereon.crypto.IKey>(
-    keyInfo: com.sphereon.crypto.IKeyInfo<KT>
+    keyInfo: com.sphereon.crypto.IKeyInfo<KT>,
   ): Promise<com.sphereon.crypto.IResolvedKeyInfo<KT>> {
     if (keyInfo.key) {
       return Promise.resolve(CoseJoseKeyMappingService.toResolvedKeyInfo(keyInfo, keyInfo.key))
@@ -181,16 +189,16 @@ export class X509CallbackService implements IX509ServiceJS {
    * @param verificationTime
    */
   async verifyCertificateChain({
-                                 chain,
-                                 trustAnchors = this.getTrustedCerts(),
-                                 verificationTime,
-                                 opts
-                               }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
+    chain,
+    trustAnchors = this.getTrustedCerts(),
+    verificationTime,
+    opts,
+  }: VerifyCertificateChainArgs): Promise<X509ValidationResult> {
     return await validateX509CertificateChain({
       chain,
       trustAnchors,
       verificationTime,
-      opts
+      opts,
     })
   }
 
@@ -202,7 +210,7 @@ export class X509CallbackService implements IX509ServiceJS {
     chainPEM: Nullable<string[]>,
     trustedCerts: Nullable<string[]>,
     verificationProfile?: X509VerificationProfile | undefined,
-    verificationTime?: Nullable<LocalDateTimeKMP>
+    verificationTime?: Nullable<LocalDateTimeKMP>,
   ): Promise<IX509VerificationResult<KeyType>> {
     const verificationAt = verificationTime ?? DateTimeUtils.Static.DEFAULT.dateTimeLocal()
     let chain: Array<string | Uint8Array> = []
@@ -216,7 +224,7 @@ export class X509CallbackService implements IX509ServiceJS {
       chain: chain, // The function will handle an empty array
       trustAnchors: trustedCerts ?? this.getTrustedCerts(),
       verificationTime: new Date(verificationAt.toEpochSeconds().toULong() * 1000),
-      opts: { trustRootWhenNoAnchors: true }
+      opts: { trustRootWhenNoAnchors: true },
     })
 
     const cert: CertificateInfo | undefined = result.certificateChain ? result.certificateChain[result.certificateChain.length - 1] : undefined
@@ -228,7 +236,7 @@ export class X509CallbackService implements IX509ServiceJS {
       critical: result.critical,
       message: result.message,
       error: result.error,
-      verificationTime: verificationAt
+      verificationTime: verificationAt,
     } satisfies IX509VerificationResult<KeyType>
   }
 
@@ -264,7 +272,6 @@ const defaultCryptoEngine = () => {
     // @ts-ignore
     const name = 'crypto'
     setEngine(name, new CryptoEngine({ name, crypto: globalCrypto(false) }))
-
   }
 }
 
