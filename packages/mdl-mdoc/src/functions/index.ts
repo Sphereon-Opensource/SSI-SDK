@@ -1,5 +1,5 @@
 import { com, Nullable } from '@sphereon/kmp-mdoc-core'
-import { globalCrypto, verifyRawSignature } from '@sphereon/ssi-sdk-ext.key-utils'
+import { calculateJwkThumbprint, globalCrypto, verifyRawSignature } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CertificateInfo,
   derToPEM,
@@ -57,7 +57,8 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       }
       const resolvedKeyInfo = ResolvedKeyInfo.Static.fromKeyInfo(keyInfo, key)
       const jwkKeyInfo: ResolvedKeyInfo<Jwk> = CoseJoseKeyMappingService.toResolvedJwkKeyInfo(resolvedKeyInfo)
-      const kid = jwkKeyInfo.kid ?? key.getKidAsString(true) ?? undefined
+
+      const kid = jwkKeyInfo.kid ?? calculateJwkThumbprint(jwkKeyInfo.key.toJsonDTO()) ?? jwkKeyInfo.key.getKidAsString(true)
       if (!kid) {
         return Promise.reject(Error('No kid present'))
       }

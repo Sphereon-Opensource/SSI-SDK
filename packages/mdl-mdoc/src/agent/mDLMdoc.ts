@@ -1,7 +1,20 @@
 import { com } from '@sphereon/kmp-mdoc-core'
-import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
+import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
+import {
+  CertificateInfo,
+  getCertificateInfo,
+  pemOrDerToX509Certificate,
+  X509ValidationResult
+} from '@sphereon/ssi-sdk-ext.x509-utils'
+import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { MdocOid4vpPresentArgs, MdocOid4VPPresentationAuth, MdocOid4vpRPVerifyArgs, MdocOid4vpRPVerifyResult, schema } from '..'
+import {
+  MdocOid4vpPresentArgs,
+  MdocOid4VPPresentationAuth,
+  MdocOid4vpRPVerifyArgs,
+  MdocOid4vpRPVerifyResult,
+  schema
+} from '..'
 import { CoseCryptoService, X509CallbackService } from '../functions'
 import {
   GetX509CertificateInfoArgs,
@@ -9,12 +22,15 @@ import {
   IRequiredContext,
   KeyType,
   MdocVerifyIssuerSignedArgs,
-  VerifyCertificateChainArgs,
+  VerifyCertificateChainArgs
 } from '../types/ImDLMdoc'
+import CborByteString = com.sphereon.cbor.CborByteString
+import CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import CoseCryptoServiceJS = com.sphereon.crypto.CoseCryptoServiceJS
 import CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
 import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
+import KeyInfo = com.sphereon.crypto.KeyInfo
 import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import encodeTo = com.sphereon.kmp.encodeTo
@@ -32,7 +48,7 @@ export const mdocSupportMethods: Array<string> = [
   'x509GetCertificateInfo',
   'mdocVerifyIssuerSigned',
   'mdocOid4vpHolderPresent',
-  'mdocOid4vpRPVerify',
+  'mdocOid4vpRPVerify'
 ]
 
 /**
@@ -47,7 +63,7 @@ export class MDLMdoc implements IAgentPlugin {
     x509GetCertificateInfo: this.x509GetCertificateInfo.bind(this),
     mdocVerifyIssuerSigned: this.mdocVerifyIssuerSigned.bind(this),
     mdocOid4vpHolderPresent: this.mdocOid4vpHolderPresent.bind(this),
-    mdocOid4vpRPVerify: this.mdocOid4vpRPVerify.bind(this),
+    mdocOid4vpRPVerify: this.mdocOid4vpRPVerify.bind(this)
   }
   private readonly trustAnchors: string[]
   private opts: {
@@ -80,7 +96,16 @@ export class MDLMdoc implements IAgentPlugin {
    * @return {Promise<MdocOid4VPPresentationAuth>} A promise that resolves to an object containing vp_token and presentation_submission.
    */
   private async mdocOid4vpHolderPresent(args: MdocOid4vpPresentArgs, _context: IRequiredContext): Promise<MdocOid4VPPresentationAuth> {
-    const { mdocs, presentationDefinition, trustAnchors, verifications, mdocHolderNonce, authorizationRequestNonce, responseUri, clientId } = args
+    const {
+      mdocs,
+      presentationDefinition,
+      trustAnchors,
+      verifications,
+      mdocHolderNonce,
+      authorizationRequestNonce,
+      responseUri,
+      clientId
+    } = args
 
     const oid4vpService = new MdocOid4vpService()
     // const mdoc = DocumentCbor.Static.cborDecode(decodeFrom(mdocBase64Url, Encoding.BASE64URL))
@@ -91,7 +116,7 @@ export class MDLMdoc implements IAgentPlugin {
           null,
           trustAnchors ?? this.trustAnchors,
           DateTimeUtils.Static.DEFAULT.dateTimeLocal((verifications?.verificationTime?.getTime() ?? Date.now()) / 1000),
-          verifications?.allowExpiredDocuments,
+          verifications?.allowExpiredDocuments
         )
         if (result.error) {
           console.log(JSON.stringify(result, null, 2))
@@ -106,9 +131,9 @@ export class MDLMdoc implements IAgentPlugin {
               name: 'mdoc',
               error: true,
               critical: true,
-              message: e.message as string,
-            },
-          ],
+              message: e.message as string
+            }
+          ]
         }
       }
     }
@@ -116,15 +141,38 @@ export class MDLMdoc implements IAgentPlugin {
     const allMatches: DocumentDescriptorMatchResult[] = oid4vpService.matchDocumentsAndDescriptors(
       mdocHolderNonce,
       mdocs,
-      presentationDefinition as IOid4VPPresentationDefinition,
+      presentationDefinition as IOid4VPPresentationDefinition
     )
     const docsAndDescriptors: DocumentDescriptorMatchResult[] = []
-    var lastError: com.sphereon.crypto.generic.IVerifyResults<com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
-    for (const match of allMatches) {
+    let lastError: com.sphereon.crypto.generic.IVerifyResults<com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
+    for (let match of allMatches) {
       if (match.document) {
         const result = await validate(match.document)
         if (!result.error || responseUri.includes('openid.net')) {
           // TODO: We relax for the conformance suite, as the cert would be invalid
+          try {
+            const cborKey = result.keyInfo?.key ? CoseKeyCbor.Static.fromDTO(result.keyInfo.key) : undefined
+            if (!cborKey) {
+              throw Error('No key found in result')
+            }
+            let jwk = CoseJoseKeyMappingService.toJoseJwk(cborKey).toJsonDTO<JWK>()
+            if (!result.keyInfo?.kmsKeyRef) {
+              const keyInfo = result.keyInfo!
+              const kid = jwk.kid ?? calculateJwkThumbprint({ jwk })
+
+              const key = await _context.agent.keyManagerGet({ kid })
+              const kms = key.kms
+              const kmsKeyRef = key.meta?.kmsKeyRef
+              const updateCborKey = cborKey.copy(false, cborKey.kty, cborKey.kid ?? new CborByteString(decodeFrom(kid, Encoding.UTF8)))
+              const deviceKeyInfo = KeyInfo.Static.fromDTO(keyInfo).copy(kid, updateCborKey, keyInfo.opts, keyInfo.keyVisibility, keyInfo.signatureAlgorithm, keyInfo.x5c, kmsKeyRef, kms)
+              const updateMatch = match.copy(match.inputDescriptor, match.document, match.documentError, deviceKeyInfo)
+              match = updateMatch
+            }
+          } catch (e: any) {
+            console.log(`We tied to ammend key info from the KMS, but failed. Potential trouble ahead ${e.message}`, e)
+          }
+
+
           docsAndDescriptors.push(match)
         } else if (result.error) {
           lastError = result
@@ -142,11 +190,11 @@ export class MDLMdoc implements IAgentPlugin {
       presentationDefinition as IOid4VPPresentationDefinition,
       clientId,
       responseUri,
-      authorizationRequestNonce,
+      authorizationRequestNonce
     )
     const vp_token = encodeTo(deviceResponse.cborEncode(), Encoding.BASE64URL)
     const presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(
-      presentationDefinition as IOid4VPPresentationDefinition,
+      presentationDefinition as IOid4VPPresentationDefinition
     )
     return { vp_token, presentation_submission }
   }
@@ -179,7 +227,7 @@ export class MDLMdoc implements IAgentPlugin {
               name: 'mdoc',
               error,
               critical: error,
-              message: `No descriptor map id with document type ${document.docType.value} present`,
+              message: `No descriptor map id with document type ${document.docType.value} present`
             })
           }
           return { document: document.toJson(), validations }
@@ -194,13 +242,13 @@ export class MDLMdoc implements IAgentPlugin {
                   name: 'mdoc',
                   error,
                   critical: true,
-                  message: e.message as string,
-                },
-              ],
-            },
+                  message: e.message as string
+                }
+              ]
+            }
           }
         }
-      }),
+      })
     )
     if (error) {
       console.log(JSON.stringify(documents, null, 2))
@@ -221,7 +269,7 @@ export class MDLMdoc implements IAgentPlugin {
     const verification = await new CoseCryptoServiceJS(new CoseCryptoService(context)).verify1(
       CoseSign1Json.Static.fromDTO(input).toCbor(),
       coseKeyInfo,
-      requireX5Chain,
+      requireX5Chain
     )
     return { ...verification, keyInfo: keyInfo }
   }
@@ -240,10 +288,10 @@ export class MDLMdoc implements IAgentPlugin {
     const validationResult = await new X509CallbackService(Array.from(mergedAnchors)).verifyCertificateChain({
       ...args,
       trustAnchors: Array.from(trustAnchors),
-      opts: { ...args?.opts, ...this.opts },
+      opts: { ...args?.opts, ...this.opts }
     })
     console.log(
-      `x509 validation for ${validationResult.error ? 'Error' : 'Success'}. message: ${validationResult.message}, details: ${validationResult.detailMessage}`,
+      `x509 validation for ${validationResult.error ? 'Error' : 'Success'}. message: ${validationResult.message}, details: ${validationResult.detailMessage}`
     )
     return validationResult
   }

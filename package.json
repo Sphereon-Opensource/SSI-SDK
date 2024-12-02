@@ -115,7 +115,7 @@
       "@sphereon/ssi-sdk.core": "workspace:*",
       "@sphereon/pex": "5.0.0-unstable.28",
       "@sphereon/pex-models": "^2.3.2",
-      "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.22",
+      "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.23",
       "@noble/hashes": "1.6.1",
       "debug": "^4.3.5",
       "did-jwt": "6.11.6",
