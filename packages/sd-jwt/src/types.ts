@@ -164,8 +164,8 @@ export interface ICreateSdJwtPresentationResult {
  */
 export interface IVerifySdJwtVcArgs {
   credential: string
-  opts: {
-    x5cValidation: X509CertificateChainValidationOpts
+  opts?: {
+    x5cValidation?: X509CertificateChainValidationOpts
   }
 }
 

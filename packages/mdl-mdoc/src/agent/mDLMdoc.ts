@@ -152,7 +152,7 @@ export class MDLMdoc implements IAgentPlugin {
   }
 
   /**
-   * Verifies the Result Provider (RP) for mdoc (mobile document) OIDC4VP (OpenID Connect for Verifiable Presentations).
+   * Verifies on the Relying Party (RP) side for mdoc (mobile document) OIDC4VP (OpenID Connect for Verifiable Presentations).
    *
    * @param {MdocOid4vpRPVerifyArgs} args - The arguments required for verification, including the vp_token, presentation_submission, and trustAnchors.
    * @param {IRequiredContext} _context - The required context for this method.
