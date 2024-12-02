@@ -158,7 +158,7 @@ export class MDLMdoc implements IAgentPlugin {
             let jwk = CoseJoseKeyMappingService.toJoseJwk(cborKey).toJsonDTO<JWK>()
             if (!result.keyInfo?.kmsKeyRef) {
               const keyInfo = result.keyInfo!
-              const kid = jwk.kid ?? calculateJwkThumbprint({ jwk })
+              const kid = jwk.kid ?? calculateJwkThumbprint({ jwk: jwk })
 
               const key = await _context.agent.keyManagerGet({ kid })
               const kms = key.kms

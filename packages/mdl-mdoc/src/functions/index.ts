@@ -58,9 +58,9 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       const resolvedKeyInfo = ResolvedKeyInfo.Static.fromKeyInfo(keyInfo, key)
       const jwkKeyInfo: ResolvedKeyInfo<Jwk> = CoseJoseKeyMappingService.toResolvedJwkKeyInfo(resolvedKeyInfo)
 
-      const kid = jwkKeyInfo.kid ?? calculateJwkThumbprint(jwkKeyInfo.key.toJsonDTO()) ?? jwkKeyInfo.key.getKidAsString(true)
+      const kid = jwkKeyInfo.kid ?? calculateJwkThumbprint({jwk: jwkKeyInfo.key.toJsonDTO()}) ?? jwkKeyInfo.key.getKidAsString(true)
       if (!kid) {
-        return Promise.reject(Error('No kid present'))
+        return Promise.reject(Error('No kid present and not kmsKeyRef provided'))
       }
       kmsKeyRef = kid
     }
