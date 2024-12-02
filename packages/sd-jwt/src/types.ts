@@ -1,11 +1,12 @@
-import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
+import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
 import { IIdentifierResolution, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
+import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { JoseSignatureAlgorithm } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 
 export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
 
@@ -163,6 +164,9 @@ export interface ICreateSdJwtPresentationResult {
  */
 export interface IVerifySdJwtVcArgs {
   credential: string
+  opts: {
+    x5cValidation: X509CertificateChainValidationOpts
+  }
 }
 
 /**

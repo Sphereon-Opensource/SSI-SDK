@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.26.1-next.27",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.26.1-next.27",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.26.1-next.30",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.26.1-next.30",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",

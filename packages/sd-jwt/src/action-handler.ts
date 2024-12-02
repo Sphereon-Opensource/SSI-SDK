@@ -2,6 +2,7 @@ import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { DisclosureFrame, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { decodeBase64url } from '@veramo/utils'
@@ -272,7 +273,7 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string): Promise<boolean> {
+  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string, opts?: {x5cValidation?: X509CertificateChainValidationOpts}): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
@@ -287,6 +288,8 @@ export class SDJwtPlugin implements IAgentPlugin {
       const certificateValidationResult = await context.agent.x509VerifyCertificateChain({
         chain: x5c,
         trustAnchors: Array.from(trustAnchors),
+        // TODO: Defaults to allowing untrusted certs! Fine for now, not when wallets go mainstream
+        opts: opts?.x5cValidation ?? {trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true},
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
