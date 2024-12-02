@@ -31,7 +31,7 @@ overrides:
   '@sphereon/ssi-sdk.core': workspace:*
   '@sphereon/pex': 5.0.0-unstable.28
   '@sphereon/pex-models': ^2.3.2
-  '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.23
+  '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.25
   '@noble/hashes': 1.6.1
   debug: ^4.3.5
   did-jwt: 6.11.6
@@ -453,8 +453,8 @@ importers:
   packages/credential-validation:
     dependencies:
       '@sphereon/kmp-mdoc-core':
-        specifier: 0.2.0-SNAPSHOT.23
-        version: 0.2.0-SNAPSHOT.23
+        specifier: 0.2.0-SNAPSHOT.25
+        version: 0.2.0-SNAPSHOT.25
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -502,8 +502,8 @@ importers:
   packages/data-store:
     dependencies:
       '@sphereon/kmp-mdoc-core':
-        specifier: 0.2.0-SNAPSHOT.23
-        version: 0.2.0-SNAPSHOT.23
+        specifier: 0.2.0-SNAPSHOT.25
+        version: 0.2.0-SNAPSHOT.25
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -917,8 +917,8 @@ importers:
         specifier: 0.16.1-next.224
         version: 0.16.1-next.224(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
-        specifier: 0.2.0-SNAPSHOT.23
-        version: 0.2.0-SNAPSHOT.23
+        specifier: 0.2.0-SNAPSHOT.25
+        version: 0.2.0-SNAPSHOT.25
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -1145,8 +1145,8 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/kmp-mdoc-core':
-        specifier: 0.2.0-SNAPSHOT.23
-        version: 0.2.0-SNAPSHOT.23
+        specifier: 0.2.0-SNAPSHOT.25
+        version: 0.2.0-SNAPSHOT.25
       '@sphereon/oid4vci-client':
         specifier: 0.16.1-next.224
         version: 0.16.1-next.224(encoding@0.1.13)
@@ -2814,8 +2814,8 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2
       '@sphereon/kmp-mdoc-core':
-        specifier: 0.2.0-SNAPSHOT.23
-        version: 0.2.0-SNAPSHOT.23
+        specifier: 0.2.0-SNAPSHOT.25
+        version: 0.2.0-SNAPSHOT.25
       debug:
         specifier: ^4.3.5
         version: 4.3.7
@@ -6030,8 +6030,8 @@ packages:
     resolution: {integrity: sha512-9cxNd9gZ0WIlNdfjtJv5sL3W+7WUizyzsm7R3Meg8xTEmXp0kExnl9+CLFF8gzX0v08GHl8r2NCYQL8l43nO2w==}
     engines: {node: '>=18'}
 
-  '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.23':
-    resolution: {integrity: sha512-S5Y6ycBqkVfIftwSPtTmcQtNXYZcDZ7RXhy8ESjgG8WOPlQspdvFbwYtX35nwRWzDhVyglIN8s+5+mowH9brIw==}
+  '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.25':
+    resolution: {integrity: sha512-iWL5xtlVq+0YalOEsniIo2bfvRK+iPLe7FRT6FCN7zPW7EF+MeUqtSVQFpdQdWoimrwzIIt1dsvQ78BPV8pFqw==}
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -17061,7 +17061,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.23':
+  '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.25':
     dependencies:
       '@js-joda/core': 5.6.3
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
