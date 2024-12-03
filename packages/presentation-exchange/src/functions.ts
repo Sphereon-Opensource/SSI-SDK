@@ -27,15 +27,30 @@ export async function createPEXPresentationSignCallback(
   },
   context: IRequiredContext,
 ): Promise<IPEXPresentationSignCallback> {
-  function determineProofFormat(innerArgs: {
+  function determineProofFormat(determineArgs: {
     format?: Format | 'jwt' | 'lds' | 'EthereumEip712Signature2021'
     presentationDefinition: IPresentationDefinition
+    presentation: Optional<PresentationPayload, 'holder'> | SdJwtDecodedVerifiableCredential
   }): string {
-    const { format, presentationDefinition } = innerArgs
+    const { format, presentationDefinition, presentation } = determineArgs
 
-    const formatOptions = format ?? presentationDefinition.format ?? args.format
+    var formatOptions = format ?? presentationDefinition.format ?? args.format
+    // TODO Refactor so it takes into account the Input Descriptors and we can lookup from there. Now we only do that if there is 1 descriptor
+    if (!formatOptions && presentationDefinition.input_descriptors.length == 1 && 'format' in presentationDefinition.input_descriptors[0]) {
+      formatOptions = presentationDefinition.input_descriptors[0].format
+    }
     // All format arguments are optional. So if no format has been given we go for the most supported 'jwt'
     if (!formatOptions) {
+      if (CredentialMapper.isSdJwtDecodedCredentialPayload(presentation.decodedPayload)) {
+        return 'vc+sd-jwt'
+      } else if (      CredentialMapper.isMsoMdocDecodedPresentation(presentation.decodedPayload as OriginalVerifiablePresentation)) {
+        return 'mso_mdoc'
+      } else if (CredentialMapper.isW3cPresentation(presentation.decodedPayload)) {
+        if (typeof presentation.signedPayload === 'string') {
+          return 'jwt'
+        }
+        return 'lds'
+      }
       return 'jwt'
     } else if (typeof formatOptions === 'string') {
       // if formatOptions is a singular string we can return that as the format
@@ -78,7 +93,7 @@ export async function createPEXPresentationSignCallback(
     domain?: string
     challenge?: string
   }): Promise<W3CVerifiablePresentation> => {
-    const proofFormat = determineProofFormat({ format, presentationDefinition })
+    const proofFormat = determineProofFormat({ format, presentationDefinition, presentation })
     const { idOpts } = args
     const CLOCK_SKEW = 120
     if (args.skipDidResolution && isManagedIdentifierDidOpts(idOpts)) {
