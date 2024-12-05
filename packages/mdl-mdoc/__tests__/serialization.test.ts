@@ -15,7 +15,7 @@ describe('Serialization', (): void => {
       alg: CoseAlgorithm.ES256,
     })
     // const asIKey = coseKey as IKey
-    console.log(coseKey.toDto())
+    console.log(coseKey.toJsonObject())
     console.log(coseKey.toJsonString())
     console.log(coseKey.toJsonDTO())
     const json: ICoseKeyJson = coseKey.toJsonDTO()

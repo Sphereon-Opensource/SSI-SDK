@@ -31,6 +31,8 @@ export type VerifyCertificateChainArgs = {
   trustAnchors?: string[]
   verificationTime?: Date
   opts?: {
+    // If no trust anchor is found, but the chain itself checks out, allow. (defaults to false:)
+    allowNoTrustAnchorsFound?: boolean
     // Trust the supplied root from the chain, when no anchors are being passed in.
     trustRootWhenNoAnchors?: boolean
     // Do not perform a chain validation check if the chain only has a single value. This means only the certificate itself will be validated. No chain checks for CA certs will be performed. Only used when the cert has no issuer

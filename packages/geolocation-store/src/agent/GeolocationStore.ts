@@ -1,4 +1,4 @@
-import {IAgentPlugin} from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import {
   GeolocationStoreArgs,
   GeolocationStoreClearAllLocationsArgs,
@@ -8,10 +8,10 @@ import {
   GeolocationStoreLocationResultIValueData,
   GeolocationStoreLocationResultOrUndefined,
   IGeolocationStore,
-  schema
+  schema,
 } from '../index'
 
-import {IKeyValueStore, KeyValueStore, ValueStoreType} from "@sphereon/ssi-sdk.kv-store-temp";
+import { IKeyValueStore, KeyValueStore, ValueStoreType } from '@sphereon/ssi-sdk.kv-store-temp'
 
 export const geolocationStoreMethods: Array<string> = [
   'geolocationStorePersistLocation',
@@ -19,7 +19,7 @@ export const geolocationStoreMethods: Array<string> = [
   'geolocationStoreRemoveLocation',
   'geolocationStoreClearAllLocations',
   'geolocationStoreGetLocation',
-  'geolocationStoreDefaultLocationStore'
+  'geolocationStoreDefaultLocationStore',
 ]
 
 /**
@@ -37,12 +37,12 @@ export class GeolocationStore implements IAgentPlugin {
     geolocationStoreRemoveLocation: this.geolocationStoreRemoveLocation.bind(this),
     geolocationStoreClearAllLocations: this.geolocationStoreClearAllLocations.bind(this),
     geolocationStoreGetLocation: this.geolocationStoreGetLocation.bind(this),
-    geolocationStoreDefaultLocationStore: this.geolocationStoreDefaultLocationStore.bind(this)
+    geolocationStoreDefaultLocationStore: this.geolocationStoreDefaultLocationStore.bind(this),
   }
 
   constructor(args: {
-    defaultStoreId?: string;
-    defaultNamespace?: string;
+    defaultStoreId?: string
+    defaultNamespace?: string
     dnsLookupStore?: Map<string, IKeyValueStore<GeolocationStoreLocation>> | IKeyValueStore<GeolocationStoreLocation>
   }) {
     this.defaultStoreId = args?.defaultStoreId ?? '_default'
@@ -52,11 +52,11 @@ export class GeolocationStore implements IAgentPlugin {
       this._dnsLookupStore = args.dnsLookupStore
     } else {
       this._dnsLookupStore = new Map().set(
-          this.defaultStoreId,
-          new KeyValueStore({
-            namespace: this.defaultNamespace,
-            store: new Map<string, GeolocationStoreLocation>(),
-          }),
+        this.defaultStoreId,
+        new KeyValueStore({
+          namespace: this.defaultNamespace,
+          store: new Map<string, GeolocationStoreLocation>(),
+        }),
       )
     }
   }
@@ -70,26 +70,26 @@ export class GeolocationStore implements IAgentPlugin {
       // TODO
     }
     const existing = await this.store({ stores: this._dnsLookupStore, storeId }).getAsValueData(
+      this.prefix({
+        namespace,
+        ipOrHostname,
+      }),
+    )
+    if (!existing.value || (existing.value && args?.overwriteExisting !== false)) {
+      return await this.store({ stores: this._dnsLookupStore, storeId }).set(
         this.prefix({
           namespace,
           ipOrHostname,
         }),
-    )
-    if (!existing.value || (existing.value && args?.overwriteExisting !== false)) {
-      return await this.store({ stores: this._dnsLookupStore, storeId }).set(
-          this.prefix({
-            namespace,
-            ipOrHostname,
-          }),
-          locationArgs,
-          ttl,
+        locationArgs,
+        ttl,
       )
     }
     return existing
   }
 
   private async geolocationStoreHasLocation(args: GeolocationStoreArgs): Promise<boolean> {
-    const { storeId, namespace, ipOrHostname  } = { ...args }
+    const { storeId, namespace, ipOrHostname } = { ...args }
     return this.store({ stores: this._dnsLookupStore, storeId }).has(this.prefix({ namespace, ipOrHostname }))
   }
 
@@ -101,12 +101,12 @@ export class GeolocationStore implements IAgentPlugin {
   private async geolocationStoreClearAllLocations(args: GeolocationStoreClearAllLocationsArgs): Promise<boolean> {
     const { storeId } = { ...args }
     return await this.store({ stores: this._dnsLookupStore, storeId })
-        .clear()
-        .then(() => true)
+      .clear()
+      .then(() => true)
   }
 
   private async geolocationStoreGetLocation(args: GeolocationStoreArgs): Promise<GeolocationStoreLocationResultOrUndefined> {
-    const { storeId, namespace, ipOrHostname } = { ... args }
+    const { storeId, namespace, ipOrHostname } = { ...args }
     return this.store<GeolocationStoreLocation>({
       stores: this._dnsLookupStore,
       storeId,

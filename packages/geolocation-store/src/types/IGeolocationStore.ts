@@ -1,5 +1,5 @@
-import {IPluginMethodMap} from '@veramo/core'
-import {IKeyValueStore, IValueData} from "@sphereon/ssi-sdk.kv-store-temp";
+import { IPluginMethodMap } from '@veramo/core'
+import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 
 export interface IGeolocationStore extends IPluginMethodMap {
   geolocationStoreDefaultLocationStore(): Promise<GeolocationStoreLocationResult>

@@ -15,6 +15,7 @@ import {
 import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { JweAlg, JweEnc } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { encodeBase64url } from '@sphereon/ssi-sdk.core'
 import {
   CompactSdJwtVc,
@@ -140,9 +141,9 @@ export class OpSession {
       (opts.agentMethods ?? this.getAgentDIDMethodsSupported(opts))?.map((method) => convertDidMethod(method, opts.didPrefix)) ?? []
     debug(`agent methods supported: ${JSON.stringify(agentMethods)}`)
     const authReq = await this.getAuthorizationRequest()
-    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported?.map((method) =>
-      convertDidMethod(method, opts.didPrefix),
-    ).filter(val => !val.startsWith('did'))
+    const subjectSyntaxTypesSupported = authReq.registrationMetadataPayload?.subject_syntax_types_supported
+      ?.map((method) => convertDidMethod(method, opts.didPrefix))
+      .filter((val) => !val.startsWith('did'))
     debug(`subject syntax types supported in rp method supported: ${JSON.stringify(subjectSyntaxTypesSupported)}`)
     const aud = await authReq.authorizationRequest.getMergedProperty<string>('aud')
     let rpMethods: string[] = []
@@ -283,7 +284,7 @@ export class OpSession {
       requestObjectPayload: RequestObjectPayload
       clientMetadata: JwksMetadataParams
     }): Promise<{ response: string }> {
-      const { clientMetadata, authorizationResponsePayload: authResponse } = opts
+      const { clientMetadata, requestObjectPayload, authorizationResponsePayload: authResponse } = opts
       const jwk = await OP.extractEncJwksFromClientMetadata(clientMetadata)
       // @ts-ignore // FIXME: Fix jwk inference
       const recipientKey = await agent.identifierExternalResolveByJwk({ identifier: jwk })
@@ -292,9 +293,8 @@ export class OpSession {
         .jwtEncryptJweCompactJwt({
           recipientKey,
           protectedHeader: {},
-          //FIXME. Get from metadata
-          alg: 'ECDH-ES',
-          enc: 'A256GCM',
+          alg: requestObjectPayload.client_metadata.authorization_encrypted_response_alg as JweAlg | undefined ?? 'ECDH-ES',
+          enc: requestObjectPayload.client_metadata.authorization_encrypted_response_enc as JweEnc | undefined ?? 'A256GCM',
           apv: encodeBase64url(opts.requestObjectPayload.nonce),
           apu: encodeBase64url(v4()),
           payload: authResponse,

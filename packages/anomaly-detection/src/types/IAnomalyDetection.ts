@@ -1,5 +1,5 @@
-import {IAgentContext, IPluginMethodMap} from '@veramo/core'
-import {GeolocationStoreArgs, IGeolocationStore} from "@sphereon/ssi-sdk.geolocation-store";
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import { GeolocationStoreArgs, IGeolocationStore } from '@sphereon/ssi-sdk.geolocation-store'
 
 export interface IAnomalyDetection extends IPluginMethodMap {
   anomalyDetectionLookupLocation(args: AnomalyDetectionLookupLocationArgs, context: IRequiredContext): Promise<AnomalyDetectionLookupLocationResult>

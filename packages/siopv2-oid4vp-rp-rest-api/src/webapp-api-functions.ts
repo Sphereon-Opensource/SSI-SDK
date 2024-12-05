@@ -5,7 +5,7 @@ import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@s
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
 import { ICreateAuthRequestWebappEndpointOpts, IRequiredContext } from './types'
-import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export function createAuthRequestWebappEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {

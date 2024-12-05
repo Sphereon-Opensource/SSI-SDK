@@ -1,10 +1,12 @@
 import { com } from '@sphereon/kmp-mdoc-core'
+import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CertificateInfo,
   getCertificateInfo,
   pemOrDerToX509Certificate,
   X509ValidationResult
 } from '@sphereon/ssi-sdk-ext.x509-utils'
+import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
   MdocOid4vpPresentArgs,
@@ -22,10 +24,13 @@ import {
   MdocVerifyIssuerSignedArgs,
   VerifyCertificateChainArgs
 } from '../types/ImDLMdoc'
+import CborByteString = com.sphereon.cbor.CborByteString
+import CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
 import CoseCryptoServiceJS = com.sphereon.crypto.CoseCryptoServiceJS
 import CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
 import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
+import KeyInfo = com.sphereon.crypto.KeyInfo
 import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import encodeTo = com.sphereon.kmp.encodeTo
@@ -121,15 +126,16 @@ export class MDLMdoc implements IAgentPlugin {
         console.log(e)
         return {
           error: true,
-          verifications: [{
-            name: 'mdoc',
-            error: true,
-            critical: true,
-            message: e.message as string
-          }]
+          verifications: [
+            {
+              name: 'mdoc',
+              error: true,
+              critical: true,
+              message: e.message as string
+            }
+          ]
         }
       }
-
     }
 
     const allMatches: DocumentDescriptorMatchResult[] = oid4vpService.matchDocumentsAndDescriptors(
@@ -138,12 +144,35 @@ export class MDLMdoc implements IAgentPlugin {
       presentationDefinition as IOid4VPPresentationDefinition
     )
     const docsAndDescriptors: DocumentDescriptorMatchResult[] = []
-    var lastError: com.sphereon.crypto.generic.IVerifyResults<com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
-    for (const match of allMatches) {
+    let lastError: com.sphereon.crypto.generic.IVerifyResults<com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
+    for (let match of allMatches) {
       if (match.document) {
         const result = await validate(match.document)
         if (!result.error || responseUri.includes('openid.net')) {
           // TODO: We relax for the conformance suite, as the cert would be invalid
+          try {
+            const cborKey = result.keyInfo?.key ? CoseKeyCbor.Static.fromDTO(result.keyInfo.key) : undefined
+            if (!cborKey) {
+              throw Error('No key found in result')
+            }
+            let jwk = CoseJoseKeyMappingService.toJoseJwk(cborKey).toJsonDTO<JWK>()
+            if (!result.keyInfo?.kmsKeyRef) {
+              const keyInfo = result.keyInfo!
+              const kid = jwk.kid ?? calculateJwkThumbprint({ jwk: jwk })
+
+              const key = await _context.agent.keyManagerGet({ kid })
+              const kms = key.kms
+              const kmsKeyRef = key.meta?.kmsKeyRef
+              const updateCborKey = cborKey.copy(false, cborKey.kty, cborKey.kid ?? new CborByteString(decodeFrom(kid, Encoding.UTF8)))
+              const deviceKeyInfo = KeyInfo.Static.fromDTO(keyInfo).copy(kid, updateCborKey, keyInfo.opts, keyInfo.keyVisibility, keyInfo.signatureAlgorithm, keyInfo.x5c, kmsKeyRef, kms)
+              const updateMatch = match.copy(match.inputDescriptor, match.document, match.documentError, deviceKeyInfo)
+              match = updateMatch
+            }
+          } catch (e: any) {
+            console.log(`We tied to ammend key info from the KMS, but failed. Potential trouble ahead ${e.message}`, e)
+          }
+
+
           docsAndDescriptors.push(match)
         } else if (result.error) {
           lastError = result
@@ -171,7 +200,7 @@ export class MDLMdoc implements IAgentPlugin {
   }
 
   /**
-   * Verifies the Result Provider (RP) for mdoc (mobile document) OIDC4VP (OpenID Connect for Verifiable Presentations).
+   * Verifies on the Relying Party (RP) side for mdoc (mobile document) OIDC4VP (OpenID Connect for Verifiable Presentations).
    *
    * @param {MdocOid4vpRPVerifyArgs} args - The arguments required for verification, including the vp_token, presentation_submission, and trustAnchors.
    * @param {IRequiredContext} _context - The required context for this method.
@@ -188,7 +217,6 @@ export class MDLMdoc implements IAgentPlugin {
     const documents = await Promise.all(
       deviceResponse.documents.map(async (document) => {
         try {
-
           const validations = await MdocValidations.fromDocumentAsync(document, null, trustAnchors ?? this.trustAnchors)
           if (!validations || validations.error) {
             error = true
@@ -206,17 +234,20 @@ export class MDLMdoc implements IAgentPlugin {
         } catch (e) {
           error = true
           return {
-            document: document.toJson(), validations: {
-              error: true, verifications: [{
-                name: 'mdoc',
-                error,
-                critical: true,
-                message: e.message as string
-              }]
+            document: document.toJson(),
+            validations: {
+              error: true,
+              verifications: [
+                {
+                  name: 'mdoc',
+                  error,
+                  critical: true,
+                  message: e.message as string
+                }
+              ]
             }
           }
         }
-
       })
     )
     if (error) {
@@ -254,11 +285,15 @@ export class MDLMdoc implements IAgentPlugin {
   private async x509VerifyCertificateChain(args: VerifyCertificateChainArgs, _context: IRequiredContext): Promise<X509ValidationResult> {
     const mergedAnchors: string[] = [...this.trustAnchors, ...(args.trustAnchors ?? [])]
     const trustAnchors = new Set<string>(mergedAnchors)
-    return await new X509CallbackService().verifyCertificateChain({
+    const validationResult = await new X509CallbackService(Array.from(mergedAnchors)).verifyCertificateChain({
       ...args,
       trustAnchors: Array.from(trustAnchors),
-      opts: args?.opts ?? this.opts
+      opts: { ...args?.opts, ...this.opts }
     })
+    console.log(
+      `x509 validation for ${validationResult.error ? 'Error' : 'Success'}. message: ${validationResult.message}, details: ${validationResult.detailMessage}`
+    )
+    return validationResult
   }
 
   /**

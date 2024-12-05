@@ -66,8 +66,7 @@ const testContext = {
   tearDown,
 }
 
-// We need to solve functions not being available after deserialization
+// FIXME: We need to solve functions not being available after deserialization
 describe.skip('REST integration tests', (): void => {
-  // FIXME SDK-42 test holds expired certificates
   authClientAgentLogic(testContext)
 })

@@ -21,6 +21,7 @@ export const serializeResponse = async (response: Response): Promise<SerializedR
   return {
     status: response.status,
     statusText: response.statusText,
+    // @ts-ignore
     headers: Object.fromEntries(response.headers.entries()),
     body: base64Url,
   }

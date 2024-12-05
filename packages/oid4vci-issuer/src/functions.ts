@@ -6,18 +6,20 @@ import {
   JwtVerifyResult,
   OID4VCICredentialFormat,
 } from '@sphereon/oid4vci-common'
+import { JWTHeader, JWTPayload } from '@sphereon/oid4vci-common/lib/types'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
+import jwtDecode from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
-import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
@@ -26,33 +28,64 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       uniresolverResolution: true,
       localResolution: true,
     })
-    verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver seperately as that is a function
+    verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver separately as that is a function
     if (!verifyOpts?.resolver || typeof verifyOpts?.resolver?.resolve !== 'function') {
       verifyOpts.resolver = resolver
     }
-    const result = await verifyJWT(args.jwt, verifyOpts)
-    if (!result.verified) {
+    const result = await _context.agent.jwtVerifyJwsSignature({ jws: args.jwt })
+    if (!result.error) {
+      const identifier = result.jws.signatures[0].identifier
+      if (!identifier) {
+        return Promise.reject(Error('the jws did not contain a signature with an identifier'))
+      }
+      const jwkInfo = identifier.jwks[0]
+      if (!jwkInfo) {
+        return Promise.reject(Error(`the identifier of type ${identifier.method} is missing jwks (ExternalJwkInfo)`))
+      }
+      const { alg } = jwkInfo.jwk
+      if (!alg) {
+        return Promise.reject(Error(`the ExternalJwkInfo of identifier of type ${identifier.method} is missing alg in its jwk`))
+      }
+
+      const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
+      const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
+      return {
+        alg,
+        ...identifier,
+        jwt: { header, payload },
+      } as JwtVerifyResult<DIDDocument>
+    }
+
+    const decodedJwt = (await decodeJWT(args.jwt)) as Jwt
+    const kid = args.kid ?? decodedJwt.header.kid
+
+    if (!kid || !kid.startsWith('did:')) {
+      // No DID method present in header. We already performed the validation above. So return that
+      return {
+        alg: decodedJwt.header.alg,
+        jwt: decodedJwt,
+      } as JwtVerifyResult<DIDDocument>
+    }
+    const did = kid.split('#')[0]
+
+    const didResult = await verifyJWT(args.jwt, verifyOpts)
+    if (!didResult.verified) {
       console.log(`JWT invalid: ${args.jwt}`)
       throw Error('JWT did not verify successfully')
     }
-    const jwt = (await decodeJWT(args.jwt)) as Jwt
-    const kid = args.kid ?? jwt.header.kid
-    if (!kid) {
-      throw Error('No kid value found')
-    }
-    const did = kid.split('#')[0]
+
     const didResolution = await resolver.resolve(did)
     if (!didResolution || !didResolution.didDocument) {
       throw Error(`Could not resolve did: ${did}, metadata: ${didResolution?.didResolutionMetadata}`)
     }
-    const didDocument = didResolution.didDocument
-    const alg = jwt.header.alg
+
+    const alg = decodedJwt.header.alg
     return {
       alg,
       kid,
       did,
-      didDocument,
-      jwt,
+      didDocument: didResolution.didDocument,
+      jwt: decodedJwt,
     }
   }
 }
@@ -278,5 +311,15 @@ export async function createVciIssuer(
   },
   context: IRequiredContext,
 ): Promise<VcIssuer<DIDDocument>> {
-  return (await createVciIssuerBuilder({ issuerOpts, issuerMetadata, authorizationServerMetadata, credentialDataSupplier }, context)).build()
+  return (
+    await createVciIssuerBuilder(
+      {
+        issuerOpts,
+        issuerMetadata,
+        authorizationServerMetadata,
+        credentialDataSupplier,
+      },
+      context,
+    )
+  ).build()
 }

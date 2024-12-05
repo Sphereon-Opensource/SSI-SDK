@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-issuer-store",
-  "version": "0.31.0",
+  "version": "0.30.1",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.16.1-next.224",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.26.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
