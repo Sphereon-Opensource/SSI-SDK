@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oidf-client",
-  "version": "0.30.1",
+  "version": "0.32.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,12 +15,12 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
-    "@sphereon/openid-federation-open-api": "0.1.1-unstable.0647eb6",
     "@sphereon/openid-federation-client": "0.1.1-unstable.0647eb6",
     "@sphereon/openid-federation-common": "0.1.1-unstable.0647eb6",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0"
+    "@sphereon/openid-federation-open-api": "0.1.1-unstable.0647eb6",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
+    "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",

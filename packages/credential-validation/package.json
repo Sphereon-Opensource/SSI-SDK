@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.credential-validation",
-  "version": "0.30.1",
+  "version": "0.32.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,12 +15,12 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
-    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "ajv": "^8.17.1",
