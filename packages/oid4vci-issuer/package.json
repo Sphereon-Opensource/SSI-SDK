@@ -14,8 +14,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-next.224",
-    "@sphereon/oid4vci-issuer": "0.16.1-next.224",
+    "@sphereon/oid4vci-common": "link:../../../OID4VC_dcql/packages/oid4vci-common",
+    "@sphereon/oid4vci-issuer": "link:../../../OID4VC_dcql/packages/issuer",
     "@sphereon/ssi-sdk-ext.did-utils": "0.26.1-next.37",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.26.1-next.37",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
@@ -27,11 +27,11 @@
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "jwt-decode": "^3.1.2",
     "@types/uuid": "^9.0.8",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
     "cross-fetch": "^3.1.8",
+    "jwt-decode": "^3.1.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
