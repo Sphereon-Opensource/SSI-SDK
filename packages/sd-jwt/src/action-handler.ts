@@ -348,9 +348,8 @@ export class SDJwtPlugin implements IAgentPlugin {
   async fetchSdJwtTypeMetadataFromVctUrl(args: FetchSdJwtTypeMetadataFromVctUrlArgs, context: IRequiredContext): Promise<SdJwtTypeMetadata> {
     const {vct, opts} = args
     const url = new URL(vct)
-    const wellKnownUrl = `${url.origin}/.well-known/vct${url.pathname}`
 
-    const response = await fetchUrlWithErrorHandling(wellKnownUrl)
+    const response = await fetchUrlWithErrorHandling(url.toString())
     const metadata: SdJwtTypeMetadata = await response.json()
     assertValidTypeMetadata(metadata, vct)
 
