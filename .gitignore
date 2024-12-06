@@ -77,6 +77,7 @@ test/*.js
 /packages/oidf-client/plugin.schema.json
 /packages/anomaly-detection/plugin.schema.json
 /packages/geolocation-store/plugin.schema.json
+/packages/oidf-metadata-server/plugin.schema.json
 
 **/.env.energyshr
 **/.env.local
