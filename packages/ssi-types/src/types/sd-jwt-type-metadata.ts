@@ -1,10 +1,7 @@
-import * as u8a from 'uint8arrays'
-import { AsyncHasher } from './sd-jwt-vc'
-
 /**
  * Represents the metadata associated with a specific SD-JWT VC type.
  */
-interface SdJwtTypeMetadata {
+export interface SdJwtTypeMetadata {
   /**
    * REQUIRED. The VC type URI.
    */
@@ -48,14 +45,58 @@ interface SdJwtTypeMetadata {
   /**
    * OPTIONAL. Metadata for the claims within the VC.
    */
-  // TODO:
-  claims?: Array<any>
+  claims?: Array<SdJwtClaimMetadata>
+}
+
+/**
+ * Represents the metadata associated with a specific SD-JWT claim.
+ */
+export interface SdJwtClaimMetadata {
+  /**
+   * REQUIRED. An array indicating the claim or claims that are being addressed.
+   */
+  path: Array<SdJwtClaimPath>
+
+  /**
+   * OPTIONAL. Display information for the claim.
+   */
+  display?: Array<SdJwtClaimDisplayMetadata>
+
+  /**
+   * OPTIONAL. A string indicating whether the claim is selectively disclosable.
+   */
+  sd?: SdJwtClaimSelectiveDisclosure
+
+  /**
+   * OPTIONAL. A string defining the ID of the claim for reference in the SVG template.
+   */
+  svg_id?: string
+}
+
+/**
+ * Represents claim display metadata for a specific language.
+ */
+export interface SdJwtClaimDisplayMetadata {
+  /**
+   * REQUIRED. Language tag for the display information.
+   */
+  lang: string
+
+  /**
+   * REQUIRED. A human-readable label for the claim, intended for end users.
+   */
+  label: string
+
+  /**
+   * REQUIRED. A human-readable description for the claim, intended for end users.
+   */
+  description?: string
 }
 
 /**
  * Represents display metadata for a specific language.
  */
-interface SdJwtTypeDisplayMetadata {
+export interface SdJwtTypeDisplayMetadata {
   /**
    * REQUIRED. Language tag for the display information.
    */
@@ -80,7 +121,7 @@ interface SdJwtTypeDisplayMetadata {
 /**
  * Contains rendering metadata for different methods.
  */
-interface SdJwtTypeRenderingMetadata {
+export interface SdJwtTypeRenderingMetadata {
   /**
    * OPTIONAL. Simple rendering method metadata.
    */
@@ -95,7 +136,7 @@ interface SdJwtTypeRenderingMetadata {
 /**
  * Represents metadata for simple rendering.
  */
-interface SdJwtSimpleRenderingMetadata {
+export interface SdJwtSimpleRenderingMetadata {
   /**
    * OPTIONAL. Metadata for the logo image.
    */
@@ -115,7 +156,7 @@ interface SdJwtSimpleRenderingMetadata {
 /**
  * Represents metadata for a logo.
  */
-interface SdJwtLogoMetadata {
+export interface SdJwtLogoMetadata {
   /**
    * REQUIRED. URI pointing to the logo image.
    */
@@ -135,7 +176,7 @@ interface SdJwtLogoMetadata {
 /**
  * Represents metadata for SVG templates.
  */
-interface SdJwtSVGTemplateMetadata {
+export interface SdJwtSVGTemplateMetadata {
   /**
    * REQUIRED. URI pointing to the SVG template.
    */
@@ -155,7 +196,7 @@ interface SdJwtSVGTemplateMetadata {
 /**
  * Contains properties for SVG templates.
  */
-interface SdJwtSVGTemplateProperties {
+export interface SdJwtSVGTemplateProperties {
   /**
    * OPTIONAL. The orientation for which the SVG template is optimized.
    */
@@ -167,51 +208,18 @@ interface SdJwtSVGTemplateProperties {
   color_scheme?: string
 }
 
-// Helper function to fetch API with error handling
-async function fetchUrlWithErrorHandling(url: string): Promise<Response> {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`${response.status}: ${response.statusText}`)
-  }
-  return response
-}
+/**
+ * A string indicates that the respective key is to be selected.
+ * A null value indicates that all elements of the currently selected array(s) are to be selected.
+ * A non-negative integer indicates that the respective index in an array is to be selected.
+ */
+export type SdJwtClaimPath = string | null | number
+
+/**
+ * always: The Issuer MUST make the claim selectively disclosable.
+ * allowed: The Issuer MAY make the claim selectively disclosable.
+ * never: The Issuer MUST NOT make the claim selectively disclosable.
+ */
+export type SdJwtClaimSelectiveDisclosure = 'always' | 'allowed' | 'never'
 
 export type SdJwtTypeHasher = (input: any, alg?: string) => string
-
-async function validateIntegrity(input: any, integrityValue: string, hasher: AsyncHasher, alg?: string): Promise<boolean> {
-  const hash = await hasher(input, alg ?? 'sha256')
-  return u8a.toString(hash, 'utf-8') === integrityValue
-}
-
-// Fetch and validate Type Metadata
-export async function fetchSdJwtTypeMetadataFromVctUrl(vct: string, opts?: { hasher?: AsyncHasher; integrity?: string }): Promise<SdJwtTypeMetadata> {
-  const url = new URL(vct)
-  const wellKnownUrl = `${url.origin}/.well-known/vct${url.pathname}`
-
-  const response = await fetchUrlWithErrorHandling(wellKnownUrl)
-  const metadata: SdJwtTypeMetadata = await response.json()
-  assertValidTypeMetadata(metadata, vct)
-  if (opts?.integrity && opts.hasher) {
-    if (!(await validateIntegrity(metadata, opts.integrity, opts.hasher))) {
-      throw new Error('Integrity check failed')
-    }
-  }
-  return metadata
-}
-
-function assertValidTypeMetadata(metadata: SdJwtTypeMetadata, vct: string): void {
-  if (metadata.vct !== vct) {
-    throw new Error('VCT mismatch in metadata and credential')
-  }
-}
-
-/*
-// Example usage
-  try {
-    const vct = 'https://betelgeuse.example.com/education_credential'
-    const typeMetadata = await fetchSdJwtTypeMetadataFromVctUrl(vct)
-    console.log('Type Metadata retrieved successfully:', typeMetadata)
-  } catch (error) {
-    console.error('Error fetching type metadata:', error.message)
-  }
-*/
