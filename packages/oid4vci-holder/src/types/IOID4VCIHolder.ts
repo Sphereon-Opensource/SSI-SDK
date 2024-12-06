@@ -43,9 +43,11 @@ import {
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
   OriginalVerifiableCredential,
+  SdJwtTypeDisplayMetadata,
+  SdJwtClaimMetadata,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation,
+  WrappedVerifiablePresentation
 } from '@sphereon/ssi-types'
 import {
   IAgentContext,
@@ -667,8 +669,21 @@ export type VerifyEBSICredentialIssuerResult = {
   attributes: Attribute[]
 }
 
-export type CredentialLocaleBrandingFromArgs = {
+export type Oid4vciCredentialLocaleBrandingFromArgs = {
   credentialDisplay: CredentialsSupportedDisplay
+}
+
+export type SdJwtCredentialLocaleBrandingFromArgs = {
+  credentialDisplay: SdJwtTypeDisplayMetadata
+}
+
+export type SdJwtGetCredentialBrandingFromArgs = {
+  credentialDisplay?: Array<SdJwtTypeDisplayMetadata>
+  claimsMetadata?: Array<SdJwtClaimMetadata>
+}
+
+export type SdJwtCredentialClaimLocalesFromArgs = {
+  claimsMetadata: Array<SdJwtClaimMetadata>
 }
 
 export type IssuerLocaleBrandingFromArgs = {
@@ -676,22 +691,31 @@ export type IssuerLocaleBrandingFromArgs = {
   dynamicRegistrationClientMetadata?: DynamicRegistrationClientMetadataDisplay
 }
 
-export type CredentialBrandingFromArgs = {
+export type Oid4vciGetCredentialBrandingFromArgs = {
   credentialDisplay?: Array<CredentialsSupportedDisplay>
   issuerCredentialSubject?: IssuerCredentialSubject
 }
 
-export type CredentialDisplayLocalesFromArgs = {
+export type Oid4vciCredentialDisplayLocalesFromArgs = {
   credentialDisplay: Array<CredentialsSupportedDisplay>
 }
 
-export type IssuerCredentialSubjectLocalesFromArgs = {
+export type SdJwtCredentialDisplayLocalesFromArgs = {
+  credentialDisplay: Array<SdJwtTypeDisplayMetadata>
+}
+
+export type Oid4vciIssuerCredentialSubjectLocalesFromArgs = {
   issuerCredentialSubject: IssuerCredentialSubject
 }
 
-export type CombineLocalesFromArgs = {
+export type Oid4vciCombineDisplayLocalesFromArgs = {
   credentialDisplayLocales?: Map<string, CredentialsSupportedDisplay>
   issuerCredentialSubjectLocales?: Map<string, Array<IBasicCredentialClaim>>
+}
+
+export type SdJwtCombineDisplayLocalesFromArgs = {
+  credentialDisplayLocales?: Map<string, SdJwtTypeDisplayMetadata>
+  claimsMetadata?: Map<string, Array<IBasicCredentialClaim>>
 }
 
 export type DynamicRegistrationClientMetadataDisplay = Pick<
