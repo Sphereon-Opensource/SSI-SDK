@@ -29,6 +29,7 @@ import {
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
+  ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
   CredentialRole,
@@ -725,7 +726,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         type: identifierType,
         correlationId,
       },
-      ...(identifierType === URL && {
+      ...(identifierType === CorrelationIdentifierType.URL && {
         connection: {
           type: ConnectionType.OPENID_CONNECT,
           config: {
