@@ -355,7 +355,7 @@ export class SDJwtPlugin implements IAgentPlugin {
 
     if (opts?.integrity && opts.hasher) {
       if (!(await validateIntegrity(metadata, opts.integrity, opts.hasher))) {
-        throw new Error('Integrity check failed')
+        throw new Error(`Integrity check failed. vct: ${vct}`)
       }
     }
 
