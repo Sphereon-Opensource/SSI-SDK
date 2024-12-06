@@ -725,6 +725,20 @@ export class OID4VCIHolder implements IAgentPlugin {
         type: identifierType,
         correlationId,
       },
+      ...(identifierType === URL && {
+        connection: {
+          type: ConnectionType.OPENID_CONNECT,
+          config: {
+            clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
+            clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
+            scopes: ['auth'],
+            issuer: 'https://example.com/app-test',
+            redirectUrl: 'app:/callback',
+            dangerouslyAllowInsecureHttpRequests: true,
+            clientAuthMethod: 'post' as const,
+          },
+        },
+      }),
     }
 
     await context.agent.emit(OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, {
