@@ -1,6 +1,8 @@
 import { LOG } from '@sphereon/oid4vci-client'
 import {
   CredentialConfigurationSupported,
+  CredentialSupportedSdJwtVc,
+  CredentialConfigurationSupportedSdJwtVcV1_0_13,
   CredentialOfferFormatV1_0_11,
   CredentialResponse,
   getSupportedCredentials,
@@ -30,6 +32,7 @@ import {
   OriginalVerifiableCredential,
   sdJwtDecodedCredentialToUniformCredential,
   SdJwtDecodedVerifiableCredential,
+  SdJwtTypeMetadata,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
@@ -54,31 +57,51 @@ import {
   VerificationResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
-import { getCredentialBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
+import {
+  oid4vciGetCredentialBrandingFrom,
+  sdJwtGetCredentialBrandingFrom,
+  issuerLocaleBrandingFrom
+} from './OIDC4VCIBrandingMapper'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
   await Promise.all(
-    Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]) => {
-      const mappedLocaleBranding = await getCredentialBrandingFrom({
-        credentialDisplay: credentialsConfigSupported.display,
-        issuerCredentialSubject:
+    Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]): Promise<void> => {
+      let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
+      if (credentialsConfigSupported.format === 'vc+sd-jwt') {
+        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_13>credentialsConfigSupported).vct
+        if (vct.startsWith('http')) {
+          try {
+            sdJwtTypeMetadata = await context.agent.fetchSdJwtTypeMetadataFromVctUrl({ vct })
+          } catch (error) {
+            // For now, we are just going to ignore and continue without any branding as we still have a fallback
+          }
+        }
+      }
+      let mappedLocaleBranding: Array<IBasicCredentialLocaleBranding> = []
+      if (sdJwtTypeMetadata) {
+        mappedLocaleBranding = await sdJwtGetCredentialBrandingFrom({
+          credentialDisplay: sdJwtTypeMetadata.display,
+          claimsMetadata: sdJwtTypeMetadata.claims
+        })
+      } else {
+        mappedLocaleBranding = await oid4vciGetCredentialBrandingFrom({
+          credentialDisplay: credentialsConfigSupported.display,
+          issuerCredentialSubject:
           // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
           credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
-      })
-
+        })
+      }
       // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use
       const localeBranding = await Promise.all(
-        (mappedLocaleBranding ?? []).map(
+        mappedLocaleBranding.map(
           async (localeBranding): Promise<IBasicCredentialLocaleBranding> => await context.agent.ibCredentialLocaleBrandingFrom({ localeBranding }),
         ),
       )
-
       const defaultCredentialType = 'VerifiableCredential'
       const configSupportedTypes = getTypesFromCredentialSupported(credentialsConfigSupported)
       const credentialTypes: Array<string> = configSupportedTypes.length === 0 ? asArray(defaultCredentialType) : configSupportedTypes
-
       const filteredCredentialTypes = credentialTypes.filter((type: string): boolean => type !== defaultCredentialType)
       credentialBranding[filteredCredentialTypes[0]] = localeBranding // TODO for now taking the first type
     }),

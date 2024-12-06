@@ -209,7 +209,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStart: this.oid4vciHolderStart.bind(this),
     oid4vciHolderGetIssuerMetadata: this.oid4vciHolderGetIssuerMetadata.bind(this),
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
-    oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHoldercreateCredentialsToSelectFrom.bind(this),
+    oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHolderCreateCredentialsToSelectFrom.bind(this),
     oid4vciHolderGetContact: this.oid4vciHolderGetContact.bind(this),
     oid4vciHolderGetCredentials: this.oid4vciHolderGetCredentials.bind(this),
     oid4vciHolderGetCredential: this.oid4vciHolderGetCredential.bind(this),
@@ -315,7 +315,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           },
           context,
         ),
-      createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
+      createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) =>
         this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
@@ -461,7 +461,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHoldercreateCredentialsToSelectFrom(
+  private async oid4vciHolderCreateCredentialsToSelectFrom(
     args: createCredentialsToSelectFromArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>> {
