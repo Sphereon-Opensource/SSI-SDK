@@ -29,6 +29,7 @@ import {
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
+  ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
   CredentialRole,
@@ -209,7 +210,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStart: this.oid4vciHolderStart.bind(this),
     oid4vciHolderGetIssuerMetadata: this.oid4vciHolderGetIssuerMetadata.bind(this),
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
-    oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHoldercreateCredentialsToSelectFrom.bind(this),
+    oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHolderCreateCredentialsToSelectFrom.bind(this),
     oid4vciHolderGetContact: this.oid4vciHolderGetContact.bind(this),
     oid4vciHolderGetCredentials: this.oid4vciHolderGetCredentials.bind(this),
     oid4vciHolderGetCredential: this.oid4vciHolderGetCredential.bind(this),
@@ -315,7 +316,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           },
           context,
         ),
-      createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
+      createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
       getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       getCredentials: (args: GetCredentialsArgs) =>
         this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
@@ -461,7 +462,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHoldercreateCredentialsToSelectFrom(
+  private async oid4vciHolderCreateCredentialsToSelectFrom(
     args: createCredentialsToSelectFromArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>> {
@@ -725,6 +726,20 @@ export class OID4VCIHolder implements IAgentPlugin {
         type: identifierType,
         correlationId,
       },
+      ...(identifierType === CorrelationIdentifierType.URL && {
+        connection: {
+          type: ConnectionType.OPENID_CONNECT,
+          config: {
+            clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
+            clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
+            scopes: ['auth'],
+            issuer: 'https://example.com/app-test',
+            redirectUrl: 'app:/callback',
+            dangerouslyAllowInsecureHttpRequests: true,
+            clientAuthMethod: 'post' as const,
+          },
+        },
+      }),
     }
 
     await context.agent.emit(OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, {

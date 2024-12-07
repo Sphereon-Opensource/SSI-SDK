@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.core",
   "description": "SSI SDK Core & Interfaces",
-  "version": "0.30.1",
+  "version": "0.32.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,12 +9,12 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
+    "@noble/hashes": "^1.6.1",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
     "image-size": "2.0.0-beta.2",
-    "@noble/hashes": "^1.6.1",
     "uint8arrays": "3.1.1"
   },
   "devDependencies": {

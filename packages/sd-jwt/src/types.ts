@@ -1,11 +1,11 @@
 import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
-import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator } from '@sd-jwt/types'
+import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator, Signer } from '@sd-jwt/types'
 import { IIdentifierResolution, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { JoseSignatureAlgorithm } from '@sphereon/ssi-types'
+import { AsyncHasher, JoseSignatureAlgorithm, SdJwtTypeMetadata } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
 export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
@@ -66,6 +66,13 @@ export interface ISDJwtPlugin extends IPluginMethodMap {
    * @param context - This reserved param is automatically added and handled by the framework, *do not override*
    */
   verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult>
+
+  /**
+   * Fetch and validate Type Metadata.
+   * @param args - Arguments necessary for fetching and validating the type metadata.
+   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
+   */
+  fetchSdJwtTypeMetadataFromVctUrl(args: FetchSdJwtTypeMetadataFromVctUrlArgs, context: IRequiredContext): Promise<SdJwtTypeMetadata>
 }
 
 export function contextHasSDJwtPlugin(context: IAgentContext<IPluginMethodMap>): context is IAgentContext<ISDJwtPlugin> {
@@ -241,4 +248,25 @@ export interface Claims {
   }
 
   [key: string]: unknown
+}
+
+export type FetchSdJwtTypeMetadataFromVctUrlArgs = {
+  vct: string
+  opts?: FetchSdJwtTypeMetadataFromVctUrlOpts
+}
+
+export type FetchSdJwtTypeMetadataFromVctUrlOpts = {
+  hasher?: AsyncHasher
+  integrity?: string
+}
+
+export type GetSignerForIdentifierArgs = {
+  identifier: string
+  resolution?: ManagedIdentifierResult
+}
+
+export type GetSignerResult = {
+  signer: Signer
+  alg?: string
+  signingKey?: SignKeyResult
 }

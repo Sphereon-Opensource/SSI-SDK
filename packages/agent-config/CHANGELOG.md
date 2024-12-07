@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.32.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.31.0...v0.32.0) (2024-12-05)
+
+### Bug Fixes
+
+- run migrations when resetting the database ([7891648](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7891648801584cccc16cc525127df7063c7ed806))
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.agent-config
