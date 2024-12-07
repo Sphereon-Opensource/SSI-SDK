@@ -1,4 +1,5 @@
 import {
+  DcqlQueryResponseOpts,
   PresentationDefinitionWithLocation,
   PresentationSignCallback,
   ResponseMode,
@@ -7,7 +8,7 @@ import {
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationRequest,
   VerifyJwtCallback,
-  VPTokenLocation,
+  VPTokenLocation
 } from '@sphereon/did-auth-siop'
 import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { DIDDocument } from '@sphereon/did-uni-client'
@@ -122,6 +123,7 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
+  dcqlQuery?: DcqlQueryResponseOpts
   hasher?: Hasher
 }
 

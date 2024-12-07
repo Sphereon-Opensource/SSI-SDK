@@ -348,8 +348,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
       const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
         presentationDefinition.definition,
-        selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
+        selectedCredentials.map((udc) => udc.originalVerifiableCredential! as any),
       )
+      selectedCredentials
       if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
         const uniqueDigitalCredentials: UniqueDigitalCredential[] = verifiableCredentials.map((vc) => {
           // @ts-ignore FIXME Funke
