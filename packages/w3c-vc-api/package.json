@@ -11,7 +11,7 @@
     "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-next.224",
+    "@sphereon/did-auth-siop": "link:../../../OID4VC_dcql/packages/siop-oid4vp",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
