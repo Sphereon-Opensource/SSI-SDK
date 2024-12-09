@@ -95,7 +95,7 @@ export function getPresentationVerificationCallback(
     return { verified: result.verified }
   }
 
-  return presentationVerificationCallback
+  return presentationVerificationCallback as PresentationVerificationCallback
 }
 
 export async function createRPBuilder(args: {

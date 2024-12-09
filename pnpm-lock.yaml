@@ -1345,8 +1345,8 @@ importers:
         specifier: link:../../../OID4VC_dcql/packages/issuer
         version: link:../../../OID4VC_dcql/packages/issuer
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-next.224
-        version: 0.16.1-next.224(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: link:../../../OID4VC_dcql/packages/issuer-rest
+        version: link:../../../OID4VC_dcql/packages/issuer-rest
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6028,32 +6028,6 @@ packages:
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
 
-  '@sphereon/oid4vc-common@0.16.1-next.224':
-    resolution: {integrity: sha512-g+8aKZN7e7D4/doKCPPnojewyN5l9A6bwVOTzCChmBijtzYOQCljL5CnxULdss/1HgycTCwcfyLipCplGVpYYg==}
-    engines: {node: '>=18'}
-
-  '@sphereon/oid4vci-common@0.16.1-next.224':
-    resolution: {integrity: sha512-AWfdb4y0viVFhvSyTgzd7E/KgEUkK7qdJ8sKT4AdvCxqGz2koaFmWwKXMLQvzwrOWV2B01Ac03suB+coa8bhtQ==}
-    engines: {node: '>=18'}
-
-  '@sphereon/oid4vci-issuer-server@0.16.1-next.224':
-    resolution: {integrity: sha512-uNFwjoOO9cq3qgFzRH9kWD+QTX3dFjcQxqgjEDMGCurnm+Xunyl2Me1+iyy1OdiUnqd1fsfgfJROfnlJ7+uIPA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      awesome-qr: ^2.1.5-rc.0
-    peerDependenciesMeta:
-      awesome-qr:
-        optional: true
-
-  '@sphereon/oid4vci-issuer@0.16.1-next.224':
-    resolution: {integrity: sha512-5hWdh46FME0wlfCRgcpSZ2F4Yk/VhT4ZVXlLReRQF/Ra+9vTN/WVIyPPaghbw38ifVorCIrKghHknJoDshqIGw==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      awesome-qr: ^2.1.5-rc.0
-    peerDependenciesMeta:
-      awesome-qr:
-        optional: true
-
   '@sphereon/openid-federation-client@0.1.1-unstable.0647eb6':
     resolution: {integrity: sha512-CdGb9Ha55h8achnuwuQYk7LUtR8jITdcS0Jred3ZUzkt1+Gv4sF2HyTq4Tv6uzHQEL5X7TiLg6Gx/sQvYFslDQ==}
 
@@ -6074,20 +6048,6 @@ packages:
     resolution: {integrity: sha512-mXcp3meaKbv5TpEPxItZ1ZuRqkdNf8vjx3EM+GqNVQ8QQF9pbD3jw6wQfuFRPc+8kN+m9GEiVVbd9I0m50OPBg==}
     peerDependencies:
       react-native: '>=0.67.0'
-
-  '@sphereon/ssi-express-support@0.30.2-next.279':
-    resolution: {integrity: sha512-FtIj3bTBfbaeiZ6UGAXTOjA8KixFlzZ3wmg5zTFNOfv3POtEaS6x8xyZJANNW+G+hU2ZWpGKdWp5AVINdrEsLg==}
-    peerDependencies:
-      '@noble/hashes': 1.6.1
-      passport-azure-ad: ^4.3.5
-      passport-http-bearer: ^1.0.1
-    peerDependenciesMeta:
-      '@noble/hashes':
-        optional: true
-      passport-azure-ad:
-        optional: true
-      passport-http-bearer:
-        optional: true
 
   '@sphereon/ssi-sdk-ext.did-provider-jwk@0.27.0':
     resolution: {integrity: sha512-lx8t9QMpiekWHdj8LQWvxONA0nT/APrnEEbi10yAOE8GWs9wH7sfT60Y06IHRr92sbEcWWUJIJvtuDxxDwCxoQ==}
@@ -17004,62 +16964,6 @@ snapshots:
       - encoding
       - typescript
 
-  '@sphereon/oid4vc-common@0.16.1-next.224':
-    dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      jwt-decode: 4.0.0
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-
-  '@sphereon/oid4vci-common@0.16.1-next.224(encoding@0.1.13)':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.224
-      '@sphereon/ssi-types': link:packages/ssi-types
-      cross-fetch: 3.1.8(encoding@0.1.13)
-      debug: 4.3.7
-      jwt-decode: 4.0.0
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
-  '@sphereon/oid4vci-issuer-server@0.16.1-next.224(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.224
-      '@sphereon/oid4vci-common': 0.16.1-next.224(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.16.1-next.224(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
-      '@sphereon/ssi-express-support': 0.30.2-next.279(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
-      '@sphereon/ssi-types': link:packages/ssi-types
-      body-parser: 1.20.3
-      cookie-parser: 1.4.7
-      cors: 2.8.5
-      dotenv-flow: 3.3.0
-      express: 4.21.1
-      http-terminator: 3.2.0
-      typescript: 5.6.3
-    optionalDependencies:
-      awesome-qr: 2.1.5-rc.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - '@noble/hashes'
-      - encoding
-      - passport-azure-ad
-      - passport-http-bearer
-      - supports-color
-
-  '@sphereon/oid4vci-issuer@0.16.1-next.224(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.224
-      '@sphereon/oid4vci-common': 0.16.1-next.224(encoding@0.1.13)
-      '@sphereon/ssi-types': link:packages/ssi-types
-      uuid: 9.0.1
-    optionalDependencies:
-      awesome-qr: 2.1.5-rc.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
   '@sphereon/openid-federation-client@0.1.1-unstable.0647eb6(encoding@0.1.13)':
     dependencies:
       '@js-joda/core': 3.2.0
@@ -17115,28 +17019,6 @@ snapshots:
   '@sphereon/react-native-argon2@2.0.9(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))':
     dependencies:
       react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1)
-
-  '@sphereon/ssi-express-support@0.30.2-next.279(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
-    dependencies:
-      body-parser: 1.20.3
-      casbin: 5.36.0
-      cookie-session: 2.1.0
-      cors: 2.8.5
-      dotenv-flow: 3.3.0
-      express: 4.21.1
-      express-session: 1.18.1
-      http-terminator: 3.2.0
-      morgan: 1.10.0
-      openid-client: 5.7.1
-      passport: 0.6.0
-      qs: 6.13.1
-      uint8arrays: 3.1.1
-    optionalDependencies:
-      '@noble/hashes': 1.6.1
-      passport-azure-ad: 4.3.5
-      passport-http-bearer: 1.0.1
-    transitivePeerDependencies:
-      - supports-color
 
   '@sphereon/ssi-sdk-ext.did-provider-jwk@0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))':
     dependencies:
