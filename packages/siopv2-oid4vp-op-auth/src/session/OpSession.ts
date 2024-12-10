@@ -21,7 +21,6 @@ import {
   CompactSdJwtVc,
   CredentialMapper,
   Hasher,
-  OriginalVerifiableCredential,
   parseDid,
   PresentationSubmission,
   W3CVerifiablePresentation,
@@ -320,7 +319,7 @@ export class OpSession {
     }
     //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
     const verification: Verification = {
-      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
+      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context) as any,
     }
     const request = await this.getAuthorizationRequest()
     const hasDefinitions = await this.hasPresentationDefinitions()
@@ -366,6 +365,7 @@ export class OpSession {
           presentationSubmission: args.presentationSubmission,
         } as PresentationExchangeResponseOpts,
       }),
+      dcqlQuery: args.dcqlQuery
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)
@@ -391,7 +391,7 @@ export class OpSession {
       const isSdJWT = CredentialMapper.isSdJwtDecodedCredential(uvp)
       if (
         isSdJWT ||
-        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>))
+        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<any>))
       ) {
         return sum + 1
       }
