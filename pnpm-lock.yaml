@@ -34,6 +34,7 @@ overrides:
   '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.26
   '@noble/hashes': 1.6.1
   debug: ^4.3.5
+  dcql: 0.2.11
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
   ethr-did: 2.3.9
@@ -2333,6 +2334,9 @@ importers:
       cross-fetch:
         specifier: ^3.1.8
         version: 3.1.8(encoding@0.1.13)
+      dcql:
+        specifier: 0.2.11
+        version: 0.2.11(typescript@5.6.3)
       did-jwt-vc:
         specifier: 3.1.3
         version: 3.1.3
@@ -8109,6 +8113,9 @@ packages:
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
+  dcql@0.2.11:
+    resolution: {integrity: sha512-hR8MuSx49b7JPoZztcFMSKEHc6iEE4l/Zs6aUsvMCWVa3qFWpuJRiJEp5Rh2+UkCAhsce94fbDpMdBTcS9zn7g==}
+
   debug@4.3.7:
     resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
     engines: {node: '>=6.0'}
@@ -13212,6 +13219,14 @@ packages:
   v8-to-istanbul@9.3.0:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
     engines: {node: '>=10.12.0'}
+
+  valibot@0.37.0:
+    resolution: {integrity: sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==}
+    peerDependencies:
+      typescript: 5.6.3
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   valid-url@1.0.9:
     resolution: {integrity: sha512-QQDsV8OnSf5Uc30CKSwG9lnhMPe6exHtTXLRYX8uMwKENy640pU+2BgBL0LRbDh/eYRahNCS7aewCx0wf3NYVA==}
@@ -20510,6 +20525,12 @@ snapshots:
 
   dayjs@1.11.13: {}
 
+  dcql@0.2.11(typescript@5.6.3):
+    dependencies:
+      valibot: 0.37.0(typescript@5.6.3)
+    transitivePeerDependencies:
+      - typescript
+
   debug@4.3.7:
     dependencies:
       ms: 2.1.3
@@ -26933,6 +26954,10 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
+
+  valibot@0.37.0(typescript@5.6.3):
+    optionalDependencies:
+      typescript: 5.6.3
 
   valid-url@1.0.9: {}
 

@@ -244,6 +244,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
           verifiedAuthorizationRequest.presentationDefinitions.length > 0)
           ? verifiedAuthorizationRequest.presentationDefinitions
           : undefined,
+      dcqlQuery: verifiedAuthorizationRequest.dcqlQuery
     }
   }
 
