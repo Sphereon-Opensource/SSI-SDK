@@ -11,7 +11,7 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.SPRIND.137.239+47b9205",
+    "@sphereon/did-auth-siop": " 0.16.1-feature.SPRIND.137.243",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",
