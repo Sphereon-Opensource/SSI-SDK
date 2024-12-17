@@ -1,4 +1,4 @@
-// FIXME Temporary minimal DCQL schema for PD manager
+// FIXME Temporary minimal DCQL schema for PD manager, the DcqlQuery used by Animo does not serialize properly (over REST / Veramo)
 
 export interface DcqlQuery {
   credentials: DcqlCredentialQuery[]

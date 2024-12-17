@@ -38,6 +38,7 @@ import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { DcqlQuery } from '@sphereon/ssi-types/dist'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -102,11 +103,13 @@ export async function createRPBuilder(args: {
   rpOpts: IRPOptions
   pexOpts?: IPEXOptions | undefined
   definition?: IPresentationDefinition
+  dcql?: DcqlQuery
   context: IRequiredContext
 }): Promise<RPBuilder> {
   const { rpOpts, pexOpts, context } = args
   const { identifierOpts } = rpOpts
   let definition: IPresentationDefinition | undefined = args.definition
+  let dcqlQuery: DcqlQuery | undefined = args.dcql
 
   if (!definition && pexOpts && pexOpts.definitionId) {
     const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
@@ -119,7 +122,13 @@ export async function createRPBuilder(args: {
       ],
     })
 
-    definition = presentationDefinitionItems.length > 0 ? presentationDefinitionItems[0].definitionPayload : undefined
+    if (presentationDefinitionItems.length > 0) {
+      const presentationDefinitionItem = presentationDefinitionItems[0]
+      definition = presentationDefinitionItem.definitionPayload
+      if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
+        dcqlQuery = presentationDefinitionItem.dcqlPayload
+      }
+    }
   }
 
   const didMethods = identifierOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
@@ -213,6 +222,9 @@ export async function createRPBuilder(args: {
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
+  }
+  if (dcqlQuery) {
+    builder.withDcqlQuery(JSON.stringify(dcqlQuery))
   }
 
   if (rpOpts.responseRedirectUri) {
