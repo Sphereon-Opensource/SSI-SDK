@@ -37,6 +37,7 @@ import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { DcqlQuery } from '@sphereon/ssi-types'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -114,8 +115,13 @@ export interface IVerifyAuthResponseStateArgs {
   presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
 }
 
+export interface IDefinitionPair {
+  definitionPayload: IPresentationDefinition
+  dcqlPayload?: DcqlQuery
+}
+
 export interface ImportDefinitionsArgs {
-  definitions: Array<IPresentationDefinition>
+  definitions: Array<IDefinitionPair>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode
