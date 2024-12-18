@@ -349,7 +349,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
       const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
         presentationDefinition.definition,
-        selectedCredentials.map((udc) => udc.originalVerifiableCredential! as any),
+        selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
       )
       selectedCredentials
       if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {

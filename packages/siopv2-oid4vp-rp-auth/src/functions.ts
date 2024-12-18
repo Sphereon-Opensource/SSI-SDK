@@ -64,7 +64,7 @@ export function getPresentationVerificationCallback(
 ): PresentationVerificationCallback {
   async function presentationVerificationCallback(
     args: any, // FIXME any
-    presentationSubmission: PresentationSubmission,
+    presentationSubmission?: PresentationSubmission,
   ): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
@@ -80,11 +80,14 @@ export function getPresentationVerificationCallback(
       if (context.agent.mdocOid4vpRPVerify === undefined) {
         return Promise.reject('ImDLMdoc agent plugin must be enabled to support MsoMdoc types')
       }
-      const verifyResult = await context.agent.mdocOid4vpRPVerify({
-        vp_token: args,
-        presentation_submission: presentationSubmission,
-      })
-      return { verified: !verifyResult.error }
+      if (presentationSubmission !== undefined && presentationSubmission !== null) {
+        const verifyResult = await context.agent.mdocOid4vpRPVerify({
+          vp_token: args,
+          presentation_submission: presentationSubmission,
+        })
+        return { verified: !verifyResult.error }
+      }
+      throw Error(`mdocOid4vpRPVerify(...) method requires a presentation submission`)
     }
 
     const result = await context.agent.verifyPresentation({
@@ -95,7 +98,7 @@ export function getPresentationVerificationCallback(
     return { verified: result.verified }
   }
 
-  return presentationVerificationCallback as PresentationVerificationCallback
+  return presentationVerificationCallback
 }
 
 export async function createRPBuilder(args: {
