@@ -20,10 +20,10 @@ import { encodeBase64url } from '@sphereon/ssi-sdk.core'
 import {
   CompactSdJwtVc,
   CredentialMapper,
-  Hasher,
+  Hasher, OriginalVerifiableCredential,
   parseDid,
   PresentationSubmission,
-  W3CVerifiablePresentation,
+  W3CVerifiablePresentation
 } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
@@ -391,7 +391,7 @@ export class OpSession {
       const isSdJWT = CredentialMapper.isSdJwtDecodedCredential(uvp)
       if (
         isSdJWT ||
-        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<any>))
+        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>))
       ) {
         return sum + 1
       }
