@@ -4,6 +4,8 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
+  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13,
+  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
@@ -675,7 +677,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!credentialTypes || credentialTypes.length === 0) {
         return Promise.reject(Error('cannot determine credential id to request'))
       }
+
+      const credentialDefinition = this.getCredentialDefinition(issuanceOpt)
       const credentialResponse = await client.acquireCredentials({
+        ...(credentialDefinition && { context: credentialDefinition['@context'] }),
         credentialTypes,
         proofCallbacks: callbacks,
         format: issuanceOpt.format,
@@ -1124,6 +1129,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
     } else {
       return wrappedIssuerVC.credential?.credentialSubject?.id
+    }
+    return undefined
+  }
+
+  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13 | undefined {
+    if (issuanceOpt.format == 'ldp_vc' || issuanceOpt.format == 'jwt_vc_json-ld') {
+      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13).credential_definition
     }
     return undefined
   }

@@ -1,5 +1,5 @@
 import { TAgent } from '@veramo/core'
-import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs } from '../../src'
+import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPresentationDefinitionItem } from '../../src'
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
 import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
@@ -17,6 +17,20 @@ function getFileAsJson(path: string) {
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('PD Manager Agent Plugin', (): void => {
     const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
+    const sampleDcql = {
+      credentials: [
+        {
+          id: 'credential1',
+          format: 'jwt_vc',
+          claims: [
+            {
+              namespace: 'test',
+              claim_name: 'testClaim',
+            },
+          ],
+        },
+      ],
+    }
 
     let agent: ConfiguredAgent
     let defaultDefinitionItem: PresentationDefinitionItem
@@ -148,20 +162,40 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(versionedDefinitionItem.version).toEqual(definition.definitionItem.version)
     })
 
-    it('should create a new major version of the definition item', async (): Promise<void> => {
-      const updatedDefinitionItem: PresentationDefinitionItem = {
-        ...versionedDefinitionItem,
+    it('should increment major versions up to 12.0.0', async (): Promise<void> => {
+      let currentItem = { ...versionedDefinitionItem } as PersistPresentationDefinitionItem
+
+      for (let i = 2; i <= 12; i++) {
+        currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
+        currentItem.dcqlPayload = {
+          credentials: [
+            {
+              id: `credential-v${i}`,
+              format: 'jwt_vc',
+              claims: [
+                {
+                  namespace: 'test',
+                  claim_name: `claim-v${i}`,
+                },
+              ],
+            },
+          ],
+        }
+        currentItem.version = undefined
+        const result = await agent.pdmPersistDefinition({
+          definitionItem: currentItem,
+          opts: { versionControlMode: 'AutoIncrement', versionIncrementReleaseType: 'major' },
+        })
+
+        expect(result.version).toEqual(`${i}.0.0`)
+        expect(result.definitionPayload.input_descriptors[0].id).toEqual(`Version ${i}.0.0`)
+        expect(result.dcqlPayload).toBeTruthy()
+        expect(result.dcqlPayload?.credentials[0].id).toEqual(`credential-v${i}`)
+
+        currentItem = result
       }
-      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New major version'
-      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
-        definitionItem: updatedDefinitionItem,
-      })
 
-      expect(result.version).toEqual('2.0.0')
-      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
-      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New major version')
-
-      versionedDefinitionItem.version = result.version
+      versionedDefinitionItem = currentItem as PresentationDefinitionItem
     })
 
     it('should create a new minor version of the definition item', async (): Promise<void> => {
@@ -174,7 +208,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         opts: { versionControlMode: 'AutoIncrement', versionIncrementReleaseType: 'minor' },
       })
 
-      expect(result.version).toEqual('2.1.0')
+      expect(result.version).toEqual('12.1.0')
       expect(result.definitionPayload.input_descriptors.length).toEqual(1)
       expect(result.definitionPayload.input_descriptors[0].id).toEqual('New minor version')
     })
@@ -215,7 +249,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get all definition items including all version', async (): Promise<void> => {
       const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({ opts: { showVersionHistory: true } })
 
-      expect(result.length).toBe(8)
+      expect(result.length).toBe(18)
     })
 
     it('should get all definition items only containing the latest versions', async (): Promise<void> => {
@@ -261,6 +295,50 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const result: boolean = await agent.pdmHasDefinitions(args)
       expect(result).toBe(false)
+    })
+
+    it('should add definition item with dcqlPayload', async (): Promise<void> => {
+      const definition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'new_definition_id',
+          definitionPayload: singleDefinition,
+          dcqlPayload: sampleDcql,
+        },
+      }
+
+      const result = await agent.pdmPersistDefinition(definition)
+
+      expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(result.dcqlPayload).toEqual(definition.definitionItem.dcqlPayload)
+    })
+
+    it('should update dcqlPayload in definition item', async (): Promise<void> => {
+      const updatedDcql = {
+        credentials: [
+          {
+            id: 'credential2',
+            format: 'jwt_vc',
+            claims: [
+              {
+                namespace: 'test',
+                claim_name: 'updatedClaim',
+              },
+            ],
+          },
+        ],
+      }
+
+      const updatedDefinitionItem = {
+        ...defaultDefinitionItem,
+        dcqlPayload: updatedDcql,
+      }
+
+      const result = await agent.pdmPersistDefinition({
+        definitionItem: updatedDefinitionItem,
+        opts: { versionControlMode: 'Overwrite' },
+      })
+
+      expect(result.dcqlPayload).toEqual(updatedDcql)
     })
   })
 }

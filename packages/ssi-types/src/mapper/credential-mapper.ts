@@ -1,5 +1,4 @@
 import { IssuerType } from '@veramo/core'
-import jwt_decode from 'jwt-decode'
 import {
   AsyncHasher,
   decodeMdocDeviceResponse,
@@ -45,6 +44,7 @@ import { getMdocDecodedPayload, MdocDocument } from '../types/mso_mdoc'
 import { ObjectUtils } from '../utils'
 import { com } from '@sphereon/kmp-mdoc-core'
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
+import { jwtDecode } from 'jwt-decode'
 
 export class CredentialMapper {
   /**
@@ -69,8 +69,8 @@ export class CredentialMapper {
     hasher?: Hasher
   ): JwtDecodedVerifiablePresentation | IVerifiablePresentation | SdJwtDecodedVerifiableCredential | MdocOid4vpMdocVpToken | MdocDeviceResponse {
     if (CredentialMapper.isJwtEncoded(presentation)) {
-      const payload = jwt_decode(presentation as string) as JwtDecodedVerifiablePresentation
-      const header = jwt_decode(presentation as string, { header: true }) as Record<string, any>
+      const payload = jwtDecode(presentation as string) as JwtDecodedVerifiablePresentation
+      const header = jwtDecode(presentation as string, { header: true }) as Record<string, any>
 
       payload.vp.proof = {
         type: IProofType.JwtProof2020,
@@ -114,8 +114,8 @@ export class CredentialMapper {
     hasher?: Hasher
   ): JwtDecodedVerifiableCredential | IVerifiableCredential | SdJwtDecodedVerifiableCredential {
     if (CredentialMapper.isJwtEncoded(credential)) {
-      const payload = jwt_decode(credential as string) as JwtDecodedVerifiableCredential
-      const header = jwt_decode(credential as string, { header: true }) as Record<string, any>
+      const payload = jwtDecode(credential as string) as JwtDecodedVerifiableCredential
+      const header = jwtDecode(credential as string, { header: true }) as Record<string, any>
       payload.vc.proof = {
         type: IProofType.JwtProof2020,
         created: payload.nbf,
@@ -530,7 +530,7 @@ export class CredentialMapper {
     makeCredentialsUniform: boolean = true,
     opts?: { maxTimeSkewInMS?: number }
   ): IPresentation {
-    return CredentialMapper.jwtDecodedPresentationToUniformPresentation(jwt_decode(jwt), makeCredentialsUniform, opts)
+    return CredentialMapper.jwtDecodedPresentationToUniformPresentation(jwtDecode(jwt), makeCredentialsUniform, opts)
   }
 
   static jwtDecodedPresentationToUniformPresentation(
@@ -660,7 +660,7 @@ export class CredentialMapper {
       maxTimeSkewInMS?: number
     }
   ): IVerifiableCredential {
-    return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwt_decode(jwt), opts)
+    return CredentialMapper.jwtDecodedCredentialToUniformCredential(jwtDecode(jwt), opts)
   }
 
   static jwtDecodedCredentialToUniformCredential(

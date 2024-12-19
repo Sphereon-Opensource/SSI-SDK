@@ -18,7 +18,7 @@ import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {

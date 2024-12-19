@@ -13,7 +13,7 @@
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "debug": "^4.3.5",
     "events": "^3.3.0",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
     "uint8arrays": "3.1.1"
   },
   "devDependencies": {
