@@ -20,11 +20,10 @@ import { encodeBase64url } from '@sphereon/ssi-sdk.core'
 import {
   CompactSdJwtVc,
   CredentialMapper,
-  Hasher,
-  OriginalVerifiableCredential,
+  Hasher, OriginalVerifiableCredential,
   parseDid,
   PresentationSubmission,
-  W3CVerifiablePresentation,
+  W3CVerifiablePresentation
 } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
@@ -240,7 +239,7 @@ export class OpSession {
   private createPresentationVerificationCallback(context: IRequiredContext) {
     async function presentationVerificationCallback(
       args: W3CVerifiablePresentation | CompactSdJwtVc,
-      presentationSubmission: PresentationSubmission,
+      presentationSubmission?: PresentationSubmission,
     ): Promise<PresentationVerificationResult> {
       let result: IVerifyResult
       if (CredentialMapper.isSdJwtEncoded(args)) {
@@ -366,6 +365,7 @@ export class OpSession {
           presentationSubmission: args.presentationSubmission,
         } as PresentationExchangeResponseOpts,
       }),
+      dcqlQuery: args.dcqlQuery
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)

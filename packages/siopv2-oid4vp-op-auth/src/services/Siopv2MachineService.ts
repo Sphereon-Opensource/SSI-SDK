@@ -2,7 +2,7 @@ import { AuthorizationRequest, SupportedVersion } from '@sphereon/did-auth-siop'
 import { IPresentationDefinition, PEX } from '@sphereon/pex'
 import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
+import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
 import { OID4VP, OpSession } from '../session'
@@ -20,6 +20,7 @@ import {
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
+import { DcqlCredentialRepresentation, DcqlPresentationRecord, DcqlQuery } from 'dcql'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -48,6 +49,7 @@ export const siopSendAuthorizationResponse = async (
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
+    dcqlQuery?: DcqlQuery
   },
   context: RequiredContext,
 ) => {
@@ -153,16 +155,113 @@ export const siopSendAuthorizationResponse = async (
 
     idOpts = presentationsAndDefs[0].idOpts
     presentationSubmission = presentationsAndDefs[0].presentationSubmission
+
+    logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentations, null, 2))
+    logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
+    const mergedVerifiablePresentations = presentationsAndDefs?.flatMap((pd) => pd.verifiablePresentations) || []
+    return await session.sendAuthorizationResponse({
+      ...(presentationsAndDefs && { verifiablePresentations: mergedVerifiablePresentations }),
+      ...(presentationSubmission && { presentationSubmission }),
+      // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
+      responseSignerOpts: idOpts!,
+    })
+
+  } else if (args.dcqlQuery !== undefined && args.dcqlQuery !== null) {
+
+    const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
+    const vcs = credentialsAndDefinitions?.flatMap(cd => cd.credentials)!
+    const domain =
+      ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ??
+      request.issuer ??
+      (request.versions.includes(SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1)
+        ? 'https://self-issued.me/v2/openid-vc'
+        : 'https://self-issued.me/v2')
+    logger.log(`NONCE: ${session.nonce}, domain: ${domain}`)
+
+    const firstUniqueDC = vcs[0]
+    if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
+      return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
+    }
+
+    let identifier: ManagedIdentifierOptsOrResult
+    const digitalCredential = firstUniqueDC.digitalCredential
+    const firstVC = firstUniqueDC.uniformVerifiableCredential
+    const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
+      ? firstVC.decodedPayload.cnf?.jwk
+        ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+          //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
+        `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+        : firstVC.decodedPayload.sub
+      : Array.isArray(firstVC.credentialSubject)
+        ? firstVC.credentialSubject[0].id
+        : firstVC.credentialSubject.id
+    if (!digitalCredential.kmsKeyRef) {
+      // In case the store does not have the kmsKeyRef lets search for the holder
+
+      if (!holder) {
+        return Promise.reject(`No holder found and no kmsKeyRef in DB. Cannot determine identifier to use`)
+      }
+      try {
+        identifier = await session.context.agent.identifierManagedGet({ identifier: holder })
+      } catch (e) {
+        logger.debug(`Holder DID not found: ${holder}`)
+        throw e
+      }
+    } else if (isOID4VCIssuerIdentifier(digitalCredential.kmsKeyRef)) {
+      identifier = await session.context.agent.identifierManagedGetByOID4VCIssuer({
+        identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+      })
+    } else {
+      switch (digitalCredential.subjectCorrelationType) {
+        case 'DID':
+          identifier = await session.context.agent.identifierManagedGetByDid({
+            identifier: digitalCredential.subjectCorrelationId ?? holder,
+            kmsKeyRef: digitalCredential.kmsKeyRef,
+          })
+          break
+        // TODO other implementations?
+        default:
+          // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
+          identifier = await session.context.agent.identifierManagedGetByKid({
+            identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
+            kmsKeyRef: digitalCredential.kmsKeyRef,
+          })
+      }
+    }
+
+    if (identifier === undefined && idOpts !== undefined && (await hasEbsiClient(request.authorizationRequest))) {
+      identifier = await createEbsiIdentifier(agentContext)
+    }
+    logger.debug(`Identifier`, identifier)
+
+    const dcqlCredentialToCredential: Map<DcqlCredentialRepresentation, UniqueDigitalCredential> = new Map()
+    vcs.forEach((vc: any) => {
+      const payload = vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null ? vc.decodedPayload : vc
+      const vct = payload?.vct
+      const docType = payload?.docType
+      const namespaces = payload?.namespaces
+      const result: DcqlCredentialRepresentation = {
+        claims: payload,
+        vct,
+        docType,
+        namespaces
+      }
+      dcqlCredentialToCredential.set(result, vc)
+    })
+    const queryResult = DcqlQuery.query(request.dcqlQuery!, Array.from(dcqlCredentialToCredential.keys()))
+    const presentation: DcqlPresentationRecord.Output = {}
+    for (const [key, value] of Object.entries(queryResult.credential_matches)) {
+      const credential = dcqlCredentialToCredential.get(value.output as DcqlCredentialRepresentation)!
+      presentation[key] = (credential.originalVerifiableCredential as any)['compactSdJwtVc'] !== undefined ? (credential.originalVerifiableCredential as any).compactSdJwtVc : (credential.originalCredential as any).original
+    }
+
+    return await session.sendAuthorizationResponse({
+      // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
+      responseSignerOpts: idOpts!,
+      dcqlQuery: { encodedPresentationRecord: DcqlPresentationRecord.parse(presentation) }
+    })
   }
-  logger.log(`Definitions and locations:`, JSON.stringify(presentationsAndDefs?.[0]?.verifiablePresentations, null, 2))
-  logger.log(`Presentation Submission:`, JSON.stringify(presentationSubmission, null, 2))
-  const mergedVerifiablePresentations = presentationsAndDefs?.flatMap((pd) => pd.verifiablePresentations) || []
-  return await session.sendAuthorizationResponse({
-    ...(presentationsAndDefs && { verifiablePresentations: mergedVerifiablePresentations }),
-    ...(presentationSubmission && { presentationSubmission }),
-    // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
-    responseSignerOpts: idOpts!,
-  })
+  return undefined
 }
 
 function buildPartialPD(
