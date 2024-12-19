@@ -230,8 +230,6 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined> {
-    /*
-    FIXME: Re-anable once redirect uri is re-enabled
     const instanceId = args.definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (this.instances.has(instanceId)) {
       const rpInstance = this.instances.get(instanceId)
@@ -243,7 +241,7 @@ export class SIOPv2RP implements IAgentPlugin {
           ...(args.state && { state: args.state }),
         })
       }
-    }*/
+    }
     return undefined
   }
 
