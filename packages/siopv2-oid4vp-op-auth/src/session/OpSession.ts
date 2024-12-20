@@ -20,10 +20,10 @@ import { encodeBase64url } from '@sphereon/ssi-sdk.core'
 import {
   CompactSdJwtVc,
   CredentialMapper,
-  Hasher,
+  Hasher, OriginalVerifiableCredential,
   parseDid,
   PresentationSubmission,
-  W3CVerifiablePresentation,
+  W3CVerifiablePresentation
 } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
 import Debug from 'debug'
@@ -239,7 +239,7 @@ export class OpSession {
   private createPresentationVerificationCallback(context: IRequiredContext) {
     async function presentationVerificationCallback(
       args: W3CVerifiablePresentation | CompactSdJwtVc,
-      presentationSubmission: PresentationSubmission,
+      presentationSubmission?: PresentationSubmission,
     ): Promise<PresentationVerificationResult> {
       let result: IVerifyResult
       if (CredentialMapper.isSdJwtEncoded(args)) {
@@ -319,7 +319,7 @@ export class OpSession {
     }
     //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
     const verification: Verification = {
-      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context) as any,
+      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
     }
     const request = await this.getAuthorizationRequest()
     const hasDefinitions = await this.hasPresentationDefinitions()
@@ -391,7 +391,7 @@ export class OpSession {
       const isSdJWT = CredentialMapper.isSdJwtDecodedCredential(uvp)
       if (
         isSdJWT ||
-        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<any>))
+        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>))
       ) {
         return sum + 1
       }
