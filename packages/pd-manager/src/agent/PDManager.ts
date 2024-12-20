@@ -128,11 +128,18 @@ export class PDManager implements IAgentPlugin {
 
     const existing = await this.store.getDefinitions({ filter: [{ id, definitionId, tenantId, version }] })
     const existingItem = existing[0]
-    let latestVersionItem: PresentationDefinitionItem | undefined = existingItem
 
+    // Always fetch all definitions for the definitionId/tenantId and determine the truly latest version
+    const allDefinitions = await this.store.getDefinitions({ filter: [{ definitionId, tenantId }] })
+    allDefinitions.sort((a, b) => semver.compare(this.normalizeToSemverVersionFormat(a.version), this.normalizeToSemverVersionFormat(b.version)))
+    const trulyLatestVersionItem = allDefinitions[allDefinitions.length - 1]
+
+    let latestVersionItem: PresentationDefinitionItem | undefined = trulyLatestVersionItem
+
+    // If a specific version exists and matches existingItem, we keep that as a base.
+    // Otherwise we use the trulyLatestVersionItem
     if (existingItem && version) {
-      const latest = await this.store.getDefinitions({ filter: [{ id, definitionId, tenantId }] })
-      latestVersionItem = latest[0] ?? existingItem
+      latestVersionItem = trulyLatestVersionItem ?? existingItem
     }
 
     const isPayloadModified = !existingItem || !isPresentationDefinitionEqual(existingItem, definitionItem)

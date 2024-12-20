@@ -25,9 +25,13 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   @Column({ name: 'name', length: 255, type: 'varchar', nullable: true, unique: false })
   name?: string
 
-  @Column({ name: 'definition_payload', type: 'text', nullable: false, unique: false })
-  @IsNotEmpty({ message: 'A blank definition payload field is not allowed' })
+  @Column({ name: 'definition_payload', type: 'text', nullable: false, unique: false }) // TODO should this become nullable now we have dcqlPayload?
+  @IsNotEmpty({ message: 'A blank PD definition payload field is not allowed' })
   definitionPayload!: string
+
+  @Column({ name: 'dcql_payload', type: 'text', nullable: true, unique: false })
+  @IsNotEmpty({ message: 'A blank dcql definition payload field is not allowed' })
+  dcqlPayload!: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date
