@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/oid4vci-client": "0.16.1-next.231",
-    "@sphereon/oid4vci-common": "0.16.1-next.231",
+    "@sphereon/oid4vci-client": "0.16.1-next.233",
+    "@sphereon/oid4vci-common": "0.16.1-next.233",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
