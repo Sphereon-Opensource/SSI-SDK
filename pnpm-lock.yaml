@@ -34,6 +34,7 @@ overrides:
   '@sphereon/kmp-mdoc-core': 0.2.0-SNAPSHOT.26
   '@noble/hashes': 1.6.1
   debug: ^4.3.5
+  dcql: 0.2.11
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
   ethr-did: 2.3.9
@@ -615,11 +616,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -697,11 +698,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -913,9 +914,9 @@ importers:
 
   packages/mdl-mdoc:
     dependencies:
-      '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop-adapter':
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
@@ -972,11 +973,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1148,11 +1149,11 @@ importers:
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -1227,8 +1228,8 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-next.187
-        version: 0.16.1-next.187
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.27.0
         version: 0.27.0
@@ -1260,11 +1261,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -1339,14 +1340,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1505,8 +1506,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1542,8 +1543,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -2240,8 +2241,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2262,14 +2263,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2333,6 +2334,9 @@ importers:
       cross-fetch:
         specifier: ^3.1.8
         version: 3.1.8(encoding@0.1.13)
+      dcql:
+        specifier: 0.2.11
+        version: 0.2.11(typescript@5.6.3)
       did-jwt-vc:
         specifier: 3.1.3
         version: 3.1.3
@@ -2370,6 +2374,9 @@ importers:
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=feb5u2ygzsdf67qbxr2lxgqjyy)(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
       '@veramo/did-provider-key':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)(expo@52.0.11(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(encoding@0.1.13)(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))(web-streams-polyfill@3.3.3)
@@ -2391,18 +2398,21 @@ importers:
       nock:
         specifier: ^13.5.4
         version: 13.5.6
+      typeorm:
+        specifier: ^0.3.20
+        version: 0.3.20(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
 
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2483,8 +2493,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3592,8 +3602,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-next.233
-        version: 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SPRIND.137.254+5674a27
+        version: 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6001,12 +6011,12 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-next.233':
-    resolution: {integrity: sha512-epkvRUSNyAMXvgDynbCQxV9xmrkLvZBgRmL+XVK65pri03TcpLfwt8q3q++l0b0JljcEvENZGXs6SrUNdxb7KQ==}
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-8kbX5aaLNn+TnWoxhqCTmxSzqm3BxPCIk3imh+JwgeAp2IUKN+IMgiyZJARgORXjqK/Sxlq9b86BwNQ7MqZJ5A==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-auth-siop@0.16.1-next.233':
-    resolution: {integrity: sha512-E+NvyheYqZqkC4qUa9HVPVoQoJfAeKxqpL1cUPUNo/KqZL2v4g+6AruDutUNm5omvPNbr3DJBY/qHed/1ze7NA==}
+  '@sphereon/did-auth-siop@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-goJBaSrZRXNQhfuDVTl17xTdp8nwT4Sx5v9wfnnc6Z/ez+VqEMdf4Taf7L+ARasqmxqCyEWkqOB5yXBYxZuidg==}
     engines: {node: '>=18'}
 
   '@sphereon/did-provider-oyd@0.27.0':
@@ -6029,8 +6039,8 @@ packages:
       '@sphereon/react-native-argon2': ^2.0.9
       react-native: '>=0.60.0'
 
-  '@sphereon/jarm@0.16.1-next.233':
-    resolution: {integrity: sha512-FJTzPcNMEzEL1pK8QEnKIbZ8EnbU3yv2R9YiuIMPbHrEQuROq/MduqWmjWTKGPjFeNhZDJ8JSebN2pefhowCRA==}
+  '@sphereon/jarm@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-34yix1gqqjmlHwBmKymC++KEwlGh4bvLPTP2qxGFBP0I4wi82RcP7bQx7jKKAZnBpu7k8feK5Bqp2gatg27Prg==}
     engines: {node: '>=18'}
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
@@ -6040,24 +6050,20 @@ packages:
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
 
-  '@sphereon/oid4vc-common@0.16.1-next.187':
-    resolution: {integrity: sha512-OYOT3Z3moNb6JyGHYX9tcaOcrCAUn9opNKQ9wuKoiSyckXS6RZXinuDlGETISnMCf3cQZCWAHOc6ctfHv1eHDw==}
+  '@sphereon/oid4vc-common@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-nM/paDjgzLPsSLQU1zCUBFLTdj6WiiX6fPmdKk+JSDeEsoktzX8yZdcxtwa1TVrsBVCm9ty1kuhQgd2SdOg/gQ==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vc-common@0.16.1-next.233':
-    resolution: {integrity: sha512-dNoCOTgRek5d1gSTPrVXxP8WIoY/NJpQnpvXVHGvS4+o6W81nEmq0z5aIwPyQ4XbXExjCrlZd8LaN9GyZJwE7w==}
+  '@sphereon/oid4vci-client@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-siD++a3lRb4OsdhxzsxMhSCmLukycjsByXnqVMEfYkYD0E1cdwAojKC/vsW6qVNTMi3Y9z+o8tUhW4FHjUGeAA==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-client@0.16.1-next.233':
-    resolution: {integrity: sha512-bv2AFdieXF5mhMrl/rBoBEJAUS+Ctd1zTg4vnz+eBVHa8zhL9t4wwH30QeKqB4UuBTTH5Ubk/or5Y/JS0OureA==}
+  '@sphereon/oid4vci-common@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-Uzt2fSaTpFOgG+pkCDnqmbv7RQgrzXy0m6f7mfplYVenB3y8yR/ZSJaGJ/b9eSgSEqOqfQrw9UQbvWu1CNnQvw==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-common@0.16.1-next.233':
-    resolution: {integrity: sha512-X1cdipPhQwTkV/NRiG/4jl6BY0nJ5MQcrfbmfCIPcC4hHcKJzW1p9g9jfQfLGHkYmWB6EtECk+C+lquJsWOHGA==}
-    engines: {node: '>=18'}
-
-  '@sphereon/oid4vci-issuer-server@0.16.1-next.233':
-    resolution: {integrity: sha512-mIp+OCL2xtVLH5ZX7K/jfuCYcryUKQo7BQfd0hvctq8ug1NVxjF1bakpkx1m6eRUFZzSvvvZqI+4UqDAzFHs7Q==}
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-zPs3Vt+DcbgtT56XrTEKD0Zv3Zr/ni+7r5es1gRY9I12LwfWwaQCaOpUjo3hLSWDw8MUrr9RaJTVIXurS1l7sQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6065,8 +6071,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.16.1-next.233':
-    resolution: {integrity: sha512-LVhHJiADjn3XKbV+QEXKLElwhuEsTH7E4AXr5VrwC1TlqvDo69v2dE2seUMJWSVhPXR4hzOaxzhQtoPtA/SE8A==}
+  '@sphereon/oid4vci-issuer@0.16.1-feature.SPRIND.137.254':
+    resolution: {integrity: sha512-ey0niQ3Ar2AhfKO+gkc0S5/W2frPy2BCahPAM9kyL2g9HGdCdmRrcFsVzxOFTU771isuPno+eYgiLEXu/9vq/A==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8168,6 +8174,9 @@ packages:
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
+
+  dcql@0.2.11:
+    resolution: {integrity: sha512-hR8MuSx49b7JPoZztcFMSKEHc6iEE4l/Zs6aUsvMCWVa3qFWpuJRiJEp5Rh2+UkCAhsce94fbDpMdBTcS9zn7g==}
 
   debug@4.3.7:
     resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
@@ -13286,6 +13295,14 @@ packages:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
     engines: {node: '>=10.12.0'}
 
+  valibot@0.37.0:
+    resolution: {integrity: sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==}
+    peerDependencies:
+      typescript: 5.6.3
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   valibot@0.42.1:
     resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
     peerDependencies:
@@ -16982,11 +16999,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.16.1-next.233
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -16995,15 +17012,16 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.16.1-next.233(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop@0.16.1-feature.SPRIND.137.254(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/jarm': 0.16.1-next.233(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.16.1-next.233
+      '@sphereon/jarm': 0.16.1-feature.SPRIND.137.254(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
       '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.0.0(encoding@0.1.13)
+      dcql: 0.2.11(typescript@5.6.3)
       debug: 4.3.7
       events: 3.3.0
       jwt-decode: 4.0.0
@@ -17060,9 +17078,9 @@ snapshots:
       react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1)
       uint8arrays: 3.1.1
 
-  '@sphereon/jarm@0.16.1-next.233(typescript@5.6.3)':
+  '@sphereon/jarm@0.16.1-feature.SPRIND.137.254(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.233
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
@@ -17086,7 +17104,7 @@ snapshots:
       - encoding
       - typescript
 
-  '@sphereon/oid4vc-common@0.16.1-next.187':
+  '@sphereon/oid4vc-common@0.16.1-feature.SPRIND.137.254':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
@@ -17094,18 +17112,10 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vc-common@0.16.1-next.233':
+  '@sphereon/oid4vci-client@0.16.1-feature.SPRIND.137.254(encoding@0.1.13)':
     dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      jwt-decode: 4.0.0
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-
-  '@sphereon/oid4vci-client@0.16.1-next.233(encoding@0.1.13)':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.233
-      '@sphereon/oid4vci-common': 0.16.1-next.233(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
+      '@sphereon/oid4vci-common': 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.7
@@ -17113,9 +17123,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.16.1-next.233(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.16.1-feature.SPRIND.137.254(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.233
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.7
@@ -17126,11 +17136,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-next.233(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SPRIND.137.254(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.233
-      '@sphereon/oid4vci-common': 0.16.1-next.233(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.16.1-next.233(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
+      '@sphereon/oid4vci-common': 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
+      '@sphereon/oid4vci-issuer': 0.16.1-feature.SPRIND.137.254(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-express-support': 0.30.2-feature.mdoc.funke2.367(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.3
@@ -17149,10 +17159,10 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.16.1-next.233(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
+  '@sphereon/oid4vci-issuer@0.16.1-feature.SPRIND.137.254(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.233
-      '@sphereon/oid4vci-common': 0.16.1-next.233(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SPRIND.137.254
+      '@sphereon/oid4vci-common': 0.16.1-feature.SPRIND.137.254(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
     optionalDependencies:
@@ -20728,6 +20738,12 @@ snapshots:
   dateformat@3.0.3: {}
 
   dayjs@1.11.13: {}
+
+  dcql@0.2.11(typescript@5.6.3):
+    dependencies:
+      valibot: 0.37.0(typescript@5.6.3)
+    transitivePeerDependencies:
+      - typescript
 
   debug@4.3.7:
     dependencies:
@@ -27160,6 +27176,10 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
+
+  valibot@0.37.0(typescript@5.6.3):
+    optionalDependencies:
+      typescript: 5.6.3
 
   valibot@0.42.1(typescript@5.6.3):
     optionalDependencies:
