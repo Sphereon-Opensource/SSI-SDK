@@ -15,7 +15,7 @@ import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-
 
 jest.setTimeout(60000)
 
-const port = 4002
+const port = 4302
 const basePath = '/agent'
 
 let serverAgent: IAgent
