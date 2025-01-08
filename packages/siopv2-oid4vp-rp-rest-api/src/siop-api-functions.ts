@@ -1,6 +1,6 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
-import { PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -37,12 +37,14 @@ export function verifyAuthResponseSIOPv2Endpoint(
         console.log(`Supplied presentation_submission was a string instead of JSON. Correcting, but external party should fix their implementation!`)
         authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
       }
-      if (typeof authorizationResponse.vp_token === 'string') {
-        // arrays pass as string when using FORM_URL_ENCODED
-        if (authorizationResponse.vp_token.startsWith('[') && authorizationResponse.vp_token.endsWith(']')) {
-          authorizationResponse.vp_token = JSON.parse(authorizationResponse.vp_token)
-        } else {
-          authorizationResponse.vp_token = [authorizationResponse.vp_token]
+
+      // when using FORM_URL_ENCODED, vp_token comes back as string not matter whether the input was string, object or array. Handled below.
+      if (typeof authorizationResponse.vp_token === 'string' && request.header('content-type') === 'application/x-www-form-urlencoded') {
+        const { vp_token } = authorizationResponse
+
+        // The only use case where vp_object is an object is JsonLdAsString atm. For arrays, any objects will be parsed along with the array
+        if ((vp_token.startsWith('[') && vp_token.endsWith(']')) || CredentialMapper.isJsonLdAsString(vp_token)) {
+          authorizationResponse.vp_token = JSON.parse(vp_token)
         }
       }
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)

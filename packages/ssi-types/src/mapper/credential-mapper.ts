@@ -204,13 +204,7 @@ export class CredentialMapper {
     }
 
     if (typeof originalPresentation === 'string' && !CredentialMapper.isJwtEncoded(originalPresentation)) {
-      // We probably have a JSON-stringified vp, try to unwrap
-      try {
-        const vpObject = JSON.parse(originalPresentation)
-        if (vpObject && '@context' in vpObject) {
-          originalPresentation = vpObject as W3CVerifiablePresentation
-        }
-      } catch (error) {}
+      throw Error(`Unknown presentation type, the vp is a string, but not JWT or MDOC encoded`)
     }
 
     // If the VP is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
@@ -489,7 +483,7 @@ export class CredentialMapper {
     }
   }
 
-  private static isJsonLdAsString(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is string {
+  public static isJsonLdAsString(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is string {
     return ObjectUtils.isString(original) && original.includes('@context')
   }
 
