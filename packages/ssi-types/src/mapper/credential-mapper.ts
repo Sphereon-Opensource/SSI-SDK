@@ -203,10 +203,6 @@ export class CredentialMapper {
       }
     }
 
-    if (typeof originalPresentation === 'string' && !CredentialMapper.isJwtEncoded(originalPresentation)) {
-      throw Error(`Unknown presentation type, the vp is a string, but not JWT or MDOC encoded`)
-    }
-
     // If the VP is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
     const proof = CredentialMapper.getFirstProof(originalPresentation)
     const original =
