@@ -62,7 +62,7 @@ import { PEX, Status } from '@sphereon/pex'
 import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
-import { DcqlCredentialRepresentation, DcqlPresentationRecord, DcqlQuery } from 'dcql'
+import { DcqlCredential, DcqlPresentation, DcqlQuery } from 'dcql'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -357,7 +357,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     const pex = new PEX()
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
-    const dcqlCredentialsWithCredentials: Map<DcqlCredentialRepresentation, UniqueDigitalCredential> = new Map()
+    const dcqlCredentialsWithCredentials: Map<DcqlCredential, UniqueDigitalCredential> = new Map()
 
     if (authorizationRequestData.presentationDefinitions !== undefined && authorizationRequestData.presentationDefinitions !== null) {
       authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
@@ -394,18 +394,20 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         selectedCredentials.forEach((vc: any) => {
           const payload = vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null ? vc.decodedPayload : vc['decoded'] !== undefined && vc['decoded'] !== null ? vc.decoded : undefined
           const vct = payload?.vct
-          const docType = payload?.docType
+          const doctype = payload?.docType
           const namespaces = payload?.namespaces
-          const result: DcqlCredentialRepresentation = {
+          const credential_format = payload?.credential_format
+          const result: DcqlCredential = {
             claims: payload,
             vct,
-            docType,
-            namespaces
+            doctype,
+            namespaces,
+            credential_format
           }
           dcqlCredentialsWithCredentials.set(result, vc)
         })
 
-        const dcqlPresentationRecord: DcqlPresentationRecord.Output = {}
+        const dcqlPresentationRecord: DcqlPresentation.Output = {}
         const queryResult = DcqlQuery.query(authorizationRequestData.dcqlQuery, Array.from(dcqlCredentialsWithCredentials.keys()))
         for (const [key, value] of Object.entries(queryResult.credential_matches)) {
           if (value.success) {

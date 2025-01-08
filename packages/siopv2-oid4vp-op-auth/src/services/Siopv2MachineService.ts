@@ -20,7 +20,7 @@ import {
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
-import { DcqlCredentialRepresentation, DcqlPresentationRecord, DcqlQuery } from 'dcql'
+import { DcqlCredential, DcqlPresentation, DcqlQuery } from 'dcql'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -234,34 +234,36 @@ export const siopSendAuthorizationResponse = async (
     }
     logger.debug(`Identifier`, identifier)
 
-    const dcqlCredentialToCredential: Map<DcqlCredentialRepresentation, UniqueDigitalCredential> = new Map()
+    const dcqlCredentialToCredential: Map<DcqlCredential, UniqueDigitalCredential> = new Map()
     vcs.forEach((vc: any) => {
       const payload = vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null ? vc.decodedPayload : vc
       const vct = payload?.vct
-      const docType = payload?.docType
+      const doctype = payload?.docType
       const namespaces = payload?.namespaces
-      const result: DcqlCredentialRepresentation = {
+      const credential_format = payload?.credential_format
+      const result: DcqlCredential = {
         claims: payload,
         vct,
-        docType,
-        namespaces
+        doctype,
+        namespaces,
+        credential_format
       }
       dcqlCredentialToCredential.set(result, vc)
     })
     const queryResult = DcqlQuery.query(request.dcqlQuery!, Array.from(dcqlCredentialToCredential.keys()))
-    const presentation: DcqlPresentationRecord.Output = {}
+    const presentation: DcqlPresentation.Output = {}
     for (const [key, value] of Object.entries(queryResult.credential_matches)) {
-      const credential = dcqlCredentialToCredential.get(value.output as DcqlCredentialRepresentation)!
+      const credential = dcqlCredentialToCredential.get((('output' in value) ? value?.output : value) as DcqlCredential)!
       presentation[key] = (credential.originalVerifiableCredential as any)['compactSdJwtVc'] !== undefined ? (credential.originalVerifiableCredential as any).compactSdJwtVc : (credential.originalCredential as any).original
     }
 
     return await session.sendAuthorizationResponse({
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
-      dcqlQuery: { encodedPresentationRecord: DcqlPresentationRecord.parse(presentation) }
+      dcqlQuery: { dcqlPresentation: DcqlPresentation.parse(presentation) }
     })
   }
-  return undefined
+  throw Error('Presentation Definition or DCQL is required')
 }
 
 function buildPartialPD(
