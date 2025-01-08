@@ -359,7 +359,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
     const dcqlCredentialsWithCredentials: Map<DcqlCredential, UniqueDigitalCredential> = new Map()
 
-    if (authorizationRequestData.presentationDefinitions !== undefined && authorizationRequestData.presentationDefinitions !== null) {
+    if (authorizationRequestData.presentationDefinitions !== undefined && authorizationRequestData.presentationDefinitions !== null && Array.isArray(authorizationRequestData.presentationDefinitions) && authorizationRequestData?.presentationDefinitions.length > 0) {
       authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
         const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
           presentationDefinition.definition,
