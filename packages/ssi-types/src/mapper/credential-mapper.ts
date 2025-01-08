@@ -203,6 +203,16 @@ export class CredentialMapper {
       }
     }
 
+    if (typeof originalPresentation === 'string' && !CredentialMapper.isJwtEncoded(originalPresentation)) {
+      // We probably have a JSON-stringified vp, try to unwrap
+      try {
+        const vpObject = JSON.parse(originalPresentation)
+        if (vpObject && '@context' in vpObject) {
+          originalPresentation = vpObject as W3CVerifiablePresentation
+        }
+      } catch (error) {}
+    }
+
     // If the VP is not an encoded/decoded SD-JWT, we assume it will be a W3C VC
     const proof = CredentialMapper.getFirstProof(originalPresentation)
     const original =
