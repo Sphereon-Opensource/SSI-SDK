@@ -393,7 +393,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
       }
 
-    } else if (authorizationRequestData.dcqlQuery !== undefined && authorizationRequestData.dcqlQuery !== null) {
+    } else if (authorizationRequestData.dcqlQuery) {
       //TODO Only SD-JWT and MSO MDOC are supported at the moment
       if (this.hasMDocCredentials(selectedCredentials) || this.hasSdJwtCredentials(selectedCredentials)) {
         selectedCredentials.forEach((vc: any) => {
