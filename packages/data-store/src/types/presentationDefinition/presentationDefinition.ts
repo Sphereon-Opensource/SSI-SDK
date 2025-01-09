@@ -16,4 +16,4 @@ export type PresentationDefinitionItem = {
 
 export type NonPersistedPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialPresentationDefinitionItem = Partial<PresentationDefinitionItem>
-export type PresentationDefinitionItemFilter = Partial<Omit<PresentationDefinitionItem, 'definitionPayload' | 'dcqlPayload'>> // TODO add logic to linearize & hash definitionPayload into a separate column so we can filter on it?
+export type PresentationDefinitionItemFilter = Partial<Omit<PresentationDefinitionItem, 'definitionPayload' | 'dcqlPayload'>>
