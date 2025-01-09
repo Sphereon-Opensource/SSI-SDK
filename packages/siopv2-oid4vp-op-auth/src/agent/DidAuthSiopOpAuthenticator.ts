@@ -439,7 +439,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     const contentType = response?.headers.get('content-type') || ''
     let responseBody: any = null
 
-    const text = await response?.text()
+    const text = await response.text()
     if (text) {
       responseBody = contentType.includes('application/json') || text.startsWith('{') ? JSON.parse(text) : text
     }
