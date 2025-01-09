@@ -115,7 +115,7 @@ export class LdCredentialModule {
     verificationMethodId: string,
     challenge: string | undefined,
     domain: string | undefined,
-    purpose: typeof ProofPurpose = !challenge && !domain
+    purpose: typeof ProofPurpose = !challenge // domain is not a mandatory var for AuthenticationProofPurpose per se, but challenge is.
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({
           domain,
