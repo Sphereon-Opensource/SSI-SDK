@@ -24,5 +24,9 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
   nonce?: string
 }
 
+export interface AuthorizationChallengeValidationResponse {
+  presentation_during_issuance_session: string;
+}
+
 export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPresentationExchange & IPDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
