@@ -212,7 +212,7 @@ export class LdCredentialModule {
     domain: string | undefined,
     context: IAgentContext<RequiredAgentMethods>,
     fetchRemoteContexts = false,
-    presentationPurpose: typeof ProofPurpose = !challenge && !domain
+    presentationPurpose: typeof ProofPurpose = !challenge // domain is not a mandatory var for AuthenticationProofPurpose per se, but challenge is.
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({ domain, challenge }),
     checkStatus?: Function,
