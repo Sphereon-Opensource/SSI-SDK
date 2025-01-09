@@ -26,6 +26,7 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
       const { vp_token } = payload
 
       // The only use case where vp_object is an object is JsonLdAsString atm. For arrays, any objects will be parsed along with the array
+      // (Leaving the vp_token JsonLdAsString causes problems because the original credential will remain string and will be interpreted as JWT in some parts of the code)
       if ((vp_token.startsWith('[') && vp_token.endsWith(']')) || CredentialMapper.isJsonLdAsString(vp_token)) {
         payload.vp_token = JSON.parse(vp_token)
       }
