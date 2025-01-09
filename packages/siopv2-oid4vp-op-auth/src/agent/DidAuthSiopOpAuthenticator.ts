@@ -360,29 +360,34 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     const dcqlCredentialsWithCredentials: Map<DcqlCredential, UniqueDigitalCredential> = new Map()
 
     if (authorizationRequestData.presentationDefinitions !== undefined && authorizationRequestData.presentationDefinitions !== null && Array.isArray(authorizationRequestData.presentationDefinitions) && authorizationRequestData?.presentationDefinitions.length > 0) {
-      authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
-        const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
-          presentationDefinition.definition,
-          selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
-        )
+      try {
+        authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
+          const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
+            presentationDefinition.definition,
+            selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
+          )
 
-        if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
-          const uniqueDigitalCredentials: UniqueDigitalCredential[] = verifiableCredentials.map((vc) => {
-            // @ts-ignore FIXME Funke
-            const hash = computeEntryHash(vc)
-            const udc = selectedCredentials.find((udc) => udc.hash == hash)
+          if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
+            let uniqueDigitalCredentials: UniqueDigitalCredential[] = []
+              uniqueDigitalCredentials = verifiableCredentials.map((vc) => {
+                // @ts-ignore FIXME Funke
+                const hash = computeEntryHash(vc)
+                const udc = selectedCredentials.find((udc) => udc.hash == hash)
 
-            if (!udc) {
-              throw Error('UniqueDigitalCredential could not be found')
-            }
-            return udc
-          })
-          verifiableCredentialsWithDefinition.push({
-            definition: presentationDefinition,
-            credentials: uniqueDigitalCredentials,
-          })
-        }
-      })
+                if (!udc) {
+                  throw Error('UniqueDigitalCredential could not be found')
+                }
+                return udc
+              })
+            verifiableCredentialsWithDefinition.push({
+              definition: presentationDefinition,
+              credentials: uniqueDigitalCredentials,
+            })
+          }
+        })
+      } catch (e) {
+        return Promise.reject(e)
+      }
 
       if (verifiableCredentialsWithDefinition.length === 0) {
         return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
