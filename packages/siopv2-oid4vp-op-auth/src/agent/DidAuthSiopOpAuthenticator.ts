@@ -447,7 +447,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return {
       body: responseBody,
       url: response?.url,
-      queryParams: response && decodeUriAsJson(response?.url),
+      queryParams: decodeUriAsJson(response?.url),
     }
   }
 
