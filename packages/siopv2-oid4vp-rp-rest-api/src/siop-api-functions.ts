@@ -68,7 +68,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
         response.statusCode = 200
 
         const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = { presentation_during_issuance_session: verifiedResponse.correlationId }
-        if (authorizationResponse.is_first_party) { // TODO update package to oid4vp
+        if (authorizationResponse.is_first_party) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }

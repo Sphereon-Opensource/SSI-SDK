@@ -360,7 +360,7 @@ export class OpSession {
     const responseOpts = {
       verification,
       issuer,
-      ...(args.isFirstParty && { isFirstParty: args.isFirstParty }), // TODO update to oid4vp
+      ...(args.isFirstParty && { isFirstParty: args.isFirstParty }),
       ...(args.verifiablePresentations && {
         presentationExchange: {
           verifiablePresentations,
