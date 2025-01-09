@@ -115,7 +115,7 @@ export class LdCredentialModule {
     verificationMethodId: string,
     challenge: string | undefined,
     domain: string | undefined,
-    purpose: typeof ProofPurpose = !challenge && !domain
+    purpose: typeof ProofPurpose = !challenge
       ? new AssertionProofPurpose()
       : new AuthenticationProofPurpose({
           domain,
@@ -212,9 +212,7 @@ export class LdCredentialModule {
     domain: string | undefined,
     context: IAgentContext<RequiredAgentMethods>,
     fetchRemoteContexts = false,
-    presentationPurpose: typeof ProofPurpose = !challenge && !domain
-      ? new AssertionProofPurpose()
-      : new AuthenticationProofPurpose({ domain, challenge }),
+    presentationPurpose: typeof ProofPurpose = !challenge ? new AssertionProofPurpose() : new AuthenticationProofPurpose({ domain, challenge }),
     checkStatus?: Function,
     //AssertionProofPurpose()
   ): Promise<IVerifyResult> {
