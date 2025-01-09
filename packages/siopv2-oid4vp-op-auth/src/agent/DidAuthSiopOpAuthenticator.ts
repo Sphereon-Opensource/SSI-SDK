@@ -15,7 +15,7 @@ import {
   NonPersistedIdentity,
   Party
 } from '@sphereon/ssi-sdk.data-store'
-import { Loggers } from '@sphereon/ssi-types'
+import { Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -57,12 +57,13 @@ import {
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
   Siopv2HolderEvent
-} from '../types/siop-service'
+} from '../types'
 import { PEX, Status } from '@sphereon/pex'
 import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
-import { DcqlCredential, DcqlPresentation, DcqlQuery } from 'dcql'
+import { DcqlCredential, DcqlPresentation, DcqlQuery, DcqlSdJwtVcCredential } from 'dcql'
+import { Json } from 'dcql/dist/src/u-dcql'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -396,21 +397,24 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     } else if (authorizationRequestData.dcqlQuery) {
       //TODO Only SD-JWT and MSO MDOC are supported at the moment
       if (this.hasMDocCredentials(selectedCredentials) || this.hasSdJwtCredentials(selectedCredentials)) {
-        selectedCredentials.forEach((vc: any) => {
-          const payload = vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null ? vc.decodedPayload : vc['decoded'] !== undefined && vc['decoded'] !== null ? vc.decoded : undefined
-          const vct = payload?.vct
-          const doctype = payload?.docType
-          const namespaces = payload?.namespaces
-          const credential_format = payload?.credential_format
-          const result: DcqlCredential = {
-            claims: payload,
-            vct,
-            doctype,
-            namespaces,
-            credential_format
-          }
-          dcqlCredentialsWithCredentials.set(result, vc)
-        })
+        try {
+          selectedCredentials.forEach((vc) => {
+            if (this.isSdJwtCredential(vc)) {
+              const payload = (vc.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).decodedPayload
+              const result: DcqlSdJwtVcCredential = {
+                claims: payload as { [x: string]: Json },
+                vct: payload.vct,
+                credential_format: 'vc+sd-jwt'
+              }
+              dcqlCredentialsWithCredentials.set(result, vc)
+              //FIXME MDoc namespaces are incompatible: array of strings vs complex object
+            } else {
+              throw Error(`Invalid credential format: ${vc.digitalCredential.documentFormat}`)
+            }
+          })
+        } catch (e) {
+          return Promise.reject(e)
+        }
 
         const dcqlPresentationRecord: DcqlPresentation.Output = {}
         const queryResult = DcqlQuery.query(authorizationRequestData.dcqlQuery, Array.from(dcqlCredentialsWithCredentials.keys()))
@@ -448,18 +452,22 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private hasMDocCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(credential =>
-          credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
-          credential.digitalCredential.documentType === DocumentType.VC
-    );
+    return credentials.some(this.isMDocCredential);
   };
 
-  private hasSdJwtCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(credential =>
-      credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
+  private isMDocCredential = (credential: UniqueDigitalCredential) => {
+    return credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
       credential.digitalCredential.documentType === DocumentType.VC
-    );
+  }
+
+  private hasSdJwtCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
+    return credentials.some(this.isSdJwtCredential);
   };
+
+  private isSdJwtCredential= (credential: UniqueDigitalCredential) => {
+    return credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
+      credential.digitalCredential.documentType === DocumentType.VC
+  }
 
   private retrieveEncodedCredential = (credential: UniqueDigitalCredential) => {
     // FIXME Remove any
