@@ -407,7 +407,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
                 credential_format: 'vc+sd-jwt'
               }
               dcqlCredentialsWithCredentials.set(result, vc)
-              //FIXME MDoc namespaces are incompatible: array of strings vs complex object
+              //FIXME MDoc namespaces are incompatible: array of strings vs complex object - https://sphereon.atlassian.net/browse/SPRIND-143
             } else {
               throw Error(`Invalid credential format: ${vc.digitalCredential.documentFormat}`)
             }
@@ -420,7 +420,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         const queryResult = DcqlQuery.query(authorizationRequestData.dcqlQuery, Array.from(dcqlCredentialsWithCredentials.keys()))
         for (const [key, value] of Object.entries(queryResult.credential_matches)) {
           if (value.success) {
-            dcqlPresentationRecord[key] = this.retrieveEncodedCredential(dcqlCredentialsWithCredentials.get(value.output)!)
+            dcqlPresentationRecord[key] = this.retrieveEncodedCredential(dcqlCredentialsWithCredentials.get(value.output)!) as string | { [x: string]: Json }
           }
         }
       }
@@ -470,8 +470,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private retrieveEncodedCredential = (credential: UniqueDigitalCredential) => {
-    // FIXME Remove any
-    return (credential as any).original !== undefined && (credential as any).original !== null ? (credential as any).original : (credential as any).compactSdJwtVc
+    return credential.originalVerifiableCredential !== undefined && credential.originalVerifiableCredential !== null &&
+    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== undefined &&
+    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== null ? (credential.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc : credential.originalVerifiableCredential
   }
 
   private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap> {
