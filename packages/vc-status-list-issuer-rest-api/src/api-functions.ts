@@ -175,7 +175,10 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
         await driver.updateStatusListEntry({ ...statusListEntry, statusListIndex, statusList, credentialId, value: value ? '1' : '0' })
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
-        details = await updateStatusIndexFromStatusListCredential({ statusListCredential, statusListIndex, value, keyRef: opts.keyRef }, context)
+        details = await updateStatusIndexFromStatusListCredential(
+          { statusListCredential: statusListCredential, statusListIndex, value, keyRef: opts.keyRef },
+          context,
+        )
         details = await driver.updateStatusList({ statusListCredential: details.statusListCredential })
       }
 

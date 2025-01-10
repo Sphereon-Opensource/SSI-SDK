@@ -1,5 +1,6 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
+  CompactJWT,
   ICredential,
   ICredentialStatus,
   IIssuer,
@@ -24,10 +25,10 @@ import { DataSource } from 'typeorm'
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
-  OAuth2StatusList = 'OAuth2StatusList',
+  OAuthStatusList = 'OAuthStatusList',
 }
 
-export type StatusPurposeOAuth2 = 'active' | 'suspended' | 'revoked' | string
+export type StatusPurposeOAuth = 'active' | 'suspended' | 'revoked' | string
 
 export type StatusList2021Args = {
   encodedList: string
@@ -36,8 +37,8 @@ export type StatusList2021Args = {
   // todo: validFrom and validUntil
 }
 
-export type OAuth2StatusListArgs = {
-  statusPurpose: StatusPurposeOAuth2
+export type OAuthStatusListArgs = {
+  statusPurpose: StatusPurposeOAuth
   expiresAt?: string
 }
 
@@ -50,18 +51,15 @@ export type BaseCreateNewStatusListArgs = {
   proofFormat?: ProofFormat
   keyRef?: string
   statusList2021?: StatusList2021Args
-  oauth2StatusList?: OAuth2StatusListArgs
+  oauthStatusList?: OAuthStatusListArgs
 }
 
 export type UpdateStatusList2021Args = {
-  issuer: string | IIssuer
-  id: string
   statusPurpose: StatusPurpose2021
-  encodedList: string
 }
 
-export type UpdateOAuth2StatusListArgs = {
-  statusPurpose: StatusPurposeOAuth2
+export type UpdateOAuthStatusListArgs = {
+  statusPurpose: StatusPurposeOAuth
   expiresAt?: string
 }
 
@@ -72,12 +70,15 @@ export interface UpdateStatusListFromEncodedListArgs {
   proofFormat?: ProofFormat
   keyRef?: string
   correlationId?: string
+  encodedList: string
+  issuer: string | IIssuer
+  id: string
   statusList2021?: UpdateStatusList2021Args
-  oauth2StatusList?: UpdateOAuth2StatusListArgs
+  oauthStatusList?: UpdateOAuthStatusListArgs
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
-  statusListCredential: OriginalVerifiableCredential
+  statusListCredential: OriginalVerifiableCredential | CompactJWT
   keyRef?: string
   statusListIndex: number | string
   value: boolean
@@ -88,7 +89,7 @@ export interface StatusListDetails {
   length: number
   type: StatusListType
   proofFormat: ProofFormat
-  statusPurpose: StatusPurpose2021
+  statusPurpose?: StatusPurpose2021 | StatusPurposeOAuth
   id: string
   issuer: string | IIssuer
   indexingDirection: StatusListIndexingDirection

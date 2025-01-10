@@ -13,6 +13,7 @@
     "@sd-jwt/jwt-status-list": "^0.9.1",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
