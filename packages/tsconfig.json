@@ -41,7 +41,7 @@
     { "path": "wellknown-did-issuer" },
     { "path": "wellknown-did-verifier" },
     { "path": "issuance-branding" },
-    { "path": "headless-web3-provider" },
+    { "path": "web3-provider-headless" },
     { "path": "event-logger" },
     { "path": "remote-server-rest-api" },
     { "path": "sd-jwt" },
@@ -49,7 +49,7 @@
     { "path": "public-key-hosting" },
     { "path": "resource-resolver" },
     { "path": "oidf-client" },
-    { "path": "oidf-metatdata-server" },
+    { "path": "oidf-metadata-server" },
     { "path": "anomaly-detection" },
     { "path": "geolocation-store" }
   ]
