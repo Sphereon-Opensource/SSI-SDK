@@ -49,8 +49,8 @@ export type BaseCreateNewStatusListArgs = {
   length?: number
   proofFormat?: ProofFormat
   keyRef?: string
-  statusList2021Args?: StatusList2021Args
-  oauth2StatusListArgs?: OAuth2StatusListArgs
+  statusList2021?: StatusList2021Args
+  oauth2StatusList?: OAuth2StatusListArgs
 }
 
 export type UpdateStatusList2021Args = {
