@@ -50,11 +50,8 @@ export type BaseCreateNewStatusListArgs = {
 export type UpdateStatusList2021Args = {
   issuer: string | IIssuer
   id: string
-  type?: StatusListType
   statusPurpose: StatusPurpose2021
   encodedList: string
-  proofFormat?: ProofFormat
-  keyRef?: string
 }
 
 export type UpdateOAuth2StatusListArgs = {
@@ -63,8 +60,12 @@ export type UpdateOAuth2StatusListArgs = {
 }
 
 export interface UpdateStatusListFromEncodedListArgs {
+  type?: StatusListType
   statusListIndex: number | string
   value: boolean
+  proofFormat?: ProofFormat
+  keyRef?: string
+  correlationId?: string
   statusList2021Args?: UpdateStatusList2021Args
   oauth2StatusListArgs?: UpdateOAuth2StatusListArgs
 }
