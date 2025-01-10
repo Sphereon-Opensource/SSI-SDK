@@ -6,13 +6,9 @@ import {
   ICredentialSchemaType,
   IVerifyResult,
   OriginalVerifiableCredential,
-  WrappedVerifiableCredential
+  WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import {
-  IAgentPlugin,
-  IVerifyCredentialArgs,
-  W3CVerifiableCredential as VeramoW3CVerifiableCredential
-} from '@veramo/core'
+import { IAgentPlugin, IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020'
 import fetch from 'cross-fetch'
@@ -27,7 +23,7 @@ import {
   VerificationSubResult,
   VerifyCredentialArgs,
   VerifyMdocCredentialArgs,
-  VerifySDJWTCredentialArgs
+  VerifySDJWTCredentialArgs,
 } from '../index'
 import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 import decodeFrom = com.sphereon.kmp.decodeFrom
@@ -39,7 +35,7 @@ export const credentialValidationMethods: Array<string> = [
   'cvVerifySchema',
   'cvVerifyMdoc',
   'cvVerifySDJWTCredential',
-  'cvVerifyW3CCredential'
+  'cvVerifyW3CCredential',
 ]
 
 /**
@@ -52,7 +48,7 @@ export class CredentialValidation implements IAgentPlugin {
     cvVerifySchema: this.cvVerifySchema.bind(this),
     cvVerifyMdoc: this.cvVerifyMdoc.bind(this),
     cvVerifySDJWTCredential: this.cvVerifySDJWTCredential.bind(this),
-    cvVerifyW3CCredential: this.cvVerifyW3CCredential.bind(this)
+    cvVerifyW3CCredential: this.cvVerifyW3CCredential.bind(this),
   }
 
   private detectSchemas(wrappedVC: WrappedVerifiableCredential): ICredentialSchemaType[] | undefined {
@@ -79,7 +75,7 @@ export class CredentialValidation implements IAgentPlugin {
     const schemaResult = await this.cvVerifySchema({
       credential,
       validationPolicy: policies?.schemaValidation ?? SchemaValidation.WHEN_PRESENT,
-      hasher
+      hasher,
     })
     if (!schemaResult.result) {
       return schemaResult
@@ -89,10 +85,13 @@ export class CredentialValidation implements IAgentPlugin {
     } else if (CredentialMapper.isSdJwtEncoded(credential)) {
       return await this.cvVerifySDJWTCredential({ credential, hasher }, context)
     } else {
-      return await this.cvVerifyW3CCredential({
-        ...args,
-        credential: credential as VeramoW3CVerifiableCredential
-      }, context)
+      return await this.cvVerifyW3CCredential(
+        {
+          ...args,
+          credential: credential as VeramoW3CVerifiableCredential,
+        },
+        context,
+      )
     }
   }
 
@@ -103,7 +102,7 @@ export class CredentialValidation implements IAgentPlugin {
       return {
         result: true,
         source: wrappedCredential,
-        subResults: []
+        subResults: [],
       }
     }
     return this.validateSchema(wrappedCredential, validationPolicy)
@@ -113,17 +112,19 @@ export class CredentialValidation implements IAgentPlugin {
     const schemas: ICredentialSchemaType[] | undefined = this.detectSchemas(wrappedVC)
     if (!schemas) {
       if (validationPolicy === SchemaValidation.ALWAYS) {
-        console.error(`No schema found for credential, but validation policy is set to ALWAYS. Returning false. Credential: ${JSON.stringify(wrappedVC.credential, null, 2)}`)
+        console.error(
+          `No schema found for credential, but validation policy is set to ALWAYS. Returning false. Credential: ${JSON.stringify(wrappedVC.credential, null, 2)}`,
+        )
         return {
           result: false,
           source: wrappedVC,
-          subResults: []
+          subResults: [],
         }
       } else {
         return {
           result: true,
           source: wrappedVC,
-          subResults: []
+          subResults: [],
         }
       }
     }
@@ -133,7 +134,7 @@ export class CredentialValidation implements IAgentPlugin {
     return {
       result: subResults.every((subResult) => subResult.result),
       source: wrappedVC,
-      subResults
+      subResults,
     }
   }
 
@@ -154,7 +155,7 @@ export class CredentialValidation implements IAgentPlugin {
       console.error(error)
       return {
         result: false,
-        error: error
+        error: error,
       }
     }
 
@@ -167,7 +168,7 @@ export class CredentialValidation implements IAgentPlugin {
       console.error(`Schema validation failed for `, wrappedVC.credential)
     }
     return {
-      result: valid
+      result: valid,
     }
   }
 
@@ -182,7 +183,7 @@ export class CredentialValidation implements IAgentPlugin {
         name: 'mdoc',
         critical: true,
         error: true,
-        message: error.message ?? 'Mdoc Issuer Signed VC could not be verified'
+        message: error.message ?? 'Mdoc Issuer Signed VC could not be verified',
       } satisfies IVerifySignatureResult<ICoseKeyJson>
     })
 
@@ -191,8 +192,8 @@ export class CredentialValidation implements IAgentPlugin {
       result: !verification.error,
       subResults: [],
       ...(verification.error && {
-        error: verification.message ?? `Could not verify mdoc from issuer`
-      })
+        error: verification.message ?? `Could not verify mdoc from issuer`,
+      }),
     }
   }
 
@@ -209,9 +210,9 @@ export class CredentialValidation implements IAgentPlugin {
         result,
         ...(!result && {
           error: 'Invalid JWT VC',
-          errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`
+          errorDetails: `JWT VC was not valid with policies: ${JSON.stringify(policies)}`,
         }),
-        subResults: []
+        subResults: [],
       }
     } else {
       // TODO look at what this is doing and make it simple and readable
@@ -236,7 +237,7 @@ export class CredentialValidation implements IAgentPlugin {
         result: result.verified,
         subResults,
         error,
-        errorDetails
+        errorDetails,
       }
     }
   }
@@ -250,7 +251,7 @@ export class CredentialValidation implements IAgentPlugin {
         console.error(error)
         return {
           error: 'Invalid SD-JWT VC',
-          errorDetails: error.message ?? 'SD-JWT VC could not be verified'
+          errorDetails: error.message ?? 'SD-JWT VC could not be verified',
         }
       })
 
@@ -259,7 +260,7 @@ export class CredentialValidation implements IAgentPlugin {
       source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
       result,
       subResults: [],
-      ...(!result && { ...verification })
+      ...(!result && { ...verification }),
     }
   }
 }

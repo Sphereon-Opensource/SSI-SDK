@@ -47,7 +47,7 @@ import {
   SdJwtClaimMetadata,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
+  WrappedVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import {
   IAgentContext,

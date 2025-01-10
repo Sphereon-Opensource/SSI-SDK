@@ -1,5 +1,13 @@
-import { AccessTokenResponse, AuthorizationServerMetadata, CredentialResponse, IssuerMetadata } from '@sphereon/oid4vci-common'
+import {
+  AccessTokenResponse,
+  AuthorizationServerMetadata,
+  CredentialResponse,
+  IssuerMetadata,
+  OpenIDResponse,
+  WellKnownEndpoints,
+} from '@sphereon/oid4vci-common'
 import { assertValidAccessTokenRequest, createAccessTokenResponse, VcIssuer } from '@sphereon/oid4vci-issuer'
+import { retrieveWellknown } from '@sphereon/oid4vci-client'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { DIDDocument, IAgentPlugin } from '@veramo/core'
@@ -82,13 +90,41 @@ export class OID4VCIIssuer implements IAgentPlugin {
     })
   }
 
+  private getExternalAS(issuerMetadata: IssuerMetadata): string | undefined {
+    if ('authorization_servers' in issuerMetadata && Array.isArray(issuerMetadata.authorization_servers)) {
+      return issuerMetadata.authorization_servers.find((as) => as.token_endpoint)
+    }
+    return undefined
+  }
+
   private async createIssuerInstance(args: IIssuerInstanceArgs, context: IRequiredContext): Promise<IssuerInstance> {
     const credentialIssuer = args.credentialIssuer ?? OID4VCIIssuer._DEFAULT_OPTS_KEY
     //todo: prob doesn't make sense as credentialIssuer is mandatory anyway
 
     const metadataOpts = await this.getMetadataOpts({ ...args, credentialIssuer }, context)
     const issuerMetadata = await this.getIssuerMetadata({ ...args, credentialIssuer }, context)
-    const authorizationServerMetadata = await this.getAuthorizationServerMetadata({ ...args, credentialIssuer }, context)
+    const externalAS = this.getExternalAS(issuerMetadata)
+    let asMetadataResponse: OpenIDResponse<AuthorizationServerMetadata> | undefined = undefined
+    if (externalAS) {
+      // Let's try OIDC first and then fallback to OAuth2
+      asMetadataResponse = await retrieveWellknown(externalAS, WellKnownEndpoints.OPENID_CONFIGURATION, {
+        errorOnNotFound: false,
+      })
+      if (!asMetadataResponse) {
+        asMetadataResponse = await retrieveWellknown(externalAS, WellKnownEndpoints.OAUTH_AS, {
+          errorOnNotFound: true,
+        })
+      }
+    }
+    const authorizationServerMetadata = asMetadataResponse?.successBody
+      ? asMetadataResponse!.successBody
+      : await this.getAuthorizationServerMetadataFromStore(
+          {
+            ...args,
+            credentialIssuer,
+          },
+          context,
+        )
     const issuerOpts = await this.getIssuerOpts({ ...args, credentialIssuer }, context)
     if (!issuerOpts.resolveOpts) {
       issuerOpts.resolveOpts = { ...issuerOpts.didOpts?.resolveOpts, ...this._opts.resolveOpts }
@@ -170,14 +206,12 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId: metadataOpts.storeId,
     })) as IssuerMetadata
     if (!metadata) {
-      throw Error(
-        `Authorization server metadata not found for issuer ${opts.credentialIssuer}, namespace ${opts.namespace} and store ${opts.storeId}`,
-      )
+      throw Error(`Issuer metadata not found for issuer ${opts.credentialIssuer}, namespace ${opts.namespace} and store ${opts.storeId}`)
     }
     return metadata
   }
 
-  private async getAuthorizationServerMetadata(
+  private async getAuthorizationServerMetadataFromStore(
     opts: {
       credentialIssuer: string
       storeId?: string
@@ -193,7 +227,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId: metadataOpts.storeId,
     })) as AuthorizationServerMetadata
     if (!metadata) {
-      throw Error(`Credential issuer ${opts.credentialIssuer} metadata  not found for namespace ${opts.namespace} and store ${opts.storeId}`)
+      throw Error(`Authorization server ${opts.credentialIssuer} metadata  not found for namespace ${opts.namespace} and store ${opts.storeId}`)
     }
     return metadata
   }

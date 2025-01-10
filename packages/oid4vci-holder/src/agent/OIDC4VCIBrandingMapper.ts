@@ -1,15 +1,6 @@
 import { CredentialsSupportedDisplay, NameAndLocale } from '@sphereon/oid4vci-common'
-import {
-  IBasicCredentialClaim,
-  IBasicCredentialLocaleBranding,
-  IBasicIssuerLocaleBranding
-} from '@sphereon/ssi-sdk.data-store'
-import {
-  SdJwtClaimDisplayMetadata,
-  SdJwtClaimMetadata,
-  SdJwtClaimPath,
-  SdJwtTypeDisplayMetadata
-} from '@sphereon/ssi-types'
+import { IBasicCredentialClaim, IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
+import { SdJwtClaimDisplayMetadata, SdJwtClaimMetadata, SdJwtClaimPath, SdJwtTypeDisplayMetadata } from '@sphereon/ssi-types'
 import {
   IssuerLocaleBrandingFromArgs,
   Oid4vciCombineDisplayLocalesFromArgs,
@@ -26,7 +17,9 @@ import {
 
 // FIXME should we not move this to the branding plugin?
 
-export const oid4vciGetCredentialBrandingFrom = async (args: Oid4vciGetCredentialBrandingFromArgs): Promise<Array<IBasicCredentialLocaleBranding>> => {
+export const oid4vciGetCredentialBrandingFrom = async (
+  args: Oid4vciGetCredentialBrandingFromArgs,
+): Promise<Array<IBasicCredentialLocaleBranding>> => {
   const { credentialDisplay, issuerCredentialSubject } = args
 
   return oid4vciCombineDisplayLocalesFrom({
@@ -35,7 +28,9 @@ export const oid4vciGetCredentialBrandingFrom = async (args: Oid4vciGetCredentia
   })
 }
 
-export const oid4vciCredentialDisplayLocalesFrom = async (args: Oid4vciCredentialDisplayLocalesFromArgs): Promise<Map<string, CredentialsSupportedDisplay>> => {
+export const oid4vciCredentialDisplayLocalesFrom = async (
+  args: Oid4vciCredentialDisplayLocalesFromArgs,
+): Promise<Map<string, CredentialsSupportedDisplay>> => {
   const { credentialDisplay } = args
   return credentialDisplay.reduce((localeDisplays, display) => {
     const localeKey = display.locale || ''
@@ -44,7 +39,9 @@ export const oid4vciCredentialDisplayLocalesFrom = async (args: Oid4vciCredentia
   }, new Map<string, CredentialsSupportedDisplay>())
 }
 
-export const oid4vciIssuerCredentialSubjectLocalesFrom = async (args: Oid4vciIssuerCredentialSubjectLocalesFromArgs): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
+export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
+  args: Oid4vciIssuerCredentialSubjectLocalesFromArgs,
+): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
   const { issuerCredentialSubject } = args
   const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
 
@@ -125,7 +122,9 @@ export const oid4vciCredentialLocaleBrandingFrom = async (args: Oid4vciCredentia
   }
 }
 
-export const oid4vciCombineDisplayLocalesFrom = async (args: Oid4vciCombineDisplayLocalesFromArgs): Promise<Array<IBasicCredentialLocaleBranding>> => {
+export const oid4vciCombineDisplayLocalesFrom = async (
+  args: Oid4vciCombineDisplayLocalesFromArgs,
+): Promise<Array<IBasicCredentialLocaleBranding>> => {
   const {
     credentialDisplayLocales = new Map<string, CredentialsSupportedDisplay>(),
     issuerCredentialSubjectLocales = new Map<string, Array<IBasicCredentialClaim>>(),
@@ -156,7 +155,9 @@ export const sdJwtGetCredentialBrandingFrom = async (args: SdJwtGetCredentialBra
   })
 }
 
-export const sdJwtCredentialDisplayLocalesFrom = async (args: SdJwtCredentialDisplayLocalesFromArgs): Promise<Map<string, SdJwtTypeDisplayMetadata>> => {
+export const sdJwtCredentialDisplayLocalesFrom = async (
+  args: SdJwtCredentialDisplayLocalesFromArgs,
+): Promise<Map<string, SdJwtTypeDisplayMetadata>> => {
   const { credentialDisplay } = args
   return credentialDisplay.reduce((localeDisplays, display) => {
     const localeKey = display.lang || ''
@@ -165,14 +166,16 @@ export const sdJwtCredentialDisplayLocalesFrom = async (args: SdJwtCredentialDis
   }, new Map<string, SdJwtTypeDisplayMetadata>())
 }
 
-export const sdJwtCredentialClaimLocalesFrom = async (args: SdJwtCredentialClaimLocalesFromArgs): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
+export const sdJwtCredentialClaimLocalesFrom = async (
+  args: SdJwtCredentialClaimLocalesFromArgs,
+): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
   const { claimsMetadata } = args
   const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
 
   claimsMetadata.forEach((claim: SdJwtClaimMetadata): void => {
     claim.display?.forEach((display: SdJwtClaimDisplayMetadata): void => {
-      const { lang = '', label } = display;
-      const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.');
+      const { lang = '', label } = display
+      const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.')
       if (!localeClaims.has(lang)) {
         localeClaims.set(lang, [])
       }
@@ -180,7 +183,7 @@ export const sdJwtCredentialClaimLocalesFrom = async (args: SdJwtCredentialClaim
     })
   })
 
-  return localeClaims;
+  return localeClaims
 }
 
 export const sdJwtCredentialLocaleBrandingFrom = async (args: SdJwtCredentialLocaleBrandingFromArgs): Promise<IBasicCredentialLocaleBranding> => {
@@ -213,17 +216,15 @@ export const sdJwtCredentialLocaleBrandingFrom = async (args: SdJwtCredentialLoc
     }),
     ...(credentialDisplay.rendering?.simple?.background_color && {
       background: {
-        color: credentialDisplay.rendering.simple.background_color ,
+        color: credentialDisplay.rendering.simple.background_color,
       },
     }),
   }
 }
 
 export const sdJwtCombineDisplayLocalesFrom = async (args: SdJwtCombineDisplayLocalesFromArgs): Promise<Array<IBasicCredentialLocaleBranding>> => {
-  const {
-    credentialDisplayLocales = new Map<string, SdJwtTypeDisplayMetadata>(),
-    claimsMetadata = new Map<string, Array<IBasicCredentialClaim>>(),
-  } = args
+  const { credentialDisplayLocales = new Map<string, SdJwtTypeDisplayMetadata>(), claimsMetadata = new Map<string, Array<IBasicCredentialClaim>>() } =
+    args
 
   const locales: Array<string> = Array.from(new Set([...claimsMetadata.keys(), ...credentialDisplayLocales.keys()]))
 

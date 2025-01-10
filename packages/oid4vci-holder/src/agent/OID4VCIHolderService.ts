@@ -57,11 +57,7 @@ import {
   VerificationResult,
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
-import {
-  oid4vciGetCredentialBrandingFrom,
-  sdJwtGetCredentialBrandingFrom,
-  issuerLocaleBrandingFrom
-} from './OIDC4VCIBrandingMapper'
+import { oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom, issuerLocaleBrandingFrom } from './OIDC4VCIBrandingMapper'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -83,14 +79,14 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       if (sdJwtTypeMetadata) {
         mappedLocaleBranding = await sdJwtGetCredentialBrandingFrom({
           credentialDisplay: sdJwtTypeMetadata.display,
-          claimsMetadata: sdJwtTypeMetadata.claims
+          claimsMetadata: sdJwtTypeMetadata.claims,
         })
       } else {
         mappedLocaleBranding = await oid4vciGetCredentialBrandingFrom({
           credentialDisplay: credentialsConfigSupported.display,
           issuerCredentialSubject:
-          // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
-          credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
+            // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
+            credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
         })
       }
       // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use

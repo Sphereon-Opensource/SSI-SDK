@@ -1,9 +1,4 @@
-import {
-  decodeUriAsJson,
-  PresentationSignCallback,
-  SupportedVersion,
-  VerifiedAuthorizationRequest
-} from '@sphereon/did-auth-siop'
+import { decodeUriAsJson, PresentationSignCallback, SupportedVersion, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -13,7 +8,7 @@ import {
   Identity,
   IdentityOrigin,
   NonPersistedIdentity,
-  Party
+  Party,
 } from '@sphereon/ssi-sdk.data-store'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
@@ -27,14 +22,10 @@ import {
   schema,
   SelectableCredentialsMap,
   Siopv2AuthorizationResponseData,
-  VerifiableCredentialsWithDefinition
+  VerifiableCredentialsWithDefinition,
 } from '../index'
 import { Siopv2Machine } from '../machine/Siopv2Machine'
-import {
-  getSelectableCredentials,
-  siopSendAuthorizationResponse,
-  translateCorrelationIdToName
-} from '../services/Siopv2MachineService'
+import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
 import {
   IDidAuthSiopOpAuthenticator,
@@ -42,7 +33,7 @@ import {
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
-  IRequiredContext
+  IRequiredContext,
 } from '../types/IDidAuthSiopOpAuthenticator'
 import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
 
@@ -56,7 +47,7 @@ import {
   RetrieveContactArgs,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
-  Siopv2HolderEvent
+  Siopv2HolderEvent,
 } from '../types/siop-service'
 import { PEX, Status } from '@sphereon/pex'
 import { computeEntryHash } from '@veramo/utils'
@@ -256,7 +247,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
           verifiedAuthorizationRequest.presentationDefinitions.length > 0)
           ? verifiedAuthorizationRequest.presentationDefinitions
           : undefined,
-      dcqlQuery: verifiedAuthorizationRequest.dcqlQuery
+      dcqlQuery: verifiedAuthorizationRequest.dcqlQuery,
     }
   }
 
@@ -387,12 +378,16 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       if (verifiableCredentialsWithDefinition.length === 0) {
         return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
       }
-
     } else if (authorizationRequestData.dcqlQuery !== undefined && authorizationRequestData.dcqlQuery !== null) {
       //TODO Only SD-JWT and MSO MDOC are supported at the moment
       if (this.hasMDocCredentials(selectedCredentials) || this.hasSdJwtCredentials(selectedCredentials)) {
         selectedCredentials.forEach((vc: any) => {
-          const payload = vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null ? vc.decodedPayload : vc['decoded'] !== undefined && vc['decoded'] !== null ? vc.decoded : undefined
+          const payload =
+            vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null
+              ? vc.decodedPayload
+              : vc['decoded'] !== undefined && vc['decoded'] !== null
+                ? vc.decoded
+                : undefined
           const vct = payload?.vct
           const docType = payload?.docType
           const namespaces = payload?.namespaces
@@ -400,7 +395,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
             claims: payload,
             vct,
             docType,
-            namespaces
+            namespaces,
           }
           dcqlCredentialsWithCredentials.set(result, vc)
         })
@@ -441,22 +436,26 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private hasMDocCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(credential =>
-          credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
-          credential.digitalCredential.documentType === DocumentType.VC
-    );
-  };
+    return credentials.some(
+      (credential) =>
+        credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
+        credential.digitalCredential.documentType === DocumentType.VC,
+    )
+  }
 
   private hasSdJwtCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(credential =>
-      credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
-      credential.digitalCredential.documentType === DocumentType.VC
-    );
-  };
+    return credentials.some(
+      (credential) =>
+        credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
+        credential.digitalCredential.documentType === DocumentType.VC,
+    )
+  }
 
   private retrieveEncodedCredential = (credential: UniqueDigitalCredential) => {
     // FIXME Remove any
-    return (credential as any).original !== undefined && (credential as any).original !== null ? (credential as any).original : (credential as any).compactSdJwtVc
+    return (credential as any).original !== undefined && (credential as any).original !== null
+      ? (credential as any).original
+      : (credential as any).compactSdJwtVc
   }
 
   private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap> {

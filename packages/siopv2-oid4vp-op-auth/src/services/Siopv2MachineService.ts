@@ -165,11 +165,9 @@ export const siopSendAuthorizationResponse = async (
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
     })
-
   } else if (args.dcqlQuery !== undefined && args.dcqlQuery !== null) {
-
     const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
-    const vcs = credentialsAndDefinitions?.flatMap(cd => cd.credentials)!
+    const vcs = credentialsAndDefinitions?.flatMap((cd) => cd.credentials)!
     const domain =
       ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ??
       request.issuer ??
@@ -190,7 +188,7 @@ export const siopSendAuthorizationResponse = async (
       ? firstVC.decodedPayload.cnf?.jwk
         ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
           //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
-        `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+          `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
         : firstVC.decodedPayload.sub
       : Array.isArray(firstVC.credentialSubject)
         ? firstVC.credentialSubject[0].id
@@ -244,7 +242,7 @@ export const siopSendAuthorizationResponse = async (
         claims: payload,
         vct,
         docType,
-        namespaces
+        namespaces,
       }
       dcqlCredentialToCredential.set(result, vc)
     })
@@ -252,13 +250,16 @@ export const siopSendAuthorizationResponse = async (
     const presentation: DcqlPresentationRecord.Output = {}
     for (const [key, value] of Object.entries(queryResult.credential_matches)) {
       const credential = dcqlCredentialToCredential.get(value.output as DcqlCredentialRepresentation)!
-      presentation[key] = (credential.originalVerifiableCredential as any)['compactSdJwtVc'] !== undefined ? (credential.originalVerifiableCredential as any).compactSdJwtVc : (credential.originalCredential as any).original
+      presentation[key] =
+        (credential.originalVerifiableCredential as any)['compactSdJwtVc'] !== undefined
+          ? (credential.originalVerifiableCredential as any).compactSdJwtVc
+          : (credential.originalCredential as any).original
     }
 
     return await session.sendAuthorizationResponse({
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
-      dcqlQuery: { encodedPresentationRecord: DcqlPresentationRecord.parse(presentation) }
+      dcqlQuery: { encodedPresentationRecord: DcqlPresentationRecord.parse(presentation) },
     })
   }
   return undefined
