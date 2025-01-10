@@ -92,7 +92,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
 
   private getExternalAS(issuerMetadata: IssuerMetadata): string | undefined {
     if ('authorization_servers' in issuerMetadata && Array.isArray(issuerMetadata.authorization_servers)) {
-      return issuerMetadata.authorization_servers.find((as) => as.token_endpoint)
+      return issuerMetadata.authorization_servers.find((as) => as !== issuerMetadata.credential_issuer)
     }
     return undefined
   }
