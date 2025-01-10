@@ -125,7 +125,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
           },
           context,
         )
-    const issuerOpts = await this.getIssuerOpts({ ...args, credentialIssuer }, context)
+    const issuerOpts = await this.getIssuerOptsFromStore({ ...args, credentialIssuer }, context)
     if (!issuerOpts.resolveOpts) {
       issuerOpts.resolveOpts = { ...issuerOpts.didOpts?.resolveOpts, ...this._opts.resolveOpts }
     }
@@ -153,7 +153,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     return this.instances.get(credentialIssuer)!
   }
 
-  private async getIssuerOpts(
+  private async getIssuerOptsFromStore(
     opts: {
       credentialIssuer: string
       storeId?: string
@@ -165,7 +165,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     const storeId = await this.storeId(opts, context)
     const namespace = await this.namespace(opts, context)
     const options = await context.agent.oid4vciStoreGetIssuerOpts({
-      metadataType: 'authorizationServer',
+      metadataType: 'issuer',
       correlationId: credentialIssuer,
       storeId,
       namespace,
