@@ -23,24 +23,31 @@ import {
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
 
-export interface CreateNewStatusListFuncArgs extends Omit<StatusList2021ToVerifiableCredentialArgs, 'encodedList'> {
-  correlationId: string
+export type StatusList2021Args = {
+  encodedList: string
+  indexingDirection: StatusListIndexingDirection
+  statusPurpose?: StatusPurpose2021
+  // todo: validFrom and validUntil
+}
+
+export type OAuth2StatusListArgs = {
+  status: 'active' | 'suspended' | 'revoked'
+  expiresAt?: string
+}
+
+export type BaseCreateNewStatusListArgs = {
+  type: StatusListType
+  id: string
+  issuer: string | IIssuer
+  correlationId?: string
   length?: number
-}
-
-export interface UpdateStatusListFromEncodedListArgs extends StatusList2021ToVerifiableCredentialArgs {
-  statusListIndex: number | string
-  value: boolean
-}
-
-export interface UpdateStatusListFromStatusListCredentialArgs {
-  statusListCredential: OriginalVerifiableCredential
+  proofFormat?: ProofFormat
   keyRef?: string
-  statusListIndex: number | string
-  value: boolean
+  statusList2021Args?: StatusList2021Args
+  oauth2StatusListArgs?: OAuth2StatusListArgs
 }
 
-export interface StatusList2021ToVerifiableCredentialArgs {
+export type UpdateStatusList2021Args = {
   issuer: string | IIssuer
   id: string
   type?: StatusListType
@@ -48,8 +55,25 @@ export interface StatusList2021ToVerifiableCredentialArgs {
   encodedList: string
   proofFormat?: ProofFormat
   keyRef?: string
+}
 
-  // todo: validFrom and validUntil
+export type UpdateOAuth2StatusListArgs = {
+  status: 'active' | 'suspended' | 'revoked'
+  expiresAt?: string
+}
+
+export interface UpdateStatusListFromEncodedListArgs {
+  statusListIndex: number | string
+  value: boolean
+  statusList2021Args?: UpdateStatusList2021Args
+  oauth2StatusListArgs?: UpdateOAuth2StatusListArgs
+}
+
+export interface UpdateStatusListFromStatusListCredentialArgs {
+  statusListCredential: OriginalVerifiableCredential
+  keyRef?: string
+  statusListIndex: number | string
+  value: boolean
 }
 
 export interface StatusListDetails {
@@ -117,13 +141,20 @@ export interface IStatusListPlugin extends IPluginMethodMap {
   slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListDetails>
 }
 
+export type CreateNewStatusListFuncArgs = BaseCreateNewStatusListArgs
+
+export type CreateNewStatusListArgs = BaseCreateNewStatusListArgs & {
+  dataSource?: OrPromise<DataSource>
+  dbName?: string
+  isDefault?: boolean
+}
+
 export type IAddStatusToCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataSource'> & {
   credential: CredentialWithStatusSupport
 }
 
 export interface IIssueCredentialStatusOpts {
   dataSource?: DataSource
-
   credentialId?: string // An id to use for the credential. Normally should be set as the crdential.id value
   statusListId?: string // Explicit status list to use. Determines the id from the credentialStatus object in the VC itself or uses the default otherwise
   statusListIndex?: number | string
@@ -136,12 +167,6 @@ export type GetStatusListArgs = {
   correlationId?: string
   dataSource?: OrPromise<DataSource>
   dbName?: string
-}
-
-export type CreateNewStatusListArgs = CreateNewStatusListFuncArgs & {
-  dataSource?: OrPromise<DataSource>
-  dbName?: string
-  isDefault?: boolean
 }
 
 export type CredentialWithStatusSupport = ICredential | CredentialPayload | IVerifiableCredential

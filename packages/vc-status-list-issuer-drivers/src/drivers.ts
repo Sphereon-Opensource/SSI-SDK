@@ -131,28 +131,15 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     }
     const credentialIdMode = args.credentialIdMode ?? StatusListCredentialIdMode.ISSUANCE
     const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
-    const entity = await (
-      await this.statusListStore.getStatusListRepo()
-    ).findOne({
-      where: [
-        {
-          id: details.id,
-        },
-        {
-          correlationId,
-        },
-      ],
-    })
-    if (entity) {
-      throw Error(`Status list ${details.id}, correlationId ${args.correlationId} already exists`)
-    }
-    this._statusListLength = details.length
+
+    // (StatusListStore does the duplicate entity check)
     await this.statusListStore.addStatusList({
       ...details,
       credentialIdMode,
       correlationId,
       driverType: this.getType(),
     })
+    this._statusListLength = details.length
     return details
   }
 

@@ -3221,6 +3221,9 @@ importers:
 
   packages/vc-status-list:
     dependencies:
+      '@sd-jwt/jwt-status-list':
+        specifier: ^0.9.1
+        version: 0.9.1
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -5915,6 +5918,10 @@ packages:
     resolution: {integrity: sha512-o/Mg/Zg21poFsPXuxtPD9sdXq2b/0L+rb9gxU2k1rp1aT+DWmqD0k8v0Ttr2tlMc8l1xXQNA8FLXbL1AdLRmbQ==}
     engines: {node: '>=18'}
 
+  '@sd-jwt/jwt-status-list@0.9.1':
+    resolution: {integrity: sha512-vdk9LKmhZWNbR3K4MFPwJ/ms04UKpDpxNt+CgTuvP++xgcdgmMj8WPiqxZznNssaPPe5XI+THgFn0w1O7gXTSg==}
+    engines: {node: '>=18'}
+
   '@sd-jwt/present@0.7.2':
     resolution: {integrity: sha512-mQV85u2+mLLy2VZ9Wx2zpaB6yTDnbhCfWkP7eeCrzJQHBKAAHko8GrylEFmLKewFIcajS/r4lT/zHOsCkp5pZw==}
     engines: {node: '>=18'}
@@ -5925,6 +5932,10 @@ packages:
 
   '@sd-jwt/types@0.7.2':
     resolution: {integrity: sha512-1NRKowiW0ZiB9SGLApLPBH4Xk8gDQJ+nA9NdZ+uy6MmJKLEwjuJxO7yTvRIv/jX/0/Ebh339S7Kq4RD2AiFuRg==}
+    engines: {node: '>=18'}
+
+  '@sd-jwt/types@0.9.1':
+    resolution: {integrity: sha512-/Ylzbpre9HQdBrRSRS3bivFdYtwkLM99Ye6gEZEMsJCb231Z1LKdzvmN35H/335ZV4cFYsT5IVM9PurEl6GoLQ==}
     engines: {node: '>=18'}
 
   '@sd-jwt/utils@0.7.2':
@@ -6035,7 +6046,6 @@ packages:
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
-    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -16835,6 +16845,12 @@ snapshots:
       base64url: 3.0.1
       pako: 2.1.0
 
+  '@sd-jwt/jwt-status-list@0.9.1':
+    dependencies:
+      '@sd-jwt/types': 0.9.1
+      base64url: 3.0.1
+      pako: 2.1.0
+
   '@sd-jwt/present@0.7.2':
     dependencies:
       '@sd-jwt/decode': 0.7.2
@@ -16848,6 +16864,8 @@ snapshots:
       '@sd-jwt/utils': 0.7.2
 
   '@sd-jwt/types@0.7.2': {}
+
+  '@sd-jwt/types@0.9.1': {}
 
   '@sd-jwt/utils@0.7.2':
     dependencies:

@@ -225,7 +225,7 @@ export interface IVerifyResult {
       verified: boolean
       error?: IError
       log: [{ id: string; valid: boolean }]
-    },
+    }
   ]
 
   statusResult?: IVerifyStatusResult
@@ -278,6 +278,7 @@ export interface IErrorDetails {
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
+  OAuth2StatusList = 'OAuth2StatusList',
 }
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
