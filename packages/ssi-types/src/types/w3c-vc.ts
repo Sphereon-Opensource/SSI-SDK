@@ -278,7 +278,6 @@ export interface IErrorDetails {
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
-  OAuth2StatusList = 'OAuth2StatusList',
 }
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string

@@ -9,7 +9,6 @@ import {
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
-  StatusListType,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import {
@@ -23,6 +22,13 @@ import {
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
 
+export enum StatusListType {
+  StatusList2021 = 'StatusList2021',
+  OAuth2StatusList = 'OAuth2StatusList',
+}
+
+export type StatusPurposeOAuth2 = 'active' | 'suspended' | 'revoked' | string
+
 export type StatusList2021Args = {
   encodedList: string
   indexingDirection: StatusListIndexingDirection
@@ -31,7 +37,7 @@ export type StatusList2021Args = {
 }
 
 export type OAuth2StatusListArgs = {
-  status: 'active' | 'suspended' | 'revoked'
+  statusPurpose: StatusPurposeOAuth2
   expiresAt?: string
 }
 
@@ -55,7 +61,7 @@ export type UpdateStatusList2021Args = {
 }
 
 export type UpdateOAuth2StatusListArgs = {
-  status: 'active' | 'suspended' | 'revoked'
+  statusPurpose: StatusPurposeOAuth2
   expiresAt?: string
 }
 
@@ -66,8 +72,8 @@ export interface UpdateStatusListFromEncodedListArgs {
   proofFormat?: ProofFormat
   keyRef?: string
   correlationId?: string
-  statusList2021Args?: UpdateStatusList2021Args
-  oauth2StatusListArgs?: UpdateOAuth2StatusListArgs
+  statusList2021?: UpdateStatusList2021Args
+  oauth2StatusList?: UpdateOAuth2StatusListArgs
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
@@ -102,6 +108,16 @@ export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
   statusPurpose: StatusPurpose2021
   statusListIndex: string
   statusListCredential: string
+}
+
+export interface StatusList2021ToVerifiableCredentialArgs {
+  issuer: string | IIssuer
+  id: string
+  type?: StatusListType
+  proofFormat?: ProofFormat
+  keyRef?: string
+  encodedList: string
+  statusPurpose: StatusPurpose2021
 }
 
 /**
