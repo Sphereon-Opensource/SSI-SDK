@@ -3,7 +3,7 @@ import { IPresentationDefinition } from '@sphereon/pex'
 import { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import { blake2bHex } from 'blakejs'
 import { replaceNullWithUndefined } from '../FormattingUtils'
-import { DcqlQuery } from '@sphereon/ssi-types/dist/types/dcql'
+import { DcqlQueryREST } from '@sphereon/ssi-types'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
   const result: PresentationDefinitionItem = {
@@ -14,7 +14,7 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     name: entity.name,
     purpose: entity.purpose,
     definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
-    dcqlPayload: JSON.parse(entity.dcqlPayload) as DcqlQuery,
+    dcqlPayload: JSON.parse(entity.dcqlPayload) as DcqlQueryREST,
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }

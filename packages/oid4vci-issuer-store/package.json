@@ -14,7 +14,7 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-feature.SPRIND.137.254",
+    "@sphereon/oid4vci-common": "0.16.1-feature.VDX.341.dcql.275",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
