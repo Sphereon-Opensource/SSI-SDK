@@ -7,6 +7,17 @@ import { createHeaderAndPayload, StatusList, StatusListJWTHeaderParameters, Stat
 import { JWTPayload } from 'did-jwt'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
+
+type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>
+
+export const BITS_PER_STATUS_DEFAULT = 1
+export const DEFAULT_LIST_LENGTH = 65536
+export const DEFAULT_PROOF_FORMAT = 'jwt' as const
+export const STATUS_LIST_JWT_HEADER: StatusListJWTHeaderParameters = {
+  alg: 'EdDSA',
+  typ: 'statuslist+jwt',
+}
 
 export class OAuthStatusListImplementation implements IStatusList {
   async createNewStatusList(
@@ -18,45 +29,29 @@ export class OAuthStatusListImplementation implements IStatusList {
       correlationId?: string
       expiresAt?: string
       length?: number
+      bitsPerStatus?: BitsPerStatus
     },
-    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>,
+    context: IRequiredContext,
   ): Promise<StatusListResult> {
-    const proofFormat = args?.proofFormat ?? 'jwt'
-    if (proofFormat !== 'jwt') {
+    const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
+    if (proofFormat !== DEFAULT_PROOF_FORMAT) {
       throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
     }
 
     const { issuer, id } = args
-
-    const issuerString = typeof args.issuer === 'string' ? args.issuer : args.issuer.id
-    const identifier = await this.resolveIdentifier(context, issuerString, args.keyRef)
-
+    const length = args.length ?? DEFAULT_LIST_LENGTH
+    const bitsPerStatus = args.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
+    const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
-    const length = args.length ?? 100 // Default length if not specified
 
-    // Initialize a status list with the specified length, all set to 0 (not revoked)
     const initialStatuses = new Array(length).fill(0)
-    const statusList = new StatusList(initialStatuses, 1) // TODO bits per status config
+    const statusList = new StatusList(initialStatuses, bitsPerStatus)
     const encodedList = statusList.compressStatusList()
-    const payload: JWTPayload = {
-      iss: issuerString,
-      sub: id,
-      iat: Math.floor(new Date().getTime() / 1000),
-    }
-    const header: StatusListJWTHeaderParameters = {
-      alg: 'EdDSA',
-      typ: 'statuslist+jwt',
-    }
-    const values = createHeaderAndPayload(statusList, payload, header)
-    const signedPayload = await context.agent.jwtCreateJwsCompactSignature({
-      issuer: { ...identifier, noIssPayloadUpdate: false },
-      protectedHeader: values.header,
-      payload: values.payload,
-    })
+    const { jwt } = await this.createSignedPayload(context, statusList, issuerString, id, args.keyRef)
 
     return {
       encodedList,
-      statusListCredential: signedPayload.jwt,
+      statusListCredential: jwt,
       length,
       type: StatusListType.OAuthStatusList,
       proofFormat,
@@ -68,19 +63,6 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
   }
 
-  private async resolveIdentifier(context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>, issuer: string, keyRef?: string) {
-    const identifier = keyRef
-      ? await context.agent.identifierManagedGetByKid({
-          identifier: keyRef,
-        })
-      : await context.agent.identifierManagedGet({
-          identifier: issuer,
-          vmRelationship: 'assertionMethod',
-          offlineWhenNoDIDRegistered: true,
-        })
-    return identifier
-  }
-
   async updateStatusListIndex(
     args: {
       statusListCredential: CompactJWT
@@ -88,7 +70,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       statusListIndex: number | string
       value: boolean
     },
-    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>,
+    context: IRequiredContext,
   ): Promise<StatusListDetails> {
     const { statusListCredential, value } = args
     const sourcePayload = decodeStatusListJWT(statusListCredential)
@@ -109,32 +91,14 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     statusList.setStatus(index, value ? 1 : 0)
-    const updatedEncodedList = await statusList.compressStatusList()
-    const identifier = await this.resolveIdentifier(context, issuer, args.keyRef)
+    const { jwt, encodedList } = await this.createSignedPayload(context, statusList, issuer, id, args.keyRef)
 
-    const payload: JWTPayload = {
-      iss: issuer,
-      sub: id,
-      iat: Math.floor(new Date().getTime() / 1000),
-    }
-    const header: StatusListJWTHeaderParameters = {
-      alg: 'EdDSA',
-      typ: 'statuslist+jwt',
-    }
-    const values = createHeaderAndPayload(statusList, payload, header)
-    const signedPayload = await context.agent.jwtCreateJwsCompactSignature({
-      issuer: { ...identifier, noIssPayloadUpdate: false },
-      protectedHeader: values.header,
-      payload: values.payload,
-    })
-
-    // Return details without credential-specific fields
     return {
-      encodedList: updatedEncodedList,
-      statusListCredential: signedPayload.jwt,
+      encodedList,
+      statusListCredential: jwt,
       length: statusList.statusList.length,
       type: StatusListType.OAuthStatusList,
-      proofFormat: 'jwt',
+      proofFormat: DEFAULT_PROOF_FORMAT,
       id,
       issuer,
       statusPurpose: 'active',
@@ -142,31 +106,28 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
   }
 
-  async updateStatusListFromEncodedList(
-    args: UpdateStatusListFromEncodedListArgs,
-    context: IAgentContext<ICredentialPlugin>,
-  ): Promise<StatusListDetails> {
+  async updateStatusListFromEncodedList(args: UpdateStatusListFromEncodedListArgs, context: IRequiredContext): Promise<StatusListDetails> {
     if (!args.oauthStatusList) {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
     }
 
     const { statusPurpose } = args.oauthStatusList
     const { issuer, id } = getAssertedValues(args)
+    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
+    const issuerString = typeof issuer === 'string' ? issuer : issuer.id
 
-    const decodedList = StatusList.decompressStatusList(args.encodedList, 1)
-    const updatedEncodedList = await decodedList.compressStatusList()
+    const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus)
+    const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
+    listToUpdate.setStatus(index, args.value ? 1 : 0)
+
+    const { jwt, encodedList } = await this.createSignedPayload(context, listToUpdate, issuerString, id, args.keyRef)
 
     return {
-      encodedList: updatedEncodedList,
-      statusListCredential: {
-        encodedList: updatedEncodedList,
-        issuer,
-        id,
-        statusPurpose,
-      },
-      length: decodedList.statusList.length,
+      encodedList,
+      statusListCredential: jwt,
+      length: listToUpdate.statusList.length,
       type: StatusListType.OAuthStatusList,
-      proofFormat: args.proofFormat ?? 'jwt',
+      proofFormat: args.proofFormat ?? DEFAULT_PROOF_FORMAT,
       id,
       issuer,
       statusPurpose,
@@ -176,8 +137,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   async checkStatusIndex(args: { statusListCredential: CompactJWT; statusListIndex: string | number }): Promise<boolean> {
     const { statusListCredential, statusListIndex } = args
-
-    const statusList = StatusList.decompressStatusList(statusListCredential, 1)
+    const statusList = StatusList.decompressStatusList(statusListCredential, BITS_PER_STATUS_DEFAULT)
     const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
 
     if (index < 0 || index >= statusList.statusList.length) {
@@ -185,5 +145,37 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     return statusList.getStatus(index) === 1
+  }
+
+  private async createSignedPayload(context: IRequiredContext, statusList: StatusList, issuerString: string, id: string, keyRef?: string) {
+    const identifier = await this.resolveIdentifier(context, issuerString, keyRef)
+    const payload: JWTPayload = {
+      iss: issuerString,
+      sub: id,
+      iat: Math.floor(new Date().getTime() / 1000),
+    }
+    const values = createHeaderAndPayload(statusList, payload, STATUS_LIST_JWT_HEADER)
+    const signedJwt = await context.agent.jwtCreateJwsCompactSignature({
+      issuer: { ...identifier, noIssPayloadUpdate: false },
+      protectedHeader: values.header,
+      payload: values.payload,
+    })
+
+    return {
+      jwt: signedJwt.jwt,
+      encodedList: (values.payload as StatusListJWTPayload).status_list.lst,
+    }
+  }
+
+  private async resolveIdentifier(context: IRequiredContext, issuer: string, keyRef?: string) {
+    return keyRef
+      ? await context.agent.identifierManagedGetByKid({
+          identifier: keyRef,
+        })
+      : await context.agent.identifierManagedGet({
+          identifier: issuer,
+          vmRelationship: 'assertionMethod',
+          offlineWhenNoDIDRegistered: true,
+        })
   }
 }

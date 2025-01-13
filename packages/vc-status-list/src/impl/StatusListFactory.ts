@@ -1,6 +1,6 @@
 import { IStatusList } from './IStatusList'
 import { StatusList2021Implementation } from './StatusList2021'
-import { OAuth2StatusListImplementation } from './OAuthStatusList'
+import { OAuthStatusListImplementation } from './OAuthStatusList'
 import { StatusListType } from '../types'
 
 export class StatusListFactory {
@@ -10,7 +10,7 @@ export class StatusListFactory {
   private constructor() {
     this.implementations = new Map()
     this.implementations.set(StatusListType.StatusList2021, new StatusList2021Implementation())
-    this.implementations.set(StatusListType.OAuthStatusList, new OAuth2StatusListImplementation())
+    this.implementations.set(StatusListType.OAuthStatusList, new OAuthStatusListImplementation())
   }
 
   public static getInstance(): StatusListFactory {

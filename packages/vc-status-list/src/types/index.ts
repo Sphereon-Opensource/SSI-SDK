@@ -22,13 +22,14 @@ import {
   ProofFormat,
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
+import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
   OAuthStatusList = 'OAuthStatusList',
 }
 
-export type StatusPurposeOAuth = 'active' | 'suspended' | 'revoked' | string
+export type StatusOAuth = 'active' | 'suspended' | 'revoked' | string
 
 export type StatusList2021Args = {
   encodedList: string
@@ -38,7 +39,7 @@ export type StatusList2021Args = {
 }
 
 export type OAuthStatusListArgs = {
-  statusPurpose: StatusPurposeOAuth
+  statusPurpose: StatusOAuth
   expiresAt?: string
 }
 
@@ -48,6 +49,7 @@ export type BaseCreateNewStatusListArgs = {
   issuer: string | IIssuer
   correlationId?: string
   length?: number
+  bitsPerStatus?: BitsPerStatus
   proofFormat?: ProofFormat
   keyRef?: string
   statusList2021?: StatusList2021Args
@@ -59,7 +61,8 @@ export type UpdateStatusList2021Args = {
 }
 
 export type UpdateOAuthStatusListArgs = {
-  statusPurpose: StatusPurposeOAuth
+  bitsPerStatus: BitsPerStatus
+  statusPurpose: StatusOAuth
   expiresAt?: string
 }
 
@@ -89,7 +92,7 @@ export interface StatusListDetails {
   length: number
   type: StatusListType
   proofFormat: ProofFormat
-  statusPurpose?: StatusPurpose2021 | StatusPurposeOAuth
+  statusPurpose?: StatusPurpose2021 | StatusOAuth
   id: string
   issuer: string | IIssuer
   indexingDirection: StatusListIndexingDirection
