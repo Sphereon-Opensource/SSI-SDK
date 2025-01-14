@@ -23,12 +23,14 @@ export function convertToDcqlCredentials(credential: UniqueDigitalCredential | O
   }
 
   if ('vct' in payload!) {
-    return { vct: payload.vct, claims: payload } satisfies DcqlSdJwtVcCredential
+    return { vct: payload.vct, claims: payload, credential_format: 'vc+sd-jwt' } satisfies DcqlSdJwtVcCredential // TODO dc+sd-jwt support?
   } else if ('docType' in payload! && 'namespaces' in payload) {
+    // mdoc
     return { docType: payload.docType, namespaces: payload.namespaces, claims: payload }
   } else {
     return {
       claims: payload,
+      credential_format: 'jwt_vc_json', // TODO jwt_vc_json-ld support
     } as DcqlW3cVcCredential
   }
 }

@@ -246,9 +246,9 @@ export const siopSendAuthorizationResponse = async (
         const allMatches = Array.isArray(value) ? value : [value]
         allMatches.forEach((match) => {
           if (match.success) {
-            const originalCredential = getOriginalVerifiableCredential(vcs[match.credential_index])
+            const originalCredential = getOriginalVerifiableCredential(vcs[match.input_credential_index])
             if (!originalCredential) {
-              throw new Error(`Index ${match.credential_index} out of range in credentials array`)
+              throw new Error(`Index ${match.input_credential_index} out of range in credentials array`)
             }
             presentation[key] =
               (originalCredential as any)['compactSdJwtVc'] !== undefined ? (originalCredential as any).compactSdJwtVc : originalCredential

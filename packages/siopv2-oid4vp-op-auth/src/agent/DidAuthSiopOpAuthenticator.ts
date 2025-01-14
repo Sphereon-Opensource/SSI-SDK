@@ -102,7 +102,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     presentationSignCallback?: PresentationSignCallback,
     customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
     options?: DidAuthSiopOpAuthenticatorOptions,
-    hasher?: Hasher,
+    hasher?: Hasher, // FIXME BEFORE PR move into DidAuthSiopOpAuthenticatorOptions (move everything into options like we do with the rest of the agent plugins)
   ) {
     const { onContactIdentityCreated, onIdentifierCreated } = options ?? {}
     this.onContactIdentityCreated = onContactIdentityCreated
