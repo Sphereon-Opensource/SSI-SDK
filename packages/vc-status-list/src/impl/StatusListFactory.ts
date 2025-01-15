@@ -1,7 +1,7 @@
 import { IStatusList } from './IStatusList'
 import { StatusList2021Implementation } from './StatusList2021'
 import { OAuthStatusListImplementation } from './OAuthStatusList'
-import { StatusListType } from '../types'
+import { StatusListType } from '@sphereon/ssi-types'
 
 export class StatusListFactory {
   private static instance: StatusListFactory

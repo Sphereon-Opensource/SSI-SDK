@@ -6,9 +6,10 @@ import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin } from 
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
   CreateNewStatusListFuncArgs,
+  Status2021,
   StatusList2021ToVerifiableCredentialArgs,
-  StatusListDetails,
   StatusListResult,
+  StatusOAuth,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
@@ -20,8 +21,7 @@ export async function fetchStatusListCredential(args: { statusListCredential: st
   try {
     const response = await fetch(url)
     if (!response.ok) {
-      const error = `Fetching status list ${url} resulted in an error: ${response.status} : ${response.statusText}`
-      throw Error(error)
+      throw Error(`Fetching status list ${url} resulted in an error: ${response.status} : ${response.statusText}`)
     }
     const responseAsText = await response.text()
     if (responseAsText.trim().startsWith('{')) {
@@ -29,7 +29,7 @@ export async function fetchStatusListCredential(args: { statusListCredential: st
     }
     return responseAsText as OriginalVerifiableCredential
   } catch (error) {
-    console.log(`Fetching status list ${url} resulted in an unexpected error: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
+    console.error(`Fetching status list ${url} resulted in an unexpected error: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
     throw error
   }
 }
@@ -126,7 +126,7 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
   type?: StatusListType | 'StatusList2021Entry'
   id?: string
   statusListIndex: string
-}): Promise<boolean> {
+}): Promise<number | Status2021 | StatusOAuth> {
   return checkStatusIndexFromStatusListCredential({
     ...args,
     statusListCredential: await fetchStatusListCredential(args),
@@ -139,7 +139,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
   type?: StatusListType | 'StatusList2021Entry'
   id?: string
   statusListIndex: string | number
-}): Promise<boolean> {
+}): Promise<number | Status2021 | StatusOAuth> {
   const requestedType = getAssertedStatusListType(args.type?.replace('Entry', '') as StatusListType)
   const implementation = getStatusListImplementation(requestedType)
   return implementation.checkStatusIndex(args)
@@ -157,7 +157,7 @@ export async function createNewStatusList(
 export async function updateStatusIndexFromStatusListCredential(
   args: UpdateStatusListFromStatusListCredentialArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-): Promise<StatusListDetails> {
+): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
   const uniform = CredentialMapper.toUniformCredential(credential)
   const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
@@ -174,7 +174,7 @@ export async function statusListCredentialToDetails(args: {
   statusListCredential: OriginalVerifiableCredential
   correlationId?: string
   driverType?: StatusListDriverType
-}): Promise<StatusListDetails> {
+}): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
   const uniform = CredentialMapper.toUniformCredential(credential)
   const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
@@ -196,7 +196,7 @@ export async function statusListCredentialToDetails(args: {
 export async function updateStatusListIndexFromEncodedList(
   args: UpdateStatusListFromEncodedListArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-): Promise<StatusListDetails> {
+): Promise<StatusListResult> {
   const { type } = getAssertedValue('type', args)
   const implementation = getStatusListImplementation(type!)
   return implementation.updateStatusListFromEncodedList(args, context)

@@ -276,9 +276,11 @@ export interface IErrorDetails {
   cause?: IError
 }
 
+/* FIXME figurae out how to handle this, we can't have duplicates and we need one in ssi-types for the data store logic
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
 }
+*/
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 

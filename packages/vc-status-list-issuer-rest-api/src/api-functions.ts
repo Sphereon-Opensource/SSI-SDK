@@ -8,6 +8,7 @@ import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import Debug from 'debug'
 import { Request, Response, Router } from 'express'
 import { ICredentialStatusListEndpointOpts, IRequiredContext, IW3CredentialStatusEndpointOpts, UpdateCredentialStatusRequest } from './types'
+import { StatusListType } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -100,7 +101,14 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         correlationId: details.correlationId,
         errorOnNotFound: false,
       })
-      const status = await checkStatusIndexFromStatusListCredential({ ...details, statusListIndex })
+      const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
+      const status = await checkStatusIndexFromStatusListCredential({
+        statusListCredential: details.statusListCredential,
+        statusPurpose: details.statusList2021?.statusPurpose,
+        type,
+        id: details.id,
+        statusListIndex,
+      })
       if (!entry) {
         // The fact we have nothing on it means the status is okay
         entry = {

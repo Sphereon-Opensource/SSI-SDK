@@ -1,7 +1,7 @@
 import { Validate } from 'class-validator'
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
-import { StatusListEntity } from './StatusList2021Entity'
+import { StatusListEntity } from './StatusListEntities'
 
 @Entity('StatusListEntry')
 // @Unique('uq_credential_statuslist', ['statusList', 'credentialId']) // disabled because one prop can be null

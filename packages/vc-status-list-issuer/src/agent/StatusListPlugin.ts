@@ -8,7 +8,7 @@ import {
   IRequiredContext,
   IRequiredPlugins,
   IStatusListPlugin,
-  StatusListDetails,
+  StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
@@ -47,7 +47,7 @@ export class StatusListPlugin implements IAgentPlugin {
     this.autoCreateInstances = opts.autoCreateInstances ?? true
   }
 
-  private async slGetStatusList(args: GetStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListDetails> {
+  private async slGetStatusList(args: GetStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListResult> {
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
     const dataSource =
       (sl?.dataSource ?? args?.dataSource)
@@ -74,7 +74,7 @@ export class StatusListPlugin implements IAgentPlugin {
   private async slCreateStatusList(
     args: CreateNewStatusListArgs,
     context: IAgentContext<IRequiredPlugins & IStatusListPlugin>,
-  ): Promise<StatusListDetails> {
+  ): Promise<StatusListResult> {
     const sl = await createNewStatusList(args, context)
     const dataSource = args?.dataSource
       ? await args.dataSource
@@ -86,29 +86,29 @@ export class StatusListPlugin implements IAgentPlugin {
       correlationId: sl.correlationId,
       dataSource,
     })
-    let statusListDetails: StatusListDetails | undefined = undefined
+    let statusListResponse: StatusListResult | undefined = undefined
     try {
-      statusListDetails = await this.slGetStatusList(args, context)
+      statusListResponse = await this.slGetStatusList(args, context)
     } catch (e) {
       // That is fine if there is no status list yet
     }
-    if (statusListDetails && this.instances.find((sl) => sl.id === args.id || sl.correlationId === args.correlationId)) {
+    if (statusListResponse && this.instances.find((sl) => sl.id === args.id || sl.correlationId === args.correlationId)) {
       return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
     } else {
-      statusListDetails = await driver.createStatusList({
+      statusListResponse = await driver.createStatusList({
         statusListCredential: sl.statusListCredential,
         correlationId: sl.correlationId,
       })
       this.instances.push({
-        correlationId: statusListDetails.correlationId,
-        id: statusListDetails.id,
+        correlationId: statusListResponse.correlationId,
+        id: statusListResponse.id,
         dataSource,
-        driverType: statusListDetails.driverType!,
+        driverType: statusListResponse.driverType!,
         driverOptions: driver.getOptions(),
       })
     }
 
-    return statusListDetails
+    return statusListResponse
   }
 
   private async slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport> {

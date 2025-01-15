@@ -5,12 +5,20 @@ import {
   IGetStatusListEntryByIndexArgs,
   IStatusListEntity,
   IStatusListEntryEntity,
+  StatusListEntity,
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
-import { StatusList2021EntryCredentialStatus, statusListCredentialToDetails, StatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
-import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
+import {
+  StatusList2021EntryCredentialStatus,
+  statusListCredentialToDetails,
+  StatusListOAuthEntryCredentialStatus,
+  StatusListResult,
+} from '@sphereon/ssi-sdk.vc-status-list'
+import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
+import { statusListResultToEntity } from './status-list-adapters'
+import { OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store/dist/entities/statusList/StatusListEntities'
 
 export interface StatusListManagementOptions {
   id?: string
@@ -124,7 +132,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     statusListCredential: OriginalVerifiableCredential
     correlationId?: string
     credentialIdMode?: StatusListCredentialIdMode
-  }): Promise<StatusListDetails> {
+  }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
     if (!correlationId) {
       throw Error('Either a correlationId needs to be set as an option, or it needs to be provided when creating a status list. None found')
@@ -143,7 +151,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return details
   }
 
-  async updateStatusList(args: { statusListCredential: OriginalVerifiableCredential; correlationId: string }): Promise<StatusListDetails> {
+  async updateStatusList(args: { statusListCredential: OriginalVerifiableCredential; correlationId: string }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
     const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
     const entity = await (
@@ -176,21 +184,50 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return Promise.resolve(true)
   }
 
+  private isStatusList2021Entity(statusList: StatusListEntity): statusList is StatusList2021Entity {
+    return statusList.type === StatusListType.StatusList2021
+  }
+
+  private isOAuthStatusListEntity(statusList: StatusListEntity): statusList is OAuthStatusListEntity {
+    return statusList.type === StatusListType.OAuthStatusList
+  }
+
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
-    credentialStatus: StatusList2021EntryCredentialStatus
+    credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus
     statusListEntry: IStatusListEntryEntity
   }> {
-    const statusList = typeof args.statusList === 'string' ? await this.getStatusList() : args.statusList
+    const statusList: StatusListEntity = typeof args.statusList === 'string' ? statusListResultToEntity(await this.getStatusList()) : args.statusList
 
     const statusListEntry = await this.statusListStore.updateStatusListEntry({ ...args, statusList: statusList.id })
-    const credentialStatus: StatusList2021EntryCredentialStatus = {
-      id: `${statusList.id}#${statusListEntry.statusListIndex}`,
-      type: 'StatusList2021Entry',
-      statusPurpose: statusList.statusPurpose ?? 'revocation',
-      statusListIndex: '' + statusListEntry.statusListIndex,
-      statusListCredential: statusList.id,
+
+    if (this.isStatusList2021Entity(statusList)) {
+      return {
+        credentialStatus: {
+          id: `${statusList.id}#${statusListEntry.statusListIndex}`,
+          type: 'StatusList2021Entry',
+          statusPurpose: statusList.statusPurpose ?? 'revocation',
+          statusListIndex: '' + statusListEntry.statusListIndex,
+          statusListCredential: statusList.id,
+        },
+        statusListEntry,
+      }
     }
-    return { credentialStatus, statusListEntry }
+
+    if (this.isOAuthStatusListEntity(statusList)) {
+      return {
+        credentialStatus: {
+          id: `${statusList.id}#${statusListEntry.statusListIndex}`,
+          type: 'OAuthStatusListEntry',
+          bitsPerStatus: statusList.bitsPerStatus,
+          statusListIndex: '' + statusListEntry.statusListIndex,
+          statusListCredential: statusList.id,
+          expiresAt: statusList.expiresAt,
+        },
+        statusListEntry,
+      }
+    }
+
+    throw new Error(`Unsupported status list type: ${statusList.type}`)
   }
 
   async getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<IStatusListEntryEntity | undefined> {
@@ -238,7 +275,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return this._statusListLength!
   }
 
-  async getStatusList(args?: { correlationId?: string }): Promise<StatusListDetails> {
+  async getStatusList(args?: { correlationId?: string }): Promise<StatusListResult> {
     const id = this.options.id
     const correlationId = args?.correlationId ?? this.options.correlationId
     return await this.statusListStore

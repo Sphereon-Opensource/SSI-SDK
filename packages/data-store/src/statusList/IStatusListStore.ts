@@ -1,4 +1,4 @@
-import { StatusListEntryEntity } from '../entities/statusList2021/StatusList2021EntryEntity'
+import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,

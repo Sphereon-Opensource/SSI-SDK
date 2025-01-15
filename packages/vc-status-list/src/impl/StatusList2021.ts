@@ -3,22 +3,24 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import { CredentialMapper, DocumentFormat, IIssuer, OriginalVerifiableCredential, StatusListType } from '@sphereon/ssi-types'
 import { StatusList } from '@sphereon/vc-status-list'
 import { IStatusList } from './IStatusList'
-import { StatusListDetails, StatusListResult, UpdateStatusListFromEncodedListArgs } from '../types'
-import { getAssertedValue, getAssertedValues } from '../utils'
+import {
+  CheckStatusIndexArgs,
+  CreateStatusListArgs,
+  Status2021,
+  StatusListResult,
+  UpdateStatusListFromEncodedListArgs,
+  UpdateStatusListIndexArgs,
+} from '../types'
+import { getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
+
+export const DEFAULT_LIST_LENGTH = 250000
 
 export class StatusList2021Implementation implements IStatusList {
   async createNewStatusList(
-    args: {
-      issuer: string | IIssuer
-      id: string
-      proofFormat?: ProofFormat
-      keyRef?: string
-      correlationId?: string
-      length?: number
-    },
+    args: CreateStatusListArgs,
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
-    const length = args?.length ?? 250000
+    const length = args?.length ?? DEFAULT_LIST_LENGTH
     const proofFormat: ProofFormat = args?.proofFormat ?? 'lds'
     const { issuer, id } = args
     const correlationId = getAssertedValue('correlationId', args.correlationId)
@@ -39,32 +41,28 @@ export class StatusList2021Implementation implements IStatusList {
     return {
       encodedList,
       statusListCredential: statusListCredential,
+      statusList2021: {
+        statusPurpose,
+        indexingDirection: 'rightToLeft',
+      },
       length,
       type: StatusListType.StatusList2021,
       proofFormat,
       id,
       correlationId,
       issuer,
-      statusPurpose,
-      indexingDirection: 'rightToLeft',
     }
   }
 
   async updateStatusListIndex(
-    args: {
-      statusListCredential: OriginalVerifiableCredential
-      keyRef?: string
-      statusListIndex: number | string
-      value: boolean
-    },
+    args: UpdateStatusListIndexArgs,
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-  ): Promise<StatusListDetails> {
+  ): Promise<StatusListResult> {
     const credential = args.statusListCredential
     const uniform = CredentialMapper.toUniformCredential(credential)
     const { issuer, credentialSubject } = uniform
     const id = getAssertedValue('id', uniform.id)
-    // @ts-ignore
-    const origEncodedList = credentialSubject.encodedList
+    const origEncodedList = getAssertedProperty('encodedList', credentialSubject)
 
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     const statusList = await StatusList.decode({ encodedList: origEncodedList })
@@ -83,23 +81,24 @@ export class StatusList2021Implementation implements IStatusList {
     )
 
     return {
-      encodedList,
       statusListCredential: updatedCredential,
+      encodedList,
+      statusList2021: {
+        ...('statusPurpose' in credentialSubject ? { statusPurpose: credentialSubject.statusPurpose } : {}),
+        indexingDirection: 'rightToLeft',
+      },
       length: statusList.length - 1,
       type: StatusListType.StatusList2021,
       proofFormat: CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'jwt' : 'lds',
       id,
       issuer,
-      // @ts-ignore
-      statusPurpose: credentialSubject.statusPurpose,
-      indexingDirection: 'rightToLeft',
     }
   }
 
   async updateStatusListFromEncodedList(
     args: UpdateStatusListFromEncodedListArgs,
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-  ): Promise<StatusListDetails> {
+  ): Promise<StatusListResult> {
     if (!args.statusList2021) {
       throw new Error('statusList2021 options required for type StatusList2021')
     }
@@ -122,27 +121,28 @@ export class StatusList2021Implementation implements IStatusList {
     )
 
     return {
-      encodedList: newEncodedList,
-      statusListCredential: credential,
-      length: statusList.length,
       type: StatusListType.StatusList2021,
+      statusListCredential: credential,
+      encodedList: newEncodedList,
+      statusList2021: {
+        statusPurpose: args.statusList2021.statusPurpose,
+        indexingDirection: 'rightToLeft',
+      },
+      length: statusList.length,
       proofFormat: args.proofFormat ?? 'lds',
       id: id,
       issuer: issuer,
-      statusPurpose: 'revocation',
-      indexingDirection: 'rightToLeft',
     }
   }
 
-  async checkStatusIndex(args: { statusListCredential: OriginalVerifiableCredential; statusListIndex: string | number }): Promise<boolean> {
+  async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021> {
     const uniform = CredentialMapper.toUniformCredential(args.statusListCredential)
     const { credentialSubject } = uniform
-    // @ts-ignore
-    const encodedList = getAssertedValue('encodedList', credentialSubject.encodedList)
+    const encodedList = getAssertedProperty('encodedList', credentialSubject)
 
     const statusList = await StatusList.decode({ encodedList })
     const status = statusList.getStatus(typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex))
-    return status
+    return status ? Status2021.Invalid : Status2021.Valid
   }
 
   private async createVerifiableCredential(

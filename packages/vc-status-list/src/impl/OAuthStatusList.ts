@@ -1,18 +1,24 @@
-import { IAgentContext, ICredentialPlugin, ProofFormat } from '@veramo/core'
-import { CompactJWT, IIssuer } from '@sphereon/ssi-types'
-import { StatusListDetails, StatusListResult, StatusListType, UpdateStatusListFromEncodedListArgs } from '../types'
+import { IAgentContext, ICredentialPlugin } from '@veramo/core'
+import { CredentialMapper, StatusListType } from '@sphereon/ssi-types'
+import {
+  CheckStatusIndexArgs,
+  CreateStatusListArgs,
+  StatusListResult,
+  StatusOAuth,
+  UpdateStatusListFromEncodedListArgs,
+  UpdateStatusListIndexArgs,
+} from '../types'
 import { decodeStatusListJWT, getAssertedValue, getAssertedValues } from '../utils'
 import { IStatusList } from './IStatusList'
 import { createHeaderAndPayload, StatusList, StatusListJWTHeaderParameters, StatusListJWTPayload } from '@sd-jwt/jwt-status-list'
 import { JWTPayload } from 'did-jwt'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
 
 type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>
 
-export const BITS_PER_STATUS_DEFAULT = 1
-export const DEFAULT_LIST_LENGTH = 65536
+export const BITS_PER_STATUS_DEFAULT = 2 // 2 bits are sufficient for 0x00 - "VALID"  0x01 - "INVALID" & 0x02 - "SUSPENDED"
+export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'jwt' as const
 export const STATUS_LIST_JWT_HEADER: StatusListJWTHeaderParameters = {
   alg: 'EdDSA',
@@ -20,19 +26,11 @@ export const STATUS_LIST_JWT_HEADER: StatusListJWTHeaderParameters = {
 }
 
 export class OAuthStatusListImplementation implements IStatusList {
-  async createNewStatusList(
-    args: {
-      issuer: string | IIssuer
-      id: string
-      proofFormat?: ProofFormat
-      keyRef?: string
-      correlationId?: string
-      expiresAt?: string
-      length?: number
-      bitsPerStatus?: BitsPerStatus
-    },
-    context: IRequiredContext,
-  ): Promise<StatusListResult> {
+  async createNewStatusList(args: CreateStatusListArgs, context: IRequiredContext): Promise<StatusListResult> {
+    if (!args.oauthStatusList) {
+      throw new Error('OAuthStatusList options are required for type OAuthStatusList')
+    }
+
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     if (proofFormat !== DEFAULT_PROOF_FORMAT) {
       throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
@@ -40,7 +38,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const { issuer, id } = args
     const length = args.length ?? DEFAULT_LIST_LENGTH
-    const bitsPerStatus = args.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
+    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
 
@@ -52,27 +50,23 @@ export class OAuthStatusListImplementation implements IStatusList {
     return {
       encodedList,
       statusListCredential: jwt,
+      oauthStatusList: {
+        bitsPerStatus,
+      },
       length,
       type: StatusListType.OAuthStatusList,
       proofFormat,
       id,
       correlationId,
       issuer,
-      statusPurpose: 'active',
-      indexingDirection: 'rightToLeft',
     }
   }
 
-  async updateStatusListIndex(
-    args: {
-      statusListCredential: CompactJWT
-      keyRef?: string
-      statusListIndex: number | string
-      value: boolean
-    },
-    context: IRequiredContext,
-  ): Promise<StatusListDetails> {
+  async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
     const { statusListCredential, value } = args
+    if (!CredentialMapper.isJwtEncoded(statusListCredential) && !CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)) {
+      return Promise.reject(new Error('statusListCredential is neither a JWT nor an MDOC document'))
+    }
     const sourcePayload = decodeStatusListJWT(statusListCredential)
     if (!('iss' in sourcePayload)) {
       throw new Error('issuer (iss) is missing in the status list JWT')
@@ -96,22 +90,22 @@ export class OAuthStatusListImplementation implements IStatusList {
     return {
       encodedList,
       statusListCredential: jwt,
+      oauthStatusList: {
+        bitsPerStatus: statusListContainer.bits,
+      },
       length: statusList.statusList.length,
       type: StatusListType.OAuthStatusList,
       proofFormat: DEFAULT_PROOF_FORMAT,
       id,
       issuer,
-      statusPurpose: 'active',
-      indexingDirection: 'rightToLeft',
     }
   }
 
-  async updateStatusListFromEncodedList(args: UpdateStatusListFromEncodedListArgs, context: IRequiredContext): Promise<StatusListDetails> {
+  async updateStatusListFromEncodedList(args: UpdateStatusListFromEncodedListArgs, context: IRequiredContext): Promise<StatusListResult> {
     if (!args.oauthStatusList) {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
     }
 
-    const { statusPurpose } = args.oauthStatusList
     const { issuer, id } = getAssertedValues(args)
     const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
@@ -125,26 +119,33 @@ export class OAuthStatusListImplementation implements IStatusList {
     return {
       encodedList,
       statusListCredential: jwt,
+      oauthStatusList: {
+        bitsPerStatus,
+      },
       length: listToUpdate.statusList.length,
       type: StatusListType.OAuthStatusList,
       proofFormat: args.proofFormat ?? DEFAULT_PROOF_FORMAT,
       id,
       issuer,
-      statusPurpose,
-      indexingDirection: 'rightToLeft',
     }
   }
 
-  async checkStatusIndex(args: { statusListCredential: CompactJWT; statusListIndex: string | number }): Promise<boolean> {
+  async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | StatusOAuth> {
     const { statusListCredential, statusListIndex } = args
-    const statusList = StatusList.decompressStatusList(statusListCredential, BITS_PER_STATUS_DEFAULT)
+    if (!CredentialMapper.isJwtEncoded(statusListCredential) && !CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)) {
+      return Promise.reject(new Error('statusListCredential is neither a JWT nor an MDOC document'))
+    }
+    const sourcePayload = decodeStatusListJWT(statusListCredential)
+    const statusListContainer = sourcePayload.status_list
+    const statusList = StatusList.decompressStatusList(statusListContainer.lst, statusListContainer.bits)
+
     const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
 
     if (index < 0 || index >= statusList.statusList.length) {
       throw new Error('Status list index out of bounds')
     }
 
-    return statusList.getStatus(index) === 1
+    return statusList.getStatus(index)
   }
 
   private async createSignedPayload(context: IRequiredContext, statusList: StatusList, issuerString: string, id: string, keyRef?: string) {

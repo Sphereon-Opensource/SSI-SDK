@@ -1,16 +1,15 @@
-import { CompactJWT, IIssuer, StatusListType as StatusListTypeW3C } from '@sphereon/ssi-types'
-import { StatusListType } from './types'
+import { CompactJWT, IIssuer, StatusListType, StatusListType as StatusListTypeW3C } from '@sphereon/ssi-types'
 import { StatusListJWTPayload } from '@sd-jwt/jwt-status-list'
-import { decodeBase64url } from 'did-jwt/lib/util'
+import base64url from 'base64url'
 
 export function decodeStatusListJWT(jwt: CompactJWT): StatusListJWTPayload {
   const parts = jwt.split('.')
-  return JSON.parse(decodeBase64url(parts[1]))
+  return JSON.parse(base64url.decode(parts[1]))
 }
 
 export function getAssertedStatusListType(type?: StatusListType) {
   const assertedType = type ?? StatusListType.StatusList2021
-  if (assertedType !== StatusListType.StatusList2021) {
+  if (![StatusListType.StatusList2021, StatusListType.OAuthStatusList].includes(assertedType)) {
     throw Error(`StatusList type ${assertedType} is not supported (yet)`)
   }
   return assertedType
@@ -28,4 +27,11 @@ export function getAssertedValues(args: { issuer: string | IIssuer; id: string; 
   const id = getAssertedValue('id', args.id)
   const issuer = getAssertedValue('issuer', args.issuer)
   return { id, issuer, type }
+}
+
+export function getAssertedProperty<T extends object>(propertyName: string, obj: T): NonNullable<any> {
+  if (!(propertyName in obj)) {
+    throw Error(`The input object does not contain required property: ${propertyName}`)
+  }
+  return getAssertedValue(propertyName, (obj as any)[propertyName])
 }

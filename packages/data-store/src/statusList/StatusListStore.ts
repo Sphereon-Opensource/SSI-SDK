@@ -1,8 +1,8 @@
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, In, Repository } from 'typeorm'
-import { StatusListEntity } from '../entities/statusList2021/StatusList2021Entity'
-import { StatusListEntryEntity } from '../entities/statusList2021/StatusList2021EntryEntity'
+import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
+import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
@@ -11,11 +11,13 @@ import {
   IGetStatusListEntryByCredentialIdArgs,
   IGetStatusListEntryByIndexArgs,
   IGetStatusListsArgs,
+  IOAuthStatusListEntity,
   IRemoveStatusListArgs,
-  IStatusListEntryAvailableArgs,
-  IUpdateStatusListIndexArgs,
+  IStatusList2021Entity,
   IStatusListEntity,
+  IStatusListEntryAvailableArgs,
   IStatusListEntryEntity,
+  IUpdateStatusListIndexArgs,
 } from '../types'
 import { IStatusListStore } from './IStatusListStore'
 
@@ -176,9 +178,15 @@ export class StatusListStore implements IStatusListStore {
     if (!result) {
       throw Error(`No status list found for id ${args.id}`)
     }
-    return result
-  }
 
+    if (result instanceof StatusList2021Entity) {
+      return result as IStatusList2021Entity
+    } else if (result instanceof OAuthStatusListEntity) {
+      return result as IOAuthStatusListEntity
+    }
+
+    throw Error(`Invalid status list type ${result.type}`)
+  }
   async getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity>> {
     const result = await (
       await this.getStatusListRepo()
@@ -189,9 +197,16 @@ export class StatusListStore implements IStatusListStore {
     if (!result) {
       return []
     }
-    return result
-  }
 
+    return result.map((entity) => {
+      if (entity instanceof StatusList2021Entity) {
+        return entity as IStatusList2021Entity
+      } else if (entity instanceof OAuthStatusListEntity) {
+        return entity as IOAuthStatusListEntity
+      }
+      throw Error(`Invalid status list type ${entity.type}`)
+    })
+  }
   async addStatusList(args: IAddStatusListArgs): Promise<IStatusListEntity> {
     const { id, correlationId } = args
 
@@ -206,7 +221,6 @@ export class StatusListStore implements IStatusListStore {
 
     debug('Adding status list ', id)
     const createdResult = await (await this.getStatusListRepo()).save(args)
-
     return createdResult
   }
 
@@ -227,7 +241,8 @@ export class StatusListStore implements IStatusListStore {
   }
 
   async getStatusListRepo(): Promise<Repository<StatusListEntity>> {
-    return (await this.getDS()).getRepository(StatusListEntity)
+    const repo = (await this.getDS()).getRepository(StatusListEntity)
+    return repo
   }
 
   async getStatusListEntryRepo(): Promise<Repository<StatusListEntryEntity>> {

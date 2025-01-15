@@ -10,6 +10,7 @@ import {
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
+  StatusListType,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import {
@@ -24,22 +25,25 @@ import {
 import { DataSource } from 'typeorm'
 import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
 
-export enum StatusListType {
-  StatusList2021 = 'StatusList2021',
-  OAuthStatusList = 'OAuthStatusList',
+export enum StatusOAuth {
+  Valid = 0,
+  Invalid = 1,
+  Suspended = 2,
 }
 
-export type StatusOAuth = 'active' | 'suspended' | 'revoked' | string
+export enum Status2021 {
+  Valid = 0,
+  Invalid = 1,
+}
 
 export type StatusList2021Args = {
-  encodedList: string
   indexingDirection: StatusListIndexingDirection
   statusPurpose?: StatusPurpose2021
   // todo: validFrom and validUntil
 }
 
 export type OAuthStatusListArgs = {
-  statusPurpose: StatusOAuth
+  bitsPerStatus?: BitsPerStatus
   expiresAt?: string
 }
 
@@ -49,7 +53,6 @@ export type BaseCreateNewStatusListArgs = {
   issuer: string | IIssuer
   correlationId?: string
   length?: number
-  bitsPerStatus?: BitsPerStatus
   proofFormat?: ProofFormat
   keyRef?: string
   statusList2021?: StatusList2021Args
@@ -62,7 +65,6 @@ export type UpdateStatusList2021Args = {
 
 export type UpdateOAuthStatusListArgs = {
   bitsPerStatus: BitsPerStatus
-  statusPurpose: StatusOAuth
   expiresAt?: string
 }
 
@@ -87,24 +89,30 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
   value: boolean
 }
 
-export interface StatusListDetails {
+export interface StatusListResult {
   encodedList: string
+  statusListCredential: OriginalVerifiableCredential | CompactJWT
   length: number
   type: StatusListType
   proofFormat: ProofFormat
-  statusPurpose?: StatusPurpose2021 | StatusOAuth
   id: string
   issuer: string | IIssuer
-  indexingDirection: StatusListIndexingDirection
-  statusListCredential: OriginalVerifiableCredential
+  statusList2021?: StatusList2021Details
+  oauthStatusList?: OAuthStatusDetails
+
   // These cannot be deduced from the VC, so they are present when callers pass in these values as params
   correlationId?: string
   driverType?: StatusListDriverType
   credentialIdMode?: StatusListCredentialIdMode
 }
 
-export interface StatusListResult extends StatusListDetails {
-  statusListCredential: OriginalVerifiableCredential
+interface StatusList2021Details {
+  indexingDirection: StatusListIndexingDirection
+  statusPurpose?: StatusPurpose2021
+}
+
+interface OAuthStatusDetails {
+  bitsPerStatus?: BitsPerStatus
 }
 
 export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
@@ -112,6 +120,14 @@ export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
   statusPurpose: StatusPurpose2021
   statusListIndex: string
   statusListCredential: string
+}
+
+export interface StatusListOAuthEntryCredentialStatus extends ICredentialStatus {
+  type: 'OAuthStatusListEntry'
+  bitsPerStatus: number
+  statusListIndex: string
+  statusListCredential: string
+  expiresAt?: string
 }
 
 export interface StatusList2021ToVerifiableCredentialArgs {
@@ -122,6 +138,29 @@ export interface StatusList2021ToVerifiableCredentialArgs {
   keyRef?: string
   encodedList: string
   statusPurpose: StatusPurpose2021
+}
+
+export interface CreateStatusListArgs {
+  issuer: string | IIssuer
+  id: string
+  proofFormat?: ProofFormat
+  keyRef?: string
+  correlationId?: string
+  length?: number
+  statusList2021?: StatusList2021Args
+  oauthStatusList?: OAuthStatusListArgs
+}
+
+export interface UpdateStatusListIndexArgs {
+  statusListCredential: OriginalVerifiableCredential | CompactJWT
+  keyRef?: string
+  statusListIndex: number | string
+  value: boolean
+}
+
+export interface CheckStatusIndexArgs {
+  statusListCredential: OriginalVerifiableCredential | CompactJWT
+  statusListIndex: string | number
 }
 
 /**
@@ -140,7 +179,7 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    *
    * @returns - The details of the newly created status list
    */
-  slCreateStatusList(args: CreateNewStatusListArgs, context: IRequiredContext): Promise<StatusListDetails>
+  slCreateStatusList(args: CreateNewStatusListArgs, context: IRequiredContext): Promise<StatusListResult>
 
   /**
    * Ensures status list info like index and list id is added to a credential
@@ -159,7 +198,7 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    * @param args
    * @param context
    */
-  slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListDetails>
+  slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListResult>
 }
 
 export type CreateNewStatusListFuncArgs = BaseCreateNewStatusListArgs

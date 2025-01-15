@@ -9,12 +9,13 @@ import {
   W3CVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { ProofFormat } from '@veramo/core'
-import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, Unique } from 'typeorm'
+import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])
-export class StatusListEntity extends BaseEntity {
+@TableInheritance({ column: { type: 'varchar', name: 'type' } })
+export abstract class StatusListEntity extends BaseEntity {
   @PrimaryColumn({ name: 'id', type: 'varchar' })
   id!: string
 
@@ -46,10 +47,20 @@ export class StatusListEntity extends BaseEntity {
   })
   issuer!: string | IIssuer
 
-  @Column('simple-enum', { name: 'type', enum: StatusListType, nullable: false, default: StatusListType.StatusList2021 })
+  @Column('simple-enum', {
+    name: 'type',
+    enum: StatusListType,
+    nullable: false,
+    default: StatusListType.StatusList2021,
+  })
   type!: StatusListType
 
-  @Column('simple-enum', { name: 'driverType', enum: StatusListDriverType, nullable: false, default: StatusListDriverType.AGENT_TYPEORM })
+  @Column('simple-enum', {
+    name: 'driverType',
+    enum: StatusListDriverType,
+    nullable: false,
+    default: StatusListDriverType.AGENT_TYPEORM,
+  })
   driverType!: StatusListDriverType
 
   @Column('simple-enum', {
@@ -62,12 +73,6 @@ export class StatusListEntity extends BaseEntity {
 
   @Column({ type: 'varchar', name: 'proofFormat', enum: ['lds', 'jwt'], nullable: false, default: 'lds' })
   proofFormat!: ProofFormat
-
-  @Column({ type: 'varchar', name: 'indexingDirection', enum: ['rightToLeft'], nullable: false, default: 'rightToLeft' })
-  indexingDirection!: StatusListIndexingDirection
-
-  @Column({ type: 'varchar', name: 'statusPurpose', nullable: false, default: 'revocation' })
-  statusPurpose!: StatusPurpose2021
 
   @Column({
     name: 'statusListCredential',
@@ -93,4 +98,25 @@ export class StatusListEntity extends BaseEntity {
 
   @OneToMany((type) => StatusListEntryEntity, (entry) => entry.statusList)
   statusListEntries!: StatusListEntryEntity[]
+}
+
+@ChildEntity(StatusListType.StatusList2021)
+export class StatusList2021Entity extends StatusListEntity {
+  @Column({
+    type: 'varchar',
+    name: 'indexingDirection',
+    enum: ['rightToLeft'],
+    nullable: false,
+    default: 'rightToLeft',
+  })
+  indexingDirection!: StatusListIndexingDirection
+
+  @Column({ type: 'varchar', name: 'statusPurpose', nullable: false, default: 'revocation' })
+  statusPurpose!: StatusPurpose2021
+}
+
+@ChildEntity(StatusListType.OAuthStatusList)
+export class OAuthStatusListEntity extends StatusListEntity {
+  bitsPerStatus: number
+  expiresAt?: string
 }
