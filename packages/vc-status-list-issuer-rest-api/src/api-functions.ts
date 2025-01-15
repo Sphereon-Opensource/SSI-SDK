@@ -178,7 +178,7 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
             `Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`,
           )
         }
-        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? false : true
+        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? 0 : 1
         const statusList = statusListId ?? statusListEntry.statusList
         await driver.updateStatusListEntry({ ...statusListEntry, statusListIndex, statusList, credentialId, value: value ? '1' : '0' })
 

@@ -66,7 +66,7 @@ export class StatusList2021Implementation implements IStatusList {
 
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     const statusList = await StatusList.decode({ encodedList: origEncodedList })
-    statusList.setStatus(index, args.value)
+    statusList.setStatus(index, args.value != 0)
     const encodedList = await statusList.encode()
 
     const updatedCredential = await this.createVerifiableCredential(

@@ -84,7 +84,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       throw new Error('Status list index out of bounds')
     }
 
-    statusList.setStatus(index, value ? 1 : 0)
+    statusList.setStatus(index, value)
     const { jwt, encodedList } = await this.createSignedPayload(context, statusList, issuer, id, args.keyRef)
 
     return {

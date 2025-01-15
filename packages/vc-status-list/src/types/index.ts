@@ -86,7 +86,7 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
   statusListCredential: OriginalVerifiableCredential | CompactJWT
   keyRef?: string
   statusListIndex: number | string
-  value: boolean
+  value: number | Status2021 | StatusOAuth
 }
 
 export interface StatusListResult {
@@ -155,7 +155,7 @@ export interface UpdateStatusListIndexArgs {
   statusListCredential: OriginalVerifiableCredential | CompactJWT
   keyRef?: string
   statusListIndex: number | string
-  value: boolean
+  value: number | Status2021 | StatusOAuth
 }
 
 export interface CheckStatusIndexArgs {

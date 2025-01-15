@@ -159,7 +159,8 @@ export async function updateStatusIndexFromStatusListCredential(
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
-  const uniform = CredentialMapper.toUniformCredential(credential)
+
+  const uniform = CredentialMapper.toUniformCredential(credential) // This is not correct, we can't run a OAuthSTatusList through CredentialMapper and we can't see the type
   const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
   if (!type) {
     throw new Error('Invalid status list credential type')
