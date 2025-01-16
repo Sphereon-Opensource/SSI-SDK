@@ -1,5 +1,13 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, StatusListVerifiableCredential, StatusListDriverType, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  ProofFormat,
+  StatusListDriverType,
+  StatusListType,
+  StatusListVerifiableCredential,
+  StatusPurpose2021,
+} from '@sphereon/ssi-types'
+import { ProofFormat as VmoProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
 
 import { checkStatus } from '@sphereon/vc-status-list'
 import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin } from '@veramo/core'
@@ -13,7 +21,7 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
-import { getAssertedValue, getAssertedValues } from './utils'
+import { assertValidProofType, getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
 import { jwtDecode } from 'jwt-decode'
 
@@ -220,6 +228,7 @@ export async function updateStatusListIndexFromEncodedList(
   return implementation.updateStatusListFromEncodedList(args, context)
 }
 
+// TODO Is this still in use? Or do we need to redesign this after having multiple status list types?
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
@@ -230,6 +239,10 @@ export async function statusList2021ToVerifiableCredential(
     vmRelationship: 'assertionMethod',
     offlineWhenNoDIDRegistered: true, // FIXME Fix identifier resolution for EBSI
   })
+  const proofFormat: ProofFormat = args?.proofFormat ?? 'lds'
+  assertValidProofType(StatusListType.StatusList2021, proofFormat)
+  const vmoProofFormat: VmoProofFormat = proofFormat as VmoProofFormat
+
   const encodedList = getAssertedValue('encodedList', args.encodedList)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)
   const credential = {
@@ -249,7 +262,7 @@ export async function statusList2021ToVerifiableCredential(
   const verifiableCredential = await context.agent.createVerifiableCredential({
     credential,
     keyRef: identifier.kmsKeyRef,
-    proofFormat: args.proofFormat ?? 'lds',
+    proofFormat: vmoProofFormat,
     fetchRemoteContexts: true,
   })
 

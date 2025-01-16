@@ -1,5 +1,5 @@
 import { IAgentContext, ICredentialPlugin } from '@veramo/core'
-import { CredentialMapper, StatusListType } from '@sphereon/ssi-types'
+import { CompactJWT, CredentialMapper, ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
 import {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
@@ -14,12 +14,15 @@ import { createHeaderAndPayload, StatusList, StatusListJWTHeaderParameters, Stat
 import { JWTPayload } from 'did-jwt'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { com, kotlin } from '@sphereon/kmp-cbor'
+import base64url from 'base64url'
+import { deflate } from 'pako' // extracted from @sd-jwt/jwt-status-list
 
 type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>
 
 export const BITS_PER_STATUS_DEFAULT = 2 // 2 bits are sufficient for 0x00 - "VALID"  0x01 - "INVALID" & 0x02 - "SUSPENDED"
 export const DEFAULT_LIST_LENGTH = 250000
-export const DEFAULT_PROOF_FORMAT = 'jwt' as const
+export const DEFAULT_PROOF_FORMAT = 'jwt' as ProofFormat
 export const STATUS_LIST_JWT_HEADER: StatusListJWTHeaderParameters = {
   alg: 'EdDSA',
   typ: 'statuslist+jwt',
@@ -45,11 +48,20 @@ export class OAuthStatusListImplementation implements IStatusList {
     const initialStatuses = new Array(length).fill(0)
     const statusList = new StatusList(initialStatuses, bitsPerStatus)
     const encodedList = statusList.compressStatusList()
-    const { jwt } = await this.createSignedPayload(context, statusList, issuerString, id, args.keyRef)
+    let statusListCredential: StatusListVerifiableCredential
+    if (proofFormat === 'jwt') {
+      const { jwt } = await this.createSignedJwt(context, statusList, issuerString, id, args.keyRef)
+      statusListCredential = jwt as CompactJWT
+    } else if (proofFormat === 'cbor') {
+      const { cbor } = await this.createSignedCbor(context, statusList, issuerString, id, args.keyRef)
+      statusListCredential = cbor
+    } else {
+      return Promise.reject(Error(`Unknown proofFormat ${proofFormat}`))
+    }
 
     return {
       encodedList,
-      statusListCredential: jwt,
+      statusListCredential,
       oauthStatusList: {
         bitsPerStatus,
       },
@@ -64,7 +76,9 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
     const { statusListCredential, value } = args
-    if (!CredentialMapper.isJwtEncoded(statusListCredential) && !CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)) {
+    const isJwtEncoded = CredentialMapper.isJwtEncoded(statusListCredential)
+    const isMsoMdocOid4VPEncoded = CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)
+    if (!isJwtEncoded && !isMsoMdocOid4VPEncoded) {
       return Promise.reject(new Error('statusListCredential is neither a JWT nor an MDOC document'))
     }
     const sourcePayload = decodeStatusListJWT(statusListCredential)
@@ -85,7 +99,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     statusList.setStatus(index, value)
-    const { jwt, encodedList } = await this.createSignedPayload(context, statusList, issuer, id, args.keyRef)
+    const { jwt, encodedList } = await this.createSignedJwt(context, statusList, issuer, id, args.keyRef)
 
     return {
       encodedList,
@@ -114,7 +128,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     listToUpdate.setStatus(index, args.value ? 1 : 0)
 
-    const { jwt, encodedList } = await this.createSignedPayload(context, listToUpdate, issuerString, id, args.keyRef)
+    const { jwt, encodedList } = await this.createSignedJwt(context, listToUpdate, issuerString, id, args.keyRef)
 
     return {
       encodedList,
@@ -148,13 +162,14 @@ export class OAuthStatusListImplementation implements IStatusList {
     return statusList.getStatus(index)
   }
 
-  private async createSignedPayload(context: IRequiredContext, statusList: StatusList, issuerString: string, id: string, keyRef?: string) {
+  private async createSignedJwt(context: IRequiredContext, statusList: StatusList, issuerString: string, id: string, keyRef?: string) {
     const identifier = await this.resolveIdentifier(context, issuerString, keyRef)
     const payload: JWTPayload = {
       iss: issuerString,
       sub: id,
       iat: Math.floor(new Date().getTime() / 1000),
     }
+
     const values = createHeaderAndPayload(statusList, payload, STATUS_LIST_JWT_HEADER)
     const signedJwt = await context.agent.jwtCreateJwsCompactSignature({
       issuer: { ...identifier, noIssPayloadUpdate: false },
@@ -165,6 +180,92 @@ export class OAuthStatusListImplementation implements IStatusList {
     return {
       jwt: signedJwt.jwt,
       encodedList: (values.payload as StatusListJWTPayload).status_list.lst,
+    }
+  }
+
+  private async createSignedCbor(
+    context: IRequiredContext,
+    statusList: StatusList,
+    issuerString: string,
+    id: string,
+    keyRef?: string,
+  ): Promise<{ cwt: string; encodedList: string }> {
+    const identifier = await this.resolveIdentifier(context, issuerString, keyRef)
+
+    const encodeStatusList = statusList.encodeStatusList()
+    const compressedList = deflate(encodeStatusList, { level: 9 })
+    const compressedListInt8Array = new Int8Array(compressedList.buffer)
+
+    const statusListMap = new com.sphereon.cbor.CborMap(
+      kotlin.collections.KtMutableMap.fromJsMap(
+        new Map<com.sphereon.cbor.CborString, com.sphereon.cbor.CborItem<any>>([
+          [
+            new com.sphereon.cbor.CborString('bits'),
+            new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(statusList.getBitsPerStatus())),
+          ],
+          [new com.sphereon.cbor.CborString('lst'), new com.sphereon.cbor.CborByteString(compressedListInt8Array)],
+        ]),
+      ),
+    )
+
+    const exp = Math.floor(new Date().getTime() / 1000)
+    const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
+    const claimsMap = new com.sphereon.cbor.CborMap(
+      kotlin.collections.KtMutableMap.fromJsMap(
+        new Map([
+          [new com.sphereon.cbor.CborUInt(2), new com.sphereon.cbor.CborString(issuerString)], // "sub"
+          [
+            new com.sphereon.cbor.CborUInt(6),
+            new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(Math.floor(Date.now() / 1000))), // "iat"
+          ],
+          ...(exp
+            ? [
+                [
+                  new com.sphereon.cbor.CborUInt(4),
+                  new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(exp)), // "exp"
+                ],
+              ]
+            : []),
+          ...(ttl
+            ? [
+                [
+                  new com.sphereon.cbor.CborUInt(65534),
+                  new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(ttl)), // "time to live"
+                ],
+              ]
+            : []),
+          [new com.sphereon.cbor.CborUInt(65533), statusListMap], // "status list"
+        ]),
+      ),
+    )
+
+    const protectedHeader = new com.sphereon.cbor.CborMap(
+      kotlin.collections.KtMutableMap.fromJsMap(
+        new Map([[new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(16)), new com.sphereon.cbor.CborString('statuslist+cwt')]]), // "type"
+      ),
+    )
+    const protectedHeaderEncoded = com.sphereon.cbor.Cbor.encode(protectedHeader)
+    const claimsEncoded = com.sphereon.cbor.Cbor.encode(claimsMap)
+
+    const signedCWT = await context.agent.keyManagerSign({
+      keyRef: identifier.kmsKeyRef,
+      data: claimsEncoded,
+      encoding: undefined,
+    })
+
+    const cwtArray = new com.sphereon.cbor.CborArray(
+      kotlin.collections.KtMutableList.fromJsArray([
+        new com.sphereon.cbor.CborByteString(protectedHeaderEncoded),
+        new com.sphereon.cbor.CborByteString(claimsEncoded),
+        new com.sphereon.cbor.CborByteString(signedCWT.signature),
+      ]),
+    )
+    const cwtEncoded = com.sphereon.cbor.Cbor.encode(cwtArray)
+    const cwtBuffer = Buffer.from(cwtEncoded)
+    const cwt = base64url.encode(cwtBuffer)
+    return {
+      cwt,
+      encodedList: '', // FIXME
     }
   }
 

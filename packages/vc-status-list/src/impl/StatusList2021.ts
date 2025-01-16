@@ -1,6 +1,8 @@
-import { IAgentContext, ICredentialPlugin, ProofFormat } from '@veramo/core'
+import { IAgentContext, ICredentialPlugin } from '@veramo/core'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, DocumentFormat, IIssuer, StatusListVerifiableCredential, StatusListType } from '@sphereon/ssi-types'
+import { CredentialMapper, DocumentFormat, IIssuer, ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
+import { ProofFormat as VmoProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
+
 import { StatusList } from '@sphereon/vc-status-list'
 import { IStatusList } from './IStatusList'
 import {
@@ -11,9 +13,10 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-import { getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
+import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 
 export const DEFAULT_LIST_LENGTH = 250000
+export const DEFAULT_PROOF_FORMAT = 'lds' as VmoProofFormat
 
 export class StatusList2021Implementation implements IStatusList {
   async createNewStatusList(
@@ -21,7 +24,10 @@ export class StatusList2021Implementation implements IStatusList {
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     const length = args?.length ?? DEFAULT_LIST_LENGTH
-    const proofFormat: ProofFormat = args?.proofFormat ?? 'lds'
+    const proofFormat: ProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
+    assertValidProofType(StatusListType.StatusList2021, proofFormat)
+    const vmoProofFormat: VmoProofFormat = proofFormat as VmoProofFormat
+
     const { issuer, id } = args
     const correlationId = getAssertedValue('correlationId', args.correlationId)
 
@@ -33,7 +39,7 @@ export class StatusList2021Implementation implements IStatusList {
       {
         ...args,
         encodedList,
-        proofFormat,
+        proofFormat: vmoProofFormat,
       },
       context,
     )
@@ -102,8 +108,11 @@ export class StatusList2021Implementation implements IStatusList {
     if (!args.statusList2021) {
       throw new Error('statusList2021 options required for type StatusList2021')
     }
-    const { issuer, id } = getAssertedValues(args)
+    const proofFormat: ProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
+    assertValidProofType(StatusListType.StatusList2021, proofFormat)
+    const vmoProofFormat: VmoProofFormat = proofFormat as VmoProofFormat
 
+    const { issuer, id } = getAssertedValues(args)
     const statusList = await StatusList.decode({ encodedList: args.encodedList })
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     statusList.setStatus(index, args.value)
@@ -114,7 +123,7 @@ export class StatusList2021Implementation implements IStatusList {
         id,
         issuer,
         encodedList: newEncodedList,
-        proofFormat: args.proofFormat,
+        proofFormat: vmoProofFormat,
         keyRef: args.keyRef,
       },
       context,
@@ -150,7 +159,7 @@ export class StatusList2021Implementation implements IStatusList {
       id: string
       issuer: string | IIssuer
       encodedList: string
-      proofFormat?: ProofFormat
+      proofFormat: VmoProofFormat
       keyRef?: string
     },
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
@@ -177,7 +186,7 @@ export class StatusList2021Implementation implements IStatusList {
     const verifiableCredential = await context.agent.createVerifiableCredential({
       credential,
       keyRef: args.keyRef ?? identifier.kmsKeyRef,
-      proofFormat: args.proofFormat ?? 'lds',
+      proofFormat: args.proofFormat,
       fetchRemoteContexts: true,
     })
 

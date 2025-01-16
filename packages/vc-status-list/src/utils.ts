@@ -1,4 +1,4 @@
-import { CompactJWT, IIssuer, StatusListType, StatusListType as StatusListTypeW3C } from '@sphereon/ssi-types'
+import { CompactJWT, IIssuer, ProofFormat, StatusListType, StatusListType as StatusListTypeW3C } from '@sphereon/ssi-types'
 import { StatusListJWTPayload } from '@sd-jwt/jwt-status-list'
 import base64url from 'base64url'
 
@@ -34,4 +34,16 @@ export function getAssertedProperty<T extends object>(propertyName: string, obj:
     throw Error(`The input object does not contain required property: ${propertyName}`)
   }
   return getAssertedValue(propertyName, (obj as any)[propertyName])
+}
+
+const ValidProofTypeMap = new Map<StatusListType, ProofFormat[]>([
+  [StatusListType.StatusList2021, ['jwt', 'lds', 'EthereumEip712Signature2021']],
+  [StatusListType.OAuthStatusList, ['jwt', 'cbor']],
+])
+
+export function assertValidProofType(type: StatusListType, proofFormat: ProofFormat) {
+  const validProofTypes = ValidProofTypeMap.get(type)
+  if (!validProofTypes?.includes(proofFormat)) {
+    throw Error(`Invalid proof format '${proofFormat}' for status list type ${type}`)
+  }
 }

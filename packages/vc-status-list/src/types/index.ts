@@ -5,6 +5,7 @@ import {
   IIssuer,
   IVerifiableCredential,
   OrPromise,
+  ProofFormat,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
@@ -12,15 +13,7 @@ import {
   StatusListVerifiableCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import {
-  CredentialPayload,
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IPluginMethodMap,
-  ProofFormat,
-} from '@veramo/core'
+import { CredentialPayload, IAgentContext, ICredentialIssuer, ICredentialPlugin, ICredentialVerifier, IPluginMethodMap } from '@veramo/core'
 import { DataSource } from 'typeorm'
 import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
 
