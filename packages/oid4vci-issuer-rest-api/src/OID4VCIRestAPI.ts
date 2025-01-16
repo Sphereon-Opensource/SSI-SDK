@@ -2,7 +2,13 @@ import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
 import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { getAccessTokenSignerCallback, IIssuerInstanceArgs, IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import {
+  createAuthRequestUriCallback,
+  getAccessTokenSignerCallback,
+  IIssuerInstanceArgs,
+  IssuerInstance,
+  verifyAuthResponseCallback
+} from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { DIDDocument } from 'did-resolver'
 import { Express } from 'express'
 import { IRequiredContext } from './types'
@@ -56,6 +62,37 @@ export class OID4VCIRestAPI {
         args.context,
       )
     }
+
+    if (opts?.endpointOpts.authorizationChallengeOpts?.enabled === true) {
+      if (typeof opts?.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback !== 'function') {
+        if (!opts.endpointOpts.authorizationChallengeOpts?.createAuthRequestUriEndpointPath) {
+          throw Error(
+            `Unable to set createAuthRequestUriCallback. No createAuthRequestUriEndpointPath present in options`,
+          )
+        }
+
+        opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback = await createAuthRequestUriCallback(
+          {
+            path: opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriEndpointPath,
+          }
+        )
+      }
+
+      if (typeof opts?.endpointOpts.authorizationChallengeOpts?.verifyAuthResponseCallback !== 'function') {
+        if (!opts.endpointOpts.authorizationChallengeOpts?.verifyAuthResponseEndpointPath) {
+          throw Error(
+            `Unable to set verifyAuthResponseCallback. No createAuthRequestUriEndpointPath present in options`,
+          )
+        }
+
+        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await verifyAuthResponseCallback(
+          {
+            path: opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseEndpointPath,
+          }
+        )
+      }
+    }
+
     return new OID4VCIRestAPI({ context, issuerInstanceArgs, expressSupport, opts, instance, issuer })
   }
 

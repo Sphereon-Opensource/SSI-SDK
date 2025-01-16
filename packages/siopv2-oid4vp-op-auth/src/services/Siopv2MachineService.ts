@@ -48,12 +48,13 @@ export const siopSendAuthorizationResponse = async (
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
+    isFirstParty?: boolean
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { idOpts } = args
+  let { idOpts, isFirstParty } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
@@ -162,6 +163,7 @@ export const siopSendAuthorizationResponse = async (
     ...(presentationSubmission && { presentationSubmission }),
     // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
     responseSignerOpts: idOpts!,
+    isFirstParty,
   })
 }
 

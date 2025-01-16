@@ -1,4 +1,8 @@
-import { AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
+import {
+  AuthorizationChallengeCodeResponse,
+  AuthzFlowType,
+  toAuthorizationResponsePayload
+} from '@sphereon/oid4vci-common'
 import { IBasicIssuerLocaleBranding, Identity, IIssuerLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
@@ -117,6 +121,10 @@ const oid4vciHasAuthorizationResponse = (ctx: OID4VCIMachineContext, _event: OID
   return !!ctx.openID4VCIClientState?.authorizationCodeResponse
 }
 
+const oid4vciIsFirstPartyApplication = (ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
+  return !!ctx.serverMetadata?.authorization_challenge_endpoint
+}
+
 const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMachine => {
   const initialContext: OID4VCIMachineContext = {
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
@@ -153,7 +161,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         | { type: OID4VCIMachineGuards.hasSelectedCredentialsGuard }
         | { type: OID4VCIMachineGuards.hasAuthorizationResponse }
         | { type: OID4VCIMachineGuards.isOIDFOriginGuard }
-        | { type: OID4VCIMachineGuards.contactHasLowTrustGuard },
+        | { type: OID4VCIMachineGuards.contactHasLowTrustGuard }
+        | { type: OID4VCIMachineGuards.isFirstPartyApplication },
       services: {} as {
         [OID4VCIMachineServices.start]: {
           data: StartResult
@@ -187,6 +196,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         }
         [OID4VCIMachineServices.getIssuerBranding]: {
           data: Array<IIssuerLocaleBranding | IBasicIssuerLocaleBranding>
+        }
+        [OID4VCIMachineServices.startFirstPartApplicationFlow]: {
+          data: void
         }
       },
     },
@@ -333,6 +345,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.credentialsToSelectRequiredGuard,
           },
           {
+            target: OID4VCIMachineStates.startFirstPartApplicationFlow,
+            cond: OID4VCIMachineGuards.isFirstPartyApplication,
+          },
+          {
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
@@ -423,6 +439,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.credentialsToSelectRequiredGuard,
           },
           {
+            target: OID4VCIMachineStates.startFirstPartApplicationFlow,
+            cond: OID4VCIMachineGuards.isFirstPartyApplication,
+          },
+          {
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
@@ -434,6 +454,31 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             target: OID4VCIMachineStates.getCredentials,
           },
         ],
+      },
+      [OID4VCIMachineStates.startFirstPartApplicationFlow] :{
+        id: OID4VCIMachineStates.startFirstPartApplicationFlow,
+        invoke: {
+          src: OID4VCIMachineServices.startFirstPartApplicationFlow,
+          onDone: {
+            target: OID4VCIMachineStates.getCredentials,
+            actions: assign({
+              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeCodeResponse>) => {
+                const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
+                return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
+              }
+            })
+          },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_first_party_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
+          },
+        },
       },
       [OID4VCIMachineStates.selectCredentials]: {
         id: OID4VCIMachineStates.selectCredentials,
@@ -453,6 +498,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
       [OID4VCIMachineStates.transitionFromSelectingCredentials]: {
         id: OID4VCIMachineStates.transitionFromSelectingCredentials,
         always: [
+          {
+            target: OID4VCIMachineStates.startFirstPartApplicationFlow,
+            cond: OID4VCIMachineGuards.isFirstPartyApplication,
+          },
           {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
@@ -726,6 +775,7 @@ export class OID4VCIMachine {
           oid4vciHasAuthorizationResponse,
           oid4vciIsOIDFOriginGuard,
           oid4vciContactHasLowTrustGuard,
+          oid4vciIsFirstPartyApplication,
           ...opts?.guards,
         },
       }),
@@ -737,7 +787,7 @@ export class OID4VCIMachine {
     if (opts?.requireCustomNavigationHook !== true) {
       if (typeof opts?.stateNavigationListener === 'function') {
         interpreter.onTransition((snapshot: OID4VCIMachineState): void => {
-          if (opts?.stateNavigationListener !== undefined) {
+          if (opts?.stateNavigationListener) {
             opts.stateNavigationListener(interpreter, snapshot)
           }
         })

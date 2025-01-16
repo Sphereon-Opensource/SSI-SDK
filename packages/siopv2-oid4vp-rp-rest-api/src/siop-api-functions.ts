@@ -1,8 +1,9 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { PresentationSubmission } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
-import { AuthorizationChallengeValidationResponse, IRequiredContext } from './types'
+import { IRequiredContext } from './types'
 
 export function verifyAuthResponseSIOPv2Endpoint(
   router: Router,

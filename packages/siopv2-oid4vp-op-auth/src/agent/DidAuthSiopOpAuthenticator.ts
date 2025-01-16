@@ -25,32 +25,30 @@ import {
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
+import { PEX, Status } from '@sphereon/pex'
+import { computeEntryHash } from '@veramo/utils'
+import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { EventEmitter } from 'events'
 import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
+  GetSiopRequestArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
-} from '../types/IDidAuthSiopOpAuthenticator'
-import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
-
-import {
-  AddIdentityArgs,
-  CreateConfigArgs,
-  CreateConfigResult,
-  GetSiopRequestArgs,
   OnContactIdentityCreatedArgs,
   OnIdentifierCreatedArgs,
   RetrieveContactArgs,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
   Siopv2HolderEvent,
-} from '../types/siop-service'
-import { PEX, Status } from '@sphereon/pex'
-import { computeEntryHash } from '@veramo/utils'
-import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { EventEmitter } from 'events'
+  Siopv2Machine as Siopv2MachineId,
+  Siopv2MachineInstanceOpts
+} from '../types'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -185,8 +183,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return Siopv2Machine.newInstance(siopv2MachineOpts)
   }
 
-  private async siopCreateConfig(args: CreateConfigArgs): Promise<CreateConfigResult> {
-    const { url } = args
+  private async siopCreateConfig<TContext extends CreateConfigArgs>(context: TContext): Promise<CreateConfigResult> {
+    const { url } = context
 
     if (!url) {
       return Promise.reject(Error('Missing request uri in context'))
@@ -200,7 +198,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
   }
 
-  private async siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData> {
+  private async siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData> { //GetSiopRequestArgs
     const { agent } = context
     const { didAuthConfig } = args
 
@@ -332,7 +330,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private async siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData> {
-    const { didAuthConfig, authorizationRequestData, selectedCredentials } = args
+    const { didAuthConfig, authorizationRequestData, selectedCredentials, isFirstParty } = args
 
     if (didAuthConfig === undefined) {
       return Promise.reject(Error('Missing config in context'))
@@ -378,6 +376,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         sessionId: didAuthConfig.sessionId,
         ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
+        isFirstParty
       },
       context,
     )

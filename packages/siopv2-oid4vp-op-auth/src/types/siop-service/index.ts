@@ -19,12 +19,18 @@ export type GetMachineArgs = {
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 }
 
-export type CreateConfigArgs = Pick<Siopv2MachineContext, 'url'>
+export type CreateConfigArgs = { url: string }//Pick<Siopv2MachineContext, 'url'> // TContext extends { url: string } //Pick<Siopv2MachineContext, 'url'> // TODO create function args
 export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'idOpts'>
-export type GetSiopRequestArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'url'>
+export type GetSiopRequestArgs = { didAuthConfig?: Omit<DidAuthConfig, 'identifier'>, url: string }//Pick<Siopv2MachineContext, 'didAuthConfig' | 'url'> // TODO
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
-export type SendResponseArgs = Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts'>
+export type SendResponseArgs = {
+  didAuthConfig?: Omit<DidAuthConfig, 'identifier'>,
+  authorizationRequestData?: Siopv2AuthorizationRequestData,
+  selectedCredentials: Array<UniqueDigitalCredential>
+  idOpts?: ManagedIdentifierOptsOrResult
+  isFirstParty?: boolean
+} //Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts' | 'isFirstParty'>
 export type GetSelectableCredentialsArgs = Pick<Siopv2MachineContext, 'authorizationRequestData'>
 
 export enum Siopv2HolderEvent {
@@ -38,7 +44,7 @@ export enum SupportedLanguage {
 }
 
 export type Siopv2AuthorizationResponseData = {
-  body?: string
+  body?: string | Record<string, any>
   url?: string
   queryParams?: Record<string, any>
 }
