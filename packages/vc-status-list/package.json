@@ -17,7 +17,6 @@
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@sphereon/kmp-cbor": "0.2.0-SNAPSHOT.25",
-    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@veramo/core": "4.2.0",
     "@veramo/credential-status": "4.2.0",
     "base64url": "^3.0.1",

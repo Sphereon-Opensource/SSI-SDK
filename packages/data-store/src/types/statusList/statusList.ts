@@ -6,8 +6,8 @@ import {
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
+  ProofFormat,
 } from '@sphereon/ssi-types'
-import { ProofFormat } from '@veramo/core'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
 
 export interface IStatusListEntity {

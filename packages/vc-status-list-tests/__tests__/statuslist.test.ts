@@ -164,6 +164,37 @@ describe('Status list', () => {
       expect(status).toBe(StatusOAuth.Invalid)
     })
 
+    it('should create and update using CBOR format', async () => {
+      const statusList = await createNewStatusList(
+        {
+          type: StatusListType.OAuthStatusList,
+          proofFormat: 'cbor',
+          id: 'http://localhost:9543/oauth3',
+          issuer: didKeyIdentifier.did,
+          length: 99999,
+          correlationId: 'test-6-' + Date.now(),
+          oauthStatusList: {
+            bitsPerStatus: 2,
+          },
+        },
+        { agent },
+      )
+
+      const updated = await updateStatusIndexFromStatusListCredential(
+        {
+          statusListCredential: statusList.statusListCredential,
+          statusListIndex: 5,
+          value: StatusOAuth.Suspended,
+        },
+        { agent },
+      )
+      const status = await checkStatusIndexFromStatusListCredential({
+        statusListCredential: updated.statusListCredential,
+        statusListIndex: '5',
+      })
+      expect(status).toBe(StatusOAuth.Suspended)
+    })
+
     it('should reject LD-Signatures format', async () => {
       await expect(
         createNewStatusList(
@@ -171,6 +202,7 @@ describe('Status list', () => {
             type: StatusListType.OAuthStatusList,
             proofFormat: 'lds',
             id: 'http://localhost:9543/oauth2',
+            correlationId: 'test-4-' + Date.now(),
             issuer: didKeyIdentifier.did,
             length: 99999,
             oauthStatusList: {
@@ -191,7 +223,7 @@ describe('Status list', () => {
           type: StatusListType.StatusList2021,
           proofFormat: 'jwt',
           id: 'http://localhost:9543/encoded1',
-          correlationId: 'test-4-' + Date.now(),
+          correlationId: 'test-5-' + Date.now(),
           issuer: didKeyIdentifier.did,
           length: 1000,
           statusList2021: {
@@ -228,7 +260,7 @@ describe('Status list', () => {
           type: StatusListType.OAuthStatusList,
           proofFormat: 'jwt',
           id: 'http://localhost:9543/encoded2',
-          correlationId: 'test-5-' + Date.now(),
+          correlationId: 'test-6-' + Date.now(),
           issuer: didKeyIdentifier.did,
           length: 1000,
           oauthStatusList: {

@@ -1,5 +1,5 @@
 import { IAgentContext, ICredentialPlugin } from '@veramo/core'
-import { CompactJWT, CredentialMapper, ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
 import {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
@@ -8,15 +8,13 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-import { decodeStatusListJWT, getAssertedValue, getAssertedValues } from '../utils'
+import { getAssertedValue, getAssertedValues } from '../utils'
 import { IStatusList } from './IStatusList'
-import { createHeaderAndPayload, StatusList, StatusListJWTHeaderParameters, StatusListJWTPayload } from '@sd-jwt/jwt-status-list'
-import { JWTPayload } from 'did-jwt'
+import { StatusList, StatusListJWTHeaderParameters } from '@sd-jwt/jwt-status-list'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { com, kotlin } from '@sphereon/kmp-cbor'
-import base64url from 'base64url'
-import { deflate } from 'pako' // extracted from @sd-jwt/jwt-status-list
+import { createSignedJwt, decodeStatusListJWT } from './encoding/jwt'
+import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
 
 type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>
 
@@ -35,36 +33,35 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
-    if (proofFormat !== DEFAULT_PROOF_FORMAT) {
-      throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
-    }
-
     const { issuer, id } = args
     const length = args.length ?? DEFAULT_LIST_LENGTH
     const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
 
-    const initialStatuses = new Array(length).fill(0)
-    const statusList = new StatusList(initialStatuses, bitsPerStatus)
+    const statusList = new StatusList(new Array(length).fill(0), bitsPerStatus)
     const encodedList = statusList.compressStatusList()
     let statusListCredential: StatusListVerifiableCredential
-    if (proofFormat === 'jwt') {
-      const { jwt } = await this.createSignedJwt(context, statusList, issuerString, id, args.keyRef)
-      statusListCredential = jwt as CompactJWT
-    } else if (proofFormat === 'cbor') {
-      const { cbor } = await this.createSignedCbor(context, statusList, issuerString, id, args.keyRef)
-      statusListCredential = cbor
-    } else {
-      return Promise.reject(Error(`Unknown proofFormat ${proofFormat}`))
+
+    switch (proofFormat) {
+      case 'jwt': {
+        const { statusListCredential: slJwt } = await createSignedJwt(context, statusList, issuerString, id, args.keyRef)
+        statusListCredential = slJwt
+        break
+      }
+      case 'cbor': {
+        const { statusListCredential: slCbor } = await createSignedCbor(context, statusList, issuerString, id, args.keyRef)
+        statusListCredential = slCbor
+        break
+      }
+      default:
+        throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
     }
 
     return {
       encodedList,
       statusListCredential,
-      oauthStatusList: {
-        bitsPerStatus,
-      },
+      oauthStatusList: { bitsPerStatus },
       length,
       type: StatusListType.OAuthStatusList,
       proofFormat,
@@ -77,21 +74,15 @@ export class OAuthStatusListImplementation implements IStatusList {
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
     const { statusListCredential, value } = args
     const isJwtEncoded = CredentialMapper.isJwtEncoded(statusListCredential)
-    const isMsoMdocOid4VPEncoded = CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)
-    if (!isJwtEncoded && !isMsoMdocOid4VPEncoded) {
-      return Promise.reject(new Error('statusListCredential is neither a JWT nor an MDOC document'))
-    }
-    const sourcePayload = decodeStatusListJWT(statusListCredential)
-    if (!('iss' in sourcePayload)) {
-      throw new Error('issuer (iss) is missing in the status list JWT')
-    }
-    if (!('sub' in sourcePayload)) {
-      throw new Error('List id (sub) is missing in the status list JWT')
-    }
-    const { iss: issuer, sub: id } = sourcePayload as StatusListJWTPayload & { iss: string; sub: string }
+    const isCborEncoded = CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)
+    const proofFormat = isJwtEncoded ? 'jwt' : isCborEncoded ? 'cbor' : DEFAULT_PROOF_FORMAT
 
-    const statusListContainer = sourcePayload.status_list
-    const statusList = StatusList.decompressStatusList(statusListContainer.lst, statusListContainer.bits)
+    if (!isJwtEncoded && !isCborEncoded) {
+      throw new Error('statusListCredential is neither a JWT nor a CBOR document')
+    }
+
+    const decoded = isJwtEncoded ? decodeStatusListJWT(statusListCredential) : decodeStatusListCWT(statusListCredential)
+    const { statusList, issuer, id } = decoded
 
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     if (index < 0 || index >= statusList.statusList.length) {
@@ -99,17 +90,19 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     statusList.setStatus(index, value)
-    const { jwt, encodedList } = await this.createSignedJwt(context, statusList, issuer, id, args.keyRef)
+    const result =
+      proofFormat === 'jwt'
+        ? await createSignedJwt(context, statusList, issuer, id, args.keyRef)
+        : await createSignedCbor(context, statusList, issuer, id, args.keyRef)
 
     return {
-      encodedList,
-      statusListCredential: jwt,
+      ...result,
       oauthStatusList: {
-        bitsPerStatus: statusListContainer.bits,
+        bitsPerStatus: statusList.getBitsPerStatus(),
       },
       length: statusList.statusList.length,
       type: StatusListType.OAuthStatusList,
-      proofFormat: DEFAULT_PROOF_FORMAT,
+      proofFormat,
       id,
       issuer,
     }
@@ -120,6 +113,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
     }
 
+    const proofFormat = args.proofFormat ?? DEFAULT_PROOF_FORMAT
     const { issuer, id } = getAssertedValues(args)
     const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
@@ -128,17 +122,28 @@ export class OAuthStatusListImplementation implements IStatusList {
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     listToUpdate.setStatus(index, args.value ? 1 : 0)
 
-    const { jwt, encodedList } = await this.createSignedJwt(context, listToUpdate, issuerString, id, args.keyRef)
+    let result: { statusListCredential: StatusListVerifiableCredential; encodedList: string }
+
+    switch (proofFormat) {
+      case 'jwt':
+        result = await createSignedJwt(context, listToUpdate, issuerString, id, args.keyRef)
+        break
+      case 'cbor':
+        result = await createSignedCbor(context, listToUpdate, issuerString, id, args.keyRef)
+        break
+      default:
+        throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
+    }
 
     return {
-      encodedList,
-      statusListCredential: jwt,
+      encodedList: result.encodedList,
+      statusListCredential: result.statusListCredential,
       oauthStatusList: {
         bitsPerStatus,
       },
       length: listToUpdate.statusList.length,
       type: StatusListType.OAuthStatusList,
-      proofFormat: args.proofFormat ?? DEFAULT_PROOF_FORMAT,
+      proofFormat,
       id,
       issuer,
     }
@@ -146,13 +151,14 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | StatusOAuth> {
     const { statusListCredential, statusListIndex } = args
-    if (!CredentialMapper.isJwtEncoded(statusListCredential) && !CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)) {
-      return Promise.reject(new Error('statusListCredential is neither a JWT nor an MDOC document'))
-    }
-    const sourcePayload = decodeStatusListJWT(statusListCredential)
-    const statusListContainer = sourcePayload.status_list
-    const statusList = StatusList.decompressStatusList(statusListContainer.lst, statusListContainer.bits)
+    const isJwtEncoded = CredentialMapper.isJwtEncoded(statusListCredential)
+    const isCborEncoded = CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)
 
+    if (!isJwtEncoded && !isCborEncoded) {
+      throw new Error('statusListCredential is neither a JWT nor a CBOR document')
+    }
+
+    const { statusList } = isJwtEncoded ? decodeStatusListJWT(statusListCredential) : decodeStatusListCWT(statusListCredential)
     const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
 
     if (index < 0 || index >= statusList.statusList.length) {
@@ -160,124 +166,5 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     return statusList.getStatus(index)
-  }
-
-  private async createSignedJwt(context: IRequiredContext, statusList: StatusList, issuerString: string, id: string, keyRef?: string) {
-    const identifier = await this.resolveIdentifier(context, issuerString, keyRef)
-    const payload: JWTPayload = {
-      iss: issuerString,
-      sub: id,
-      iat: Math.floor(new Date().getTime() / 1000),
-    }
-
-    const values = createHeaderAndPayload(statusList, payload, STATUS_LIST_JWT_HEADER)
-    const signedJwt = await context.agent.jwtCreateJwsCompactSignature({
-      issuer: { ...identifier, noIssPayloadUpdate: false },
-      protectedHeader: values.header,
-      payload: values.payload,
-    })
-
-    return {
-      jwt: signedJwt.jwt,
-      encodedList: (values.payload as StatusListJWTPayload).status_list.lst,
-    }
-  }
-
-  private async createSignedCbor(
-    context: IRequiredContext,
-    statusList: StatusList,
-    issuerString: string,
-    id: string,
-    keyRef?: string,
-  ): Promise<{ cwt: string; encodedList: string }> {
-    const identifier = await this.resolveIdentifier(context, issuerString, keyRef)
-
-    const encodeStatusList = statusList.encodeStatusList()
-    const compressedList = deflate(encodeStatusList, { level: 9 })
-    const compressedListInt8Array = new Int8Array(compressedList.buffer)
-
-    const statusListMap = new com.sphereon.cbor.CborMap(
-      kotlin.collections.KtMutableMap.fromJsMap(
-        new Map<com.sphereon.cbor.CborString, com.sphereon.cbor.CborItem<any>>([
-          [
-            new com.sphereon.cbor.CborString('bits'),
-            new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(statusList.getBitsPerStatus())),
-          ],
-          [new com.sphereon.cbor.CborString('lst'), new com.sphereon.cbor.CborByteString(compressedListInt8Array)],
-        ]),
-      ),
-    )
-
-    const exp = Math.floor(new Date().getTime() / 1000)
-    const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
-    const claimsMap = new com.sphereon.cbor.CborMap(
-      kotlin.collections.KtMutableMap.fromJsMap(
-        new Map([
-          [new com.sphereon.cbor.CborUInt(2), new com.sphereon.cbor.CborString(issuerString)], // "sub"
-          [
-            new com.sphereon.cbor.CborUInt(6),
-            new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(Math.floor(Date.now() / 1000))), // "iat"
-          ],
-          ...(exp
-            ? [
-                [
-                  new com.sphereon.cbor.CborUInt(4),
-                  new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(exp)), // "exp"
-                ],
-              ]
-            : []),
-          ...(ttl
-            ? [
-                [
-                  new com.sphereon.cbor.CborUInt(65534),
-                  new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(ttl)), // "time to live"
-                ],
-              ]
-            : []),
-          [new com.sphereon.cbor.CborUInt(65533), statusListMap], // "status list"
-        ]),
-      ),
-    )
-
-    const protectedHeader = new com.sphereon.cbor.CborMap(
-      kotlin.collections.KtMutableMap.fromJsMap(
-        new Map([[new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(16)), new com.sphereon.cbor.CborString('statuslist+cwt')]]), // "type"
-      ),
-    )
-    const protectedHeaderEncoded = com.sphereon.cbor.Cbor.encode(protectedHeader)
-    const claimsEncoded = com.sphereon.cbor.Cbor.encode(claimsMap)
-
-    const signedCWT = await context.agent.keyManagerSign({
-      keyRef: identifier.kmsKeyRef,
-      data: claimsEncoded,
-      encoding: undefined,
-    })
-
-    const cwtArray = new com.sphereon.cbor.CborArray(
-      kotlin.collections.KtMutableList.fromJsArray([
-        new com.sphereon.cbor.CborByteString(protectedHeaderEncoded),
-        new com.sphereon.cbor.CborByteString(claimsEncoded),
-        new com.sphereon.cbor.CborByteString(signedCWT.signature),
-      ]),
-    )
-    const cwtEncoded = com.sphereon.cbor.Cbor.encode(cwtArray)
-    const cwtBuffer = Buffer.from(cwtEncoded)
-    const cwt = base64url.encode(cwtBuffer)
-    return {
-      cwt,
-      encodedList: '', // FIXME
-    }
-  }
-
-  private async resolveIdentifier(context: IRequiredContext, issuer: string, keyRef?: string) {
-    return keyRef
-      ? await context.agent.identifierManagedGetByKid({
-          identifier: keyRef,
-        })
-      : await context.agent.identifierManagedGet({
-          identifier: issuer,
-          vmRelationship: 'assertionMethod',
-          offlineWhenNoDIDRegistered: true,
-        })
   }
 }

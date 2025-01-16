@@ -169,6 +169,9 @@ function determineStatusListType(credential: StatusListVerifiableCredential): St
     if (!CredentialMapper.isCredential(payload) && 'status_list' in payload) {
       return StatusListType.OAuthStatusList
     }
+  } else if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
+    // Just assume Cbor status list for now, I'd need to decode the Cbor to know what it is
+    return StatusListType.OAuthStatusList
   }
 
   if (CredentialMapper.isCredential(credential)) {

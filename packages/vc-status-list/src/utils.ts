@@ -1,11 +1,4 @@
-import { CompactJWT, IIssuer, ProofFormat, StatusListType, StatusListType as StatusListTypeW3C } from '@sphereon/ssi-types'
-import { StatusListJWTPayload } from '@sd-jwt/jwt-status-list'
-import base64url from 'base64url'
-
-export function decodeStatusListJWT(jwt: CompactJWT): StatusListJWTPayload {
-  const parts = jwt.split('.')
-  return JSON.parse(base64url.decode(parts[1]))
-}
+import { IIssuer, ProofFormat, StatusListType, StatusListType as StatusListTypeW3C } from '@sphereon/ssi-types'
 
 export function getAssertedStatusListType(type?: StatusListType) {
   const assertedType = type ?? StatusListType.StatusList2021

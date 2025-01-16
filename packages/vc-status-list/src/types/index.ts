@@ -223,5 +223,10 @@ export type GetStatusListArgs = {
 
 export type CredentialWithStatusSupport = ICredential | CredentialPayload | IVerifiableCredential
 
+export type SignedStatusListData = {
+  statusListCredential: StatusListVerifiableCredential
+  encodedList: string
+}
+
 export type IRequiredPlugins = ICredentialPlugin & IIdentifierResolution
 export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution>

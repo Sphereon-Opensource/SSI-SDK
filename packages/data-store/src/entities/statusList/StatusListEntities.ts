@@ -6,8 +6,8 @@ import {
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
+  ProofFormat,
 } from '@sphereon/ssi-types'
-import { ProofFormat } from '@veramo/core'
 import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 
