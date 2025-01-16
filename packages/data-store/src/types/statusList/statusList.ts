@@ -1,6 +1,6 @@
 import {
   IIssuer,
-  OriginalVerifiableCredential,
+  StatusListVerifiableCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
@@ -19,7 +19,7 @@ export interface IStatusListEntity {
   issuer: string | IIssuer
   type: StatusListType
   proofFormat: ProofFormat
-  statusListCredential?: OriginalVerifiableCredential
+  statusListCredential?: StatusListVerifiableCredential
 }
 
 export interface IStatusList2021Entity extends IStatusListEntity {

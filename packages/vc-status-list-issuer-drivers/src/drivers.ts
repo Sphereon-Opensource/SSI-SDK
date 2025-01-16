@@ -14,7 +14,7 @@ import {
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { OriginalVerifiableCredential, StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
+import { StatusListCredentialIdMode, StatusListDriverType, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
 import { statusListResultToEntity } from './status-list-adapters'
@@ -129,7 +129,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   }
 
   async createStatusList(args: {
-    statusListCredential: OriginalVerifiableCredential
+    statusListCredential: StatusListVerifiableCredential
     correlationId?: string
     credentialIdMode?: StatusListCredentialIdMode
   }): Promise<StatusListResult> {
@@ -151,11 +151,15 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return details
   }
 
-  async updateStatusList(args: { statusListCredential: OriginalVerifiableCredential; correlationId: string }): Promise<StatusListResult> {
+  async updateStatusList(args: {
+    statusListCredential: StatusListVerifiableCredential
+    correlationId: string
+    type: StatusListType
+  }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
     const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
     const entity = await (
-      await this.statusListStore.getStatusListRepo()
+      await this.statusListStore.getStatusListRepo(args.type)
     ).findOne({
       where: [
         {
@@ -185,11 +189,11 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   }
 
   private isStatusList2021Entity(statusList: StatusListEntity): statusList is StatusList2021Entity {
-    return statusList.type === StatusListType.StatusList2021
+    return statusList instanceof StatusList2021Entity
   }
 
   private isOAuthStatusListEntity(statusList: StatusListEntity): statusList is OAuthStatusListEntity {
-    return statusList.type === StatusListType.OAuthStatusList
+    return statusList instanceof OAuthStatusListEntity
   }
 
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
@@ -227,7 +231,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       }
     }
 
-    throw new Error(`Unsupported status list type: ${statusList.type}`)
+    throw new Error(`Unsupported status list type: ${typeof statusList}`)
   }
 
   async getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<IStatusListEntryEntity | undefined> {

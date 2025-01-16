@@ -1,12 +1,11 @@
 import {
   IIssuer,
-  JwtDecodedVerifiableCredential,
+  StatusListVerifiableCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
-  W3CVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { ProofFormat } from '@veramo/core'
 import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
@@ -14,7 +13,7 @@ import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])
-@TableInheritance({ column: { type: 'varchar', name: 'type' } })
+@TableInheritance({ column: { type: 'simple-enum', name: 'type', enum: StatusListType } })
 export abstract class StatusListEntity extends BaseEntity {
   @PrimaryColumn({ name: 'id', type: 'varchar' })
   id!: string
@@ -48,14 +47,6 @@ export abstract class StatusListEntity extends BaseEntity {
   issuer!: string | IIssuer
 
   @Column('simple-enum', {
-    name: 'type',
-    enum: StatusListType,
-    nullable: false,
-    default: StatusListType.StatusList2021,
-  })
-  type!: StatusListType
-
-  @Column('simple-enum', {
     name: 'driverType',
     enum: StatusListDriverType,
     nullable: false,
@@ -80,13 +71,13 @@ export abstract class StatusListEntity extends BaseEntity {
     nullable: true,
     unique: false,
     transformer: {
-      from(value: string): W3CVerifiableCredential | JwtDecodedVerifiableCredential {
+      from(value: string): StatusListVerifiableCredential {
         if (value?.startsWith('ey')) {
           return value
         }
         return JSON.parse(value)
       },
-      to(value: W3CVerifiableCredential | JwtDecodedVerifiableCredential): string {
+      to(value: StatusListVerifiableCredential): string {
         if (typeof value === 'string') {
           return value
         }
@@ -94,7 +85,7 @@ export abstract class StatusListEntity extends BaseEntity {
       },
     },
   })
-  statusListCredential?: W3CVerifiableCredential | JwtDecodedVerifiableCredential
+  statusListCredential?: StatusListVerifiableCredential
 
   @OneToMany((type) => StatusListEntryEntity, (entry) => entry.statusList)
   statusListEntries!: StatusListEntryEntity[]
@@ -117,6 +108,8 @@ export class StatusList2021Entity extends StatusListEntity {
 
 @ChildEntity(StatusListType.OAuthStatusList)
 export class OAuthStatusListEntity extends StatusListEntity {
-  bitsPerStatus: number
+  @Column({ type: 'integer', name: 'bitsPerStatus', nullable: false })
+  bitsPerStatus!: number
+  @Column({ type: 'varchar', name: 'expiresAt', nullable: true })
   expiresAt?: string
 }

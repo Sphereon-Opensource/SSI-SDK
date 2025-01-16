@@ -3254,6 +3254,9 @@ importers:
       debug:
         specifier: ^4.3.5
         version: 4.3.7
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))

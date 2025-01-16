@@ -1,16 +1,15 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
-  CompactJWT,
   ICredential,
   ICredentialStatus,
   IIssuer,
   IVerifiableCredential,
-  OriginalVerifiableCredential,
   OrPromise,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
+  StatusListVerifiableCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import {
@@ -83,7 +82,7 @@ export interface UpdateStatusListFromEncodedListArgs {
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
-  statusListCredential: OriginalVerifiableCredential | CompactJWT
+  statusListCredential: StatusListVerifiableCredential // | CompactJWT
   keyRef?: string
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth
@@ -91,7 +90,7 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
 
 export interface StatusListResult {
   encodedList: string
-  statusListCredential: OriginalVerifiableCredential | CompactJWT
+  statusListCredential: StatusListVerifiableCredential // | CompactJWT
   length: number
   type: StatusListType
   proofFormat: ProofFormat
@@ -152,14 +151,14 @@ export interface CreateStatusListArgs {
 }
 
 export interface UpdateStatusListIndexArgs {
-  statusListCredential: OriginalVerifiableCredential | CompactJWT
+  statusListCredential: StatusListVerifiableCredential // | CompactJWT
   keyRef?: string
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth
 }
 
 export interface CheckStatusIndexArgs {
-  statusListCredential: OriginalVerifiableCredential | CompactJWT
+  statusListCredential: StatusListVerifiableCredential // | CompactJWT
   statusListIndex: string | number
 }
 

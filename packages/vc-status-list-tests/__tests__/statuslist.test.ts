@@ -11,7 +11,11 @@ import { Resolver } from 'did-resolver'
 import {
   checkStatusIndexFromStatusListCredential,
   createNewStatusList,
+  Status2021,
+  statusList2021ToVerifiableCredential,
+  StatusOAuth,
   updateStatusIndexFromStatusListCredential,
+  updateStatusListIndexFromEncodedList,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import {
   CredentialHandlerLDLocal,
@@ -94,14 +98,14 @@ describe('Status list', () => {
       expect(statusList.statusList2021?.indexingDirection).toBe('rightToLeft')
 
       const updated = await updateStatusIndexFromStatusListCredential(
-        { statusListCredential: statusList.statusListCredential, statusListIndex: 2, value: true },
+        { statusListCredential: statusList.statusListCredential, statusListIndex: 2, value: Status2021.Invalid },
         { agent },
       )
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: updated.statusListCredential,
         statusListIndex: '2',
       })
-      expect(status).toBe(1)
+      expect(status).toBe(Status2021.Invalid)
     })
 
     it('should create and update using JWT format', async () => {
@@ -121,14 +125,14 @@ describe('Status list', () => {
       )
 
       const updated = await updateStatusIndexFromStatusListCredential(
-        { statusListCredential: statusList.statusListCredential, statusListIndex: 3, value: true },
+        { statusListCredential: statusList.statusListCredential, statusListIndex: 3, value: Status2021.Invalid },
         { agent },
       )
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: updated.statusListCredential,
         statusListIndex: '3',
       })
-      expect(status).toBe(1)
+      expect(status).toBe(Status2021.Invalid)
     })
   })
 
@@ -150,14 +154,14 @@ describe('Status list', () => {
       )
 
       const updated = await updateStatusIndexFromStatusListCredential(
-        { statusListCredential: statusList.statusListCredential, statusListIndex: 4, value: true },
+        { statusListCredential: statusList.statusListCredential, statusListIndex: 4, value: StatusOAuth.Invalid },
         { agent },
       )
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: updated.statusListCredential,
         statusListIndex: '4',
       })
-      expect(status).toBe(1)
+      expect(status).toBe(StatusOAuth.Invalid)
     })
 
     it('should reject LD-Signatures format', async () => {
@@ -176,6 +180,134 @@ describe('Status list', () => {
           { agent },
         ),
       ).rejects.toThrow("Invalid proof format 'lds' for OAuthStatusList")
+    })
+  })
+
+  describe('updateStatusListIndexFromEncodedList', () => {
+    it('should update StatusList2021 using encoded list', async () => {
+      // First create a status list to get valid encoded list
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.StatusList2021,
+          proofFormat: 'jwt',
+          id: 'http://localhost:9543/encoded1',
+          correlationId: 'test-4-' + Date.now(),
+          issuer: didKeyIdentifier.did,
+          length: 1000,
+          statusList2021: {
+            indexingDirection: 'rightToLeft',
+          },
+        },
+        { agent },
+      )
+
+      const result = await updateStatusListIndexFromEncodedList(
+        {
+          type: StatusListType.StatusList2021,
+          statusListIndex: 1,
+          value: true,
+          proofFormat: 'jwt',
+          issuer: didKeyIdentifier.did,
+          id: 'http://localhost:9543/encoded1',
+          encodedList: initialList.encodedList,
+          statusList2021: {
+            statusPurpose: 'revocation',
+          },
+        },
+        { agent },
+      )
+
+      expect(result.type).toBe(StatusListType.StatusList2021)
+      expect(result.encodedList).toBeDefined()
+      expect(result.statusListCredential).toBeDefined()
+    })
+
+    it('should update OAuthStatusList using encoded list', async () => {
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.OAuthStatusList,
+          proofFormat: 'jwt',
+          id: 'http://localhost:9543/encoded2',
+          correlationId: 'test-5-' + Date.now(),
+          issuer: didKeyIdentifier.did,
+          length: 1000,
+          oauthStatusList: {
+            bitsPerStatus: 2,
+          },
+        },
+        { agent },
+      )
+
+      const result = await updateStatusListIndexFromEncodedList(
+        {
+          type: StatusListType.OAuthStatusList,
+          statusListIndex: 1,
+          value: true,
+          proofFormat: 'jwt',
+          issuer: didKeyIdentifier.did,
+          id: 'http://localhost:9543/encoded2',
+          encodedList: initialList.encodedList,
+          oauthStatusList: {
+            bitsPerStatus: 2,
+          },
+        },
+        { agent },
+      )
+
+      expect(result.type).toBe(StatusListType.OAuthStatusList)
+      expect(result.oauthStatusList?.bitsPerStatus).toBe(2)
+    })
+  })
+
+  describe('statusList2021ToVerifiableCredential', () => {
+    it('should create VC with string issuer', async () => {
+      const result = await statusList2021ToVerifiableCredential(
+        {
+          issuer: didKeyIdentifier.did,
+          id: 'http://localhost:9543/sl1',
+          encodedList: 'H4sIAAAAAAAAA2NgwA8YgYARiEFEMxBzAbEMEEsAsQAQswExIxADAHPnBI8QAAAA',
+          statusPurpose: 'revocation',
+          type: StatusListType.StatusList2021,
+          proofFormat: 'jwt',
+        },
+        { agent },
+      )
+
+      expect(result).toBeDefined()
+      expect(typeof result === 'string' || 'proof' in result).toBeTruthy()
+    })
+
+    it('should create VC with issuer object', async () => {
+      const result = await statusList2021ToVerifiableCredential(
+        {
+          issuer: { id: didKeyIdentifier.did },
+          id: 'http://localhost:9543/sl2',
+          encodedList: 'H4sIAAAAAAAAA2NgwA8YgYARiEFEMxBzAbEMEEsAsQAQswExIxADAHPnBI8QAAAA',
+          statusPurpose: 'revocation',
+          type: StatusListType.StatusList2021,
+          proofFormat: 'lds',
+        },
+        { agent },
+      )
+
+      if (typeof result === 'string') {
+        expect(result).toMatch(/^ey/) // JWT format starts with 'ey'
+      } else {
+        expect(result).toHaveProperty('proof')
+      }
+    })
+
+    it('should throw error for missing required fields', async () => {
+      await expect(
+        statusList2021ToVerifiableCredential(
+          {
+            issuer: didKeyIdentifier.did,
+            id: 'test',
+            encodedList: 'test',
+          } as any,
+          { agent },
+        ),
+      ).rejects.toThrow()
     })
   })
 })

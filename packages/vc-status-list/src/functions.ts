@@ -1,5 +1,5 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, OriginalVerifiableCredential, StatusListDriverType, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
+import { CredentialMapper, StatusListVerifiableCredential, StatusListDriverType, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
 
 import { checkStatus } from '@sphereon/vc-status-list'
 import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin } from '@veramo/core'
@@ -13,10 +13,11 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
-import { getAssertedStatusListType, getAssertedValue, getAssertedValues } from './utils'
+import { getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
+import { jwtDecode } from 'jwt-decode'
 
-export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<OriginalVerifiableCredential> {
+export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListVerifiableCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
   try {
     const response = await fetch(url)
@@ -25,9 +26,9 @@ export async function fetchStatusListCredential(args: { statusListCredential: st
     }
     const responseAsText = await response.text()
     if (responseAsText.trim().startsWith('{')) {
-      return JSON.parse(responseAsText) as OriginalVerifiableCredential
+      return JSON.parse(responseAsText) as StatusListVerifiableCredential
     }
-    return responseAsText as OriginalVerifiableCredential
+    return responseAsText as StatusListVerifiableCredential
   } catch (error) {
     console.error(`Fetching status list ${url} resulted in an unexpected error: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
     throw error
@@ -46,7 +47,7 @@ export function statusPluginStatusFunction(args: {
     const result = await checkStatusForCredential({
       ...args,
       documentLoader: args.documentLoader,
-      credential: credential as OriginalVerifiableCredential,
+      credential: credential as StatusListVerifiableCredential,
       errorUnknownListType: args.errorUnknownListType,
     })
 
@@ -69,7 +70,7 @@ export function vcLibCheckStatusFunction(args: {
 }) {
   const { mandatoryCredentialStatus, verifyStatusListCredential, verifyMatchingIssuers, errorUnknownListType } = args
   return (args: {
-    credential: OriginalVerifiableCredential
+    credential: StatusListVerifiableCredential
     documentLoader: any
     suite: any
   }): Promise<{
@@ -87,7 +88,7 @@ export function vcLibCheckStatusFunction(args: {
 }
 
 export async function checkStatusForCredential(args: {
-  credential: OriginalVerifiableCredential
+  credential: StatusListVerifiableCredential
   documentLoader: any
   suite: any
   mandatoryCredentialStatus?: boolean
@@ -134,14 +135,14 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
 }
 
 export async function checkStatusIndexFromStatusListCredential(args: {
-  statusListCredential: OriginalVerifiableCredential
+  statusListCredential: StatusListVerifiableCredential
   statusPurpose?: StatusPurpose2021
   type?: StatusListType | 'StatusList2021Entry'
   id?: string
   statusListIndex: string | number
 }): Promise<number | Status2021 | StatusOAuth> {
-  const requestedType = getAssertedStatusListType(args.type?.replace('Entry', '') as StatusListType)
-  const implementation = getStatusListImplementation(requestedType)
+  const statusListType: StatusListType = determineStatusListType(args.statusListCredential)
+  const implementation = getStatusListImplementation(statusListType)
   return implementation.checkStatusIndex(args)
 }
 
@@ -154,25 +155,41 @@ export async function createNewStatusList(
   return implementation.createNewStatusList(args, context)
 }
 
+function determineStatusListType(credential: StatusListVerifiableCredential): StatusListType {
+  if (CredentialMapper.isJwtEncoded(credential)) {
+    const payload: StatusListVerifiableCredential = jwtDecode(credential as string)
+    if (!CredentialMapper.isCredential(payload) && 'status_list' in payload) {
+      return StatusListType.OAuthStatusList
+    }
+  }
+
+  if (CredentialMapper.isCredential(credential)) {
+    const uniform = CredentialMapper.toUniformCredential(credential)
+    const type = uniform.type.find((t) => {
+      return Object.values(StatusListType).some((statusType) => t.includes(statusType))
+    })
+    if (!type) {
+      throw new Error('Invalid status list credential type')
+    }
+    return type.replace('Credential', '') as StatusListType
+  }
+
+  throw new Error('Cannot decode credential payload')
+}
+
 export async function updateStatusIndexFromStatusListCredential(
   args: UpdateStatusListFromStatusListCredentialArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
-
-  const uniform = CredentialMapper.toUniformCredential(credential) // This is not correct, we can't run a OAuthSTatusList through CredentialMapper and we can't see the type
-  const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
-  if (!type) {
-    throw new Error('Invalid status list credential type')
-  }
-  const statusListType = type.replace('Credential', '') as StatusListType
+  const statusListType: StatusListType = determineStatusListType(credential)
   const implementation = getStatusListImplementation(statusListType)
   return implementation.updateStatusListIndex(args, context)
 }
 
 // Keeping helper function for backward compatibility
 export async function statusListCredentialToDetails(args: {
-  statusListCredential: OriginalVerifiableCredential
+  statusListCredential: StatusListVerifiableCredential
   correlationId?: string
   driverType?: StatusListDriverType
 }): Promise<StatusListResult> {
@@ -188,7 +205,7 @@ export async function statusListCredentialToDetails(args: {
     {
       statusListCredential: args.statusListCredential,
       statusListIndex: 0,
-      value: false,
+      value: 0,
     },
     {} as IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   )
@@ -206,7 +223,7 @@ export async function updateStatusListIndexFromEncodedList(
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-): Promise<OriginalVerifiableCredential> {
+): Promise<StatusListVerifiableCredential> {
   const { issuer, id, type } = getAssertedValues(args)
   const identifier = await context.agent.identifierManagedGet({
     identifier: typeof issuer === 'string' ? issuer : issuer.id,
@@ -236,5 +253,6 @@ export async function statusList2021ToVerifiableCredential(
     fetchRemoteContexts: true,
   })
 
-  return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as OriginalVerifiableCredential).original
+  return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListVerifiableCredential)
+    .original as StatusListVerifiableCredential
 }
