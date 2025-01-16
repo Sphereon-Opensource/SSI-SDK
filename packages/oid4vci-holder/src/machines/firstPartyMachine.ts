@@ -57,7 +57,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
           target: FirstPartyMachineStateTypes.error,
           actions: assign({
             error: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-              title: translate('oid4vci_machine_verify_credentials_error_title'), // TODO check others
+              title: translate('oid4vci_machine_send_authorization_challenge_request_error_title'),
               message: _event.data.message,
               stack: _event.data.stack,
             }),
@@ -80,7 +80,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
         target: FirstPartyMachineStateTypes.error,
         actions: assign({
           error: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-            title: translate('siopV2_machine_create_config_error_title'), // TODO check others
+            title: translate('oid4vci_machine_create_config_error_title'),
             message: _event.data.message,
             stack: _event.data.stack,
           }),

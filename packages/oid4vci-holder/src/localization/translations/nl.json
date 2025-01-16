@@ -11,5 +11,7 @@
   "oid4vci_machine_initiation_error_title": "Initiëren OID4VCI provider",
   "oid4vci_machine_credential_verification_failed_message": "Verificatie van de credential leidde tot een fout.",
   "oid4vci_machine_retrieve_federation_trust_error_title": "Ophalen federatievertrouwen",
-  "oid4vci_machine_first_party_error_title": "Eerste partijstroom"
+  "oid4vci_machine_first_party_error_title": "Eerste partijstroom",
+  "oid4vci_machine_send_authorization_challenge_request_error_title": "Versturen autorisatie-uitdaging aanvraag",
+  "oid4vci_machine_create_config_error_title": "SiopV2-configuratie aanmaken"
 }
