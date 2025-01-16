@@ -198,7 +198,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
   }
 
-  private async siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData> { //GetSiopRequestArgs
+  private async siopGetSiopRequest(args: GetSiopRequestArgs, context: RequiredContext): Promise<Siopv2AuthorizationRequestData> {
     const { agent } = context
     const { didAuthConfig } = args
 

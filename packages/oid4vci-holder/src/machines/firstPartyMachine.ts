@@ -130,7 +130,6 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
       src: FirstPartyMachineServices.sendAuthorizationResponse,
       onDone: {
         target: FirstPartyMachineStateTypes.sendAuthorizationChallengeRequest,
-        // TODO do we need to return the vci state? as this should contain the authorization_code?
         actions: assign({
           presentationDuringIssuanceSession: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<string>) => _event.data,
         }),
@@ -139,7 +138,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
         target: FirstPartyMachineStateTypes.error,
         actions: assign({
           error: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-            title: translate('siopV2_machine_get_request_error_title'), // TODO
+            title: translate('oid4vci_machine_get_request_error_title'),
             message: _event.data.message,
             stack: _event.data.stack,
           }),

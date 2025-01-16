@@ -19,10 +19,12 @@ export type GetMachineArgs = {
   stateNavigationListener?: (siopv2Machine: Siopv2MachineInterpreter, state: Siopv2MachineState, navigation?: any) => Promise<void>
 }
 
-export type CreateConfigArgs = { url: string }//Pick<Siopv2MachineContext, 'url'> // TContext extends { url: string } //Pick<Siopv2MachineContext, 'url'> // TODO create function args
+export type CreateConfigArgs = { url: string }
 export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'idOpts'>
-export type GetSiopRequestArgs = { didAuthConfig?: Omit<DidAuthConfig, 'identifier'>, url: string }//Pick<Siopv2MachineContext, 'didAuthConfig' | 'url'> // TODO
+export type GetSiopRequestArgs = { didAuthConfig?: Omit<DidAuthConfig, 'identifier'>, url: string }
+// FIXME it would be nicer if these function are not tied to a certain machine so that we can start calling them for anywhere
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
+// FIXME it would be nicer if these function are not tied to a certain machine so that we can start calling them for anywhere
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
 export type SendResponseArgs = {
   didAuthConfig?: Omit<DidAuthConfig, 'identifier'>,
@@ -30,7 +32,8 @@ export type SendResponseArgs = {
   selectedCredentials: Array<UniqueDigitalCredential>
   idOpts?: ManagedIdentifierOptsOrResult
   isFirstParty?: boolean
-} //Pick<Siopv2MachineContext, 'didAuthConfig' | 'authorizationRequestData' | 'selectedCredentials' | 'idOpts' | 'isFirstParty'>
+}
+// FIXME it would be nicer if these function are not tied to a certain machine so that we can start calling them for anywhere
 export type GetSelectableCredentialsArgs = Pick<Siopv2MachineContext, 'authorizationRequestData'>
 
 export enum Siopv2HolderEvent {
