@@ -10,13 +10,13 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Hasher, Loggers } from '@sphereon/ssi-types'
+import { Hasher, Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
   DidAuthSiopOpAuthenticatorOptions,
   GetSelectableCredentialsArgs,
-  IOpSessionArgs,
+  IOpSessionArgs, Json,
   LOGGER_NAMESPACE,
   RequiredContext,
   schema,
@@ -33,8 +33,8 @@ import {
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
-  IRequiredContext,
-} from '../types/IDidAuthSiopOpAuthenticator'
+  IRequiredContext
+} from '../types'
 import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
 
 import {
@@ -47,13 +47,13 @@ import {
   RetrieveContactArgs,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
-  Siopv2HolderEvent,
-} from '../types/siop-service'
+  Siopv2HolderEvent
+} from '../types'
 import { PEX, Status } from '@sphereon/pex'
 import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
-import { DcqlCredential, DcqlPresentation, DcqlQuery } from 'dcql'
+import { DcqlCredential, DcqlPresentation, DcqlQuery, DcqlSdJwtVcCredential } from 'dcql'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -353,61 +353,67 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
     const dcqlCredentialsWithCredentials: Map<DcqlCredential, UniqueDigitalCredential> = new Map()
 
-    if (authorizationRequestData.presentationDefinitions !== undefined && authorizationRequestData.presentationDefinitions !== null) {
-      authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
-        const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
-          presentationDefinition.definition,
-          selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
-        )
+    if (Array.isArray(authorizationRequestData.presentationDefinitions) && authorizationRequestData?.presentationDefinitions.length > 0) {
+      try {
+        authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
+          const { areRequiredCredentialsPresent, verifiableCredential: verifiableCredentials } = pex.selectFrom(
+            presentationDefinition.definition,
+            selectedCredentials.map((udc) => udc.originalVerifiableCredential!),
+          )
 
-        if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
-          const uniqueDigitalCredentials: UniqueDigitalCredential[] = verifiableCredentials.map((vc) => {
-            // @ts-ignore FIXME Funke
-            const hash = computeEntryHash(vc)
-            const udc = selectedCredentials.find((udc) => udc.hash == hash)
+          if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
+            let uniqueDigitalCredentials: UniqueDigitalCredential[] = []
+              uniqueDigitalCredentials = verifiableCredentials.map((vc) => {
+                // @ts-ignore FIXME Funke
+                const hash = computeEntryHash(vc)
+                const udc = selectedCredentials.find((udc) => udc.hash == hash)
 
-            if (!udc) {
-              throw Error('UniqueDigitalCredential could not be found')
-            }
-            return udc
-          })
-          verifiableCredentialsWithDefinition.push({
-            definition: presentationDefinition,
-            credentials: uniqueDigitalCredentials,
-          })
-        }
-      })
+                if (!udc) {
+                  throw Error('UniqueDigitalCredential could not be found')
+                }
+                return udc
+              })
+            verifiableCredentialsWithDefinition.push({
+              definition: presentationDefinition,
+              credentials: uniqueDigitalCredentials,
+            })
+          }
+        })
+      } catch (e) {
+        return Promise.reject(e)
+      }
 
       if (verifiableCredentialsWithDefinition.length === 0) {
         return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
       }
-    } else if (authorizationRequestData.dcqlQuery !== undefined && authorizationRequestData.dcqlQuery !== null) {
+
+    } else if (authorizationRequestData.dcqlQuery) {
       //TODO Only SD-JWT and MSO MDOC are supported at the moment
       if (this.hasMDocCredentials(selectedCredentials) || this.hasSdJwtCredentials(selectedCredentials)) {
-        selectedCredentials.forEach((vc: any) => {
-          const payload =
-            vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null
-              ? vc.decodedPayload
-              : vc['decoded'] !== undefined && vc['decoded'] !== null
-                ? vc.decoded
-                : undefined
-          const vct = payload?.vct
-          const docType = payload?.docType
-          const namespaces = payload?.namespaces
-          const result: DcqlCredential = {
-            claims: payload,
-            vct,
-            docType,
-            namespaces,
-          }
-          dcqlCredentialsWithCredentials.set(result, vc)
-        })
+        try {
+          selectedCredentials.forEach((vc) => {
+            if (this.isSdJwtCredential(vc)) {
+              const payload = (vc.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).decodedPayload
+              const result: DcqlSdJwtVcCredential = {
+                claims: payload as { [x: string]: Json },
+                vct: payload.vct,
+                credential_format: 'vc+sd-jwt'
+              }
+              dcqlCredentialsWithCredentials.set(result, vc)
+              //FIXME MDoc namespaces are incompatible: array of strings vs complex object - https://sphereon.atlassian.net/browse/SPRIND-143
+            } else {
+              throw Error(`Invalid credential format: ${vc.digitalCredential.documentFormat}`)
+            }
+          })
+        } catch (e) {
+          return Promise.reject(e)
+        }
 
-        const dcqlPresentationRecord: DcqlPresentation = {}
+        const dcqlPresentationRecord: DcqlPresentation.Output = {}
         const queryResult = DcqlQuery.query(authorizationRequestData.dcqlQuery, Array.from(dcqlCredentialsWithCredentials.keys()))
         for (const [key, value] of Object.entries(queryResult.credential_matches)) {
           if (value.success) {
-            dcqlPresentationRecord[key] = this.retrieveEncodedCredential(dcqlCredentialsWithCredentials.get(value.output)!)
+            dcqlPresentationRecord[key] = this.retrieveEncodedCredential(dcqlCredentialsWithCredentials.get(value.output)!) as string | { [x: string]: Json }
           }
         }
       }
@@ -424,10 +430,10 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       context,
     )
 
-    const contentType = response?.headers.get('content-type') || ''
+    const contentType = response.headers.get('content-type') || ''
     let responseBody: any = null
 
-    const text = await response?.text()
+    const text = await response.text()
     if (text) {
       responseBody = contentType.includes('application/json') || text.startsWith('{') ? JSON.parse(text) : text
     }
@@ -435,31 +441,32 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return {
       body: responseBody,
       url: response?.url,
-      queryParams: response && decodeUriAsJson(response?.url),
+      queryParams: decodeUriAsJson(response?.url),
     }
   }
 
   private hasMDocCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(
-      (credential) =>
-        credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
-        credential.digitalCredential.documentType === DocumentType.VC,
-    )
+    return credentials.some(this.isMDocCredential);
+  };
+
+  private isMDocCredential = (credential: UniqueDigitalCredential) => {
+    return credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
+      credential.digitalCredential.documentType === DocumentType.VC
   }
 
   private hasSdJwtCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(
-      (credential) =>
-        credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
-        credential.digitalCredential.documentType === DocumentType.VC,
-    )
+    return credentials.some(this.isSdJwtCredential);
+  };
+
+  private isSdJwtCredential= (credential: UniqueDigitalCredential) => {
+    return credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
+      credential.digitalCredential.documentType === DocumentType.VC
   }
 
   private retrieveEncodedCredential = (credential: UniqueDigitalCredential) => {
-    // FIXME Remove any
-    return (credential as any).original !== undefined && (credential as any).original !== null
-      ? (credential as any).original
-      : (credential as any).compactSdJwtVc
+    return credential.originalVerifiableCredential !== undefined && credential.originalVerifiableCredential !== null &&
+    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== undefined &&
+    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== null ? (credential.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc : credential.originalVerifiableCredential
   }
 
   private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap> {

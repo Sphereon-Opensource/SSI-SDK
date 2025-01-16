@@ -266,7 +266,7 @@ export const siopSendAuthorizationResponse = async (
       return response
     }
   }
-  return undefined
+  throw Error('Presentation Definition or DCQL is required')
 }
 
 function buildPartialPD(
