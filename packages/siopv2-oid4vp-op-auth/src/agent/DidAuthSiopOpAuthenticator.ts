@@ -21,7 +21,7 @@ import { v4 as uuidv4 } from 'uuid'
 import {
   DidAuthSiopOpAuthenticatorOptions,
   GetSelectableCredentialsArgs,
-  IOpSessionArgs,
+  IOpSessionArgs, Json,
   LOGGER_NAMESPACE,
   RequiredContext,
   schema,
@@ -43,7 +43,7 @@ import {
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext
-} from '../types/IDidAuthSiopOpAuthenticator'
+} from '../types'
 import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
 
 import {
@@ -63,7 +63,6 @@ import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
 import { DcqlCredential, DcqlPresentation, DcqlQuery, DcqlSdJwtVcCredential } from 'dcql'
-import { Json } from 'dcql/dist/src/u-dcql'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
