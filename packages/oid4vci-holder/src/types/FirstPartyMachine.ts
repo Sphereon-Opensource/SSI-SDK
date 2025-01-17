@@ -63,7 +63,7 @@ export enum FirstPartyMachineEvents {
 type NextEvent = {type: FirstPartyMachineEvents.NEXT};
 type PreviousEvent = {type: FirstPartyMachineEvents.PREVIOUS};
 type DeclineEvent = {type: FirstPartyMachineEvents.DECLINE};
-type SelectCredentialsEvent = {
+export type SelectCredentialsEvent = {
   type: FirstPartyMachineEvents.SET_SELECTED_CREDENTIALS;
   data: Array<UniqueDigitalCredential>;
 };
