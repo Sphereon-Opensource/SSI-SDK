@@ -159,3 +159,11 @@ export type SiopV2AuthorizationRequestData = {
   entityId?: string;
   presentationDefinitions?: PresentationDefinitionWithLocation[];
 };
+
+export type FirstPartyMachineNavigationArgs = {
+  oid4vciMachine: FirstPartyMachineInterpreter
+  state: FirstPartyMachineState
+  navigation: any
+  onNext?: () => void
+  onBack?: () => void
+}
