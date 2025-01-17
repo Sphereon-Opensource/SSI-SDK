@@ -20,9 +20,8 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListFromStatusListCredentialArgs,
 } from './types'
-import { assertValidProofType, getAssertedValue, getAssertedValues } from './utils'
+import { assertValidProofType, determineStatusListType, getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
-import { jwtDecode } from 'jwt-decode'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListVerifiableCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
@@ -160,31 +159,6 @@ export async function createNewStatusList(
   const { type } = getAssertedValues(args)
   const implementation = getStatusListImplementation(type)
   return implementation.createNewStatusList(args, context)
-}
-
-function determineStatusListType(credential: StatusListVerifiableCredential): StatusListType {
-  if (CredentialMapper.isJwtEncoded(credential)) {
-    const payload: StatusListVerifiableCredential = jwtDecode(credential as string)
-    if (!CredentialMapper.isCredential(payload) && 'status_list' in payload) {
-      return StatusListType.OAuthStatusList
-    }
-  } else if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
-    // Just assume Cbor status list for now, I'd need to decode the Cbor to know what it is
-    return StatusListType.OAuthStatusList
-  }
-
-  if (CredentialMapper.isCredential(credential)) {
-    const uniform = CredentialMapper.toUniformCredential(credential)
-    const type = uniform.type.find((t) => {
-      return Object.values(StatusListType).some((statusType) => t.includes(statusType))
-    })
-    if (!type) {
-      throw new Error('Invalid status list credential type')
-    }
-    return type.replace('Credential', '') as StatusListType
-  }
-
-  throw new Error('Cannot decode credential payload')
 }
 
 export async function updateStatusIndexFromStatusListCredential(

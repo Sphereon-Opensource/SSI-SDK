@@ -1,5 +1,5 @@
 import { IAgentContext, ICredentialPlugin } from '@veramo/core'
-import { CredentialMapper, ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
+import { ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
 import {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
@@ -8,7 +8,7 @@ import {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-import { getAssertedValue, getAssertedValues } from '../utils'
+import { determineProofFormat, getAssertedValue, getAssertedValues } from '../utils'
 import { IStatusList } from './IStatusList'
 import { StatusList, StatusListJWTHeaderParameters } from '@sd-jwt/jwt-status-list'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -73,15 +73,12 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
     const { statusListCredential, value } = args
-    const isJwtEncoded = CredentialMapper.isJwtEncoded(statusListCredential)
-    const isCborEncoded = CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)
-    const proofFormat = isJwtEncoded ? 'jwt' : isCborEncoded ? 'cbor' : DEFAULT_PROOF_FORMAT
-
-    if (!isJwtEncoded && !isCborEncoded) {
-      throw new Error('statusListCredential is neither a JWT nor a CBOR document')
+    if (typeof statusListCredential !== 'string') {
+      return Promise.reject('statusListCredential in neither JWT nor CWT')
     }
 
-    const decoded = isJwtEncoded ? decodeStatusListJWT(statusListCredential) : decodeStatusListCWT(statusListCredential)
+    const proofFormat = determineProofFormat(statusListCredential)
+    const decoded = proofFormat === 'jwt' ? decodeStatusListJWT(statusListCredential) : decodeStatusListCWT(statusListCredential)
     const { statusList, issuer, id } = decoded
 
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
@@ -151,16 +148,14 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | StatusOAuth> {
     const { statusListCredential, statusListIndex } = args
-    const isJwtEncoded = CredentialMapper.isJwtEncoded(statusListCredential)
-    const isCborEncoded = CredentialMapper.isMsoMdocOid4VPEncoded(statusListCredential)
-
-    if (!isJwtEncoded && !isCborEncoded) {
-      throw new Error('statusListCredential is neither a JWT nor a CBOR document')
+    if (typeof statusListCredential !== 'string') {
+      return Promise.reject('statusListCredential in neither JWT nor CWT')
     }
 
-    const { statusList } = isJwtEncoded ? decodeStatusListJWT(statusListCredential) : decodeStatusListCWT(statusListCredential)
-    const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
+    const proofFormat = determineProofFormat(statusListCredential)
+    const { statusList } = proofFormat === 'jwt' ? decodeStatusListJWT(statusListCredential) : decodeStatusListCWT(statusListCredential)
 
+    const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
     if (index < 0 || index >= statusList.statusList.length) {
       throw new Error('Status list index out of bounds')
     }
