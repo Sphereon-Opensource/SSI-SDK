@@ -1,6 +1,6 @@
 import { W3CVerifiableCredential } from './w3c-vc'
 import { MdocDocument } from './mso_mdoc'
-import { ProofFormat as VmoProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
+import { ProofFormat as VmoProofFormat } from '@veramo/core'
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',

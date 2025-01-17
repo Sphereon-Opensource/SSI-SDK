@@ -7,10 +7,9 @@ import {
   StatusListVerifiableCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { ProofFormat as VmoProofFormat } from '@veramo/core/src/types/ICredentialIssuer'
+import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VmoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
-import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin } from '@veramo/core'
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
   CreateNewStatusListFuncArgs,
