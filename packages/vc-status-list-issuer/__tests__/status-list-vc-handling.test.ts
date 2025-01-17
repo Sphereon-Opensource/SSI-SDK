@@ -152,6 +152,7 @@ describe('JWT Verifiable Credential, should be', () => {
           type: StatusListType.OAuthStatusList,
           issuer: 'did:example:123',
           id: 'list123',
+          correlationId: 'test-1-' + Date.now(),
           proofFormat: 'lds',
           oauthStatusList: {
             bitsPerStatus: 2,

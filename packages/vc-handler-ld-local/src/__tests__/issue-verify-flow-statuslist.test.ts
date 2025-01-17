@@ -89,7 +89,7 @@ describe('credential-LD full flow', () => {
     expect(statusList.issuer).toEqual(didKeyIdentifier.did)
     expect(statusList.length).toEqual(99999)
     expect(statusList.statusList2021).toBeTruthy()
-    expect(statusList.statusList2021.indexingDirection).toEqual('rightToLeft')
+    expect(statusList.statusList2021!.indexingDirection).toEqual('rightToLeft')
     expect(statusList.proofFormat).toEqual('lds')
     expect(statusList.statusListCredential).toBeDefined()
   })
