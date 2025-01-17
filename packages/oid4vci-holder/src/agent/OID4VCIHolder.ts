@@ -319,7 +319,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           },
           context,
         ),
-      [OID4VCIMachineServices.startFirstPartApplicationFlow]: (args: StartFirstPartApplicationMachine) => startFirstPartApplicationMachine(args, context),
+      [OID4VCIMachineServices.startFirstPartApplicationFlow]: (args: StartFirstPartApplicationMachine) => startFirstPartApplicationMachine({ ...args, stateNavigationListener: opts.firstPartyStateNavigationListener }, context),
       [OID4VCIMachineServices.createCredentialsToSelectFrom]: (args: CreateCredentialsToSelectFromArgs) => this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
       [OID4VCIMachineServices.getContact]: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       [OID4VCIMachineServices.getCredentials]: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),

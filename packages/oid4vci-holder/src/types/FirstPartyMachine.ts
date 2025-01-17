@@ -106,12 +106,14 @@ export type FirstPartyMachineInterpreter = Interpreter<
   any
 >;
 
+export type FirstPartyMachineStateNavigationListener = (firstPartyMachine: FirstPartyMachineInterpreter, state: FirstPartyMachineState, navigation?: any) => Promise<void>
+
 export type InstanceFirstPartyMachineOpts = {
   services?: any;
   guards?: any;
   subscription?: () => void;
   requireCustomNavigationHook?: boolean;
-  stateNavigationListener?: (firstPartyMachine: FirstPartyMachineInterpreter, state: FirstPartyMachineState, navigation?: any) => Promise<void>
+  stateNavigationListener?: FirstPartyMachineStateNavigationListener
 } & CreateFirstPartyMachineOpts;
 
 export type FirstPartyMachineState = State<

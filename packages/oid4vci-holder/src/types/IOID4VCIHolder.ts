@@ -64,6 +64,7 @@ import {
   VerificationPolicies,
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
+import { FirstPartyMachineStateNavigationListener } from './FirstPartyMachine'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -138,7 +139,8 @@ export type GetMachineArgs = {
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: Partial<IssuanceOpts>
-  stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+  stateNavigationListener?: OID4VCIMachineStateNavigationListener
+  firstPartyStateNavigationListener?: FirstPartyMachineStateNavigationListener
 }
 
 export type PrepareStartArgs = Pick<
@@ -171,7 +173,7 @@ export type SendNotificationArgs = Pick<
   'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
 > & { notificationRequest?: NotificationRequest; stored: boolean }
 export type GetFederationTrustArgs = Pick<OID4VCIMachineContext, 'requestData' | 'trustAnchors' | 'serverMetadata'>
-export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState'>
+export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState'> & { stateNavigationListener?: FirstPartyMachineStateNavigationListener }
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -317,6 +319,8 @@ export type CreateOID4VCIMachineOpts = {
   issuanceOpt?: IssuanceOpts
 }
 
+export type OID4VCIMachineStateNavigationListener = (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+
 export type OID4VCIMachineInstanceOpts = {
   services?: any
   guards?: any
@@ -325,7 +329,8 @@ export type OID4VCIMachineInstanceOpts = {
   authorizationRequestOpts?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts // restrict the issuance to these opts
-  stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+  stateNavigationListener?: OID4VCIMachineStateNavigationListener
+  firstPartyStateNavigationListener?: FirstPartyMachineStateNavigationListener
 } & CreateOID4VCIMachineOpts
 
 export type OID4VCIProviderProps = {
