@@ -1,6 +1,6 @@
 import { IAgentContext, ICredentialPlugin, ProofFormat as VmoProofFormat } from '@veramo/core'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, DocumentFormat, IIssuer, ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, DocumentFormat, IIssuer, ProofFormat, StatusListType, StatusListCredential } from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
 import { IStatusList } from './IStatusList'
@@ -162,7 +162,7 @@ export class StatusList2021Implementation implements IStatusList {
       keyRef?: string
     },
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-  ): Promise<StatusListVerifiableCredential> {
+  ): Promise<StatusListCredential> {
     const identifier = await context.agent.identifierManagedGet({
       identifier: typeof args.issuer === 'string' ? args.issuer : args.issuer.id,
       vmRelationship: 'assertionMethod',
@@ -189,7 +189,6 @@ export class StatusList2021Implementation implements IStatusList {
       fetchRemoteContexts: true,
     })
 
-    return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListVerifiableCredential)
-      .original as StatusListVerifiableCredential
+    return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListCredential).original as StatusListCredential
   }
 }

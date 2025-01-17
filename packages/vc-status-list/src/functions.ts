@@ -1,12 +1,5 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import {
-  CredentialMapper,
-  ProofFormat,
-  StatusListDriverType,
-  StatusListType,
-  StatusListVerifiableCredential,
-  StatusPurpose2021,
-} from '@sphereon/ssi-types'
+import { CredentialMapper, ProofFormat, StatusListDriverType, StatusListType, StatusListCredential, StatusPurpose2021 } from '@sphereon/ssi-types'
 import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VmoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
@@ -23,7 +16,7 @@ import {
 import { assertValidProofType, determineStatusListType, getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
 
-export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListVerifiableCredential> {
+export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
   try {
     const response = await fetch(url)
@@ -32,9 +25,9 @@ export async function fetchStatusListCredential(args: { statusListCredential: st
     }
     const responseAsText = await response.text()
     if (responseAsText.trim().startsWith('{')) {
-      return JSON.parse(responseAsText) as StatusListVerifiableCredential
+      return JSON.parse(responseAsText) as StatusListCredential
     }
-    return responseAsText as StatusListVerifiableCredential
+    return responseAsText as StatusListCredential
   } catch (error) {
     console.error(`Fetching status list ${url} resulted in an unexpected error: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
     throw error
@@ -53,7 +46,7 @@ export function statusPluginStatusFunction(args: {
     const result = await checkStatusForCredential({
       ...args,
       documentLoader: args.documentLoader,
-      credential: credential as StatusListVerifiableCredential,
+      credential: credential as StatusListCredential,
       errorUnknownListType: args.errorUnknownListType,
     })
 
@@ -76,7 +69,7 @@ export function vcLibCheckStatusFunction(args: {
 }) {
   const { mandatoryCredentialStatus, verifyStatusListCredential, verifyMatchingIssuers, errorUnknownListType } = args
   return (args: {
-    credential: StatusListVerifiableCredential
+    credential: StatusListCredential
     documentLoader: any
     suite: any
   }): Promise<{
@@ -94,7 +87,7 @@ export function vcLibCheckStatusFunction(args: {
 }
 
 export async function checkStatusForCredential(args: {
-  credential: StatusListVerifiableCredential
+  credential: StatusListCredential
   documentLoader: any
   suite: any
   mandatoryCredentialStatus?: boolean
@@ -141,7 +134,7 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
 }
 
 export async function checkStatusIndexFromStatusListCredential(args: {
-  statusListCredential: StatusListVerifiableCredential
+  statusListCredential: StatusListCredential
   statusPurpose?: StatusPurpose2021
   type?: StatusListType | 'StatusList2021Entry'
   id?: string
@@ -173,7 +166,7 @@ export async function updateStatusIndexFromStatusListCredential(
 
 // Keeping helper function for backward compatibility
 export async function statusListCredentialToDetails(args: {
-  statusListCredential: StatusListVerifiableCredential
+  statusListCredential: StatusListCredential
   correlationId?: string
   driverType?: StatusListDriverType
 }): Promise<StatusListResult> {
@@ -208,7 +201,7 @@ export async function updateStatusListIndexFromEncodedList(
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-): Promise<StatusListVerifiableCredential> {
+): Promise<StatusListCredential> {
   const { issuer, id, type } = getAssertedValues(args)
   const identifier = await context.agent.identifierManagedGet({
     identifier: typeof issuer === 'string' ? issuer : issuer.id,
@@ -242,6 +235,5 @@ export async function statusList2021ToVerifiableCredential(
     fetchRemoteContexts: true,
   })
 
-  return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListVerifiableCredential)
-    .original as StatusListVerifiableCredential
+  return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListCredential).original as StatusListCredential
 }

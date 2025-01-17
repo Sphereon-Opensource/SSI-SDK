@@ -25,18 +25,18 @@ export const createStatusListFromInstance = async (
     statusPurpose: args.instance.statusPurpose ?? 'revocation',
     correlationId: args.instance.correlationId ?? args.instance.id,
   }
-  let sl: StatusListResult
+  let statusList: StatusListResult
   try {
-    sl = await context.agent.slGetStatusList(instance)
+    statusList = await context.agent.slGetStatusList(instance)
   } catch (e) {
     const id = instance.id
     const correlationId = instance.correlationId
     if (!id || !correlationId) {
       return Promise.reject(Error(`No correlation id and id provided for status list`))
     }
-    sl = await context.agent.slCreateStatusList({ ...instance, id, correlationId })
+    statusList = await context.agent.slCreateStatusList({ ...instance, id, correlationId })
   }
-  return sl
+  return statusList
 }
 
 export const handleCredentialStatus = async (

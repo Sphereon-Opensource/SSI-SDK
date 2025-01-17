@@ -86,29 +86,29 @@ export class StatusListPlugin implements IAgentPlugin {
       correlationId: sl.correlationId,
       dataSource,
     })
-    let statusListResponse: StatusListResult | undefined = undefined
+    let statusList: StatusListResult | undefined = undefined
     try {
-      statusListResponse = await this.slGetStatusList(args, context)
+      statusList = await this.slGetStatusList(args, context)
     } catch (e) {
       // That is fine if there is no status list yet
     }
-    if (statusListResponse && this.instances.find((sl) => sl.id === args.id || sl.correlationId === args.correlationId)) {
+    if (statusList && this.instances.find((sl) => sl.id === args.id || sl.correlationId === args.correlationId)) {
       return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
     } else {
-      statusListResponse = await driver.createStatusList({
+      statusList = await driver.createStatusList({
         statusListCredential: sl.statusListCredential,
         correlationId: sl.correlationId,
       })
       this.instances.push({
-        correlationId: statusListResponse.correlationId,
-        id: statusListResponse.id,
+        correlationId: statusList.correlationId,
+        id: statusList.id,
         dataSource,
-        driverType: statusListResponse.driverType!,
+        driverType: statusList.driverType!,
         driverOptions: driver.getOptions(),
       })
     }
 
-    return statusListResponse
+    return statusList
   }
 
   private async slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport> {

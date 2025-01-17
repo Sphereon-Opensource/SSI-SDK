@@ -78,6 +78,7 @@ describe('credential-LD full flow', () => {
         length: 99999,
         correlationId: '1234',
         statusList2021: {
+          statusPurpose: 'revocation',
           indexingDirection: 'rightToLeft',
         },
       },
@@ -90,6 +91,7 @@ describe('credential-LD full flow', () => {
     expect(statusList.length).toEqual(99999)
     expect(statusList.statusList2021).toBeTruthy()
     expect(statusList.statusList2021!.indexingDirection).toEqual('rightToLeft')
+    expect(statusList.statusList2021!.statusPurpose).toEqual('revocation')
     expect(statusList.proofFormat).toEqual('lds')
     expect(statusList.statusListCredential).toBeDefined()
   })

@@ -1,6 +1,6 @@
 import {
   IIssuer,
-  StatusListVerifiableCredential,
+  StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
@@ -71,13 +71,13 @@ export abstract class StatusListEntity extends BaseEntity {
     nullable: true,
     unique: false,
     transformer: {
-      from(value: string): StatusListVerifiableCredential {
+      from(value: string): StatusListCredential {
         if (value?.startsWith('ey')) {
           return value
         }
         return JSON.parse(value)
       },
-      to(value: StatusListVerifiableCredential): string {
+      to(value: StatusListCredential): string {
         if (typeof value === 'string') {
           return value
         }
@@ -85,7 +85,7 @@ export abstract class StatusListEntity extends BaseEntity {
       },
     },
   })
-  statusListCredential?: StatusListVerifiableCredential
+  statusListCredential?: StatusListCredential
 
   @OneToMany((type) => StatusListEntryEntity, (entry) => entry.statusList)
   statusListEntries!: StatusListEntryEntity[]

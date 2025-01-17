@@ -27,11 +27,6 @@ export class StatusListFactory {
     }
     return implementation
   }
-
-  // Optional: Method to register custom implementations if needed
-  public registerImplementation(type: StatusListType, implementation: IStatusList): void {
-    this.implementations.set(type, implementation)
-  }
 }
 
 export function getStatusListImplementation(type: StatusListType): IStatusList {

@@ -41,6 +41,46 @@ export const createSignedCbor = async (
     ),
   )
 
+  const protectedHeader = new cbor.CborMap(
+    kotlin.collections.KtMutableMap.fromJsMap(
+      new Map([[new cbor.CborUInt(kmp.LongKMP.fromNumber(16)), new cbor.CborString('statuslist+cwt')]]), // "type"
+    ),
+  )
+  const protectedHeaderEncoded = cbor.Cbor.encode(protectedHeader)
+  const claimsMap = buildClaimsMap(id, issuerString, statusListMap)
+  const claimsEncoded = cbor.Cbor.encode(claimsMap)
+
+  const signedCWT = await context.agent.keyManagerSign({
+    keyRef: identifier.kmsKeyRef,
+    data: claimsEncoded,
+    encoding: undefined,
+  })
+
+  const protectedHeaderEncodedInt8 = new Int8Array(protectedHeaderEncoded)
+  const claimsEncodedInt8 = new Int8Array(claimsEncoded)
+  const signatureInt8 = new Int8Array(signedCWT.signature)
+
+  const cwtArray = new cbor.CborArray(
+    kotlin.collections.KtMutableList.fromJsArray([
+      new cbor.CborByteString(protectedHeaderEncodedInt8),
+      new cbor.CborByteString(claimsEncodedInt8),
+      new cbor.CborByteString(signatureInt8),
+    ]),
+  )
+
+  const cwtEncoded = cbor.Cbor.encode(cwtArray)
+  const cwtBuffer = Buffer.from(cwtEncoded)
+  return {
+    statusListCredential: base64url.encode(cwtBuffer),
+    encodedList: base64url.encode(compressedList as Buffer), // JS in @sd-jwt/jwt-status-list drops it in like this, so keep the same method
+  }
+}
+
+function buildClaimsMap(
+  id: string,
+  issuerString: string,
+  statusListMap: com.sphereon.cbor.CborMap<com.sphereon.cbor.CborString, com.sphereon.cbor.CborItem<any>>,
+) {
   const exp = Math.floor(new Date().getTime() / 1000)
   const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
   const claimsEntries: Array<[com.sphereon.cbor.CborUInt, com.sphereon.cbor.CborItem<any>]> = [
@@ -69,39 +109,7 @@ export const createSignedCbor = async (
   claimsEntries.push([new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.STATUS_LIST)), statusListMap])
 
   const claimsMap = new cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(claimsEntries)))
-
-  const protectedHeader = new cbor.CborMap(
-    kotlin.collections.KtMutableMap.fromJsMap(
-      new Map([[new cbor.CborUInt(kmp.LongKMP.fromNumber(16)), new cbor.CborString('statuslist+cwt')]]), // "type"
-    ),
-  )
-  const protectedHeaderEncoded = cbor.Cbor.encode(protectedHeader)
-  const claimsEncoded = cbor.Cbor.encode(claimsMap)
-
-  const signedCWT = await context.agent.keyManagerSign({
-    keyRef: identifier.kmsKeyRef,
-    data: claimsEncoded,
-    encoding: undefined,
-  })
-
-  const protectedHeaderEncodedInt8 = new Int8Array(protectedHeaderEncoded)
-  const claimsEncodedInt8 = new Int8Array(claimsEncoded)
-  const signatureInt8 = new Int8Array(signedCWT.signature)
-
-  const cwtArray = new cbor.CborArray(
-    kotlin.collections.KtMutableList.fromJsArray([
-      new cbor.CborByteString(protectedHeaderEncodedInt8),
-      new cbor.CborByteString(claimsEncodedInt8),
-      new cbor.CborByteString(signatureInt8),
-    ]),
-  )
-
-  const cwtEncoded = cbor.Cbor.encode(cwtArray)
-  const cwtBuffer = Buffer.from(cwtEncoded)
-  return {
-    statusListCredential: base64url.encode(cwtBuffer),
-    encodedList: base64url.encode(compressedList as Buffer), // JS in @sd-jwt/jwt-status-list drops it in like this, so keep the same method
-  }
+  return claimsMap
 }
 
 const getCborValueFromMap = <T>(map: Map<com.sphereon.cbor.CborItem<any>, com.sphereon.cbor.CborItem<any>>, key: number): T | never => {

@@ -1,12 +1,12 @@
 import { W3CVerifiableCredential } from './w3c-vc'
-import { MdocDocument } from './mso_mdoc'
 import { ProofFormat as VmoProofFormat } from '@veramo/core'
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
   OAuthStatusList = 'OAuthStatusList',
 }
+export type CWT = string
 
-export type StatusListVerifiableCredential = W3CVerifiableCredential | MdocDocument
+export type StatusListCredential = W3CVerifiableCredential | CWT
 
 export type ProofFormat = VmoProofFormat | 'cbor'

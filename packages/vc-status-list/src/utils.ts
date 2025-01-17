@@ -4,7 +4,7 @@ import {
   ProofFormat,
   StatusListType,
   StatusListType as StatusListTypeW3C,
-  StatusListVerifiableCredential,
+  StatusListCredential,
 } from '@sphereon/ssi-types'
 import { jwtDecode } from 'jwt-decode'
 
@@ -49,11 +49,11 @@ export function assertValidProofType(type: StatusListType, proofFormat: ProofFor
   }
 }
 
-export function determineStatusListType(credential: StatusListVerifiableCredential): StatusListType {
+export function determineStatusListType(credential: StatusListCredential): StatusListType {
   const proofFormat = determineProofFormat(credential)
   switch (proofFormat) {
     case 'jwt':
-      const payload: StatusListVerifiableCredential = jwtDecode(credential as string)
+      const payload: StatusListCredential = jwtDecode(credential as string)
       const keys = Object.keys(payload)
       if (keys.includes('status_list')) {
         return StatusListType.OAuthStatusList
@@ -78,7 +78,7 @@ export function determineStatusListType(credential: StatusListVerifiableCredenti
   throw new Error('Cannot determine status list type from credential payload')
 }
 
-export function determineProofFormat(credential: StatusListVerifiableCredential): ProofFormat {
+export function determineProofFormat(credential: StatusListCredential): ProofFormat {
   if (CredentialMapper.isJwtEncoded(credential)) {
     return 'jwt'
   } else if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {

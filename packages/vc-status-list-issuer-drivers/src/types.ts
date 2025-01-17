@@ -12,7 +12,7 @@ import {
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListVerifiableCredential, StatusListDriverType } from '@sphereon/ssi-types'
+import { StatusListCredential, StatusListDriverType } from '@sphereon/ssi-types'
 import {
   IAgentContext,
   ICredentialIssuer,
@@ -45,7 +45,7 @@ export interface IStatusListDriver {
 
   getStatusListLength(args?: { correlationId?: string }): Promise<number>
 
-  createStatusList(args: { statusListCredential: StatusListVerifiableCredential; correlationId?: string }): Promise<StatusListResult>
+  createStatusList(args: { statusListCredential: StatusListCredential; correlationId?: string }): Promise<StatusListResult>
 
   getStatusList(args?: { correlationId?: string }): Promise<StatusListResult>
 
@@ -58,7 +58,7 @@ export interface IStatusListDriver {
 
   getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<IStatusListEntryEntity | undefined>
 
-  updateStatusList(args: { statusListCredential: StatusListVerifiableCredential }): Promise<StatusListResult>
+  updateStatusList(args: { statusListCredential: StatusListCredential }): Promise<StatusListResult>
 
   deleteStatusList(): Promise<boolean>
 

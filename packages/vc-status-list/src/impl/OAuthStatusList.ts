@@ -1,8 +1,9 @@
 import { IAgentContext, ICredentialPlugin } from '@veramo/core'
-import { ProofFormat, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
+import { ProofFormat, StatusListType } from '@sphereon/ssi-types'
 import {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
+  SignedStatusListData,
   StatusListResult,
   StatusOAuth,
   UpdateStatusListFromEncodedListArgs,
@@ -33,7 +34,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
-    const { issuer, id } = args
+    const { issuer, id, keyRef } = args
     const length = args.length ?? DEFAULT_LIST_LENGTH
     const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
@@ -41,22 +42,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const statusList = new StatusList(new Array(length).fill(0), bitsPerStatus)
     const encodedList = statusList.compressStatusList()
-    let statusListCredential: StatusListVerifiableCredential
-
-    switch (proofFormat) {
-      case 'jwt': {
-        const { statusListCredential: slJwt } = await createSignedJwt(context, statusList, issuerString, id, args.keyRef)
-        statusListCredential = slJwt
-        break
-      }
-      case 'cbor': {
-        const { statusListCredential: slCbor } = await createSignedCbor(context, statusList, issuerString, id, args.keyRef)
-        statusListCredential = slCbor
-        break
-      }
-      default:
-        throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
-    }
+    const { statusListCredential } = await this.createSignedStatusList(proofFormat, context, statusList, issuerString, id, keyRef)
 
     return {
       encodedList,
@@ -72,7 +58,7 @@ export class OAuthStatusListImplementation implements IStatusList {
   }
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
-    const { statusListCredential, value } = args
+    const { statusListCredential, value, keyRef } = args
     if (typeof statusListCredential !== 'string') {
       return Promise.reject('statusListCredential in neither JWT nor CWT')
     }
@@ -87,13 +73,18 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     statusList.setStatus(index, value)
-    const result =
-      proofFormat === 'jwt'
-        ? await createSignedJwt(context, statusList, issuer, id, args.keyRef)
-        : await createSignedCbor(context, statusList, issuer, id, args.keyRef)
+    const { statusListCredential: signedCredential, encodedList } = await this.createSignedStatusList(
+      proofFormat,
+      context,
+      statusList,
+      issuer,
+      id,
+      keyRef,
+    )
 
     return {
-      ...result,
+      statusListCredential: signedCredential,
+      encodedList,
       oauthStatusList: {
         bitsPerStatus: statusList.getBitsPerStatus(),
       },
@@ -119,22 +110,11 @@ export class OAuthStatusListImplementation implements IStatusList {
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     listToUpdate.setStatus(index, args.value ? 1 : 0)
 
-    let result: { statusListCredential: StatusListVerifiableCredential; encodedList: string }
-
-    switch (proofFormat) {
-      case 'jwt':
-        result = await createSignedJwt(context, listToUpdate, issuerString, id, args.keyRef)
-        break
-      case 'cbor':
-        result = await createSignedCbor(context, listToUpdate, issuerString, id, args.keyRef)
-        break
-      default:
-        throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
-    }
+    const { statusListCredential, encodedList } = await this.createSignedStatusList(proofFormat, context, listToUpdate, issuerString, id, args.keyRef)
 
     return {
-      encodedList: result.encodedList,
-      statusListCredential: result.statusListCredential,
+      encodedList,
+      statusListCredential,
       oauthStatusList: {
         bitsPerStatus,
       },
@@ -161,5 +141,25 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     return statusList.getStatus(index)
+  }
+
+  private async createSignedStatusList(
+    proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor',
+    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>,
+    statusList: StatusList,
+    issuerString: string,
+    id: string,
+    keyRef?: string,
+  ): Promise<SignedStatusListData> {
+    switch (proofFormat) {
+      case 'jwt': {
+        return await createSignedJwt(context, statusList, issuerString, id, keyRef)
+      }
+      case 'cbor': {
+        return await createSignedCbor(context, statusList, issuerString, id, keyRef)
+      }
+      default:
+        throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
+    }
   }
 }

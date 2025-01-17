@@ -10,7 +10,7 @@ import {
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
-  StatusListVerifiableCredential,
+  StatusListCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import { CredentialPayload, IAgentContext, ICredentialIssuer, ICredentialPlugin, ICredentialVerifier, IPluginMethodMap } from '@veramo/core'
@@ -75,7 +75,7 @@ export interface UpdateStatusListFromEncodedListArgs {
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
-  statusListCredential: StatusListVerifiableCredential // | CompactJWT
+  statusListCredential: StatusListCredential // | CompactJWT
   keyRef?: string
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth
@@ -83,7 +83,7 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
 
 export interface StatusListResult {
   encodedList: string
-  statusListCredential: StatusListVerifiableCredential // | CompactJWT
+  statusListCredential: StatusListCredential // | CompactJWT
   length: number
   type: StatusListType
   proofFormat: ProofFormat
@@ -144,14 +144,14 @@ export interface CreateStatusListArgs {
 }
 
 export interface UpdateStatusListIndexArgs {
-  statusListCredential: StatusListVerifiableCredential // | CompactJWT
+  statusListCredential: StatusListCredential // | CompactJWT
   keyRef?: string
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth
 }
 
 export interface CheckStatusIndexArgs {
-  statusListCredential: StatusListVerifiableCredential // | CompactJWT
+  statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: string | number
 }
 
@@ -224,7 +224,7 @@ export type GetStatusListArgs = {
 export type CredentialWithStatusSupport = ICredential | CredentialPayload | IVerifiableCredential
 
 export type SignedStatusListData = {
-  statusListCredential: StatusListVerifiableCredential
+  statusListCredential: StatusListCredential
   encodedList: string
 }
 

@@ -14,7 +14,7 @@ import {
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListCredentialIdMode, StatusListDriverType, StatusListType, StatusListVerifiableCredential } from '@sphereon/ssi-types'
+import { StatusListCredentialIdMode, StatusListDriverType, StatusListType, StatusListCredential } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
 import { statusListResultToEntity } from './status-list-adapters'
@@ -129,7 +129,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   }
 
   async createStatusList(args: {
-    statusListCredential: StatusListVerifiableCredential
+    statusListCredential: StatusListCredential
     correlationId?: string
     credentialIdMode?: StatusListCredentialIdMode
   }): Promise<StatusListResult> {
@@ -152,7 +152,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   }
 
   async updateStatusList(args: {
-    statusListCredential: StatusListVerifiableCredential
+    statusListCredential: StatusListCredential
     correlationId: string
     type: StatusListType
   }): Promise<StatusListResult> {
