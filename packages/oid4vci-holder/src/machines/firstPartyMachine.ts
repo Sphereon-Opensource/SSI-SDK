@@ -31,7 +31,7 @@ import {
   InstanceFirstPartyMachineOpts,
   SiopV2AuthorizationRequestData,
   SendAuthorizationResponseArgs,
-  SelectCredentialsEvent
+  FirstPartySelectCredentialsEvent
 } from '../types/FirstPartyMachine'
 
 const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
@@ -115,7 +115,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
     id: FirstPartyMachineStateTypes.selectCredentials,
     on: {
       [FirstPartyMachineEvents.SET_SELECTED_CREDENTIALS]: {
-        actions: assign({selectedCredentials: (_ctx: FirstPartyMachineContext, _event: SelectCredentialsEvent) => _event.data}),
+        actions: assign({selectedCredentials: (_ctx: FirstPartyMachineContext, _event: FirstPartySelectCredentialsEvent) => _event.data}),
       },
       [FirstPartyMachineEvents.NEXT]: {
         target: FirstPartyMachineStateTypes.sendAuthorizationResponse,

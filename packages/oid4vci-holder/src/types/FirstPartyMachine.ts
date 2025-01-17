@@ -60,19 +60,19 @@ export enum FirstPartyMachineEvents {
   SET_SELECTED_CREDENTIALS = 'SET_SELECTED_CREDENTIALS'
 }
 
-type NextEvent = {type: FirstPartyMachineEvents.NEXT};
-type PreviousEvent = {type: FirstPartyMachineEvents.PREVIOUS};
-type DeclineEvent = {type: FirstPartyMachineEvents.DECLINE};
-export type SelectCredentialsEvent = {
+export type FirstPartyNextEvent = {type: FirstPartyMachineEvents.NEXT};
+export type FirstPartyPreviousEvent = {type: FirstPartyMachineEvents.PREVIOUS};
+export type FirstPartyDeclineEvent = {type: FirstPartyMachineEvents.DECLINE};
+export type FirstPartySelectCredentialsEvent = {
   type: FirstPartyMachineEvents.SET_SELECTED_CREDENTIALS;
   data: Array<UniqueDigitalCredential>;
 };
 
 export type FirstPartyMachineEventTypes =
-  NextEvent |
-  PreviousEvent |
-  DeclineEvent |
-  SelectCredentialsEvent
+  FirstPartyNextEvent |
+  FirstPartyPreviousEvent |
+  FirstPartyDeclineEvent |
+  FirstPartySelectCredentialsEvent
 
 export type FirstPartyMachineStatesConfig = StatesConfig<
   FirstPartyMachineContext,
