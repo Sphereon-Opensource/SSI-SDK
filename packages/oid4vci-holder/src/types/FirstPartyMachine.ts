@@ -161,7 +161,7 @@ export type SiopV2AuthorizationRequestData = {
 };
 
 export type FirstPartyMachineNavigationArgs = {
-  oid4vciMachine: FirstPartyMachineInterpreter
+  firstPartyMachine: FirstPartyMachineInterpreter
   state: FirstPartyMachineState
   navigation: any
   onNext?: () => void
