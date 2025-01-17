@@ -8,7 +8,7 @@ import {
   TypegenDisabled
 } from 'xstate'
 import { OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import { DidAuthConfig } from '@sphereon/ssi-sdk.data-store'
+import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
 import {
   PresentationDefinitionWithLocation,
   RPRegistrationMetadataPayload
@@ -42,6 +42,7 @@ export type FirstPartyMachineStates = Record<FirstPartyMachineStateTypes, {}>;
 export type FirstPartyMachineContext = {
   openID4VCIClientState: OpenID4VCIClientState
   selectedCredentials: Array<UniqueDigitalCredential>
+  contact: Party
   authSession?: string
   presentationUri?: string
   identifier?: IIdentifier
@@ -78,6 +79,7 @@ export type FirstPartyMachineStatesConfig = StatesConfig<
 
 export type CreateFirstPartyMachineOpts = {
   openID4VCIClientState: OpenID4VCIClientState
+  contact: Party
   agentContext: RequiredContext
   machineId?: string;
 };

@@ -173,7 +173,7 @@ export type SendNotificationArgs = Pick<
   'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
 > & { notificationRequest?: NotificationRequest; stored: boolean }
 export type GetFederationTrustArgs = Pick<OID4VCIMachineContext, 'requestData' | 'trustAnchors' | 'serverMetadata'>
-export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState'> & { stateNavigationListener?: FirstPartyMachineStateNavigationListener }
+export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState' | 'contact'> & { stateNavigationListener?: FirstPartyMachineStateNavigationListener }
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',

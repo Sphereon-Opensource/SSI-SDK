@@ -167,6 +167,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
 const createFirstPartyActivationMachine = (opts: CreateFirstPartyMachineOpts): FirstPartyStateMachine => {
   const initialContext: FirstPartyMachineContext = {
     openID4VCIClientState: opts.openID4VCIClientState,
+    contact: opts.contact,
     selectedCredentials: [],
   };
 
