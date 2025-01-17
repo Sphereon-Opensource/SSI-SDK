@@ -74,7 +74,11 @@ export class StatusListStore implements IStatusListStore {
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
     console.log(updateResult)
-    return (await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: true })) as IStatusListEntryEntity
+    return (await this.getStatusListEntryByIndex({
+      ...args,
+      statusListId,
+      errorOnNotFound: true,
+    })) as IStatusListEntryEntity
   }
 
   async getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
@@ -102,7 +106,10 @@ export class StatusListStore implements IStatusListStore {
     if (!credentialId) {
       throw Error('Can only get a credential by credentialId when a credentialId is supplied')
     }
-    const statusList = await this.getStatusList({ id: args.statusListId, correlationId: args.statusListCorrelationId })
+    const statusList = await this.getStatusList({
+      id: args.statusListId,
+      correlationId: args.statusListCorrelationId,
+    })
     const where = {
       statusList: statusList.id,
       ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
@@ -164,6 +171,10 @@ export class StatusListStore implements IStatusListStore {
   }
 
   async getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity> {
+    return statusListFrom(await this.getStatusListEntity(args))
+  }
+
+  private async getStatusListEntity(args: IGetStatusListArgs): Promise<StatusListEntity> {
     if (!args.id && !args.correlationId) {
       throw Error(`At least and 'id' or 'correlationId' needs to be provided to lookup a status list`)
     }
@@ -177,8 +188,7 @@ export class StatusListStore implements IStatusListStore {
     if (!result) {
       throw Error(`No status list found for id ${args.id}`)
     }
-
-    return statusListFrom(result)
+    return result
   }
 
   async getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity>> {
@@ -221,9 +231,13 @@ export class StatusListStore implements IStatusListStore {
     return statusListFrom(updatedResult)
   }
 
-  async removeStatusList(args: IRemoveStatusListArgs): Promise<void> {
-    const result = await this.getStatusList(args)
-    await (await this.getStatusListRepo(result.type)).delete(result)
+  async removeStatusList(args: IRemoveStatusListArgs): Promise<boolean> {
+    const result = await this.getStatusListEntity(args)
+
+    await (await this.getStatusListEntryRepo()).delete({ statusList: result.id })
+    const deletedEntity = await (await this.getStatusListRepo()).remove(result)
+
+    return Boolean(deletedEntity)
   }
 
   private async getDS(): Promise<DataSource> {

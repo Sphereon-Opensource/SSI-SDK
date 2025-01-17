@@ -18,7 +18,7 @@ export interface IStatusListStore {
 
   getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity>>
 
-  removeStatusList(args: IRemoveStatusListArgs): Promise<void>
+  removeStatusList(args: IRemoveStatusListArgs): Promise<boolean>
 
   addStatusList(args: IAddStatusListArgs): Promise<IStatusListEntity>
 

@@ -227,6 +227,6 @@ describe('Status list store tests', () => {
     const result = await statusListStore.removeStatusList({ id: statusList.id })
     expect(result).toEqual(true)
 
-    await expect(statusListStore.getStatusList({ id: statusList.id })).rejects.toThrow(`No status list found for id: ${statusList.id}`)
+    await expect(statusListStore.getStatusList({ id: statusList.id })).rejects.toThrow(`No status list found for id ${statusList.id}`)
   })
 })
