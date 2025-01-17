@@ -60,10 +60,10 @@ export enum FirstPartyMachineEvents {
   SET_SELECTED_CREDENTIALS = 'SET_SELECTED_CREDENTIALS'
 }
 
-export type NextEvent = {type: FirstPartyMachineEvents.NEXT};
-export type PreviousEvent = {type: FirstPartyMachineEvents.PREVIOUS};
-export type DeclineEvent = {type: FirstPartyMachineEvents.DECLINE};
-export type SelectCredentialsEvent = {
+type NextEvent = {type: FirstPartyMachineEvents.NEXT};
+type PreviousEvent = {type: FirstPartyMachineEvents.PREVIOUS};
+type DeclineEvent = {type: FirstPartyMachineEvents.DECLINE};
+type SelectCredentialsEvent = {
   type: FirstPartyMachineEvents.SET_SELECTED_CREDENTIALS;
   data: Array<UniqueDigitalCredential>;
 };
