@@ -326,7 +326,7 @@ export async function createVciIssuer(
   ).build()
 }
 
-export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(presentationDefinitionId: string) => Promise<string>> {
+export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<() => Promise<string>> {
   async function authRequestUriCallback(): Promise<string> {
     const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
     return fetch(path, {
@@ -354,7 +354,7 @@ export async function createAuthRequestUriCallback(opts: { path: string, present
   return authRequestUriCallback
 }
 
-export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(presentationDefinitionId: string, correlationId: string) => Promise<boolean>> {
+export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(correlationId: string) => Promise<boolean>> {
   async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
     return fetch(opts.path, {
       method: 'POST',
