@@ -622,14 +622,19 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
 }
 
 export const startFirstPartApplicationMachine = async (args: StartFirstPartApplicationMachine, context: RequiredContext): Promise<AuthorizationChallengeCodeResponse | undefined> => {
-  const { openID4VCIClientState, stateNavigationListener } = args
+  const { openID4VCIClientState, stateNavigationListener, contact } = args
 
   if (!openID4VCIClientState) {
     return Promise.reject(Error('Missing openID4VCI client state in context'))
   }
 
+  if (!contact) {
+    return Promise.reject(Error('Missing contact in context'))
+  }
+
   const firstPartyMachineInstance = FirstPartyMachine.newInstance({
     openID4VCIClientState,
+    contact,
     agentContext: context,
     stateNavigationListener
   });
