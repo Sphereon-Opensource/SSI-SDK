@@ -1,9 +1,45 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { CredentialMapper } from '@sphereon/ssi-types'
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { PresentationSubmission } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
+
+const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayload => {
+  const contentType = request.header('content-type')
+
+  if (contentType === 'application/json') {
+    const payload = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
+    return payload as AuthorizationResponsePayload
+  }
+
+  if (contentType === 'application/x-www-form-urlencoded') {
+    const payload = request.body as AuthorizationResponsePayload
+
+    // Parse presentation_submission if it's a string
+    if (typeof payload.presentation_submission === 'string') {
+      console.log(`Supplied presentation_submission was a string instead of JSON. Correcting, but external party should fix their implementation!`)
+      payload.presentation_submission = JSON.parse(payload.presentation_submission)
+    }
+
+    // when using FORM_URL_ENCODED, vp_token comes back as string not matter whether the input was string, object or array. Handled below.
+    if (typeof payload.vp_token === 'string') {
+      const { vp_token } = payload
+
+      // The only use case where vp_object is an object is JsonLdAsString atm. For arrays, any objects will be parsed along with the array
+      // (Leaving the vp_token JsonLdAsString causes problems because the original credential will remain string and will be interpreted as JWT in some parts of the code)
+      if ((vp_token.startsWith('[') && vp_token.endsWith(']')) || CredentialMapper.isJsonLdAsString(vp_token)) {
+        payload.vp_token = JSON.parse(vp_token)
+      }
+    }
+
+    return payload
+  }
+
+  throw new Error(
+    `Unsupported content type: ${contentType}. Currently only application/x-www-form-urlencoded and application/json (for direct_post) are supported`,
+  )
+}
 
 export function verifyAuthResponseSIOPv2Endpoint(
   router: Router,
@@ -32,20 +68,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
         return response.send()
       }
 
-      const authorizationResponse =
-        typeof request.body === 'string' ? (JSON.parse(request.body) as AuthorizationResponsePayload) : (request.body as AuthorizationResponsePayload)
-      if (typeof authorizationResponse.presentation_submission === 'string') {
-        console.log(`Supplied presentation_submission was a string instead of JSON. Correcting, but external party should fix their implementation!`)
-        authorizationResponse.presentation_submission = JSON.parse(authorizationResponse.presentation_submission) as PresentationSubmission
-      }
-      if (typeof authorizationResponse.vp_token === 'string') {
-        // arrays pass as string when using FORM_URL_ENCODED
-        if (authorizationResponse.vp_token.startsWith('[') && authorizationResponse.vp_token.endsWith(']')) {
-          authorizationResponse.vp_token = JSON.parse(authorizationResponse.vp_token)
-        } else {
-          authorizationResponse.vp_token = [authorizationResponse.vp_token]
-        }
-      }
+      const authorizationResponse = parseAuthorizationResponse(request)
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
 
       const definition = definitionItems[0].definitionPayload
