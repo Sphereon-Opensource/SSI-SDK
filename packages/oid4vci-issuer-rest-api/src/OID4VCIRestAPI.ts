@@ -7,7 +7,7 @@ import {
   getAccessTokenSignerCallback,
   IIssuerInstanceArgs,
   IssuerInstance,
-  verifyAuthResponseCallback
+  createVerifyAuthResponseCallback
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { DIDDocument } from 'did-resolver'
 import { Express } from 'express'
@@ -64,6 +64,12 @@ export class OID4VCIRestAPI {
     }
 
     if (opts?.endpointOpts.authorizationChallengeOpts?.enabled === true) {
+      if (!instance.issuerOptions.presentationDefinitionId) {
+        throw Error(
+          `Unable to set createAuthRequestUriCallback. No presentationDefinitionId present in issuer options`,
+        )
+      }
+
       if (typeof opts?.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback !== 'function') {
         if (!opts.endpointOpts.authorizationChallengeOpts?.createAuthRequestUriEndpointPath) {
           throw Error(
@@ -74,6 +80,7 @@ export class OID4VCIRestAPI {
         opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback = await createAuthRequestUriCallback(
           {
             path: opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriEndpointPath,
+            presentationDefinitionId: instance.issuerOptions.presentationDefinitionId
           }
         )
       }
@@ -85,9 +92,10 @@ export class OID4VCIRestAPI {
           )
         }
 
-        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await verifyAuthResponseCallback(
+        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await createVerifyAuthResponseCallback(
           {
             path: opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseEndpointPath,
+            presentationDefinitionId: instance.issuerOptions.presentationDefinitionId
           }
         )
       }

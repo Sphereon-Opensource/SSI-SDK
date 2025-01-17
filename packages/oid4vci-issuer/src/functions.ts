@@ -326,9 +326,9 @@ export async function createVciIssuer(
   ).build()
 }
 
-export async function createAuthRequestUriCallback(opts: { path: string }): Promise<(presentationDefinitionId: string) => Promise<string>> {
-  async function authRequestUriCallback(presentationDefinitionId: string): Promise<string> {
-    const path = opts.path.replace(':definitionId', presentationDefinitionId)
+export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(presentationDefinitionId: string) => Promise<string>> {
+  async function authRequestUriCallback(): Promise<string> {
+    const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
     return fetch(path, {
       method: 'POST',
       headers: {
@@ -354,14 +354,14 @@ export async function createAuthRequestUriCallback(opts: { path: string }): Prom
   return authRequestUriCallback
 }
 
-export async function verifyAuthResponseCallback(opts: { path: string }): Promise<(presentationDefinitionId: string, correlationId: string) => Promise<boolean>> {
-  async function verifyAuthResponseCallback(presentationDefinitionId: string, correlationId: string): Promise<boolean> {
+export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(presentationDefinitionId: string, correlationId: string) => Promise<boolean>> {
+  async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
     return fetch(opts.path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ definitionId: presentationDefinitionId, correlationId }),
+      body: JSON.stringify({ definitionId: opts.presentationDefinitionId, correlationId }),
     })
     .then(async (response): Promise<boolean> => {
       if (response.status >= 400) {

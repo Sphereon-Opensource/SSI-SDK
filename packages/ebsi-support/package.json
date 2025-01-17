@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@ethersproject/random": "^5.7.0",
-    "@sphereon/did-auth-siop": "0.16.1-feature.SPRIND.89.255",
-    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.SPRIND.89.255",
+    "@sphereon/did-auth-siop": "0.16.1-feature.SPRIND.89.256",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.SPRIND.89.256",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
     "@sphereon/ssi-sdk-ext.did-resolver-ebsi": "0.27.0",
@@ -44,8 +44,8 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/oid4vci-client": "0.16.1-feature.SPRIND.89.255",
-    "@sphereon/oid4vci-common": "0.16.1-feature.SPRIND.89.255",
+    "@sphereon/oid4vci-client": "0.16.1-feature.SPRIND.89.256",
+    "@sphereon/oid4vci-common": "0.16.1-feature.SPRIND.89.256",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.key-manager": "0.27.0",
     "@sphereon/ssi-sdk-ext.kms-local": "0.27.0",
