@@ -56,17 +56,23 @@ export type FirstPartyMachineContext = {
 export enum FirstPartyMachineEvents {
   NEXT = 'NEXT',
   PREVIOUS = 'PREVIOUS',
-  DECLINE = 'DECLINE' // TODO not sure if we need this, will correct this after implementing the UI
+  DECLINE = 'DECLINE',
+  SET_SELECTED_CREDENTIALS = 'SET_SELECTED_CREDENTIALS'
 }
 
 export type NextEvent = {type: FirstPartyMachineEvents.NEXT};
 export type PreviousEvent = {type: FirstPartyMachineEvents.PREVIOUS};
 export type DeclineEvent = {type: FirstPartyMachineEvents.DECLINE};
+export type SelectCredentialsEvent = {
+  type: FirstPartyMachineEvents.SET_SELECTED_CREDENTIALS;
+  data: Array<UniqueDigitalCredential>;
+};
 
 export type FirstPartyMachineEventTypes =
   NextEvent |
   PreviousEvent |
-  DeclineEvent
+  DeclineEvent |
+  SelectCredentialsEvent
 
 export type FirstPartyMachineStatesConfig = StatesConfig<
   FirstPartyMachineContext,
