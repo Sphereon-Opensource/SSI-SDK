@@ -71,13 +71,15 @@ describe('credential-LD full flow', () => {
   it('create a new status list', async () => {
     const statusList = await createNewStatusList(
       {
-        statusPurpose: 'revocation',
+        type: StatusListType.StatusList2021,
         proofFormat: 'lds',
         id: 'http://localhost:9543/list1',
         issuer: didKeyIdentifier.did,
         length: 99999,
         correlationId: '1234',
-        type: StatusListType.StatusList2021,
+        statusList2021: {
+          indexingDirection: 'rightToLeft',
+        },
       },
       { agent },
     )
@@ -86,7 +88,8 @@ describe('credential-LD full flow', () => {
     expect(statusList.encodedList).toBeDefined()
     expect(statusList.issuer).toEqual(didKeyIdentifier.did)
     expect(statusList.length).toEqual(99999)
-    expect(statusList.indexingDirection).toEqual('rightToLeft')
+    expect(statusList.statusList2021).toBeTruthy()
+    expect(statusList.statusList2021.indexingDirection).toEqual('rightToLeft')
     expect(statusList.proofFormat).toEqual('lds')
     expect(statusList.statusListCredential).toBeDefined()
   })
