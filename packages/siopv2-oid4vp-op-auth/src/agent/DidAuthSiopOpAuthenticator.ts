@@ -88,24 +88,25 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly sessions: Map<string, OpSession>
   private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   private readonly presentationSignCallback?: PresentationSignCallback
-
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   private readonly eventEmitter?: EventEmitter
 
-  constructor(
-    presentationSignCallback?: PresentationSignCallback,
-    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
-    options?: DidAuthSiopOpAuthenticatorOptions,
-  ) {
-    const { onContactIdentityCreated, onIdentifierCreated, hasher } = { ...options }
+  constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
+    const {
+      onContactIdentityCreated,
+      onIdentifierCreated,
+      hasher,
+      customApprovals = {},
+      presentationSignCallback
+    } = { ...options }
+
+    this.hasher = hasher
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onIdentifierCreated = onIdentifierCreated
-
-    this.sessions = new Map<string, OpSession>()
-    this.customApprovals = customApprovals || {}
     this.presentationSignCallback = presentationSignCallback
-    this.hasher = hasher
+    this.sessions = new Map<string, OpSession>()
+    this.customApprovals = customApprovals
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {

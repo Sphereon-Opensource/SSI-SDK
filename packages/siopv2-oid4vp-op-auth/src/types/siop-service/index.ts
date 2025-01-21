@@ -1,4 +1,8 @@
-import { PresentationDefinitionWithLocation, RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
+import {
+  PresentationDefinitionWithLocation,
+  PresentationSignCallback,
+  RPRegistrationMetadataPayload, VerifiedAuthorizationRequest
+} from '@sphereon/did-auth-siop'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
@@ -10,6 +14,8 @@ import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } fr
 import { Hasher } from '@sphereon/ssi-types'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
+  presentationSignCallback?: PresentationSignCallback
+  customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   hasher?: Hasher
