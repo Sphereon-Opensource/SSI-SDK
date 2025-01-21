@@ -2,6 +2,7 @@ import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { AuthorizationChallengeCodeResponse } from '@sphereon/oid4vci-common'
 import { CreateConfigResult } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { v4 as uuidv4 } from 'uuid'
 import { RequiredContext } from '../types/IOID4VCIHolder'
 import {
   CreateConfigArgs,
@@ -16,7 +17,7 @@ export const sendAuthorizationChallengeRequest = async (args: SendAuthorizationC
 
   const oid4vciClient = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
   return oid4vciClient.acquireAuthorizationChallengeCode({
-    clientId: oid4vciClient.clientId,
+    clientId: oid4vciClient.clientId ?? uuidv4(),
     ...(authSession && { authSession }),
     ...(presentationDuringIssuanceSession && { presentationDuringIssuanceSession })
   })
