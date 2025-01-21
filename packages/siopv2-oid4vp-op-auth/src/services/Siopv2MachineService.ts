@@ -4,7 +4,7 @@ import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, Present
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
 import { OID4VP, OpSession } from '../session'
 import {
   DidAgents,
@@ -49,12 +49,13 @@ export const siopSendAuthorizationResponse = async (
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
     isFirstParty?: boolean
+    hasher?: Hasher
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { idOpts, isFirstParty } = args
+  let { idOpts, isFirstParty, hasher } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
@@ -68,7 +69,7 @@ export const siopSendAuthorizationResponse = async (
   let presentationsAndDefs: VerifiablePresentationWithDefinition[] | undefined
   let presentationSubmission: PresentationSubmission | undefined
   if (await session.hasPresentationDefinitions()) {
-    const oid4vp: OID4VP = await session.getOID4VP({ hasher: this.hasher })
+    const oid4vp: OID4VP = await session.getOID4VP({ hasher })
 
     const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
       ? args.verifiableCredentialsWithDefinition

@@ -379,7 +379,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         sessionId: didAuthConfig.sessionId,
         ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
-        isFirstParty
+        isFirstParty,
+        hasher: this.hasher
       },
       context,
     )
