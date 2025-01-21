@@ -19,8 +19,8 @@ export const sendAuthorizationChallengeRequest = async (args: SendAuthorizationC
   return oid4vciClient.acquireAuthorizationChallengeCode({
     clientId: oid4vciClient.clientId ?? uuidv4(),
     ...(authSession && { authSession }),
-    ...(openID4VCIClientState.credentialOffer?.preAuthorizedCode && { issuerState: openID4VCIClientState.credentialOffer?.preAuthorizedCode }),
-    ...(openID4VCIClientState.credentialOffer?.issuerState && { issuerState: openID4VCIClientState.credentialOffer?.issuerState }),
+    ...(!authSession && openID4VCIClientState.credentialOffer?.preAuthorizedCode && { issuerState: openID4VCIClientState.credentialOffer?.preAuthorizedCode }),
+    ...(!authSession && openID4VCIClientState.credentialOffer?.issuerState && { issuerState: openID4VCIClientState.credentialOffer?.issuerState }),
     ...(presentationDuringIssuanceSession && { presentationDuringIssuanceSession })
   })
 }

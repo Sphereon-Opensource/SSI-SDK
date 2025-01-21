@@ -8,7 +8,7 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Loggers } from '@sphereon/ssi-types'
+import { Hasher, Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -84,6 +84,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopGetSelectableCredentials: this.siopGetSelectableCredentials.bind(this),
   }
 
+  private readonly hasher?: Hasher
   private readonly sessions: Map<string, OpSession>
   private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   private readonly presentationSignCallback?: PresentationSignCallback
@@ -97,13 +98,14 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
     options?: DidAuthSiopOpAuthenticatorOptions,
   ) {
-    const { onContactIdentityCreated, onIdentifierCreated } = options ?? {}
+    const { onContactIdentityCreated, onIdentifierCreated, hasher } = { ...options }
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onIdentifierCreated = onIdentifierCreated
 
     this.sessions = new Map<string, OpSession>()
     this.customApprovals = customApprovals || {}
     this.presentationSignCallback = presentationSignCallback
+    this.hasher = hasher
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -340,7 +342,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       return Promise.reject(Error('Missing authorization request data in context'))
     }
 
-    const pex = new PEX()
+    const pex = new PEX({ hasher: this.hasher })
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
 
     authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {

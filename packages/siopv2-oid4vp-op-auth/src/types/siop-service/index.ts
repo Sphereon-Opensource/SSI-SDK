@@ -7,10 +7,12 @@ import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
+import { Hasher } from '@sphereon/ssi-types'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
+  hasher?: Hasher
 }
 
 export type GetMachineArgs = {
