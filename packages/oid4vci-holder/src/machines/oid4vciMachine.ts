@@ -471,8 +471,8 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           onError: {
             target: OID4VCIMachineStates.handleError,
             actions: assign({
-              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
-                title: translate('oid4vci_machine_first_party_error_title'),
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<ErrorDetails>): ErrorDetails => ({
+                title: _event.data.title ?? translate('oid4vci_machine_first_party_error_title'),
                 message: _event.data.message,
                 stack: _event.data.stack,
               }),
