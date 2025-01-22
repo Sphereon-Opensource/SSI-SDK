@@ -69,7 +69,7 @@ export interface IIssuerOptions {
   /**
    * Used in the callbacks for the first party flow
    */
-  // FIXME we need to start supporting a map with a definition id per credential, we can use the credential offer session to check which credential is being issued and then look it up in this map
+  // FIXME SPRIND-151 we need to start supporting a map with a definition id per credential, we can use the credential offer session to check which credential is being issued and then look it up in this map
   presentationDefinitionId?: string
 }
 
