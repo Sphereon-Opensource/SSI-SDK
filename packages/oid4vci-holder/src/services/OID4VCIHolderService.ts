@@ -621,7 +621,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
   }
 }
 
-export const startFirstPartApplicationMachine = async (args: StartFirstPartApplicationMachine, context: RequiredContext): Promise<AuthorizationChallengeCodeResponse | undefined> => {
+export const startFirstPartApplicationMachine = async (args: StartFirstPartApplicationMachine, context: RequiredContext): Promise<AuthorizationChallengeCodeResponse | string> => {
   const { openID4VCIClientState, stateNavigationListener, contact } = args
 
   if (!openID4VCIClientState) {
@@ -647,9 +647,11 @@ export const startFirstPartApplicationMachine = async (args: StartFirstPartAppli
           if (!authorizationCodeResponse) {
             reject(Error('No authorizationCodeResponse acquired'));
           }
-          resolve(authorizationCodeResponse);
+          resolve(authorizationCodeResponse!);
         } else if (state.matches(FirstPartyMachineStateTypes.aborted)) {
-          resolve(undefined);
+          resolve(FirstPartyMachineStateTypes.aborted);
+        } else if (state.matches(FirstPartyMachineStateTypes.declined)) {
+          resolve(FirstPartyMachineStateTypes.declined);
         } else if (state.matches(FirstPartyMachineStateTypes.error)) {
           reject(state.context.error);
         }

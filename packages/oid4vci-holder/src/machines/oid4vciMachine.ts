@@ -33,6 +33,7 @@ import {
   SetAuthorizationCodeURLEvent,
   VerificationCodeEvent,
 } from '../types/IOID4VCIHolder'
+import { FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
 
 const oid4vciHasNoContactGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { contact } = _ctx
@@ -459,15 +460,25 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         id: OID4VCIMachineStates.startFirstPartApplicationFlow,
         invoke: {
           src: OID4VCIMachineServices.startFirstPartApplicationFlow,
-          onDone: {
-            target: OID4VCIMachineStates.getCredentials,
-            actions: assign({
-              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeCodeResponse>) => {
-                const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
-                return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
-              }
-            })
-          },
+          onDone: [
+            {
+              target: OID4VCIMachineStates.aborted,
+              cond: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<FirstPartyMachineStateTypes>): boolean => _event.data === FirstPartyMachineStateTypes.aborted,
+            },
+            {
+              target: OID4VCIMachineStates.declined,
+              cond: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<FirstPartyMachineStateTypes>): boolean => _event.data === FirstPartyMachineStateTypes.declined,
+            },
+            {
+              target: OID4VCIMachineStates.getCredentials,
+              actions: assign({
+                openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeCodeResponse>) => {
+                  const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
+                  return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
+                }
+              })
+            }
+          ],
           onError: {
             target: OID4VCIMachineStates.handleError,
             actions: assign({
