@@ -35,7 +35,9 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
     return payload
   }
 
-  throw new Error(`Unsupported content type: ${contentType}`)
+  throw new Error(
+    `Unsupported content type: ${contentType}. Currently only application/x-www-form-urlencoded and application/json (for direct_post) are supported`,
+  )
 }
 
 export function verifyAuthResponseSIOPv2Endpoint(
