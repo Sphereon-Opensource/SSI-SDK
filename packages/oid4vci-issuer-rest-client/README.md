@@ -57,7 +57,7 @@ const result: IVCIClientCreateOfferUriResponse = await agent.vciClientCreateOffe
 import { IAgentContext } from '@veramo/core'
 import { IOID4VCIClientCreateOfferUriResponse } from '@sphereon/ssi-sdk.oid4vci-issuer-rest-client'
 import fetch from 'cross-fetch';
-import jwtDecode from "jwt-decode";
+import jwtDecode from 'jwt-decode';
 
 const getUserCustomAttributesFromVDX = async (baseUrl: string, realmId: string, userId: string): Promise<Record<string, any> | undefined> => {
     const url = `${baseUrl}/${realmId}/users/${userId}`;
