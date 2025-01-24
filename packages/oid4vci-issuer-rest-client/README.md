@@ -91,9 +91,9 @@ const parseKeycloakAccessToken = async (accessToken: string): Promise<{ realmId:
 
 const createCredentialOfferUri = async (baseUrl: string, accessToken: string, context: IAgentContext): Promise<IOID4VCIClientCreateOfferUriResponse> => {
     // Parse the access token to get the realm id and user id
-    const parsedToken = await parseToken(accessToken)
+    const parsedToken = await parseKeycloakAccessToken(accessToken)
     // Retrieve the custom attributes of a user to be used as credential input
-    const credentialDataSupplierInput = await getUserCustomAttributes(baseUrl, parsedToken.realmId, parsedToken.userId)
+    const credentialDataSupplierInput = await getUserCustomAttributesFromVDX(baseUrl, parsedToken.realmId, parsedToken.userId)
 
     // Create credential offer uri with credential input
     return context.agent.oid4vciClientCreateOfferUri({ credentialDataSupplierInput: {
