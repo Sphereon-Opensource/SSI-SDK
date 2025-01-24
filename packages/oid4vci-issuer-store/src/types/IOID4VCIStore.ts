@@ -65,6 +65,12 @@ export interface IIssuerOptions {
   didOpts?: IDIDOptions
   userPinRequired?: boolean
   cNonceExpiresIn?: number
+
+  /**
+   * Used in the callbacks for the first party flow
+   */
+  // FIXME SPRIND-151 we need to start supporting a map with a definition id per credential, we can use the credential offer session to check which credential is being issued and then look it up in this map
+  presentationDefinitionId?: string
 }
 
 export interface IMetadataOptions {
@@ -102,6 +108,7 @@ export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs, IMetadat
 
 export interface IIssuerOptsPersistArgs extends Ioid4vciStorePersistArgs {
   issuerOpts: IIssuerOptions
+  endpointOpts: unknown // FIXME these types are all in OID4VC all over the place
 }
 export interface Ioid4vciStorePersistArgs {
   correlationId: string // The credential Issuer to store the metadata for

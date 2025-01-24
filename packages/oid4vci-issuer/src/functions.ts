@@ -20,6 +20,8 @@ import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { jwtDecode } from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
+import fetch from 'cross-fetch'
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
@@ -322,4 +324,59 @@ export async function createVciIssuer(
       context,
     )
   ).build()
+}
+
+export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<() => Promise<string>> {
+  async function authRequestUriCallback(): Promise<string> {
+    const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
+    return fetch(path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(async (response): Promise<string> => {
+      if (response.status >= 400) {
+        return Promise.reject(Error(await response.text()))
+      } else {
+        const responseData = await response.json();
+
+        if (!responseData.authRequestURI) {
+          return Promise.reject(Error('Missing auth request uri in response body'))
+        }
+
+        return responseData.authRequestURI
+      }
+    })
+
+  }
+
+  return authRequestUriCallback
+}
+
+export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(correlationId: string) => Promise<boolean>> {
+  async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
+    return fetch(opts.path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ definitionId: opts.presentationDefinitionId, correlationId }),
+    })
+    .then(async (response): Promise<boolean> => {
+      if (response.status >= 400) {
+        return Promise.reject(Error(await response.text()))
+      } else {
+        const responseData = await response.json();
+
+        if (!responseData.status) {
+          return Promise.reject(Error('Missing status in response body'))
+        }
+
+        return responseData.status === AuthorizationResponseStateStatus.VERIFIED
+      }
+    })
+  }
+
+  return verifyAuthResponseCallback
 }

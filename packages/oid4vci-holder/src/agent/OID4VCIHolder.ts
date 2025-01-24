@@ -70,12 +70,12 @@ import {
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
-import { OID4VCIMachine } from '../machine/oid4vciMachine'
+import { OID4VCIMachine } from '../machines/oid4vciMachine'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
   Attribute,
-  createCredentialsToSelectFromArgs,
+  CreateCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
   GetContactArgs,
@@ -91,6 +91,8 @@ import {
   OID4VCIHolderOptions,
   OID4VCIMachine as OID4VCIMachineId,
   OID4VCIMachineInstanceOpts,
+  OID4VCIMachineServiceDefinitions,
+  OID4VCIMachineServices,
   OnContactIdentityCreatedArgs,
   OnCredentialStoredArgs,
   OnIdentifierCreatedArgs,
@@ -98,13 +100,14 @@ import {
   RequestType,
   RequiredContext,
   SendNotificationArgs,
+  StartFirstPartApplicationMachine,
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
   StoreIssuerBrandingArgs,
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
-  VerifyEBSICredentialIssuerResult,
+  VerifyEBSICredentialIssuerResult
 } from '../types/IOID4VCIHolder'
 import {
   getBasicIssuerLocaleBranding,
@@ -115,8 +118,8 @@ import {
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
   verifyCredentialToAccept,
-} from './OID4VCIHolderService'
-
+  startFirstPartApplicationMachine
+} from '../services/OID4VCIHolderService'
 import 'cross-fetch/polyfill'
 
 /**
@@ -307,8 +310,8 @@ export class OID4VCIHolder implements IAgentPlugin {
    */
   private async oid4vciHolderGetMachineInterpreter(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...opts.authorizationRequestOpts }
-    const services = {
-      start: (args: PrepareStartArgs) =>
+    const services: OID4VCIMachineServiceDefinitions = {
+      [OID4VCIMachineServices.start]: (args: PrepareStartArgs) =>
         this.oid4vciHolderStart(
           {
             ...args,
@@ -316,18 +319,18 @@ export class OID4VCIHolder implements IAgentPlugin {
           },
           context,
         ),
-      createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
-      getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
-      getCredentials: (args: GetCredentialsArgs) =>
-        this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
-      addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
-      getIssuerBranding: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
-      storeIssuerBranding: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
-      assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
-      storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
-      storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
-      sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
-      getFederationTrust: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context),
+      [OID4VCIMachineServices.startFirstPartApplicationFlow]: (args: StartFirstPartApplicationMachine) => startFirstPartApplicationMachine({ ...args, stateNavigationListener: opts.firstPartyStateNavigationListener }, context),
+      [OID4VCIMachineServices.createCredentialsToSelectFrom]: (args: CreateCredentialsToSelectFromArgs) => this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
+      [OID4VCIMachineServices.getContact]: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
+      [OID4VCIMachineServices.getCredentials]: (args: GetCredentialsArgs) => this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
+      [OID4VCIMachineServices.addContactIdentity]: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
+      [OID4VCIMachineServices.getIssuerBranding]: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
+      [OID4VCIMachineServices.storeIssuerBranding]: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
+      [OID4VCIMachineServices.assertValidCredentials]: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
+      [OID4VCIMachineServices.storeCredentialBranding]: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
+      [OID4VCIMachineServices.storeCredentials]: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
+      [OID4VCIMachineServices.sendNotification]: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
+      [OID4VCIMachineServices.getFederationTrust]: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context),
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -463,7 +466,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderCreateCredentialsToSelectFrom(
-    args: createCredentialsToSelectFromArgs,
+    args: CreateCredentialsToSelectFromArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>> {
     const { credentialBranding, locale, selectedCredentials /*, openID4VCIClientState*/, credentialsSupported } = args

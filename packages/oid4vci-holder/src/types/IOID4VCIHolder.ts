@@ -37,6 +37,8 @@ import {
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {
   Hasher,
   IVerifiableCredential,
@@ -62,7 +64,7 @@ import {
   VerificationPolicies,
 } from '@veramo/core'
 import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, TypegenDisabled } from 'xstate'
-import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { FirstPartyMachineStateNavigationListener } from './FirstPartyMachine'
 
 export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderGetIssuerMetadata(args: GetIssuerMetadataArgs, context: RequiredContext): Promise<EndpointMetadataResult>
@@ -72,7 +74,7 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
   oid4vciHolderStart(args: PrepareStartArgs, context: RequiredContext): Promise<StartResult>
 
   oid4vciHolderCreateCredentialsToSelectFrom(
-    args: createCredentialsToSelectFromArgs,
+    args: CreateCredentialsToSelectFromArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>>
 
@@ -137,14 +139,15 @@ export type GetMachineArgs = {
   clientOpts?: AuthorizationServerClientOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: Partial<IssuanceOpts>
-  stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+  stateNavigationListener?: OID4VCIMachineStateNavigationListener
+  firstPartyStateNavigationListener?: FirstPartyMachineStateNavigationListener
 }
 
 export type PrepareStartArgs = Pick<
   OID4VCIMachineContext,
   'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
-export type createCredentialsToSelectFromArgs = Pick<
+export type CreateCredentialsToSelectFromArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
 >
@@ -170,6 +173,7 @@ export type SendNotificationArgs = Pick<
   'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
 > & { notificationRequest?: NotificationRequest; stored: boolean }
 export type GetFederationTrustArgs = Pick<OID4VCIMachineContext, 'requestData' | 'trustAnchors' | 'serverMetadata'>
+export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState' | 'contact'> & { stateNavigationListener?: FirstPartyMachineStateNavigationListener }
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -245,6 +249,7 @@ export enum OID4VCIMachineStates {
   storeIssuerBranding = 'storeIssuerBranding',
   addIssuerBrandingAfterIdentity = 'addIssuerBrandingAfterIdentity',
   transitionFromContactSetup = 'transitionFromContactSetup',
+  startFirstPartApplicationFlow = 'startFirstPartApplicationFlow',
   selectCredentials = 'selectCredentials',
   transitionFromSelectingCredentials = 'transitionFromSelectingCredentials',
   verifyPin = 'verifyPin',
@@ -314,6 +319,8 @@ export type CreateOID4VCIMachineOpts = {
   issuanceOpt?: IssuanceOpts
 }
 
+export type OID4VCIMachineStateNavigationListener = (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+
 export type OID4VCIMachineInstanceOpts = {
   services?: any
   guards?: any
@@ -322,7 +329,8 @@ export type OID4VCIMachineInstanceOpts = {
   authorizationRequestOpts?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   issuanceOpt?: IssuanceOpts // restrict the issuance to these opts
-  stateNavigationListener?: (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+  stateNavigationListener?: OID4VCIMachineStateNavigationListener
+  firstPartyStateNavigationListener?: FirstPartyMachineStateNavigationListener
 } & CreateOID4VCIMachineOpts
 
 export type OID4VCIProviderProps = {
@@ -370,6 +378,7 @@ export enum OID4VCIMachineGuards {
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
   isOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
   contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard',
+  isFirstPartyApplication = 'oid4vciIsFirstPartyApplication'
 }
 
 export enum OID4VCIMachineServices {
@@ -380,13 +389,18 @@ export enum OID4VCIMachineServices {
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
   getIssuerBranding = 'getIssuerBranding',
   storeIssuerBranding = 'storeIssuerBranding',
-  createCredentialSelection = 'createCredentialSelection',
   getCredentials = 'getCredentials',
   assertValidCredentials = 'assertValidCredentials',
   storeCredentialBranding = 'storeCredentialBranding',
   sendNotification = 'sendNotification',
   storeCredentials = 'storeCredentials',
+  startFirstPartApplicationFlow = 'startFirstPartApplicationFlow'
 }
+
+export type OID4VCIMachineServiceDefinitions = Record<
+  keyof typeof OID4VCIMachineServices,
+  (...args: Array<any>) => any
+>;
 
 export type NextEvent = { type: OID4VCIMachineEvents.NEXT }
 export type PreviousEvent = { type: OID4VCIMachineEvents.PREVIOUS }
@@ -397,14 +411,9 @@ export type VerificationCodeEvent = { type: OID4VCIMachineEvents.SET_VERIFICATIO
 export type ContactConsentEvent = { type: OID4VCIMachineEvents.SET_CONTACT_CONSENT; data: boolean }
 export type ContactAliasEvent = { type: OID4VCIMachineEvents.SET_CONTACT_ALIAS; data: string }
 export type SetAuthorizationCodeURLEvent = { type: OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL; data: string }
-export type InvokeAuthorizationRequestEvent = {
-  type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST
-  data: string
-}
-export type AuthorizationResponseEvent = {
-  type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE
-  data: string | AuthorizationResponse
-}
+export type InvokeAuthorizationRequestEvent = { type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST, data: string }
+export type AuthorizationResponseEvent = { type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, data: string | AuthorizationResponse }
+
 export type OID4VCIMachineEventTypes =
   | NextEvent
   | PreviousEvent
@@ -633,22 +642,6 @@ export interface VerifyCredentialArgs {
   [x: string]: any
 }
 
-export type RequiredContext = IAgentContext<
-  IIssuanceBranding &
-    IContactManager &
-    ICredentialValidation &
-    ICredentialVerifier &
-    ICredentialIssuer &
-    ICredentialStore &
-    IIdentifierResolution &
-    IJwtService &
-    IDIDManager &
-    IResolver &
-    IKeyManager &
-    ISDJwtPlugin &
-    ImDLMdoc
->
-
 export type IssuerType = 'RootTAO' | 'TAO' | 'TI' | 'Revoked or Undefined'
 
 export type VerifyEBSICredentialIssuerArgs = {
@@ -724,3 +717,20 @@ export type DynamicRegistrationClientMetadataDisplay = Pick<
 >
 
 export type DidAgents = TAgent<IResolver & IDIDManager>
+
+export type RequiredContext = IAgentContext<
+  IIssuanceBranding &
+  IContactManager &
+  ICredentialValidation &
+  ICredentialVerifier &
+  ICredentialIssuer &
+  ICredentialStore &
+  IIdentifierResolution &
+  IJwtService &
+  IDIDManager &
+  IResolver &
+  IKeyManager &
+  ISDJwtPlugin &
+  ImDLMdoc &
+  IDidAuthSiopOpAuthenticator
+>
