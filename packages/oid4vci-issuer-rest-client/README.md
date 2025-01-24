@@ -59,7 +59,7 @@ import { IOID4VCIClientCreateOfferUriResponse } from '@sphereon/ssi-sdk.oid4vci-
 import fetch from 'cross-fetch';
 import jwtDecode from "jwt-decode";
 
-const getUserCustomAttributes = async (baseUrl: string, realmId: string, userId: string): Promise<Record<string, any> | undefined> => {
+const getUserCustomAttributesFromVDX = async (baseUrl: string, realmId: string, userId: string): Promise<Record<string, any> | undefined> => {
     const url = `${baseUrl}/${realmId}/users/${userId}`;
 
     // Fetch the custom attributes of a user
@@ -76,7 +76,7 @@ const getUserCustomAttributes = async (baseUrl: string, realmId: string, userId:
         .catch((error) => Promise.reject(`Failed to fetch user attributes. Error: ${error.message}`))
 }
 
-const parseToken = async (accessToken: string): Promise<{ realmId: string, userId: string }> => {
+const parseKeycloakAccessToken = async (accessToken: string): Promise<{ realmId: string, userId: string }> => {
     // Decode the access token
     const decoded = jwtDecode(accessToken)
 
