@@ -240,7 +240,7 @@ export class OpSession {
   private createPresentationVerificationCallback(context: IRequiredContext) {
     async function presentationVerificationCallback(
       args: W3CVerifiablePresentation | CompactSdJwtVc,
-      presentationSubmission: PresentationSubmission,
+      presentationSubmission?: PresentationSubmission,
     ): Promise<PresentationVerificationResult> {
       let result: IVerifyResult
       if (CredentialMapper.isSdJwtEncoded(args)) {
