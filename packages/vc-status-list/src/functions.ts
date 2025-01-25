@@ -1,6 +1,6 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, ProofFormat, StatusListDriverType, StatusListType, StatusListCredential, StatusPurpose2021 } from '@sphereon/ssi-types'
-import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VmoProofFormat } from '@veramo/core'
+import { CredentialMapper, ProofFormat, StatusListCredential, StatusListDriverType, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
+import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
@@ -11,7 +11,7 @@ import {
   StatusListResult,
   StatusOAuth,
   UpdateStatusListFromEncodedListArgs,
-  UpdateStatusListFromStatusListCredentialArgs,
+  UpdateStatusListIndexArgs,
 } from './types'
 import { assertValidProofType, determineStatusListType, getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
@@ -155,7 +155,7 @@ export async function createNewStatusList(
 }
 
 export async function updateStatusIndexFromStatusListCredential(
-  args: UpdateStatusListFromStatusListCredentialArgs,
+  args: UpdateStatusListIndexArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
@@ -176,16 +176,14 @@ export async function statusListCredentialToDetails(args: {
   if (!type) {
     throw new Error('Invalid status list credential type')
   }
-  const statusListType = type.replace('Credential', '') as StatusListType
+  const statusListType = type.replace('Credential', '') as StatusListType // "StatusList2021Credential" is a VC schema type and does not map 1:1 to our internal StatusListType enum
+
   const implementation = getStatusListImplementation(statusListType)
-  return implementation.updateStatusListIndex(
-    {
-      statusListCredential: args.statusListCredential,
-      statusListIndex: 0,
-      value: 0,
-    },
-    {} as IAgentContext<ICredentialPlugin & IIdentifierResolution>,
-  )
+  return await implementation.toStatusListDetails({
+    statusListPayload: credential,
+    correlationId: args.correlationId,
+    driverType: args.driverType,
+  })
 }
 
 export async function updateStatusListIndexFromEncodedList(
@@ -197,7 +195,6 @@ export async function updateStatusListIndexFromEncodedList(
   return implementation.updateStatusListFromEncodedList(args, context)
 }
 
-// TODO Is this still in use? Or do we need to redesign this after having multiple status list types?
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
   context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
@@ -210,7 +207,7 @@ export async function statusList2021ToVerifiableCredential(
   })
   const proofFormat: ProofFormat = args?.proofFormat ?? 'lds'
   assertValidProofType(StatusListType.StatusList2021, proofFormat)
-  const vmoProofFormat: VmoProofFormat = proofFormat as VmoProofFormat
+  const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
   const encodedList = getAssertedValue('encodedList', args.encodedList)
   const statusPurpose = getAssertedValue('statusPurpose', args.statusPurpose)
@@ -231,7 +228,7 @@ export async function statusList2021ToVerifiableCredential(
   const verifiableCredential = await context.agent.createVerifiableCredential({
     credential,
     keyRef: identifier.kmsKeyRef,
-    proofFormat: vmoProofFormat,
+    proofFormat: veramoProofFormat,
     fetchRemoteContexts: true,
   })
 

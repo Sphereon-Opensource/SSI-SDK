@@ -110,6 +110,6 @@ export class StatusList2021Entity extends StatusListEntity {
 export class OAuthStatusListEntity extends StatusListEntity {
   @Column({ type: 'integer', name: 'bitsPerStatus', nullable: false })
   bitsPerStatus!: number
-  @Column({ type: 'varchar', name: 'expiresAt', nullable: true })
-  expiresAt?: string
+  @Column({ type: 'timestamptz', name: 'expiresAt', nullable: true })
+  expiresAt?: Date
 }

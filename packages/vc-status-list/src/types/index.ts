@@ -13,7 +13,15 @@ import {
   StatusListCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { CredentialPayload, IAgentContext, ICredentialIssuer, ICredentialPlugin, ICredentialVerifier, IPluginMethodMap } from '@veramo/core'
+import {
+  CredentialPayload,
+  IAgentContext,
+  ICredentialIssuer,
+  ICredentialPlugin,
+  ICredentialVerifier,
+  IKeyManager,
+  IPluginMethodMap,
+} from '@veramo/core'
 import { DataSource } from 'typeorm'
 import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
 
@@ -36,7 +44,7 @@ export type StatusList2021Args = {
 
 export type OAuthStatusListArgs = {
   bitsPerStatus?: BitsPerStatus
-  expiresAt?: string
+  expiresAt?: Date
 }
 
 export type BaseCreateNewStatusListArgs = {
@@ -57,7 +65,7 @@ export type UpdateStatusList2021Args = {
 
 export type UpdateOAuthStatusListArgs = {
   bitsPerStatus: BitsPerStatus
-  expiresAt?: string
+  expiresAt?: Date
 }
 
 export interface UpdateStatusListFromEncodedListArgs {
@@ -105,6 +113,7 @@ interface StatusList2021Details {
 
 interface OAuthStatusDetails {
   bitsPerStatus?: BitsPerStatus
+  expiresAt?: Date
 }
 
 export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
@@ -119,7 +128,7 @@ export interface StatusListOAuthEntryCredentialStatus extends ICredentialStatus 
   bitsPerStatus: number
   statusListIndex: string
   statusListCredential: string
-  expiresAt?: string
+  expiresAt?: Date
 }
 
 export interface StatusList2021ToVerifiableCredentialArgs {
@@ -153,6 +162,12 @@ export interface UpdateStatusListIndexArgs {
 export interface CheckStatusIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: string | number
+}
+
+export interface ToStatusListDetailsArgs {
+  statusListPayload: StatusListCredential
+  correlationId?: string
+  driverType?: StatusListDriverType
 }
 
 /**
@@ -229,4 +244,4 @@ export type SignedStatusListData = {
 }
 
 export type IRequiredPlugins = ICredentialPlugin & IIdentifierResolution
-export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution>
+export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager>

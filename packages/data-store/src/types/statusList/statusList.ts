@@ -29,7 +29,7 @@ export interface IStatusList2021Entity extends IStatusListEntity {
 
 export interface IOAuthStatusListEntity extends IStatusListEntity {
   bitsPerStatus: number
-  expiresAt?: string
+  expiresAt?: Date
 }
 
 export interface IStatusListEntryEntity {

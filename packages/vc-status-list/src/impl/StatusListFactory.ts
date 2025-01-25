@@ -20,15 +20,15 @@ export class StatusListFactory {
     return StatusListFactory.instance
   }
 
-  public getImplementation(type: StatusListType): IStatusList {
-    const implementation = this.implementations.get(type)
-    if (!implementation) {
+  public getByType(type: StatusListType): IStatusList {
+    const statusList = this.implementations.get(type)
+    if (!statusList) {
       throw new Error(`No implementation found for status list type: ${type}`)
     }
-    return implementation
+    return statusList
   }
 }
 
 export function getStatusListImplementation(type: StatusListType): IStatusList {
-  return StatusListFactory.getInstance().getImplementation(type)
+  return StatusListFactory.getInstance().getByType(type)
 }

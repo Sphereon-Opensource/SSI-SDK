@@ -215,9 +215,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
         },
         statusListEntry,
       }
-    }
-
-    if (this.isOAuthStatusListEntity(statusList)) {
+    } else if (this.isOAuthStatusListEntity(statusList)) {
       return {
         credentialStatus: {
           id: `${statusList.id}#${statusListEntry.statusListIndex}`,

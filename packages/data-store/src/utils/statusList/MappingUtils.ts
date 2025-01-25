@@ -59,7 +59,7 @@ export const statusListFrom = (entity: StatusListEntity): IStatusListEntity => {
   throw new Error(`Invalid status list type ${typeof entity}`)
 }
 
-function setBaseFields(entity: StatusListEntity, args: IStatusListEntity) {
+const setBaseFields = (entity: StatusListEntity, args: IStatusListEntity) => {
   entity.id = args.id
   entity.correlationId = args.correlationId
   entity.length = args.length
@@ -70,15 +70,13 @@ function setBaseFields(entity: StatusListEntity, args: IStatusListEntity) {
   entity.statusListCredential = args.statusListCredential
 }
 
-function getBaseFields(entity: StatusListEntity): Omit<IStatusListEntity, 'type'> {
-  return {
-    id: entity.id,
-    correlationId: entity.correlationId,
-    length: entity.length,
-    issuer: entity.issuer,
-    driverType: entity.driverType,
-    credentialIdMode: entity.credentialIdMode,
-    proofFormat: entity.proofFormat,
-    statusListCredential: entity.statusListCredential,
-  }
-}
+const getBaseFields = (entity: StatusListEntity): Omit<IStatusListEntity, 'type'> => ({
+  id: entity.id,
+  correlationId: entity.correlationId,
+  length: entity.length,
+  issuer: entity.issuer,
+  driverType: entity.driverType,
+  credentialIdMode: entity.credentialIdMode,
+  proofFormat: entity.proofFormat,
+  statusListCredential: entity.statusListCredential,
+})

@@ -1,6 +1,6 @@
-import { IAgentContext, ICredentialPlugin, ProofFormat as VmoProofFormat } from '@veramo/core'
+import { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, DocumentFormat, IIssuer, ProofFormat, StatusListType, StatusListCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, DocumentFormat, IIssuer, ProofFormat, StatusListCredential, StatusListType } from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
 import { IStatusList } from './IStatusList'
@@ -9,13 +9,14 @@ import {
   CreateStatusListArgs,
   Status2021,
   StatusListResult,
+  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 
 export const DEFAULT_LIST_LENGTH = 250000
-export const DEFAULT_PROOF_FORMAT = 'lds' as VmoProofFormat
+export const DEFAULT_PROOF_FORMAT = 'lds' as VeramoProofFormat
 
 export class StatusList2021Implementation implements IStatusList {
   async createNewStatusList(
@@ -25,7 +26,7 @@ export class StatusList2021Implementation implements IStatusList {
     const length = args?.length ?? DEFAULT_LIST_LENGTH
     const proofFormat: ProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     assertValidProofType(StatusListType.StatusList2021, proofFormat)
-    const vmoProofFormat: VmoProofFormat = proofFormat as VmoProofFormat
+    const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
     const { issuer, id } = args
     const correlationId = getAssertedValue('correlationId', args.correlationId)
@@ -38,7 +39,7 @@ export class StatusList2021Implementation implements IStatusList {
       {
         ...args,
         encodedList,
-        proofFormat: vmoProofFormat,
+        proofFormat: veramoProofFormat,
       },
       context,
     )
@@ -109,7 +110,7 @@ export class StatusList2021Implementation implements IStatusList {
     }
     const proofFormat: ProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     assertValidProofType(StatusListType.StatusList2021, proofFormat)
-    const vmoProofFormat: VmoProofFormat = proofFormat as VmoProofFormat
+    const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
     const { issuer, id } = getAssertedValues(args)
     const statusList = await StatusList.decode({ encodedList: args.encodedList })
@@ -122,7 +123,7 @@ export class StatusList2021Implementation implements IStatusList {
         id,
         issuer,
         encodedList: newEncodedList,
-        proofFormat: vmoProofFormat,
+        proofFormat: veramoProofFormat,
         keyRef: args.keyRef,
       },
       context,
@@ -153,12 +154,40 @@ export class StatusList2021Implementation implements IStatusList {
     return status ? Status2021.Invalid : Status2021.Valid
   }
 
+  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
+    const { statusListPayload } = args
+    const uniform = CredentialMapper.toUniformCredential(statusListPayload)
+    const { issuer, credentialSubject } = uniform
+    const id = getAssertedValue('id', uniform.id)
+    const encodedList = getAssertedProperty('encodedList', credentialSubject)
+    const proofFormat: ProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
+
+    const statusPurpose = getAssertedProperty('statusPurpose', credentialSubject)
+    const list = await StatusList.decode({ encodedList })
+
+    return {
+      id,
+      encodedList,
+      issuer,
+      type: StatusListType.StatusList2021,
+      proofFormat,
+      length: list.length,
+      statusListCredential: statusListPayload,
+      statusList2021: {
+        indexingDirection: 'rightToLeft',
+        statusPurpose,
+      },
+      ...(args.correlationId && { correlationId: args.correlationId }),
+      ...(args.driverType && { driverType: args.driverType }),
+    }
+  }
+
   private async createVerifiableCredential(
     args: {
       id: string
       issuer: string | IIssuer
       encodedList: string
-      proofFormat: VmoProofFormat
+      proofFormat: VeramoProofFormat
       keyRef?: string
     },
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,

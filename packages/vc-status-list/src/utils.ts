@@ -5,6 +5,7 @@ import {
   StatusListType,
   StatusListType as StatusListTypeW3C,
   StatusListCredential,
+  DocumentFormat,
 } from '@sphereon/ssi-types'
 import { jwtDecode } from 'jwt-decode'
 
@@ -79,13 +80,16 @@ export function determineStatusListType(credential: StatusListCredential): Statu
 }
 
 export function determineProofFormat(credential: StatusListCredential): ProofFormat {
-  if (CredentialMapper.isJwtEncoded(credential)) {
-    return 'jwt'
-  } else if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
-    // Just assume Cbor for now, I'd need to decode at least the header to what type of Cbor we have
-    return 'cbor'
-  } else if (CredentialMapper.isCredential(credential)) {
-    return 'lds'
+  const type: DocumentFormat = CredentialMapper.detectDocumentType(credential)
+  switch (type) {
+    case DocumentFormat.JWT:
+      return 'jwt'
+    case DocumentFormat.MSO_MDOC:
+      // Not really mdoc, just assume Cbor for now, I'd need to decode at least the header to what type of Cbor we have
+      return 'cbor'
+    case DocumentFormat.JSONLD:
+      return 'lds'
+    default:
+      throw Error('Cannot determine credential payload type')
   }
-  throw Error('Cannot determine credential payload type')
 }

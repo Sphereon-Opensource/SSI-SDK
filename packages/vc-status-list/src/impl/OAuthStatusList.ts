@@ -1,31 +1,28 @@
-import { IAgentContext, ICredentialPlugin } from '@veramo/core'
-import { ProofFormat, StatusListType } from '@sphereon/ssi-types'
+import { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
+import { CompactJWT, CWT, ProofFormat, StatusListType } from '@sphereon/ssi-types'
 import {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   SignedStatusListData,
   StatusListResult,
   StatusOAuth,
+  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
 import { determineProofFormat, getAssertedValue, getAssertedValues } from '../utils'
 import { IStatusList } from './IStatusList'
-import { StatusList, StatusListJWTHeaderParameters } from '@sd-jwt/jwt-status-list'
+import { StatusList } from '@sd-jwt/jwt-status-list'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createSignedJwt, decodeStatusListJWT } from './encoding/jwt'
 import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
 
-type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>
+type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
 
-export const BITS_PER_STATUS_DEFAULT = 2 // 2 bits are sufficient for 0x00 - "VALID"  0x01 - "INVALID" & 0x02 - "SUSPENDED"
+export const DEFAULT_BITS_PER_STATUS = 2 // 2 bits are sufficient for 0x00 - "VALID"  0x01 - "INVALID" & 0x02 - "SUSPENDED"
 export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'jwt' as ProofFormat
-export const STATUS_LIST_JWT_HEADER: StatusListJWTHeaderParameters = {
-  alg: 'EdDSA',
-  typ: 'statuslist+jwt',
-}
 
 export class OAuthStatusListImplementation implements IStatusList {
   async createNewStatusList(args: CreateStatusListArgs, context: IRequiredContext): Promise<StatusListResult> {
@@ -36,7 +33,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     const { issuer, id, keyRef } = args
     const length = args.length ?? DEFAULT_LIST_LENGTH
-    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
+    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? DEFAULT_BITS_PER_STATUS
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
 
@@ -103,7 +100,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const proofFormat = args.proofFormat ?? DEFAULT_PROOF_FORMAT
     const { issuer, id } = getAssertedValues(args)
-    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? BITS_PER_STATUS_DEFAULT
+    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? DEFAULT_BITS_PER_STATUS
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
 
     const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus)
@@ -143,9 +140,31 @@ export class OAuthStatusListImplementation implements IStatusList {
     return statusList.getStatus(index)
   }
 
+  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
+    const { statusListPayload } = args as { statusListPayload: CompactJWT | CWT }
+    const proofFormat = determineProofFormat(statusListPayload)
+    const decoded = proofFormat === 'jwt' ? decodeStatusListJWT(statusListPayload) : decodeStatusListCWT(statusListPayload)
+    const { statusList, issuer, id } = decoded
+
+    return {
+      id,
+      encodedList: statusList.compressStatusList(),
+      issuer,
+      type: StatusListType.OAuthStatusList,
+      proofFormat,
+      length: statusList.statusList.length,
+      statusListCredential: statusListPayload,
+      oauthStatusList: {
+        bitsPerStatus: statusList.getBitsPerStatus(),
+      },
+      ...(args.correlationId && { correlationId: args.correlationId }),
+      ...(args.driverType && { driverType: args.driverType }),
+    }
+  }
+
   private async createSignedStatusList(
     proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor',
-    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution>,
+    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>,
     statusList: StatusList,
     issuerString: string,
     id: string,

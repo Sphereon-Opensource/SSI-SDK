@@ -6,6 +6,7 @@ import {
   Status2021,
   StatusListResult,
   StatusOAuth,
+  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
@@ -33,4 +34,9 @@ export interface IStatusList {
    * Checks the status at a given index in the status list
    */
   checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021 | StatusOAuth>
+
+  /**
+   * Collects the status list details
+   */
+  toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult>
 }

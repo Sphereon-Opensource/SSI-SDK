@@ -19,7 +19,7 @@ export class UpdateStatusList1737110469000 implements MigrationInterface {
                 "statusPurpose" varchar,
                 "statusListCredential" text,
                 "bitsPerStatus" integer,
-                "expiresAt" varchar,
+                "expiresAt" datetime,
                 CONSTRAINT "UQ_correlationId" UNIQUE ("correlationId")
             )`,
     )

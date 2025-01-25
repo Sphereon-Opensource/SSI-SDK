@@ -11,7 +11,7 @@ export class UpdateStatusList1737110469001 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "StatusList" ALTER COLUMN "indexingDirection" DROP NOT NULL`)
     await queryRunner.query(`ALTER TABLE "StatusList" ALTER COLUMN "statusPurpose" DROP NOT NULL`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD "bitsPerStatus" integer`)
-    await queryRunner.query(`ALTER TABLE "StatusList" ADD "expiresAt" varchar`)
+    await queryRunner.query(`ALTER TABLE "StatusList" ADD "expiresAt" timestamp with time zone`)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

@@ -48,17 +48,18 @@ export const createSignedCbor = async (
   )
   const protectedHeaderEncoded = cbor.Cbor.encode(protectedHeader)
   const claimsMap = buildClaimsMap(id, issuerString, statusListMap)
-  const claimsEncoded = cbor.Cbor.encode(claimsMap)
+  const claimsEncoded: Int8Array = cbor.Cbor.encode(claimsMap)
 
-  const signedCWT = await context.agent.keyManagerSign({
+  const signedCWT: string = await context.agent.keyManagerSign({
     keyRef: identifier.kmsKeyRef,
-    data: claimsEncoded,
+    data: base64url.encode(Buffer.from(claimsEncoded)), // TODO test on RN
     encoding: undefined,
   })
 
   const protectedHeaderEncodedInt8 = new Int8Array(protectedHeaderEncoded)
   const claimsEncodedInt8 = new Int8Array(claimsEncoded)
-  const signatureInt8 = new Int8Array(signedCWT.signature)
+  const signatureBytes = base64url.decode(signedCWT)
+  const signatureInt8 = new Int8Array(Buffer.from(signatureBytes))
 
   const cwtArray = new cbor.CborArray(
     kotlin.collections.KtMutableList.fromJsArray([

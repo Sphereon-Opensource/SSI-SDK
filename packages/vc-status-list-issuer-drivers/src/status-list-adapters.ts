@@ -31,7 +31,7 @@ export function statusListResultToEntity(result: StatusListResult): StatusList20
     return Object.assign(new OAuthStatusListEntity(), {
       ...baseFields,
       bitsPerStatus: result.oauthStatusList.bitsPerStatus,
-      expiresAt: undefined, // Optional field
+      expiresAt: result.oauthStatusList.expiresAt,
     })
   }
   throw new Error(`Unsupported status list type: ${result.type}`)

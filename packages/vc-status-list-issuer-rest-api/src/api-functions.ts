@@ -104,7 +104,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
-        statusPurpose: details.statusList2021?.statusPurpose,
+        ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
         type,
         id: details.id,
         statusListIndex,
