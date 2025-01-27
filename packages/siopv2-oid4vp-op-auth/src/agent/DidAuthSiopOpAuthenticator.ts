@@ -10,7 +10,7 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Hasher, Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
+import { HasherSync, Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -33,18 +33,13 @@ import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
 import {
-  AddIdentityArgs,
-  CreateConfigArgs,
-  CreateConfigResult,
-  GetSiopRequestArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
-} from '../types/IDidAuthSiopOpAuthenticator'
-import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
+} from '../types'
 
 import {
   AddIdentityArgs,
@@ -102,7 +97,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   private readonly eventEmitter?: EventEmitter
-  private readonly hasher?: Hasher
+  private readonly hasher?: HasherSync
 
   constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
     const { onContactIdentityCreated, onIdentifierCreated, hasher, customApprovals = {}, presentationSignCallback } = { ...options }

@@ -7,9 +7,8 @@ import {
   getAccessTokenSignerCallback,
   IIssuerInstanceArgs,
   IssuerInstance,
-  createVerifyAuthResponseCallback
+  createVerifyAuthResponseCallback,
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { DIDDocument } from 'did-resolver'
 import { Express } from 'express'
 import { IRequiredContext } from './types'
 
@@ -19,9 +18,9 @@ export class OID4VCIRestAPI {
   private readonly _expressSupport: ExpressSupport
   private readonly _context: IRequiredContext
   private readonly _opts?: IOID4VCIRestAPIOpts
-  private readonly _restApi: OID4VCIServer<DIDDocument>
+  private readonly _restApi: OID4VCIServer
   private readonly _instance: IssuerInstance
-  private readonly _issuer: VcIssuer<DIDDocument>
+  private readonly _issuer: VcIssuer
 
   static async init(args: {
     context: IRequiredContext
@@ -65,39 +64,29 @@ export class OID4VCIRestAPI {
 
     if (opts?.endpointOpts.authorizationChallengeOpts?.enabled === true) {
       if (!instance.issuerOptions.presentationDefinitionId) {
-        throw Error(
-          `Unable to set createAuthRequestUriCallback. No presentationDefinitionId present in issuer options`,
-        )
+        throw Error(`Unable to set createAuthRequestUriCallback. No presentationDefinitionId present in issuer options`)
       }
 
       if (typeof opts?.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback !== 'function') {
         if (!opts.endpointOpts.authorizationChallengeOpts?.createAuthRequestUriEndpointPath) {
-          throw Error(
-            `Unable to set createAuthRequestUriCallback. No createAuthRequestUriEndpointPath present in options`,
-          )
+          throw Error(`Unable to set createAuthRequestUriCallback. No createAuthRequestUriEndpointPath present in options`)
         }
 
-        opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback = await createAuthRequestUriCallback(
-          {
-            path: opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriEndpointPath,
-            presentationDefinitionId: instance.issuerOptions.presentationDefinitionId
-          }
-        )
+        opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback = await createAuthRequestUriCallback({
+          path: opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriEndpointPath,
+          presentationDefinitionId: instance.issuerOptions.presentationDefinitionId,
+        })
       }
 
       if (typeof opts?.endpointOpts.authorizationChallengeOpts?.verifyAuthResponseCallback !== 'function') {
         if (!opts.endpointOpts.authorizationChallengeOpts?.verifyAuthResponseEndpointPath) {
-          throw Error(
-            `Unable to set verifyAuthResponseCallback. No createAuthRequestUriEndpointPath present in options`,
-          )
+          throw Error(`Unable to set verifyAuthResponseCallback. No createAuthRequestUriEndpointPath present in options`)
         }
 
-        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await createVerifyAuthResponseCallback(
-          {
-            path: opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseEndpointPath,
-            presentationDefinitionId: instance.issuerOptions.presentationDefinitionId
-          }
-        )
+        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await createVerifyAuthResponseCallback({
+          path: opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseEndpointPath,
+          presentationDefinitionId: instance.issuerOptions.presentationDefinitionId,
+        })
       }
     }
 
@@ -105,7 +94,7 @@ export class OID4VCIRestAPI {
   }
 
   private constructor(args: {
-    issuer: VcIssuer<DIDDocument>
+    issuer: VcIssuer
     instance: IssuerInstance
     context: IRequiredContext
     issuerInstanceArgs: IIssuerInstanceArgs
@@ -118,7 +107,7 @@ export class OID4VCIRestAPI {
     this._expressSupport = args.expressSupport
     this._issuer = args.issuer
     this._instance = args.instance
-    this._restApi = new OID4VCIServer<DIDDocument>(args.expressSupport, { ...opts, issuer: this._issuer })
+    this._restApi = new OID4VCIServer(args.expressSupport, { ...opts, issuer: this._issuer })
   }
 
   get express(): Express {
@@ -133,7 +122,7 @@ export class OID4VCIRestAPI {
     return this._opts
   }
 
-  get restApi(): OID4VCIServer<DIDDocument> {
+  get restApi(): OID4VCIServer {
     return this._restApi
   }
 
@@ -141,7 +130,7 @@ export class OID4VCIRestAPI {
     return this._instance
   }
 
-  get issuer(): VcIssuer<DIDDocument> {
+  get issuer(): VcIssuer {
     return this._issuer
   }
 

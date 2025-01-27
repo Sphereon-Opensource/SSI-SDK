@@ -1,9 +1,9 @@
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { DcqlCredential, DcqlSdJwtVcCredential, DcqlW3cVcCredential } from 'dcql'
-import { CredentialMapper, Hasher, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, HasherSync, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { isUniqueDigitalCredential } from './CredentialUtils'
 
-export function convertToDcqlCredentials(credential: UniqueDigitalCredential | OriginalVerifiableCredential, hasher?: Hasher): DcqlCredential {
+export function convertToDcqlCredentials(credential: UniqueDigitalCredential | OriginalVerifiableCredential, hasher?: HasherSync): DcqlCredential {
   let payload
   if (isUniqueDigitalCredential(credential)) {
     if (!credential.originalVerifiableCredential) {

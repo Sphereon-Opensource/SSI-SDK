@@ -7,8 +7,14 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
-import { OriginalVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  AdditionalClaims,
+  CredentialMapper,
+  HasherSync,
+  ICredentialSubject,
+  IVerifiableCredential,
+  OriginalVerifiablePresentation,
+} from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
   AuthorizationResponseStateWithVerifiedData,
@@ -118,7 +124,7 @@ export class SIOPv2RP implements IAgentPlugin {
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
-      let hasher: Hasher | undefined
+      let hasher: HasherSync | undefined
       if (
         CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) &&
         (!rpInstance.rpOptions.credentialOpts?.hasher || typeof rpInstance.rpOptions.credentialOpts?.hasher !== 'function')

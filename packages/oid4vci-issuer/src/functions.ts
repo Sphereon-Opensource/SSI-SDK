@@ -6,7 +6,7 @@ import {
   JwtVerifyResult,
   OID4VCICredentialFormat,
 } from '@sphereon/oid4vci-common'
-import { JWTHeader, JWTPayload } from '@sphereon/oid4vci-common/lib/types'
+import { JWTHeader, JWTPayload } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
@@ -14,7 +14,7 @@ import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
+import { CredentialPayload, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
@@ -24,7 +24,7 @@ import fetch from 'cross-fetch'
 import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
-  return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
+  return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult> => {
     const resolver = getAgentResolver(_context, {
       resolverResolution: true,
       uniresolverResolution: true,
@@ -55,7 +55,7 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
         alg,
         ...identifier,
         jwt: { header, payload },
-      } as JwtVerifyResult<DIDDocument>
+      } as JwtVerifyResult
     }
 
     const decodedJwt = (await decodeJWT(args.jwt)) as Jwt
@@ -66,7 +66,7 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       return {
         alg: decodedJwt.header.alg,
         jwt: decodedJwt,
-      } as JwtVerifyResult<DIDDocument>
+      } as JwtVerifyResult
     }
     const did = kid.split('#')[0]
 
@@ -172,11 +172,11 @@ export async function getCredentialSignerCallback(
     crypto?: Crypto
   },
   context: IRequiredContext,
-): Promise<CredentialSignerCallback<DIDDocument>> {
+): Promise<CredentialSignerCallback> {
   async function issueVCCallback(args: {
     credentialRequest: CredentialRequest
     credential: CredentialIssuanceInput
-    jwtVerifyResult: JwtVerifyResult<DIDDocument>
+    jwtVerifyResult: JwtVerifyResult
     format?: OID4VCICredentialFormat
   }): Promise<W3CVerifiableCredential | CompactSdJwtVc> {
     const { jwtVerifyResult, format } = args
@@ -263,10 +263,10 @@ export async function createVciIssuerBuilder(
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
-): Promise<VcIssuerBuilder<DIDDocument>> {
+): Promise<VcIssuerBuilder> {
   const { issuerOpts, issuerMetadata, authorizationServerMetadata } = args
 
-  const builder = new VcIssuerBuilder<DIDDocument>()
+  const builder = new VcIssuerBuilder()
   // @ts-ignore
   const resolver =
     args.resolver ??
@@ -312,7 +312,7 @@ export async function createVciIssuer(
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
-): Promise<VcIssuer<DIDDocument>> {
+): Promise<VcIssuer> {
   return (
     await createVciIssuerBuilder(
       {
@@ -326,20 +326,19 @@ export async function createVciIssuer(
   ).build()
 }
 
-export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<() => Promise<string>> {
+export async function createAuthRequestUriCallback(opts: { path: string; presentationDefinitionId: string }): Promise<() => Promise<string>> {
   async function authRequestUriCallback(): Promise<string> {
     const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
     return fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      }
-    })
-    .then(async (response): Promise<string> => {
+      },
+    }).then(async (response): Promise<string> => {
       if (response.status >= 400) {
         return Promise.reject(Error(await response.text()))
       } else {
-        const responseData = await response.json();
+        const responseData = await response.json()
 
         if (!responseData.authRequestURI) {
           return Promise.reject(Error('Missing auth request uri in response body'))
@@ -348,13 +347,15 @@ export async function createAuthRequestUriCallback(opts: { path: string, present
         return responseData.authRequestURI
       }
     })
-
   }
 
   return authRequestUriCallback
 }
 
-export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(correlationId: string) => Promise<boolean>> {
+export async function createVerifyAuthResponseCallback(opts: {
+  path: string
+  presentationDefinitionId: string
+}): Promise<(correlationId: string) => Promise<boolean>> {
   async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
     return fetch(opts.path, {
       method: 'POST',
@@ -362,12 +363,11 @@ export async function createVerifyAuthResponseCallback(opts: { path: string, pre
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ definitionId: opts.presentationDefinitionId, correlationId }),
-    })
-    .then(async (response): Promise<boolean> => {
+    }).then(async (response): Promise<boolean> => {
       if (response.status >= 400) {
         return Promise.reject(Error(await response.text()))
       } else {
-        const responseData = await response.json();
+        const responseData = await response.json()
 
         if (!responseData.status) {
           return Promise.reject(Error('Missing status in response body'))

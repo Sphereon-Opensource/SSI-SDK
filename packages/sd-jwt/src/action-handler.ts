@@ -1,6 +1,6 @@
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { DisclosureFrame, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
+import { DisclosureFrame, Hasher, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
@@ -30,6 +30,7 @@ import {
   SignKeyArgs,
   SignKeyResult,
 } from './types'
+import { HasherSync } from '@sd-jwt/types/src/type'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
@@ -348,17 +349,49 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns
    */
   async fetchSdJwtTypeMetadataFromVctUrl(args: FetchSdJwtTypeMetadataFromVctUrlArgs, context: IRequiredContext): Promise<SdJwtTypeMetadata> {
-    const { vct, opts } = args
+    const { vct, vctIntegrity, opts } = args
     const url = new URL(vct)
 
     const response = await fetchUrlWithErrorHandling(url.toString())
     const metadata: SdJwtTypeMetadata = await response.json()
     assertValidTypeMetadata(metadata, vct)
 
-    if (opts?.integrity && opts.hasher) {
-      if (!(await validateIntegrity(metadata, opts.integrity, opts.hasher))) {
-        throw new Error(`Integrity check failed. vct: ${vct}`)
+    const validate = async (vct: string, input: unknown, integrityValue?: string, hasher?: Hasher | HasherSync) => {
+      if (hasher && integrityValue) {
+        const validation = await validateIntegrity({ integrityValue, input, hasher })
+        if (!validation) {
+          return Promise.reject(Error(`Integrity check failed for vct: ${vct}, extends: ${metadata.extends}, integrity: ${integrityValue}}`))
+        }
       }
+    }
+
+    const hasher = (opts?.hasher ?? this.registeredImplementations.hasher) as Hasher | HasherSync | undefined
+    if (hasher) {
+      if (vctIntegrity) {
+        await validate(vct, metadata, vctIntegrity, hasher)
+        const vctValidation = await validateIntegrity({ integrityValue: vctIntegrity, input: metadata, hasher })
+        if (!vctValidation) {
+          return Promise.reject(Error(`Integrity check failed for vct: ${vct}, integrity: ${vctIntegrity}`))
+        }
+      }
+
+      if (metadata['extends#integrity']) {
+        const extendsMetadata = await this.fetchSdJwtTypeMetadataFromVctUrl({ vct: metadata['extends#integrity'], opts }, context)
+        await validate(vct, extendsMetadata, metadata['extends#integrity'], hasher)
+      }
+
+      if (metadata['schema_uri#integrity']) {
+        const schemaResponse = await fetchUrlWithErrorHandling(metadata.schema_uri!)
+        const schema = await schemaResponse.json()
+        await validate(vct, schema, metadata['schema_uri#integrity'], hasher)
+      }
+
+      metadata.display?.forEach((display) => {
+        const simpleLogoIntegrity = display.rendering?.simple?.logo?.['uri#integrity']
+        if (simpleLogoIntegrity) {
+          console.log('TODO: Logo integrity check')
+        }
+      })
     }
 
     return metadata

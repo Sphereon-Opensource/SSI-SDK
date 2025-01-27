@@ -4,7 +4,7 @@ import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, Present
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, Hasher, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, HasherSync, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { OID4VP, OpSession } from '../session'
 import {
   DidAgents,
@@ -20,7 +20,7 @@ import {
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
-import { DcqlCredential, DcqlQuery, DcqlCredentialPresentation, DcqlPresentation } from 'dcql'
+import { DcqlCredential, DcqlCredentialPresentation, DcqlPresentation, DcqlQuery } from 'dcql'
 import { convertToDcqlCredentials } from '../utils/dcql'
 import { getOriginalVerifiableCredential } from '../utils/CredentialUtils'
 
@@ -52,7 +52,7 @@ export const siopSendAuthorizationResponse = async (
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
     isFirstParty?: boolean
-    hasher?: Hasher
+    hasher?: HasherSync
     dcqlQuery?: DcqlQuery
   },
   context: RequiredContext,
@@ -168,7 +168,7 @@ export const siopSendAuthorizationResponse = async (
       ...(presentationSubmission && { presentationSubmission }),
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
-    isFirstParty,
+      isFirstParty,
     })
   } else if (request.dcqlQuery) {
     if (args.verifiableCredentialsWithDefinition !== undefined && args.verifiableCredentialsWithDefinition !== null) {
@@ -186,20 +186,20 @@ export const siopSendAuthorizationResponse = async (
         return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
       }
 
-    let identifier: ManagedIdentifierOptsOrResult
-    const digitalCredential = firstUniqueDC.digitalCredential
-    const firstVC = firstUniqueDC.uniformVerifiableCredential
-    const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
-      ? firstVC.decodedPayload.cnf?.jwk
-        ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
-          //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
-          `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
-        : firstVC.decodedPayload.sub
-      : Array.isArray(firstVC.credentialSubject)
-        ? firstVC.credentialSubject[0].id
-        : firstVC.credentialSubject.id
-    if (!digitalCredential.kmsKeyRef) {
-      // In case the store does not have the kmsKeyRef lets search for the holder
+      let identifier: ManagedIdentifierOptsOrResult
+      const digitalCredential = firstUniqueDC.digitalCredential
+      const firstVC = firstUniqueDC.uniformVerifiableCredential
+      const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
+        ? firstVC.decodedPayload.cnf?.jwk
+          ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+            //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
+            `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
+          : firstVC.decodedPayload.sub
+        : Array.isArray(firstVC.credentialSubject)
+          ? firstVC.credentialSubject[0].id
+          : firstVC.credentialSubject.id
+      if (!digitalCredential.kmsKeyRef) {
+        // In case the store does not have the kmsKeyRef lets search for the holder
 
         if (!holder) {
           return Promise.reject(`No holder found and no kmsKeyRef in DB. Cannot determine identifier to use`)

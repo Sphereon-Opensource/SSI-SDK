@@ -125,7 +125,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     } as AuthorizationDetails
   })
 
-  const signCallbacks: ProofOfPossessionCallbacks<never> = requestObjectOpts.signCallbacks ?? {
+  const signCallbacks: ProofOfPossessionCallbacks = requestObjectOpts.signCallbacks ?? {
     signCallback: signCallback(idOpts, context),
   }
   const authorizationRequestOpts = {

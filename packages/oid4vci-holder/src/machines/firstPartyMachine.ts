@@ -1,17 +1,8 @@
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
-import {
-  AuthorizationChallengeCodeResponse,
-  AuthorizationChallengeError,
-  AuthorizationChallengeErrorResponse
-} from '@sphereon/oid4vci-common'
+import { AuthorizationChallengeCodeResponse, AuthorizationChallengeError, AuthorizationChallengeErrorResponse } from '@sphereon/oid4vci-common'
 import { DidAuthConfig } from '@sphereon/ssi-sdk.data-store'
 import { CreateConfigResult } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-import {
-  createConfig,
-  getSiopRequest,
-  sendAuthorizationChallengeRequest,
-  sendAuthorizationResponse
-} from '../services/FirstPartyMachineServices'
+import { createConfig, getSiopRequest, sendAuthorizationChallengeRequest, sendAuthorizationResponse } from '../services/FirstPartyMachineServices'
 import { translate } from '../localization/Localization'
 import { ErrorDetails } from '../types/IOID4VCIHolder'
 import {
@@ -31,7 +22,7 @@ import {
   InstanceFirstPartyMachineOpts,
   SiopV2AuthorizationRequestData,
   SendAuthorizationResponseArgs,
-  FirstPartySelectCredentialsEvent
+  FirstPartySelectCredentialsEvent,
 } from '../types/FirstPartyMachine'
 
 const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
@@ -42,16 +33,18 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
       onDone: {
         target: FirstPartyMachineStateTypes.done,
         actions: assign({
-          authorizationCodeResponse: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeCodeResponse>) => _event.data
-        })
+          authorizationCodeResponse: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeCodeResponse>) => _event.data,
+        }),
       },
       onError: [
         {
           target: FirstPartyMachineStateTypes.createConfig,
-          cond: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeErrorResponse>): boolean => _event.data.error === AuthorizationChallengeError.insufficient_authorization,
+          cond: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeErrorResponse>): boolean =>
+            _event.data.error === AuthorizationChallengeError.insufficient_authorization,
           actions: assign({
             authSession: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeErrorResponse>) => _event.data.auth_session,
-            presentationUri: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeErrorResponse>) => _event.data.presentation,
+            presentationUri: (_ctx: FirstPartyMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeErrorResponse>) =>
+              _event.data.presentation,
           }),
         },
         {
@@ -63,9 +56,9 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
               stack: _event.data.stack,
             }),
           }),
-        }
+        },
       ],
-    }
+    },
   },
   [FirstPartyMachineStateTypes.createConfig]: {
     id: FirstPartyMachineStateTypes.createConfig,
@@ -115,7 +108,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
     id: FirstPartyMachineStateTypes.selectCredentials,
     on: {
       [FirstPartyMachineEvents.SET_SELECTED_CREDENTIALS]: {
-        actions: assign({selectedCredentials: (_ctx: FirstPartyMachineContext, _event: FirstPartySelectCredentialsEvent) => _event.data}),
+        actions: assign({ selectedCredentials: (_ctx: FirstPartyMachineContext, _event: FirstPartySelectCredentialsEvent) => _event.data }),
       },
       [FirstPartyMachineEvents.NEXT]: {
         target: FirstPartyMachineStateTypes.sendAuthorizationResponse,
@@ -148,15 +141,15 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
           }),
         }),
       },
-    }
+    },
   },
   [FirstPartyMachineStateTypes.aborted]: {
     id: FirstPartyMachineStateTypes.aborted,
-    type: 'final'
+    type: 'final',
   },
   [FirstPartyMachineStateTypes.declined]: {
     id: FirstPartyMachineStateTypes.declined,
-    type: 'final'
+    type: 'final',
   },
   [FirstPartyMachineStateTypes.error]: {
     id: FirstPartyMachineStateTypes.error,
@@ -165,7 +158,7 @@ const firstPartyMachineStates: FirstPartyMachineStatesConfig = {
   [FirstPartyMachineStateTypes.done]: {
     id: FirstPartyMachineStateTypes.done,
     type: 'final',
-  }
+  },
 }
 
 const createFirstPartyActivationMachine = (opts: CreateFirstPartyMachineOpts): FirstPartyStateMachine => {
@@ -173,66 +166,64 @@ const createFirstPartyActivationMachine = (opts: CreateFirstPartyMachineOpts): F
     openID4VCIClientState: opts.openID4VCIClientState,
     contact: opts.contact,
     selectedCredentials: [],
-  };
+  }
 
-  return createMachine<FirstPartyMachineContext, FirstPartyMachineEventTypes>(
-    {
-      id: opts?.machineId ?? 'FirstParty',
-      predictableActionArguments: true,
-      initial: FirstPartyMachineStateTypes.sendAuthorizationChallengeRequest,
-      context: initialContext,
-      states: firstPartyMachineStates,
-      schema: {
-        events: {} as FirstPartyMachineEventTypes,
-        services: {} as {
-          [FirstPartyMachineServices.sendAuthorizationChallengeRequest]: {
-            data: void
-          },
-          [FirstPartyMachineServices.createConfig]: {
-            data: CreateConfigResult
-          },
-          [FirstPartyMachineServices.getSiopRequest]: {
-            data: SiopV2AuthorizationRequestData
-          },
-          [FirstPartyMachineServices.sendAuthorizationResponse]: {
-            data: string
-          }
+  return createMachine<FirstPartyMachineContext, FirstPartyMachineEventTypes>({
+    id: opts?.machineId ?? 'FirstParty',
+    predictableActionArguments: true,
+    initial: FirstPartyMachineStateTypes.sendAuthorizationChallengeRequest,
+    context: initialContext,
+    states: firstPartyMachineStates,
+    schema: {
+      events: {} as FirstPartyMachineEventTypes,
+      services: {} as {
+        [FirstPartyMachineServices.sendAuthorizationChallengeRequest]: {
+          data: void
         }
-      }
-    }
-  );
-};
+        [FirstPartyMachineServices.createConfig]: {
+          data: CreateConfigResult
+        }
+        [FirstPartyMachineServices.getSiopRequest]: {
+          data: SiopV2AuthorizationRequestData
+        }
+        [FirstPartyMachineServices.sendAuthorizationResponse]: {
+          data: string
+        }
+      },
+    },
+  })
+}
 
 export class FirstPartyMachine {
-  private static _instance: FirstPartyMachineInterpreter | undefined;
+  private static _instance: FirstPartyMachineInterpreter | undefined
 
   static hasInstance(): boolean {
-    return FirstPartyMachine._instance !== undefined;
+    return FirstPartyMachine._instance !== undefined
   }
 
   static get instance(): FirstPartyMachineInterpreter {
     if (!FirstPartyMachine._instance) {
-      throw Error('Please initialize ESIMActivation machine first');
+      throw Error('Please initialize ESIMActivation machine first')
     }
-    return FirstPartyMachine._instance;
+    return FirstPartyMachine._instance
   }
 
-  static clearInstance(opts: {stop: boolean}) {
-    const {stop} = opts;
+  static clearInstance(opts: { stop: boolean }) {
+    const { stop } = opts
     if (FirstPartyMachine.hasInstance()) {
       if (stop) {
-        FirstPartyMachine.stopInstance();
+        FirstPartyMachine.stopInstance()
       }
     }
-    FirstPartyMachine._instance = undefined;
+    FirstPartyMachine._instance = undefined
   }
 
   static stopInstance(): void {
     if (!FirstPartyMachine.hasInstance()) {
-      return;
+      return
     }
-    FirstPartyMachine.instance.stop();
-    FirstPartyMachine._instance = undefined;
+    FirstPartyMachine.instance.stop()
+    FirstPartyMachine._instance = undefined
   }
 
   public static newInstance(opts: InstanceFirstPartyMachineOpts): FirstPartyMachineInterpreter {
@@ -254,10 +245,10 @@ export class FirstPartyMachine {
           ...opts?.guards,
         },
       }),
-    );
+    )
 
     if (typeof opts?.subscription === 'function') {
-      newInst.onTransition(opts.subscription);
+      newInst.onTransition(opts.subscription)
     }
 
     if (opts?.requireCustomNavigationHook !== true) {
@@ -265,23 +256,23 @@ export class FirstPartyMachine {
         if (opts?.stateNavigationListener) {
           void opts.stateNavigationListener(newInst, snapshot)
         }
-      });
+      })
     }
 
-    return newInst;
+    return newInst
   }
 
   static getInstance(
     opts: InstanceFirstPartyMachineOpts & {
-      requireExisting?: boolean;
+      requireExisting?: boolean
     },
   ): FirstPartyMachineInterpreter {
     if (!FirstPartyMachine._instance) {
       if (opts?.requireExisting === true) {
-        throw Error(`Existing FirstPartyMachine instance requested, but none was created at this point!`);
+        throw Error(`Existing FirstPartyMachine instance requested, but none was created at this point!`)
       }
-      FirstPartyMachine._instance = FirstPartyMachine.newInstance(opts);
+      FirstPartyMachine._instance = FirstPartyMachine.newInstance(opts)
     }
-    return FirstPartyMachine._instance;
+    return FirstPartyMachine._instance
   }
 }

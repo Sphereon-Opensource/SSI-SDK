@@ -92,7 +92,9 @@ export function verifyAuthResponseSIOPv2Endpoint(
         console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
         response.statusCode = 200
 
-        const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = { presentation_during_issuance_session: verifiedResponse.correlationId }
+        const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
+          presentation_during_issuance_session: verifiedResponse.correlationId,
+        }
         if (authorizationResponse.is_first_party) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))

@@ -1,4 +1,4 @@
-import { CredentialMapper, Hasher, ICredential, IVerifiableCredential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, HasherSync, ICredential, IVerifiableCredential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { VerifiableCredential } from '@veramo/core'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 
@@ -58,7 +58,7 @@ export const getOriginalVerifiableCredential = (credential: InputCredential): Or
   return getCredentialFromProofOrWrapped(credential)
 }
 
-const getCredentialFromProofOrWrapped = (cred: any, hasher?: Hasher): OriginalVerifiableCredential => {
+const getCredentialFromProofOrWrapped = (cred: any, hasher?: HasherSync): OriginalVerifiableCredential => {
   if (typeof cred === 'object' && 'proof' in cred && 'jwt' in cred.proof && CredentialMapper.isSdJwtEncoded(cred.proof.jwt)) {
     return cred.proof.jwt
   }

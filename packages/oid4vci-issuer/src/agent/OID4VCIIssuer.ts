@@ -10,7 +10,7 @@ import { assertValidAccessTokenRequest, createAccessTokenResponse, VcIssuer } fr
 import { retrieveWellknown } from '@sphereon/oid4vci-client'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { DIDDocument, IAgentPlugin } from '@veramo/core'
+import { IAgentPlugin } from '@veramo/core'
 import { getAccessTokenSignerCallback } from '../functions'
 import {
   IAssertValidAccessTokenArgs,
@@ -47,7 +47,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
   private async oid4vciCreateOfferURI(createArgs: ICreateOfferArgs, context: IRequiredContext): Promise<ICreateCredentialOfferURIResult> {
     return await this.oid4vciGetInstance(createArgs, context)
       .then((instance) => instance.get({ context }))
-      .then((issuer: VcIssuer<DIDDocument>) =>
+      .then((issuer: VcIssuer) =>
         issuer.createCredentialOfferURI(createArgs).then((response) => {
           const result: ICreateCredentialOfferURIResult = response
           if (this._opts.returnSessions === false) {
@@ -61,7 +61,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
   private async oid4vciIssueCredential(issueArgs: IIssueCredentialArgs, context: IRequiredContext): Promise<CredentialResponse> {
     return await this.oid4vciGetInstance(issueArgs, context)
       .then((instance) => instance.get({ context }))
-      .then((issuer: VcIssuer<DIDDocument>) => issuer.issueCredential(issueArgs))
+      .then((issuer: VcIssuer) => issuer.issueCredential(issueArgs))
   }
 
   private async oid4vciCreateAccessTokenResponse(

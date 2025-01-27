@@ -1,12 +1,12 @@
 import { IssuerType } from '@veramo/core'
 import {
-  AsyncHasher,
   decodeMdocDeviceResponse,
   decodeMdocIssuerSigned,
   decodeSdJwtVc,
   decodeSdJwtVcAsync,
   DocumentFormat,
   Hasher,
+  HasherSync,
   ICredential,
   IPresentation,
   IProof,
@@ -43,15 +43,15 @@ import {
 import { getMdocDecodedPayload, MdocDocument } from '../types/mso_mdoc'
 import { ObjectUtils } from '../utils'
 import { com } from '@sphereon/kmp-mdoc-core'
-import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 import { jwtDecode } from 'jwt-decode'
+import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export class CredentialMapper {
   /**
    * Decodes a compact SD-JWT vc to it's decoded variant. This method can be used when the hasher implementation used is Async, and therefore not suitable for usage
    * with the other decode methods.
    */
-  static decodeSdJwtVcAsync(compactSdJwtVc: string, hasher: AsyncHasher) {
+  static decodeSdJwtVcAsync(compactSdJwtVc: string, hasher: Hasher) {
     return decodeSdJwtVcAsync(compactSdJwtVc, hasher)
   }
 
@@ -62,11 +62,12 @@ export class CredentialMapper {
    * an async hasher implementation, use the decodeSdJwtVcAsync method instead and you can provide the decoded payload to methods
    * instead of the compact SD-JWT.
    *
+   * @param presentation
    * @param hasher Hasher implementation to use for SD-JWT decoding.
    */
   static decodeVerifiablePresentation(
     presentation: OriginalVerifiablePresentation,
-    hasher?: Hasher,
+    hasher?: HasherSync,
   ): JwtDecodedVerifiablePresentation | IVerifiablePresentation | SdJwtDecodedVerifiableCredential | MdocOid4vpMdocVpToken | MdocDeviceResponse {
     if (CredentialMapper.isJwtEncoded(presentation)) {
       const payload = jwtDecode(presentation as string) as JwtDecodedVerifiablePresentation
@@ -111,7 +112,7 @@ export class CredentialMapper {
    */
   static decodeVerifiableCredential(
     credential: OriginalVerifiableCredential,
-    hasher?: Hasher,
+    hasher?: HasherSync,
   ): JwtDecodedVerifiableCredential | IVerifiableCredential | SdJwtDecodedVerifiableCredential {
     if (CredentialMapper.isJwtEncoded(credential)) {
       const payload = jwtDecode(credential as string) as JwtDecodedVerifiableCredential
@@ -151,7 +152,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiablePresentation(
     originalPresentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
+    opts?: { maxTimeSkewInMS?: number; hasher?: HasherSync },
   ): WrappedVerifiablePresentation {
     // MSO_MDOC
     if (CredentialMapper.isMsoMdocDecodedPresentation(originalPresentation) || CredentialMapper.isMsoMdocOid4VPEncoded(originalPresentation)) {
@@ -265,7 +266,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiableCredentials(
     verifiableCredentials: OriginalVerifiableCredential[],
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
+    opts?: { maxTimeSkewInMS?: number; hasher?: HasherSync },
   ): WrappedVerifiableCredential[] {
     return verifiableCredentials.map((vc) => CredentialMapper.toWrappedVerifiableCredential(vc, opts))
   }
@@ -281,7 +282,7 @@ export class CredentialMapper {
    */
   static toWrappedVerifiableCredential(
     verifiableCredential: OriginalVerifiableCredential,
-    opts?: { maxTimeSkewInMS?: number; hasher?: Hasher },
+    opts?: { maxTimeSkewInMS?: number; hasher?: HasherSync },
   ): WrappedVerifiableCredential {
     // MSO_MDOC
     if (CredentialMapper.isMsoMdocDecodedCredential(verifiableCredential) || CredentialMapper.isMsoMdocOid4VPEncoded(verifiableCredential)) {
@@ -582,7 +583,7 @@ export class CredentialMapper {
     verifiableCredential: OriginalVerifiableCredential,
     opts?: {
       maxTimeSkewInMS?: number
-      hasher?: Hasher
+      hasher?: HasherSync
     },
   ): IVerifiableCredential {
     if (CredentialMapper.isMsoMdocDecodedCredential(verifiableCredential)) {
@@ -620,7 +621,7 @@ export class CredentialMapper {
 
   static toUniformPresentation(
     presentation: OriginalVerifiablePresentation,
-    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean; hasher?: Hasher },
+    opts?: { maxTimeSkewInMS?: number; addContextIfMissing?: boolean; hasher?: HasherSync },
   ): IVerifiablePresentation {
     if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       throw new Error('Converting SD-JWT VC to uniform VP is not supported.')
