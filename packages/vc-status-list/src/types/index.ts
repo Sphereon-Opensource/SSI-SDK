@@ -154,9 +154,10 @@ export interface CreateStatusListArgs {
 
 export interface UpdateStatusListIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
-  keyRef?: string
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth
+  keyRef?: string
+  expiresAt?: Date
 }
 
 export interface CheckStatusIndexArgs {

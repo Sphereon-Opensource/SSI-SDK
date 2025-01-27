@@ -1,5 +1,13 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, ProofFormat, StatusListCredential, StatusListDriverType, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  DocumentFormat,
+  ProofFormat,
+  StatusListCredential,
+  StatusListDriverType,
+  StatusListType,
+  StatusPurpose2021,
+} from '@sphereon/ssi-types'
 import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
@@ -171,12 +179,28 @@ export async function statusListCredentialToDetails(args: {
   driverType?: StatusListDriverType
 }): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
-  const uniform = CredentialMapper.toUniformCredential(credential)
-  const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
-  if (!type) {
-    throw new Error('Invalid status list credential type')
+
+  let statusListType: StatusListType | undefined
+  const documentFormat = CredentialMapper.detectDocumentType(credential)
+  if (documentFormat === DocumentFormat.JWT) {
+    const [header] = credential.split('.')
+    const decodedHeader = JSON.parse(Buffer.from(header, 'base64').toString())
+
+    if (decodedHeader.typ === 'statuslist+jwt') {
+      statusListType = StatusListType.OAuthStatusList
+    }
+  } else if (documentFormat === DocumentFormat.MSO_MDOC) {
+    statusListType = StatusListType.OAuthStatusList
+    // TODO check CBOR content?
   }
-  const statusListType = type.replace('Credential', '') as StatusListType // "StatusList2021Credential" is a VC schema type and does not map 1:1 to our internal StatusListType enum
+  if (!statusListType) {
+    const uniform = CredentialMapper.toUniformCredential(credential)
+    const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
+    if (!type) {
+      throw new Error('Invalid status list credential type')
+    }
+    statusListType = type.replace('Credential', '') as StatusListType
+  }
 
   const implementation = getStatusListImplementation(statusListType)
   return await implementation.toStatusListDetails({

@@ -14,6 +14,7 @@ export const createSignedJwt = async (
   statusList: StatusList,
   issuerString: string,
   id: string,
+  expiresAt?: Date,
   keyRef?: string,
 ): Promise<SignedStatusListData> => {
   const identifier = await resolveIdentifier(context, issuerString, keyRef)
@@ -23,6 +24,7 @@ export const createSignedJwt = async (
     iss: issuerString,
     sub: id,
     iat: Math.floor(Date.now() / 1000),
+    ...(expiresAt && { exp: Math.floor(expiresAt.getTime() / 1000) }),
   }
 
   const header: StatusListJWTHeaderParameters = {

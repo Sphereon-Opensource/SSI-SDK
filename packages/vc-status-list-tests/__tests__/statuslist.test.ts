@@ -13,6 +13,7 @@ import {
   createNewStatusList,
   Status2021,
   statusList2021ToVerifiableCredential,
+  statusListCredentialToDetails,
   StatusOAuth,
   updateStatusIndexFromStatusListCredential,
   updateStatusListIndexFromEncodedList,
@@ -28,7 +29,7 @@ import {
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 // @ts-ignore
 import nock from 'nock'
-import { StatusListType } from '@sphereon/ssi-types'
+import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 jest.setTimeout(100000)
@@ -340,6 +341,95 @@ describe('Status list', () => {
           { agent },
         ),
       ).rejects.toThrow()
+    })
+  })
+
+  describe('statusListCredentialToDetails', () => {
+    it('should handle StatusList2021 JWT credential', async () => {
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.StatusList2021,
+          proofFormat: 'jwt',
+          id: 'http://localhost:9543/details1',
+          issuer: didKeyIdentifier.did,
+          length: 1000,
+          correlationId: 'test-details-1',
+          statusList2021: {
+            indexingDirection: 'rightToLeft',
+          },
+        },
+        { agent },
+      )
+
+      const details = await statusListCredentialToDetails({
+        statusListCredential: initialList.statusListCredential,
+        correlationId: 'test-details-1',
+        driverType: StatusListDriverType.AGENT_TYPEORM,
+      })
+
+      expect(details.type).toBe(StatusListType.StatusList2021)
+      expect(details.proofFormat).toBe('jwt')
+      expect(details.correlationId).toBe('test-details-1')
+      expect(details.driverType).toBe(StatusListDriverType.AGENT_TYPEORM)
+      expect(details.statusList2021?.indexingDirection).toBe('rightToLeft')
+    })
+
+    it('should handle OAuthStatusList credential', async () => {
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.OAuthStatusList,
+          proofFormat: 'jwt',
+          id: 'http://localhost:9543/details2',
+          issuer: didKeyIdentifier.did,
+          length: 1000,
+          correlationId: 'test-details-2',
+          oauthStatusList: {
+            bitsPerStatus: 2,
+            expiresAt: new Date('2025-01-01'),
+          },
+        },
+        { agent },
+      )
+
+      const details = await statusListCredentialToDetails({
+        statusListCredential: initialList.statusListCredential,
+        correlationId: 'test-details-2',
+      })
+
+      expect(details.type).toBe(StatusListType.OAuthStatusList)
+      expect(details.proofFormat).toBe('jwt')
+      expect(details.correlationId).toBe('test-details-2')
+      expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
+      expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
+    })
+
+    it('should handle OAuthStatusList with CBOR format', async () => {
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.OAuthStatusList,
+          proofFormat: 'cbor',
+          id: 'http://localhost:9543/details3',
+          issuer: didKeyIdentifier.did,
+          length: 1000,
+          correlationId: 'test-details-3',
+          oauthStatusList: {
+            bitsPerStatus: 2,
+            expiresAt: new Date('2025-01-01'),
+          },
+        },
+        { agent },
+      )
+
+      const details = await statusListCredentialToDetails({
+        statusListCredential: initialList.statusListCredential,
+        correlationId: 'test-details-3',
+      })
+
+      expect(details.type).toBe(StatusListType.OAuthStatusList)
+      expect(details.proofFormat).toBe('cbor')
+      expect(details.correlationId).toBe('test-details-3')
+      expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
+      expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
     })
   })
 })

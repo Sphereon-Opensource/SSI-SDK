@@ -24,6 +24,7 @@ export const createSignedCbor = async (
   statusList: StatusList,
   issuerString: string,
   id: string,
+  expiresAt?: Date,
   keyRef?: string,
 ): Promise<SignedStatusListData> => {
   const identifier = await resolveIdentifier(context, issuerString, keyRef)
@@ -47,7 +48,7 @@ export const createSignedCbor = async (
     ),
   )
   const protectedHeaderEncoded = cbor.Cbor.encode(protectedHeader)
-  const claimsMap = buildClaimsMap(id, issuerString, statusListMap)
+  const claimsMap = buildClaimsMap(id, issuerString, statusListMap, expiresAt)
   const claimsEncoded: Int8Array = cbor.Cbor.encode(claimsMap)
 
   const signedCWT: string = await context.agent.keyManagerSign({
@@ -61,14 +62,12 @@ export const createSignedCbor = async (
   const signatureBytes = base64url.decode(signedCWT)
   const signatureInt8 = new Int8Array(Buffer.from(signatureBytes))
 
-  const cwtArray = new cbor.CborArray(
-    kotlin.collections.KtMutableList.fromJsArray([
-      new cbor.CborByteString(protectedHeaderEncodedInt8),
-      new cbor.CborByteString(claimsEncodedInt8),
-      new cbor.CborByteString(signatureInt8),
-    ]),
-  )
-
+  const cwtArrayElements: Array<com.sphereon.cbor.CborItem<any>> = [
+    new cbor.CborByteString(protectedHeaderEncodedInt8),
+    new cbor.CborByteString(claimsEncodedInt8),
+    new cbor.CborByteString(signatureInt8),
+  ]
+  const cwtArray = new cbor.CborArray(kotlin.collections.KtMutableList.fromJsArray(cwtArrayElements))
   const cwtEncoded = cbor.Cbor.encode(cwtArray)
   const cwtBuffer = Buffer.from(cwtEncoded)
   return {
@@ -81,8 +80,8 @@ function buildClaimsMap(
   id: string,
   issuerString: string,
   statusListMap: com.sphereon.cbor.CborMap<com.sphereon.cbor.CborString, com.sphereon.cbor.CborItem<any>>,
+  expiresAt?: Date,
 ) {
-  const exp = Math.floor(new Date().getTime() / 1000)
   const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
   const claimsEntries: Array<[com.sphereon.cbor.CborUInt, com.sphereon.cbor.CborItem<any>]> = [
     [new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.SUBJECT)), new cbor.CborString(id)], // "sub"
@@ -93,10 +92,10 @@ function buildClaimsMap(
     ],
   ]
 
-  if (exp) {
+  if (expiresAt) {
     claimsEntries.push([
       new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.EXPIRATION)),
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(exp)), // "exp"
+      new cbor.CborUInt(kmp.LongKMP.fromNumber(Math.floor(expiresAt.getTime() / 1000))), // "exp"
     ])
   }
 
@@ -113,10 +112,21 @@ function buildClaimsMap(
   return claimsMap
 }
 
-const getCborValueFromMap = <T>(map: Map<com.sphereon.cbor.CborItem<any>, com.sphereon.cbor.CborItem<any>>, key: number): T | never => {
+const getCborValueFromMap = <T>(map: Map<com.sphereon.cbor.CborItem<any>, com.sphereon.cbor.CborItem<any>>, key: number): T => {
+  const value = getCborOptionalValueFromMap<T>(map, key)
+  if (value === undefined) {
+    throw new Error(`Required claim ${key} not found`)
+  }
+  return value
+}
+
+const getCborOptionalValueFromMap = <T>(
+  map: Map<com.sphereon.cbor.CborItem<any>, com.sphereon.cbor.CborItem<any>>,
+  key: number,
+): T | undefined | never => {
   const value = map.get(new com.sphereon.cbor.CborUInt(kmp.LongKMP.fromNumber(key)))
   if (!value) {
-    throw new Error(`Required claim ${key} not found`)
+    return undefined
   }
   return value.value as T
 }
@@ -154,8 +164,8 @@ export const decodeStatusListCWT = (cwt: string): DecodedStatusListPayload => {
     issuer: getCborValueFromMap<string>(claimsMap, CWT_CLAIMS.ISSUER),
     id: getCborValueFromMap<string>(claimsMap, CWT_CLAIMS.SUBJECT),
     statusList,
-    exp: getCborValueFromMap<number>(claimsMap, CWT_CLAIMS.EXPIRATION),
-    ttl: getCborValueFromMap<number>(claimsMap, CWT_CLAIMS.TIME_TO_LIVE),
     iat: Number(getCborValueFromMap<number>(claimsMap, CWT_CLAIMS.ISSUED_AT)),
+    exp: getCborOptionalValueFromMap<number>(claimsMap, CWT_CLAIMS.EXPIRATION),
+    ttl: getCborOptionalValueFromMap<number>(claimsMap, CWT_CLAIMS.TIME_TO_LIVE),
   }
 }

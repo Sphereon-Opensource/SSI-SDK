@@ -31,15 +31,15 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
 
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
-    const { issuer, id, keyRef } = args
+    const { issuer, id, oauthStatusList, keyRef } = args
+    const { bitsPerStatus, expiresAt } = oauthStatusList
     const length = args.length ?? DEFAULT_LIST_LENGTH
-    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? DEFAULT_BITS_PER_STATUS
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
 
-    const statusList = new StatusList(new Array(length).fill(0), bitsPerStatus)
+    const statusList = new StatusList(new Array(length).fill(0), bitsPerStatus ?? DEFAULT_BITS_PER_STATUS)
     const encodedList = statusList.compressStatusList()
-    const { statusListCredential } = await this.createSignedStatusList(proofFormat, context, statusList, issuerString, id, keyRef)
+    const { statusListCredential } = await this.createSignedStatusList(proofFormat, context, statusList, issuerString, id, expiresAt, keyRef)
 
     return {
       encodedList,
@@ -55,7 +55,7 @@ export class OAuthStatusListImplementation implements IStatusList {
   }
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
-    const { statusListCredential, value, keyRef } = args
+    const { statusListCredential, value, expiresAt, keyRef } = args
     if (typeof statusListCredential !== 'string') {
       return Promise.reject('statusListCredential in neither JWT nor CWT')
     }
@@ -76,6 +76,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       statusList,
       issuer,
       id,
+      expiresAt,
       keyRef,
     )
 
@@ -97,27 +98,36 @@ export class OAuthStatusListImplementation implements IStatusList {
     if (!args.oauthStatusList) {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
     }
+    const { proofFormat, oauthStatusList, keyRef } = args
+    const { bitsPerStatus, expiresAt } = oauthStatusList
 
-    const proofFormat = args.proofFormat ?? DEFAULT_PROOF_FORMAT
     const { issuer, id } = getAssertedValues(args)
-    const bitsPerStatus = args.oauthStatusList.bitsPerStatus ?? DEFAULT_BITS_PER_STATUS
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
 
-    const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus)
+    const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus ?? DEFAULT_BITS_PER_STATUS)
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     listToUpdate.setStatus(index, args.value ? 1 : 0)
 
-    const { statusListCredential, encodedList } = await this.createSignedStatusList(proofFormat, context, listToUpdate, issuerString, id, args.keyRef)
+    const { statusListCredential, encodedList } = await this.createSignedStatusList(
+      proofFormat ?? DEFAULT_PROOF_FORMAT,
+      context,
+      listToUpdate,
+      issuerString,
+      id,
+      expiresAt,
+      keyRef,
+    )
 
     return {
       encodedList,
       statusListCredential,
       oauthStatusList: {
         bitsPerStatus,
+        expiresAt,
       },
       length: listToUpdate.statusList.length,
       type: StatusListType.OAuthStatusList,
-      proofFormat,
+      proofFormat: proofFormat ?? DEFAULT_PROOF_FORMAT,
       id,
       issuer,
     }
@@ -144,7 +154,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     const { statusListPayload } = args as { statusListPayload: CompactJWT | CWT }
     const proofFormat = determineProofFormat(statusListPayload)
     const decoded = proofFormat === 'jwt' ? decodeStatusListJWT(statusListPayload) : decodeStatusListCWT(statusListPayload)
-    const { statusList, issuer, id } = decoded
+    const { statusList, issuer, id, exp } = decoded
 
     return {
       id,
@@ -156,6 +166,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       statusListCredential: statusListPayload,
       oauthStatusList: {
         bitsPerStatus: statusList.getBitsPerStatus(),
+        ...(exp && { expiresAt: new Date(exp * 1000) }),
       },
       ...(args.correlationId && { correlationId: args.correlationId }),
       ...(args.driverType && { driverType: args.driverType }),
@@ -168,14 +179,15 @@ export class OAuthStatusListImplementation implements IStatusList {
     statusList: StatusList,
     issuerString: string,
     id: string,
+    expiresAt?: Date,
     keyRef?: string,
   ): Promise<SignedStatusListData> {
     switch (proofFormat) {
       case 'jwt': {
-        return await createSignedJwt(context, statusList, issuerString, id, keyRef)
+        return await createSignedJwt(context, statusList, issuerString, id, expiresAt, keyRef)
       }
       case 'cbor': {
-        return await createSignedCbor(context, statusList, issuerString, id, keyRef)
+        return await createSignedCbor(context, statusList, issuerString, id, expiresAt, keyRef)
       }
       default:
         throw new Error(`Invalid proof format '${proofFormat}' for OAuthStatusList`)
