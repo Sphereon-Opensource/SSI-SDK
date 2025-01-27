@@ -13,6 +13,7 @@ export class CreatePresentationDefinitions1716475165344 implements MigrationInte
     "version" varchar NOT NULL,
     "purpose" varchar,
     "definition_payload" varchar NOT NULL,
+    "dcql_payload" varchar,
     "created_at" datetime NOT NULL DEFAULT (datetime('now')),
     "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')))`,
     )

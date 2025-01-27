@@ -14,7 +14,7 @@ import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLo
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3007
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server

@@ -38,6 +38,7 @@ import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { DcqlQuery } from 'dcql'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -80,14 +81,14 @@ export function getPresentationVerificationCallback(
       if (context.agent.mdocOid4vpRPVerify === undefined) {
         return Promise.reject('ImDLMdoc agent plugin must be enabled to support MsoMdoc types')
       }
-      if (!presentationSubmission) {
-        return Promise.reject('No presentationSubmission present')
+      if (presentationSubmission !== undefined && presentationSubmission !== null) {
+        const verifyResult = await context.agent.mdocOid4vpRPVerify({
+          vp_token: args,
+          presentation_submission: presentationSubmission,
+        })
+        return { verified: !verifyResult.error }
       }
-      const verifyResult = await context.agent.mdocOid4vpRPVerify({
-        vp_token: args,
-        presentation_submission: presentationSubmission,
-      })
-      return { verified: !verifyResult.error }
+      throw Error(`mdocOid4vpRPVerify(...) method requires a presentation submission`)
     }
 
     const result = await context.agent.verifyPresentation({
@@ -105,11 +106,13 @@ export async function createRPBuilder(args: {
   rpOpts: IRPOptions
   pexOpts?: IPEXOptions | undefined
   definition?: IPresentationDefinition
+  dcql?: DcqlQuery
   context: IRequiredContext
 }): Promise<RPBuilder> {
   const { rpOpts, pexOpts, context } = args
   const { identifierOpts } = rpOpts
   let definition: IPresentationDefinition | undefined = args.definition
+  let dcqlQuery: DcqlQuery | undefined = args.dcql
 
   if (!definition && pexOpts && pexOpts.definitionId) {
     const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
@@ -122,7 +125,13 @@ export async function createRPBuilder(args: {
       ],
     })
 
-    definition = presentationDefinitionItems.length > 0 ? presentationDefinitionItems[0].definitionPayload : undefined
+    if (presentationDefinitionItems.length > 0) {
+      const presentationDefinitionItem = presentationDefinitionItems[0]
+      definition = presentationDefinitionItem.definitionPayload
+      if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
+        dcqlQuery = presentationDefinitionItem.dcqlPayload as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
+      }
+    }
   }
 
   const didMethods = identifierOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
@@ -216,6 +225,9 @@ export async function createRPBuilder(args: {
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
+  }
+  if (dcqlQuery) {
+    builder.withDcqlQuery(dcqlQuery)
   }
 
   if (rpOpts.responseRedirectUri) {

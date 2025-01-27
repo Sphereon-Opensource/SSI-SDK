@@ -12,7 +12,7 @@ import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3011
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server

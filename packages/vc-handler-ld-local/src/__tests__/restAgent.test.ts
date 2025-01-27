@@ -15,7 +15,7 @@ import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 4002
+const port = 4009
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
