@@ -1,5 +1,5 @@
 import {
-  DcqlQueryResponseOpts,
+  DcqlResponseOpts,
   PresentationDefinitionWithLocation,
   PresentationSignCallback,
   ResponseMode,
@@ -123,7 +123,7 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
-  dcqlResponse?: DcqlQueryResponseOpts
+  dcqlResponse?: DcqlResponseOpts
   hasher?: Hasher
   isFirstParty?: boolean
 }

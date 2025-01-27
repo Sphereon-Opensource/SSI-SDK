@@ -16,7 +16,8 @@ import { v4 as uuidv4 } from 'uuid'
 import {
   DidAuthSiopOpAuthenticatorOptions,
   GetSelectableCredentialsArgs,
-  IOpSessionArgs, Json,
+  IOpSessionArgs,
+  Json,
   LOGGER_NAMESPACE,
   RequiredContext,
   schema,
@@ -49,8 +50,9 @@ import {
   Siopv2AuthorizationRequestData,
   Siopv2HolderEvent,
   Siopv2Machine as Siopv2MachineId,
-  Siopv2MachineInstanceOpts
+  Siopv2MachineInstanceOpts,
 } from '../types'
+import { DcqlCredential, DcqlPresentation, DcqlQuery, DcqlSdJwtVcCredential } from 'dcql'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -86,23 +88,16 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopGetSelectableCredentials: this.siopGetSelectableCredentials.bind(this),
   }
 
-  private readonly hasher?: Hasher
   private readonly sessions: Map<string, OpSession>
   private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   private readonly presentationSignCallback?: PresentationSignCallback
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   private readonly eventEmitter?: EventEmitter
-  private readonly hasher: Hasher | undefined
+  private readonly hasher?: Hasher
 
   constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
-    const {
-      onContactIdentityCreated,
-      onIdentifierCreated,
-      hasher,
-      customApprovals = {},
-      presentationSignCallback
-    } = { ...options }
+    const { onContactIdentityCreated, onIdentifierCreated, hasher, customApprovals = {}, presentationSignCallback } = { ...options }
 
     this.hasher = hasher
     this.onContactIdentityCreated = onContactIdentityCreated
@@ -217,9 +212,14 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     }
     const { sessionId, redirectUrl } = didAuthConfig
 
-    const session: OpSession = await agent
-      .siopGetOPSession({ sessionId })
-      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter, hasher: this.hasher } }))
+    const session: OpSession = await agent.siopGetOPSession({ sessionId }).catch(
+      async () =>
+        await agent.siopRegisterOPSession({
+          requestJwtOrUri: redirectUrl,
+          sessionId,
+          op: { eventEmitter: this.eventEmitter, hasher: this.hasher },
+        }),
+    )
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
@@ -361,16 +361,16 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
           if (areRequiredCredentialsPresent !== Status.ERROR && verifiableCredentials) {
             let uniqueDigitalCredentials: UniqueDigitalCredential[] = []
-              uniqueDigitalCredentials = verifiableCredentials.map((vc) => {
-                // @ts-ignore FIXME Funke
-                const hash = computeEntryHash(vc)
-                const udc = selectedCredentials.find((udc) => udc.hash == hash)
+            uniqueDigitalCredentials = verifiableCredentials.map((vc) => {
+              // @ts-ignore FIXME Funke
+              const hash = computeEntryHash(vc)
+              const udc = selectedCredentials.find((udc) => udc.hash == hash)
 
-                if (!udc) {
-                  throw Error('UniqueDigitalCredential could not be found')
-                }
-                return udc
-              })
+              if (!udc) {
+                throw Error('UniqueDigitalCredential could not be found')
+              }
+              return udc
+            })
             verifiableCredentialsWithDefinition.push({
               definition: presentationDefinition,
               credentials: uniqueDigitalCredentials,
@@ -384,7 +384,6 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       if (verifiableCredentialsWithDefinition.length === 0) {
         return Promise.reject(Error('None of the selected credentials match any of the presentation definitions.'))
       }
-
     } else if (authorizationRequestData.dcqlQuery) {
       //TODO Only SD-JWT and MSO MDOC are supported at the moment
       if (this.hasMDocCredentials(selectedCredentials) || this.hasSdJwtCredentials(selectedCredentials)) {
@@ -395,7 +394,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
               const result: DcqlSdJwtVcCredential = {
                 claims: payload as { [x: string]: Json },
                 vct: payload.vct,
-                credential_format: 'vc+sd-jwt'
+                credential_format: 'vc+sd-jwt',
               }
               dcqlCredentialsWithCredentials.set(result, vc)
               //FIXME MDoc namespaces are incompatible: array of strings vs complex object - https://sphereon.atlassian.net/browse/SPRIND-143
@@ -411,7 +410,9 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         const queryResult = DcqlQuery.query(authorizationRequestData.dcqlQuery, Array.from(dcqlCredentialsWithCredentials.keys()))
         for (const [key, value] of Object.entries(queryResult.credential_matches)) {
           if (value.success) {
-            dcqlPresentationRecord[key] = this.retrieveEncodedCredential(dcqlCredentialsWithCredentials.get(value.output)!) as string | { [x: string]: Json }
+            dcqlPresentationRecord[key] = this.retrieveEncodedCredential(dcqlCredentialsWithCredentials.get(value.output)!) as
+              | string
+              | { [x: string]: Json }
           }
         }
       }
@@ -424,7 +425,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
         isFirstParty,
-        hasher: this.hasher
+        hasher: this.hasher,
       },
       context,
     )
@@ -445,27 +446,33 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private hasMDocCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(this.isMDocCredential);
-  };
+    return credentials.some(this.isMDocCredential)
+  }
 
   private isMDocCredential = (credential: UniqueDigitalCredential) => {
-    return credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
+    return (
+      credential.digitalCredential.documentFormat === CredentialDocumentFormat.MSO_MDOC &&
       credential.digitalCredential.documentType === DocumentType.VC
+    )
   }
 
   private hasSdJwtCredentials = (credentials: UniqueDigitalCredential[]): boolean => {
-    return credentials.some(this.isSdJwtCredential);
-  };
+    return credentials.some(this.isSdJwtCredential)
+  }
 
-  private isSdJwtCredential= (credential: UniqueDigitalCredential) => {
-    return credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT &&
-      credential.digitalCredential.documentType === DocumentType.VC
+  private isSdJwtCredential = (credential: UniqueDigitalCredential) => {
+    return (
+      credential.digitalCredential.documentFormat === CredentialDocumentFormat.SD_JWT && credential.digitalCredential.documentType === DocumentType.VC
+    )
   }
 
   private retrieveEncodedCredential = (credential: UniqueDigitalCredential) => {
-    return credential.originalVerifiableCredential !== undefined && credential.originalVerifiableCredential !== null &&
-    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== undefined &&
-    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== null ? (credential.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc : credential.originalVerifiableCredential
+    return credential.originalVerifiableCredential !== undefined &&
+      credential.originalVerifiableCredential !== null &&
+      (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== undefined &&
+      (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== null
+      ? (credential.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc
+      : credential.originalVerifiableCredential
   }
 
   private async siopGetSelectableCredentials(args: GetSelectableCredentialsArgs, context: RequiredContext): Promise<SelectableCredentialsMap> {
