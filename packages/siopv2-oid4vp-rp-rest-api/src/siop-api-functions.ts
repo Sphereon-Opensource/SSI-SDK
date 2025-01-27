@@ -1,6 +1,7 @@
 import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { CredentialMapper } from '@sphereon/ssi-types'
+import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -89,8 +90,15 @@ export function verifyAuthResponseSIOPv2Endpoint(
         // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
         // console.log(JSON.stringify(credentialSubject, null, 2))
         console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
         response.statusCode = 200
+
+        const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = { presentation_during_issuance_session: verifiedResponse.correlationId }
+        if (authorizationResponse.is_first_party) {
+          response.setHeader('Content-Type', 'application/json')
+          return response.send(JSON.stringify(authorizationChallengeValidationResponse))
+        }
+
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))

@@ -43,7 +43,7 @@ const getAgent = (options?: IAgentOptions) =>
   createAgent<IDidAuthSiopOpAuthenticator>({
     ...options,
     plugins: [
-      new DidAuthSiopOpAuthenticator(presentationSignCallback),
+      new DidAuthSiopOpAuthenticator({ presentationSignCallback }),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),

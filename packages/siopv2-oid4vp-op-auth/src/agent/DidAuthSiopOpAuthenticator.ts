@@ -27,33 +27,30 @@ import {
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
-import {
-  IDidAuthSiopOpAuthenticator,
-  IGetSiopSessionArgs,
-  IRegisterCustomApprovalForSiopArgs,
-  IRemoveCustomApprovalForSiopArgs,
-  IRemoveSiopSessionArgs,
-  IRequiredContext
-} from '../types'
-import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
-
+import { PEX, Status } from '@sphereon/pex'
+import { computeEntryHash } from '@veramo/utils'
+import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { EventEmitter } from 'events'
 import {
   AddIdentityArgs,
   CreateConfigArgs,
   CreateConfigResult,
   GetSiopRequestArgs,
+  IDidAuthSiopOpAuthenticator,
+  IGetSiopSessionArgs,
+  IRegisterCustomApprovalForSiopArgs,
+  IRemoveCustomApprovalForSiopArgs,
+  IRemoveSiopSessionArgs,
+  IRequiredContext,
   OnContactIdentityCreatedArgs,
   OnIdentifierCreatedArgs,
   RetrieveContactArgs,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
-  Siopv2HolderEvent
+  Siopv2HolderEvent,
+  Siopv2Machine as Siopv2MachineId,
+  Siopv2MachineInstanceOpts
 } from '../types'
-import { PEX, Status } from '@sphereon/pex'
-import { computeEntryHash } from '@veramo/utils'
-import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { EventEmitter } from 'events'
-import { DcqlCredential, DcqlPresentation, DcqlQuery, DcqlSdJwtVcCredential } from 'dcql'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -89,29 +86,30 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopGetSelectableCredentials: this.siopGetSelectableCredentials.bind(this),
   }
 
+  private readonly hasher?: Hasher
   private readonly sessions: Map<string, OpSession>
   private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   private readonly presentationSignCallback?: PresentationSignCallback
-
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   private readonly eventEmitter?: EventEmitter
   private readonly hasher: Hasher | undefined
 
-  constructor(
-    presentationSignCallback?: PresentationSignCallback,
-    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
-    options?: DidAuthSiopOpAuthenticatorOptions,
-    hasher?: Hasher, // FIXME BEFORE PR move into DidAuthSiopOpAuthenticatorOptions (move everything into options like we do with the rest of the agent plugins)
-  ) {
-    const { onContactIdentityCreated, onIdentifierCreated } = options ?? {}
+  constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
+    const {
+      onContactIdentityCreated,
+      onIdentifierCreated,
+      hasher,
+      customApprovals = {},
+      presentationSignCallback
+    } = { ...options }
+
+    this.hasher = hasher
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onIdentifierCreated = onIdentifierCreated
-
-    this.sessions = new Map<string, OpSession>()
-    this.customApprovals = customApprovals || {}
     this.presentationSignCallback = presentationSignCallback
-    this.hasher = hasher
+    this.sessions = new Map<string, OpSession>()
+    this.customApprovals = customApprovals
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -191,8 +189,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return Siopv2Machine.newInstance(siopv2MachineOpts)
   }
 
-  private async siopCreateConfig(args: CreateConfigArgs): Promise<CreateConfigResult> {
-    const { url } = args
+  private async siopCreateConfig<TContext extends CreateConfigArgs>(context: TContext): Promise<CreateConfigResult> {
+    const { url } = context
 
     if (!url) {
       return Promise.reject(Error('Missing request uri in context'))
@@ -221,7 +219,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     const session: OpSession = await agent
       .siopGetOPSession({ sessionId })
-      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter } }))
+      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter, hasher: this.hasher } }))
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
@@ -339,7 +337,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private async siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData> {
-    const { didAuthConfig, authorizationRequestData, selectedCredentials } = args
+    const { didAuthConfig, authorizationRequestData, selectedCredentials, isFirstParty } = args
 
     if (didAuthConfig === undefined) {
       return Promise.reject(Error('Missing config in context'))
@@ -349,7 +347,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       return Promise.reject(Error('Missing authorization request data in context'))
     }
 
-    const pex = new PEX()
+    const pex = new PEX({ hasher: this.hasher })
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
     const dcqlCredentialsWithCredentials: Map<DcqlCredential, UniqueDigitalCredential> = new Map()
 
@@ -425,7 +423,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         sessionId: didAuthConfig.sessionId,
         ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
-        hasher: this.hasher,
+        isFirstParty,
+        hasher: this.hasher
       },
       context,
     )

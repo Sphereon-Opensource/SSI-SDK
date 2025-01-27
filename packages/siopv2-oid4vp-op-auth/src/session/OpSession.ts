@@ -359,6 +359,7 @@ export class OpSession {
     const responseOpts = {
       verification,
       issuer,
+      ...(args.isFirstParty && { isFirstParty: args.isFirstParty }),
       ...(args.verifiablePresentations && {
         presentationExchange: {
           verifiablePresentations,

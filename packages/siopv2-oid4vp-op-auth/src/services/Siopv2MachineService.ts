@@ -51,14 +51,15 @@ export const siopSendAuthorizationResponse = async (
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
-    dcqlQuery?: DcqlQuery
+    isFirstParty?: boolean
     hasher?: Hasher
+    dcqlQuery?: DcqlQuery
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { idOpts } = args
+  let { idOpts, isFirstParty, hasher } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
@@ -72,7 +73,7 @@ export const siopSendAuthorizationResponse = async (
   let presentationsAndDefs: VerifiablePresentationWithDefinition[] | undefined
   let presentationSubmission: PresentationSubmission | undefined
   if (await session.hasPresentationDefinitions()) {
-    const oid4vp: OID4VP = await session.getOID4VP({})
+    const oid4vp: OID4VP = await session.getOID4VP({ hasher })
 
     const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
       ? args.verifiableCredentialsWithDefinition
@@ -167,6 +168,7 @@ export const siopSendAuthorizationResponse = async (
       ...(presentationSubmission && { presentationSubmission }),
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
+    isFirstParty,
     })
   } else if (request.dcqlQuery) {
     if (args.verifiableCredentialsWithDefinition !== undefined && args.verifiableCredentialsWithDefinition !== null) {

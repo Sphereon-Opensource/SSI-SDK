@@ -10,6 +10,7 @@ import {
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
+  AuthorizationChallengeCodeResponse
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -56,12 +57,16 @@ import {
   SelectAppLocaleBrandingArgs,
   VerificationResult,
   VerifyCredentialToAcceptArgs,
+  StartFirstPartApplicationMachine,
+  RequiredContext
 } from '../types/IOID4VCIHolder'
 import {
   oid4vciGetCredentialBrandingFrom,
   sdJwtGetCredentialBrandingFrom,
   issuerLocaleBrandingFrom
-} from './OIDC4VCIBrandingMapper'
+} from '../mappers/OIDC4VCIBrandingMapper'
+import { FirstPartyMachine } from '../machines/firstPartyMachine'
+import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -615,3 +620,45 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
       return Promise.reject(Error(`Credential format '${credentialSupported.format}' not supported`))
   }
 }
+
+export const startFirstPartApplicationMachine = async (args: StartFirstPartApplicationMachine, context: RequiredContext): Promise<AuthorizationChallengeCodeResponse | string> => {
+  const { openID4VCIClientState, stateNavigationListener, contact } = args
+
+  if (!openID4VCIClientState) {
+    return Promise.reject(Error('Missing openID4VCI client state in context'))
+  }
+
+  if (!contact) {
+    return Promise.reject(Error('Missing contact in context'))
+  }
+
+  const firstPartyMachineInstance = FirstPartyMachine.newInstance({
+    openID4VCIClientState,
+    contact,
+    agentContext: context,
+    stateNavigationListener
+  });
+
+  return new Promise((resolve, reject) => {
+    try {
+      firstPartyMachineInstance.onTransition((state: FirstPartyMachineState) => {
+        if (state.matches(FirstPartyMachineStateTypes.done)) {
+          const authorizationCodeResponse = state.context.authorizationCodeResponse
+          if (!authorizationCodeResponse) {
+            reject(Error('No authorizationCodeResponse acquired'));
+          }
+          resolve(authorizationCodeResponse!);
+        } else if (state.matches(FirstPartyMachineStateTypes.aborted)) {
+          resolve(FirstPartyMachineStateTypes.aborted);
+        } else if (state.matches(FirstPartyMachineStateTypes.declined)) {
+          resolve(FirstPartyMachineStateTypes.declined);
+        } else if (state.matches(FirstPartyMachineStateTypes.error)) {
+          reject(state.context.error);
+        }
+      })
+      firstPartyMachineInstance.start();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

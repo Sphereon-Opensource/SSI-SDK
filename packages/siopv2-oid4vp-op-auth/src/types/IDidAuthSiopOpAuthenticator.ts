@@ -125,6 +125,7 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   verifiablePresentations?: W3CVerifiablePresentation[]
   dcqlResponse?: DcqlQueryResponseOpts
   hasher?: Hasher
+  isFirstParty?: boolean
 }
 
 export enum events {

@@ -6,6 +6,10 @@ export interface ClaimPayloadCommonOpts {
   [x: string]: any
 }
 
+export interface AuthorizationChallengeValidationResponse {
+  presentation_during_issuance_session: string;
+}
+
 export type AuthorizationRequestStateStatus = 'created' | 'sent' | 'received' | 'verified' | 'error'
 
 export type AuthorizationResponseStateStatus = 'created' | 'sent' | 'received' | 'verified' | 'error'
