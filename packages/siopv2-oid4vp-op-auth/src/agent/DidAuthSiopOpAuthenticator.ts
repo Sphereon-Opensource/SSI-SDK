@@ -8,7 +8,7 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Loggers } from '@sphereon/ssi-types'
+import { Hasher, Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -25,32 +25,30 @@ import {
 import { Siopv2Machine } from '../machine/Siopv2Machine'
 import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
 import { OpSession } from '../session'
+import { PEX, Status } from '@sphereon/pex'
+import { computeEntryHash } from '@veramo/utils'
+import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { EventEmitter } from 'events'
 import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
+  GetSiopRequestArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
-} from '../types/IDidAuthSiopOpAuthenticator'
-import { Siopv2Machine as Siopv2MachineId, Siopv2MachineInstanceOpts } from '../types/machine'
-
-import {
-  AddIdentityArgs,
-  CreateConfigArgs,
-  CreateConfigResult,
-  GetSiopRequestArgs,
   OnContactIdentityCreatedArgs,
   OnIdentifierCreatedArgs,
   RetrieveContactArgs,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
   Siopv2HolderEvent,
-} from '../types/siop-service'
-import { PEX, Status } from '@sphereon/pex'
-import { computeEntryHash } from '@veramo/utils'
-import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { EventEmitter } from 'events'
+  Siopv2Machine as Siopv2MachineId,
+  Siopv2MachineInstanceOpts
+} from '../types'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -86,26 +84,29 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     siopGetSelectableCredentials: this.siopGetSelectableCredentials.bind(this),
   }
 
+  private readonly hasher?: Hasher
   private readonly sessions: Map<string, OpSession>
   private readonly customApprovals: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   private readonly presentationSignCallback?: PresentationSignCallback
-
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   private readonly eventEmitter?: EventEmitter
 
-  constructor(
-    presentationSignCallback?: PresentationSignCallback,
-    customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>,
-    options?: DidAuthSiopOpAuthenticatorOptions,
-  ) {
-    const { onContactIdentityCreated, onIdentifierCreated } = options ?? {}
+  constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
+    const {
+      onContactIdentityCreated,
+      onIdentifierCreated,
+      hasher,
+      customApprovals = {},
+      presentationSignCallback
+    } = { ...options }
+
+    this.hasher = hasher
     this.onContactIdentityCreated = onContactIdentityCreated
     this.onIdentifierCreated = onIdentifierCreated
-
-    this.sessions = new Map<string, OpSession>()
-    this.customApprovals = customApprovals || {}
     this.presentationSignCallback = presentationSignCallback
+    this.sessions = new Map<string, OpSession>()
+    this.customApprovals = customApprovals
   }
 
   public async onEvent(event: any, context: RequiredContext): Promise<void> {
@@ -185,8 +186,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
     return Siopv2Machine.newInstance(siopv2MachineOpts)
   }
 
-  private async siopCreateConfig(args: CreateConfigArgs): Promise<CreateConfigResult> {
-    const { url } = args
+  private async siopCreateConfig<TContext extends CreateConfigArgs>(context: TContext): Promise<CreateConfigResult> {
+    const { url } = context
 
     if (!url) {
       return Promise.reject(Error('Missing request uri in context'))
@@ -215,7 +216,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
 
     const session: OpSession = await agent
       .siopGetOPSession({ sessionId })
-      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter } }))
+      .catch(async () => await agent.siopRegisterOPSession({ requestJwtOrUri: redirectUrl, sessionId, op: { eventEmitter: this.eventEmitter, hasher: this.hasher } }))
 
     logger.debug(`session: ${JSON.stringify(session.id, null, 2)}`)
     const verifiedAuthorizationRequest = await session.getAuthorizationRequest()
@@ -332,7 +333,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   }
 
   private async siopSendResponse(args: SendResponseArgs, context: RequiredContext): Promise<Siopv2AuthorizationResponseData> {
-    const { didAuthConfig, authorizationRequestData, selectedCredentials } = args
+    const { didAuthConfig, authorizationRequestData, selectedCredentials, isFirstParty } = args
 
     if (didAuthConfig === undefined) {
       return Promise.reject(Error('Missing config in context'))
@@ -342,7 +343,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       return Promise.reject(Error('Missing authorization request data in context'))
     }
 
-    const pex = new PEX()
+    const pex = new PEX({ hasher: this.hasher })
     const verifiableCredentialsWithDefinition: Array<VerifiableCredentialsWithDefinition> = []
 
     authorizationRequestData.presentationDefinitions?.forEach((presentationDefinition) => {
@@ -378,6 +379,8 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
         sessionId: didAuthConfig.sessionId,
         ...(args.idOpts && { idOpts: args.idOpts }),
         ...(authorizationRequestData.presentationDefinitions !== undefined && { verifiableCredentialsWithDefinition }),
+        isFirstParty,
+        hasher: this.hasher
       },
       context,
     )

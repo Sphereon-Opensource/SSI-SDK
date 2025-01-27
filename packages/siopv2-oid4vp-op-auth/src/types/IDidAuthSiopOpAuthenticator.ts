@@ -123,6 +123,7 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
   hasher?: Hasher
+  isFirstParty?: boolean
 }
 
 export enum events {

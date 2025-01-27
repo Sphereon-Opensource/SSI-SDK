@@ -64,7 +64,7 @@ export function getPresentationVerificationCallback(
 ): PresentationVerificationCallback {
   async function presentationVerificationCallback(
     args: any, // FIXME any
-    presentationSubmission: PresentationSubmission,
+    presentationSubmission?: PresentationSubmission,
   ): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
@@ -79,6 +79,9 @@ export function getPresentationVerificationCallback(
       // TODO Funke reevaluate
       if (context.agent.mdocOid4vpRPVerify === undefined) {
         return Promise.reject('ImDLMdoc agent plugin must be enabled to support MsoMdoc types')
+      }
+      if (!presentationSubmission) {
+        return Promise.reject('No presentationSubmission present')
       }
       const verifyResult = await context.agent.mdocOid4vpRPVerify({
         vp_token: args,

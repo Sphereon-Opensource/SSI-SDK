@@ -18,6 +18,7 @@ export type Siopv2MachineContext = {
   contactAlias: string
   selectableCredentialsMap?: SelectableCredentialsMap
   selectedCredentials: Array<UniqueDigitalCredential>
+  isFirstParty?: boolean
   error?: ErrorDetails
 }
 
