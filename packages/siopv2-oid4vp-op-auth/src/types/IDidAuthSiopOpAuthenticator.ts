@@ -1,5 +1,5 @@
 import {
-  DcqlQueryResponseOpts,
+  DcqlResponseOpts,
   PresentationDefinitionWithLocation,
   PresentationSignCallback,
   ResponseMode,
@@ -123,8 +123,9 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
-  dcqlQuery?: DcqlQueryResponseOpts
+  dcqlResponse?: DcqlResponseOpts
   hasher?: Hasher
+  isFirstParty?: boolean
 }
 
 export enum events {
@@ -198,5 +199,16 @@ export interface IGetPresentationExchangeArgs {
   allIdentifiers?: string[]
   hasher?: Hasher
 }
+
+// It was added here because it's not exported from DCQL anymore
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | {
+      [key: string]: Json
+    }
+  | Json[]
 
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

@@ -1,7 +1,7 @@
 import { ClientMetadataOpts, VerifyJwtCallback } from '@sphereon/did-auth-siop'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { AdditionalClaims, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { AdditionalClaims, DcqlQueryREST, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
@@ -37,7 +37,6 @@ import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
-import { DcqlQuery } from '@sphereon/ssi-types'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -113,11 +112,12 @@ export interface IVerifyAuthResponseStateArgs {
   correlationId: string
   audience?: string
   presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
+  dcqlQuery?: DcqlQueryREST
 }
 
 export interface IDefinitionPair {
   definitionPayload: IPresentationDefinition
-  dcqlPayload?: DcqlQuery
+  dcqlPayload?: DcqlQueryREST
 }
 
 export interface ImportDefinitionsArgs {

@@ -33,6 +33,7 @@ import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
+import { DcqlQuery } from 'dcql'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -203,7 +204,8 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          presentationDefinitions: args.presentationDefinitions,
+          ...(args.presentationDefinitions && !args.dcqlQuery ? { presentationDefinitions: args.presentationDefinitions } : {}),
+          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery as DcqlQuery } : {}), // TODO BEFORE PR, check compatibility and whether we can remove local type
           audience: args.audience,
         }),
       ),

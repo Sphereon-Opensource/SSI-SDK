@@ -38,7 +38,7 @@ import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { DcqlQuery } from '@sphereon/ssi-types/dist'
+import { DcqlQuery } from 'dcql'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -129,7 +129,7 @@ export async function createRPBuilder(args: {
       const presentationDefinitionItem = presentationDefinitionItems[0]
       definition = presentationDefinitionItem.definitionPayload
       if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
-        dcqlQuery = presentationDefinitionItem.dcqlPayload
+        dcqlQuery = presentationDefinitionItem.dcqlPayload as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
       }
     }
   }
@@ -227,7 +227,7 @@ export async function createRPBuilder(args: {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
   }
   if (dcqlQuery) {
-    builder.withDcqlQuery(JSON.stringify(dcqlQuery))
+    builder.withDcqlQuery(dcqlQuery)
   }
 
   if (rpOpts.responseRedirectUri) {

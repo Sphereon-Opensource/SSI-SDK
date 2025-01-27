@@ -479,7 +479,7 @@ export class CredentialMapper {
     }
   }
 
-  private static isJsonLdAsString(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is string {
+  public static isJsonLdAsString(original: OriginalVerifiableCredential | OriginalVerifiablePresentation): original is string {
     return ObjectUtils.isString(original) && original.includes('@context')
   }
 

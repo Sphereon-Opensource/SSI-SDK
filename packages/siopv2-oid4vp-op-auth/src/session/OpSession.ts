@@ -360,13 +360,14 @@ export class OpSession {
     const responseOpts = {
       verification,
       issuer,
+      ...(args.isFirstParty && { isFirstParty: args.isFirstParty }),
       ...(args.verifiablePresentations && {
         presentationExchange: {
           verifiablePresentations,
           presentationSubmission: args.presentationSubmission,
         } as PresentationExchangeResponseOpts,
       }),
-      dcqlQuery: args.dcqlQuery,
+      dcqlQuery: args.dcqlResponse,
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)

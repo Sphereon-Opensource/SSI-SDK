@@ -36,6 +36,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@sphereon/did-auth-siop": "0.16.1-next.339",
     "@sphereon/did-uni-client": "^0.6.3",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

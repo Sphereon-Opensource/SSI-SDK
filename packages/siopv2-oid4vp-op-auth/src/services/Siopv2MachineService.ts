@@ -4,7 +4,7 @@ import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, Present
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, Loggers, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, Hasher, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { OID4VP, OpSession } from '../session'
 import {
   DidAgents,
@@ -20,7 +20,9 @@ import {
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
-import { DcqlCredentialRepresentation, DcqlPresentationRecord, DcqlQuery } from 'dcql'
+import { DcqlCredential, DcqlQuery, DcqlCredentialPresentation, DcqlPresentation } from 'dcql'
+import { convertToDcqlCredentials } from '../utils/dcql'
+import { getOriginalVerifiableCredential } from '../utils/CredentialUtils'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -49,13 +51,15 @@ export const siopSendAuthorizationResponse = async (
     sessionId: string
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
+    isFirstParty?: boolean
+    hasher?: Hasher
     dcqlQuery?: DcqlQuery
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { idOpts } = args
+  let { idOpts, isFirstParty, hasher } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
@@ -69,7 +73,7 @@ export const siopSendAuthorizationResponse = async (
   let presentationsAndDefs: VerifiablePresentationWithDefinition[] | undefined
   let presentationSubmission: PresentationSubmission | undefined
   if (await session.hasPresentationDefinitions()) {
-    const oid4vp: OID4VP = await session.getOID4VP({})
+    const oid4vp: OID4VP = await session.getOID4VP({ hasher })
 
     const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
       ? args.verifiableCredentialsWithDefinition
@@ -164,22 +168,23 @@ export const siopSendAuthorizationResponse = async (
       ...(presentationSubmission && { presentationSubmission }),
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
+    isFirstParty,
     })
-  } else if (args.dcqlQuery !== undefined && args.dcqlQuery !== null) {
-    const credentialsAndDefinitions = args.verifiableCredentialsWithDefinition
-    const vcs = credentialsAndDefinitions?.flatMap((cd) => cd.credentials)!
-    const domain =
-      ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ??
-      request.issuer ??
-      (request.versions.includes(SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1)
-        ? 'https://self-issued.me/v2/openid-vc'
-        : 'https://self-issued.me/v2')
-    logger.log(`NONCE: ${session.nonce}, domain: ${domain}`)
+  } else if (request.dcqlQuery) {
+    if (args.verifiableCredentialsWithDefinition !== undefined && args.verifiableCredentialsWithDefinition !== null) {
+      const vcs = args.verifiableCredentialsWithDefinition.flatMap((vcd) => vcd.credentials)
+      const domain =
+        ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ??
+        request.issuer ??
+        (request.versions.includes(SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1)
+          ? 'https://self-issued.me/v2/openid-vc'
+          : 'https://self-issued.me/v2')
+      logger.debug(`NONCE: ${session.nonce}, domain: ${domain}`)
 
-    const firstUniqueDC = vcs[0]
-    if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
-      return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
-    }
+      const firstUniqueDC = vcs[0]
+      if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
+        return Promise.reject(Error('SiopMachine only supports UniqueDigitalCredentials for now'))
+      }
 
     let identifier: ManagedIdentifierOptsOrResult
     const digitalCredential = firstUniqueDC.digitalCredential
@@ -196,73 +201,74 @@ export const siopSendAuthorizationResponse = async (
     if (!digitalCredential.kmsKeyRef) {
       // In case the store does not have the kmsKeyRef lets search for the holder
 
-      if (!holder) {
-        return Promise.reject(`No holder found and no kmsKeyRef in DB. Cannot determine identifier to use`)
+        if (!holder) {
+          return Promise.reject(`No holder found and no kmsKeyRef in DB. Cannot determine identifier to use`)
+        }
+        try {
+          identifier = await session.context.agent.identifierManagedGet({ identifier: holder })
+        } catch (e) {
+          logger.debug(`Holder DID not found: ${holder}`)
+          throw e
+        }
+      } else if (isOID4VCIssuerIdentifier(digitalCredential.kmsKeyRef)) {
+        identifier = await session.context.agent.identifierManagedGetByOID4VCIssuer({
+          identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+        })
+      } else {
+        switch (digitalCredential.subjectCorrelationType) {
+          case 'DID':
+            identifier = await session.context.agent.identifierManagedGetByDid({
+              identifier: digitalCredential.subjectCorrelationId ?? holder,
+              kmsKeyRef: digitalCredential.kmsKeyRef,
+            })
+            break
+          // TODO other implementations?
+          default:
+            // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
+            identifier = await session.context.agent.identifierManagedGetByKid({
+              identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
+              kmsKeyRef: digitalCredential.kmsKeyRef,
+            })
+        }
       }
-      try {
-        identifier = await session.context.agent.identifierManagedGet({ identifier: holder })
-      } catch (e) {
-        logger.debug(`Holder DID not found: ${holder}`)
-        throw e
-      }
-    } else if (isOID4VCIssuerIdentifier(digitalCredential.kmsKeyRef)) {
-      identifier = await session.context.agent.identifierManagedGetByOID4VCIssuer({
-        identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
+      console.log(`Identifier`, identifier)
+
+      const dcqlRepresentations: DcqlCredential[] = []
+      vcs.forEach((vc: UniqueDigitalCredential | OriginalVerifiableCredential) => {
+        const rep = convertToDcqlCredentials(vc, args.hasher)
+        if (rep) {
+          dcqlRepresentations.push(rep)
+        }
       })
-    } else {
-      switch (digitalCredential.subjectCorrelationType) {
-        case 'DID':
-          identifier = await session.context.agent.identifierManagedGetByDid({
-            identifier: digitalCredential.subjectCorrelationId ?? holder,
-            kmsKeyRef: digitalCredential.kmsKeyRef,
-          })
-          break
-        // TODO other implementations?
-        default:
-          // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
-          identifier = await session.context.agent.identifierManagedGetByKid({
-            identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
-            kmsKeyRef: digitalCredential.kmsKeyRef,
-          })
+
+      const queryResult = DcqlQuery.query(request.dcqlQuery, dcqlRepresentations)
+      const presentation: Record<string, DcqlCredentialPresentation> = {}
+
+      for (const [key, value] of Object.entries(queryResult.credential_matches)) {
+        const allMatches = Array.isArray(value) ? value : [value]
+        allMatches.forEach((match) => {
+          if (match.success) {
+            const originalCredential = getOriginalVerifiableCredential(vcs[match.input_credential_index])
+            if (!originalCredential) {
+              throw new Error(`Index ${match.input_credential_index} out of range in credentials array`)
+            }
+            presentation[key] =
+              (originalCredential as any)['compactSdJwtVc'] !== undefined ? (originalCredential as any).compactSdJwtVc : originalCredential
+          }
+        })
       }
-    }
 
-    if (identifier === undefined && idOpts !== undefined && (await hasEbsiClient(request.authorizationRequest))) {
-      identifier = await createEbsiIdentifier(agentContext)
-    }
-    logger.debug(`Identifier`, identifier)
+      const response = session.sendAuthorizationResponse({
+        responseSignerOpts: identifier,
+        ...{ dcqlQuery: { dcqlPresentation: DcqlPresentation.parse(presentation) } },
+      })
 
-    const dcqlCredentialToCredential: Map<DcqlCredentialRepresentation, UniqueDigitalCredential> = new Map()
-    vcs.forEach((vc: any) => {
-      const payload = vc['decodedPayload'] !== undefined && vc['decodedPayload'] !== null ? vc.decodedPayload : vc
-      const vct = payload?.vct
-      const docType = payload?.docType
-      const namespaces = payload?.namespaces
-      const result: DcqlCredentialRepresentation = {
-        claims: payload,
-        vct,
-        docType,
-        namespaces,
-      }
-      dcqlCredentialToCredential.set(result, vc)
-    })
-    const queryResult = DcqlQuery.query(request.dcqlQuery!, Array.from(dcqlCredentialToCredential.keys()))
-    const presentation: DcqlPresentationRecord.Output = {}
-    for (const [key, value] of Object.entries(queryResult.credential_matches)) {
-      const credential = dcqlCredentialToCredential.get(value.output as DcqlCredentialRepresentation)!
-      presentation[key] =
-        (credential.originalVerifiableCredential as any)['compactSdJwtVc'] !== undefined
-          ? (credential.originalVerifiableCredential as any).compactSdJwtVc
-          : (credential.originalCredential as any).original
-    }
+      logger.debug(`Response: `, response)
 
-    return await session.sendAuthorizationResponse({
-      // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
-      responseSignerOpts: idOpts!,
-      dcqlQuery: { encodedPresentationRecord: DcqlPresentationRecord.parse(presentation) },
-    })
+      return response
+    }
   }
-  return undefined
+  throw Error('Presentation Definition or DCQL is required')
 }
 
 function buildPartialPD(
