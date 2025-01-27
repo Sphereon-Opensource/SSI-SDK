@@ -71,7 +71,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
       const authorizationResponse = parseAuthorizationResponse(request)
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
 
-      const definition = definitionItems[0].definitionPayload
+      const definitionItem = definitionItems[0]
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
@@ -79,9 +79,10 @@ export function verifyAuthResponseSIOPv2Endpoint(
         presentationDefinitions: [
           {
             location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
-            definition,
+            definition: definitionItem.definitionPayload,
           },
         ],
+        dcqlQuery: definitionItem.dcqlPayload,
       })
 
       const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]

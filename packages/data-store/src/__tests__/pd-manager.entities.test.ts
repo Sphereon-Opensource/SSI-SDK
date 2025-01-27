@@ -24,6 +24,83 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     await dbConnection.destroy()
   })
 
+  it('should create and retrieve PresentationDefinitionItemEntity with dcqlPayload', async (): Promise<void> => {
+    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
+    const entity = new PresentationDefinitionItemEntity()
+    entity.definitionId = 'definition1'
+    entity.version = '1.0'
+    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
+    entity.dcqlPayload = JSON.stringify({
+      credentials: [
+        {
+          id: 'credential1',
+          format: 'jwt_vc',
+          claims: [
+            {
+              namespace: 'test',
+              claim_name: 'testClaim',
+            },
+          ],
+        },
+      ],
+    })
+
+    const savedEntity = await repository.save(entity)
+    expect(savedEntity).toBeDefined()
+    expect(savedEntity.id).toBeDefined()
+    expect(savedEntity.dcqlPayload).toBeDefined()
+
+    const retrievedEntity = await repository.findOneBy({ id: savedEntity.id })
+    expect(retrievedEntity).toBeDefined()
+    expect(retrievedEntity!.dcqlPayload).toBeDefined()
+    const parsedDcql = JSON.parse(retrievedEntity!.dcqlPayload)
+    expect(parsedDcql.credentials[0].id).toEqual('credential1')
+  })
+
+  it('should update PresentationDefinitionItemEntity dcqlPayload', async (): Promise<void> => {
+    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
+    const entity = new PresentationDefinitionItemEntity()
+    entity.definitionId = 'definition1'
+    entity.version = '1.0'
+    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
+    entity.dcqlPayload = JSON.stringify({
+      credentials: [
+        {
+          id: 'credential1',
+          format: 'jwt_vc',
+          claims: [
+            {
+              namespace: 'test',
+              claim_name: 'testClaim',
+            },
+          ],
+        },
+      ],
+    })
+
+    const savedEntity = await repository.save(entity)
+    expect(savedEntity).toBeDefined()
+
+    const updatedDcql = {
+      credentials: [
+        {
+          id: 'credential2',
+          format: 'jwt_vc',
+          claims: [
+            {
+              namespace: 'test',
+              claim_name: 'updatedClaim',
+            },
+          ],
+        },
+      ],
+    }
+    savedEntity.dcqlPayload = JSON.stringify(updatedDcql)
+    const updatedEntity = await repository.save(savedEntity)
+    expect(updatedEntity).toBeDefined()
+    expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].id).toEqual('credential2')
+  })
+
   it('should create and retrieve PresentationDefinitionItemEntity', async (): Promise<void> => {
     const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
     const entity = new PresentationDefinitionItemEntity()

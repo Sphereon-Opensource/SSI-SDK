@@ -31,6 +31,7 @@
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/wellknown-dids-client": "^0.1.3",
+    "dcql": "0.2.19",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
     "cross-fetch": "^3.1.8",

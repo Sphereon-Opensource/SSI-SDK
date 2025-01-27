@@ -33,6 +33,7 @@ import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
+import { DcqlQuery } from 'dcql'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -203,7 +204,8 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          presentationDefinitions: args.presentationDefinitions,
+          ...(args.presentationDefinitions && !args.dcqlQuery ? { presentationDefinitions: args.presentationDefinitions } : {}),
+          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery as DcqlQuery } : {}), // TODO BEFORE PR, check compatibility and whether we can remove local type
           audience: args.audience,
         }),
       ),
@@ -213,15 +215,17 @@ export class SIOPv2RP implements IAgentPlugin {
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
     const { definitions, tenantId, version, versionControlMode } = args
     await Promise.all(
-      definitions.map(async (definition) => {
-        await context.agent.pexValidateDefinition({ definition: definition })
+      definitions.map(async (definitionPair) => {
+        const definitionPayload = definitionPair.definitionPayload
+        await context.agent.pexValidateDefinition({ definition: definitionPayload })
 
-        console.log(`persisting definition ${definition.id} / ${definition.name} with versionControlMode ${versionControlMode}`)
+        console.log(`persisting definition ${definitionPayload.id} / ${definitionPayload.name} with versionControlMode ${versionControlMode}`)
         return context.agent.pdmPersistDefinition({
           definitionItem: {
             tenantId: tenantId,
             version: version,
-            definitionPayload: definition,
+            definitionPayload,
+            dcqlPayload: definitionPair.dcqlPayload,
           },
           opts: { versionControlMode: versionControlMode },
         })

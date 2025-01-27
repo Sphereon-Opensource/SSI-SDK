@@ -11,7 +11,7 @@ import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3004
 const basePath = '/agent'
 
 let serverAgent: IAgent

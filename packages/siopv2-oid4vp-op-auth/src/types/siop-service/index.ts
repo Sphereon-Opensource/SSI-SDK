@@ -11,6 +11,7 @@ import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
+import { DcqlQuery } from 'dcql'
 import { Hasher } from '@sphereon/ssi-types'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
@@ -68,6 +69,7 @@ export type Siopv2AuthorizationRequestData = {
   uri?: URL
   clientId?: string
   presentationDefinitions?: PresentationDefinitionWithLocation[]
+  dcqlQuery?: DcqlQuery
 }
 
 export type SelectableCredentialsMap = Map<string, Array<SelectableCredential>>
