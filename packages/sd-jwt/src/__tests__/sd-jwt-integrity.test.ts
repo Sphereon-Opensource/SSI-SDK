@@ -41,7 +41,7 @@ describe('VCT Integrity', () => {
     const ePassportSchemaIntegrity = await createIntegrity({ input: ePassportSchema, hasher, alg: 'sha256' })
     await validateIntegrity({ input: ePassportSchema, integrityValue: ePassportSchemaIntegrity, hasher })
 
-    const ePassportPNGLogo: string = fs.readFileSync(__dirname + '/resources/ePassport-logo.png', 'utf8')
+    const ePassportPNGLogo: string = fs.readFileSync(__dirname + '/resources/epassport-logo.png', 'utf8')
     const ePassportPNGLogoIntegrity = await createIntegrity({ input: ePassportPNGLogo, hasher, alg: 'sha256' })
     await validateIntegrity({ input: ePassportPNGLogo, integrityValue: ePassportPNGLogoIntegrity, hasher })
 
@@ -54,7 +54,7 @@ describe('VCT Integrity', () => {
     )
   })
 
-  it('create vct integrity values for loyalty prograam account', async () => {
+  it('create vct integrity values for loyalty program account', async () => {
     const vct: string = fs.readFileSync(__dirname + '/resources/LoyaltyProgramAccountCredential-vct.json', 'utf8')
     const vctIntegrity = await createIntegrity({ input: vct, hasher, alg: 'sha256' })
     await validateIntegrity({ input: vct, integrityValue: vctIntegrity, hasher })
