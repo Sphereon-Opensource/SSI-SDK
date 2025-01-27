@@ -109,7 +109,7 @@ describe('Status list entities tests', () => {
     statusList.credentialIdMode = StatusListCredentialIdMode.ISSUANCE
     statusList.proofFormat = 'jwt'
     statusList.bitsPerStatus = 1
-    statusList.expiresAt = '2025-01-01T00:00:00Z'
+    statusList.expiresAt = new Date('2025-01-01T00:00:00Z')
     statusList.issuer = 'did:example:123'
 
     const fromDb = await dbConnection.getRepository(OAuthStatusListEntity).save(statusList)

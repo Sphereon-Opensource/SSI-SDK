@@ -103,10 +103,10 @@ export class StatusListPlugin implements IAgentPlugin {
         correlationId: sl.correlationId,
       })
       this.instances.push({
-        correlationId: statusListDetails.correlationId,
-        id: statusListDetails.id,
+        correlationId: statusListDetails!.correlationId,
+        id: statusListDetails!.id,
         dataSource,
-        driverType: statusListDetails.driverType!,
+        driverType: statusListDetails!.driverType!,
         driverOptions: driver.getOptions(),
       })
     }

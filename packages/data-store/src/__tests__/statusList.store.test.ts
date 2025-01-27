@@ -90,7 +90,7 @@ describe('Status list store tests', () => {
       type: StatusListType.OAuthStatusList,
       proofFormat: 'jwt',
       bitsPerStatus: 1,
-      expiresAt: '2025-01-01T00:00:00Z',
+      expiresAt: new Date('2025-01-01T00:00:00Z'),
       issuer: 'did:example:123',
     }
 
