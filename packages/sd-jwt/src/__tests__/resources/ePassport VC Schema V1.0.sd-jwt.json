@@ -40,9 +40,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport"
-      ]
+      "path": ["electronicPassport"]
     },
     {
       "display": [
@@ -52,10 +50,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1"
-      ]
+      "path": ["electronicPassport", "dataGroup1"]
     },
     {
       "display": [
@@ -65,11 +60,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "birthdate"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "birthdate"]
     },
     {
       "display": [
@@ -79,11 +70,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "docTypeCode"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "docTypeCode"]
     },
     {
       "display": [
@@ -93,11 +80,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "expiryDate"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "expiryDate"]
     },
     {
       "display": [
@@ -107,11 +90,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "sexCode"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "sexCode"]
     },
     {
       "display": [
@@ -121,11 +100,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "holdersName"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "holdersName"]
     },
     {
       "display": [
@@ -135,11 +110,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "issuerCode"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "issuerCode"]
     },
     {
       "display": [
@@ -149,11 +120,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "natlCode"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "natlCode"]
     },
     {
       "display": [
@@ -163,11 +130,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup1",
-        "passportNumberIdentifier"
-      ]
+      "path": ["electronicPassport", "dataGroup1", "passportNumberIdentifier"]
     },
     {
       "display": [
@@ -177,11 +140,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup2EncodedFaceBiometrics",
-        "faceBiometricDataEncodedPicture"
-      ]
+      "path": ["electronicPassport", "dataGroup2EncodedFaceBiometrics", "faceBiometricDataEncodedPicture"]
     },
     {
       "display": [
@@ -191,10 +150,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup15"
-      ]
+      "path": ["electronicPassport", "dataGroup15"]
     },
     {
       "display": [
@@ -204,12 +160,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "dataGroup15",
-        "activeAuthentication",
-        "publicKeyBinaryObject"
-      ]
+      "path": ["electronicPassport", "dataGroup15", "activeAuthentication", "publicKeyBinaryObject"]
     },
     {
       "display": [
@@ -219,10 +170,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "docSecurityObject"
-      ]
+      "path": ["electronicPassport", "docSecurityObject"]
     },
     {
       "display": [
@@ -232,11 +180,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "docSecurityObject",
-        "digestHashAlgorithmIdentifier"
-      ]
+      "path": ["electronicPassport", "docSecurityObject", "digestHashAlgorithmIdentifier"]
     },
     {
       "display": [
@@ -246,11 +190,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "docSecurityObject",
-        "versionNumber"
-      ]
+      "path": ["electronicPassport", "docSecurityObject", "versionNumber"]
     },
     {
       "display": [
@@ -260,12 +200,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "docSecurityObject",
-        "dataGroupHash",
-        null
-      ]
+      "path": ["electronicPassport", "docSecurityObject", "dataGroupHash", null]
     },
     {
       "display": [
@@ -275,13 +210,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "docSecurityObject",
-        "dataGroupHash",
-        null,
-        "dataGroupNumber"
-      ]
+      "path": ["electronicPassport", "docSecurityObject", "dataGroupHash", null, "dataGroupNumber"]
     },
     {
       "display": [
@@ -291,13 +220,7 @@
           "lang": "en-US"
         }
       ],
-      "path": [
-        "electronicPassport",
-        "docSecurityObject",
-        "dataGroupHash",
-        null,
-        "valueBinaryObject"
-      ]
+      "path": ["electronicPassport", "docSecurityObject", "dataGroupHash", null, "valueBinaryObject"]
     }
   ]
 }

@@ -32,7 +32,7 @@ export class OID4VCIStore implements IAgentPlugin {
 
   private readonly _issuerMetadataStores: Map<string, IKeyValueStore<IssuerMetadata>>
   private readonly _authorizationServerMetadataStores: Map<string, IKeyValueStore<AuthorizationServerMetadata>>
-  private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions & { asClientOpts?: unknown }>>
+  private readonly _optionStores: Map<string, IKeyValueStore<IIssuerOptions>>
   private readonly defaultStoreId: string
   private readonly defaultNamespace: string
 

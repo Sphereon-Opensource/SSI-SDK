@@ -288,13 +288,15 @@ export async function createVciIssuerBuilder(
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
+  if (issuerOpts.asClientOpts) {
+    builder.withASClientMetadata(issuerOpts.asClientOpts)
+  }
   if (args.credentialDataSupplier) {
     builder.withCredentialDataSupplier(args.credentialDataSupplier)
   }
   builder.withInMemoryCNonceState()
   builder.withInMemoryCredentialOfferState()
   builder.withInMemoryCredentialOfferURIState()
-  builder.build()
 
   return builder
 }

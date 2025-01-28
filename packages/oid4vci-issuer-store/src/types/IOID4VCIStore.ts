@@ -1,4 +1,4 @@
-import { AuthorizationServerMetadata, CredentialIssuerMetadataOpts, IssuerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, ClientMetadata, CredentialIssuerMetadataOpts, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
@@ -57,6 +57,7 @@ export interface IIssuerInstanceOptions extends IMetadataOptions {
 }
 
 export interface IIssuerOptions {
+  asClientOpts?: ClientMetadata
   idOpts?: ManagedIdentifierOptsOrResult
   resolveOpts?: ResolveOpts
   /**

@@ -1,6 +1,7 @@
 import {
   AccessTokenRequest,
   AccessTokenResponse,
+  ClientMetadata,
   CredentialConfigurationSupported,
   CredentialDataSupplierInput,
   CredentialIssuerMetadataOpts,
@@ -74,6 +75,7 @@ export interface IIssuerInstanceOptions extends IMetadataOptions {
 }
 
 export interface IIssuerOptions {
+  asClientOpts?: ClientMetadata
   idOpts?: ManagedIdentifierOptsOrResult
   resolveOpts?: ResolveOpts
   /**
