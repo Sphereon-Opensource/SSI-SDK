@@ -1,197 +1,303 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.prod.digitalcredentials.iata.org/epassport.json",
-  "title": "ePassport",
-  "description": "Verifiable Credential for an ePassport.",
-  "type": "object",
-  "required": ["electronicPassport", "iss", "iat", "vct", "cnf"],
-  "properties": {
-    "electronicPassport": {
-      "title": "Electronic Passport",
-      "description": "A passport that has an embedded electronic microprocessor chip, which contains biometric information that can be used to authenticate the identity of the passport holder. Also known as an e-passport, biometric passport, or a digital passport. Note filler characters are not required.",
-      "type": "object",
-      "required": ["dataGroup1", "dataGroup2EncodedFaceBiometrics", "docSecurityObject"],
-      "properties": {
-        "dataGroup1": {
-          "title": "Data Group 1",
-          "description": "Data Group 1 (DG1) of the machine readable zone (MRZ). Reference: Section 4.7.1 of Doc 9303 Machine Readable Travel Documents, Eighth Edition 2021, Part 10: Logical Data Structure (LDS) for Storage of Biometrics and Other Data in the Contactless Integrated Circuit (IC).",
-          "type": "object",
-          "required": ["birthdate", "docTypeCode", "expiryDate", "sexCode", "holdersName", "issuerCode", "natlCode", "passportNumberIdentifier"],
-          "properties": {
-            "birthdate": {
-              "title": "Data Group 1 Birthdate",
-              "description": "Date of birth of the passport holder as recorded by the issuing State or organization.",
-              "type": "string",
-              "pattern": "^[0-9<]{2}([0<][1-9<]|[1<][0-2<])([0<][1-9<]|[12<][0-9<]|[3<][01<])$"
-            },
-            "docTypeCode": {
-              "title": "Data Group 1 Document Type Code",
-              "description": "Capital letter P to designate an ePassport. One additional capital letter may be used, in the character position after the letter P and at the discretion of the issuing State or organization, to designate other types of passports such as MRP issued to diplomatic staff.",
-              "type": "string",
-              "pattern": "^P.$"
-            },
-            "expiryDate": {
-              "title": "Data Group 1 Expiry Date",
-              "description": "Date of expiry of the ePassport.",
-              "type": "string",
-              "pattern": "^[0-9]{2}([0][1-9]|[1][0-2])([0][1-9]|[12][0-9]|[3][01])$"
-            },
-            "sexCode": {
-              "title": "Sex Code",
-              "description": "Sex of the passport holder; typically, F for Female, M for Male or < for non-specified.",
-              "type": "string",
-              "enum": ["F", "M", "<"]
-            },
-            "holdersName": {
-              "title": "Data Group 1 Holders Name",
-              "description": "Full name of the holder, as identified by the issuing State or organization.",
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 39
-            },
-            "issuerCode": {
-              "title": "Data Group 1 Issuer Code",
-              "description": "Code of the State or Organization responsible for the issuance of the ePassport.",
-              "type": "string",
-              "maxLength": 13
-            },
-            "natlCode": {
-              "title": "Data Group 1 Nationality Text",
-              "description": "The code for the nationality of the holder of the ePassport.",
-              "type": "string",
-              "minLength": 3,
-              "maxLength": 3
-            },
-            "passportNumberIdentifier": {
-              "title": "Data Group 1 Passport Number Identifier",
-              "description": "As given by the issuing State or organization to uniquely identify the document from all other MRTDs issued by the State or organization.",
-              "type": "string",
-              "maxLength": 9
-            }
-          }
+  "name": "ePassport Verifiable Credential",
+  "schema_uri": "https://iata.trustregistry.nborbit.ca/.well-known/schema/epassport.json",
+  "schema_uri#integrity": "sha256-ro3/ER87HPcrdV1JliUeH5JRDKNO+PThBd1gMf84EKc",
+  "vct": "https://iata.trustregistry.nborbit.ca/epassport",
+  "description": "A Verifiable Credential for an ePassport.",
+  "display": [
+    {
+      "description": "A Verifiable Credential for an ePassport.",
+      "lang": "en-US",
+      "name": "ePassport Verifiable Credential",
+      "rendering": {
+        "simple": {
+          "background_color": "#CB2210",
+          "logo": {
+            "alt_text": "ePassport Verifiable Credential Logo",
+            "uri": "https://iata.trustregistry.nborbit.ca/logo/epassport-logo.png",
+            "uri#integrity": "sha256-SSp0p9SBIotc7FIi/pkqbMthx4Gmx+g+IXnMdOOQXl4"
+          },
+          "text_color": "#F9F9F9"
         },
-        "dataGroup15": {
-          "title": "Data Group 15",
-          "description": "Data group 15 defined by ICAO for ePassport. Reference: Section 4.7.15.1 of Doc 9303 Machine Readable Travel Documents, Eighth Edition 2021, Part 10: Logical Data Structure (LDS) for Storage of Biometrics and Other Data in the Contactless Integrated Circuit (IC).",
-          "type": "object",
-          "required": ["activeAuthentication"],
+        "svg_template": {
           "properties": {
-            "activeAuthentication": {
-              "title": "Active Authentication",
-              "description": "Active Authentication authenticates the contactless IC by signing a challenge sent by the IFD (inspection system) with a private key known only to the IC. For this purpose the contactless IC contains its own Active Authentication Key pair (KPrAA and KPuAA). A hash representation of Data Group 15 (Public Key (KPuAA) info) is stored in the Document Security Object (SOD) and therefore authenticated by the issuer's digital signature. The corresponding Private Key (KPrAA) is stored in the contactless IC's secure memory. By authenticating the visual MRZ (through the hashed MRZ in the Document Security Object (SOD)) in combination with the challenge response, using the eMRTD's Active Authentication Key Pair (KPrAA and KPuAA), the inspection system verifies that the Document Security Object (SOD) has been read from the genuine contactless IC stored in the genuine eMRTD.",
-              "type": "object",
-              "required": ["publicKeyBinaryObject"],
-              "properties": {
-                "publicKeyBinaryObject": {
-                  "title": "Active Authentication Public Key Binary Object",
-                  "description": "Public key for use in active authentication. Example uri format data:application/octet-stream;base64,...",
-                  "type": "string",
-                  "format": "uri"
-                }
-              }
-            }
-          }
-        },
-        "dataGroup2EncodedFaceBiometrics": {
-          "title": "Data Group 2 Encoded Face Biometrics",
-          "description": "First, most recent, face biometric image from data group 2. Reference: Section 4.7.2 of Doc 9303 Machine Readable Travel Documents, Eighth Edition 2021, Part 10: Logical Data Structure (LDS) for Storage of Biometrics and Other Data in the Contactless Integrated Circuit (IC).",
-          "type": "object",
-          "required": ["faceBiometricDataEncodedPicture"],
-          "properties": {
-            "faceBiometricDataEncodedPicture": {
-              "title": "Data Group 2 Encoded Face Biometrics Face Biometric Data Encoded Picture",
-              "description": "First, most recent, face biometric image from data group 2. Example uri, data:image/jpeg;base64,...",
-              "type": "string",
-              "format": "uri"
-            }
-          }
-        },
-        "digitalTravelCredential": {
-          "title": "Digital Travel Credential",
-          "description": "Travel credentials in a digital format that are meant to temporarily or permanently substitute a conventional passport by a digital representation of the traveler's identity. Reference: Section 2.1.3 of Machine Readable Travel Documents, Digital Travel Credentials (DTC), Virtual Component Data Structure and PKI Mechanisms, Technical Report, Version 1.2 October 2020.",
-          "type": "object",
-          "required": ["dTCContentInfo"],
-          "properties": {
-            "dTCContentInfo": {
-              "title": "DTC-VC as DTCContentInfo encoded Structure",
-              "description": "DER encoded DTC-VC. Example uri format data:application/octet-stream;base64,...",
-              "type": "string",
-              "format": "uri"
-            }
-          }
-        },
-        "docSecurityObject": {
-          "title": "Document Security Object",
-          "description": "Document Security Object which contains the hashing information including hashed ePassport data. Reference: Section 4.6.2 of Doc 9303 Machine Readable Travel Documents, Eighth Edition 2021, Part 10: Logical Data Structure (LDS) for Storage of Biometrics and Other Data in the Contactless Integrated Circuit (IC).",
-          "type": "object",
-          "required": ["dataGroupHash", "digestHashAlgorithmIdentifier", "versionNumber"],
-          "properties": {
-            "digestHashAlgorithmIdentifier": {
-              "title": "Document Security Object Digest Hash Algorithm Identifier",
-              "description": "Digest Algorithm Identifier used to perform hashing on the data groups.",
-              "type": "string",
-              "maxLength": 35
-            },
-            "versionNumber": {
-              "title": "Document Security Object Version Number",
-              "description": "Security object version.",
-              "type": "number"
-            },
-            "dataGroupHash": {
-              "title": "Data Group Hash",
-              "description": "Data group with corresponding hash value.",
-              "type": "array",
-              "items": {
-                "type": "object",
-                "title": "Data Group Hash",
-                "description": "Data group with corresponding hash value.",
-                "required": ["dataGroupNumber", "valueBinaryObject"],
-                "properties": {
-                  "dataGroupNumber": {
-                    "title": "Data Group Hash Data Group Number",
-                    "description": "Data group number.",
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 16
-                  },
-                  "valueBinaryObject": {
-                    "title": "Data Group Hash Value Binary Object",
-                    "description": "Hash value for the corresponding data group. Example uri format data:application/octet-stream;base64,...",
-                    "type": "string",
-                    "format": "uri"
-                  }
-                }
-              }
-            }
-          }
+            "color_scheme": "light",
+            "contrast": "high",
+            "orientation": "landscape"
+          },
+          "uri": "https://iata.trustregistry.nborbit.ca/svg/epassport.svg",
+          "uri#integrity": "sha256-+2b8yT2jzbRuoHh5KnI6RzorWNTN/eL67ZvEV+abEfA"
         }
       }
-    },
-    "iss": {
-      "title": "Issuer",
-      "description": "URI identifying the issuer of the credential.",
-      "type": "string",
-      "format": "uri"
-    },
-    "iat": {
-      "title": "Issued At",
-      "description": "The time at which the credential was issued (Unix timestamp).",
-      "type": "integer"
-    },
-    "exp": {
-      "title": "Expiration",
-      "description": "The time at which the credential expires (Unix timestamp).",
-      "type": "integer"
-    },
-    "vct": {
-      "title": "Verifiable Credential Type",
-      "description": "A URI or string identifying the type or context of this credential.",
-      "type": "string"
-    },
-    "cnf": {
-      "title": "Confirmation",
-      "description": "Proof-of-possession key information used to bind the credential to a specific holder.",
-      "type": "object"
     }
-  }
+  ],
+  "claims": [
+    {
+      "display": [
+        {
+          "description": "Information about the electronic passport.",
+          "label": "Electronic Passport",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Data Group 1 of the electronic passport.",
+          "label": "Data Group 1",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Date of birth of the passport holder.",
+          "label": "Birthdate",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "birthdate"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Document type code, such as 'P' for an ePassport.",
+          "label": "Document Type Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "docTypeCode"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Expiry date of the ePassport.",
+          "label": "Expiry Date",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "expiryDate"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Sex of the passport holder.",
+          "label": "Sex Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "sexCode"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Full name of the passport holder.",
+          "label": "Holder's Name",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "holdersName"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Issuer code of the ePassport.",
+          "label": "Issuer Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "issuerCode"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Nationality code of the passport holder.",
+          "label": "Nationality Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "natlCode"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Unique identifier for the passport.",
+          "label": "Passport Number",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup1",
+        "passportNumberIdentifier"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Encoded face biometric data from Data Group 2.",
+          "label": "Encoded Face Biometrics",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup2EncodedFaceBiometrics",
+        "faceBiometricDataEncodedPicture"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Data group 15 containing the public key for active authentication.",
+          "label": "Data Group 15",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup15"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Public key for active authentication.",
+          "label": "Active Authentication Public Key",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "dataGroup15",
+        "activeAuthentication",
+        "publicKeyBinaryObject"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Document security object containing hashing information.",
+          "label": "Document Security Object",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "docSecurityObject"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Digest hash algorithm used for the document security object.",
+          "label": "Digest Hash Algorithm",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "docSecurityObject",
+        "digestHashAlgorithmIdentifier"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Version number of the document security object.",
+          "label": "Version Number",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "docSecurityObject",
+        "versionNumber"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Data group hash values within the document security object.",
+          "label": "Data Group Hash",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "docSecurityObject",
+        "dataGroupHash",
+        null
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Data group number for the hash.",
+          "label": "Data Group Number",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "docSecurityObject",
+        "dataGroupHash",
+        null,
+        "dataGroupNumber"
+      ]
+    },
+    {
+      "display": [
+        {
+          "description": "Hash value for the data group.",
+          "label": "Hash Value",
+          "lang": "en-US"
+        }
+      ],
+      "path": [
+        "electronicPassport",
+        "docSecurityObject",
+        "dataGroupHash",
+        null,
+        "valueBinaryObject"
+      ]
+    }
+  ]
 }

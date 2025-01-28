@@ -54,7 +54,7 @@ describe('VCT Integrity', () => {
     )
   })
 
-  it('create vct integrity values for loyalty program account', async () => {
+  it('create vct integrity values for loyalty prograam account', async () => {
     const vct: string = fs.readFileSync(__dirname + '/resources/LoyaltyProgramAccountCredential-vct.json', 'utf8')
     const vctIntegrity = await createIntegrity({ input: vct, hasher, alg: 'sha256' })
     await validateIntegrity({ input: vct, integrityValue: vctIntegrity, hasher })
