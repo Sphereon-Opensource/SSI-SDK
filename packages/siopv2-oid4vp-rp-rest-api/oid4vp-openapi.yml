@@ -8,13 +8,19 @@ paths:
   /webapp/definitions/{definitionId}/auth-requests:
     post:
       summary: Create authentication request
+      description: |
+        Creates a new SIOP authentication request that can be used to request verifiable credentials from a wallet.
+        Returns URIs needed to initiate the auth flow and check its status.
       parameters:
         - name: definitionId
           in: path
           required: true
+          description: "Identifier for the presentation definition that specifies which credentials are required"
           schema:
             type: string
+            example: "kyc-basic-v1"
       requestBody:
+        description: "Optional configuration for the authentication request"
         content:
           application/json:
             schema:
@@ -22,6 +28,7 @@ paths:
               properties:
                 response_redirect_uri:
                   type: string
+                  description: "URI where the wallet should redirect after completing the authentication"
                   example: "https://example.com/callback"
       responses:
         '200':
@@ -40,6 +47,9 @@ paths:
   /webapp/auth-status:
     post:
       summary: Get authentication status
+      description: |
+        Checks the current status of an authentication request. Can optionally include verified credential data 
+        in the response when the status is 'verified'.
       requestBody:
         required: true
         content:
@@ -53,6 +63,7 @@ paths:
                   type: string
                 includeVerifiedData:
                   type: string
+                  description: "Controls what verified data to include in the response. Only applies when status is 'verified'"
                   enum: [none, vp, cs-flat]
               required:
                 - correlationId
@@ -76,17 +87,22 @@ paths:
   /webapp/definitions/{definitionId}/auth-requests/{correlationId}:
     delete:
       summary: Remove authentication request state
+      description: "Deletes all state associated with an authentication request. Use for cleanup after completion or timeout."
       parameters:
         - name: definitionId
           in: path
           required: true
+          description: "Identifier for the presentation definition that specifies which credentials are required"
           schema:
             type: string
+            example: "kyc-basic-v1"
         - name: correlationId
           in: path
           required: true
+          description: "Unique identifier for the authentication session"
           schema:
             type: string
+            example: "N7RmqG2xT9unEh"
       responses:
         '200':
           description: Authentication request state removed successfully
@@ -106,6 +122,9 @@ paths:
   /siop/definitions/{definitionId}/auth-responses/{correlationId}:
     post:
       summary: Verify authentication response
+      description: |
+        Verifies the presentation response from a wallet. Handles both direct responses and form-encoded responses.
+        Returns either a challenge response for first-party flows or a redirect URI for third-party flows.
       parameters:
         - name: definitionId
           in: path
@@ -147,6 +166,7 @@ paths:
   /siop/definitions/{definitionId}/auth-requests/{correlationId}:
     get:
       summary: Get authentication request
+      description: "Retrieves the JWT representation of an authentication request. Called by wallets to get the full request details."
       parameters:
         - name: definitionId
           in: path
@@ -253,17 +273,23 @@ components:
 
     AuthChallengeResponse:
       type: object
+      description: "Response containing the presentation session identifier for first-party flows"
       properties:
         presentation_during_issuance_session:
           type: string
+          description: "Identifier for the presentation session"
+          example: "N7RmqG2xT9unEh"
       required:
         - presentation_during_issuance_session
 
     AuthResponseRedirect:
       type: object
+      description: "Response containing the redirect URI for non-first-party flows"
       properties:
         redirect_uri:
           type: string
+          description: "URI where the wallet should redirect after authentication"
+          example: "https://example.com/callback"
       required:
         - redirect_uri
 
