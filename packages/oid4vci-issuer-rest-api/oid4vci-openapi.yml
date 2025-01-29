@@ -202,7 +202,7 @@ components:
         notification_id:
           type: string
 
-    CredentialRequestV1_0_13:
+    CredentialRequest:
       type: object
       description: Request to issue a credential according to OID4VCI v1.0.13 specification
       required:
@@ -286,22 +286,34 @@ components:
           type: string
 
     CredentialOfferRequest:
+      description: Request to create a credential offer
       type: object
       properties:
         credential_offer:
           $ref: '#/components/schemas/CredentialOfferPayload'
         credential_offer_uri:
           type: string
+          description: URI pointing to the credential offer
+          example: "https://issuer.example.com/credential-offer/123"
         baseUri:
           type: string
+          description: Base URI for constructing offer-related links
+          example: "https://issuer.example.com"
         scheme:
           type: string
+          description: URI scheme for offer delivery
+          example: "openid-credential-offer"
         pinLength:
           type: number
+          description: Length of the user PIN if required for authentication
+          example: 4
         qrCodeOpts:
           type: object
+          description: Options for generating a QR code representation of the offer
         credentialDataSupplierInput:
           type: object
+          description: Additional input for the credential data supplier, if needed
+
 
     IssuerMetadata:
       description: Credential issuer metadata as defined in the OID4VCI specification
@@ -528,7 +540,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CredentialRequestV1_0_13'
+              $ref: '#/components/schemas/CredentialRequest'
       responses:
         '200':
           description: Successful response with issued credential
@@ -581,6 +593,7 @@ paths:
   /webapp/credential-offers:
     post:
       summary: Create credential offer
+      description: Generate and return a new credential offer
       requestBody:
         required: true
         content:
@@ -597,7 +610,12 @@ paths:
                 properties:
                   uri:
                     type: string
+                    description: Credential offer URI
+                    example: "https://issuer.example.com/credential-offer/123"
                   userPin:
                     type: string
+                    description: User PIN for access if required
+                    example: "1234"
                   txCode:
                     type: object
+                    description: Transaction code details for tracking
