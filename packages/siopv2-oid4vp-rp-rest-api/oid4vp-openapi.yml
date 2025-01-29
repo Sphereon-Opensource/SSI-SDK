@@ -59,12 +59,16 @@ paths:
               properties:
                 correlationId:
                   type: string
+                  description: "Unique identifier for the authentication session"
+                  example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
                 definitionId:
                   type: string
+                  description: "Identifier for the presentation definition that specifies which credentials are required"
+                  example: "kyc-basic-v1"
                 includeVerifiedData:
                   type: string
                   description: "Controls what verified data to include in the response. Only applies when status is 'verified'"
-                  enum: [none, vp, cs-flat]
+                  enum: [ none, vp, cs-flat ]
               required:
                 - correlationId
                 - definitionId
@@ -102,7 +106,7 @@ paths:
           description: "Unique identifier for the authentication session"
           schema:
             type: string
-            example: "N7RmqG2xT9unEh"
+            example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
       responses:
         '200':
           description: Authentication request state removed successfully
@@ -127,15 +131,19 @@ paths:
         Returns either a challenge response for first-party flows or a redirect URI for third-party flows.
       parameters:
         - name: definitionId
+          description: "Identifier for the presentation definition that specifies which credentials are required"
           in: path
           required: true
           schema:
             type: string
+            example: "kyc-basic-v1"
         - name: correlationId
+          description: "Unique identifier for the authentication session"
           in: path
           required: true
           schema:
             type: string
+            example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
       requestBody:
         required: true
         content:
@@ -169,15 +177,19 @@ paths:
       description: "Retrieves the JWT representation of an authentication request. Called by wallets to get the full request details."
       parameters:
         - name: definitionId
+          description: "Identifier for the presentation definition that specifies which credentials are required"
           in: path
           required: true
           schema:
             type: string
+            example: "kyc-basic-v1"
         - name: correlationId
+          description: "Unique identifier for the authentication session"
           in: path
           required: true
           schema:
             type: string
+            example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
       responses:
         '200':
           description: Authentication request retrieved successfully
@@ -201,8 +213,8 @@ components:
       properties:
         correlationId:
           type: string
-          description: "Unique identifier for the authentication session, generated using short-uuid"
-          example: "N7RmqG2xT9unEh"  # short-uuid format
+          description: "Unique identifier for the authentication session"
+          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
         definitionId:
           type: string
           description: "Identifier for the presentation definition that specifies required verifiable credentials"
@@ -227,12 +239,16 @@ components:
         status:
           type: string
           description: "Current state of the authentication request in its lifecycle"
-          enum: [created, sent, received, verified, error]
+          enum: [ created, sent, received, verified, error ]
         correlationId:
           type: string
+          description: "Unique identifier for the authentication session"
+          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
         error:
           type: string
         definitionId:
+          description: "Identifier for the presentation definition that specifies which credentials are required"
+          example: "kyc-basic-v1"
           type: string
         lastUpdated:
           type: integer
@@ -259,8 +275,8 @@ components:
           oneOf:
             - type: string
               description: >
-        A Verifiable Presentation in JWT or JSON-LD format. 
-        Required in responses when `vp_token` is the `response_type`.
+                A Verifiable Presentation in JWT or JSON-LD format.
+                Required in responses when `vp_token` is the `response_type`.
             - type: array
               description: "Array of verifiable presentations"
               items:
