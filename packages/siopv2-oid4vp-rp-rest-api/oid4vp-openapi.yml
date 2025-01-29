@@ -1,0 +1,287 @@
+openapi: 3.0.0
+info:
+  title: Sphereon SIOP v2 OID4VP RP API
+  version: 1.0.0
+  description: API for SIOP v2 OID4VP Relying Party operations
+
+paths:
+  /webapp/definitions/{definitionId}/auth-requests:
+    post:
+      summary: Create authentication request
+      parameters:
+        - name: definitionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                response_redirect_uri:
+                  type: string
+                  example: "https://example.com/callback"
+      responses:
+        '200':
+          description: Authentication request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateAuthRequestURIResponse'
+        '500':
+          description: Error creating auth request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /webapp/auth-status:
+    post:
+      summary: Get authentication status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correlationId:
+                  type: string
+                definitionId:
+                  type: string
+                includeVerifiedData:
+                  type: string
+                  enum: [none, vp, cs-flat]
+              required:
+                - correlationId
+                - definitionId
+      responses:
+        '200':
+          description: Authentication status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthStatusResponse'
+        '404':
+          description: Auth request not found
+        '500':
+          description: Error retrieving auth status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /webapp/definitions/{definitionId}/auth-requests/{correlationId}:
+    delete:
+      summary: Remove authentication request state
+      parameters:
+        - name: definitionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication request state removed successfully
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: Auth request not found
+        '500':
+          description: Error removing auth request state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /siop/definitions/{definitionId}/auth-responses/{correlationId}:
+    post:
+      summary: Verify authentication response
+      parameters:
+        - name: definitionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizationResponsePayload'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthorizationResponsePayload'
+      responses:
+        '200':
+          description: Authentication response verified successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AuthChallengeResponse'
+                  - $ref: '#/components/schemas/AuthResponseRedirect'
+        '404':
+          description: Auth request not found
+        '500':
+          description: Error verifying auth response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /siop/definitions/{definitionId}/auth-requests/{correlationId}:
+    get:
+      summary: Get authentication request
+      parameters:
+        - name: definitionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication request retrieved successfully
+          content:
+            application/jwt:
+              schema:
+                type: string
+        '404':
+          description: Auth request not found
+        '500':
+          description: Error retrieving auth request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    GenerateAuthRequestURIResponse:
+      type: object
+      properties:
+        correlationId:
+          type: string
+          description: "Unique identifier for the authentication session, generated using short-uuid"
+          example: "N7RmqG2xT9unEh"  # short-uuid format
+        definitionId:
+          type: string
+          description: "Identifier for the presentation definition that specifies required verifiable credentials"
+          example: "kyc-basic-v1"
+        authRequestURI:
+          type: string
+          description: "SIOP protocol URI that initiates the authentication flow"
+          example: "openid-vc://?request_uri=https://example.com/siop/definitions/kyc-basic-v1/auth-requests/N7RmqG2xT9unEh"
+        authStatusURI:
+          type: string
+          description: "Endpoint URL for checking the status of the authentication request"
+          example: "https://example.com/webapp/auth-status"
+      required:
+        - correlationId
+        - definitionId
+        - authRequestURI
+        - authStatusURI
+
+    AuthStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "Current state of the authentication request in its lifecycle"
+          enum: [created, sent, received, verified, error]
+        correlationId:
+          type: string
+        error:
+          type: string
+        definitionId:
+          type: string
+        lastUpdated:
+          type: integer
+          description: "Unix timestamp in milliseconds representing when the status was last updated"
+          example: 1706515200000
+        payload:
+          $ref: '#/components/schemas/AuthorizationResponsePayload'
+        verifiedData:
+          type: object
+          additionalProperties: true
+      required:
+        - status
+        - correlationId
+        - definitionId
+        - lastUpdated
+
+    AuthorizationResponsePayload:
+      type: object
+      properties:
+        presentation_submission:
+          type: object
+          description: "Object containing information about how the presented credentials fulfill the presentation definition requirements"
+        vp_token:
+          oneOf:
+            - type: string
+              description: >
+        A Verifiable Presentation in JWT or JSON-LD format. 
+        Required in responses when `vp_token` is the `response_type`.
+            - type: array
+              description: "Array of verifiable presentations"
+              items:
+                type: object
+            - type: object
+              description: "Single verifiable presentation object"
+        is_first_party:
+          type: boolean
+          description: "Indicates if this is a first-party authentication flow"
+
+    AuthChallengeResponse:
+      type: object
+      properties:
+        presentation_during_issuance_session:
+          type: string
+      required:
+        - presentation_during_issuance_session
+
+    AuthResponseRedirect:
+      type: object
+      properties:
+        redirect_uri:
+          type: string
+      required:
+        - redirect_uri
+
+    ErrorResponse:
+      type: object
+      description: "Error details returned when an operation fails"
+      properties:
+        status:
+          type: integer
+          description: "HTTP status code"
+          example: 500
+        message:
+          type: string
+          description: "Human-readable error message"
+          example: "Could not verify auth status"
+        error:
+          type: object
+          description: "Additional error details or stack trace when available"
+      required:
+        - status
+        - message
