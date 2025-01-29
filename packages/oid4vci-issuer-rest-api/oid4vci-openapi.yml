@@ -2,24 +2,58 @@ openapi: 3.0.0
 info:
   title: Sphereon OID4VCI API
   version: 1.0.0
-  description: Sphereon OpenID for Verifiable Credential Issuance API
-
-servers:
-  - url: /
-    description: Base API path
+  description: |
+    Sphereon OpenID for Verifiable Credential Issuance API
+    This API allows issuers to provide verifiable credentials to wallets following the OID4VCI specification.
 
 components:
   schemas:
     Error:
+      description: Standard error response format
       type: object
       properties:
         error:
           type: string
+          description: Error code
+          example: invalid_request
         error_description:
           type: string
+          description: Human readable error description
+          example: The credential offer xyz was not found
+
+    CredentialResponse:
+      description: Response containing the issued credential
+      type: object
+      properties:
+        credential:
+          oneOf:
+            - type: string
+            - type: object
+          description: The issued credential, either as a JWT string or JSON object
+          example: "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9..."
+        format:
+          type: string
+          enum:
+            - jwt_vc_json
+            - jwt_vc
+            - ldp_vc
+            - jwt_vc_json-ld
+            - vc+sd-jwt
+            - mso_mdoc
+          description: Format of the issued credential
+          example: jwt_vc_json
+        c_nonce:
+          type: string
+          description: Nonce for subsequent credential requests
+          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+        c_nonce_expires_in:
+          type: number
+          description: Expiration time of the c_nonce in seconds
+          example: 300
 
     IssueStatusResponse:
       type: object
+      description: Status of a credential issuance request
       required:
         - createdAt
         - lastUpdatedAt
@@ -27,10 +61,15 @@ components:
       properties:
         createdAt:
           type: number
+          description: Unix timestamp of when the request was created
+          example: 1706533345000
         lastUpdatedAt:
           type: number
+          description: Unix timestamp of the last status update
+          example: 1706533346000
         status:
           type: string
+          description: Current status of the issuance process
           enum:
             - OFFER_CREATED
             - OFFER_URI_RETRIEVED
@@ -42,6 +81,7 @@ components:
             - NOTIFICATION_CREDENTIAL_DELETED
             - NOTIFICATION_CREDENTIAL_FAILURE
             - ERROR
+          example: CREDENTIAL_ISSUED
         error:
           type: string
         clientId:
@@ -49,13 +89,20 @@ components:
 
     AuthorizationChallengeRequest:
       type: object
+      description: Request to initiate authorization challenge
       properties:
         client_id:
           type: string
+          description: Client identifier
+          example: "https://wallet.example.com"
         issuer_state:
           type: string
+          description: Opaque state from issuer
+          example: "a81bc81b-dead-4563-8692-3bc3c7f12897"
         auth_session:
           type: string
+          description: Session identifier for associating subsequent requests
+          example: "d270fee1-9185-4e60-9901-d291e1338d7a"
         scope:
           type: string
         code_challenge:
@@ -136,33 +183,6 @@ components:
         notification_id:
           type: string
 
-    CredentialResponse:
-      type: object
-      properties:
-        credential:
-          oneOf:
-            - type: string
-            - type: object
-        format:
-          type: string
-          enum:
-            - jwt_vc_json
-            - jwt_vc
-            - ldp_vc
-            - jwt_vc_json-ld
-            - vc+sd-jwt
-            - mso_mdoc
-        transaction_id:
-          type: string
-        acceptance_token:
-          type: string
-        c_nonce:
-          type: string
-        c_nonce_expires_in:
-          type: number
-        notification_id:
-          type: string
-
     CredentialRequestV1_0_13:
       type: object
       required:
@@ -205,18 +225,27 @@ components:
 
     CredentialOfferPayload:
       type: object
+      description: Core credential offer data
       required:
         - credential_issuer
         - credential_configuration_ids
       properties:
         credential_issuer:
           type: string
+          description: URL of the credential issuer
+          example: "https://issuer.example.com"
         credential_configuration_ids:
           type: array
+          description: Identifiers for the offered credential configurations
           items:
             type: string
+          example: [ "university_degree_1", "verified_email_2" ]
         grants:
           type: object
+          description: Supported authorization grant types
+          example:
+            "urn:ietf:params:oauth:grant-type:pre-authorized_code":
+              "pre-authorized_code": "d270fee1-9185-4e60-9901-d291e1338d7a"
         client_id:
           type: string
 
@@ -239,6 +268,7 @@ components:
           type: object
 
     IssuerMetadata:
+      description: Credential issuer metadata as defined in the OID4VCI specification
       type: object
       required:
         - credential_configurations_supported
@@ -247,12 +277,17 @@ components:
       properties:
         credential_configurations_supported:
           type: object
+          description: Map of supported credential configurations
           additionalProperties:
             $ref: '#/components/schemas/CredentialConfigurationSupported'
         credential_issuer:
           type: string
+          description: URL identifying the credential issuer
+          example: "https://issuer.example.com"
         credential_endpoint:
           type: string
+          description: URL of the credential endpoint
+          example: "https://issuer.example.com/credentials"
         authorization_servers:
           type: array
           items:
@@ -336,6 +371,7 @@ paths:
   /.well-known/openid-credential-issuer:
     get:
       summary: Get credential issuer metadata
+      description: Returns the metadata about the credential issuer's capabilities
       responses:
         '200':
           description: Successful response
@@ -358,6 +394,7 @@ paths:
   /webapp/credential-offer-status:
     post:
       summary: Get credential issuance status
+      description: Check the current status of a credential issuance request
       requestBody:
         required: true
         content:
@@ -369,6 +406,8 @@ paths:
               properties:
                 id:
                   type: string
+                  description: Identifier of the credential offer
+                  example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
       responses:
         '200':
           description: Successful response
@@ -420,6 +459,7 @@ paths:
   /credentials:
     post:
       summary: Get credential endpoint
+      description: Request issuance of a credential
       security:
         - bearerAuth: [ ]
       requestBody:
@@ -430,7 +470,7 @@ paths:
               $ref: '#/components/schemas/CredentialRequestV1_0_13'
       responses:
         '200':
-          description: Successful response
+          description: Successful response with issued credential
           content:
             application/json:
               schema:
@@ -460,12 +500,15 @@ paths:
   /webapp/credential-offers/{id}:
     get:
       summary: Get credential offer
+      description: Retrieve a specific credential offer by ID
       parameters:
         - name: id
           in: path
           required: true
+          description: Unique identifier of the credential offer
           schema:
             type: string
+          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
       responses:
         '200':
           description: Successful response
