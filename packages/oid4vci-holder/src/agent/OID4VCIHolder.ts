@@ -1087,6 +1087,12 @@ export class OID4VCIHolder implements IAgentPlugin {
     const params = new URLSearchParams(url.search)
     const openidFederation = params.get('openid_federation')
     const entityIdentifier = openidFederation ?? serverMetadata.issuer
+    if (entityIdentifier.startsWith('http://')) {
+      console.warn(`OpenID federation does not support http://, only https:// allowed; got: (${url.toString()})`)
+      // OIDF always needs to be https
+      return []
+    }
+
 
     const result = await context.agent.identifierExternalResolveByOIDFEntityId({
       method: 'entity_id',

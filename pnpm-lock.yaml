@@ -619,11 +619,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -701,11 +701,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -918,8 +918,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
@@ -976,11 +976,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1149,17 +1149,17 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.1-next.14
         version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.16)(typescript@5.6.3))
@@ -1240,8 +1240,8 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.27.1-next.14
         version: 0.27.1-next.14
@@ -1273,14 +1273,14 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.1-next.14
         version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.16)(typescript@5.6.3))
@@ -1334,8 +1334,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -1358,14 +1358,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1524,8 +1524,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1561,8 +1561,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.1-next.14
         version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.16)(typescript@5.6.3))
@@ -2259,8 +2259,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2281,14 +2281,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2423,14 +2423,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2514,8 +2514,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3623,8 +3623,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.MWALL.715.349
-        version: 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.MWALL.715.352
+        version: 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6005,12 +6005,12 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-exEoUYfkcxFcZLyZsrmQ11Y5qKcETbDmgPchqqFYSFhas6Me9A+O9bXj3Hkv1o3QDAZZIpjd6NLshEanxXDdWg==}
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-9EG+tcpNmzITaqGDDOhmmkaX4jjWxFUtmmtrRjUV4nIf3smOGln9JyoF+/SNkhxxZD9KtuMk/k34NhB481/RKQ==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-auth-siop@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-XNc6DJtQUhdCIF+358jakoeG93Xik3L2+n51j/hUFUZVUOjU8UGo9cDBDYKVYMgFqYEpEhDplroToIHWgTnbBA==}
+  '@sphereon/did-auth-siop@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-Xseq9lHqul+J1IwYIi4Si1UyddOQSXBsM1FFbOo2N2yvpFZJXWDkGfrwFTnzey+SZN8T1WSBblaA1XzVf+E1Tw==}
     engines: {node: '>=18'}
 
   '@sphereon/did-provider-oyd@0.27.1-next.14':
@@ -6033,30 +6033,31 @@ packages:
       '@sphereon/react-native-argon2': ^2.0.9
       react-native: '>=0.60.0'
 
-  '@sphereon/jarm@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-6lkjjjzqOEY12u5CN+yi2yxdXcYncL0lWcokOoCmHr2RUCp0I7jjdwQFJNPv/gvDaEcE3gfu7/RyNzqzdVF7UQ==}
+  '@sphereon/jarm@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-9YHpAjQnfnsbNrViCbe6GBsqg5upVE/JlfAXJ6ufqw/QlVz6Pvx/h37+EWwiOZMIVlSdRto38qGcfn51tifpfw==}
     engines: {node: '>=18'}
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
+    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
 
-  '@sphereon/oid4vc-common@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-aRa8bi3d4GEhc2GNJBJwphGXowhe74LFVWQYElSx2U49Abc+poISzpYr8VRRgiagRLqcox1ZFXLSlSfp6J7xbQ==}
+  '@sphereon/oid4vc-common@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-KfS1CK5wSeTR616ek8DwNpR2r+GbcqWnln6Vb3ODXPvLzPyD67FYHes1kZtijZAAqi3Dt6f1z7oLvq32xXG/Rw==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-client@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-0kvEPHsy/NWeOTdLKyYHLG37GclHNsUVhywEft5oX/3628XqM4hR7yIrM14mqr5hiJLJmRgnGh40mN6TcV/tWA==}
+  '@sphereon/oid4vci-client@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-16a/oASVe9Qat+zvvLW2fThIBy7lzGAabUZ/sCgiEA9K3Ti/87ZIxRyfw7VziBR8bz/x1FhbFv7f1vsD7g9MZA==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-common@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-6ZpjT5cKqkSAK6XSDEqtn/FtDn7NoeIZOmymJmCtgO8onaZZEXIDumW/AnduY2rF4CzuEPc923Rfl2AeTwYDxg==}
+  '@sphereon/oid4vci-common@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-eRgqL7RCT4ueP6qDSUK3DXowNF8n/y2zV3XE0jP+h97ppvjcp5TMpGpeP53eUL/SMEpNUZt/BUxKSafvmkmjnQ==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-INyvaxHHN99vUW7Aw0M9rlHpa0MeE4tIxFC4q3qSnFJ+Icab4y+sTkabG1tYNOZZmxUdKDsUJVdwgRqpZFKGpg==}
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-JI6q7VuQ3oYMBxis5Z7sv/sl6lMirlXGweqCGUrsA486OBoV7KnFU0hkXX2Vjd3h3DRfIGk8TARcx83SXJjvbA==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6064,8 +6065,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.16.1-feature.MWALL.715.349':
-    resolution: {integrity: sha512-vB9VgwZG0PHyidPJ62Whn/BRY+iS5fgXq2BZXMFRLvIHvc8VylvrJGvX4FPN85G6DSjB7krOudj1pPnHmsA2RQ==}
+  '@sphereon/oid4vci-issuer@0.16.1-feature.MWALL.715.352':
+    resolution: {integrity: sha512-CDtPx+iCPZV6Ghpu0d3dUIWQld3cKT54+dsodEIIIqQilX29hVwLma0ZB8CPz1hjeTFNGx11lyGToy+W2pj6uw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -16923,11 +16924,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -16936,11 +16937,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.16.1-feature.MWALL.715.349(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop@0.16.1-feature.MWALL.715.352(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/jarm': 0.16.1-feature.MWALL.715.349(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
+      '@sphereon/jarm': 0.16.1-feature.MWALL.715.352(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
       '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17002,9 +17003,9 @@ snapshots:
       react-native: 0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1)
       uint8arrays: 3.1.1
 
-  '@sphereon/jarm@0.16.1-feature.MWALL.715.349(typescript@5.6.3)':
+  '@sphereon/jarm@0.16.1-feature.MWALL.715.352(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
@@ -17028,7 +17029,7 @@ snapshots:
       - encoding
       - typescript
 
-  '@sphereon/oid4vc-common@0.16.1-feature.MWALL.715.349':
+  '@sphereon/oid4vc-common@0.16.1-feature.MWALL.715.352':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
@@ -17036,10 +17037,10 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vci-client@0.16.1-feature.MWALL.715.349(encoding@0.1.13)':
+  '@sphereon/oid4vci-client@0.16.1-feature.MWALL.715.352(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
-      '@sphereon/oid4vci-common': 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
+      '@sphereon/oid4vci-common': 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.2.0(encoding@0.1.13)
       debug: 4.4.0
@@ -17047,9 +17048,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.16.1-feature.MWALL.715.349(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.16.1-feature.MWALL.715.352(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.2.0(encoding@0.1.13)
       debug: 4.4.0
@@ -17060,11 +17061,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.MWALL.715.349(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.MWALL.715.352(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
-      '@sphereon/oid4vci-common': 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.16.1-feature.MWALL.715.349(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
+      '@sphereon/oid4vci-common': 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
+      '@sphereon/oid4vci-issuer': 0.16.1-feature.MWALL.715.352(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support': 0.32.1-next.113(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.3
@@ -17083,10 +17084,10 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.16.1-feature.MWALL.715.349(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer@0.16.1-feature.MWALL.715.352(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.349
-      '@sphereon/oid4vci-common': 0.16.1-feature.MWALL.715.349(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.MWALL.715.352
+      '@sphereon/oid4vci-common': 0.16.1-feature.MWALL.715.352(encoding@0.1.13)
       '@sphereon/ssi-express-support': 0.32.1-next.113(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       uuid: 9.0.1
