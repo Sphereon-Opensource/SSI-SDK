@@ -3,7 +3,7 @@ info:
   title: Sphereon OID4VCI API
   version: 1.0.0
   description: |
-    Sphereon OpenID for Verifiable Credential Issuance API
+    API for OpenID for Verifiable Credential Issuance
     This API allows issuers to provide verifiable credentials to wallets following the OID4VCI specification.
 
 components:
@@ -123,31 +123,50 @@ components:
 
     AccessTokenRequest:
       type: object
+      description: Request for obtaining an access token
       required:
         - grant_type
       properties:
         client_id:
           type: string
+          description: Unique identifier for the client making the request
+          example: "client-12345"
         code:
           type: string
+          description: Authorization code received from the authorization server
+          example: "abc123xyz"
         code_verifier:
           type: string
+          description: Code verifier used in the PKCE flow
+          example: "s256-code-verifier"
         grant_type:
           type: string
+          description: OAuth 2.0 grant type
           enum:
             - authorization_code
             - urn:ietf:params:oauth:grant-type:pre-authorized_code
             - password
+          example: "authorization_code"
         pre-authorized_code:
           type: string
+          description: Pre-authorized code used for credential issuance
+          example: "pre-auth-code-xyz"
         redirect_uri:
           type: string
+          description: The redirect URI where the response should be sent
+          example: "https://wallet.example.com/callback"
         scope:
           type: string
+          description: The scope of access requested by the client
+          example: "openid credential"
         user_pin:
           type: string
+          description: PIN required for pre-authorized flows (if applicable)
+          example: "1234"
         tx_code:
           type: string
+          description: Transaction code for authorization (if applicable)
+          example: "tx-56789"
 
     AccessTokenResponse:
       type: object
@@ -185,11 +204,13 @@ components:
 
     CredentialRequestV1_0_13:
       type: object
+      description: Request to issue a credential according to OID4VCI v1.0.13 specification
       required:
         - format
       properties:
         format:
           type: string
+          description: Format of the requested credential
           enum:
             - jwt_vc_json
             - jwt_vc
@@ -197,19 +218,34 @@ components:
             - jwt_vc_json-ld
             - vc+sd-jwt
             - mso_mdoc
+          example: "jwt_vc_json"
         credential_identifier:
           type: string
+          description: Identifier of the credential configuration to be issued
+          example: "UniversityDegree_JWT"
         proof:
           $ref: '#/components/schemas/ProofOfPossession'
         credential_response_encryption:
           type: object
+          description: Parameters for response encryption
           properties:
             jwk:
               type: object
+              description: JWK for encryption
+              example: {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "...",
+                "y": "..."
+              }
             alg:
               type: string
+              description: Algorithm for encryption
+              example: "ES256"
             enc:
               type: string
+              description: Content encryption algorithm
+              example: "A256GCM"
 
     ProofOfPossession:
       type: object
@@ -307,65 +343,89 @@ components:
 
     CredentialConfigurationSupported:
       type: object
+      description: Defines the supported configurations for issuing credentials
       required:
         - format
       properties:
         format:
           type: string
+          description: Format of the credential being issued
+          example: "jwt_vc_json"
         scope:
           type: string
+          description: Scope of the credential request, if applicable
+          example: "openid credential"
         cryptographic_binding_methods_supported:
           type: array
           items:
             type: string
+          description: Supported cryptographic binding methods
         credential_signing_alg_values_supported:
           type: array
           items:
             type: string
+          description: Supported credential signing algorithms
         proof_types_supported:
           type: object
+          description: Types of proof supported for credential issuance
         display:
           type: array
           items:
-            $ref: '#/components/schemas/CredentialDisplay'
+            $ref: '#/components/schemas/CredentialsSupportedDisplay'
 
     MetadataDisplay:
       type: object
+      description: Display metadata for a credential or issuer
       properties:
         name:
           type: string
+          description: Display name for the credential or issuer
+          example: "University Degree"
         locale:
           type: string
+          description: Language locale for the display information
+          example: "en-US"
         logo:
           type: object
           properties:
             url:
               type: string
+              description: URL to the logo image
             alt_text:
               type: string
+              description: Alternative text for the logo
         background_color:
           type: string
+          description: Background color for display components
         text_color:
           type: string
+          description: Text color for display components
 
-    CredentialDisplay:
+    CredentialsSupportedDisplay:
       type: object
+      description: Display information for a credential type
       properties:
         name:
           type: string
+          description: Name of the credential for display purposes
         locale:
           type: string
+          description: Language locale for the credential display
         logo:
           type: object
           properties:
             url:
               type: string
+              description: URL to the credential logo
             alt_text:
               type: string
+              description: Alternative text for the logo
         background_color:
           type: string
+          description: Background color for the credential display
         text_color:
           type: string
+          description: Text color for the credential display
 
 paths:
   /.well-known/openid-credential-issuer:
@@ -442,6 +502,7 @@ paths:
   /token:
     post:
       summary: Access token endpoint
+      description: Issues an access token based on an authorization request
       requestBody:
         required: true
         content:
