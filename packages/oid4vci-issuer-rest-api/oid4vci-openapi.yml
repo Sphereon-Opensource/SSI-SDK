@@ -1,0 +1,499 @@
+openapi: 3.0.0
+info:
+  title: Sphereon OID4VCI API
+  version: 1.0.0
+  description: Sphereon OpenID for Verifiable Credential Issuance API
+
+servers:
+  - url: /
+    description: Base API path
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+
+    IssueStatusResponse:
+      type: object
+      required:
+        - createdAt
+        - lastUpdatedAt
+        - status
+      properties:
+        createdAt:
+          type: number
+        lastUpdatedAt:
+          type: number
+        status:
+          type: string
+          enum:
+            - OFFER_CREATED
+            - OFFER_URI_RETRIEVED
+            - ACCESS_TOKEN_REQUESTED
+            - ACCESS_TOKEN_CREATED
+            - CREDENTIAL_REQUEST_RECEIVED
+            - CREDENTIAL_ISSUED
+            - NOTIFICATION_CREDENTIAL_ACCEPTED
+            - NOTIFICATION_CREDENTIAL_DELETED
+            - NOTIFICATION_CREDENTIAL_FAILURE
+            - ERROR
+        error:
+          type: string
+        clientId:
+          type: string
+
+    AuthorizationChallengeRequest:
+      type: object
+      properties:
+        client_id:
+          type: string
+        issuer_state:
+          type: string
+        auth_session:
+          type: string
+        scope:
+          type: string
+        code_challenge:
+          type: string
+        code_challenge_method:
+          type: string
+          enum: [ plain, S256 ]
+        presentation_during_issuance_session:
+          type: string
+
+    AuthorizationChallengeResponse:
+      type: object
+      required:
+        - authorization_code
+      properties:
+        authorization_code:
+          type: string
+
+    AccessTokenRequest:
+      type: object
+      required:
+        - grant_type
+      properties:
+        client_id:
+          type: string
+        code:
+          type: string
+        code_verifier:
+          type: string
+        grant_type:
+          type: string
+          enum:
+            - authorization_code
+            - urn:ietf:params:oauth:grant-type:pre-authorized_code
+            - password
+        pre-authorized_code:
+          type: string
+        redirect_uri:
+          type: string
+        scope:
+          type: string
+        user_pin:
+          type: string
+        tx_code:
+          type: string
+
+    AccessTokenResponse:
+      type: object
+      required:
+        - access_token
+      properties:
+        access_token:
+          type: string
+        scope:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: number
+        c_nonce:
+          type: string
+        c_nonce_expires_in:
+          type: number
+        authorization_pending:
+          type: boolean
+        interval:
+          type: number
+
+    NotificationRequest:
+      type: object
+      required:
+        - event
+      properties:
+        event:
+          type: string
+        event_description:
+          type: string
+        notification_id:
+          type: string
+
+    CredentialResponse:
+      type: object
+      properties:
+        credential:
+          oneOf:
+            - type: string
+            - type: object
+        format:
+          type: string
+          enum:
+            - jwt_vc_json
+            - jwt_vc
+            - ldp_vc
+            - jwt_vc_json-ld
+            - vc+sd-jwt
+            - mso_mdoc
+        transaction_id:
+          type: string
+        acceptance_token:
+          type: string
+        c_nonce:
+          type: string
+        c_nonce_expires_in:
+          type: number
+        notification_id:
+          type: string
+
+    CredentialRequestV1_0_13:
+      type: object
+      required:
+        - format
+      properties:
+        format:
+          type: string
+          enum:
+            - jwt_vc_json
+            - jwt_vc
+            - ldp_vc
+            - jwt_vc_json-ld
+            - vc+sd-jwt
+            - mso_mdoc
+        credential_identifier:
+          type: string
+        proof:
+          $ref: '#/components/schemas/ProofOfPossession'
+        credential_response_encryption:
+          type: object
+          properties:
+            jwk:
+              type: object
+            alg:
+              type: string
+            enc:
+              type: string
+
+    ProofOfPossession:
+      type: object
+      required:
+        - proof_type
+        - jwt
+      properties:
+        proof_type:
+          type: string
+          enum: [ jwt ]
+        jwt:
+          type: string
+
+    CredentialOfferPayload:
+      type: object
+      required:
+        - credential_issuer
+        - credential_configuration_ids
+      properties:
+        credential_issuer:
+          type: string
+        credential_configuration_ids:
+          type: array
+          items:
+            type: string
+        grants:
+          type: object
+        client_id:
+          type: string
+
+    CredentialOfferRequest:
+      type: object
+      properties:
+        credential_offer:
+          $ref: '#/components/schemas/CredentialOfferPayload'
+        credential_offer_uri:
+          type: string
+        baseUri:
+          type: string
+        scheme:
+          type: string
+        pinLength:
+          type: number
+        qrCodeOpts:
+          type: object
+        credentialDataSupplierInput:
+          type: object
+
+    IssuerMetadata:
+      type: object
+      required:
+        - credential_configurations_supported
+        - credential_issuer
+        - credential_endpoint
+      properties:
+        credential_configurations_supported:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CredentialConfigurationSupported'
+        credential_issuer:
+          type: string
+        credential_endpoint:
+          type: string
+        authorization_servers:
+          type: array
+          items:
+            type: string
+        deferred_credential_endpoint:
+          type: string
+        notification_endpoint:
+          type: string
+        token_endpoint:
+          type: string
+        display:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataDisplay'
+        authorization_challenge_endpoint:
+          type: string
+
+    CredentialConfigurationSupported:
+      type: object
+      required:
+        - format
+      properties:
+        format:
+          type: string
+        scope:
+          type: string
+        cryptographic_binding_methods_supported:
+          type: array
+          items:
+            type: string
+        credential_signing_alg_values_supported:
+          type: array
+          items:
+            type: string
+        proof_types_supported:
+          type: object
+        display:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialDisplay'
+
+    MetadataDisplay:
+      type: object
+      properties:
+        name:
+          type: string
+        locale:
+          type: string
+        logo:
+          type: object
+          properties:
+            url:
+              type: string
+            alt_text:
+              type: string
+        background_color:
+          type: string
+        text_color:
+          type: string
+
+    CredentialDisplay:
+      type: object
+      properties:
+        name:
+          type: string
+        locale:
+          type: string
+        logo:
+          type: object
+          properties:
+            url:
+              type: string
+            alt_text:
+              type: string
+        background_color:
+          type: string
+        text_color:
+          type: string
+
+paths:
+  /.well-known/openid-credential-issuer:
+    get:
+      summary: Get credential issuer metadata
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuerMetadata'
+
+  /.well-known/oauth-authorization-server:
+    get:
+      summary: Get authorization server metadata
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /webapp/credential-offer-status:
+    post:
+      summary: Get credential issuance status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueStatusResponse'
+        '404':
+          description: Credential offer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /authorization-challenge:
+    post:
+      summary: Authorization challenge endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizationChallengeRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationChallengeResponse'
+
+  /token:
+    post:
+      summary: Access token endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessTokenRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokenResponse'
+
+  /credentials:
+    post:
+      summary: Get credential endpoint
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialRequestV1_0_13'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialResponse'
+
+  /notification:
+    post:
+      summary: Notification endpoint
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        '204':
+          description: Notification processed successfully
+        '400':
+          description: Invalid notification request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /webapp/credential-offers/{id}:
+    get:
+      summary: Get credential offer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialOfferPayload'
+
+  /webapp/credential-offers:
+    post:
+      summary: Create credential offer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialOfferRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uri:
+                    type: string
+                  userPin:
+                    type: string
+                  txCode:
+                    type: object
