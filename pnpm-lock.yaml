@@ -1284,6 +1284,9 @@ importers:
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1367,6 +1370,9 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
@@ -3249,10 +3255,19 @@ importers:
 
   packages/vc-status-list:
     dependencies:
+      '@sd-jwt/jwt-status-list':
+        specifier: ^0.9.1
+        version: 0.9.1
+      '@sphereon/kmp-cbor':
+        specifier: 0.2.0-SNAPSHOT.25
+        version: 0.2.0-SNAPSHOT.25
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
       '@sphereon/ssi-types':
@@ -3267,12 +3282,21 @@ importers:
       '@veramo/credential-status':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
+      base64url:
+        specifier: ^3.0.1
+        version: 3.0.1
       credential-status:
         specifier: ^2.0.6
         version: 2.0.6
       debug:
         specifier: ^4.3.5
         version: 4.3.7
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
+      pako:
+        specifier: ^2.1.0
+        version: 2.1.0
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -3292,6 +3316,12 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.24.7
         version: 7.26.0(@babel/core@7.26.0)
+      '@types/pako':
+        specifier: 2.0.3
+        version: 2.0.3
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -3492,6 +3522,9 @@ importers:
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3613,6 +3646,70 @@ importers:
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
+      typescript:
+        specifier: 5.6.3
+        version: 5.6.3
+
+  packages/vc-status-list-tests:
+    dependencies:
+      react-native-securerandom:
+        specifier: ^1.0.1
+        version: 1.0.1(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))
+    devDependencies:
+      '@sphereon/ssi-sdk-ext.did-provider-key':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(expo@52.0.11(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(encoding@0.1.13)(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.27.0
+        version: 0.27.0
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.27.0
+        version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
+      '@sphereon/ssi-sdk.vc-handler-ld-local':
+        specifier: workspace:*
+        version: link:../vc-handler-ld-local
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@types/jest':
+        specifier: ^27.5.2
+        version: 27.5.2
+      '@types/node':
+        specifier: ^20.17.1
+        version: 20.17.9
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
+      '@veramo/credential-w3c':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=wuhizuafnrz3uzah2wlqaevbmi)(encoding@0.1.13)(expo@52.0.11(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(encoding@0.1.13)(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      nock:
+        specifier: ^13.5.4
+        version: 13.5.6
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.17.9)(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -5935,6 +6032,10 @@ packages:
     resolution: {integrity: sha512-o/Mg/Zg21poFsPXuxtPD9sdXq2b/0L+rb9gxU2k1rp1aT+DWmqD0k8v0Ttr2tlMc8l1xXQNA8FLXbL1AdLRmbQ==}
     engines: {node: '>=18'}
 
+  '@sd-jwt/jwt-status-list@0.9.1':
+    resolution: {integrity: sha512-vdk9LKmhZWNbR3K4MFPwJ/ms04UKpDpxNt+CgTuvP++xgcdgmMj8WPiqxZznNssaPPe5XI+THgFn0w1O7gXTSg==}
+    engines: {node: '>=18'}
+
   '@sd-jwt/present@0.7.2':
     resolution: {integrity: sha512-mQV85u2+mLLy2VZ9Wx2zpaB6yTDnbhCfWkP7eeCrzJQHBKAAHko8GrylEFmLKewFIcajS/r4lT/zHOsCkp5pZw==}
     engines: {node: '>=18'}
@@ -5945,6 +6046,10 @@ packages:
 
   '@sd-jwt/types@0.7.2':
     resolution: {integrity: sha512-1NRKowiW0ZiB9SGLApLPBH4Xk8gDQJ+nA9NdZ+uy6MmJKLEwjuJxO7yTvRIv/jX/0/Ebh339S7Kq4RD2AiFuRg==}
+    engines: {node: '>=18'}
+
+  '@sd-jwt/types@0.9.1':
+    resolution: {integrity: sha512-/Ylzbpre9HQdBrRSRS3bivFdYtwkLM99Ye6gEZEMsJCb231Z1LKdzvmN35H/335ZV4cFYsT5IVM9PurEl6GoLQ==}
     engines: {node: '>=18'}
 
   '@sd-jwt/utils@0.7.2':
@@ -6052,6 +6157,10 @@ packages:
   '@sphereon/jarm@0.16.1-next.339':
     resolution: {integrity: sha512-PQABG/rZpK1ypZqfHRV3HuxVDxclRJnD41A8fnr8EQB5JFKElSQ/SWEIWi7DD1HeWqzZnRiLWt1boPuWjgphOQ==}
     engines: {node: '>=18'}
+
+  '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
+    resolution: {integrity: sha512-EFuAtA4zaONe1/BGOntx9m1Oov6iVSMhbjhht6ST/6hFx+VMCs5iDTnl8qay3dleIOoDEluK8AnSiufi56+IJA==}
+    bundledDependencies: []
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
@@ -15895,6 +16004,10 @@ snapshots:
 
   '@js-joda/core@5.6.3': {}
 
+  '@js-joda/timezone@2.3.0(@js-joda/core@3.2.0)':
+    dependencies:
+      '@js-joda/core': 3.2.0
+
   '@js-joda/timezone@2.3.0(@js-joda/core@5.6.3)':
     dependencies:
       '@js-joda/core': 5.6.3
@@ -16834,6 +16947,12 @@ snapshots:
       base64url: 3.0.1
       pako: 2.1.0
 
+  '@sd-jwt/jwt-status-list@0.9.1':
+    dependencies:
+      '@sd-jwt/types': 0.9.1
+      base64url: 3.0.1
+      pako: 2.1.0
+
   '@sd-jwt/present@0.7.2':
     dependencies:
       '@sd-jwt/decode': 0.7.2
@@ -16847,6 +16966,8 @@ snapshots:
       '@sd-jwt/utils': 0.7.2
 
   '@sd-jwt/types@0.7.2': {}
+
+  '@sd-jwt/types@0.9.1': {}
 
   '@sd-jwt/utils@0.7.2':
     dependencies:
@@ -17066,6 +17187,12 @@ snapshots:
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
+
+  '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
+    dependencies:
+      '@js-joda/core': 3.2.0
+      '@js-joda/timezone': 2.3.0(@js-joda/core@3.2.0)
+      format-util: 1.0.5
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     dependencies:
@@ -18625,7 +18752,7 @@ snapshots:
 
   '@types/testing-library__jest-dom@5.14.9':
     dependencies:
-      '@types/jest': 27.5.2
+      '@types/jest': 29.5.14
 
   '@types/through@0.0.33':
     dependencies:

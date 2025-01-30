@@ -2,7 +2,7 @@ import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { CredentialPayload } from '@veramo/core'
 import { ProofFormat } from '@veramo/core'
-import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
+import { W3CVerifiableCredential } from '@veramo/core'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
 import { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
