@@ -3,7 +3,7 @@ import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataStoreStatusListEntities, StatusListEntryEntity } from '../index'
 import { DataStoreStatusListMigrations } from '../migrations'
 import { OAuthStatusListEntity, StatusList2021Entity } from '../entities/statusList/StatusListEntities'
-import { StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
+import { IIssuer, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
 
 describe('Status list entities tests', () => {
   let dbConnection: DataSource
@@ -96,8 +96,8 @@ describe('Status list entities tests', () => {
     expect(fromDb).toBeDefined()
     expect(fromDb.issuer).toEqual(statusList.issuer)
     expect(typeof fromDb.issuer).toEqual('object')
-    expect((fromDb.issuer as any).id).toEqual('did:example:123')
-    expect((fromDb.issuer as any).name).toEqual('Test Issuer')
+    expect((fromDb.issuer as IIssuer).id).toEqual('did:example:123')
+    expect((fromDb.issuer as IIssuer).name).toEqual('Test Issuer')
   })
 
   it('should save OAuth status list to database', async () => {
