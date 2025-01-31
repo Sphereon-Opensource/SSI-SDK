@@ -86,6 +86,8 @@ components:
           type: string
         clientId:
           type: string
+          description: Client identifier
+          example: "https://wallet.example.com"
 
     AuthorizationChallengeRequest:
       type: object
@@ -175,32 +177,55 @@ components:
       properties:
         access_token:
           type: string
+          description: The issued access token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         scope:
           type: string
+          description: The granted scope(s) of the access token
+          example: "openid credential"
         token_type:
           type: string
+          description: The type of token issued (typically "Bearer")
+          example: "Bearer"
         expires_in:
           type: number
+          description: The duration in seconds for which the token is valid
+          example: 3600
         c_nonce:
           type: string
+          description: A nonce to be used in credential requests
+          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
         c_nonce_expires_in:
           type: number
+          description: Expiration time of the c_nonce in seconds
+          example: 300
         authorization_pending:
           type: boolean
+          description: Indicates if authorization is still pending
+          example: false
         interval:
           type: number
+          description: The recommended polling interval in seconds
+          example: 5
 
     NotificationRequest:
       type: object
+      description: Request payload for sending a notification event
       required:
         - event
       properties:
         event:
           type: string
+          description: Type of the event being notified
+          example: "CREDENTIAL_ISSUED"
         event_description:
           type: string
+          description: A human-readable description of the event
+          example: "Credential issuance was successful."
         notification_id:
           type: string
+          description: Unique identifier for the notification event
+          example: "notif-12345"
 
     CredentialRequest:
       type: object
@@ -249,15 +274,20 @@ components:
 
     ProofOfPossession:
       type: object
+      description: Proof of possession structure for credential requests
       required:
         - proof_type
         - jwt
       properties:
         proof_type:
           type: string
+          description: The type of proof provided
           enum: [ jwt ]
+          example: "jwt"
         jwt:
           type: string
+          description: A signed JWT containing the proof of possession
+          example: "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9..."
 
     CredentialOfferPayload:
       type: object
@@ -284,6 +314,8 @@ components:
               "pre-authorized_code": "d270fee1-9185-4e60-9901-d291e1338d7a"
         client_id:
           type: string
+          description: Client identifier
+          example: "https://wallet.example.com"
 
     CredentialOfferRequest:
       description: Request to create a credential offer
