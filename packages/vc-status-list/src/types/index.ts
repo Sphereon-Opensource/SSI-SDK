@@ -97,6 +97,7 @@ export interface StatusListResult {
   type: StatusListType
   proofFormat: ProofFormat
   id: string
+  statuslistContentType: string
   issuer: string | IIssuer
   statusList2021?: StatusList2021Details
   oauthStatusList?: OAuthStatusDetails

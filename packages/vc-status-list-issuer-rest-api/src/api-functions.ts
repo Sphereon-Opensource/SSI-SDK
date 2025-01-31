@@ -42,7 +42,9 @@ const buildStatusListId = (request: Request): string => {
     host += `:${forwardedPort}`
   }
 
-  return `${protocol}://${host}${request.originalUrl}`
+  const forwardedPrefix = request.headers['x-forwarded-prefix']?.toString() ?? ''
+
+  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl}`
 }
 
 export function getStatusListCredentialEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
@@ -58,7 +60,7 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
       const driver = await getDriver({ id: buildStatusListId(request), correlationId, dbName: opts.dbName })
       const details = await driver.getStatusList()
       response.statusCode = 200
-      return response.send(details.statusListCredential)
+      return response.type(details.statuslistContentType).send(details.statusListCredential)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -191,7 +193,7 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
       }
 
       response.statusCode = 200
-      return response.send(details.statusListCredential)
+      return response.type(details.statuslistContentType).send(details.statusListCredential)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }

@@ -247,8 +247,9 @@ export async function getCredentialSignerCallback(
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential') && sdJwtPayload.status && sdJwtPayload.status.status_list) {
         // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
         const credentialStatusVC = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload })
-        if (!sdJwtPayload.status?.status_list?.idx) {
+        if (sdJwtPayload.status?.status_list?.idx) {
           if (!credentialStatusVC.status || !credentialStatusVC.status.status_list) {
+            // TODO check, looks like sdJwtPayload and credentialStatusVC is the same
             return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
           }
 
