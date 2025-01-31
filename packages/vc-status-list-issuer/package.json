@@ -21,6 +21,8 @@
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
+    "@sd-jwt/core": "^0.7.2",
+    "@sd-jwt/sd-jwt-vc": "^0.7.2",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",

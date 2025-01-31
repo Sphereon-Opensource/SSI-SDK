@@ -5,6 +5,7 @@ import {
   CredentialWithStatusSupport,
   GetStatusListArgs,
   IAddStatusToCredentialArgs,
+  IAddStatusToSdJwtCredentialArgs,
   IRequiredContext,
   IRequiredPlugins,
   IStatusListPlugin,
@@ -13,8 +14,9 @@ import {
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentContext, IAgentPlugin, IKeyManager } from '@veramo/core'
-import { createStatusListFromInstance, handleCredentialStatus } from '../functions'
+import { createStatusListFromInstance, handleCredentialStatus, handleSdJwtCredentialStatus } from '../functions'
 import { StatusListInstance } from '../types'
+import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list')
 
@@ -26,6 +28,7 @@ export class StatusListPlugin implements IAgentPlugin {
   private readonly allDataSources: DataSources
   readonly methods: IStatusListPlugin = {
     slAddStatusToCredential: this.slAddStatusToCredential.bind(this),
+    slAddStatusToSdJwtCredential: this.slAddStatusToSdJwtCredential.bind(this),
     slCreateStatusList: this.slCreateStatusList.bind(this),
     slGetStatusList: this.slGetStatusList.bind(this),
   }
@@ -137,6 +140,30 @@ export class StatusListPlugin implements IAgentPlugin {
       credentialId,
       statusListId,
       driver: await getDriver({ dataSource, id: statusListId }),
+    })
+    return credential
+  }
+
+  private async slAddStatusToSdJwtCredential(args: IAddStatusToSdJwtCredentialArgs, context: IRequiredContext): Promise<SdJwtVcPayload> {
+    const { credential, ...rest } = args
+    const credentialStatus = credential.status
+    if (!credentialStatus) {
+      logger.info(`Not adding status list info, since no credentialStatus object was present in the credential`)
+      return Promise.resolve(credential)
+    }
+    // If the credential is already providing the id we favor that over the argument. Default status list as a fallback. We also allow passing in an empty id to get the default
+    const statusListUri = credentialStatus.status_list.uri
+    const instance = this.instances.find((instance) => instance.id === statusListUri)
+    if (!instance) {
+      return Promise.reject(Error(`Status list with id ${statusListUri} is not managed by the status list plugin`))
+    } else if (!instance.dataSource && !instance.driverOptions?.dbName) {
+      return Promise.reject(Error(`Either a datasource or dbName needs to be supplied`))
+    }
+    const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+    await handleSdJwtCredentialStatus(credential, {
+      ...rest,
+      statusListId: statusListUri,
+      driver: await getDriver({ dataSource, id: statusListUri }),
     })
     return credential
   }

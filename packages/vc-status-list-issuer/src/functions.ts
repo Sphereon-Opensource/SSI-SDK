@@ -11,6 +11,7 @@ import { StatusListCredentialIdMode, StatusListType, StatusPurpose2021 } from '@
 import { IAgentContext } from '@veramo/core'
 import debug from 'debug'
 import { StatusListInstance } from './types'
+import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 
 export const createStatusListFromInstance = async (
   args: {
@@ -120,5 +121,63 @@ export const handleCredentialStatus = async (
       ...credential.credentialStatus,
       ...result.credentialStatus,
     }
+  }
+}
+export const handleSdJwtCredentialStatus = async (
+  credential: SdJwtVcPayload,
+  credentialStatusOpts?: IIssueCredentialStatusOpts & {
+    driver?: IStatusListDriver
+  },
+): Promise<void> => {
+  if (credential.status) {
+    const statusListId = credential.status.status_list.uri ?? credentialStatusOpts?.statusListId
+    debug(`Creating new credentialStatus object for credential with statusListId ${statusListId}...`)
+    if (!statusListId) {
+      throw Error(
+        `A credential status is requested, but we could not determine the status list id from 'statusListCredential' value or configuration`,
+      )
+    }
+
+    const slDriver =
+      credentialStatusOpts?.driver ??
+      (await getDriver({
+        id: statusListId,
+        dataSource: credentialStatusOpts?.dataSource,
+      }))
+    const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
+
+    let existingEntry: IStatusListEntryEntity | undefined = undefined
+
+    let statusListIndex =
+      credential.status?.status_list?.idx ??
+      (typeof credentialStatusOpts?.statusListIndex === 'string'
+        ? parseInt(credentialStatusOpts.statusListIndex, 10)
+        : (credentialStatusOpts?.statusListIndex ?? -1))
+    if (statusListIndex > 0) {
+      existingEntry = await slDriver.getStatusListEntryByIndex({
+        statusListId: statusList.id,
+        statusListIndex,
+        errorOnNotFound: false,
+      })
+      debug(
+        `${!existingEntry && 'no'} existing statusList entry and index ${
+          existingEntry?.statusListIndex
+        } for credential with statusListId ${statusListId}. Will reuse the index`,
+      )
+    } else {
+      debug(
+        `Will generate a new random statusListIndex since the credential did not contain a statusListIndex for credential with statusListId ${statusListId}...`,
+      )
+      statusListIndex = await slDriver.getRandomNewStatusListIndex({ correlationId: statusList.correlationId })
+      debug(`Random statusListIndex ${statusListIndex} assigned for credential with statusListId ${statusListId}`)
+    }
+    await slDriver.updateStatusListEntry({
+      statusList: statusListId,
+      statusListIndex,
+      correlationId: credentialStatusOpts?.statusEntryCorrelationId,
+      value: credentialStatusOpts?.value,
+    })
+    debug(`StatusListEntry with statusListIndex ${statusListIndex} created for credential with statusListId ${statusListId}`)
+    credential.status.status_list.idx = statusListIndex
   }
 }

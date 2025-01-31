@@ -243,6 +243,19 @@ export async function getCredentialSignerCallback(
           _sd: credential['_sd'],
         }
       }
+
+      if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential') && sdJwtPayload.status && sdJwtPayload.status.status_list) {
+        // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+        const credentialStatusVC = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload })
+        if (!sdJwtPayload.status?.status_list?.idx) {
+          if (!credentialStatusVC.status || !credentialStatusVC.status.status_list) {
+            return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
+          }
+
+          sdJwtPayload.status.status_list.idx = credentialStatusVC.status.status_list.idx
+        }
+      }
+
       const result = await context.agent.createSdJwtVc({
         credentialPayload: sdJwtPayload,
         disclosureFrame: disclosureFrame,

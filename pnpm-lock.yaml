@@ -3255,9 +3255,15 @@ importers:
 
   packages/vc-status-list:
     dependencies:
+      '@sd-jwt/core':
+        specifier: ^0.7.2
+        version: 0.7.2
       '@sd-jwt/jwt-status-list':
         specifier: ^0.9.1
         version: 0.9.1
+      '@sd-jwt/sd-jwt-vc':
+        specifier: ^0.7.2
+        version: 0.7.2
       '@sphereon/kmp-cbor':
         specifier: 0.2.0-SNAPSHOT.25
         version: 0.2.0-SNAPSHOT.25
@@ -3328,6 +3334,12 @@ importers:
 
   packages/vc-status-list-issuer:
     dependencies:
+      '@sd-jwt/core':
+        specifier: ^0.7.2
+        version: 0.7.2
+      '@sd-jwt/sd-jwt-vc':
+        specifier: ^0.7.2
+        version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))

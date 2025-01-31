@@ -6,11 +6,11 @@ import {
   IVerifiableCredential,
   OrPromise,
   ProofFormat,
+  StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
-  StatusListCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import {
@@ -24,6 +24,7 @@ import {
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
 import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
+import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -201,6 +202,8 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    */
   slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport>
 
+  slAddStatusToSdJwtCredential(args: IAddStatusToSdJwtCredentialArgs, context: IRequiredContext): Promise<SdJwtVcPayload>
+
   /**
    * Get the status list using the configured driver for the SL. Normally a correlationId or id should suffice. Optionally accepts a dbName/datasource
    * @param args
@@ -219,6 +222,10 @@ export type CreateNewStatusListArgs = BaseCreateNewStatusListArgs & {
 
 export type IAddStatusToCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataSource'> & {
   credential: CredentialWithStatusSupport
+}
+
+export type IAddStatusToSdJwtCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataSource'> & {
+  credential: SdJwtVcPayload
 }
 
 export interface IIssueCredentialStatusOpts {
