@@ -2,15 +2,27 @@ import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
 import {
   checkStatusIndexFromStatusListCredential,
   CreateNewStatusListFuncArgs,
+  StatusListResult,
   updateStatusIndexFromStatusListCredential,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import Debug from 'debug'
 import { Request, Response, Router } from 'express'
 import { ICredentialStatusListEndpointOpts, IRequiredContext, IW3CredentialStatusEndpointOpts, UpdateCredentialStatusRequest } from './types'
-import { StatusListType } from '@sphereon/ssi-types'
+import { StatusListCredential, StatusListType } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
+
+function sendStatuslistResponse(details: StatusListResult, statuslistPayload: StatusListCredential, response: Response) {
+  switch (details.proofFormat) {
+    case 'jwt':
+    case 'cbor':
+      const asciiData = Buffer.from(statuslistPayload as string, 'ascii')
+      return response.status(200).setHeader('Content-Type', details.statuslistContentType).send(asciiData)
+    default:
+      return response.status(200).setHeader('Content-Type', details.statuslistContentType).send(statuslistPayload)
+  }
+}
 
 export function createNewStatusListEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
   if (opts?.enabled === false) {
@@ -25,8 +37,9 @@ export function createNewStatusListEndpoint(router: Router, context: IRequiredCo
       if (!statusListArgs) {
         return sendErrorResponse(response, 400, 'No statusList details supplied')
       }
-      const statusListDetails = await context.agent.slCreateStatusList(statusListArgs)
-      return response.send({ statusListDetails })
+      const details = await context.agent.slCreateStatusList(statusListArgs)
+      const statuslistPayload = details.statusListCredential
+      return sendStatuslistResponse(details, statuslistPayload, response)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -59,9 +72,8 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
       const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl
       const driver = await getDriver({ id: buildStatusListId(request), correlationId, dbName: opts.dbName })
       const details = await driver.getStatusList()
-      response.statusCode = 200
-      response.set('Content-Type', details.statuslistContentType)
-      return response.send(details.statusListCredential)
+      const statuslistPayload = details.statusListCredential
+      return sendStatuslistResponse(details, statuslistPayload, response)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -121,7 +133,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         }
       }
       response.statusCode = 200
-      return response.send({ ...entry, status })
+      return response.send({ ...entry, status }) // FIXME content type?
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -193,9 +205,8 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
         details = await driver.updateStatusList({ statusListCredential: details.statusListCredential })
       }
 
-      response.statusCode = 200
-      response.set('Content-Type', details.statuslistContentType)
-      return response.send(details.statusListCredential)
+      const statuslistPayload = details.statusListCredential
+      return sendStatuslistResponse(details, statuslistPayload, response)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }

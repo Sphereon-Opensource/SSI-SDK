@@ -92,7 +92,7 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
 
 export interface StatusListResult {
   encodedList: string
-  statusListCredential: StatusListCredential // | CompactJWT
+  statusListCredential: StatusListCredential
   length: number
   type: StatusListType
   proofFormat: ProofFormat
