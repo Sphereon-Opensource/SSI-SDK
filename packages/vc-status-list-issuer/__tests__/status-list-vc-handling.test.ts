@@ -166,6 +166,7 @@ describe('JWT Verifiable Credential, should be', () => {
         type: StatusListType.OAuthStatusList,
         proofFormat: 'jwt',
         statusListCredential: 'ey_eyMockJWT',
+        statuslistContentType: 'application/statuslist+jwt',
         encodedList: 'AAAA',
         id: 'list123',
         issuer: 'did:example:123',
