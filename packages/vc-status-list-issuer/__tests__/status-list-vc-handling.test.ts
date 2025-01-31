@@ -246,6 +246,7 @@ describe('JWT Verifiable Credential, should be', () => {
         id: 'list123',
         issuer: 'did:example:123',
         length: 250000,
+        statuslistContentType: 'application/statuslist+jwt',
         oauthStatusList: {
           bitsPerStatus: 2,
         },
