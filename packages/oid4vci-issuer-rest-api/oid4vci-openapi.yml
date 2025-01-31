@@ -1,11 +1,24 @@
 openapi: 3.0.0
 info:
   title: Sphereon OID4VCI API
-  version: 1.0.0
+  version: 0.1.0
   description: |
     API for OpenID for Verifiable Credential Issuance
     This API allows issuers to provide verifiable credentials to wallets following the OID4VCI specification.
-
+    
+    It describes the complete API, including the wallets perspective. Any wallet conforming to OID4VCI should work with these endpoints out of the box.
+    The backend/webapp endpoint describe:
+    - How to create a session and get a URI to include in a QR code or link
+    - How to poll the issueance status
+    - How to access a specific credential offer
+    
+tags:
+  - name: Backend
+    description: The backend/webapp endpoints that want to issue a credential
+  - name: Wallet
+    description: The endpoints conforming to the OID4VCI specification used by wallet implementers
+  - name: Integrated Authorization Server
+    description: Integrated Authorization Server endpoints (if enabled and external AS is not used)
 components:
   schemas:
     Error:
@@ -472,21 +485,17 @@ components:
           description: Text color for the credential display
 
 paths:
-  /.well-known/openid-credential-issuer:
-    get:
-      summary: Get credential issuer metadata
-      description: Returns the metadata about the credential issuer's capabilities
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IssuerMetadata'
-
-  /.well-known/oauth-authorization-server:
-    get:
-      summary: Get authorization server metadata
+  /webapp/credential-offers:
+    post:
+      summary: Create credential offer
+      description: Generate and return a new credential offer
+      tags: ["Backend"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialOfferRequest'
       responses:
         '200':
           description: Successful response
@@ -494,11 +503,23 @@ paths:
             application/json:
               schema:
                 type: object
-
+                properties:
+                  uri:
+                    type: string
+                    description: Credential offer URI
+                    example: "https://issuer.example.com/credential-offer/123"
+                  userPin:
+                    type: string
+                    description: User PIN for access if required
+                    example: "1234"
+                  txCode:
+                    type: object
+                    description: Transaction code details for tracking
   /webapp/credential-offer-status:
     post:
       summary: Get credential issuance status
       description: Check the current status of a credential issuance request
+      tags: ["Backend"]
       requestBody:
         required: true
         content:
@@ -526,9 +547,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /webapp/credential-offers/{id}:
+    get:
+      summary: Get credential offer
+      description: Retrieve a specific credential offer by ID
+      tags: ["Backend"]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the credential offer
+          schema:
+            type: string
+          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialOfferPayload'
+
+
+  /.well-known/openid-credential-issuer:
+    get:
+      summary: Get credential issuer metadata
+      description: Returns the metadata about the credential issuer's capabilities, conforms to OID4VCI
+      tags: ["Wallet"]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuerMetadata'
+
+  /.well-known/oauth-authorization-server:
+    get:
+      summary: Get authorization server metadata, if the integrated authorization server is enabled. Conforms to OAuth2
+      tags: ["Integrated Authorization Server"]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+
+  
   /authorization-challenge:
     post:
-      summary: Authorization challenge endpoint
+      summary: Authorization challenge endpoint in case a first party flow is enabled with the integrated authorization server
+      tags: ["Integrated Authorization Server"]
       requestBody:
         required: true
         content:
@@ -546,7 +616,8 @@ paths:
   /token:
     post:
       summary: Access token endpoint
-      description: Issues an access token based on an authorization request
+      description: Issues an access token based on an authorization request, in case the integrated authorization server is enabled
+      tags: ["Integrated Authorization Server"]
       requestBody:
         required: true
         content:
@@ -565,6 +636,7 @@ paths:
     post:
       summary: Get credential endpoint
       description: Request issuance of a credential
+      tags: ["Wallet"]
       security:
         - bearerAuth: [ ]
       requestBody:
@@ -584,6 +656,7 @@ paths:
   /notification:
     post:
       summary: Notification endpoint
+      tags: ["Wallet"]
       security:
         - bearerAuth: [ ]
       requestBody:
@@ -601,53 +674,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
-  /webapp/credential-offers/{id}:
-    get:
-      summary: Get credential offer
-      description: Retrieve a specific credential offer by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Unique identifier of the credential offer
-          schema:
-            type: string
-          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CredentialOfferPayload'
-
-  /webapp/credential-offers:
-    post:
-      summary: Create credential offer
-      description: Generate and return a new credential offer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CredentialOfferRequest'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  uri:
-                    type: string
-                    description: Credential offer URI
-                    example: "https://issuer.example.com/credential-offer/123"
-                  userPin:
-                    type: string
-                    description: User PIN for access if required
-                    example: "1234"
-                  txCode:
-                    type: object
-                    description: Transaction code details for tracking
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/SphereonInt/OID4VCI/0.1.0
