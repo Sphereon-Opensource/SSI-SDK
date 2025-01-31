@@ -60,7 +60,8 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
       const driver = await getDriver({ id: buildStatusListId(request), correlationId, dbName: opts.dbName })
       const details = await driver.getStatusList()
       response.statusCode = 200
-      return response.type(details.statuslistContentType).send(details.statusListCredential)
+      response.set('Content-Type', details.statuslistContentType)
+      return response.send(details.statusListCredential)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
@@ -193,7 +194,8 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
       }
 
       response.statusCode = 200
-      return response.type(details.statuslistContentType).send(details.statusListCredential)
+      response.set('Content-Type', details.statuslistContentType)
+      return response.send(details.statusListCredential)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
