@@ -14,14 +14,24 @@ import { StatusListCredential, StatusListType } from '@sphereon/ssi-types'
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
 function sendStatuslistResponse(details: StatusListResult, statuslistPayload: StatusListCredential, response: Response) {
+  let payload: Buffer | StatusListCredential
+
   switch (details.proofFormat) {
     case 'jwt':
     case 'cbor':
-      const asciiData = Buffer.from(statuslistPayload as string, 'ascii')
-      return response.status(200).setHeader('Content-Type', details.statuslistContentType).send(asciiData)
+      payload = Buffer.from(statuslistPayload as string, 'ascii')
+      break
     default:
-      return response.status(200).setHeader('Content-Type', details.statuslistContentType).send(statuslistPayload)
+      payload = statuslistPayload
   }
+
+  return response
+    .status(200)
+    .setHeader('Content-Type', details.statuslistContentType)
+    .setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    .setHeader('Pragma', 'no-cache')
+    .setHeader('Expires', '0')
+    .send(payload)
 }
 
 export function createNewStatusListEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
@@ -139,6 +149,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
     }
   })
 }
+
 export function updateW3CStatusEndpoint(router: Router, context: IRequiredContext, opts: IW3CredentialStatusEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Update credential status endpoint is disabled`)
