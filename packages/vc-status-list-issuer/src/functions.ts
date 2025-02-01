@@ -5,16 +5,13 @@ import {
   IRequiredPlugins,
   IStatusListPlugin,
   StatusListResult,
-  StatusOAuth,
-  updateStatusIndexFromStatusListCredential,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver, IStatusListDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { StatusListCredentialIdMode, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
-import { IAgentContext, ICredentialPlugin } from '@veramo/core'
+import { IAgentContext } from '@veramo/core'
 import debug from 'debug'
 import { StatusListInstance } from './types'
 import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export const createStatusListFromInstance = async (
   args: {
@@ -129,7 +126,6 @@ export const handleCredentialStatus = async (
 }
 export const handleSdJwtCredentialStatus = async (
   credential: SdJwtVcPayload,
-  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   credentialStatusOpts?: IIssueCredentialStatusOpts & {
     driver?: IStatusListDriver
   },
@@ -183,15 +179,6 @@ export const handleSdJwtCredentialStatus = async (
       value: credentialStatusOpts?.value,
     })
     debug(`StatusListEntry with statusListIndex ${statusListIndex} created for credential with statusListId ${statusListId}`)
-
-    // Create a Valid status in the status list
-    let details = await slDriver.getStatusList()
-    let statusListCredential = details.statusListCredential
-    details = await updateStatusIndexFromStatusListCredential(
-      { statusListCredential: statusListCredential, statusListIndex: statusListIndex, value: StatusOAuth.Valid },
-      context,
-    )
-    await slDriver.updateStatusList({ statusListCredential: details.statusListCredential })
 
     credential.status.status_list.idx = statusListIndex
   }
