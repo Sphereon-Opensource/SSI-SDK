@@ -25,13 +25,7 @@ function sendStatuslistResponse(details: StatusListResult, statuslistPayload: St
       payload = statuslistPayload
   }
 
-  return response
-    .status(200)
-    .setHeader('Content-Type', details.statuslistContentType)
-    .setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
-    .setHeader('Pragma', 'no-cache')
-    .setHeader('Expires', '0')
-    .send(payload)
+  return response.status(200).setHeader('Content-Type', details.statuslistContentType).send(payload)
 }
 
 export function createNewStatusListEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
