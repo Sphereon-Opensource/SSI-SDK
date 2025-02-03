@@ -207,10 +207,6 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
       let statusListCredential = details.statusListCredential
 
       for (const updateItem of updateRequest.credentialStatus) {
-        if (updateItem.type && updateItem.type !== 'StatusList2021') {
-          return sendErrorResponse(response, 400, `Only the optional type 'StatusList2021' is currently supported`)
-        }
-
         if (!updateItem.status) {
           return sendErrorResponse(response, 400, `Required 'status' value was missing in the credentialStatus array`)
         }

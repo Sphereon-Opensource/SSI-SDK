@@ -140,6 +140,7 @@ export class StatusListPlugin implements IAgentPlugin {
       credentialId,
       statusListId,
       driver: await getDriver({ dataSource, id: statusListId }),
+      statusEntryCorrelationId: rest.statusEntryCorrelationId ?? instance.correlationId,
     })
     return credential
   }
@@ -164,6 +165,7 @@ export class StatusListPlugin implements IAgentPlugin {
       ...rest,
       statusListId: statusListUri,
       driver: await getDriver({ dataSource, id: statusListUri }),
+      statusEntryCorrelationId: rest.statusEntryCorrelationId ?? instance.correlationId,
     })
     return credential
   }
