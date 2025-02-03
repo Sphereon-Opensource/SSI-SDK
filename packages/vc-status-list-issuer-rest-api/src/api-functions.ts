@@ -61,7 +61,7 @@ const buildStatusListId = (request: Request): string => {
 
   const forwardedPrefix = request.headers['x-forwarded-prefix']?.toString() ?? ''
 
-  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl}`
+  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl.replace(/\/status\/index\/.*/, '')}`
 }
 
 export function getStatusListCredentialEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
@@ -105,7 +105,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       }
       const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl
       const driver = await getDriver({
-        id: `${request.protocol}://${request.get('host')}${request.originalUrl.replace(/\/status\/index\/.*/, '')}`,
+        id: buildStatusListId(request),
         correlationId,
         dbName: opts.dbName,
       })
