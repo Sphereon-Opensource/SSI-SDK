@@ -175,15 +175,14 @@ export const handleSdJwtCredentialStatus = async (
       }))
     const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
 
-    const currentIndex =
+    const statusListIndex =
       typeof credentialStatusOpts?.statusListIndex === 'string'
         ? parseInt(credentialStatusOpts.statusListIndex, 10)
-        : (credentialStatusOpts?.statusListIndex ?? -1)
-    const initialIndex = credential.status?.status_list?.idx ?? currentIndex
-    const { statusListIndex } = await processStatusListEntry({
+        : (credentialStatusOpts?.statusListIndex ?? (await slDriver.getRandomNewStatusListIndex({ correlationId: statusList.correlationId })))
+    await processStatusListEntry({
       statusListId,
       statusList,
-      currentIndex: initialIndex,
+      currentIndex: statusListIndex,
       opts: credentialStatusOpts,
       slDriver,
       debugCredentialInfo: `credential with statusListId ${statusListId}`,
