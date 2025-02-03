@@ -8,8 +8,15 @@ import {
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import Debug from 'debug'
 import { Request, Response, Router } from 'express'
-import { ICredentialStatusListEndpointOpts, IRequiredContext, IW3CredentialStatusEndpointOpts, UpdateCredentialStatusRequest } from './types'
+import {
+  ICredentialStatusListEndpointOpts,
+  IRequiredContext,
+  IW3CredentialStatusEndpointOpts,
+  UpdateIndexedCredentialStatusRequest,
+  UpdateW3cCredentialStatusRequest,
+} from './types'
 import { StatusListCredential, StatusListType } from '@sphereon/ssi-types'
+import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -144,7 +151,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
   })
 }
 
-export function updateW3CStatusEndpoint(router: Router, context: IRequiredContext, opts: IW3CredentialStatusEndpointOpts) {
+export function updateStatusEndpoint(router: Router, context: IRequiredContext, opts: IW3CredentialStatusEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Update credential status endpoint is disabled`)
     return
@@ -152,37 +159,50 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
   router.post(opts?.path ?? '/credentials/status', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       debug(JSON.stringify(request.body, null, 2))
-      const updateRequest = request.body as UpdateCredentialStatusRequest
+      const updateRequest = request.body as UpdateW3cCredentialStatusRequest | UpdateIndexedCredentialStatusRequest
       const statusListId = updateRequest.statusListId ?? request.query.statusListId?.toString() ?? opts.statusListId
       const statusListCorrelationId = updateRequest.statusListCorrelationId ?? request.query.statusListorrelationId?.toString() ?? opts.correlationId
       const entryCorrelationId = updateRequest.entryCorrelationId ?? request.query.entryCorrelationId?.toString()
-      const credentialId = updateRequest.credentialId
 
       // TODO: Move mostly to driver
-      if (!credentialId) {
-        return sendErrorResponse(response, 400, 'No statusList credentialId supplied')
+      if (!statusListId && !statusListCorrelationId) {
+        return sendErrorResponse(response, 400, 'No statusList id or correlation Id provided or deduced for the API or in the request')
       } else if (!updateRequest.credentialStatus || updateRequest.credentialStatus.length === 0) {
         return sendErrorResponse(response, 400, 'No statusList updates supplied')
-      } else if (!statusListId && !statusListCorrelationId) {
-        return sendErrorResponse(response, 400, 'No statusList id or correlation Id provided or deduced for the API or in the request')
       }
       const driver = await getDriver({ id: statusListId, correlationId: statusListCorrelationId, dbName: opts.dbName })
-      // unfortunately the W3C API works by credentialId. Which means you will have to map listIndices during issuance
-      const statusListEntry = await driver.getStatusListEntryByCredentialId({
-        statusListId,
-        statusListCorrelationId,
-        entryCorrelationId,
-        credentialId,
-        errorOnNotFound: true,
-      })
-      if (!statusListEntry) {
-        return sendErrorResponse(
-          response,
-          404,
-          `status list index for credential id ${credentialId} was never recorded for ${statusListId}. This means the status will be 0`,
-        )
+
+      // Get status list entry based on request type
+      let statusListEntry: IStatusListEntryEntity | undefined
+      if ('credentialId' in updateRequest) {
+        if (!updateRequest.credentialId) {
+          return sendErrorResponse(response, 400, 'No credentialId supplied')
+        }
+        // unfortunately the W3C API works by credentialId. Which means you will have to map listIndices during issuance
+        statusListEntry = await driver.getStatusListEntryByCredentialId({
+          statusListId,
+          statusListCorrelationId,
+          entryCorrelationId,
+          credentialId: updateRequest.credentialId,
+          errorOnNotFound: true,
+        })
+      } else {
+        if (!updateRequest.statusListIndex || updateRequest.statusListIndex < 0) {
+          return sendErrorResponse(response, 400, 'Invalid statusListIndex supplied')
+        }
+        statusListEntry = await driver.getStatusListEntryByIndex({
+          statusListIndex: updateRequest.statusListIndex,
+          statusListId,
+          correlationId: statusListCorrelationId,
+          errorOnNotFound: true,
+        })
       }
-      const statusListIndex = statusListEntry.statusListIndex
+
+      if (!statusListEntry) {
+        const identifier = 'credentialId' in updateRequest ? updateRequest.credentialId : `index ${updateRequest.statusListIndex}`
+        return sendErrorResponse(response, 404, `Status list entry for ${identifier} not found for ${statusListId}`)
+      }
+
       let details = await driver.getStatusList()
       let statusListCredential = details.statusListCredential
 
@@ -192,26 +212,27 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
         }
 
         if (!updateItem.status) {
-          return sendErrorResponse(
-            response,
-            400,
-            `Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`,
-          )
+          return sendErrorResponse(response, 400, `Required 'status' value was missing in the credentialStatus array`)
         }
-        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? 0 : 1
+
+        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? '0' : '1'
         const statusList = statusListId ?? statusListEntry.statusList
-        await driver.updateStatusListEntry({ ...statusListEntry, statusListIndex, statusList, credentialId, value: value ? '1' : '0' })
+        await driver.updateStatusListEntry({ ...statusListEntry, statusList, value })
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
         details = await updateStatusIndexFromStatusListCredential(
-          { statusListCredential: statusListCredential, statusListIndex, value, keyRef: opts.keyRef },
+          {
+            statusListCredential: statusListCredential,
+            statusListIndex: statusListEntry.statusListIndex,
+            value: parseInt(value),
+            keyRef: opts.keyRef,
+          },
           context,
         )
         details = await driver.updateStatusList({ statusListCredential: details.statusListCredential })
       }
 
-      const statuslistPayload = details.statusListCredential
-      return sendStatuslistResponse(details, statuslistPayload, response)
+      return sendStatuslistResponse(details, details.statusListCredential, response)
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }
