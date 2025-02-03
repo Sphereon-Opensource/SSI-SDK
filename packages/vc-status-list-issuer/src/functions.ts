@@ -8,10 +8,11 @@ import {
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver, IStatusListDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
-import { IAgentContext } from '@veramo/core'
+import { IAgentContext, ICredentialPlugin } from '@veramo/core'
 import debug from 'debug'
 import { StatusListInstance } from './types'
 import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 async function processStatusListEntry(params: {
   statusListId: string
@@ -154,6 +155,7 @@ export const handleCredentialStatus = async (
 }
 export const handleSdJwtCredentialStatus = async (
   credential: SdJwtVcPayload,
+  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   credentialStatusOpts?: IIssueCredentialStatusOpts & {
     driver?: IStatusListDriver
   },
@@ -175,19 +177,36 @@ export const handleSdJwtCredentialStatus = async (
       }))
     const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
 
-    const currentIndex =
-      typeof credentialStatusOpts?.statusListIndex === 'string'
+    let existingEntry: IStatusListEntryEntity | undefined = undefined
+
+    let statusListIndex =
+      credential.status?.status_list?.idx ??
+      (typeof credentialStatusOpts?.statusListIndex === 'string'
         ? parseInt(credentialStatusOpts.statusListIndex, 10)
-        : (credentialStatusOpts?.statusListIndex ?? -1)
-    const initialIndex = credential.status?.status_list?.idx ?? currentIndex
-    const { statusListIndex } = await processStatusListEntry({
-      statusListId,
-      statusList,
-      currentIndex: initialIndex,
-      opts: credentialStatusOpts,
-      slDriver,
-      debugCredentialInfo: `credential with statusListId ${statusListId}`,
-      useIndexCondition: (index) => index > 0,
+        : (credentialStatusOpts?.statusListIndex ?? -1))
+    if (statusListIndex > 0) {
+      existingEntry = await slDriver.getStatusListEntryByIndex({
+        statusListId: statusList.id,
+        statusListIndex,
+        errorOnNotFound: false,
+      })
+      debug(
+        `${!existingEntry && 'no'} existing statusList entry and index ${
+          existingEntry?.statusListIndex
+        } for credential with statusListId ${statusListId}. Will reuse the index`,
+      )
+    } else {
+      debug(
+        `Will generate a new random statusListIndex since the credential did not contain a statusListIndex for credential with statusListId ${statusListId}...`,
+      )
+      statusListIndex = await slDriver.getRandomNewStatusListIndex({ correlationId: statusList.correlationId })
+      debug(`Random statusListIndex ${statusListIndex} assigned for credential with statusListId ${statusListId}`)
+    }
+    await slDriver.updateStatusListEntry({
+      statusList: statusListId,
+      statusListIndex,
+      correlationId: credentialStatusOpts?.statusEntryCorrelationId,
+      value: credentialStatusOpts?.value,
     })
 
     debug(`StatusListEntry with statusListIndex ${statusListIndex} created for credential with statusListId ${statusListId}`)

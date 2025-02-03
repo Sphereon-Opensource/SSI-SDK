@@ -160,7 +160,7 @@ export class StatusListPlugin implements IAgentPlugin {
       return Promise.reject(Error(`Either a datasource or dbName needs to be supplied`))
     }
     const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-    await handleSdJwtCredentialStatus(credential, {
+    await handleSdJwtCredentialStatus(credential, context, {
       ...rest,
       statusListId: statusListUri,
       driver: await getDriver({ dataSource, id: statusListUri }),
