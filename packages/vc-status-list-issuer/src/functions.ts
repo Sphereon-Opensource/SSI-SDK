@@ -66,7 +66,7 @@ async function processStatusListEntry(params: {
     statusList: params.statusListId,
     statusListIndex,
     correlationId: params.opts?.statusEntryCorrelationId,
-    value: params.opts?.value,
+    value: params.opts?.value ?? 0, // For new entries the value may not be set. default to 0, otherwise the get API will return value null while for non-existing entries it will return 0
   }
   if (params.credentialId) {
     updateArgs.credentialId = params.credentialId
