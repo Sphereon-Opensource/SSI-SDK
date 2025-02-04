@@ -57,7 +57,7 @@ export class StatusList2021Implementation implements IStatusList {
       id,
       correlationId,
       issuer,
-      statuslistContentType: this.buildContentType(proofFormat), // TODO add to test
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -100,7 +100,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat: proofFormat,
       id,
       issuer,
-      statuslistContentType: this.buildContentType(proofFormat), // TODO add to test
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -144,7 +144,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat: args.proofFormat ?? 'lds',
       id: id,
       issuer: issuer,
-      statuslistContentType: this.buildContentType(proofFormat), // TODO add to test
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -177,7 +177,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat,
       length: list.length,
       statusListCredential: statusListPayload,
-      statuslistContentType: this.buildContentType(proofFormat), // TODO add to test
+      statuslistContentType: this.buildContentType(proofFormat),
       statusList2021: {
         indexingDirection: 'rightToLeft',
         statusPurpose,
