@@ -68,7 +68,7 @@ const buildStatusListId = (request: Request): string => {
 
   const forwardedPrefix = request.headers['x-forwarded-prefix']?.toString() ?? ''
 
-  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl.replace(/\/status\/index\/.*/, '')}`
+  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl.split('?')[0].replace(/\/status\/index\/.*/, '')}`
 }
 
 export function getStatusListCredentialEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
@@ -80,8 +80,12 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       //todo: Check index against correlationId first. Then match originalUrl against statusList id
-      const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl
-      const driver = await getDriver({ id: buildStatusListId(request), correlationId, dbName: opts.dbName })
+      //const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl TODO I so not get these
+      const correlationId = request.query.correlationId?.toString()
+      const driver = await getDriver({
+        ...(correlationId ? { correlationId } : { id: buildStatusListId(request) }),
+        dbName: opts.dbName,
+      })
       const details = await driver.getStatusList()
       const statuslistPayload = details.statusListCredential
       return sendStatuslistResponse(details, statuslistPayload, response)
@@ -110,10 +114,10 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       if (!statusListIndex || statusListIndex < 0) {
         return sendErrorResponse(response, 400, `Please provide a proper statusListIndex`)
       }
-      const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl
+      //const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl TODO I so not get these
+      const correlationId = request.query.correlationId?.toString()
       const driver = await getDriver({
-        id: buildStatusListId(request),
-        correlationId,
+        ...(correlationId ? { correlationId } : { id: buildStatusListId(request) }),
         dbName: opts.dbName,
       })
       const details = await driver.getStatusList()
@@ -121,10 +125,10 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         return sendErrorResponse(response, 400, `Please provide a proper statusListIndex`)
       }
 
+      const entityCorrelationId = request.query.entityCorrelationId?.toString()
       let entry = await driver.getStatusListEntryByIndex({
         statusListIndex,
-        statusListId: details.id,
-        correlationId: details.correlationId,
+        ...(entityCorrelationId ? { correlationId: entityCorrelationId } : { statusListId: details.id }),
         errorOnNotFound: false,
       })
       const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
@@ -170,7 +174,10 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
       } else if (!updateRequest.credentialStatus || updateRequest.credentialStatus.length === 0) {
         return sendErrorResponse(response, 400, 'No statusList updates supplied')
       }
-      const driver = await getDriver({ id: statusListId, correlationId: statusListCorrelationId, dbName: opts.dbName })
+      const driver = await getDriver({
+        ...(statusListCorrelationId ? { correlationId: statusListCorrelationId } : { id: buildStatusListId(request) }),
+        dbName: opts.dbName,
+      })
 
       // Get status list entry based on request type
       let statusListEntry: IStatusListEntryEntity | undefined

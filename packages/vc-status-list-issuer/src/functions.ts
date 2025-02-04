@@ -7,11 +7,13 @@ import {
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver, IStatusListDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
-import { StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
-import { IAgentContext } from '@veramo/core'
 import debug from 'debug'
-import { StatusListInstance } from './types'
 import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { Loggers, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
+import { StatusListInstance } from './types'
+import { IAgentContext } from '@veramo/core'
+
+const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 
 async function processStatusListEntry(params: {
   statusListId: string
@@ -23,6 +25,7 @@ async function processStatusListEntry(params: {
   debugCredentialInfo: string
   useIndexCondition: (index: number) => boolean
   checkCredentialIdMismatch?: (existingEntry: IStatusListEntryEntity, credentialId: string, index: number) => void
+  statusListCorrelationId?: string
 }): Promise<{ statusListIndex: number; updateResult: any }> {
   let existingEntry: IStatusListEntryEntity | undefined = undefined
   // Search whether there is an existing status list entry for this credential first
@@ -65,8 +68,8 @@ async function processStatusListEntry(params: {
   const updateArgs: any = {
     statusList: params.statusListId,
     statusListIndex,
-    correlationId: params.opts?.statusEntryCorrelationId,
-    value: params.opts?.value ?? 0, // For new entries the value may not be set. default to 0, otherwise the get API will return value null while for non-existing entries it will return 0
+    correlationId: params.statusListCorrelationId,
+    value: params.opts?.value ?? 0,
   }
   if (params.credentialId) {
     updateArgs.credentialId = params.credentialId
@@ -102,22 +105,55 @@ export const createStatusListFromInstance = async (
   return statusList
 }
 
+/**
+ * Adds status information to a credential using status list options from either:
+ * - The provided options
+ * - Existing credential status information
+ *
+ * The function updates each status list entry and modifies the credential's status.
+ *
+ * @param credential The credential to update with status information
+ * @param credentialStatusOpts Options for status handling and driver configuration
+ */
 export const handleCredentialStatus = async (
   credential: CredentialWithStatusSupport,
-  credentialStatusOpts?: IIssueCredentialStatusOpts & {
-    driver?: IStatusListDriver
-  },
+  credentialStatusOpts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
 ): Promise<void> => {
-  if (credential.credentialStatus) {
-    const credentialId = credential.id ?? credentialStatusOpts?.credentialId
-    const statusListId = credential.credentialStatus.statusListCredential ?? credentialStatusOpts?.statusListId
-    debug(`Creating new credentialStatus object for credential with id ${credentialId} and statusListId ${statusListId}...`)
+  logger.debug(`Starting status update for credential ${credential.id ?? 'without ID'}`)
+
+  const statusListOpts = [...(credentialStatusOpts?.statusListOpts ?? [])]
+  if (statusListOpts.length === 0 && credential.credentialStatus) {
+    if (Array.isArray(credential.credentialStatus)) {
+      for (const credStatus of credential.credentialStatus) {
+        if (credStatus.statusListCredential) {
+          statusListOpts.push({
+            statusListId: credStatus.statusListCredential,
+            statusListIndex: credStatus.statusListIndex,
+            statusListCorrelationId: (credStatus as any).statusListCorrelationId,
+          })
+        }
+      }
+    } else if (credential.credentialStatus.statusListCredential) {
+      statusListOpts.push({
+        statusListId: credential.credentialStatus.statusListCredential,
+        statusListIndex: credential.credentialStatus.statusListIndex,
+        statusListCorrelationId: (credential.credentialStatus as any).statusListCorrelationId,
+      })
+    }
+  }
+  if (!statusListOpts.length) {
+    logger.debug('No status list options found, skipping update')
+    return
+  }
+  const credentialId = credential.id ?? credentialStatusOpts?.credentialId
+  for (const statusListOpt of statusListOpts) {
+    const statusListId = statusListOpt.statusListId
     if (!statusListId) {
-      throw Error(
-        `A credential status is requested, but we could not determine the status list id from 'statusListCredential' value or configuration`,
-      )
+      logger.debug('Skipping status list option without ID')
+      continue
     }
 
+    logger.debug(`Processing status list ${statusListId} for credential ${credentialId ?? 'without ID'}`)
     const slDriver =
       credentialStatusOpts?.driver ??
       (await getDriver({
@@ -125,48 +161,74 @@ export const handleCredentialStatus = async (
         dataSource: credentialStatusOpts?.dataSource,
       }))
     const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
-
-    // Search whether there is an existing status list entry for this credential first
-    const currentIndex = credential.credentialStatus.statusListIndex ?? credentialStatusOpts?.statusListIndex ?? 0
-    const { statusListIndex, updateResult } = await processStatusListEntry({
+    const currentIndex = statusListOpt.statusListIndex ?? 0
+    const { updateResult } = await processStatusListEntry({
       statusListId,
       statusList,
       credentialId,
       currentIndex,
+      statusListCorrelationId: statusListOpt.statusListCorrelationId,
       opts: credentialStatusOpts,
       slDriver,
       debugCredentialInfo: `credential with id ${credentialId} and statusListId ${statusListId}`,
       useIndexCondition: (index) => Boolean(index),
       checkCredentialIdMismatch: (existingEntry, credentialId, index) => {
         throw Error(
-          `A credential with new id (${credentialId}) is issued, but its id does not match a registered statusListEntry id ${existingEntry.credentialId} for index ${index} `,
+          `A credential with new id (${credentialId}) is issued, but its id does not match a registered statusListEntry id ${existingEntry.credentialId} for index ${index}`,
         )
       },
     })
-
-    debug(`StatusListEntry with statusListIndex ${statusListIndex} created for credential with id ${credentialId} and statusListId ${statusListId}`)
-
-    credential.credentialStatus = {
-      ...credential.credentialStatus,
-      ...updateResult.credentialStatus,
+    if (!credential.credentialStatus || Array.isArray(credential.credentialStatus)) {
+      credential.credentialStatus = {
+        id: `${statusListId}`,
+        type: 'StatusList2021Entry',
+        statusPurpose: 'revocation',
+        statusListCredential: statusListId,
+        ...updateResult.credentialStatus,
+      }
     }
   }
+  logger.debug(`Completed status updates for credential ${credentialId ?? 'without ID'}`)
 }
+
+/**
+ * Adds status information to an SD-JWT credential using status list options from either:
+ * - The provided options
+ * - Existing credential status information
+ *
+ * Updates the credential's status field with status list URI and index.
+ *
+ * @param credential The SD-JWT credential to update
+ * @param credentialStatusOpts Options for status handling and driver configuration
+ * @throws Error if no status list options are available
+ */
 export const handleSdJwtCredentialStatus = async (
   credential: SdJwtVcPayload,
-  credentialStatusOpts?: IIssueCredentialStatusOpts & {
-    driver?: IStatusListDriver
-  },
+  credentialStatusOpts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
 ): Promise<void> => {
-  if (credential.status) {
-    const statusListId = credential.status.status_list.uri ?? credentialStatusOpts?.statusListId
-    debug(`Creating new credentialStatus object for credential with statusListId ${statusListId}...`)
+  logger.debug('Starting status update for SD-JWT credential')
+
+  const statusListOpts = [...(credentialStatusOpts?.statusListOpts ?? [])]
+  if (statusListOpts.length === 0 && credential.status?.status_list) {
+    statusListOpts.push({
+      statusListId: credential.status.status_list.uri,
+      statusListIndex: credential.status.status_list.idx,
+      statusListCorrelationId: (credential.status.status_list as any).statusListCorrelationId,
+    })
+  }
+
+  if (!statusListOpts.length) {
+    throw Error('No status list options available from credential or options')
+  }
+
+  for (const statusListOpt of statusListOpts) {
+    const statusListId = statusListOpt.statusListId
     if (!statusListId) {
-      throw Error(
-        `A credential status is requested, but we could not determine the status list id from 'statusListCredential' value or configuration`,
-      )
+      logger.debug('Skipping status list option without ID')
+      continue
     }
 
+    logger.info(`Processing status list ${statusListId}`)
     const slDriver =
       credentialStatusOpts?.driver ??
       (await getDriver({
@@ -174,23 +236,35 @@ export const handleSdJwtCredentialStatus = async (
         dataSource: credentialStatusOpts?.dataSource,
       }))
     const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
-
-    const statusListIndex =
-      typeof credentialStatusOpts?.statusListIndex === 'string'
-        ? parseInt(credentialStatusOpts.statusListIndex, 10)
-        : (credentialStatusOpts?.statusListIndex ?? (await slDriver.getRandomNewStatusListIndex({ correlationId: statusList.correlationId })))
-    await processStatusListEntry({
+    const currentIndex = statusListOpt.statusListIndex ?? 0
+    const { statusListIndex } = await processStatusListEntry({
       statusListId,
       statusList,
-      currentIndex: statusListIndex,
+      currentIndex,
+      statusListCorrelationId: statusListOpt.statusListCorrelationId,
       opts: credentialStatusOpts,
       slDriver,
       debugCredentialInfo: `credential with statusListId ${statusListId}`,
       useIndexCondition: (index) => index > 0,
     })
-
-    debug(`StatusListEntry with statusListIndex ${statusListIndex} created for credential with statusListId ${statusListId}`)
-
-    credential.status.status_list.idx = statusListIndex
+    if (!credential.status) {
+      credential.status = {
+        status_list: {
+          uri: statusListId,
+          idx: statusListIndex,
+        },
+      }
+    } else if (!credential.status.status_list) {
+      credential.status.status_list = {
+        uri: statusListId,
+        idx: statusListIndex,
+      }
+    } else {
+      credential.status.status_list = {
+        uri: credential.status.status_list.uri || statusListId,
+        idx: statusListIndex,
+      }
+    }
   }
+  logger.debug('Completed SD-JWT credential status update')
 }

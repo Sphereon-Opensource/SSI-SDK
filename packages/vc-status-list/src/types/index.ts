@@ -25,6 +25,7 @@ import {
 import { DataSource } from 'typeorm'
 import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
 import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { StatusListOpts } from '@sphereon/oid4vci-common'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -231,10 +232,8 @@ export type IAddStatusToSdJwtCredentialArgs = Omit<IIssueCredentialStatusOpts, '
 
 export interface IIssueCredentialStatusOpts {
   dataSource?: DataSource
+  statusListOpts?: Array<StatusListOpts>
   credentialId?: string // An id to use for the credential. Normally should be set as the crdential.id value
-  statusListId?: string // Explicit status list to use. Determines the id from the credentialStatus object in the VC itself or uses the default otherwise
-  statusListIndex?: number | string
-  statusEntryCorrelationId?: string // An id to use for correlation. Can be the credential id, but also a business identifier. Will only be used for lookups/management
   value?: string
 }
 

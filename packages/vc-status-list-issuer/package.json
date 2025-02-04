@@ -15,14 +15,14 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
+    "@sd-jwt/core": "^0.7.2",
+    "@sd-jwt/sd-jwt-vc": "^0.7.2",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer-drivers": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@sd-jwt/core": "^0.7.2",
-    "@sd-jwt/sd-jwt-vc": "^0.7.2",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
@@ -33,6 +33,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.24.7",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.27.0",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.27.0",
@@ -62,6 +63,7 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "morgan": "^1.10.0",
+    "ts-jest": "^29.2.5",
     "typescript": "5.4.2"
   },
   "files": [
