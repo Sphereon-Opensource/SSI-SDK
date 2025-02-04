@@ -192,8 +192,8 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         }
         statusListEntry = await driver.getStatusListEntryByIndex({
           statusListIndex: updateRequest.statusListIndex,
-          statusListId,
-          correlationId: statusListCorrelationId,
+          ...(statusListId && { statusListId }),
+          ...(!statusListId && { correlationId: statusListCorrelationId }), // Do not query for correlationId when we have statusListId
           errorOnNotFound: true,
         })
       }
