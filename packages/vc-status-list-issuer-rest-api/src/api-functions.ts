@@ -103,7 +103,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
     return
   }
 
-  const path = opts?.path ?? '/query/status-list/:statusListId/entry/:entryId'
+  const path = opts?.path ?? '/status-list/:statusListId/entry/:entryId'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const statusListIdType = (request.query.statusListIdType as StatusListIdType) ?? StatusListIdType.StatusListId

@@ -14,7 +14,7 @@ import {
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import { IStatusListPlugin, StatusListResult } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
-import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -26,6 +26,7 @@ import Debug from 'debug'
 import { Resolver } from 'did-resolver'
 import { StatusListPlugin } from '../src/agent/StatusListPlugin'
 import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
+import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 const debug = Debug('sphereon:status-list-issuer')
 
@@ -74,13 +75,14 @@ type Plugins = IDIDManager &
   IStatusListPlugin
 
 describe.skip('Status List VC handling', () => {
-  // FIXME BEFORE PR
+  // FIXME REENABLE BEFORE PR
   let agent: TAgent<Plugins>
+  let identifier: IIdentifier
 
   const baseCredential: IVerifiableCredential = {
     '@context': ['https://www.w3.org/2018/credentials/v1'],
     type: ['VerifiableCredential'],
-    issuer: 'did:example:123',
+    issuer: 'temp',
     issuanceDate: '2024-01-15T00:00:00Z',
     credentialSubject: {
       id: 'did:example:456',
@@ -126,6 +128,7 @@ describe.skip('Status List VC handling', () => {
         }),
         new IdentifierResolution({ crypto: global.crypto }),
         new CredentialPlugin(),
+        new JwtService(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts],
           suites: [
@@ -143,8 +146,10 @@ describe.skip('Status List VC handling', () => {
       ],
     })
 
-    await agent.dataStoreORMGetIdentifiers().then((ids) => ids.forEach((id) => console.log(JSON.stringify(id, null, 2))))
-    await agent
+    await agent.dataStoreORMGetIdentifiers().then((ids) => {
+      ids.forEach((id) => console.log(JSON.stringify(id, null, 2)))
+    })
+    identifier = await agent
       .didManagerCreate({
         provider: 'did:jwk',
         alias: 'test',
@@ -159,6 +164,7 @@ describe.skip('Status List VC handling', () => {
         debug(`IDENTIFIER: ${identifier.did}`)
         return identifier
       })
+    baseCredential.issuer = identifier.did
   })
 
   describe('slCreateStatusList', () => {
@@ -166,7 +172,7 @@ describe.skip('Status List VC handling', () => {
       await expect(
         agent.slCreateStatusList({
           type: StatusListType.OAuthStatusList,
-          issuer: 'did:example:123',
+          issuer: identifier.did,
           id: 'http://localhost/test/1',
           correlationId: 'test-sl',
           proofFormat: 'lds',
@@ -180,7 +186,7 @@ describe.skip('Status List VC handling', () => {
     it('should successfully create OAuth status list using JWT format with proper header and encoding', async () => {
       const result = await agent.slCreateStatusList({
         type: StatusListType.OAuthStatusList,
-        issuer: 'did:example:123',
+        issuer: identifier.did,
         id: 'http://localhost/test/1',
         correlationId: 'test-sl',
         proofFormat: 'jwt',
@@ -191,7 +197,9 @@ describe.skip('Status List VC handling', () => {
 
       expect(result.type).toBe(StatusListType.OAuthStatusList)
       expect(result.proofFormat).toBe('jwt')
-      expect(result.statusListCredential).toBe('ey_eyMockJWT')
+      expect(result.statusListCredential).toBe(
+        'eyJhbGciOiJFZERTQSIsInR5cCI6InN0YXR1c2xpc3Qrand0Iiwia2lkIjoiZGlkOmp3azpleUpoYkdjaU9pSkZaRVJUUVNJc0luVnpaU0k2SW5OcFp5SXNJbXQwZVNJNklrOUxVQ0lzSW1OeWRpSTZJa1ZrTWpVMU1Ua2lMQ0o0SWpvaWFXRlNiVWhyVW5KU2EwRlVTbUZQVGs5NVFsbE1Vak5UWkMxMFJXbHFSMEpCVTNCdVJ6TnlhRmRFWXlKOSMwIn0.eyJpc3MiOiJkaWQ6andrOmV5SmhiR2NpT2lKRlpFUlRRU0lzSW5WelpTSTZJbk5wWnlJc0ltdDBlU0k2SWs5TFVDSXNJbU55ZGlJNklrVmtNalUxTVRraUxDSjRJam9pYVdGU2JVaHJVbkpTYTBGVVNtRlBUazk1UWxsTVVqTlRaQzEwUldscVIwSkJVM0J1UnpOeWFGZEVZeUo5Iiwic3ViIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0LzEiLCJpYXQiOjE3Mzg3NTIzNDksInN0YXR1c19saXN0Ijp7ImJpdHMiOjIsImxzdCI6ImVOcnR3VEVCQUFBQXdxRDFUMjBJWDZBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQURnTV9Ra0FBRSJ9fQ.Zy8qtcvBT2Uuq1nYZRaQKQb3JnuqHcXczKt-RlICADkLCLFoP7joAVrQ3mmJG5rasCktmQ1QDkKSQzjd-PIdDg',
+      )
     })
   })
 
@@ -215,7 +223,7 @@ describe.skip('Status List VC handling', () => {
       expect(credentialStatus?.id).toBe('http://localhost/test/1#0')
       expect(credentialStatus?.statusListIndex).toBe('0')
       expect(credentialStatus?.statusListCredential).toBe('eyMockJWT')
-      expect(result.issuer).toBe('did:example:123')
+      expect(result.issuer).toBe(identifier.did)
     })
 
     it('should add status when credential has no credentialStatus', async () => {
@@ -235,34 +243,34 @@ describe.skip('Status List VC handling', () => {
     })
 
     /*  it('should handle array of credential statuses', async () => { TODO this is only true for VC v2.0  CREATE TICKET BEFORE PR
-      const mockCredential: IVerifiableCredential = {
-        ...baseCredential,
-        credentialStatus: [
-          {
-            id: 'http://localhost/test/1#0',
-            type: 'StatusList2021Entry',
-            statusPurpose: 'revocation',
-            statusListIndex: '0',
-            statusListCredential: 'http://localhost/test/1',
-          },
-        ],
-      }
-
-      const result = await agent.slAddStatusToCredential({
-        credential: mockCredential,
-        statusListOpts: [
-          {
-            statusListId: 'list456',
-            statusListIndex: 5,
-          },
-        ],
-      })
-
-      expect(Array.isArray(result.credentialStatus)).toBe(true)
-      expect((result.credentialStatus as ICredentialStatus[]).length).toBe(2)
-      expect((result.credentialStatus as ICredentialStatus[])[1].statusListCredential).toBe('list456')
-    })
-*/
+          const mockCredential: IVerifiableCredential = {
+            ...baseCredential,
+            credentialStatus: [
+              {
+                id: 'http://localhost/test/1#0',
+                type: 'StatusList2021Entry',
+                statusPurpose: 'revocation',
+                statusListIndex: '0',
+                statusListCredential: 'http://localhost/test/1',
+              },
+            ],
+          }
+    
+          const result = await agent.slAddStatusToCredential({
+            credential: mockCredential,
+            statusListOpts: [
+              {
+                statusListId: 'list456',
+                statusListIndex: 5,
+              },
+            ],
+          })
+    
+          expect(Array.isArray(result.credentialStatus)).toBe(true)
+          expect((result.credentialStatus as ICredentialStatus[]).length).toBe(2)
+          expect((result.credentialStatus as ICredentialStatus[])[1].statusListCredential).toBe('list456')
+        })
+    */
     it('should use correlation IDs when provided', async () => {
       const mockCredential: IVerifiableCredential = {
         ...baseCredential,
@@ -282,21 +290,21 @@ describe.skip('Status List VC handling', () => {
     })
 
     /* 
-    it('should handle multiple status list options', async () => { TODO this is only true for VC v2.0  CREATE TICKET BEFORE PR
-      const mockCredential: IVerifiableCredential = {
-        ...baseCredential,
-      }
-
-      const result = await agent.slAddStatusToCredential({
-        credential: mockCredential,
-        statusListOpts: [{ statusListId: 'list1' }, { statusListId: 'list2', statusListIndex: 5 }],
-      })
-
-      expect(Array.isArray(result.credentialStatus)).toBe(true)
-      const credStatus = result.credentialStatus as ICredentialStatus[]
-      expect(credStatus.length).toBe(2)
-    }) 
-*/
+        it('should handle multiple status list options', async () => { TODO this is only true for VC v2.0  CREATE TICKET BEFORE PR
+          const mockCredential: IVerifiableCredential = {
+            ...baseCredential,
+          }
+    
+          const result = await agent.slAddStatusToCredential({
+            credential: mockCredential,
+            statusListOpts: [{ statusListId: 'list1' }, { statusListId: 'list2', statusListIndex: 5 }],
+          })
+    
+          expect(Array.isArray(result.credentialStatus)).toBe(true)
+          const credStatus = result.credentialStatus as ICredentialStatus[]
+          expect(credStatus.length).toBe(2)
+        }) 
+    */
 
     it('should handle credential with no options but existing status', async () => {
       const mockCredential: IVerifiableCredential = {
@@ -318,7 +326,7 @@ describe.skip('Status List VC handling', () => {
   describe('slAddStatusToSdJwtCredential', () => {
     it('should add status to SD-JWT credential without existing status', async () => {
       const mockCredential = {
-        iss: 'did:example:123',
+        iss: identifier.did,
         vct: 'VerifiableCredential',
         sub: 'did:example:456',
       }
@@ -334,7 +342,7 @@ describe.skip('Status List VC handling', () => {
 
     it('should update existing status in SD-JWT credential', async () => {
       const mockCredential = {
-        iss: 'did:example:123',
+        iss: identifier.did,
         vct: 'VerifiableCredential',
         status: {
           status_list: {
@@ -366,7 +374,7 @@ describe.skip('Status List VC handling', () => {
         statusListCredential: 'ey_mockJWT',
         encodedList: 'AAAA',
         id: 'http://localhost/test/1',
-        issuer: 'did:example:123',
+        issuer: identifier.did,
         length: 250000,
         statuslistContentType: 'application/statuslist+jwt',
         oauthStatusList: {
