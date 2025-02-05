@@ -51,6 +51,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       id,
       correlationId,
       issuer,
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -91,6 +92,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       proofFormat,
       id,
       issuer,
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -130,7 +132,12 @@ export class OAuthStatusListImplementation implements IStatusList {
       proofFormat: proofFormat ?? DEFAULT_PROOF_FORMAT,
       id,
       issuer,
+      statuslistContentType: this.buildContentType(proofFormat),
     }
+  }
+
+  private buildContentType(proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor' | undefined) {
+    return `application/statuslist+${proofFormat === 'cbor' ? 'cwt' : 'jwt'}`
   }
 
   async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | StatusOAuth> {
@@ -164,6 +171,7 @@ export class OAuthStatusListImplementation implements IStatusList {
       proofFormat,
       length: statusList.statusList.length,
       statusListCredential: statusListPayload,
+      statuslistContentType: this.buildContentType(proofFormat),
       oauthStatusList: {
         bitsPerStatus: statusList.getBitsPerStatus(),
         ...(exp && { expiresAt: new Date(exp * 1000) }),

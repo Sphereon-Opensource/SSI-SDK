@@ -5,6 +5,7 @@ import {
   CredentialWithStatusSupport,
   GetStatusListArgs,
   IAddStatusToCredentialArgs,
+  IAddStatusToSdJwtCredentialArgs,
   IRequiredContext,
   IRequiredPlugins,
   IStatusListPlugin,
@@ -13,8 +14,9 @@ import {
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentContext, IAgentPlugin, IKeyManager } from '@veramo/core'
-import { createStatusListFromInstance, handleCredentialStatus } from '../functions'
+import { createStatusListFromInstance, handleCredentialStatus, handleSdJwtCredentialStatus } from '../functions'
 import { StatusListInstance } from '../types'
+import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list')
 
@@ -26,6 +28,7 @@ export class StatusListPlugin implements IAgentPlugin {
   private readonly allDataSources: DataSources
   readonly methods: IStatusListPlugin = {
     slAddStatusToCredential: this.slAddStatusToCredential.bind(this),
+    slAddStatusToSdJwtCredential: this.slAddStatusToSdJwtCredential.bind(this),
     slCreateStatusList: this.slCreateStatusList.bind(this),
     slGetStatusList: this.slGetStatusList.bind(this),
   }
@@ -114,30 +117,172 @@ export class StatusListPlugin implements IAgentPlugin {
     return statusListDetails
   }
 
+  /**
+   * Adds status information to a credential by either:
+   * 1. Using existing status ID from the credential if present
+   * 2. Using provided status list options
+   * 3. Falling back to the default status list ID
+   *
+   * @param args Contains credential and status options
+   * @param context Required agent context
+   * @returns Credential with added status information
+   */
   private async slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport> {
     const { credential, ...rest } = args
+    logger.debug(`Adding status to credential ${credential.id ?? 'without ID'}`)
+
     const credentialStatus = credential.credentialStatus
-    if (!credentialStatus) {
-      logger.info(`Not adding status list info, since no credentialStatus object was present in the credential`)
-      return Promise.resolve(credential)
+    if (credentialStatus) {
+      let existingStatusId: string | undefined
+      if (Array.isArray(credentialStatus)) {
+        // This was implemented with VC v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
+        for (const stat of credentialStatus) {
+          if (stat.id && stat.id.trim() !== '') {
+            existingStatusId = stat.id.split('#')[0]
+            break
+          }
+        }
+      } else if (credentialStatus.id && credentialStatus.id.trim() !== '') {
+        existingStatusId = credentialStatus.id.split('#')[0]
+      }
+
+      if (existingStatusId) {
+        logger.debug(`Using existing status ID ${existingStatusId} for credential ${credential.id ?? 'without ID'}`)
+        const instance = this.instances.find((inst) => inst.id === existingStatusId)
+        if (!instance) {
+          throw Error(`Status list with id ${existingStatusId} is not managed by the status list plugin`)
+        }
+        if (!instance.dataSource && !instance.driverOptions?.dbName) {
+          throw Error(`Either a datasource or dbName needs to be supplied`)
+        }
+        const credentialId = credential.id ?? rest.credentialId
+        const dataSource = instance.dataSource
+          ? await instance.dataSource
+          : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+        const driver = await getDriver({ dataSource, id: existingStatusId })
+        await handleCredentialStatus(credential, {
+          ...rest,
+          credentialId,
+          statusListOpts: [{ statusListId: existingStatusId }],
+          driver,
+        })
+        return credential
+      }
     }
-    // If the credential is already providing the id we favor that over the argument. Default status list as a fallback. We also allow passing in an empty id to get the default
-    const credentialStatusId = credentialStatus.id && credentialStatus.id.trim() !== '' ? credentialStatus.id.split('#')[0] : undefined
-    const statusListId = credentialStatus.statusListCredential ?? credentialStatusId ?? args.statusListId ?? this.defaultStatusListId
-    const instance = this.instances.find((instance) => instance.id === statusListId)
+
+    const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
+    logger.debug(`Adding new status using ${statusListOpts.length} status list option(s)`)
+    const credentialId = credential.id ?? rest.credentialId
+    for (const opt of statusListOpts) {
+      const effectiveStatusListId = opt.statusListId ?? this.defaultStatusListId
+      let instance
+      if (opt.statusListCorrelationId && opt.statusListCorrelationId.trim() !== '') {
+        instance = this.instances.find((inst) => inst.correlationId === opt.statusListCorrelationId)
+      } else {
+        instance = this.instances.find((inst) => inst.id === effectiveStatusListId)
+      }
+      if (!instance) {
+        throw Error(`Status list with identifier ${opt.statusListCorrelationId ?? effectiveStatusListId} is not managed by the status list plugin`)
+      }
+      if (!instance.dataSource && !instance.driverOptions?.dbName) {
+        throw Error(`Either a datasource or dbName needs to be supplied`)
+      }
+      const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+      const driver =
+        opt.statusListCorrelationId && opt.statusListCorrelationId.trim() !== ''
+          ? await getDriver({ dataSource, correlationId: opt.statusListCorrelationId })
+          : await getDriver({ dataSource, id: effectiveStatusListId })
+      await handleCredentialStatus(credential, {
+        ...rest,
+        credentialId,
+        statusListOpts: [
+          {
+            ...opt,
+            statusListId: effectiveStatusListId,
+          },
+        ],
+        driver,
+      })
+    }
+    logger.debug(`Successfully added status information to credential ${credential.id ?? 'without ID'}`)
+    return credential
+  }
+
+  /**
+   * Adds status information to an SD-JWT credential by either:
+   * 1. Using existing status URI from the credential if present
+   * 2. Using provided status list options
+   * 3. Falling back to the default status list ID
+   *
+   * @param args Contains SD-JWT credential and status options
+   * @param context Required agent context
+   * @returns SD-JWT credential with added status information
+   */
+  private async slAddStatusToSdJwtCredential(args: IAddStatusToSdJwtCredentialArgs, context: IRequiredContext): Promise<SdJwtVcPayload> {
+    const { credential, ...rest } = args
+    logger.debug(`Adding status to SD-JWT credential`)
+
+    const credentialStatus = credential.status
+    if (credentialStatus) {
+      let existingStatusUri: string | undefined
+      if (credentialStatus.status_list && credentialStatus.status_list.uri && credentialStatus.status_list.uri.trim() !== '') {
+        existingStatusUri = credentialStatus.status_list.uri
+      }
+      if (existingStatusUri) {
+        logger.debug(`Using existing status URI ${existingStatusUri} for SD-JWT credential`)
+
+        const instance = this.instances.find((inst) => inst.id === existingStatusUri)
+        if (!instance) {
+          throw Error(`Status list with id ${existingStatusUri} is not managed by the status list plugin`)
+        }
+        if (!instance.dataSource && !instance.driverOptions?.dbName) {
+          throw Error(`Either a datasource or dbName needs to be supplied`)
+        }
+        const dataSource = instance.dataSource
+          ? await instance.dataSource
+          : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+        const driver = await getDriver({ dataSource, id: existingStatusUri })
+        await handleSdJwtCredentialStatus(credential, {
+          ...rest,
+          statusListOpts: [{ ...rest.statusListOpts, statusListId: existingStatusUri }],
+          driver,
+        })
+        return credential
+      }
+    }
+
+    const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
+    logger.info(`Adding new status using status list options with ID ${statusListOpts[0].statusListId ?? this.defaultStatusListId}`)
+    const firstOpt = statusListOpts[0]
+    const effectiveStatusListId = firstOpt.statusListId ?? this.defaultStatusListId
+    let instance
+    if (firstOpt.statusListCorrelationId && firstOpt.statusListCorrelationId.trim() !== '') {
+      instance = this.instances.find((inst) => inst.correlationId === firstOpt.statusListCorrelationId)
+    } else {
+      instance = this.instances.find((inst) => inst.id === effectiveStatusListId)
+    }
     if (!instance) {
-      return Promise.reject(Error(`Status list with id ${statusListId} is not managed by the status list plugin`))
-    } else if (!instance.dataSource && !instance.driverOptions?.dbName) {
-      return Promise.reject(Error(`Either a datasource or dbName needs to be supplied`))
+      throw Error(`Status list with identifier ${firstOpt.statusListCorrelationId ?? effectiveStatusListId} is not managed by the status list plugin`)
     }
-    const credentialId = credential.id ?? args.credentialId
+    if (!instance.dataSource && !instance.driverOptions?.dbName) {
+      throw Error(`Either a datasource or dbName needs to be supplied`)
+    }
     const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-    await handleCredentialStatus(credential, {
+    const driver =
+      firstOpt.statusListCorrelationId && firstOpt.statusListCorrelationId.trim() !== ''
+        ? await getDriver({ dataSource, correlationId: firstOpt.statusListCorrelationId })
+        : await getDriver({ dataSource, id: effectiveStatusListId })
+    await handleSdJwtCredentialStatus(credential, {
       ...rest,
-      credentialId,
-      statusListId,
-      driver: await getDriver({ dataSource, id: statusListId }),
+      statusListOpts: [
+        {
+          ...firstOpt,
+          statusListId: effectiveStatusListId,
+        },
+      ],
+      driver,
     })
+    logger.debug('Successfully added status information to SD-JWT credential')
     return credential
   }
 }

@@ -110,6 +110,6 @@ export class StatusList2021Entity extends StatusListEntity {
 export class OAuthStatusListEntity extends StatusListEntity {
   @Column({ type: 'integer', name: 'bitsPerStatus', nullable: false })
   bitsPerStatus!: number
-  @Column({ type: 'datetime', name: 'expiresAt', nullable: true })
+  @Column({ type: process.env.DB_TYPE === 'postgres' ? 'timestamp' : 'datetime', name: 'expiresAt', nullable: true })
   expiresAt?: Date
 }

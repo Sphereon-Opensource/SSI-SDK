@@ -5,6 +5,7 @@ import {
   Jwt,
   JwtVerifyResult,
   OID4VCICredentialFormat,
+  StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { JWTHeader, JWTPayload } from '@sphereon/oid4vci-common/lib/types'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
@@ -51,10 +52,14 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
 
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
+      const kid = args.kid ?? header.kid
+      const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
       return {
         alg,
         ...identifier,
         jwt: { header, payload },
+        ...(kid && { kid }),
+        ...(jwk && { jwk }),
       } as JwtVerifyResult<DIDDocument>
     }
 
@@ -178,8 +183,9 @@ export async function getCredentialSignerCallback(
     credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult<DIDDocument>
     format?: OID4VCICredentialFormat
+    statusListOpts?: Array<StatusListOpts>
   }): Promise<W3CVerifiableCredential | CompactSdJwtVc> {
-    const { jwtVerifyResult, format } = args
+    const { jwtVerifyResult, format, statusListOpts } = args
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
@@ -206,7 +212,7 @@ export async function getCredentialSignerCallback(
       // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
         // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
-        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential })
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusListOpts })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
         }
@@ -239,6 +245,22 @@ export async function getCredentialSignerCallback(
           _sd: credential['_sd'],
         }
       }
+
+      if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToSdJwtCredential')) {
+        if ((sdJwtPayload.status && sdJwtPayload.status.status_list) || (statusListOpts && statusListOpts.length > 0)) {
+          // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+          const credentialStatusVC = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload, statusListOpts })
+          if (sdJwtPayload.status?.status_list?.idx) {
+            if (!credentialStatusVC.status || !credentialStatusVC.status.status_list) {
+              // TODO check, looks like sdJwtPayload and credentialStatusVC is the same
+              return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
+            }
+
+            sdJwtPayload.status.status_list.idx = credentialStatusVC.status.status_list.idx
+          }
+        }
+      }
+
       const result = await context.agent.createSdJwtVc({
         credentialPayload: sdJwtPayload,
         disclosureFrame: disclosureFrame,
@@ -326,20 +348,19 @@ export async function createVciIssuer(
   ).build()
 }
 
-export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<() => Promise<string>> {
+export async function createAuthRequestUriCallback(opts: { path: string; presentationDefinitionId: string }): Promise<() => Promise<string>> {
   async function authRequestUriCallback(): Promise<string> {
     const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
     return fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      }
-    })
-    .then(async (response): Promise<string> => {
+      },
+    }).then(async (response): Promise<string> => {
       if (response.status >= 400) {
         return Promise.reject(Error(await response.text()))
       } else {
-        const responseData = await response.json();
+        const responseData = await response.json()
 
         if (!responseData.authRequestURI) {
           return Promise.reject(Error('Missing auth request uri in response body'))
@@ -348,13 +369,15 @@ export async function createAuthRequestUriCallback(opts: { path: string, present
         return responseData.authRequestURI
       }
     })
-
   }
 
   return authRequestUriCallback
 }
 
-export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(correlationId: string) => Promise<boolean>> {
+export async function createVerifyAuthResponseCallback(opts: {
+  path: string
+  presentationDefinitionId: string
+}): Promise<(correlationId: string) => Promise<boolean>> {
   async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
     return fetch(opts.path, {
       method: 'POST',
@@ -362,12 +385,11 @@ export async function createVerifyAuthResponseCallback(opts: { path: string, pre
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ definitionId: opts.presentationDefinitionId, correlationId }),
-    })
-    .then(async (response): Promise<boolean> => {
+    }).then(async (response): Promise<boolean> => {
       if (response.status >= 400) {
         return Promise.reject(Error(await response.text()))
       } else {
-        const responseData = await response.json();
+        const responseData = await response.json()
 
         if (!responseData.status) {
           return Promise.reject(Error('Missing status in response body'))

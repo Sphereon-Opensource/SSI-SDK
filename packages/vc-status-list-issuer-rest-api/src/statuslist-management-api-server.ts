@@ -8,7 +8,7 @@ import {
   createNewStatusListEndpoint,
   getStatusListCredentialEndpoint,
   getStatusListCredentialIndexStatusEndpoint,
-  updateW3CStatusEndpoint,
+  updateStatusEndpoint,
 } from './api-functions'
 import { IStatusListOpts } from './types'
 import { IRequiredPlugins } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
@@ -50,7 +50,7 @@ export class StatuslistManagementApiServer {
       getStatusListCredentialIndexStatusEndpoint(this.router, context, opts.endpointOpts.getStatusList)
     }
     if (features.includes('w3c-vc-api-credential-status')) {
-      updateW3CStatusEndpoint(this.router, context, opts.endpointOpts.vcApiCredentialStatus)
+      updateStatusEndpoint(this.router, context, opts.endpointOpts.vcApiCredentialStatus)
     }
     this._express.use(opts?.endpointOpts?.basePath ?? '', this.router)
   }
