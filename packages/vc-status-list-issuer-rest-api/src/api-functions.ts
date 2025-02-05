@@ -115,9 +115,9 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         return sendErrorResponse(response, 400, `Please provide a proper statusListIndex`)
       }
       //const correlationId = request.query.correlationId?.toString() ?? request.params.index?.toString() ?? request.originalUrl TODO I so not get these
-      const correlationId = request.query.correlationId?.toString()
+      const statusListCorrelationId = request.query.correlationId?.toString()
       const driver = await getDriver({
-        ...(correlationId ? { correlationId } : { id: buildStatusListId(request) }),
+        ...(statusListCorrelationId ? { correlationId: statusListCorrelationId } : { id: buildStatusListId(request) }),
         dbName: opts.dbName,
       })
       const details = await driver.getStatusList()

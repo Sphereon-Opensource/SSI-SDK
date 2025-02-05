@@ -132,43 +132,42 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.debug(`Adding status to credential ${credential.id ?? 'without ID'}`)
 
     const credentialStatus = credential.credentialStatus
-    if (!credentialStatus) {
-      logger.debug('No credential status present, returning original credential')
-      return credential
-    }
-
-    let existingStatusId: string | undefined
-    if (Array.isArray(credentialStatus)) {
-      // This was implemented with VC v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
-      for (const stat of credentialStatus) {
-        if (stat.id && stat.id.trim() !== '') {
-          existingStatusId = stat.id.split('#')[0]
-          break
+    if (credentialStatus) {
+      let existingStatusId: string | undefined
+      if (Array.isArray(credentialStatus)) {
+        // This was implemented with VC v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
+        for (const stat of credentialStatus) {
+          if (stat.id && stat.id.trim() !== '') {
+            existingStatusId = stat.id.split('#')[0]
+            break
+          }
         }
+      } else if (credentialStatus.id && credentialStatus.id.trim() !== '') {
+        existingStatusId = credentialStatus.id.split('#')[0]
       }
-    } else if (credentialStatus.id && credentialStatus.id.trim() !== '') {
-      existingStatusId = credentialStatus.id.split('#')[0]
-    }
 
-    if (existingStatusId) {
-      logger.debug(`Using existing status ID ${existingStatusId} for credential ${credential.id ?? 'without ID'}`)
-      const instance = this.instances.find((inst) => inst.id === existingStatusId)
-      if (!instance) {
-        throw Error(`Status list with id ${existingStatusId} is not managed by the status list plugin`)
+      if (existingStatusId) {
+        logger.debug(`Using existing status ID ${existingStatusId} for credential ${credential.id ?? 'without ID'}`)
+        const instance = this.instances.find((inst) => inst.id === existingStatusId)
+        if (!instance) {
+          throw Error(`Status list with id ${existingStatusId} is not managed by the status list plugin`)
+        }
+        if (!instance.dataSource && !instance.driverOptions?.dbName) {
+          throw Error(`Either a datasource or dbName needs to be supplied`)
+        }
+        const credentialId = credential.id ?? rest.credentialId
+        const dataSource = instance.dataSource
+          ? await instance.dataSource
+          : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+        const driver = await getDriver({ dataSource, id: existingStatusId })
+        await handleCredentialStatus(credential, {
+          ...rest,
+          credentialId,
+          statusListOpts: [{ statusListId: existingStatusId }],
+          driver,
+        })
+        return credential
       }
-      if (!instance.dataSource && !instance.driverOptions?.dbName) {
-        throw Error(`Either a datasource or dbName needs to be supplied`)
-      }
-      const credentialId = credential.id ?? rest.credentialId
-      const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-      const driver = await getDriver({ dataSource, id: existingStatusId })
-      await handleCredentialStatus(credential, {
-        ...rest,
-        credentialId,
-        statusListOpts: [{ statusListId: existingStatusId }],
-        driver,
-      })
-      return credential
     }
 
     const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
@@ -198,9 +197,8 @@ export class StatusListPlugin implements IAgentPlugin {
         credentialId,
         statusListOpts: [
           {
+            ...opt,
             statusListId: effectiveStatusListId,
-            statusListCorrelationId: opt.statusListCorrelationId,
-            statusEntryCorrelationId: opt.statusEntryCorrelationId ?? instance.correlationId,
           },
         ],
         driver,
@@ -225,33 +223,32 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.debug(`Adding status to SD-JWT credential`)
 
     const credentialStatus = credential.status
-    if (!credentialStatus) {
-      logger.debug('No credential status present, returning original SD-JWT credential')
-      return credential
-    }
-
-    let existingStatusUri: string | undefined
-    if (credentialStatus.status_list && credentialStatus.status_list.uri && credentialStatus.status_list.uri.trim() !== '') {
-      existingStatusUri = credentialStatus.status_list.uri
-    }
-    if (existingStatusUri) {
-      logger.debug(`Using existing status URI ${existingStatusUri} for SD-JWT credential`)
-
-      const instance = this.instances.find((inst) => inst.id === existingStatusUri)
-      if (!instance) {
-        throw Error(`Status list with id ${existingStatusUri} is not managed by the status list plugin`)
+    if (credentialStatus) {
+      let existingStatusUri: string | undefined
+      if (credentialStatus.status_list && credentialStatus.status_list.uri && credentialStatus.status_list.uri.trim() !== '') {
+        existingStatusUri = credentialStatus.status_list.uri
       }
-      if (!instance.dataSource && !instance.driverOptions?.dbName) {
-        throw Error(`Either a datasource or dbName needs to be supplied`)
+      if (existingStatusUri) {
+        logger.debug(`Using existing status URI ${existingStatusUri} for SD-JWT credential`)
+
+        const instance = this.instances.find((inst) => inst.id === existingStatusUri)
+        if (!instance) {
+          throw Error(`Status list with id ${existingStatusUri} is not managed by the status list plugin`)
+        }
+        if (!instance.dataSource && !instance.driverOptions?.dbName) {
+          throw Error(`Either a datasource or dbName needs to be supplied`)
+        }
+        const dataSource = instance.dataSource
+          ? await instance.dataSource
+          : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+        const driver = await getDriver({ dataSource, id: existingStatusUri })
+        await handleSdJwtCredentialStatus(credential, {
+          ...rest,
+          statusListOpts: [{ ...rest.statusListOpts, statusListId: existingStatusUri }],
+          driver,
+        })
+        return credential
       }
-      const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-      const driver = await getDriver({ dataSource, id: existingStatusUri })
-      await handleSdJwtCredentialStatus(credential, {
-        ...rest,
-        statusListOpts: [{ statusListId: existingStatusUri }],
-        driver,
-      })
-      return credential
     }
 
     const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
@@ -279,8 +276,8 @@ export class StatusListPlugin implements IAgentPlugin {
       ...rest,
       statusListOpts: [
         {
+          ...firstOpt,
           statusListId: effectiveStatusListId,
-          statusListCorrelationId: firstOpt.statusListCorrelationId,
         },
       ],
       driver,

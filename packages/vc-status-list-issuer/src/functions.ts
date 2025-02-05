@@ -25,7 +25,7 @@ async function processStatusListEntry(params: {
   debugCredentialInfo: string
   useIndexCondition: (index: number) => boolean
   checkCredentialIdMismatch?: (existingEntry: IStatusListEntryEntity, credentialId: string, index: number) => void
-  statusListCorrelationId?: string
+  statusEntryCorrelationId?: string
 }): Promise<{ statusListIndex: number; updateResult: any }> {
   let existingEntry: IStatusListEntryEntity | undefined = undefined
   // Search whether there is an existing status list entry for this credential first
@@ -68,7 +68,7 @@ async function processStatusListEntry(params: {
   const updateArgs: any = {
     statusList: params.statusListId,
     statusListIndex,
-    correlationId: params.statusListCorrelationId,
+    correlationId: params.statusEntryCorrelationId,
     value: params.opts?.value ?? 0,
   }
   if (params.credentialId) {
@@ -167,7 +167,7 @@ export const handleCredentialStatus = async (
       statusList,
       credentialId,
       currentIndex,
-      statusListCorrelationId: statusListOpt.statusListCorrelationId,
+      statusEntryCorrelationId: statusListOpt.statusEntryCorrelationId,
       opts: credentialStatusOpts,
       slDriver,
       debugCredentialInfo: `credential with id ${credentialId} and statusListId ${statusListId}`,
@@ -241,7 +241,7 @@ export const handleSdJwtCredentialStatus = async (
       statusListId,
       statusList,
       currentIndex,
-      statusListCorrelationId: statusListOpt.statusListCorrelationId,
+      statusEntryCorrelationId: statusListOpt.statusEntryCorrelationId,
       opts: credentialStatusOpts,
       slDriver,
       debugCredentialInfo: `credential with statusListId ${statusListId}`,
