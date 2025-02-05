@@ -3392,6 +3392,9 @@ importers:
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
+      '@sphereon/oid4vci-common':
+        specifier: 0.16.1-feature.IATAB2B.52.345
+        version: 0.16.1-feature.IATAB2B.52.345(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))

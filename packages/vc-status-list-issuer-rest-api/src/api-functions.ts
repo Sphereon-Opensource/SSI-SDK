@@ -37,6 +37,20 @@ function sendStatuslistResponse(details: StatusListResult, statuslistPayload: St
   return response.status(200).setHeader('Content-Type', details.statuslistContentType).send(payload)
 }
 
+function buildStatusListId(request: Request): string {
+  const protocol = request.headers['x-forwarded-proto']?.toString() ?? request.protocol
+  let host = request.headers['x-forwarded-host']?.toString() ?? request.get('host')
+  const forwardedPort = request.headers['x-forwarded-port']?.toString()
+
+  if (forwardedPort && !(protocol === 'https' && forwardedPort === '443') && !(protocol === 'http' && forwardedPort === '80')) {
+    host += `:${forwardedPort}`
+  }
+
+  const forwardedPrefix = request.headers['x-forwarded-prefix']?.toString() ?? ''
+
+  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl.split('?')[0].replace(/\/status\/index\/.*/, '')}`
+}
+
 export function createNewStatusListEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Create new status list endpoint is disabled`)
@@ -54,23 +68,9 @@ export function createNewStatusListEndpoint(router: Router, context: IRequiredCo
       const statuslistPayload = details.statusListCredential
       return sendStatuslistResponse(details, statuslistPayload, response)
     } catch (e) {
-      return sendErrorResponse(response, 500, e.message as string, e)
+      return sendErrorResponse(response, 500, (e as Error).message, e)
     }
   })
-}
-
-const buildStatusListId = (request: Request): string => {
-  const protocol = request.headers['x-forwarded-proto']?.toString() ?? request.protocol
-  let host = request.headers['x-forwarded-host']?.toString() ?? request.get('host')
-  const forwardedPort = request.headers['x-forwarded-port']?.toString()
-
-  if (forwardedPort && !(protocol === 'https' && forwardedPort === '443') && !(protocol === 'http' && forwardedPort === '80')) {
-    host += `:${forwardedPort}`
-  }
-
-  const forwardedPrefix = request.headers['x-forwarded-prefix']?.toString() ?? ''
-
-  return `${protocol}://${host}${forwardedPrefix}${request.originalUrl.split('?')[0].replace(/\/status\/index\/.*/, '')}`
 }
 
 export function getStatusListCredentialEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
@@ -92,7 +92,7 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
       const statuslistPayload = details.statusListCredential
       return sendStatuslistResponse(details, statuslistPayload, response)
     } catch (e) {
-      return sendErrorResponse(response, 500, e.message as string, e)
+      return sendErrorResponse(response, 500, (e as Error).message, e)
     }
   })
 }
@@ -170,7 +170,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       response.statusCode = 200
       return response.send({ ...entry, status })
     } catch (e) {
-      return sendErrorResponse(response, 500, e.message as string, e)
+      return sendErrorResponse(response, 500, (e as Error).message, e)
     }
   })
 }
@@ -230,7 +230,7 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
       response.statusCode = 200
       return response.send({ ...entry, status }) // FIXME content type?
     } catch (e) {
-      return sendErrorResponse(response, 500, e.message as string, e)
+      return sendErrorResponse(response, 500, (e as Error).message, e)
     }
   })
 }
@@ -245,7 +245,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
       debug(JSON.stringify(request.body, null, 2))
       const updateRequest = request.body as UpdateW3cCredentialStatusRequest | UpdateIndexedCredentialStatusRequest
       const statusListId = updateRequest.statusListId ?? request.query.statusListId?.toString() ?? opts.statusListId // TODO why query params when we have a JSON body ??
-      const statusListCorrelationId = updateRequest.statusListCorrelationId ?? request.query.statusListorrelationId?.toString() ?? opts.correlationId
+      const statusListCorrelationId = updateRequest.statusListCorrelationId ?? request.query.statusListrelationId?.toString() ?? opts.correlationId
       const entryCorrelationId = updateRequest.entryCorrelationId ?? request.query.entryCorrelationId?.toString()
 
       // TODO: Move mostly to driver
@@ -312,7 +312,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
 
       return sendStatuslistResponse(details, details.statusListCredential, response)
     } catch (e) {
-      return sendErrorResponse(response, 500, e.message as string, e)
+      return sendErrorResponse(response, 500, (e as Error).message, e)
     }
   })
 }
