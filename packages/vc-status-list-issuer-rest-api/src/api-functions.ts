@@ -127,8 +127,8 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
 
       const entityCorrelationId = request.query.entityCorrelationId?.toString()
       let entry = await driver.getStatusListEntryByIndex({
-        statusListIndex,
-        ...(entityCorrelationId ? { correlationId: entityCorrelationId } : { statusListId: details.id }),
+        statusListId: details.id,
+        ...(entityCorrelationId ? { correlationId: entityCorrelationId } : { statusListIndex: statusListIndex }),
         errorOnNotFound: false,
       })
       const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
@@ -197,10 +197,15 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         if (!updateRequest.statusListIndex || updateRequest.statusListIndex < 0) {
           return sendErrorResponse(response, 400, 'Invalid statusListIndex supplied')
         }
+        const driver = await getDriver({
+          ...(statusListCorrelationId ? { statusListCorrelationId } : { id: buildStatusListId(request) }),
+          dbName: opts.dbName,
+        })
+        const details = await driver.getStatusList()
+
         statusListEntry = await driver.getStatusListEntryByIndex({
-          statusListIndex: updateRequest.statusListIndex,
-          ...(statusListId && { statusListId }),
-          ...(!statusListId && { correlationId: statusListCorrelationId }), // Do not query for correlationId when we have statusListId
+          statusListId: details.id,
+          ...(entryCorrelationId ? { correlationId: entryCorrelationId } : { statusListIndex: updateRequest.statusListIndex }),
           errorOnNotFound: true,
         })
       }
