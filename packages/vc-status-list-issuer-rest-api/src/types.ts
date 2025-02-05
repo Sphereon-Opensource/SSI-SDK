@@ -36,7 +36,7 @@ export interface UpdateW3cCredentialStatusRequest extends UpdateCredentialStatus
 }
 
 export interface UpdateIndexedCredentialStatusRequest extends UpdateCredentialStatusRequest {
-  statusListIndex: number
+  statusListIndex?: number
 }
 
 interface UpdateCredentialStatusRequest {
@@ -49,4 +49,14 @@ interface UpdateCredentialStatusRequest {
 export interface UpdateCredentialStatusItem {
   type?: StatusListType // makes very little sense, but listed in the spec. Would expect a purpose
   status: string
+}
+
+export enum StatusListIdType {
+  StatusListId = 'StatusListId',
+  StatusListCorrelationId = 'StatusListCorrelationId',
+}
+
+export enum EntryIdType {
+  StatusListIndex = 'StatusListIndex',
+  EntryCorrelationId = 'StatusListCorrelationId',
 }
