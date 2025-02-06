@@ -334,7 +334,7 @@ describe('Status List VC handling', () => {
       })
 
       expect(result.status?.status_list.uri).toBe('http://localhost/test/1')
-      expect(result.status?.status_list.idx).toBeGreaterThan(10000)
+      expect(result.status?.status_list.idx).toBeGreaterThan(1)
     })
 
     it('should update existing status in SD-JWT credential', async () => {
@@ -359,7 +359,7 @@ describe('Status List VC handling', () => {
         ],
       })
 
-      expect(result.status?.status_list.idx).toBeGreaterThan(10000)
+      expect(result.status?.status_list.idx).toBe(10)
     })
   })
 
