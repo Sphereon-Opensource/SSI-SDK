@@ -158,7 +158,7 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.debug(`Adding status to credential ${credential.id ?? 'without ID'}`)
 
     const credentialStatus = credential.credentialStatus
-    if (credentialStatus) {
+    if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {
       let existingStatusId: string | undefined
       if (Array.isArray(credentialStatus)) {
         // This was implemented with VC v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
@@ -196,7 +196,7 @@ export class StatusListPlugin implements IAgentPlugin {
       }
     }
 
-    const statusListOpts = rest.statusLists && rest.statusLists.length > 0 ? rest.statusLists : [{ statusListId: this.defaultStatusListId }]
+    const statusListOpts = rest.statusLists?.length ? rest.statusLists : []
     logger.debug(`Adding new status using ${statusListOpts.length} status list option(s)`)
     const credentialId = credential.id ?? rest.credentialId
     for (const opt of statusListOpts) {
@@ -233,7 +233,7 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.debug(`Adding status to SD-JWT credential`)
 
     const credentialStatus = credential.status
-    if (credentialStatus) {
+    if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {
       let existingStatusUri: string | undefined
       if (credentialStatus.status_list && credentialStatus.status_list.uri && credentialStatus.status_list.uri.trim() !== '') {
         existingStatusUri = credentialStatus.status_list.uri
@@ -250,7 +250,7 @@ export class StatusListPlugin implements IAgentPlugin {
       }
     }
 
-    const statusListOpts = rest.statusLists && rest.statusLists.length > 0 ? rest.statusLists : [{ statusListId: this.defaultStatusListId }]
+    const statusListOpts = rest.statusLists?.length ? rest.statusLists : []
     logger.info(`Adding new status using status list options with ID ${statusListOpts[0].statusListId ?? this.defaultStatusListId}`)
     const firstOpt = statusListOpts[0]
     const effectiveStatusListId = firstOpt.statusListId ?? this.defaultStatusListId
