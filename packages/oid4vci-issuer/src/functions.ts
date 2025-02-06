@@ -215,6 +215,7 @@ export async function getCredentialSignerCallback(
         const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusLists: statusLists })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
+          // TODO update statusLists somehow?
         }
       }
 
@@ -255,7 +256,11 @@ export async function getCredentialSignerCallback(
               // TODO check, looks like sdJwtPayload and credentialStatusVC is the same
               return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
             }
-
+            if (statusLists && statusLists.length > 0) {
+              const statusList = statusLists[0]
+              statusList.statusListId = credentialStatusVC.status.status_list.uri
+              statusList.statusListIndex = credentialStatusVC.status.status_list.idx
+            }
             sdJwtPayload.status.status_list.idx = credentialStatusVC.status.status_list.idx
           }
         }
