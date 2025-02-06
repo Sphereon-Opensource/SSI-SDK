@@ -207,7 +207,7 @@ describe('Status List VC handling', () => {
       }
       const result = await agent.slAddStatusToCredential({
         credential: mockCredential,
-        statusListOpts: [
+        statusLists: [
           {
             statusListId: 'http://localhost/test/1',
             statusListIndex: 123,
@@ -229,7 +229,7 @@ describe('Status List VC handling', () => {
       }
       const result = await agent.slAddStatusToCredential({
         credential: mockCredential,
-        statusListOpts: [
+        statusLists: [
           {
             statusListId: 'http://localhost/test/1',
           },
@@ -275,7 +275,7 @@ describe('Status List VC handling', () => {
 
       const result = await agent.slAddStatusToCredential({
         credential: mockCredential,
-        statusListOpts: [
+        statusLists: [
           {
             statusListCorrelationId: 'test-sl',
             statusEntryCorrelationId: 'entry-456',
@@ -330,7 +330,7 @@ describe('Status List VC handling', () => {
 
       const result = await agent.slAddStatusToSdJwtCredential({
         credential: mockCredential,
-        statusListOpts: [{ statusListId: 'http://localhost/test/1' }],
+        statusLists: [{ statusListId: 'http://localhost/test/1' }],
       })
 
       expect(result.status?.status_list.uri).toBe('http://localhost/test/1')
@@ -351,7 +351,7 @@ describe('Status List VC handling', () => {
 
       const result = await agent.slAddStatusToSdJwtCredential({
         credential: mockCredential,
-        statusListOpts: [
+        statusLists: [
           {
             statusListId: 'http://localhost/test/1',
             statusListIndex: 10,

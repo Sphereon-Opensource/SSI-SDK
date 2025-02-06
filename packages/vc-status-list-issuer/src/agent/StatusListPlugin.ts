@@ -189,14 +189,14 @@ export class StatusListPlugin implements IAgentPlugin {
         await handleCredentialStatus(credential, {
           ...rest,
           credentialId,
-          statusListOpts: [{ statusListId: existingStatusId }],
+          statusLists: [{ statusListId: existingStatusId }],
           driver,
         })
         return credential
       }
     }
 
-    const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
+    const statusListOpts = rest.statusLists && rest.statusLists.length > 0 ? rest.statusLists : [{ statusListId: this.defaultStatusListId }]
     logger.debug(`Adding new status using ${statusListOpts.length} status list option(s)`)
     const credentialId = credential.id ?? rest.credentialId
     for (const opt of statusListOpts) {
@@ -205,7 +205,7 @@ export class StatusListPlugin implements IAgentPlugin {
       await handleCredentialStatus(credential, {
         ...rest,
         credentialId,
-        statusListOpts: [
+        statusLists: [
           {
             ...opt,
             statusListId: effectiveStatusListId,
@@ -243,21 +243,21 @@ export class StatusListPlugin implements IAgentPlugin {
         const driver = await this.getDriverForStatusListOption(existingStatusUri)
         await handleSdJwtCredentialStatus(credential, {
           ...rest,
-          statusListOpts: [{ ...rest.statusListOpts, statusListId: existingStatusUri }],
+          statusLists: [{ ...rest.statusLists, statusListId: existingStatusUri }],
           driver,
         })
         return credential
       }
     }
 
-    const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
+    const statusListOpts = rest.statusLists && rest.statusLists.length > 0 ? rest.statusLists : [{ statusListId: this.defaultStatusListId }]
     logger.info(`Adding new status using status list options with ID ${statusListOpts[0].statusListId ?? this.defaultStatusListId}`)
     const firstOpt = statusListOpts[0]
     const effectiveStatusListId = firstOpt.statusListId ?? this.defaultStatusListId
     const driver = await this.getDriverForStatusListOption(effectiveStatusListId, firstOpt.statusListCorrelationId)
     await handleSdJwtCredentialStatus(credential, {
       ...rest,
-      statusListOpts: [
+      statusLists: [
         {
           ...firstOpt,
           statusListId: effectiveStatusListId,

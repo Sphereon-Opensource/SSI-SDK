@@ -103,7 +103,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
     return
   }
 
-  const path = opts?.path ?? '/status-lists/:statusListId/entry/:entryId'
+  const path = opts?.path ?? '/status-lists/:statusListId/status/entry-by-id/:entryId'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const statusListIdType = (request.query.statusListIdType as StatusListIdType) ?? StatusListIdType.StatusListId
@@ -168,7 +168,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       }
 
       response.statusCode = 200
-      return response.send({ ...entry, status })
+      return response.json({ ...entry, status })
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }
@@ -228,7 +228,7 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
         }
       }
       response.statusCode = 200
-      return response.send({ ...entry, status }) // FIXME content type?
+      return response.json({ ...entry, status }) // FIXME content type?
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }

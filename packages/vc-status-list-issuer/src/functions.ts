@@ -33,7 +33,7 @@ async function getDriverAndStatusList(
  */
 function getCredentialStatusListOpts(credential: CredentialWithStatusSupport, opts?: IIssueCredentialStatusOpts): Array<StatusListOpts> {
   // Start with any options provided via the opts parameter
-  const statusListOpts: StatusListOpts[] = [...(opts?.statusListOpts ?? [])]
+  const statusListOpts: StatusListOpts[] = [...(opts?.statusLists ?? [])]
   // If none were provided, try to derive them from the credential's credentialStatus
   if (statusListOpts.length === 0 && credential.credentialStatus) {
     if (Array.isArray(credential.credentialStatus)) {
@@ -63,7 +63,7 @@ function getCredentialStatusListOpts(credential: CredentialWithStatusSupport, op
  * Extracts status list options from an SD‑JWT credential.
  */
 function getSdJwtStatusListOpts(credential: SdJwtVcPayload, opts?: IIssueCredentialStatusOpts): StatusListOpts[] {
-  const statusListOpts: StatusListOpts[] = [...(opts?.statusListOpts ?? [])]
+  const statusListOpts: StatusListOpts[] = [...(opts?.statusLists ?? [])]
   if (statusListOpts.length === 0 && credential.status?.status_list) {
     statusListOpts.push({
       statusListId: credential.status.status_list.uri,
