@@ -256,6 +256,8 @@ export async function getCredentialSignerCallback(
               // TODO check, looks like sdJwtPayload and credentialStatusVC is the same
               return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
             }
+
+            // Update statusListId & statusListIndex back to the credential session TODO SSISDK-4 This is not a clean way to do this.
             if (statusLists && statusLists.length > 0) {
               const statusList = statusLists[0]
               statusList.statusListId = credentialStatusVC.status.status_list.uri
