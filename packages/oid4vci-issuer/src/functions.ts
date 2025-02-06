@@ -51,10 +51,14 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
 
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
+      const kid = args.kid ?? header.kid
+      const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
       return {
         alg,
         ...identifier,
         jwt: { header, payload },
+        ...(kid && { kid }),
+        ...(jwk && { jwk }),
       } as JwtVerifyResult<DIDDocument>
     }
 
@@ -326,20 +330,19 @@ export async function createVciIssuer(
   ).build()
 }
 
-export async function createAuthRequestUriCallback(opts: { path: string, presentationDefinitionId: string }): Promise<() => Promise<string>> {
+export async function createAuthRequestUriCallback(opts: { path: string; presentationDefinitionId: string }): Promise<() => Promise<string>> {
   async function authRequestUriCallback(): Promise<string> {
     const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
     return fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      }
-    })
-    .then(async (response): Promise<string> => {
+      },
+    }).then(async (response): Promise<string> => {
       if (response.status >= 400) {
         return Promise.reject(Error(await response.text()))
       } else {
-        const responseData = await response.json();
+        const responseData = await response.json()
 
         if (!responseData.authRequestURI) {
           return Promise.reject(Error('Missing auth request uri in response body'))
@@ -348,13 +351,15 @@ export async function createAuthRequestUriCallback(opts: { path: string, present
         return responseData.authRequestURI
       }
     })
-
   }
 
   return authRequestUriCallback
 }
 
-export async function createVerifyAuthResponseCallback(opts: { path: string, presentationDefinitionId: string }): Promise<(correlationId: string) => Promise<boolean>> {
+export async function createVerifyAuthResponseCallback(opts: {
+  path: string
+  presentationDefinitionId: string
+}): Promise<(correlationId: string) => Promise<boolean>> {
   async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
     return fetch(opts.path, {
       method: 'POST',
@@ -362,12 +367,11 @@ export async function createVerifyAuthResponseCallback(opts: { path: string, pre
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ definitionId: opts.presentationDefinitionId, correlationId }),
-    })
-    .then(async (response): Promise<boolean> => {
+    }).then(async (response): Promise<boolean> => {
       if (response.status >= 400) {
         return Promise.reject(Error(await response.text()))
       } else {
-        const responseData = await response.json();
+        const responseData = await response.json()
 
         if (!responseData.status) {
           return Promise.reject(Error('Missing status in response body'))
