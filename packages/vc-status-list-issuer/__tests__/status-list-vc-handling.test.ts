@@ -239,7 +239,7 @@ describe('Status List VC handling', () => {
       expect(result.credentialStatus).toBeDefined()
     })
 
-    /*  it('should handle array of credential statuses', async () => { TODO this is only true for VC v2.0  SSISDK-2
+    /*  it('should handle array of credential statuses', async () => { TODO this is only true for VCDM v2.0  SSISDK-2
           const mockCredential: IVerifiableCredential = {
             ...baseCredential,
             credentialStatus: [
@@ -287,7 +287,7 @@ describe('Status List VC handling', () => {
     })
 
     /* 
-        it('should handle multiple status list options', async () => { TODO this is only true for VC v2.0  SSISDK-2
+        it('should handle multiple status list options', async () => { TODO this is only true for VCDM v2.0  SSISDK-2
           const mockCredential: IVerifiableCredential = {
             ...baseCredential,
           }
