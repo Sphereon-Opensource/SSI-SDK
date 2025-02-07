@@ -161,7 +161,7 @@ export class StatusListPlugin implements IAgentPlugin {
     if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {
       let existingStatusId: string | undefined
       if (Array.isArray(credentialStatus)) {
-        // This was implemented with VC v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
+        // This was implemented with VCDM v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
         for (const stat of credentialStatus) {
           if (stat.id && stat.id.trim() !== '') {
             existingStatusId = stat.id.split('#')[0]
