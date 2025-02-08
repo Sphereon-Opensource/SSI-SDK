@@ -11,9 +11,9 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-feature.IATAB2B.52.355",
-    "@sphereon/oid4vci-issuer": "0.16.1-feature.IATAB2B.52.355",
-    "@sphereon/oid4vci-issuer-server": "0.16.1-feature.IATAB2B.52.355",
+    "@sphereon/oid4vci-common": "0.16.1-feature.SSISDK.5.credential.offer.uri.363",
+    "@sphereon/oid4vci-issuer": "0.16.1-feature.SSISDK.5.credential.offer.uri.363",
+    "@sphereon/oid4vci-issuer-server": "0.16.1-feature.SSISDK.5.credential.offer.uri.363",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
