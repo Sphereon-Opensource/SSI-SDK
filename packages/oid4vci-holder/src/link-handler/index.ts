@@ -60,7 +60,8 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     let offerData = convertURIToJsonObject(uri) as Record<string, unknown>
     if ('credential_offer_uri' in offerData) {
       const credentialOfferUri = offerData['credential_offer_uri'] as string
-      const response = await fetch(decodeURIComponent(credentialOfferUri))
+      const uri = decodeURIComponent(credentialOfferUri)
+      const response = await fetch(uri)
       if (!(response && response.status >= 200 && response.status < 400)) {
         return Promise.reject(
           `the credential offer URI endpoint call was not successful. http code ${response.status} - reason ${response.statusText}`,

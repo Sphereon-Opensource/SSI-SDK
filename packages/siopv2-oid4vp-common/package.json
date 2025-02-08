@@ -12,7 +12,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.SSISDK.5.credential.offer.uri.363",
+    "@sphereon/did-auth-siop": "0.16.1-feature.SSISDK.5.credential.offer.uri.366",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "3.1.1"
