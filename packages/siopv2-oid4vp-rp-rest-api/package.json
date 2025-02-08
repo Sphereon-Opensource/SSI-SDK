@@ -11,7 +11,7 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.SSISDK.5.credential.offer.uri.366",
+    "@sphereon/did-auth-siop": "0.16.1-feature.IATAB2B.52.355",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",

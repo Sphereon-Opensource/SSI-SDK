@@ -4,7 +4,6 @@ import {
   CredentialConfigurationSupported,
   CredentialDataSupplierInput,
   CredentialIssuerMetadataOpts,
-  CredentialOfferPayloadMode,
   CredentialOfferSession,
   CredentialRequest,
   CredentialResponse,
@@ -37,7 +36,6 @@ export interface IOID4VCIIssuerOpts {
 }
 
 export interface ICreateOfferArgs extends IIssuerInstanceArgs {
-  credentialOfferPayloadMode: CredentialOfferPayloadMode
   grants?: Grant
   credentials?: Record<string, CredentialConfigurationSupported>
   credentialDefinition?: IssuerCredentialDefinition

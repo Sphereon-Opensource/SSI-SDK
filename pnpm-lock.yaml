@@ -619,11 +619,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -701,11 +701,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -918,8 +918,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
@@ -976,11 +976,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1149,17 +1149,17 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -1237,8 +1237,8 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.27.0
         version: 0.27.0
@@ -1273,11 +1273,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -1334,8 +1334,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -1358,14 +1358,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1527,8 +1527,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1564,8 +1564,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -2262,8 +2262,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2284,14 +2284,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2426,14 +2426,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2517,8 +2517,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3268,8 +3268,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.25
         version: 0.2.0-SNAPSHOT.25
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -3393,8 +3393,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -3744,8 +3744,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.IATAB2B.52.355
+        version: 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -6161,12 +6161,12 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-aOvGBYKHzYTbYs2hp24YML37Oq4gvjEqP0cYKdXv+IkCsOpscl/j1eGUNa4lB1AcWA1ebH6AUbySLJ97tkAOLQ==}
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-Yleg2GtHXtCG9Tltwb6UkYF13Xm9nVJKTA+XH6Ev9Snpt4dxZb+evn2HwaeH9yQMEtsWdsuCsAyaF9v17O+mMw==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-auth-siop@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-1LLgaYa1+1Tlmzt8LxZMQmlvo7dUw8FS+ImNSq8v/1afaBwl9sf36h33TdkrkbyKnY13QIK0mQLBlAdwwmNVmg==}
+  '@sphereon/did-auth-siop@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-OuHfZ7eZ4X22kNZPbS58Ft+peBWeijyKMfoIl1yztz62BFGT1crLcuaRTZf80IrNpheKZ/YXXhgMK1g8ydPAAA==}
     engines: {node: '>=18'}
 
   '@sphereon/did-provider-oyd@0.27.0':
@@ -6189,8 +6189,8 @@ packages:
       '@sphereon/react-native-argon2': ^2.0.9
       react-native: '>=0.60.0'
 
-  '@sphereon/jarm@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-A17AKZV1cQJZ9tiyVM6Cp9PqwBwWyqX2/C/XkQramgyZ7wQsj0qIZH9O3c405ClgBD4uEvO3Dtvp6HWdSsGDFg==}
+  '@sphereon/jarm@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-4zlUgBP/r1pSsYRWq4baq2V+03HNljjXpaRB/SJ3XOUNyPkqqtKWD5YLxucUrtBfRstPrUrpEClZk3amN5YVBg==}
     engines: {node: '>=18'}
 
   '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
@@ -6204,20 +6204,20 @@ packages:
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
 
-  '@sphereon/oid4vc-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-3BQi+zt4muABpLxW7zyBu9O+v6NIpPDXyKMNJu/jLsxpNfmRAoZqlzTXrEtvOJl7pSE1VT/xOudNlr81XilBfQ==}
+  '@sphereon/oid4vc-common@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-GqTWsKuHC0uO279ESCC6mjNk7Bgz85uSZBAdWDYtGGB2pWEILLvRWj2yDeZ7gl5Bp7N6c9BVAk3BjPdnp7uiFQ==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-client@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-63ZhlQIATrqGPLkJt441/SjJoeydbFCKXdJuytx9C99tF13auBjFhaqiNojmhGGNpGnUGiQtfgSQjIeKWkV7dw==}
+  '@sphereon/oid4vci-client@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-pAILP5MV/Az6thv+TzhoDTsus8/P9dEy2rom0hCT5UvbEkOJKjDTXfA2lGxI/F3zDExXVVwol1JgZvkkKTzQag==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-KV3QVcvMV7XLprJ+LX4LeKaZoYnlr+qxnZtU763XNo4TXp3rZapOZVCrKMVFFSPGmx5xl8bkjjF95LxcG7lCfQ==}
+  '@sphereon/oid4vci-common@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-CuEtmpVY24fdxg6kdC3sSc4kGP2d7ZGlPyby+TAb1JHI8VqVyKB2DjdMhqsiShZtmM3UvJppiEKa5cgWsRgB5Q==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-h+HG72nukYgifza6kPBeKw1WfzhYp5oS1a5ALHRAgM2gyIIX57JCRVsRC8eA4LAtvAJfwNvPcYvset5qTjnu/Q==}
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-eEJOx1vVWata+E4oHlSoZAvPCKsVp6gU98MeZpU8FOz3Va0ezfPNVC8yc83J5RfKy6Tky+rusSoSAQqjNNxyWw==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6225,8 +6225,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-jEytDr7QUTAs7JjKoS+JNZp0q/KroV/zDf7nivLNP5Pc7YlV3bzQ9CLSyo1ZxB8eTwI2HVExLo74GrTnUdflew==}
+  '@sphereon/oid4vci-issuer@0.16.1-feature.IATAB2B.52.355':
+    resolution: {integrity: sha512-ytbGnzkFHX1Cqb1hKm69qnGtwa4MGJeDrcN/1/0ND8XHipMoeuRhmc1JXQ2B3DmMmUOM8WrP5szR0GmBKwnVwQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -17167,11 +17167,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -17180,11 +17180,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop@0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/jarm': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/jarm': 0.16.1-feature.IATAB2B.52.355(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
       '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17246,9 +17246,9 @@ snapshots:
       react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1)
       uint8arrays: 3.1.1
 
-  '@sphereon/jarm@0.16.1-feature.SSISDK.5.credential.offer.uri.366(typescript@5.6.3)':
+  '@sphereon/jarm@0.16.1-feature.IATAB2B.52.355(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
@@ -17278,7 +17278,7 @@ snapshots:
       - encoding
       - typescript
 
-  '@sphereon/oid4vc-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
+  '@sphereon/oid4vc-common@0.16.1-feature.IATAB2B.52.355':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
@@ -17286,10 +17286,10 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vci-client@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)':
+  '@sphereon/oid4vci-client@0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
+      '@sphereon/oid4vci-common': 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.7
@@ -17297,9 +17297,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.7
@@ -17310,11 +17310,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SSISDK.5.credential.offer.uri.366(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.IATAB2B.52.355(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
+      '@sphereon/oid4vci-common': 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
+      '@sphereon/oid4vci-issuer': 0.16.1-feature.IATAB2B.52.355(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-express-support': 0.30.2-feature.mdoc.funke2.367(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.3
@@ -17333,12 +17333,11 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
+  '@sphereon/oid4vci-issuer@0.16.1-feature.IATAB2B.52.355(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.IATAB2B.52.355
+      '@sphereon/oid4vci-common': 0.16.1-feature.IATAB2B.52.355(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
-      short-uuid: 4.2.2
       uuid: 9.0.1
     optionalDependencies:
       awesome-qr: 2.1.5-rc.0(encoding@0.1.13)
