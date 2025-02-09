@@ -50,17 +50,40 @@ export class StatusListPlugin implements IAgentPlugin {
     this.autoCreateInstances = opts.autoCreateInstances ?? true
   }
 
+  private async getDriverForStatusListOption(effectiveStatusListId: string, correlationId?: string) {
+    let instance
+    if (correlationId && correlationId.trim() !== '') {
+      instance = this.instances.find((inst) => inst.correlationId === correlationId)
+    } else {
+      instance = this.instances.find((inst) => inst.id === effectiveStatusListId)
+    }
+    if (!instance) {
+      throw Error(`Status list with identifier ${correlationId ?? effectiveStatusListId} is not managed by the status list plugin`)
+    }
+    if (!instance.dataSource && !instance.driverOptions?.dbName) {
+      throw Error(`Either a datasource or dbName needs to be supplied`)
+    }
+    const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
+    const driver =
+      correlationId && correlationId.trim() !== ''
+        ? await getDriver({ dataSource, correlationId })
+        : await getDriver({ dataSource, id: effectiveStatusListId })
+    return driver
+  }
+
   private async slGetStatusList(
     args: GetStatusListArgs,
     context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>,
   ): Promise<StatusListResult> {
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
-    const dataSource =
-      (sl?.dataSource ?? args?.dataSource)
-        ? await args.dataSource
-        : args.dbName
-          ? await this.allDataSources.getDbConnection(args.dbName)
-          : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    let dataSource
+    if (sl?.dataSource ?? args?.dataSource) {
+      dataSource = await args.dataSource
+    } else if (args.dbName) {
+      dataSource = await this.allDataSources.getDbConnection(args.dbName)
+    } else {
+      dataSource = await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    }
     try {
       const driver = await getDriver({
         id: args.id ?? sl?.id,
@@ -82,11 +105,14 @@ export class StatusListPlugin implements IAgentPlugin {
     context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>,
   ): Promise<StatusListResult> {
     const sl = await createNewStatusList(args, context)
-    const dataSource = args?.dataSource
-      ? await args.dataSource
-      : args.dbName
-        ? await this.allDataSources.getDbConnection(args.dbName)
-        : await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    let dataSource
+    if (args?.dataSource) {
+      dataSource = await args.dataSource
+    } else if (args.dbName) {
+      dataSource = await this.allDataSources.getDbConnection(args.dbName)
+    } else {
+      dataSource = await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
+    }
     const driver = await getDriver({
       id: sl.id,
       correlationId: sl.correlationId,
@@ -98,7 +124,7 @@ export class StatusListPlugin implements IAgentPlugin {
     } catch (e) {
       // That is fine if there is no status list yet
     }
-    if (statusListDetails && this.instances.find((sl) => sl.id === args.id || sl.correlationId === args.correlationId)) {
+    if (statusListDetails && this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)) {
       return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
     } else {
       statusListDetails = await driver.createStatusList({
@@ -132,10 +158,10 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.debug(`Adding status to credential ${credential.id ?? 'without ID'}`)
 
     const credentialStatus = credential.credentialStatus
-    if (credentialStatus) {
+    if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {
       let existingStatusId: string | undefined
       if (Array.isArray(credentialStatus)) {
-        // This was implemented with VC v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
+        // This was implemented with VCDM v2.0 support, but the rest of the SDK is not ready for that, so ICredential.credentialStatus's array union is disabled for now
         for (const stat of credentialStatus) {
           if (stat.id && stat.id.trim() !== '') {
             existingStatusId = stat.id.split('#')[0]
@@ -163,39 +189,23 @@ export class StatusListPlugin implements IAgentPlugin {
         await handleCredentialStatus(credential, {
           ...rest,
           credentialId,
-          statusListOpts: [{ statusListId: existingStatusId }],
+          statusLists: [{ statusListId: existingStatusId }],
           driver,
         })
         return credential
       }
     }
 
-    const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
+    const statusListOpts = rest.statusLists?.length ? rest.statusLists : []
     logger.debug(`Adding new status using ${statusListOpts.length} status list option(s)`)
     const credentialId = credential.id ?? rest.credentialId
     for (const opt of statusListOpts) {
       const effectiveStatusListId = opt.statusListId ?? this.defaultStatusListId
-      let instance
-      if (opt.statusListCorrelationId && opt.statusListCorrelationId.trim() !== '') {
-        instance = this.instances.find((inst) => inst.correlationId === opt.statusListCorrelationId)
-      } else {
-        instance = this.instances.find((inst) => inst.id === effectiveStatusListId)
-      }
-      if (!instance) {
-        throw Error(`Status list with identifier ${opt.statusListCorrelationId ?? effectiveStatusListId} is not managed by the status list plugin`)
-      }
-      if (!instance.dataSource && !instance.driverOptions?.dbName) {
-        throw Error(`Either a datasource or dbName needs to be supplied`)
-      }
-      const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-      const driver =
-        opt.statusListCorrelationId && opt.statusListCorrelationId.trim() !== ''
-          ? await getDriver({ dataSource, correlationId: opt.statusListCorrelationId })
-          : await getDriver({ dataSource, id: effectiveStatusListId })
+      const driver = await this.getDriverForStatusListOption(effectiveStatusListId, opt.statusListCorrelationId)
       await handleCredentialStatus(credential, {
         ...rest,
         credentialId,
-        statusListOpts: [
+        statusLists: [
           {
             ...opt,
             statusListId: effectiveStatusListId,
@@ -223,58 +233,31 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.debug(`Adding status to SD-JWT credential`)
 
     const credentialStatus = credential.status
-    if (credentialStatus) {
+    if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {
       let existingStatusUri: string | undefined
       if (credentialStatus.status_list && credentialStatus.status_list.uri && credentialStatus.status_list.uri.trim() !== '') {
         existingStatusUri = credentialStatus.status_list.uri
       }
       if (existingStatusUri) {
         logger.debug(`Using existing status URI ${existingStatusUri} for SD-JWT credential`)
-
-        const instance = this.instances.find((inst) => inst.id === existingStatusUri)
-        if (!instance) {
-          throw Error(`Status list with id ${existingStatusUri} is not managed by the status list plugin`)
-        }
-        if (!instance.dataSource && !instance.driverOptions?.dbName) {
-          throw Error(`Either a datasource or dbName needs to be supplied`)
-        }
-        const dataSource = instance.dataSource
-          ? await instance.dataSource
-          : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-        const driver = await getDriver({ dataSource, id: existingStatusUri })
+        const driver = await this.getDriverForStatusListOption(existingStatusUri)
         await handleSdJwtCredentialStatus(credential, {
           ...rest,
-          statusListOpts: [{ ...rest.statusListOpts, statusListId: existingStatusUri }],
+          statusLists: [{ ...rest.statusLists, statusListId: existingStatusUri }],
           driver,
         })
         return credential
       }
     }
 
-    const statusListOpts = rest.statusListOpts && rest.statusListOpts.length > 0 ? rest.statusListOpts : [{ statusListId: this.defaultStatusListId }]
+    const statusListOpts = rest.statusLists?.length ? rest.statusLists : []
     logger.info(`Adding new status using status list options with ID ${statusListOpts[0].statusListId ?? this.defaultStatusListId}`)
     const firstOpt = statusListOpts[0]
     const effectiveStatusListId = firstOpt.statusListId ?? this.defaultStatusListId
-    let instance
-    if (firstOpt.statusListCorrelationId && firstOpt.statusListCorrelationId.trim() !== '') {
-      instance = this.instances.find((inst) => inst.correlationId === firstOpt.statusListCorrelationId)
-    } else {
-      instance = this.instances.find((inst) => inst.id === effectiveStatusListId)
-    }
-    if (!instance) {
-      throw Error(`Status list with identifier ${firstOpt.statusListCorrelationId ?? effectiveStatusListId} is not managed by the status list plugin`)
-    }
-    if (!instance.dataSource && !instance.driverOptions?.dbName) {
-      throw Error(`Either a datasource or dbName needs to be supplied`)
-    }
-    const dataSource = instance.dataSource ? await instance.dataSource : await this.allDataSources.getDbConnection(instance.driverOptions!.dbName!)
-    const driver =
-      firstOpt.statusListCorrelationId && firstOpt.statusListCorrelationId.trim() !== ''
-        ? await getDriver({ dataSource, correlationId: firstOpt.statusListCorrelationId })
-        : await getDriver({ dataSource, id: effectiveStatusListId })
+    const driver = await this.getDriverForStatusListOption(effectiveStatusListId, firstOpt.statusListCorrelationId)
     await handleSdJwtCredentialStatus(credential, {
       ...rest,
-      statusListOpts: [
+      statusLists: [
         {
           ...firstOpt,
           statusListId: effectiveStatusListId,
@@ -282,7 +265,7 @@ export class StatusListPlugin implements IAgentPlugin {
       ],
       driver,
     })
-    logger.debug('Successfully added status information to SD-JWT credential')
+    logger.debug(`Successfully added status information to SD-JWT credential`)
     return credential
   }
 }

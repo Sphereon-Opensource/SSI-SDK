@@ -232,7 +232,7 @@ export type IAddStatusToSdJwtCredentialArgs = Omit<IIssueCredentialStatusOpts, '
 
 export interface IIssueCredentialStatusOpts {
   dataSource?: DataSource
-  statusListOpts?: Array<StatusListOpts>
+  statusLists?: Array<StatusListOpts>
   credentialId?: string // An id to use for the credential. Normally should be set as the crdential.id value
   value?: string
 }

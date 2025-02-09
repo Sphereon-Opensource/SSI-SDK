@@ -12,9 +12,70 @@ import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Loggers, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
 import { StatusListInstance } from './types'
 import { IAgentContext } from '@veramo/core'
+import { StatusListOpts } from '@sphereon/oid4vci-common'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 
+/**
+ * Retrieves a status list driver and its associated status list in one call.
+ */
+async function getDriverAndStatusList(
+  statusListId: string,
+  opts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
+): Promise<{ slDriver: IStatusListDriver; statusList: Pick<StatusListResult, 'id' | 'correlationId'> }> {
+  const slDriver = opts?.driver ?? (await getDriver({ id: statusListId, dataSource: opts?.dataSource }))
+  const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
+  return { slDriver, statusList }
+}
+
+/**
+ * Extracts status list options from a regular credential.
+ */
+function getCredentialStatusListOpts(credential: CredentialWithStatusSupport, opts?: IIssueCredentialStatusOpts): Array<StatusListOpts> {
+  // Start with any options provided via the opts parameter
+  const statusListOpts: StatusListOpts[] = [...(opts?.statusLists ?? [])]
+  // If none were provided, try to derive them from the credential's credentialStatus
+  if (statusListOpts.length === 0 && credential.credentialStatus) {
+    if (Array.isArray(credential.credentialStatus)) {
+      for (const credStatus of credential.credentialStatus) {
+        if (credStatus.statusListCredential) {
+          statusListOpts.push({
+            statusListId: credStatus.statusListCredential,
+            statusListIndex: credStatus.statusListIndex,
+            statusListCorrelationId: credStatus.statusListCorrelationId,
+            statusEntryCorrelationId: credStatus.statusEntryCorrelationId,
+          })
+        }
+      }
+    } else if (credential.credentialStatus.statusListCredential) {
+      statusListOpts.push({
+        statusListId: credential.credentialStatus.statusListCredential,
+        statusListIndex: credential.credentialStatus.statusListIndex,
+        statusListCorrelationId: credential.credentialStatus.statusListCorrelationId,
+        statusEntryCorrelationId: credential.credentialStatus.statusEntryCorrelationId,
+      })
+    }
+  }
+  return statusListOpts
+}
+
+/**
+ * Extracts status list options from an SD‑JWT credential.
+ */
+function getSdJwtStatusListOpts(credential: SdJwtVcPayload, opts?: IIssueCredentialStatusOpts): StatusListOpts[] {
+  const statusListOpts: StatusListOpts[] = [...(opts?.statusLists ?? [])]
+  if (statusListOpts.length === 0 && credential.status?.status_list) {
+    statusListOpts.push({
+      statusListId: credential.status.status_list.uri,
+      statusListIndex: credential.status.status_list.idx,
+    })
+  }
+  return statusListOpts
+}
+
+/**
+ * Processes a status list entry for a given credential.
+ */
 async function processStatusListEntry(params: {
   statusListId: string
   statusList: Pick<StatusListResult, 'id' | 'correlationId'>
@@ -46,7 +107,7 @@ async function processStatusListEntry(params: {
       statusListIndex,
       errorOnNotFound: false,
     })
-    debug(
+    logger.debug(
       `${!existingEntry && 'no'} existing statusList entry and index ${existingEntry?.statusListIndex} for ${params.debugCredentialInfo}. Will reuse the index`,
     )
     if (
@@ -120,28 +181,8 @@ export const handleCredentialStatus = async (
   credentialStatusOpts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
 ): Promise<void> => {
   logger.debug(`Starting status update for credential ${credential.id ?? 'without ID'}`)
-
-  const statusListOpts = [...(credentialStatusOpts?.statusListOpts ?? [])]
-  if (statusListOpts.length === 0 && credential.credentialStatus) {
-    if (Array.isArray(credential.credentialStatus)) {
-      for (const credStatus of credential.credentialStatus) {
-        if (credStatus.statusListCredential) {
-          statusListOpts.push({
-            statusListId: credStatus.statusListCredential,
-            statusListIndex: credStatus.statusListIndex,
-            statusListCorrelationId: (credStatus as any).statusListCorrelationId,
-          })
-        }
-      }
-    } else if (credential.credentialStatus.statusListCredential) {
-      statusListOpts.push({
-        statusListId: credential.credentialStatus.statusListCredential,
-        statusListIndex: credential.credentialStatus.statusListIndex,
-        statusListCorrelationId: (credential.credentialStatus as any).statusListCorrelationId,
-      })
-    }
-  }
-  if (!statusListOpts.length) {
+  const statusListOpts = getCredentialStatusListOpts(credential, credentialStatusOpts)
+  if (statusListOpts.length === 0) {
     logger.debug('No status list options found, skipping update')
     return
   }
@@ -154,13 +195,7 @@ export const handleCredentialStatus = async (
     }
 
     logger.debug(`Processing status list ${statusListId} for credential ${credentialId ?? 'without ID'}`)
-    const slDriver =
-      credentialStatusOpts?.driver ??
-      (await getDriver({
-        id: statusListId,
-        dataSource: credentialStatusOpts?.dataSource,
-      }))
-    const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
+    const { slDriver, statusList } = await getDriverAndStatusList(statusListId, credentialStatusOpts)
     const currentIndex = statusListOpt.statusListIndex ?? 0
     const { updateResult } = await processStatusListEntry({
       statusListId,
@@ -192,13 +227,13 @@ export const handleCredentialStatus = async (
 }
 
 /**
- * Adds status information to an SD-JWT credential using status list options from either:
+ * Adds status information to an SD‑JWT credential using status list options from either:
  * - The provided options
  * - Existing credential status information
  *
  * Updates the credential's status field with status list URI and index.
  *
- * @param credential The SD-JWT credential to update
+ * @param credential The SD‑JWT credential to update
  * @param credentialStatusOpts Options for status handling and driver configuration
  * @throws Error if no status list options are available
  */
@@ -206,18 +241,9 @@ export const handleSdJwtCredentialStatus = async (
   credential: SdJwtVcPayload,
   credentialStatusOpts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
 ): Promise<void> => {
-  logger.debug('Starting status update for SD-JWT credential')
-
-  const statusListOpts = [...(credentialStatusOpts?.statusListOpts ?? [])]
-  if (statusListOpts.length === 0 && credential.status?.status_list) {
-    statusListOpts.push({
-      statusListId: credential.status.status_list.uri,
-      statusListIndex: credential.status.status_list.idx,
-      statusListCorrelationId: (credential.status.status_list as any).statusListCorrelationId,
-    })
-  }
-
-  if (!statusListOpts.length) {
+  logger.debug('Starting status update for SD‑JWT credential')
+  const statusListOpts = getSdJwtStatusListOpts(credential, credentialStatusOpts)
+  if (statusListOpts.length === 0) {
     throw Error('No status list options available from credential or options')
   }
 
@@ -229,13 +255,7 @@ export const handleSdJwtCredentialStatus = async (
     }
 
     logger.info(`Processing status list ${statusListId}`)
-    const slDriver =
-      credentialStatusOpts?.driver ??
-      (await getDriver({
-        id: statusListId,
-        dataSource: credentialStatusOpts?.dataSource,
-      }))
-    const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
+    const { slDriver, statusList } = await getDriverAndStatusList(statusListId, credentialStatusOpts)
     const currentIndex = statusListOpt.statusListIndex ?? 0
     const { statusListIndex } = await processStatusListEntry({
       statusListId,
@@ -266,5 +286,5 @@ export const handleSdJwtCredentialStatus = async (
       }
     }
   }
-  logger.debug('Completed SD-JWT credential status update')
+  logger.debug('Completed SD‑JWT credential status update')
 }

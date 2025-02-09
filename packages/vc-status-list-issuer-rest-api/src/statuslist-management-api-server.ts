@@ -8,6 +8,7 @@ import {
   createNewStatusListEndpoint,
   getStatusListCredentialEndpoint,
   getStatusListCredentialIndexStatusEndpoint,
+  getStatusListCredentialIndexStatusEndpointLegacy,
   updateStatusEndpoint,
 } from './api-functions'
 import { IStatusListOpts } from './types'
@@ -48,6 +49,7 @@ export class StatuslistManagementApiServer {
     if (features.includes('status-list-hosting')) {
       getStatusListCredentialEndpoint(this.router, context, opts.endpointOpts.getStatusList)
       getStatusListCredentialIndexStatusEndpoint(this.router, context, opts.endpointOpts.getStatusList)
+      getStatusListCredentialIndexStatusEndpointLegacy(this.router, context, opts.endpointOpts.getStatusList)
     }
     if (features.includes('w3c-vc-api-credential-status')) {
       updateStatusEndpoint(this.router, context, opts.endpointOpts.vcApiCredentialStatus)

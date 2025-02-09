@@ -9,11 +9,7 @@ import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import {
-  assertValidTypeMetadata,
-  fetchUrlWithErrorHandling,
-  validateIntegrity
-} from './utils'
+import { assertValidTypeMetadata, fetchUrlWithErrorHandling, validateIntegrity } from './utils'
 import {
   Claims,
   FetchSdJwtTypeMetadataFromVctUrlArgs,
@@ -32,7 +28,7 @@ import {
   SdJWTImplementation,
   SdJwtVerifySignature,
   SignKeyArgs,
-  SignKeyResult
+  SignKeyResult,
 } from './types'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
@@ -115,7 +111,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       hasher: this.registeredImplementations.hasher,
       saltGenerator: this.registeredImplementations.saltGenerator,
       signAlg: alg ?? 'ES256',
-      hashAlg: 'SHA-256',
+      hashAlg: 'sha-256',
     })
 
     const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
@@ -255,7 +251,13 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string, opts?: {x5cValidation?: X509CertificateChainValidationOpts}): Promise<boolean> {
+  async verify(
+    sdjwt: SDJwtVcInstance,
+    context: IRequiredContext,
+    data: string,
+    signature: string,
+    opts?: { x5cValidation?: X509CertificateChainValidationOpts },
+  ): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
@@ -271,7 +273,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         chain: x5c,
         trustAnchors: Array.from(trustAnchors),
         // TODO: Defaults to allowing untrusted certs! Fine for now, not when wallets go mainstream
-        opts: opts?.x5cValidation ?? {trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true},
+        opts: opts?.x5cValidation ?? { trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true },
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
@@ -346,7 +348,7 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns
    */
   async fetchSdJwtTypeMetadataFromVctUrl(args: FetchSdJwtTypeMetadataFromVctUrlArgs, context: IRequiredContext): Promise<SdJwtTypeMetadata> {
-    const {vct, opts} = args
+    const { vct, opts } = args
     const url = new URL(vct)
 
     const response = await fetchUrlWithErrorHandling(url.toString())
@@ -391,5 +393,4 @@ export class SDJwtPlugin implements IAgentPlugin {
     }
     return parts[2].split('#')[0]
   }
-
 }
