@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/did-auth-siop": "0.16.1-feature.SSISDK.5.credential.offer.uri.366",
-    "@sphereon/oid4vci-client": "0.16.1-feature.SSISDK.5.credential.offer.uri.366",
-    "@sphereon/oid4vci-common": "0.16.1-feature.SSISDK.5.credential.offer.uri.366",
+    "@sphereon/did-auth-siop": "0.16.1-feature.SSISDK.5.credential.offer.uri.368",
+    "@sphereon/oid4vci-client": "0.16.1-feature.SSISDK.5.credential.offer.uri.368",
+    "@sphereon/oid4vci-common": "0.16.1-feature.SSISDK.5.credential.offer.uri.368",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
@@ -45,7 +45,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/oid4vc-common": "0.16.1-feature.SSISDK.5.credential.offer.uri.366",
+    "@sphereon/oid4vc-common": "0.16.1-feature.SSISDK.5.credential.offer.uri.368",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.27.0",
     "@types/i18n-js": "^3.8.9",

@@ -619,11 +619,11 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -701,11 +701,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -918,8 +918,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
@@ -976,11 +976,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1149,17 +1149,17 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-client':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -1237,8 +1237,8 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.27.0
         version: 0.27.0
@@ -1273,11 +1273,11 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -1334,8 +1334,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -1358,14 +1358,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1527,8 +1527,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1564,8 +1564,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -2262,8 +2262,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2284,14 +2284,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2426,14 +2426,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -2517,8 +2517,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3268,8 +3268,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.25
         version: 0.2.0-SNAPSHOT.25
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -3393,8 +3393,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.27.0
         version: 0.27.0(encoding@0.1.13)(pg@8.13.1)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.9)(typescript@5.6.3))
@@ -3744,8 +3744,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+        specifier: 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+        version: 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -4280,7 +4280,6 @@ packages:
   '@azure/msal-node@1.18.4':
     resolution: {integrity: sha512-Kc/dRvhZ9Q4+1FSfsTFDME/v6+R2Y1fuMty/TfwqE5p9GTPw08BPbKgeWinE8JRHRp+LemjQbUZsn4Q4l6Lszg==}
     engines: {node: 10 || 12 || 14 || 16 || 18}
-    deprecated: A newer major version of this library is available. Please upgrade to the latest available version.
 
   '@babel/cli@7.25.9':
     resolution: {integrity: sha512-I+02IfrTiSanpxJBlZQYb18qCxB6c2Ih371cVpfgIrPQrjAYkf45XxomTJOG8JBWX5GY35/+TmhCMdJ4ZPkL8Q==}
@@ -4460,7 +4459,6 @@ packages:
   '@babel/plugin-proposal-export-namespace-from@7.18.9':
     resolution: {integrity: sha512-k1NtHyOMvlDDFeb9G5PhUXuGj8m/wiwojgQVEhJ/fsVsMCpLyOP4h0uGEjYJKrRI+EVPlb5Jk+Gt9P97lOGwtA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-export-namespace-from instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
@@ -5350,7 +5348,6 @@ packages:
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/config-array instead
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -5358,7 +5355,6 @@ packages:
 
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
-    deprecated: Use @eslint/object-schema instead
 
   '@hutson/parse-repository-url@3.0.2':
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
@@ -5584,17 +5580,14 @@ packages:
 
   '@lto-network/lto-crypto@1.1.1':
     resolution: {integrity: sha512-YA6ATCP+RfWN/0Tvb6CZKs2meUAUAf3cvEVa5tpNNkJjhozxloAONxPP/9DxhUjkmiqWU6fy8xPD2eCYv3lvmQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@lto-network/lto-transactions@1.2.12':
     resolution: {integrity: sha512-bUCwN1xFMr8HFg+rdpxfj5vyCM/2aBSq8kyXyhFw2t8Ovl6BL4rI9zK+4UnOHl5e5z72UWsHgdT3taicxPQiug==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       typescript: 5.6.3
 
   '@lto-network/signature-generator@1.0.0':
     resolution: {integrity: sha512-NhfsINt8rBoY7F8xijB7fGcY7fzr5dkqLcw3EE9fvVBBhyoI11LxTX78UlokY5T2+X8NvpNpXSSek2yJqYJxHg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@mapbox/node-pre-gyp@1.0.11':
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
@@ -5725,7 +5718,6 @@ packages:
   '@npmcli/move-file@1.1.2':
     resolution: {integrity: sha512-1SUf/Cg2GzGDyaf15aR9St9TWlb+XvbZXWpDx8YKs7MLzMH/BCeopv+y9vzrzgkfykCGuWOlSu3mZhj2+FQcrg==}
     engines: {node: '>=10'}
-    deprecated: This functionality has been moved to @npmcli/fs
 
   '@npmcli/name-from-folder@2.0.0':
     resolution: {integrity: sha512-pwK+BfEBZJbKdNYpHHRTNBwBoqrN/iIMO0AiGvYsp3Hoaq0WbgGSWQR6SCldZovoDpY3yje5lkFUe6gsDgJ2vg==}
@@ -6161,12 +6153,12 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-aOvGBYKHzYTbYs2hp24YML37Oq4gvjEqP0cYKdXv+IkCsOpscl/j1eGUNa4lB1AcWA1ebH6AUbySLJ97tkAOLQ==}
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-VkZVe6K3tsYUEmLjAddP8mZ6++ewe4o7e6r4y640WxHMLs3L511Rgko/1ON59a9SVDz7x/1gbz5rxTAHBP3PRw==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-auth-siop@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-1LLgaYa1+1Tlmzt8LxZMQmlvo7dUw8FS+ImNSq8v/1afaBwl9sf36h33TdkrkbyKnY13QIK0mQLBlAdwwmNVmg==}
+  '@sphereon/did-auth-siop@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-4eOscZip0EIMlpszQnwumbiv96UBzDfNWaQUA2vGxJrJk9EavJmJKb++sbiPqsVWuJy/2A6NbiKxtlrbzOyM0A==}
     engines: {node: '>=18'}
 
   '@sphereon/did-provider-oyd@0.27.0':
@@ -6189,8 +6181,8 @@ packages:
       '@sphereon/react-native-argon2': ^2.0.9
       react-native: '>=0.60.0'
 
-  '@sphereon/jarm@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-A17AKZV1cQJZ9tiyVM6Cp9PqwBwWyqX2/C/XkQramgyZ7wQsj0qIZH9O3c405ClgBD4uEvO3Dtvp6HWdSsGDFg==}
+  '@sphereon/jarm@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-08eHVGlo8BmRcHZ4tyL9K6i0UAKTxpN8nigYKNbVVfZkxKs9th74H9R/auShN3YDAsTtKY9Yao7YwwFF4xbwIQ==}
     engines: {node: '>=18'}
 
   '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
@@ -6204,20 +6196,20 @@ packages:
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
 
-  '@sphereon/oid4vc-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-3BQi+zt4muABpLxW7zyBu9O+v6NIpPDXyKMNJu/jLsxpNfmRAoZqlzTXrEtvOJl7pSE1VT/xOudNlr81XilBfQ==}
+  '@sphereon/oid4vc-common@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-70HWccoh/HD8O6QUW8VFetDbXHL46otLq3Bul19lPaKFRuwskc2DJZlROISXvf73S4IuU4pOGLEwqS33gaOyVw==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-client@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-63ZhlQIATrqGPLkJt441/SjJoeydbFCKXdJuytx9C99tF13auBjFhaqiNojmhGGNpGnUGiQtfgSQjIeKWkV7dw==}
+  '@sphereon/oid4vci-client@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-AeErJ8lsFe3SLWHmDsIY+co2fS4ZERz3f2mbDf8vbjNhveb62Lcgx8uEXG/o/reXkGgdTHvnDX0qPKd5opSQTg==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-KV3QVcvMV7XLprJ+LX4LeKaZoYnlr+qxnZtU763XNo4TXp3rZapOZVCrKMVFFSPGmx5xl8bkjjF95LxcG7lCfQ==}
+  '@sphereon/oid4vci-common@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-1lgly4QxnT73YSI2Vx/noa8iZ8FAn4rWFfdVcTjprR45EExZmGoaH7VNXoIGpRmlwMSLgvkruqoBhLiFSuzn7w==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-h+HG72nukYgifza6kPBeKw1WfzhYp5oS1a5ALHRAgM2gyIIX57JCRVsRC8eA4LAtvAJfwNvPcYvset5qTjnu/Q==}
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-C836l2Knk2tqw3lr6axYw4LqAL9//U7/GQ7WDCQzSY/AsaEdR5fAYmHZnqRFjWQf7oWi/jylxMyX4AKdT242Bg==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6225,8 +6217,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
-    resolution: {integrity: sha512-jEytDr7QUTAs7JjKoS+JNZp0q/KroV/zDf7nivLNP5Pc7YlV3bzQ9CLSyo1ZxB8eTwI2HVExLo74GrTnUdflew==}
+  '@sphereon/oid4vci-issuer@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
+    resolution: {integrity: sha512-GCn5Ij4P0ujKTYNCWAu7aABSfF2jDPNjc7CtggV8M8qgjk5baizbDFgPlEnlpH1rT1fIMbK20kwOVFXTuhJ7jQ==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -6792,7 +6784,6 @@ packages:
 
   '@types/nock@11.1.0':
     resolution: {integrity: sha512-jI/ewavBQ7X5178262JQR0ewicPAcJhXS/iFaNJl0VHLfyosZ/kwSrsa6VNQNSO8i9d8SqdRgOtZSOKJ/+iNMw==}
-    deprecated: This is a stub types definition. nock provides its own type definitions, so you do not need this installed.
 
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
@@ -7131,7 +7122,6 @@ packages:
 
   abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
-    deprecated: Use your platform's native atob() and btoa() methods instead
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -7307,12 +7297,10 @@ packages:
   are-we-there-yet@2.0.0:
     resolution: {integrity: sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
 
   are-we-there-yet@3.0.1:
     resolution: {integrity: sha512-QZW4EDmGwlYur0Yyf/b2uGucHQMa8aFUP7eu9ddR73vvhFyt4V0Vl3QHPcTNJ8l6qYOBdxgXdnBXQrHilfRQBg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    deprecated: This package is no longer supported.
 
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
@@ -7623,7 +7611,6 @@ packages:
   bitcoin-ts@1.15.2:
     resolution: {integrity: sha512-N5cjC+PjAuTvU3mMcO9aZI5w6lseHickKh6tX6n5p89i2rrUbhgq0KHeOOCYNIbnFcemjGea8uuSXMFBRDl7NQ==}
     engines: {node: '>=8.9'}
-    deprecated: The 'bitcoin-ts' package has been renamed to '@bitauth/libauth', and the 'bitcoin-ts' package is no longer maintained. Please switch to '@bitauth/libauth'.
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -7648,7 +7635,6 @@ packages:
 
   boolean@3.2.0:
     resolution: {integrity: sha512-d0II/GO9uf9lfUHH2BQsjxzRJZBdsjgsBiW4BvhWk/3qoKwQFjIDVN19PfX8F2D/r9PCMTtLWjYVCFrpeYUzsw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   borc@2.1.2:
     resolution: {integrity: sha512-Sy9eoUi4OiKzq7VovMn246iTo17kzuyHJKomCfpWMlI6RpfN1gk95w7d7gH264nApVLg0HZfcpz62/g4VH1Y4w==}
@@ -8507,12 +8493,10 @@ packages:
   domexception@2.0.1:
     resolution: {integrity: sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==}
     engines: {node: '>=8'}
-    deprecated: Use your platform's native DOMException instead
 
   domexception@4.0.0:
     resolution: {integrity: sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw==}
     engines: {node: '>=12'}
-    deprecated: Use your platform's native DOMException instead
 
   dot-prop@5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
@@ -8792,7 +8776,6 @@ packages:
   eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -9246,12 +9229,10 @@ packages:
   gauge@3.0.2:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
 
   gauge@4.0.4:
     resolution: {integrity: sha512-f9m+BEN5jkg6a0fZjleidjN51VE1X+mPFQ2DJ0uv1V39oCLCbsGe6yjbBnp7eK7z/+GAon99a3nHuqbuuthyPg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    deprecated: This package is no longer supported.
 
   genson-js@0.0.5:
     resolution: {integrity: sha512-1i1y9MIGzTRkn4TusWQwLWLu8IJGHgSE+fbQRt1fy68ZKEq2GjDZI/7NUSZFOfTbHz8bgjP4iCIOcdYrgEsMBA==}
@@ -9355,16 +9336,13 @@ packages:
 
   glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
@@ -9624,7 +9602,6 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
-    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -10665,7 +10642,6 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
-    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
@@ -10675,7 +10651,6 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.isinteger@4.0.4:
     resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
@@ -11093,11 +11068,9 @@ packages:
   multibase@4.0.6:
     resolution: {integrity: sha512-x23pDe5+svdLz/k5JPGCVdfn7Q5mZVMBETiC+ORfO+sor9Sgs0smJzAjfTbM5tckeCqnaUuMYoz+k3RXMmJClQ==}
     engines: {node: '>=12.0.0', npm: '>=6.0.0'}
-    deprecated: This module has been superseded by the multiformats module
 
   multicodec@3.2.1:
     resolution: {integrity: sha512-+expTPftro8VAW8kfvcuNNNBgb9gPeNYV9dn+z1kJRWF2vih+/S79f2RVeIwmrJBUJ6NT9IUPWnZDQvegEh5pw==}
-    deprecated: This module has been superseded by the multiformats module
 
   multiformats@12.1.3:
     resolution: {integrity: sha512-eajQ/ZH7qXZQR2AgtfpmSMizQzmyYVmCql7pdhldPuYQi4atACekbJaQplk6dWyIi10jCaFnd6pqvcEFXjbaJw==}
@@ -11412,12 +11385,10 @@ packages:
 
   npmlog@5.0.1:
     resolution: {integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw==}
-    deprecated: This package is no longer supported.
 
   npmlog@6.0.2:
     resolution: {integrity: sha512-/vBvz5Jfr9dT/aFWd0FIRf+T/Q2WBsLENygUaFUqstqsycmZAP/t5BvFJTK0viFmSUxiUKTUplWy5vt+rvKIxg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    deprecated: This package is no longer supported.
 
   nullthrows@1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
@@ -11713,7 +11684,6 @@ packages:
   passport-azure-ad@4.3.5:
     resolution: {integrity: sha512-LBpXEght7hCMuMNFK4oegdN0uPBa3lpDMy71zQoB0zPg1RrGwdzpjwTiN1WzN0hY77fLyjz9tBr3TGAxnSgtEg==}
     engines: {node: '>= 8.0.0'}
-    deprecated: This package is deprecated and no longer supported. For more please visit https://github.com/AzureAD/passport-azure-ad?tab=readme-ov-file#node-js-validation-replacement-for-passportjs
 
   passport-http-bearer@1.0.1:
     resolution: {integrity: sha512-SELQM+dOTuMigr9yu8Wo4Fm3ciFfkMq5h/ZQ8ffi4ELgZrX1xh9PlglqZdcUZ1upzJD/whVyt+YWF62s3U6Ipw==}
@@ -12032,10 +12002,6 @@ packages:
   q@1.5.1:
     resolution: {integrity: sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==}
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
-    deprecated: |-
-      You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
-      (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   qr.js@0.0.0:
     resolution: {integrity: sha512-c4iYnWb+k2E+vYpRimHqSu575b1/wKl4XFeJGpFmrJQz5I88v9aY2czh7s0w36srfCM1sXgC/xpoJz5dJfq+OQ==}
@@ -12333,7 +12299,6 @@ packages:
 
   rimraf@2.4.5:
     resolution: {integrity: sha512-J5xnxTyqaiw06JjMftq7L9ouA448dw/E7dKghkP9WpKNuwmARNNg+Gk8/u5ryb9N/Yo2+z3MCwuqFK/+qPOPfQ==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@2.6.3:
@@ -12343,12 +12308,10 @@ packages:
 
   rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@4.4.1:
@@ -13499,7 +13462,6 @@ packages:
 
   w3c-hr-time@1.0.2:
     resolution: {integrity: sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ==}
-    deprecated: Use your platform's native performance.now() and performance.timeOrigin.
 
   w3c-xmlserializer@2.0.0:
     resolution: {integrity: sha512-4tzD0mF8iSiMiNs30BiLO3EpfGLZUT2MSX/G+o7ZywDzliWQ3OPtTZ0PTC3B3ca1UAf4cJMHB+2Bf56EriJuRA==}
@@ -17167,11 +17129,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop-adapter@0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)
+      '@sphereon/did-auth-siop': 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
@@ -17180,11 +17142,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)(typescript@5.6.3)':
+  '@sphereon/did-auth-siop@0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)(typescript@5.6.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@sphereon/jarm': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(typescript@5.6.3)
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/jarm': 0.16.1-feature.SSISDK.5.credential.offer.uri.368(typescript@5.6.3)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17246,9 +17208,9 @@ snapshots:
       react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.12)(encoding@0.1.13)(react@18.3.1)
       uint8arrays: 3.1.1
 
-  '@sphereon/jarm@0.16.1-feature.SSISDK.5.credential.offer.uri.366(typescript@5.6.3)':
+  '@sphereon/jarm@0.16.1-feature.SSISDK.5.credential.offer.uri.368(typescript@5.6.3)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
@@ -17278,7 +17240,7 @@ snapshots:
       - encoding
       - typescript
 
-  '@sphereon/oid4vc-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366':
+  '@sphereon/oid4vc-common@0.16.1-feature.SSISDK.5.credential.offer.uri.368':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
@@ -17286,10 +17248,10 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vci-client@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)':
+  '@sphereon/oid4vci-client@0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.7
@@ -17297,9 +17259,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 3.1.8(encoding@0.1.13)
       debug: 4.3.7
@@ -17310,11 +17272,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SSISDK.5.credential.offer.uri.366(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.16.1-feature.SSISDK.5.credential.offer.uri.368(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
+      '@sphereon/oid4vci-issuer': 0.16.1-feature.SSISDK.5.credential.offer.uri.368(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)
       '@sphereon/ssi-express-support': 0.30.2-feature.mdoc.funke2.367(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.3
@@ -17333,10 +17295,10 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.16.1-feature.SSISDK.5.credential.offer.uri.366(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
+  '@sphereon/oid4vci-issuer@0.16.1-feature.SSISDK.5.credential.offer.uri.368(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366
-      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.366(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368
+      '@sphereon/oid4vci-common': 0.16.1-feature.SSISDK.5.credential.offer.uri.368(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       short-uuid: 4.2.2
       uuid: 9.0.1
