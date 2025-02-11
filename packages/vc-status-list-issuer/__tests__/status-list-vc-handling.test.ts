@@ -14,7 +14,7 @@ import {
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
-import { createAgent, IAgentContext, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -103,16 +103,14 @@ describe('Status List VC handling', () => {
   }
 
   beforeAll(async () => {
-    const statusListPlugin = new StatusListPlugin({
-      defaultStatuslistImport: defaultStatuslistImport,
-      defaultStatusListId: 'http://localhost/test/default',
-      allDataSources: DataSources.singleInstance(),
-    })
     agent = createAgent<Plugins>({
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
-        statusListPlugin,
+        new StatusListPlugin({
+          defaultStatusListId: 'http://localhost/test/default',
+          allDataSources: DataSources.singleInstance(),
+        }),
         new KeyManager({
           store: new KeyStore(dbConnection),
           kms: {
@@ -167,9 +165,7 @@ describe('Status List VC handling', () => {
       })
     baseCredential.issuer = identifier.did
     defaultStatuslistImport.issuer = identifier.did
-
-    const context: IAgentContext<Plugins> = { agent }
-    await statusListPlugin.initialize(context)
+    await agent.slImportStatusLists([defaultStatuslistImport])
   })
 
   describe('slCreateStatusList', () => {
