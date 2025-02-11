@@ -59,6 +59,8 @@ export type BaseCreateNewStatusListArgs = {
   keyRef?: string
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
+  dbName?: string
+  driverType?: StatusListDriverType
 }
 
 export type UpdateStatusList2021Args = {
@@ -218,7 +220,6 @@ export type CreateNewStatusListFuncArgs = BaseCreateNewStatusListArgs
 
 export type CreateNewStatusListArgs = BaseCreateNewStatusListArgs & {
   dataSource?: OrPromise<DataSource>
-  dbName?: string
   isDefault?: boolean
 }
 

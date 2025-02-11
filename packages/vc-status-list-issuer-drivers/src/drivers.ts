@@ -285,6 +285,17 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       .then((statusListEntity: IStatusListEntity) => statusListCredentialToDetails({ statusListCredential: statusListEntity.statusListCredential! }))
   }
 
+  async getStatusLists(): Promise<Array<StatusListResult>> {
+    const statusLists = await this.statusListStore.getStatusLists({})
+    return Promise.all(
+      statusLists.map(async (statusListEntity) => {
+        return statusListCredentialToDetails({
+          statusListCredential: statusListEntity.statusListCredential!,
+        })
+      }),
+    )
+  }
+
   isStatusListIndexInUse(): Promise<boolean> {
     return Promise.resolve(false)
   }

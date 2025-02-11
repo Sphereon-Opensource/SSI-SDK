@@ -1,5 +1,6 @@
 import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 import {
+  CreateNewStatusListArgs,
   CredentialWithStatusSupport,
   IIssueCredentialStatusOpts,
   IRequiredPlugins,
@@ -9,10 +10,10 @@ import {
 import { getDriver, IStatusListDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import debug from 'debug'
 import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { Loggers, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
-import { StatusListInstance } from './types'
+import { Loggers, OrPromise } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
 import { StatusListOpts } from '@sphereon/oid4vci-common'
+import { DataSource } from 'typeorm'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 
@@ -139,29 +140,26 @@ async function processStatusListEntry(params: {
   return { statusListIndex, updateResult }
 }
 
-export const createStatusListFromInstance = async (
-  args: {
-    instance: StatusListInstance & { issuer: string; type?: StatusListType; statusPurpose?: StatusPurpose2021 }
-  },
+export const createStatusList = async (
+  args: CreateNewStatusListArgs,
+  dataSource: OrPromise<DataSource>,
   context: IAgentContext<IRequiredPlugins & IStatusListPlugin>,
 ): Promise<StatusListResult> => {
-  const instance = {
-    ...args.instance,
-    dataSource: args.instance.dataSource ? await args.instance.dataSource : undefined,
-    type: args.instance.type ?? StatusListType.StatusList2021,
-    statusPurpose: args.instance.statusPurpose ?? 'revocation',
-    correlationId: args.instance.correlationId ?? args.instance.id,
-  }
   let statusList: StatusListResult
   try {
-    statusList = await context.agent.slGetStatusList(instance)
+    statusList = await context.agent.slGetStatusList({
+      ...(args.id && { id: args.id }),
+      ...(args.correlationId && { correlationId: args.correlationId }),
+      ...(args.dbName && { dbName: args.dbName }),
+      dataSource,
+    })
   } catch (e) {
-    const id = instance.id
-    const correlationId = instance.correlationId
+    const id = args.id
+    const correlationId = args.correlationId
     if (!id || !correlationId) {
       return Promise.reject(Error(`No correlation id and id provided for status list`))
     }
-    statusList = await context.agent.slCreateStatusList({ ...instance, id, correlationId })
+    statusList = await context.agent.slCreateStatusList(args)
   }
   return statusList
 }

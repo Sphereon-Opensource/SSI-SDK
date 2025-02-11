@@ -14,7 +14,7 @@ import {
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import { IStatusListPlugin, StatusListResult } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
-import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { createAgent, IAgentContext, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -95,22 +95,22 @@ describe('Status List VC handling', () => {
   }
 
   beforeAll(async () => {
+    const statusListPlugin = new StatusListPlugin({
+      defaultStatuslistImport: {
+        id: 'http://localhost/test/1',
+        correlationId: 'test-sl',
+        driverType: StatusListDriverType.AGENT_TYPEORM,
+        type: StatusListType.StatusList2021,
+        issuer: 'temp',
+      },
+      defaultStatusListId: 'http://localhost/test/1',
+      allDataSources: DataSources.singleInstance(),
+    })
     agent = createAgent<Plugins>({
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
-        new StatusListPlugin({
-          instances: [
-            {
-              id: 'http://localhost/test/1',
-              correlationId: 'test-sl',
-              driverType: StatusListDriverType.AGENT_TYPEORM,
-              dataSource: dbConnection,
-            },
-          ],
-          defaultInstanceId: 'http://localhost/test/1',
-          allDataSources: DataSources.singleInstance(),
-        }),
+        statusListPlugin,
         new KeyManager({
           store: new KeyStore(dbConnection),
           kms: {
@@ -144,6 +144,9 @@ describe('Status List VC handling', () => {
         }),
       ],
     })
+
+    const context: IAgentContext<Plugins> = { agent }
+    statusListPlugin.initialize(context)
 
     await agent.dataStoreORMGetIdentifiers().then((ids) => {
       ids.forEach((id) => console.log(JSON.stringify(id, null, 2)))
