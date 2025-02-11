@@ -3,6 +3,7 @@ import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IKeyValueStore, IValueData } from '@sphereon/ssi-sdk.kv-store-temp'
 import { IPluginMethodMap } from '@veramo/core'
+import { CreateNewStatusListArgs } from '@sphereon/ssi-sdk.vc-status-list'
 
 export type MetadataTypeMap = {
   issuer: IssuerMetadata
@@ -109,6 +110,7 @@ export interface IMetadataPersistArgs extends Ioid4vciStorePersistArgs, IMetadat
 export interface IIssuerOptsPersistArgs extends Ioid4vciStorePersistArgs {
   issuerOpts: IIssuerOptions
   endpointOpts: unknown // FIXME these types are all in OID4VC all over the place
+  statusLists: Array<CreateNewStatusListArgs>
 }
 export interface Ioid4vciStorePersistArgs {
   correlationId: string // The credential Issuer to store the metadata for

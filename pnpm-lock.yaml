@@ -1591,6 +1591,9 @@ importers:
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
