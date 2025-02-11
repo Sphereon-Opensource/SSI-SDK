@@ -121,8 +121,10 @@ export class StatusListPlugin implements IAgentPlugin {
   private async slGetStatusList(args: GetStatusListArgs): Promise<StatusListResult> {
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
     let dataSource
-    if (sl?.dataSource ?? args?.dataSource) {
+    if (args?.dataSource) {
       dataSource = await args.dataSource
+    } else if (sl?.dataSource) {
+      dataSource = await sl.dataSource
     } else if (args.dbName) {
       dataSource = await this.allDataSources.getDbConnection(args.dbName)
     } else {
