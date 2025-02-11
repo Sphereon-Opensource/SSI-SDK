@@ -2,7 +2,6 @@ import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
   createNewStatusList,
   CreateNewStatusListArgs,
-  CreateNewStatusListFuncArgs,
   CredentialWithStatusSupport,
   GetStatusListArgs,
   IAddStatusToCredentialArgs,
@@ -26,64 +25,56 @@ export class StatusListPlugin implements IAgentPlugin {
   private readonly instances: Array<StatusListInstance> = new Array<StatusListInstance>()
   private readonly defaultStatusListId: string
   private readonly allDataSources: DataSources
-  private readonly defaultStatuslistImport: CreateNewStatusListFuncArgs | undefined
-  private readonly importStatuslists: Array<CreateNewStatusListFuncArgs> | undefined
+
+  private initialized: Boolean = false
 
   readonly methods: IStatusListPlugin = {
     slAddStatusToCredential: this.slAddStatusToCredential.bind(this),
     slAddStatusToSdJwtCredential: this.slAddStatusToSdJwtCredential.bind(this),
     slCreateStatusList: this.slCreateStatusList.bind(this),
     slGetStatusList: this.slGetStatusList.bind(this),
+    slImportStatusLists: this.slImportStatusLists.bind(this),
   }
 
-  constructor(opts: {
-    defaultStatusListId: string
-    defaultStatuslistImport?: CreateNewStatusListFuncArgs
-    importStatuslists?: Array<CreateNewStatusListFuncArgs>
-    allDataSources?: DataSources
-  }) {
+  constructor(opts: { defaultStatusListId: string; allDataSources?: DataSources }) {
     if (!opts.defaultStatusListId) {
       throw Error(`Could not deduce the default instance id from the status lists configuration`)
     }
     this.defaultStatusListId = opts.defaultStatusListId
-    this.defaultStatuslistImport = opts.defaultStatuslistImport
-    this.importStatuslists = opts.importStatuslists
     this.allDataSources = opts.allDataSources ?? DataSources.singleInstance()
   }
 
-  public async initialize(context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>): Promise<void> {
-    await this.syncImportLists(context)
-    await this.loadInstances()
-  }
+  private async init() {
+    if (!this.initialized) {
+      for (const dbName of this.allDataSources.getDbNames()) {
+        const driver = await getDriver({ dbName, dataSources: this.allDataSources })
+        const statusLists = await driver.getStatusLists()
 
-  private async syncImportLists(context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>): Promise<void> {
-    if (this.defaultStatuslistImport) {
-      const dataSource = this.allDataSources.getDbConnection(this.defaultStatuslistImport.dbName ?? 'default')
-      await createStatusList(this.defaultStatuslistImport, dataSource, context)
-    }
+        const instances = await Promise.all(
+          statusLists.map((statusList) => {
+            const dataSource = this.allDataSources.getDbConnection(dbName)
+            return this.createStatusListInstance(statusList, dataSource, driver)
+          }),
+        )
 
-    if (this.importStatuslists) {
-      for (const instanceImport of this.importStatuslists) {
-        const dataSource = this.allDataSources.getDbConnection(instanceImport.dbName ?? 'default')
-        await createStatusList(instanceImport, dataSource, context)
+        this.instances.push(...instances)
       }
+      this.initialized = true
     }
   }
 
-  private async loadInstances() {
-    for (const dbName of this.allDataSources.getDbNames()) {
-      const driver = await getDriver({ dbName, dataSources: this.allDataSources })
-      const statusLists = await driver.getStatusLists()
+  private async slImportStatusLists(
+    imports: Array<CreateNewStatusListArgs>,
+    context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>,
+  ): Promise<boolean> {
+    await this.init()
 
-      const instances = await Promise.all(
-        statusLists.map((statusList) => {
-          const dataSource = this.allDataSources.getDbConnection(dbName)
-          return this.createStatusListInstance(statusList, dataSource, driver)
-        }),
-      )
-
-      this.instances.push(...instances)
+    for (const instanceImport of imports) {
+      const dataSource = this.allDataSources.getDbConnection(instanceImport.dbName ?? 'default')
+      await createStatusList(instanceImport, dataSource, context)
     }
+
+    return true
   }
 
   private createStatusListInstance(statusList: StatusListResult, dataSource: OrPromise<DataSource>, driver: IStatusListDriver) {
@@ -119,6 +110,8 @@ export class StatusListPlugin implements IAgentPlugin {
   }
 
   private async slGetStatusList(args: GetStatusListArgs): Promise<StatusListResult> {
+    await this.init()
+
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
     let dataSource
     if (args?.dataSource) {
@@ -142,6 +135,8 @@ export class StatusListPlugin implements IAgentPlugin {
     args: CreateNewStatusListArgs,
     context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>,
   ): Promise<StatusListResult> {
+    await this.init()
+
     const sl = await createNewStatusList(args, context)
     const dbName = args.dbName ?? this.allDataSources.getDbNames()[0]
     let dataSource
@@ -189,6 +184,8 @@ export class StatusListPlugin implements IAgentPlugin {
   private async slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport> {
     const { credential, ...rest } = args
     logger.debug(`Adding status to credential ${credential.id ?? 'without ID'}`)
+
+    await this.init()
 
     const credentialStatus = credential.credentialStatus
     if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {
@@ -264,6 +261,8 @@ export class StatusListPlugin implements IAgentPlugin {
   private async slAddStatusToSdJwtCredential(args: IAddStatusToSdJwtCredentialArgs, context: IRequiredContext): Promise<SdJwtVcPayload> {
     const { credential, ...rest } = args
     logger.debug(`Adding status to SD-JWT credential`)
+
+    await this.init()
 
     const credentialStatus = credential.status
     if (credentialStatus && (!rest.statusLists || rest.statusLists.length == 0)) {

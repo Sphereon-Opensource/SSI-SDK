@@ -59,7 +59,6 @@ export type BaseCreateNewStatusListArgs = {
   keyRef?: string
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
-  dbName?: string
   driverType?: StatusListDriverType
 }
 
@@ -214,11 +213,20 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    * @param context
    */
   slGetStatusList(args: GetStatusListArgs, context: IRequiredContext): Promise<StatusListResult>
+
+  /**
+   * Import status lists when noy yet present
+   *
+   * @param imports Array of status list information like type and size
+   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
+   */
+  slImportStatusLists(imports: Array<CreateNewStatusListArgs>, context: IRequiredContext): Promise<boolean>
 }
 
 export type CreateNewStatusListFuncArgs = BaseCreateNewStatusListArgs
 
 export type CreateNewStatusListArgs = BaseCreateNewStatusListArgs & {
+  dbName?: string
   dataSource?: OrPromise<DataSource>
   isDefault?: boolean
 }
