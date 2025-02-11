@@ -20,7 +20,6 @@ export interface IStatusListEntity {
   type: StatusListType
   proofFormat: ProofFormat
   statusListCredential?: StatusListCredential
-  dbName?: string
 }
 
 export interface IStatusList2021Entity extends IStatusListEntity {
