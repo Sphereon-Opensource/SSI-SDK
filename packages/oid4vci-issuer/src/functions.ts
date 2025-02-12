@@ -212,7 +212,7 @@ export async function getCredentialSignerCallback(
       // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
         // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
-        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusLists: statusLists })
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusLists })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
           // TODO update statusLists somehow?
@@ -250,7 +250,7 @@ export async function getCredentialSignerCallback(
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToSdJwtCredential')) {
         if ((sdJwtPayload.status && sdJwtPayload.status.status_list) || (statusLists && statusLists.length > 0)) {
           // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
-          const credentialStatusVC = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload, statusLists: statusLists })
+          const credentialStatusVC = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload, statusLists })
           if (sdJwtPayload.status?.status_list?.idx) {
             if (!credentialStatusVC.status || !credentialStatusVC.status.status_list) {
               // TODO check, looks like sdJwtPayload and credentialStatusVC is the same
