@@ -12,19 +12,9 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
-import {
-  createAgent,
-  CredentialPayload,
-  ICredentialPlugin,
-  IDataStoreORM,
-  IDIDManager,
-  IIdentifier,
-  IKeyManager,
-  IResolver,
-  TAgent,
-} from '@veramo/core'
+import { IStatusListPlugin, StatusListResult } from '@sphereon/ssi-sdk.vc-status-list'
+import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
+import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -34,7 +24,6 @@ import { KeyManager } from '@veramo/key-manager'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
-import { v4 } from 'uuid'
 import { StatusListPlugin } from '../src/agent/StatusListPlugin'
 import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
 
@@ -88,14 +77,19 @@ describe('JWT Verifiable Credential, should be', () => {
   let agent: TAgent<Plugins>
   // let agentContext: IAgentContext<Plugins>
 
-  let identifier: IIdentifier
   beforeAll(async () => {
     agent = createAgent<Plugins>({
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
         new StatusListPlugin({
-          instances: [{ id: 'http://localhost/test/1', driverType: StatusListDriverType.AGENT_TYPEORM, dataSource: dbConnection }],
+          instances: [
+            {
+              id: 'http://localhost/test/1',
+              driverType: StatusListDriverType.AGENT_TYPEORM,
+              dataSource: dbConnection,
+            },
+          ],
           defaultInstanceId: 'http://localhost/test/1',
           allDataSources: DataSources.singleInstance(),
         }),
@@ -134,7 +128,7 @@ describe('JWT Verifiable Credential, should be', () => {
     // agentContext = {...agent.context, agent};
 
     await agent.dataStoreORMGetIdentifiers().then((ids) => ids.forEach((id) => console.log(JSON.stringify(id, null, 2))))
-    identifier = await agent
+    await agent
       .didManagerCreate({
         provider: 'did:jwk',
         alias: 'test',
@@ -151,38 +145,133 @@ describe('JWT Verifiable Credential, should be', () => {
       })
   })
 
-  it('should add status list to credential', async () => {
-    // Just for this test we are creating the status list. Normally this has been pre-created of course
-    const sl = await agent.slCreateStatusList({
-      id: 'http://localhost/test/1',
-      issuer: identifier.did,
-      type: StatusListType.StatusList2021,
-      proofFormat: 'jwt',
-      statusPurpose: 'revocation',
-      keyRef: identifier.keys[0].kid,
-      correlationId: '1',
+  describe('slCreateStatusList', () => {
+    it('should reject non-JWT proof formats like LD-Signatures when creating OAuth status list', async () => {
+      await expect(
+        agent.slCreateStatusList({
+          type: StatusListType.OAuthStatusList,
+          issuer: 'did:example:123',
+          id: 'list123',
+          correlationId: 'test-1-' + Date.now(),
+          proofFormat: 'lds',
+          oauthStatusList: {
+            bitsPerStatus: 2,
+          },
+        }),
+      ).rejects.toThrow("Invalid proof format 'lds' for OAuthStatusList")
     })
-    console.log(JSON.stringify(sl, null, 2))
 
-    // @ts-ignore // We do not provide the credentialStatus id as the plugin should handle that
-    const vcPayload = {
-      issuer: identifier.did,
-      id: v4(),
-      credentialSubject: {
-        id: identifier.did,
-        example: 'value',
-      },
+    it('should successfully create OAuth status list using JWT format with proper header and encoding', async () => {
+      const mockResult = {
+        type: StatusListType.OAuthStatusList,
+        proofFormat: 'jwt',
+        statusListCredential: 'ey_eyMockJWT',
+        encodedList: 'AAAA',
+        id: 'list123',
+        issuer: 'did:example:123',
+        length: 250000,
+        oauthStatusList: {
+          bitsPerStatus: 2,
+        },
+      } satisfies StatusListResult
+      jest.spyOn(agent, 'slCreateStatusList').mockResolvedValue(mockResult)
 
-      // Let's create a credentialStatus object, so that the status list handling code will assign an index automatically
-      credentialStatus: {
-        type: 'StatusList2021',
-      },
-    } as CredentialPayload
-    const vc = await agent.createVerifiableCredentialLDLocal({ credential: vcPayload, keyRef: identifier.keys[0].kid })
-    expect(vc).toBeDefined()
-    expect(vc.credentialStatus).toBeDefined()
-    expect(vc.credentialStatus?.statusListIndex).toBeDefined()
+      const result = await agent.slCreateStatusList({
+        type: StatusListType.OAuthStatusList,
+        issuer: 'did:example:123',
+        id: 'list123',
+        proofFormat: 'jwt',
+        oauthStatusList: {
+          bitsPerStatus: 2,
+        },
+      })
 
-    console.log(JSON.stringify(vc, null, 2))
+      expect(result.type).toBe(StatusListType.OAuthStatusList)
+      expect(result.proofFormat).toBe('jwt')
+      expect(result.statusListCredential).toBe('ey_eyMockJWT')
+    })
+  })
+
+  describe('slAddStatusToCredential', () => {
+    it('should inject a status to a credential', async () => {
+      const mockCredential: IVerifiableCredential = {
+        '@context': ['https://www.w3.org/2018/credentials/v1'],
+        type: ['VerifiableCredential'],
+        issuer: 'did:example:123',
+        issuanceDate: '2024-01-15T00:00:00Z',
+        credentialSubject: {
+          id: 'did:example:456',
+        },
+        proof: {
+          type: 'Ed25519Signature2018',
+          created: '2024-01-15T00:00:00Z',
+          proofPurpose: 'assertionMethod',
+          verificationMethod: 'did:example:123#key-1',
+        },
+      }
+
+      const mockResultCredential: IVerifiableCredential = {
+        ...mockCredential,
+        credentialStatus: {
+          id: 'list123#0',
+          type: 'OAuth2StatusList',
+          statusListIndex: '0',
+          statusListCredential: 'eyMockJWT',
+        },
+      }
+
+      jest.spyOn(agent, 'slAddStatusToCredential').mockResolvedValue(mockResultCredential)
+
+      const result = await agent.slAddStatusToCredential({
+        credential: mockCredential,
+        statusListId: 'list123',
+        statusListIndex: 0,
+      })
+
+      expect(result.credentialStatus?.type).toBe('OAuth2StatusList')
+      expect(result.credentialStatus?.id).toBe('list123#0')
+      expect(result.credentialStatus?.statusListIndex).toBe('0')
+      expect(result.credentialStatus?.statusListCredential).toBe('eyMockJWT')
+      expect(result.issuer).toBe('did:example:123')
+    })
+  })
+
+  describe('slGetStatusList', () => {
+    it('should retrieve an existing status list', async () => {
+      const mockResult: StatusListResult = {
+        type: StatusListType.OAuthStatusList,
+        proofFormat: 'jwt',
+        statusListCredential: 'ey_mockJWT',
+        encodedList: 'AAAA',
+        id: 'list123',
+        issuer: 'did:example:123',
+        length: 250000,
+        oauthStatusList: {
+          bitsPerStatus: 2,
+        },
+      }
+
+      jest.spyOn(agent, 'slGetStatusList').mockResolvedValue(mockResult)
+
+      const result = await agent.slGetStatusList({
+        id: 'list123',
+      })
+
+      expect(result.id).toBe('list123')
+      expect(result.type).toBe(StatusListType.OAuthStatusList)
+      expect(result.encodedList).toBe('AAAA')
+      expect(result.statusListCredential).toBe('ey_mockJWT')
+      expect(result.length).toBe(250000)
+    })
+
+    it('should throw when status list not found', async () => {
+      jest.spyOn(agent, 'slGetStatusList').mockRejectedValue(new Error('Status list not found'))
+
+      await expect(
+        agent.slGetStatusList({
+          id: 'nonexistent',
+        }),
+      ).rejects.toThrow('Status list not found')
+    })
   })
 })

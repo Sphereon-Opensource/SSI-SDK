@@ -1,0 +1,53 @@
+{
+  "name": "@sphereon/vc-status-list-tests",
+  "version": "0.32.0",
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/jest": "^27.5.2",
+    "@types/node": "^20.17.1",
+    "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
+    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.27.0",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.27.0",
+    "@sphereon/ssi-sdk-ext.did-provider-key": "0.27.0",
+    "did-resolver": "^4.1.0",
+    "@veramo/core": "4.2.0",
+    "@veramo/credential-w3c": "4.2.0",
+    "@veramo/did-manager": "4.2.0",
+    "@veramo/key-manager": "4.2.0",
+    "@veramo/did-resolver": "4.2.0",
+    "nock": "^13.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "5.6.3"
+  },
+  "files": [
+  ],
+  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "Veramo",
+    "W3C",
+    "Verifiable Credentials",
+    "Verifiable Presentations",
+    "JsonLd"
+  ],
+  "peerDependencies": {
+    "react-native-securerandom": "^1.0.1"
+  },
+  "nx": {}
+}

@@ -19,6 +19,7 @@
     "@sphereon/oid4vci-client": "0.16.1-feature.MWALL.715.352",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.1-next.14",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.1-next.14",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.1-next.14",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",

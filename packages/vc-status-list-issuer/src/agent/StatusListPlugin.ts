@@ -8,11 +8,11 @@ import {
   IRequiredContext,
   IRequiredPlugins,
   IStatusListPlugin,
-  StatusListDetails,
+  StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { Loggers } from '@sphereon/ssi-types'
-import { IAgentContext, IAgentPlugin } from '@veramo/core'
+import { IAgentContext, IAgentPlugin, IKeyManager } from '@veramo/core'
 import { createStatusListFromInstance, handleCredentialStatus } from '../functions'
 import { StatusListInstance } from '../types'
 
@@ -47,7 +47,10 @@ export class StatusListPlugin implements IAgentPlugin {
     this.autoCreateInstances = opts.autoCreateInstances ?? true
   }
 
-  private async slGetStatusList(args: GetStatusListArgs, context: IAgentContext<IRequiredPlugins & IStatusListPlugin>): Promise<StatusListDetails> {
+  private async slGetStatusList(
+    args: GetStatusListArgs,
+    context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>,
+  ): Promise<StatusListResult> {
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
     const dataSource =
       (sl?.dataSource ?? args?.dataSource)
@@ -73,8 +76,8 @@ export class StatusListPlugin implements IAgentPlugin {
 
   private async slCreateStatusList(
     args: CreateNewStatusListArgs,
-    context: IAgentContext<IRequiredPlugins & IStatusListPlugin>,
-  ): Promise<StatusListDetails> {
+    context: IAgentContext<IRequiredPlugins & IStatusListPlugin & IKeyManager>,
+  ): Promise<StatusListResult> {
     const sl = await createNewStatusList(args, context)
     const dataSource = args?.dataSource
       ? await args.dataSource
@@ -86,7 +89,7 @@ export class StatusListPlugin implements IAgentPlugin {
       correlationId: sl.correlationId,
       dataSource,
     })
-    let statusListDetails: StatusListDetails | undefined = undefined
+    let statusListDetails: StatusListResult | undefined = undefined
     try {
       statusListDetails = await this.slGetStatusList(args, context)
     } catch (e) {
@@ -100,10 +103,10 @@ export class StatusListPlugin implements IAgentPlugin {
         correlationId: sl.correlationId,
       })
       this.instances.push({
-        correlationId: statusListDetails.correlationId,
-        id: statusListDetails.id,
+        correlationId: statusListDetails!.correlationId,
+        id: statusListDetails!.id,
         dataSource,
-        driverType: statusListDetails.driverType!,
+        driverType: statusListDetails!.driverType!,
         driverOptions: driver.getOptions(),
       })
     }

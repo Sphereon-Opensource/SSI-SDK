@@ -51,10 +51,14 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
 
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
+      const kid = args.kid ?? header.kid
+      const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
       return {
         alg,
         ...identifier,
         jwt: { header, payload },
+        ...(kid && { kid }),
+        ...(jwk && { jwk }),
       } as JwtVerifyResult
     }
 

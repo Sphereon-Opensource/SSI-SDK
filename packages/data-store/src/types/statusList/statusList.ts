@@ -1,14 +1,14 @@
 import {
   IIssuer,
-  OriginalVerifiableCredential,
+  StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
+  ProofFormat,
 } from '@sphereon/ssi-types'
-import { ProofFormat } from '@veramo/core'
-import { StatusListEntity } from '../../entities/statusList2021/StatusList2021Entity'
+import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
 
 export interface IStatusListEntity {
   id: string
@@ -19,9 +19,17 @@ export interface IStatusListEntity {
   issuer: string | IIssuer
   type: StatusListType
   proofFormat: ProofFormat
+  statusListCredential?: StatusListCredential
+}
+
+export interface IStatusList2021Entity extends IStatusListEntity {
   indexingDirection: StatusListIndexingDirection
   statusPurpose: StatusPurpose2021
-  statusListCredential?: OriginalVerifiableCredential
+}
+
+export interface IOAuthStatusListEntity extends IStatusListEntity {
+  bitsPerStatus: number
+  expiresAt?: Date
 }
 
 export interface IStatusListEntryEntity {

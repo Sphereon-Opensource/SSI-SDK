@@ -1,8 +1,8 @@
-import { OrPromise } from '@sphereon/ssi-types'
+import { OrPromise, StatusListType } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, In, Repository } from 'typeorm'
-import { StatusListEntity } from '../entities/statusList2021/StatusList2021Entity'
-import { StatusListEntryEntity } from '../entities/statusList2021/StatusList2021EntryEntity'
+import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
+import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
@@ -12,12 +12,13 @@ import {
   IGetStatusListEntryByIndexArgs,
   IGetStatusListsArgs,
   IRemoveStatusListArgs,
-  IStatusListEntryAvailableArgs,
-  IUpdateStatusListIndexArgs,
   IStatusListEntity,
+  IStatusListEntryAvailableArgs,
   IStatusListEntryEntity,
+  IUpdateStatusListIndexArgs,
 } from '../types'
 import { IStatusListStore } from './IStatusListStore'
+import { statusListEntityFrom, statusListFrom } from '../utils/statusList/MappingUtils'
 
 const debug = Debug('sphereon:ssi-sdk:data-store:status-list')
 
@@ -73,7 +74,11 @@ export class StatusListStore implements IStatusListStore {
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
     console.log(updateResult)
-    return (await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: true })) as IStatusListEntryEntity
+    return (await this.getStatusListEntryByIndex({
+      ...args,
+      statusListId,
+      errorOnNotFound: true,
+    })) as IStatusListEntryEntity
   }
 
   async getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
@@ -96,34 +101,15 @@ export class StatusListStore implements IStatusListStore {
     return result ?? undefined
   }
 
-  async removeStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<boolean> {
-    let error = false
-    try {
-      await this.getStatusListEntryByIndex(args) // only used to check it exists
-    } catch (error) {
-      error = true
-    }
-    if (error) {
-      console.log(`Could not delete statusList ${args.statusListId} entry by index ${args.statusListIndex}`)
-    } else {
-      const result = await (
-        await this.getStatusListEntryRepo()
-      ).delete({
-        ...(args.statusListId && { statusList: args.statusListId }),
-        ...(args.correlationId && { correlationId: args.correlationId }),
-        statusListIndex: args.statusListIndex,
-      })
-      error = !result.affected || result.affected !== 1
-    }
-    return !error
-  }
-
   async getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<StatusListEntryEntity | undefined> {
     const credentialId = args.credentialId
     if (!credentialId) {
       throw Error('Can only get a credential by credentialId when a credentialId is supplied')
     }
-    const statusList = await this.getStatusList({ id: args.statusListId, correlationId: args.statusListCorrelationId })
+    const statusList = await this.getStatusList({
+      id: args.statusListId,
+      correlationId: args.statusListCorrelationId,
+    })
     const where = {
       statusList: statusList.id,
       ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
@@ -158,11 +144,37 @@ export class StatusListStore implements IStatusListStore {
     return !error
   }
 
+  async removeStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<boolean> {
+    let error = false
+    try {
+      await this.getStatusListEntryByIndex(args)
+    } catch (error) {
+      error = true
+    }
+    if (error) {
+      console.log(`Could not delete statusList ${args.statusListId} entry by index ${args.statusListIndex}`)
+    } else {
+      const result = await (
+        await this.getStatusListEntryRepo()
+      ).delete({
+        ...(args.statusListId && { statusList: args.statusListId }),
+        ...(args.correlationId && { correlationId: args.correlationId }),
+        statusListIndex: args.statusListIndex,
+      })
+      error = !result.affected || result.affected !== 1
+    }
+    return !error
+  }
+
   async getStatusListEntries(args: IGetStatusListEntriesArgs): Promise<StatusListEntryEntity[]> {
     return (await this.getStatusListEntryRepo()).find({ where: { ...args?.filter, statusList: args.statusListId } })
   }
 
   async getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity> {
+    return statusListFrom(await this.getStatusListEntity(args))
+  }
+
+  private async getStatusListEntity(args: IGetStatusListArgs): Promise<StatusListEntity> {
     if (!args.id && !args.correlationId) {
       throw Error(`At least and 'id' or 'correlationId' needs to be provided to lookup a status list`)
     }
@@ -189,7 +201,8 @@ export class StatusListStore implements IStatusListStore {
     if (!result) {
       return []
     }
-    return result
+
+    return result.map((entity) => statusListFrom(entity))
   }
 
   async addStatusList(args: IAddStatusListArgs): Promise<IStatusListEntity> {
@@ -205,29 +218,42 @@ export class StatusListStore implements IStatusListStore {
     }
 
     debug('Adding status list ', id)
-    const createdResult = await (await this.getStatusListRepo()).save(args)
-
-    return createdResult
+    const entity = statusListEntityFrom(args)
+    const createdResult = await (await this.getStatusListRepo(args.type)).save(entity)
+    return statusListFrom(createdResult)
   }
 
   async updateStatusList(args: IUpdateStatusListIndexArgs): Promise<IStatusListEntity> {
     const result = await this.getStatusList(args)
     debug('Updating status list', result)
-    const updatedResult = await (await this.getStatusListRepo()).save(args, { transaction: true })
-    return updatedResult
+    const entity = statusListEntityFrom(args)
+    const updatedResult = await (await this.getStatusListRepo(args.type)).save(entity, { transaction: true })
+    return statusListFrom(updatedResult)
   }
 
-  async removeStatusList(args: IRemoveStatusListArgs): Promise<void> {
-    const result = await this.getStatusList(args)
-    await (await this.getStatusListRepo()).delete(result)
+  async removeStatusList(args: IRemoveStatusListArgs): Promise<boolean> {
+    const result = await this.getStatusListEntity(args)
+
+    await (await this.getStatusListEntryRepo()).delete({ statusList: result.id })
+    const deletedEntity = await (await this.getStatusListRepo()).remove(result)
+
+    return Boolean(deletedEntity)
   }
 
   private async getDS(): Promise<DataSource> {
     return this._dbConnection
   }
 
-  async getStatusListRepo(): Promise<Repository<StatusListEntity>> {
-    return (await this.getDS()).getRepository(StatusListEntity)
+  async getStatusListRepo(type?: StatusListType): Promise<Repository<StatusListEntity>> {
+    const dataSource = await this.getDS()
+    switch (type) {
+      case StatusListType.StatusList2021:
+        return dataSource.getRepository(StatusList2021Entity)
+      case StatusListType.OAuthStatusList:
+        return dataSource.getRepository(OAuthStatusListEntity)
+      default:
+        return dataSource.getRepository(StatusListEntity)
+    }
   }
 
   async getStatusListEntryRepo(): Promise<Repository<StatusListEntryEntity>> {

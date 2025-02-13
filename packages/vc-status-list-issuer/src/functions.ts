@@ -4,7 +4,7 @@ import {
   IIssueCredentialStatusOpts,
   IRequiredPlugins,
   IStatusListPlugin,
-  StatusListDetails,
+  StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { getDriver, IStatusListDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { StatusListCredentialIdMode, StatusListType, StatusPurpose2021 } from '@sphereon/ssi-types'
@@ -17,7 +17,7 @@ export const createStatusListFromInstance = async (
     instance: StatusListInstance & { issuer: string; type?: StatusListType; statusPurpose?: StatusPurpose2021 }
   },
   context: IAgentContext<IRequiredPlugins & IStatusListPlugin>,
-): Promise<StatusListDetails> => {
+): Promise<StatusListResult> => {
   const instance = {
     ...args.instance,
     dataSource: args.instance.dataSource ? await args.instance.dataSource : undefined,
@@ -25,18 +25,18 @@ export const createStatusListFromInstance = async (
     statusPurpose: args.instance.statusPurpose ?? 'revocation',
     correlationId: args.instance.correlationId ?? args.instance.id,
   }
-  let sl: StatusListDetails
+  let statusList: StatusListResult
   try {
-    sl = await context.agent.slGetStatusList(instance)
+    statusList = await context.agent.slGetStatusList(instance)
   } catch (e) {
     const id = instance.id
     const correlationId = instance.correlationId
     if (!id || !correlationId) {
       return Promise.reject(Error(`No correlation id and id provided for status list`))
     }
-    sl = await context.agent.slCreateStatusList({ ...instance, id, correlationId })
+    statusList = await context.agent.slCreateStatusList({ ...instance, id, correlationId })
   }
-  return sl
+  return statusList
 }
 
 export const handleCredentialStatus = async (
@@ -68,6 +68,7 @@ export const handleCredentialStatus = async (
         'No credential.id was provided in the credential, whilst the issuer is configured to persist credentialIds. Please adjust your input credential to contain an id',
       )
     }
+
     let existingEntry: IStatusListEntryEntity | undefined = undefined
     // Search whether there is an existing status list entry for this credential first
     if (credentialId) {

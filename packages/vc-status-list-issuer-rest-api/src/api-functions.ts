@@ -8,6 +8,7 @@ import { getDriver } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import Debug from 'debug'
 import { Request, Response, Router } from 'express'
 import { ICredentialStatusListEndpointOpts, IRequiredContext, IW3CredentialStatusEndpointOpts, UpdateCredentialStatusRequest } from './types'
+import { StatusListType } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -100,7 +101,14 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         correlationId: details.correlationId,
         errorOnNotFound: false,
       })
-      const status = await checkStatusIndexFromStatusListCredential({ ...details, statusListIndex })
+      const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
+      const status = await checkStatusIndexFromStatusListCredential({
+        statusListCredential: details.statusListCredential,
+        ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
+        type,
+        id: details.id,
+        statusListIndex,
+      })
       if (!entry) {
         // The fact we have nothing on it means the status is okay
         entry = {
@@ -170,12 +178,15 @@ export function updateW3CStatusEndpoint(router: Router, context: IRequiredContex
             `Required 'status' value was missing in the credentialStatus array for credentialId ${credentialId}`,
           )
         }
-        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? false : true
+        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? 0 : 1
         const statusList = statusListId ?? statusListEntry.statusList
         await driver.updateStatusListEntry({ ...statusListEntry, statusListIndex, statusList, credentialId, value: value ? '1' : '0' })
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
-        details = await updateStatusIndexFromStatusListCredential({ statusListCredential, statusListIndex, value, keyRef: opts.keyRef }, context)
+        details = await updateStatusIndexFromStatusListCredential(
+          { statusListCredential: statusListCredential, statusListIndex, value, keyRef: opts.keyRef },
+          context,
+        )
         details = await driver.updateStatusList({ statusListCredential: details.statusListCredential })
       }
 
