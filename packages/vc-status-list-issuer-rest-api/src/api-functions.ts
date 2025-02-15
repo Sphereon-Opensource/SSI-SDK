@@ -293,7 +293,19 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           return sendErrorResponse(response, 400, `Required 'status' value was missing in the credentialStatus array`)
         }
 
-        const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? '0' : '1'
+        let value: string = '1'
+        if (updateItem.status === '0' || updateItem.status.toLowerCase() === 'false') {
+          value = '0'
+        } else if (updateItem.status !== '1' && updateItem.status.toLowerCase() !== 'true') {
+          if (details.type === StatusListType.StatusList2021) {
+            // 2021 only allows 0 and 1
+            return sendErrorResponse(response, 400, `Invalid 'status' value in the credentialStatus array: ${updateItem.status}`)
+          } else if (parseInt(updateItem.status) < 0 || parseInt(updateItem.status) > 255) {
+            return sendErrorResponse(response, 400, `Invalid 'status' value in the credentialStatus array: ${updateItem.status}`)
+          }
+          value = `${parseInt(updateItem.status)}`
+        }
+
         const statusList = statusListId ?? statusListEntry.statusList
         await driver.updateStatusListEntry({ ...statusListEntry, statusList, value })
 
