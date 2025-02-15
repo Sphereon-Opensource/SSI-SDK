@@ -112,7 +112,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       hasher: this.registeredImplementations.hasher,
       saltGenerator: this.registeredImplementations.saltGenerator,
       signAlg: alg ?? 'ES256',
-      hashAlg: 'SHA-256',
+      hashAlg: 'sha-256',
     })
 
     const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {

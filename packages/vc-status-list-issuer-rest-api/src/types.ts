@@ -31,8 +31,15 @@ export interface IW3CredentialStatusEndpointOpts extends ICredentialStatusListEn
   keyRef?: string
 }
 
-export interface UpdateCredentialStatusRequest {
+export interface UpdateW3cCredentialStatusRequest extends UpdateCredentialStatusRequest {
   credentialId: string
+}
+
+export interface UpdateIndexedCredentialStatusRequest extends UpdateCredentialStatusRequest {
+  statusListIndex?: number
+}
+
+interface UpdateCredentialStatusRequest {
   credentialStatus: UpdateCredentialStatusItem[]
   statusListId?: string // Non spec compliant. Allows us to manage multiple status lists. The VC API endpoint also has this config option, allowing for a default
   statusListCorrelationId?: string // Non spec compliant. Allows us to manage multiple status lists. The VC API endpoint also has this config option, allowing for a default
@@ -42,4 +49,14 @@ export interface UpdateCredentialStatusRequest {
 export interface UpdateCredentialStatusItem {
   type?: StatusListType // makes very little sense, but listed in the spec. Would expect a purpose
   status: string
+}
+
+export enum StatusListIdType {
+  StatusListId = 'StatusListId',
+  StatusListCorrelationId = 'StatusListCorrelationId',
+}
+
+export enum EntryIdType {
+  StatusListIndex = 'StatusListIndex',
+  EntryCorrelationId = 'StatusListCorrelationId',
 }

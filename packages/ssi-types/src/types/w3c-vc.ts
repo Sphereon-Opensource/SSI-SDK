@@ -20,7 +20,7 @@ export interface ICredential {
   expirationDate?: string
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
-  credentialStatus?: ICredentialStatus
+  credentialStatus?: ICredentialStatus // ArrayOr<ICredentialStatus>  TODO this is only true for VCDM v2.0  SSISDK-2
   description?: string
   name?: string
 

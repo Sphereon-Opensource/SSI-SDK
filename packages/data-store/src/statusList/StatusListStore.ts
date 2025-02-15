@@ -89,9 +89,9 @@ export class StatusListStore implements IStatusListStore {
       await this.getStatusListEntryRepo()
     ).findOne({
       where: {
-        ...(args.statusListId && { statusList: args.statusListId }),
+        statusList: args.statusListId,
         ...(args.correlationId && { correlationId: args.correlationId }),
-        statusListIndex: args.statusListIndex,
+        ...(args.statusListIndex && { statusListIndex: args.statusListIndex }),
       },
     })
 

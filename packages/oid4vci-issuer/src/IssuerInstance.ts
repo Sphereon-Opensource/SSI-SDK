@@ -7,7 +7,7 @@ export class IssuerInstance {
   private _issuer: VcIssuer | undefined
   private readonly _metadataOptions: IMetadataOptions
   private readonly _issuerOptions: IIssuerOptions
-  private readonly _issuerMetadata: IssuerMetadata
+  private _issuerMetadata: IssuerMetadata
   private readonly _authorizationServerMetadata: AuthorizationServerMetadata
 
   public constructor({
@@ -53,6 +53,10 @@ export class IssuerInstance {
 
   get issuerMetadata() {
     return this._issuerMetadata
+  }
+
+  set issuerMetadata(value: IssuerMetadata) {
+    this._issuerMetadata = value
   }
 
   get authorizationServerMetadata() {

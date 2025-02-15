@@ -6,11 +6,11 @@ import {
   IVerifiableCredential,
   OrPromise,
   ProofFormat,
+  StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
-  StatusListCredential,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import {
@@ -24,6 +24,8 @@ import {
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
 import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
+import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { StatusListOpts } from '@sphereon/oid4vci-common'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -91,11 +93,12 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
 
 export interface StatusListResult {
   encodedList: string
-  statusListCredential: StatusListCredential // | CompactJWT
+  statusListCredential: StatusListCredential
   length: number
   type: StatusListType
   proofFormat: ProofFormat
   id: string
+  statuslistContentType: string
   issuer: string | IIssuer
   statusList2021?: StatusList2021Details
   oauthStatusList?: OAuthStatusDetails
@@ -201,6 +204,8 @@ export interface IStatusListPlugin extends IPluginMethodMap {
    */
   slAddStatusToCredential(args: IAddStatusToCredentialArgs, context: IRequiredContext): Promise<CredentialWithStatusSupport>
 
+  slAddStatusToSdJwtCredential(args: IAddStatusToSdJwtCredentialArgs, context: IRequiredContext): Promise<SdJwtVcPayload>
+
   /**
    * Get the status list using the configured driver for the SL. Normally a correlationId or id should suffice. Optionally accepts a dbName/datasource
    * @param args
@@ -221,12 +226,14 @@ export type IAddStatusToCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataS
   credential: CredentialWithStatusSupport
 }
 
+export type IAddStatusToSdJwtCredentialArgs = Omit<IIssueCredentialStatusOpts, 'dataSource'> & {
+  credential: SdJwtVcPayload
+}
+
 export interface IIssueCredentialStatusOpts {
   dataSource?: DataSource
+  statusLists?: Array<StatusListOpts>
   credentialId?: string // An id to use for the credential. Normally should be set as the crdential.id value
-  statusListId?: string // Explicit status list to use. Determines the id from the credentialStatus object in the VC itself or uses the default otherwise
-  statusListIndex?: number | string
-  statusEntryCorrelationId?: string // An id to use for correlation. Can be the credential id, but also a business identifier. Will only be used for lookups/management
   value?: string
 }
 
@@ -245,4 +252,4 @@ export type SignedStatusListData = {
 }
 
 export type IRequiredPlugins = ICredentialPlugin & IIdentifierResolution
-export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager>
+export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager & ICredentialPlugin>

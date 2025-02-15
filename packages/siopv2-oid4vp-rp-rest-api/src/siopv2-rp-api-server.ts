@@ -6,7 +6,7 @@ import { TAgent } from '@veramo/core'
 import express, { Express, Router } from 'express'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
-import { authStatusWebappEndpoint, createAuthRequestWebappEndpoint, removeAuthRequestStateWebappEndpoint } from './webapp-api-functions'
+import {authStatusWebappEndpoint, createAuthRequestWebappEndpoint, getDefinitionsEndpoint, removeAuthRequestStateWebappEndpoint} from './webapp-api-functions'
 
 export class SIOPv2RPApiServer {
   private readonly _express: Express
@@ -35,6 +35,7 @@ export class SIOPv2RPApiServer {
       createAuthRequestWebappEndpoint(this._router, context, opts?.endpointOpts?.webappCreateAuthRequest)
       authStatusWebappEndpoint(this._router, context, opts?.endpointOpts?.webappAuthStatus)
       removeAuthRequestStateWebappEndpoint(this._router, context, opts?.endpointOpts?.webappDeleteAuthRequest)
+      getDefinitionsEndpoint(this._router, context, opts?.endpointOpts?.webappGetDefinitions)
     }
 
     // SIOPv2 endpoints

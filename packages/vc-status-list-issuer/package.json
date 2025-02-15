@@ -15,6 +15,8 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
+    "@sd-jwt/core": "^0.7.2",
+    "@sd-jwt/sd-jwt-vc": "^0.7.2",
     "@sphereon/ssi-sdk-ext.did-utils": "0.27.1-next.14",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.1-next.14",
     "@sphereon/ssi-sdk.core": "workspace:*",
@@ -31,6 +33,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.24.7",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/oid4vci-common": "0.16.1-feature.MWALL.715.352",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.27.1-next.14",
@@ -62,6 +65,7 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "morgan": "^1.10.0",
+    "ts-jest": "^29.2.5",
     "typescript": "5.4.2"
   },
   "files": [
