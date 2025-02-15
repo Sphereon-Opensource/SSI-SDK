@@ -20,7 +20,7 @@ import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
 
 type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
 
-export const DEFAULT_BITS_PER_STATUS = 2 // 2 bits are sufficient for 0x00 - "VALID"  0x01 - "INVALID" & 0x02 - "SUSPENDED"
+export const DEFAULT_BITS_PER_STATUS = 1 // 1 bit is sufficient for 0x00 - "VALID"  0x01 - "INVALID" saving space in the process
 export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'jwt' as ProofFormat
 
@@ -96,6 +96,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
   }
 
+  // FIXME: This still assumes only two values (boolean), whilst this list supports 8 bits max
   async updateStatusListFromEncodedList(args: UpdateStatusListFromEncodedListArgs, context: IRequiredContext): Promise<StatusListResult> {
     if (!args.oauthStatusList) {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
@@ -108,6 +109,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus ?? DEFAULT_BITS_PER_STATUS)
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
+    // FIXME: See above.
     listToUpdate.setStatus(index, args.value ? 1 : 0)
 
     const { statusListCredential, encodedList } = await this.createSignedStatusList(
