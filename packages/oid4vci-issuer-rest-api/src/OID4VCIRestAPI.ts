@@ -10,7 +10,7 @@ import {
   createVerifyAuthResponseCallback
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { DIDDocument } from 'did-resolver'
-import { Express } from 'express'
+import express, { Express, Router } from 'express'
 import { IRequiredContext } from './types'
 
 export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {}
@@ -22,6 +22,8 @@ export class OID4VCIRestAPI {
   private readonly _restApi: OID4VCIServer<DIDDocument>
   private readonly _instance: IssuerInstance
   private readonly _issuer: VcIssuer<DIDDocument>
+  private readonly _router: Router
+  private _baseUrl: URL;
 
   static async init(args: {
     context: IRequiredContext
@@ -113,12 +115,19 @@ export class OID4VCIRestAPI {
     opts: IOID4VCIRestAPIOpts
   }) {
     const { context, opts } = args
+    this._baseUrl = new URL(opts?.baseUrl ?? process.env.BASE_URL ?? opts?.issuer?.issuerMetadata?.credential_issuer ?? 'http://localhost')
     this._context = context
     this._opts = opts ?? {}
     this._expressSupport = args.expressSupport
     this._issuer = args.issuer
     this._instance = args.instance
     this._restApi = new OID4VCIServer<DIDDocument>(args.expressSupport, { ...opts, issuer: this._issuer })
+
+    // The above setups the generic OID4VCI management and wallet APIs from the OID4VCI lib.
+    // Below sets up the management of configurations
+
+    this._router = express.Router()
+    get
   }
 
   get express(): Express {
