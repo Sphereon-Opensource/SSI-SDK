@@ -30,7 +30,7 @@ export class PdManagerApiServer {
     this._router = express.Router()
     const context = agentContext(agent)
     const features = opts?.enableFeatures ?? ['pd_read', 'pd_write', 'pd_delete']
-    console.log(`Contact Manager API enabled, with features: ${JSON.stringify(features)}}`)
+    console.log(`Presentation Definition API enabled, with features: ${JSON.stringify(features)}}`)
 
     // endpoints
     if (features.includes('pd_read')) {

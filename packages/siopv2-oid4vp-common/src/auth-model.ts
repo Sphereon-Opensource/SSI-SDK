@@ -16,6 +16,7 @@ export type AuthorizationResponseStateStatus = 'created' | 'sent' | 'received' |
 
 export interface GenerateAuthRequestURIResponse {
   correlationId: string
+  state: string
   definitionId: string
   authRequestURI: string
   authStatusURI: string

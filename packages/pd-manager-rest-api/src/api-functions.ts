@@ -17,7 +17,7 @@ export function pdReadEndpoint(router: Router, context: IRequiredContext, opts?:
       const itemId = request.params.itemId
       const pd = await context.agent.pdmGetDefinition({ itemId: itemId })
       response.statusCode = 200
-      return response.send(pd)
+      return response.json(pd)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message as string, error)
     }
@@ -35,7 +35,7 @@ export function pdHasEndpoint(router: Router, context: IRequiredContext, opts?: 
       const itemId = request.params.itemId
       const result = await context.agent.pdmHasDefinition({ itemId: itemId })
       response.statusCode = 200
-      return response.send(result)
+      return response.json(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message as string, error)
     }
@@ -53,7 +53,7 @@ export function pdsReadEndpoint(router: Router, context: IRequiredContext, opts?
       // TODO Get all of them for now
       const pd = await context.agent.pdmGetDefinitions()
       response.statusCode = 200
-      return response.send(pd)
+      return response.json(pd)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message as string, error)
     }
@@ -71,7 +71,7 @@ export function pdPersistEndpoint(router: Router, context: IRequiredContext, opt
       const addPd = request.body
       const pd = await context.agent.pdmPersistDefinitionItem(addPd as PersistDefinitionArgs)
       response.statusCode = 200 // TODO find out if pdmPersistDefinitionItem added or updated
-      return response.send(pd)
+      return response.json(pd)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
     }
@@ -89,7 +89,7 @@ export function pdDeleteEndpoint(router: Router, context: IRequiredContext, opts
       const itemId = request.params.itemId
       const result = await context.agent.pdmDeleteDefinition({ itemId: itemId } as DeleteDefinitionArgs)
       response.statusCode = 200
-      return response.send(result)
+      return response.json(result)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
     }
