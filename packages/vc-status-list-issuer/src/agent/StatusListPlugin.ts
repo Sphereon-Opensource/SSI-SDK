@@ -23,7 +23,7 @@ const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list')
 export class StatusListPlugin implements IAgentPlugin {
   // readonly schema = schema.IDidAuthSiopOpAuthenticator
   private readonly instances: Array<StatusListInstance> = []
-  private readonly defaultStatusListId: string
+  private readonly defaultStatusListId?: string
   private readonly autoCreateInstances: boolean
   private readonly allDataSources: DataSources
   readonly methods: IStatusListPlugin = {
@@ -34,16 +34,16 @@ export class StatusListPlugin implements IAgentPlugin {
   }
 
   constructor(opts: {
-    instances: Array<StatusListInstance>
+    instances?: Array<StatusListInstance>
     defaultInstanceId?: string
     allDataSources?: DataSources
     autoCreateInstances?: boolean
   }) {
-    this.instances = opts.instances
+    this.instances = opts.instances ?? []
     // TODO: Do we only want the instances configured, or do we also want to look them up from the DB
-    const instanceId = opts.defaultInstanceId ?? opts.instances[0].id
+    const instanceId = opts.defaultInstanceId ?? opts.instances?.[0]?.id
     if (!instanceId) {
-      throw Error(`Could not deduce the default instance id from the status lists`)
+      logger.warning(`Could not deduce the default instance id from the status lists, so no default status list will be used. Please configure the default instance id in the agent configuration.`)
     }
     this.defaultStatusListId = instanceId
     this.allDataSources = opts.allDataSources ?? DataSources.singleInstance()
@@ -201,6 +201,9 @@ export class StatusListPlugin implements IAgentPlugin {
     const credentialId = credential.id ?? rest.credentialId
     for (const opt of statusListOpts) {
       const effectiveStatusListId = opt.statusListId ?? this.defaultStatusListId
+      if (!effectiveStatusListId) {
+        return Promise.reject(Error(`No status list ID provided and no default status list ID configured. Please provide a status list ID or configure a default status list ID in the agent configuration.`))
+      }
       const driver = await this.getDriverForStatusListOption(effectiveStatusListId, opt.statusListCorrelationId)
       await handleCredentialStatus(credential, {
         ...rest,
@@ -254,6 +257,9 @@ export class StatusListPlugin implements IAgentPlugin {
     logger.info(`Adding new status using status list options with ID ${statusListOpts[0].statusListId ?? this.defaultStatusListId}`)
     const firstOpt = statusListOpts[0]
     const effectiveStatusListId = firstOpt.statusListId ?? this.defaultStatusListId
+    if (!effectiveStatusListId) {
+      return Promise.reject(Error(`No status list ID provided and no default status list ID configured. Please provide a status list ID or configure a default status list ID in the agent configuration.`))
+    }
     const driver = await this.getDriverForStatusListOption(effectiveStatusListId, firstOpt.statusListCorrelationId)
     await handleSdJwtCredentialStatus(credential, {
       ...rest,
