@@ -5,11 +5,14 @@ import {
   CredentialConfigurationSupported,
   CredentialDataSupplierInput,
   CredentialIssuerMetadataOpts,
+  CredentialOfferMode,
   CredentialOfferSession,
   CredentialRequest,
   CredentialResponse,
   Grant,
   JsonLdIssuerCredentialDefinition,
+  QRCodeOpts,
+  StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -42,6 +45,16 @@ export interface ICreateOfferArgs extends IIssuerInstanceArgs {
   credentialDefinition?: IssuerCredentialDefinition
   credentialOfferUri?: string
   credentialDataSupplierInput?: CredentialDataSupplierInput // Optional storage that can help the credential Data Supplier. For instance to store credential input data during offer creation, if no additional data can be supplied later on
+
+  redirectUri?: string
+  // auth_session?: string; Would be a nice extension to support, to allow external systems to determine what the auth_session value should be
+  // @Deprecated use tx_code in the grant object
+  correlationId?: string
+  sessionLifeTimeInSec?: number
+  qrCodeOpts?: QRCodeOpts
+  client_id?: string
+  statusListOpts?: Array<StatusListOpts>
+  offerMode?: CredentialOfferMode
   baseUri?: string
   scheme?: string
   pinLength?: number

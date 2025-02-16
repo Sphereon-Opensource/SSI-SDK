@@ -227,7 +227,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
       storeId: metadataOpts.storeId,
     })) as AuthorizationServerMetadata
     if (!metadata) {
-      throw Error(`Authorization server ${opts.credentialIssuer} metadata  not found for namespace ${opts.namespace} and store ${opts.storeId}`)
+      throw Error(`Authorization server ${opts.credentialIssuer} metadata  not found for namespace ${metadataOpts.storeNamespace} and store ${metadataOpts.storeId}`)
     }
     return metadata
   }

@@ -1,7 +1,6 @@
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 
-
 @Entity('Oid4vcStateEntity')
 export class Oid4vcStateEntity<StateType> extends BaseEntity {
   @PrimaryColumn({ name: 'id', type: 'varchar', nullable: false })

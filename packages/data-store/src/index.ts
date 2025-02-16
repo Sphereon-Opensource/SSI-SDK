@@ -32,6 +32,8 @@ import { PresentationDefinitionItemEntity } from './entities/presentationDefinit
 import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
 
+import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity'
+
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
 export { AbstractDigitalCredentialStore } from './digitalCredential/AbstractDigitalCredentialStore'
@@ -81,6 +83,7 @@ export const DataStoreContactEntities = [
   ContactMetadataItemEntity,
 ]
 
+export const DataStoreOid4vcStateEntities = [Oid4vcStateEntity]
 export const DataStoreIssuanceBrandingEntities = [
   BackgroundAttributesEntity,
   CredentialBrandingEntity,
@@ -113,6 +116,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
+  // ...DataStoreOid4vcStateEntities,
 ]
 
 export {
@@ -146,4 +150,5 @@ export {
   PresentationDefinitionItemEntity,
   ContactMetadataItemEntity,
   CredentialClaimsEntity,
+  Oid4vcStateEntity,
 }

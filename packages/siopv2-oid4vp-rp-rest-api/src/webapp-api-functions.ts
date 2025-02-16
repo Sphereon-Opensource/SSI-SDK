@@ -7,8 +7,6 @@ import uuid from 'short-uuid'
 import { ICreateAuthRequestWebappEndpointOpts, IRequiredContext } from './types'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
-
-
 export function createAuthRequestWebappEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`createAuthRequest Webapp endpoint is disabled`)
@@ -30,7 +28,9 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
       })
       const responseURI = uriWithBase(`/siop/definitions/${definitionId}/auth-responses/${state}`, { baseURI: opts?.siopBaseURI })
       // first version is for backwards compat
-      const responseRedirectURI = ('response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)) ?? ('responseRedirectURI' in request.body && (request.body.responseRedirectURI as string | undefined))
+      const responseRedirectURI =
+        ('response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)) ??
+        ('responseRedirectURI' in request.body && (request.body.responseRedirectURI as string | undefined))
 
       const authRequestURI = await context.agent.siopCreateAuthRequestURI({
         definitionId,
@@ -155,7 +155,6 @@ export function removeAuthRequestStateWebappEndpoint(router: Router, context: IR
     }
   })
 }
-
 
 export function getDefinitionsEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {

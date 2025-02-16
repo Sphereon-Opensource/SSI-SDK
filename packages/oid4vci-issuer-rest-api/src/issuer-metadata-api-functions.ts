@@ -8,11 +8,11 @@ import { CredentialConfigurationSupportedV1_0_13 } from '@sphereon/oid4vci-commo
 import { IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { IssuerMetadataV1_0_13 } from '@sphereon/oid4vci-common'
 
-export function getCredentialConfigurationsEndpoint<DIDDoc extends object>(
+export function getCredentialConfigurationsEndpoint(
   router: Router,
   context: IRequiredContext,
   instance: IssuerInstance,
-  issuer: VcIssuer<DIDDoc>,
+  issuer: VcIssuer,
   opts: IGetIssueStatusEndpointOpts,
 ) {
   const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations', { stripBasePath: true })
@@ -34,14 +34,16 @@ export function getCredentialConfigurationsEndpoint<DIDDoc extends object>(
   })
 }
 
-export function getCredentialConfigurationByIdEndpoint<DIDDoc extends object>(
+export function getCredentialConfigurationByIdEndpoint(
   router: Router,
   context: IRequiredContext,
   instance: IssuerInstance,
-  issuer: VcIssuer<DIDDoc>,
+  issuer: VcIssuer,
   opts: IGetIssueStatusEndpointOpts,
 ) {
-  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', { stripBasePath: true })
+  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', {
+    stripBasePath: true,
+  })
   LOG.log(`[OID4VCI] getCredentialConfigurations endpoint enabled at ${path}`)
   if (opts?.enabled === false) {
     console.log(`"getCredentialConfigurations" Endpoint is disabled`)
@@ -69,14 +71,16 @@ export function getCredentialConfigurationByIdEndpoint<DIDDoc extends object>(
   })
 }
 
-export function deleteCredentialConfigurationByIdEndpoint<DIDDoc extends object>(
+export function deleteCredentialConfigurationByIdEndpoint(
   router: Router,
   context: IRequiredContext,
   instance: IssuerInstance,
-  issuer: VcIssuer<DIDDoc>,
+  issuer: VcIssuer,
   opts: IGetIssueStatusEndpointOpts,
 ) {
-  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', { stripBasePath: true })
+  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', {
+    stripBasePath: true,
+  })
   LOG.log(`[OID4VCI] deleteCredentialConfigurationById endpoint enabled at ${path}`)
   if (opts?.enabled === false) {
     console.log(`"deleteCredentialConfigurationById" Endpoint is disabled`)
@@ -119,14 +123,16 @@ export function deleteCredentialConfigurationByIdEndpoint<DIDDoc extends object>
   })
 }
 
-export function updateCredentialConfigurationByIdEndpoint<DIDDoc extends object>(
+export function updateCredentialConfigurationByIdEndpoint(
   router: Router,
   context: IRequiredContext,
   instance: IssuerInstance,
-  issuer: VcIssuer<DIDDoc>,
+  issuer: VcIssuer,
   opts: IGetIssueStatusEndpointOpts,
 ) {
-  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', { stripBasePath: true })
+  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', {
+    stripBasePath: true,
+  })
   LOG.log(`[OID4VCI] updateCredentialConfigurationById endpoint enabled at ${path}`)
   if (opts?.enabled === false) {
     console.log(`"updateCredentialConfigurationById" Endpoint is disabled`)
@@ -166,21 +172,23 @@ export function updateCredentialConfigurationByIdEndpoint<DIDDoc extends object>
         validation: true,
       })
       instance.issuerMetadata = updateMetadata
-      return response.json({...updatedCredentialConfiguration})
+      return response.json({ ...updatedCredentialConfiguration })
     } catch (error) {
       return sendErrorResponse(response, 500, error.message as string, error)
     }
   })
 }
 
-export function newCredentialConfigurationEndpoint<DIDDoc extends object>(
-    router: Router,
-    context: IRequiredContext,
-    instance: IssuerInstance,
-    issuer: VcIssuer<DIDDoc>,
-    opts: IGetIssueStatusEndpointOpts,
+export function newCredentialConfigurationEndpoint(
+  router: Router,
+  context: IRequiredContext,
+  instance: IssuerInstance,
+  issuer: VcIssuer,
+  opts: IGetIssueStatusEndpointOpts,
 ) {
-  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', { stripBasePath: true })
+  const path = determinePath(opts.baseUrl, opts?.path ?? '/webapp/issuer-metadata/credential-configurations/:configurationId', {
+    stripBasePath: true,
+  })
   LOG.log(`[OID4VCI] newCredentialConfigurationById endpoint enabled at ${path}`)
   if (opts?.enabled === false) {
     console.log(`"newCredentialConfigurationById" Endpoint is disabled`)
@@ -206,7 +214,11 @@ export function newCredentialConfigurationEndpoint<DIDDoc extends object>(
         correlationId: instance.metadataOptions.credentialIssuer,
       })) as IssuerMetadataV1_0_13
       if (storeMetadata?.credential_configurations_supported?.[configurationId]) {
-        return sendErrorResponse(response, 400, `Credential configuration ${configurationId} already exists, cannot create new one. Please update instead.`)
+        return sendErrorResponse(
+          response,
+          400,
+          `Credential configuration ${configurationId} already exists, cannot create new one. Please update instead.`,
+        )
       }
       const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_13
       updateMetadata.credential_configurations_supported[configurationId] = newCredentialConfiguration
@@ -220,7 +232,7 @@ export function newCredentialConfigurationEndpoint<DIDDoc extends object>(
         validation: true,
       })
       instance.issuerMetadata = updateMetadata
-      return response.json({...newCredentialConfiguration})
+      return response.json({ ...newCredentialConfiguration })
     } catch (error) {
       return sendErrorResponse(response, 500, error.message as string, error)
     }

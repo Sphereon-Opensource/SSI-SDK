@@ -5,19 +5,18 @@
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^20.17.1",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.0",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.27.0",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.27.0",
-    "@sphereon/ssi-sdk-ext.did-provider-key": "0.27.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.1-next.14",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.1-next.14",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.27.1-next.14",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.27.1-next.14",
+    "@sphereon/ssi-sdk-ext.did-provider-key": "0.27.1-next.14",
     "did-resolver": "^4.1.0",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
@@ -28,8 +27,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.6.3"
   },
-  "files": [
-  ],
+  "files": [],
   "private": true,
   "publishConfig": {
     "access": "public"

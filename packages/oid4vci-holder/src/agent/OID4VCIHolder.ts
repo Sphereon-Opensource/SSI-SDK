@@ -1093,7 +1093,6 @@ export class OID4VCIHolder implements IAgentPlugin {
       return []
     }
 
-
     const result = await context.agent.identifierExternalResolveByOIDFEntityId({
       method: 'entity_id',
       trustAnchors: trustAnchors,

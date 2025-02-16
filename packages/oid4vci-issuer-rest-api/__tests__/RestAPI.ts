@@ -1,4 +1,4 @@
-import { CredentialRequestJwtVc } from '@sphereon/oid4vci-common'
+import { CredentialRequestJwtVcJson } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialDataSupplierArgs, CredentialDataSupplierResult } from '@sphereon/oid4vci-issuer'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { TAgent } from '@veramo/core'
@@ -27,6 +27,7 @@ export function start() {
   }).then((restApi) => {
     console.log('REST API STARTED: ' + restApi.instance.metadataOptions.credentialIssuer)
   })
+/*
 
   OID4VCIRestAPI.init({
     context: { ...agent.context, agent: agent as TAgent<IPlugins> },
@@ -57,6 +58,7 @@ export function start() {
   }).then((restApi) => {
     console.log('REST API STARTED: ' + restApi.instance.metadataOptions.credentialIssuer)
   })
+*/
 
   expressSupport.start()
 }
@@ -136,7 +138,7 @@ const credentialDataSupplierSphereon: CredentialDataSupplier = (args: Credential
     throw Error(`Format ${args.credentialRequest.format} is not configured on this issuer`)
   }
 
-  const request = args.credentialRequest as CredentialRequestJwtVc
+  const request = args.credentialRequest as CredentialRequestJwtVcJson
   if (request.types.includes('VerifiedEmployee')) {
     return Promise.resolve({
       format: 'jwt_vc_json',

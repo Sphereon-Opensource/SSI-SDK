@@ -29,6 +29,9 @@
       "path": "../kv-store"
     },
     {
+      "path": "../data-store"
+    },
+    {
       "path": "../vc-status-list-issuer"
     }
   ]

@@ -1,5 +1,5 @@
 import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
-import { OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
+import { getBasePath, OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
 import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import {
@@ -9,8 +9,9 @@ import {
   IssuerInstance,
   createVerifyAuthResponseCallback,
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import express, { Express, Router } from 'express'
+import express, { Express, Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
+import swaggerUi from 'swagger-ui-express'
 
 export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {}
 
@@ -20,9 +21,10 @@ export class OID4VCIRestAPI {
   private readonly _opts?: IOID4VCIRestAPIOpts
   private readonly _restApi: OID4VCIServer
   private readonly _instance: IssuerInstance
-  private readonly _issuer: VcIssuer<DIDDocument>
+  private readonly _issuer: VcIssuer
   private readonly _router: Router
-  private _baseUrl: URL;
+  private _baseUrl: URL
+  private _basePath: string
 
   static async init(args: {
     context: IRequiredContext
@@ -95,6 +97,8 @@ export class OID4VCIRestAPI {
     return new OID4VCIRestAPI({ context, issuerInstanceArgs, expressSupport, opts, instance, issuer })
   }
 
+  private readonly OID4VCI_SWAGGER_URL = 'https://api.swaggerhub.com/apis/SphereonInt/OID4VCI/0.1.1'
+
   private constructor(args: {
     issuer: VcIssuer
     instance: IssuerInstance
@@ -103,8 +107,15 @@ export class OID4VCIRestAPI {
     expressSupport: ExpressSupport
     opts: IOID4VCIRestAPIOpts
   }) {
-    const { context, opts } = args
-    this._baseUrl = new URL(opts?.baseUrl ?? process.env.BASE_URL ?? opts?.issuer?.issuerMetadata?.credential_issuer ?? 'http://localhost')
+    const { context, opts, issuerInstanceArgs } = args
+    this._baseUrl = new URL(
+      opts?.baseUrl ??
+        process.env.BASE_URL ??
+        opts?.issuer?.issuerMetadata?.credential_issuer ??
+        issuerInstanceArgs.credentialIssuer ??
+        'http://localhost',
+    )
+    this._basePath = getBasePath(this._baseUrl)
     this._context = context
     this._opts = opts ?? {}
     this._expressSupport = args.expressSupport
@@ -114,9 +125,36 @@ export class OID4VCIRestAPI {
 
     // The above setups the generic OID4VCI management and wallet APIs from the OID4VCI lib.
     // Below sets up the management of configurations
-
     this._router = express.Router()
-    get
+    this.express.use(this._basePath, this._router)
+    this.setupSwaggerUi()
+  }
+
+  private setupSwaggerUi() {
+
+    fetch(this.OID4VCI_SWAGGER_URL)
+      .then((res) => res.json())
+      .then((swagger) => {
+        const apiDocs = `/api-docs`
+        console.log(`[OID4VCI] API docs available at ${this._basePath}${apiDocs}`)
+        swagger.servers = [{ url: this._baseUrl.toString(), description: 'This server' }]
+        this._router.use(
+          apiDocs,
+          (req: Request, res: Response, next: any) => {
+            // @ts-ignore
+            req.swaggerDoc = swagger
+            next()
+          },
+          swaggerUi.serveFiles(swagger, options),
+          swaggerUi.setup(),
+        )
+      })
+      .catch((err) => {
+        console.log(`[OID4VCI] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
+      })
+    const options = {
+      // customCss: '.swagger-ui .topbar { display: none }',
+    }
   }
 
   get express(): Express {
