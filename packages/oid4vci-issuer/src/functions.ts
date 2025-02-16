@@ -162,11 +162,19 @@ export async function getAccessTokenSignerCallback(
   }
 
   async function accessTokenSignerCallback(jwt: Jwt, kid?: string): Promise<string> {
-    const issuer = opts?.iss ?? opts.didOpts?.idOpts?.identifier.toString()
+    const issuer = opts.idOpts?.issuer ?? (typeof opts.idOpts?.identifier === 'string' ? opts.idOpts.identifier : (opts.didOpts?.idOpts?.identifier?.toString() ?? opts?.iss))
     if (!issuer) {
       throw Error('No issuer configured for access tokens')
     }
-    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, typ: 'JWT' })
+
+    let kidHeader: string | undefined = jwt?.header?.kid ?? kid
+    if (!kidHeader) {
+      if (opts.idOpts?.method === 'did' || opts.idOpts?.method === 'kid' || (typeof opts.didOpts?.idOpts.identifier === 'string' && opts.didOpts?.idOpts?.identifier?.startsWith('did:'))) {
+        // @ts-ignore
+        kidHeader = opts.idOpts?.kid ?? opts.didOpts?.idOpts?.kid ?? opts?.didOpts?.identifierOpts?.kid
+      }
+    }
+    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && {kid: kidHeader}), typ: 'JWT' })
   }
 
   return accessTokenSignerCallback
