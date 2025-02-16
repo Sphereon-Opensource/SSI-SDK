@@ -6,7 +6,6 @@ import {
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
-  SphereonBbsBlsSignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
@@ -24,11 +23,11 @@ import { Resolver } from 'did-resolver'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
 import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
 import Debug from 'debug'
 import { createHash } from 'crypto'
 import { SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
+import {CheckLinkedDomain} from "@sphereon/did-auth-siop-adapter";
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -157,7 +156,6 @@ const agent = createAgent<
       suites: [
         new SphereonEd25519Signature2018(),
         new SphereonEd25519Signature2020(),
-        new SphereonBbsBlsSignature2020(),
         new SphereonJsonWebSignature2020(),
       ],
       bindingOverrides: new Map([

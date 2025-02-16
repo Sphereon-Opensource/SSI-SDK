@@ -30,6 +30,7 @@
     "dotenv-flow": "^3.3.0",
     "express": "^4.19.2",
     "short-uuid": "^4.2.2",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -37,6 +38,7 @@
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
+    "@sphereon/did-auth-siop-adapter": "0.16.1-feature.MWALL.715.391",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.27.1-next.14",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
@@ -51,6 +53,7 @@
     "@types/node": "^20.17.1",
     "@types/passport": "^1.0.16",
     "@types/passport-http-bearer": "^1.0.41",
+    "@types/swagger-ui-express": "^4.1.7",
     "@types/uuid": "^9.0.8",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
@@ -64,6 +67,7 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "morgan": "^1.10.0",
+    "debug": "^4.4.0",
     "nock": "^13.5.4",
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",

@@ -139,6 +139,10 @@ export function copyGlobalAuthToEndpoint(args?: { opts?: HasEndpointOpts; key: s
   if (!opts || !key || !hasEndpointOpts(opts)) {
     return
   }
+  if (key === 'basePath') {
+    // make sure to not copy base path over, as we use these at the global router, and this would repeat the path
+    return;
+  }
   if (opts.endpointOpts?.globalAuth) {
     if (opts.endpointOpts[key]?.disableGlobalAuth === true) {
       return

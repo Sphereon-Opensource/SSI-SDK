@@ -2588,6 +2588,9 @@ importers:
       short-uuid:
         specifier: ^4.2.2
         version: 4.2.2
+      swagger-ui-express:
+        specifier: ^5.0.1
+        version: 5.0.1(express@4.21.2)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -2595,6 +2598,9 @@ importers:
       '@decentralized-identity/ion-sdk':
         specifier: ^0.6.0
         version: 0.6.0
+      '@sphereon/did-auth-siop-adapter':
+        specifier: 0.16.1-feature.MWALL.715.391
+        version: 0.16.1-feature.MWALL.715.391(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -2646,6 +2652,9 @@ importers:
       '@types/passport-http-bearer':
         specifier: ^1.0.41
         version: 1.0.41
+      '@types/swagger-ui-express':
+        specifier: ^4.1.7
+        version: 4.1.7
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -2679,6 +2688,9 @@ importers:
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
+      debug:
+        specifier: ^4.3.5
+        version: 4.4.0
       did-resolver:
         specifier: ^4.1.0
         version: 4.1.0
