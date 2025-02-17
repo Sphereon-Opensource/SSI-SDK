@@ -11,7 +11,7 @@ export interface DecodedStatusListPayload {
 }
 
 export const resolveIdentifier = async (context: IRequiredContext, issuer: string, keyRef?: string) => {
-  if (keyRef) {
+  if (keyRef && !issuer.startsWith('did:')) {
     return await context.agent.identifierManagedGetByKid({
       identifier: keyRef,
     })
