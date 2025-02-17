@@ -11,15 +11,10 @@ export interface DecodedStatusListPayload {
 }
 
 export const resolveIdentifier = async (context: IRequiredContext, issuer: string, keyRef?: string) => {
-  if (keyRef && !issuer.startsWith('did:')) {
-    return await context.agent.identifierManagedGetByKid({
-      identifier: keyRef,
-    })
-  }
-
   return await context.agent.identifierManagedGet({
     identifier: issuer,
     vmRelationship: 'assertionMethod',
     offlineWhenNoDIDRegistered: true,
+    ...(keyRef && { kmsKeyRef: keyRef }), // TODO the getDid resolver should look at this ASAP
   })
 }
