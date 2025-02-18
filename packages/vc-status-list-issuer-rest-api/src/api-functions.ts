@@ -228,7 +228,7 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
         }
       }
       response.statusCode = 200
-      return response.json({ ...entry, status }) // FIXME content type?
+      return response.json({ ...entry, status })
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }

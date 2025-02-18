@@ -53,7 +53,7 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
       const kid = args.kid ?? header.kid
-      const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
+      const jwk = !kid ? jwkInfo.jwk : undefined // correct for this branch, but a setting is coming up in IATAB2B-52
       return {
         alg,
         ...identifier,
@@ -250,10 +250,10 @@ export async function getCredentialSignerCallback(
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToSdJwtCredential')) {
         if ((sdJwtPayload.status && sdJwtPayload.status.status_list) || (statusLists && statusLists.length > 0)) {
           // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
-          const credentialStatusVC = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload, statusLists: statusLists })
+          const sdJwtPayloadWithStatus = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload, statusLists: statusLists })
           if (sdJwtPayload.status?.status_list?.idx) {
-            if (!credentialStatusVC.status || !credentialStatusVC.status.status_list) {
-              // TODO check, looks like sdJwtPayload and credentialStatusVC is the same
+          if (!sdJwtPayloadWithStatus.status || !sdJwtPayloadWithStatus.status.status_list) {
+            // sdJwtPayload and sdJwtPayloadWithStatus is the same for now, but we should use the result anyway as this could be subject to change
               return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
             }
 
@@ -263,7 +263,7 @@ export async function getCredentialSignerCallback(
               statusList.statusListId = credentialStatusVC.status.status_list.uri
               statusList.statusListIndex = credentialStatusVC.status.status_list.idx
             }
-            sdJwtPayload.status.status_list.idx = credentialStatusVC.status.status_list.idx
+            sdJwtPayload.status.status_list.idx = sdJwtPayloadWithStatus.status.status_list.idx
           }
         }
       }
