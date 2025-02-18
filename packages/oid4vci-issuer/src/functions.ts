@@ -8,7 +8,7 @@ import {
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { JWTHeader, JWTPayload } from '@sphereon/oid4vci-common'
-import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
+import {CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, oidcAccessTokenVerifyCallback, VcIssuer, VcIssuerBuilder} from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
@@ -324,9 +324,16 @@ export async function createVciIssuerBuilder(
   builder.withAuthorizationMetadata(authorizationServerMetadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
-  builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
+
   if (issuerOpts.asClientOpts) {
     builder.withASClientMetadata(issuerOpts.asClientOpts)
+    // @ts-ignore
+    const authorizationServer = issuerMetadata.authorization_servers[0] as string
+    // Set the OIDC verifier
+    builder.withJWTVerifyCallback(oidcAccessTokenVerifyCallback({clientMetadata: issuerOpts.asClientOpts, credentialIssuer: issuerMetadata.credential_issuer as string, authorizationServer}))
+  } else {
+    // Do not use it when asClient is used
+    builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
   }
   if (args.credentialDataSupplier) {
     builder.withCredentialDataSupplier(args.credentialDataSupplier)
