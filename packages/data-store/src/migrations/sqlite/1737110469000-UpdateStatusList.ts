@@ -4,6 +4,17 @@ export class UpdateStatusList1737110469000 implements MigrationInterface {
   name = 'UpdateStatusList1737110469000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Fix correlationId fields
+    await queryRunner.query(`
+     ALTER TABLE "StatusListEntry" 
+     ADD COLUMN "statusListCorrelationId" varchar(255)
+   `)
+
+    await queryRunner.query(`
+     ALTER TABLE "StatusListEntry"
+     RENAME COLUMN "correlationId" TO "entryCorrelationId"
+   `)
+
     // Create temporary table with new schema
     await queryRunner.query(
       `CREATE TABLE "temporary_StatusList" (
@@ -44,6 +55,16 @@ export class UpdateStatusList1737110469000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+     ALTER TABLE "StatusListEntry"
+     RENAME COLUMN "entryCorrelationId" TO "correlationId"
+   `)
+
+    await queryRunner.query(`
+     ALTER TABLE "StatusListEntry"
+     DROP COLUMN "statusListCorrelationId"
+   `)
+
     // Create temporary table with old schema
     await queryRunner.query(
       `CREATE TABLE "temporary_StatusList" (
