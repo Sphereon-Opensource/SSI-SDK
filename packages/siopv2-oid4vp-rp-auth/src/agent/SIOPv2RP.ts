@@ -147,7 +147,7 @@ export class SIOPv2RP implements IAgentPlugin {
         case VerifiedDataMode.VERIFIED_PRESENTATION:
           responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
           break
-        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
+        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
           const allClaims: AdditionalClaims = {}
           for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
             const vc = credential as IVerifiableCredential
@@ -189,7 +189,7 @@ export class SIOPv2RP implements IAgentPlugin {
       | MdocDeviceResponse,
   ): AdditionalClaims | IPresentation =>
     CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
-      ? presentationDecoded.decodedPayload // FIXME come up with something cleaner that also works for SD-JWT
+      ? presentationDecoded.decodedPayload
       : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {

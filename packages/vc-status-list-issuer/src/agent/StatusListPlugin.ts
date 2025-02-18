@@ -113,22 +113,26 @@ export class StatusListPlugin implements IAgentPlugin {
     await this.init()
 
     const sl = this.instances.find((instance) => instance.id === args.id || instance.correlationId === args.correlationId)
-    let dataSource
-    if (args?.dataSource) {
-      dataSource = await args.dataSource
-    } else if (sl?.dataSource) {
-      dataSource = await sl.dataSource
-    } else if (args.dbName) {
-      dataSource = await this.allDataSources.getDbConnection(args.dbName)
-    } else {
-      dataSource = await this.allDataSources.getDbConnection(this.allDataSources.getDbNames()[0])
-    }
+    const dataSource = await this.selectDatasource({ dbName: args.dbName, dataSource: args.dataSource ?? sl?.dataSource, instance: sl })
     const driver = await getDriver({
       id: args.id ?? sl?.id,
       correlationId: args.correlationId ?? sl?.correlationId,
       dataSource,
     })
     return await driver.getStatusList()
+  }
+
+  private async selectDatasource(args: { dbName?: string; dataSource?: OrPromise<DataSource>; instance?: StatusListInstance }) {
+    const dbName = args.dbName ?? this.allDataSources.getDbNames()[0]
+    if (args?.dataSource) {
+      return args.dataSource
+    } else if (args.instance?.dataSource) {
+      return args.instance.dataSource
+    } else if (args.dbName) {
+      return await this.allDataSources.getDbConnection(dbName)
+    } else {
+      return await this.allDataSources.getDbConnection(dbName)
+    }
   }
 
   private async slCreateStatusList(
@@ -138,15 +142,7 @@ export class StatusListPlugin implements IAgentPlugin {
     await this.init()
 
     const sl = await createNewStatusList(args, context)
-    const dbName = args.dbName ?? this.allDataSources.getDbNames()[0]
-    let dataSource
-    if (args?.dataSource) {
-      dataSource = await args.dataSource
-    } else if (args.dbName) {
-      dataSource = await this.allDataSources.getDbConnection(dbName)
-    } else {
-      dataSource = await this.allDataSources.getDbConnection(dbName)
-    }
+    const dataSource = await this.selectDatasource({ dbName: args.dbName, dataSource: args.dataSource })
     const driver = await getDriver({
       id: sl.id,
       correlationId: sl.correlationId,
