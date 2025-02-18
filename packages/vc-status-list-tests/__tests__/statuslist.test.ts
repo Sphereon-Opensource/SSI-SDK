@@ -95,7 +95,7 @@ describe('Status list', () => {
         { agent },
       )
       expect(statusList.type).toBe(StatusListType.StatusList2021)
-      expect(statusList.statuslistContentType).toBe('application/vc+ld+json')
+      expect(statusList.statuslistContentType).toBe('application/statuslist+ld+json')
       expect(statusList.proofFormat).toBe('lds')
       expect(statusList.statusList2021?.indexingDirection).toBe('rightToLeft')
 
@@ -108,7 +108,7 @@ describe('Status list', () => {
         statusListIndex: '2',
       })
       expect(status).toBe(Status2021.Invalid)
-      expect(statusList.statuslistContentType).toBe('application/vc+ld+json')
+      expect(statusList.statuslistContentType).toBe('application/statuslist+ld+json')
     })
 
     it('should create and update using JWT format', async () => {
