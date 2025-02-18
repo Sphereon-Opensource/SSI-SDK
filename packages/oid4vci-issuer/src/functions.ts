@@ -3,12 +3,13 @@ import {
   CredentialRequest,
   IssuerMetadata,
   Jwt,
+  JWTHeader,
+  JWTPayload,
   JwtVerifyResult,
   OID4VCICredentialFormat,
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
-import { JWTHeader, JWTPayload } from '@sphereon/oid4vci-common'
-import {CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, oidcAccessTokenVerifyCallback, VcIssuer, VcIssuerBuilder} from '@sphereon/oid4vci-issuer'
+import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
@@ -162,19 +163,25 @@ export async function getAccessTokenSignerCallback(
   }
 
   async function accessTokenSignerCallback(jwt: Jwt, kid?: string): Promise<string> {
-    const issuer = opts.idOpts?.issuer ?? (typeof opts.idOpts?.identifier === 'string' ? opts.idOpts.identifier : (opts.didOpts?.idOpts?.identifier?.toString() ?? opts?.iss))
+    const issuer =
+      opts.idOpts?.issuer ??
+      (typeof opts.idOpts?.identifier === 'string' ? opts.idOpts.identifier : (opts.didOpts?.idOpts?.identifier?.toString() ?? opts?.iss))
     if (!issuer) {
       throw Error('No issuer configured for access tokens')
     }
 
     let kidHeader: string | undefined = jwt?.header?.kid ?? kid
     if (!kidHeader) {
-      if (opts.idOpts?.method === 'did' || opts.idOpts?.method === 'kid' || (typeof opts.didOpts?.idOpts.identifier === 'string' && opts.didOpts?.idOpts?.identifier?.startsWith('did:'))) {
+      if (
+        opts.idOpts?.method === 'did' ||
+        opts.idOpts?.method === 'kid' ||
+        (typeof opts.didOpts?.idOpts.identifier === 'string' && opts.didOpts?.idOpts?.identifier?.startsWith('did:'))
+      ) {
         // @ts-ignore
         kidHeader = opts.idOpts?.kid ?? opts.didOpts?.idOpts?.kid ?? opts?.didOpts?.identifierOpts?.kid
       }
     }
-    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && {kid: kidHeader}), typ: 'JWT' })
+    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT' })
   }
 
   return accessTokenSignerCallback
@@ -328,13 +335,13 @@ export async function createVciIssuerBuilder(
   if (issuerOpts.asClientOpts) {
     builder.withASClientMetadata(issuerOpts.asClientOpts)
     // @ts-ignore
-    const authorizationServer = issuerMetadata.authorization_servers[0] as string
+    // const authorizationServer = issuerMetadata.authorization_servers[0] as string
     // Set the OIDC verifier
-    builder.withJWTVerifyCallback(oidcAccessTokenVerifyCallback({clientMetadata: issuerOpts.asClientOpts, credentialIssuer: issuerMetadata.credential_issuer as string, authorizationServer}))
-  } else {
-    // Do not use it when asClient is used
-    builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
+    // builder.withJWTVerifyCallback(oidcAccessTokenVerifyCallback({clientMetadata: issuerOpts.asClientOpts, credentialIssuer: issuerMetadata.credential_issuer as string, authorizationServer}))
   }
+  // Do not use it when asClient is used
+  builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
+
   if (args.credentialDataSupplier) {
     builder.withCredentialDataSupplier(args.credentialDataSupplier)
   }
