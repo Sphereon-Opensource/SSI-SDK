@@ -144,7 +144,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         }
       }
       response.statusCode = 200
-      return response.send({ ...entry, status }) // FIXME content type?
+      return response.json({ ...entry, status })
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }

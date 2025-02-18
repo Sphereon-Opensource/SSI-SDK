@@ -227,10 +227,15 @@ export class StatusList2021Implementation implements IStatusList {
   }
 
   private buildContentType(proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor' | undefined) {
-    if (proofFormat === 'jwt') {
-      return `application/statuslist+jwt`
-    } else {
-      return 'application/vc+ld+json' // FIXME
+    switch (proofFormat) {
+      case 'jwt':
+        return `application/statuslist+jwt`
+      case 'cbor':
+        return `application/statuslist+cwt`
+      case 'lds':
+        return 'application/statuslist+ld+json'
+      default:
+        throw Error(`Unsupported content type '${proofFormat}' for status lists`)
     }
   }
 }
