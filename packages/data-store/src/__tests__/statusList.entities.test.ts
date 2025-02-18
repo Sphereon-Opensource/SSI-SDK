@@ -68,7 +68,7 @@ describe('Status list entities tests', () => {
     entry.statusListIndex = 1
     entry.credentialId = 'credential-1'
     entry.credentialHash = 'hash-1'
-    entry.correlationId = 'correlation-1'
+    entry.statusListCorrelationId = 'correlation-1'
     entry.value = '1'
 
     const fromDb = await dbConnection.getRepository(StatusListEntryEntity).save(entry)
@@ -76,7 +76,7 @@ describe('Status list entities tests', () => {
     expect(fromDb.statusListIndex).toEqual(entry.statusListIndex)
     expect(fromDb.credentialId).toEqual(entry.credentialId)
     expect(fromDb.credentialHash).toEqual(entry.credentialHash)
-    expect(fromDb.correlationId).toEqual(entry.correlationId)
+    expect(fromDb.statusListCorrelationId).toEqual(entry.statusListCorrelationId)
     expect(fromDb.value).toEqual(entry.value)
   })
 
@@ -195,7 +195,7 @@ describe('Status list entities tests', () => {
     entry.statusListIndex = 1
     entry.credentialId = 'credential-1'
     entry.credentialHash = 'hash-1'
-    entry.correlationId = 'correlation-1'
+    entry.statusListCorrelationId = 'correlation-1'
     entry.value = '1'
 
     await dbConnection.getRepository(StatusListEntryEntity).save(entry)

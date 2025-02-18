@@ -12,9 +12,17 @@ export class UpdateStatusList1737110469001 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "StatusList" ALTER COLUMN "statusPurpose" DROP NOT NULL`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD "bitsPerStatus" integer`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD "expiresAt" timestamp with time zone`)
+
+    // Add statusListCorrelationId and rename correlationId to entryCorrelationId
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD "statusListCorrelationId" varchar(255)`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" RENAME COLUMN "correlationId" TO "entryCorrelationId"`)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    // Revert column rename and remove new column
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" RENAME COLUMN "entryCorrelationId" TO "correlationId"`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP COLUMN "statusListCorrelationId"`)
+
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "expiresAt"`)
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "bitsPerStatus"`)
     await queryRunner.query(`ALTER TABLE "StatusList" ALTER COLUMN "statusPurpose" SET NOT NULL`)

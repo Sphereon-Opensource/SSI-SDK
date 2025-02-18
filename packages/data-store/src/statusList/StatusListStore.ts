@@ -81,23 +81,36 @@ export class StatusListStore implements IStatusListStore {
     })) as IStatusListEntryEntity
   }
 
-  async getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
-    if (!args.statusListId && !args.correlationId) {
-      throw Error(`Cannot get statusList entry if not either a statusList id or correlationId is provided`)
+  async getStatusListEntryByIndex({
+    statusListId,
+    statusListCorrelationId,
+    statusListIndex,
+    entryCorrelationId,
+    errorOnNotFound,
+  }: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
+    if (!statusListId && !statusListCorrelationId) {
+      throw Error(`Cannot get statusList entry without either a statusList id or statusListCorrelationId`)
     }
+
+    if (!statusListIndex && !entryCorrelationId) {
+      throw Error(`Cannot get statusList entry without either a statusListIndex or entryCorrelationId`)
+    }
+
     const result = await (
       await this.getStatusListEntryRepo()
     ).findOne({
       where: {
-        statusList: args.statusListId,
-        ...(args.correlationId && { correlationId: args.correlationId }),
-        ...(args.statusListIndex && { statusListIndex: args.statusListIndex }),
+        ...(statusListId && { statusList: { id: statusListId } }),
+        ...(statusListCorrelationId && { statusListCorrelationId }),
+        ...(statusListIndex && { statusListIndex }),
+        ...(entryCorrelationId && { entryCorrelationId }),
       },
     })
 
-    if (!result && args.errorOnNotFound) {
-      throw Error(`Could not find status list index ${args.statusListIndex} for status list id ${args.statusListId}`)
+    if (!result && errorOnNotFound) {
+      throw Error(`Could not find status list entry with provided filters`)
     }
+
     return result ?? undefined
   }
 
@@ -158,7 +171,7 @@ export class StatusListStore implements IStatusListStore {
         await this.getStatusListEntryRepo()
       ).delete({
         ...(args.statusListId && { statusList: args.statusListId }),
-        ...(args.correlationId && { correlationId: args.correlationId }),
+        ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
         statusListIndex: args.statusListIndex,
       })
       error = !result.affected || result.affected !== 1
