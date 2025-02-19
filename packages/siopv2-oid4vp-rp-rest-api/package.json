@@ -21,6 +21,7 @@
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
+    "awesome-qr": "^2.1.5-rc.0",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
     "body-parser": "^1.20.2",

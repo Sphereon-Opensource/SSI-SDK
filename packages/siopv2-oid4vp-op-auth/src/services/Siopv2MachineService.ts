@@ -132,14 +132,14 @@ export const siopSendAuthorizationResponse = async (
           if (digitalCredential.subjectCorrelationId?.startsWith('did:') || holder?.startsWith('did:')) {
             identifier = await session.context.agent.identifierManagedGetByDid({
               identifier: digitalCredential.subjectCorrelationId ?? holder,
-              kmsKeyRef: digitalCredential.kmsKeyRef
-            });
+              kmsKeyRef: digitalCredential.kmsKeyRef,
+            })
           } else {
             // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
             identifier = await session.context.agent.identifierManagedGetByKid({
               identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
-              kmsKeyRef: digitalCredential.kmsKeyRef
-            });
+              kmsKeyRef: digitalCredential.kmsKeyRef,
+            })
           }
       }
     }

@@ -27,7 +27,7 @@ import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './pr
 import Debug from 'debug'
 import { createHash } from 'crypto'
 import { SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
-import {CheckLinkedDomain} from "@sphereon/did-auth-siop-adapter";
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -153,11 +153,7 @@ const agent = createAgent<
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
       contextMaps: [LdDefaultContexts],
-      suites: [
-        new SphereonEd25519Signature2018(),
-        new SphereonEd25519Signature2020(),
-        new SphereonJsonWebSignature2020(),
-      ],
+      suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonJsonWebSignature2020()],
       bindingOverrides: new Map([
         ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
         ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],

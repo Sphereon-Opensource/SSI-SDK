@@ -3,7 +3,7 @@ import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
-import express, {Express, Request, Response, Router} from 'express'
+import express, { Express, Request, Response, Router } from 'express'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import {
@@ -57,29 +57,28 @@ export class SIOPv2RPApiServer {
   }
 
   private setupSwaggerUi() {
-
     fetch(this.OID4VP_SWAGGER_URL)
-        .then((res) => res.json())
-        .then((swagger) => {
-          const apiDocs = `${this._basePath}/api-docs`
-          console.log(`[OID4P] API docs available at ${apiDocs}`)
+      .then((res) => res.json())
+      .then((swagger) => {
+        const apiDocs = `${this._basePath}/api-docs`
+        console.log(`[OID4P] API docs available at ${apiDocs}`)
 
-          this._router.use(
-              '/api-docs',
-              (req: Request, res: Response, next: any) => {
-                const regex = `${apiDocs.replace(/\//, '\/')}`.replace('/oid4vp', '').replace(/\/api-docs.*/, '')
-                swagger.servers = [{url: `${req.protocol}://${req.get('host')}${regex}`, description: 'This server'}]
-                // @ts-ignore
-                req.swaggerDoc = swagger
-                next()
-              },
-              swaggerUi.serveFiles(swagger, options),
-              swaggerUi.setup(),
-          )
-        })
-        .catch((err) => {
-          console.log(`[OID4VP] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
-        })
+        this._router.use(
+          '/api-docs',
+          (req: Request, res: Response, next: any) => {
+            const regex = `${apiDocs.replace(/\//, '\/')}`.replace('/oid4vp', '').replace(/\/api-docs.*/, '')
+            swagger.servers = [{ url: `${req.protocol}://${req.get('host')}${regex}`, description: 'This server' }]
+            // @ts-ignore
+            req.swaggerDoc = swagger
+            next()
+          },
+          swaggerUi.serveFiles(swagger, options),
+          swaggerUi.setup(),
+        )
+      })
+      .catch((err) => {
+        console.log(`[OID4VP] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
+      })
     const options = {
       // customCss: '.swagger-ui .topbar { display: none }',
     }

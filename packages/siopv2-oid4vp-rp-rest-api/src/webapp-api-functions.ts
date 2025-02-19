@@ -22,6 +22,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
       }
       const state: string = request.body.state ?? uuid.uuid()
       const correlationId = request.body.correlationId ?? state
+      const qrCodeOpts = request.body.qrCodeOpts ?? opts?.qrCodeOpts
 
       const requestByReferenceURI = uriWithBase(`/siop/definitions/${definitionId}/auth-requests/${state}`, {
         baseURI: opts?.siopBaseURI,
@@ -42,12 +43,20 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
         responseURI,
         ...(responseRedirectURI && { responseRedirectURI }),
       })
+
+      let qrCodeDataUri: string | undefined
+      if (qrCodeOpts) {
+        const { AwesomeQR } = await import('awesome-qr')
+        const qrCode = new AwesomeQR({ ...qrCodeOpts, text: authRequestURI })
+        qrCodeDataUri = `data:image/png;base64,${(await qrCode.draw())!.toString('base64')}`
+      }
       const authRequestBody: GenerateAuthRequestURIResponse = {
         correlationId,
         state,
         definitionId,
         authRequestURI,
         authStatusURI: `${uriWithBase(opts?.webappAuthStatusPath ?? '/webapp/auth-status', { baseURI: opts?.webappBaseURI })}`,
+        ...(qrCodeDataUri && { qrCodeDataUri }),
       }
       console.log(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
       return response.json(authRequestBody)

@@ -3,6 +3,7 @@ import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IAgentContext, ICredentialVerifier } from '@veramo/core'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { QRCodeOpts } from './QRCode.types'
 
 export type SiopFeatures = 'rp-status' | 'siop'
 export interface ISIOPv2RPRestAPIOpts {
@@ -20,6 +21,7 @@ export interface ISIOPv2RPRestAPIOpts {
 }
 export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpts {
   siopBaseURI?: string
+  qrCodeOpts?: QRCodeOpts
   webappAuthStatusPath?: string
   webappBaseURI?: string
   responseRedirectURI?: string

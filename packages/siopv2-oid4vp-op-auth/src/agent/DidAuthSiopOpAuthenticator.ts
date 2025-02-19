@@ -366,11 +366,13 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
             let uniqueDigitalCredentials: UniqueDigitalCredential[] = []
             uniqueDigitalCredentials = verifiableCredentials.map((vc) => {
               // @ts-ignore FIXME Funke
-              const hash = typeof vc === 'string' ? computeEntryHash(vc.split('~'[0])): computeEntryHash(vc)
+              const hash = typeof vc === 'string' ? computeEntryHash(vc.split('~'[0])) : computeEntryHash(vc)
               const udc = selectedCredentials.find((udc) => udc.hash == hash || udc.originalVerifiableCredential == vc)
 
               if (!udc) {
-                throw Error(`UniqueDigitalCredential could not be found in store. Either the credential is not present in the store or the hash is not correct.`)
+                throw Error(
+                  `UniqueDigitalCredential could not be found in store. Either the credential is not present in the store or the hash is not correct.`,
+                )
               }
               return udc
             })

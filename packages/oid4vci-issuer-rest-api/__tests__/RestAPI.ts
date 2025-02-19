@@ -27,7 +27,7 @@ export function start() {
   }).then((restApi) => {
     console.log('REST API STARTED: ' + restApi.instance.metadataOptions.credentialIssuer)
   })
-/*
+  /*
 
   OID4VCIRestAPI.init({
     context: { ...agent.context, agent: agent as TAgent<IPlugins> },

@@ -131,7 +131,6 @@ export class OID4VCIRestAPI {
   }
 
   private setupSwaggerUi() {
-
     fetch(this.OID4VCI_SWAGGER_URL)
       .then((res) => res.json())
       .then((swagger) => {

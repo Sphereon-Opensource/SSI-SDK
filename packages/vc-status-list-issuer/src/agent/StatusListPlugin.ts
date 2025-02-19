@@ -43,7 +43,9 @@ export class StatusListPlugin implements IAgentPlugin {
     // TODO: Do we only want the instances configured, or do we also want to look them up from the DB
     const instanceId = opts.defaultInstanceId ?? opts.instances?.[0]?.id
     if (!instanceId) {
-      logger.warning(`Could not deduce the default instance id from the status lists, so no default status list will be used. Please configure the default instance id in the agent configuration.`)
+      logger.warning(
+        `Could not deduce the default instance id from the status lists, so no default status list will be used. Please configure the default instance id in the agent configuration.`,
+      )
     }
     this.defaultStatusListId = instanceId
     this.allDataSources = opts.allDataSources ?? DataSources.singleInstance()
@@ -202,7 +204,11 @@ export class StatusListPlugin implements IAgentPlugin {
     for (const opt of statusListOpts) {
       const effectiveStatusListId = opt.statusListId ?? this.defaultStatusListId
       if (!effectiveStatusListId) {
-        return Promise.reject(Error(`No status list ID provided and no default status list ID configured. Please provide a status list ID or configure a default status list ID in the agent configuration.`))
+        return Promise.reject(
+          Error(
+            `No status list ID provided and no default status list ID configured. Please provide a status list ID or configure a default status list ID in the agent configuration.`,
+          ),
+        )
       }
       const driver = await this.getDriverForStatusListOption(effectiveStatusListId, opt.statusListCorrelationId)
       await handleCredentialStatus(credential, {
@@ -258,7 +264,11 @@ export class StatusListPlugin implements IAgentPlugin {
     const firstOpt = statusListOpts[0]
     const effectiveStatusListId = firstOpt.statusListId ?? this.defaultStatusListId
     if (!effectiveStatusListId) {
-      return Promise.reject(Error(`No status list ID provided and no default status list ID configured. Please provide a status list ID or configure a default status list ID in the agent configuration.`))
+      return Promise.reject(
+        Error(
+          `No status list ID provided and no default status list ID configured. Please provide a status list ID or configure a default status list ID in the agent configuration.`,
+        ),
+      )
     }
     const driver = await this.getDriverForStatusListOption(effectiveStatusListId, firstOpt.statusListCorrelationId)
     await handleSdJwtCredentialStatus(credential, {
