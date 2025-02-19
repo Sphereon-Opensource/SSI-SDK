@@ -68,7 +68,7 @@ describe('Status list entities tests', () => {
     entry.statusListIndex = 1
     entry.credentialId = 'credential-1'
     entry.credentialHash = 'hash-1'
-    entry.statusListCorrelationId = 'correlation-1'
+    entry.statusList.correlationId = 'correlation-1'
     entry.value = '1'
 
     const fromDb = await dbConnection.getRepository(StatusListEntryEntity).save(entry)
@@ -76,7 +76,7 @@ describe('Status list entities tests', () => {
     expect(fromDb.statusListIndex).toEqual(entry.statusListIndex)
     expect(fromDb.credentialId).toEqual(entry.credentialId)
     expect(fromDb.credentialHash).toEqual(entry.credentialHash)
-    expect(fromDb.statusListCorrelationId).toEqual(entry.statusListCorrelationId)
+    expect(fromDb.statusList.correlationId).toEqual(entry.statusList.correlationId)
     expect(fromDb.value).toEqual(entry.value)
   })
 
@@ -164,15 +164,16 @@ describe('Status list entities tests', () => {
     await dbConnection.getRepository(StatusListEntryEntity).save(entryOAuth)
 
     const found2021Entry = await dbConnection.getRepository(StatusListEntryEntity).findOne({
-      where: { statusList: statusList2021.id, statusListIndex: 1 },
+      where: { statusList: { id: statusList2021.id }, statusListIndex: 1 },
+      relations: { statusList: true },
     })
     const foundOAuthEntry = await dbConnection.getRepository(StatusListEntryEntity).findOne({
-      where: { statusList: oauthStatusList.id, statusListIndex: 1 },
+      where: { statusList: { id: oauthStatusList.id }, statusListIndex: 1 },
+      relations: { statusList: true },
     })
-
-    expect(found2021Entry).toBeDefined()
+    expect(found2021Entry).toBeTruthy()
     expect(found2021Entry?.credentialId).toEqual('credential-1')
-    expect(foundOAuthEntry).toBeDefined()
+    expect(foundOAuthEntry).toBeTruthy()
     expect(foundOAuthEntry?.credentialId).toEqual('credential-2')
   })
 
@@ -195,13 +196,13 @@ describe('Status list entities tests', () => {
     entry.statusListIndex = 1
     entry.credentialId = 'credential-1'
     entry.credentialHash = 'hash-1'
-    entry.statusListCorrelationId = 'correlation-1'
+    entry.statusList.correlationId = 'correlation-1'
     entry.value = '1'
 
     await dbConnection.getRepository(StatusListEntryEntity).save(entry)
 
     // First delete entry, otherwise constraint fails
-    await dbConnection.getRepository(StatusListEntryEntity).delete({ statusList: savedStatusList.id })
+    await dbConnection.getRepository(StatusListEntryEntity).delete({ statusListId: savedStatusList.id })
     await dbConnection.getRepository(StatusList2021Entity).remove(savedStatusList)
 
     const foundEntry = await dbConnection.getRepository(StatusListEntryEntity).findOne({

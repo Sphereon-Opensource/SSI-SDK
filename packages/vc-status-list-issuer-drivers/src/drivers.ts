@@ -201,7 +201,6 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     statusListEntry: IStatusListEntryEntity
   }> {
     const statusList: StatusListEntity = typeof args.statusList === 'string' ? statusListResultToEntity(await this.getStatusList()) : args.statusList
-
     const statusListEntry = await this.statusListStore.updateStatusListEntry({ ...args, statusList: statusList.id })
 
     if (this.isStatusList2021Entity(statusList)) {

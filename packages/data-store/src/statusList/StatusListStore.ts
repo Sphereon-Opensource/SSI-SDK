@@ -59,6 +59,7 @@ export class StatusListStore implements IStatusListStore {
 
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
     const statusListId = typeof args.statusList === 'string' ? args.statusList : args.statusList.id
+    const statusList = typeof args.statusList === 'string' ? { id: args.statusList } : args.statusList
     const result = await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: false })
     const updatedEntry: Partial<IStatusListEntryEntity> = {
       value: args.value,
@@ -70,7 +71,7 @@ export class StatusListStore implements IStatusListStore {
     const updateResult = await (
       await this.getStatusListEntryRepo()
     ).upsert(
-      { ...(result ?? { statusList: args.statusList, statusListIndex: args.statusListIndex }), ...updatedEntry },
+      { ...(result ?? { statusList, statusListIndex: args.statusListIndex }), ...updatedEntry },
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
     console.log(updateResult)
@@ -101,9 +102,12 @@ export class StatusListStore implements IStatusListStore {
     ).findOne({
       where: {
         ...(statusListId && { statusList: { id: statusListId } }),
-        ...(statusListCorrelationId && { statusListCorrelationId }),
+        ...(!statusListId && statusListCorrelationId && { statusList: { correlationId: statusListCorrelationId } }),
         ...(statusListIndex && { statusListIndex }),
         ...(entryCorrelationId && { entryCorrelationId }),
+      },
+      relations: {
+        statusList: true,
       },
     })
 
@@ -124,7 +128,7 @@ export class StatusListStore implements IStatusListStore {
       correlationId: args.statusListCorrelationId,
     })
     const where = {
-      statusList: statusList.id,
+      statusList: { id: statusList.id },
       ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
       credentialId,
     }
