@@ -39,7 +39,7 @@
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
     "@sphereon/did-auth-siop-adapter": "0.16.1-feature.MWALL.715.397",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.27.1-next.14",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.27.1-next.15",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@types/body-parser": "^1.19.5",

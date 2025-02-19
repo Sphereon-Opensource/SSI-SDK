@@ -275,11 +275,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -509,11 +509,11 @@ importers:
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -631,20 +631,20 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-resolver-ebsi':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -710,11 +710,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -930,14 +930,14 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.x509-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -985,11 +985,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1161,17 +1161,17 @@ importers:
         specifier: 0.16.1-feature.MWALL.715.397
         version: 0.16.1-feature.MWALL.715.397(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -1243,8 +1243,8 @@ importers:
         specifier: 0.16.1-feature.MWALL.715.397
         version: 0.16.1-feature.MWALL.715.397
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@types/i18n-js':
         specifier: ^3.8.9
         version: 3.8.9
@@ -1282,14 +1282,14 @@ importers:
         specifier: 0.16.1-feature.MWALL.715.397
         version: 0.16.1-feature.MWALL.715.397(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -1376,11 +1376,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1443,17 +1443,17 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -1582,11 +1582,11 @@ importers:
         specifier: 0.16.1-feature.MWALL.715.397
         version: 0.16.1-feature.MWALL.715.397(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1637,8 +1637,8 @@ importers:
         specifier: 0.1.1-unstable.0647eb6
         version: 0.1.1-unstable.0647eb6(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.resource-resolver':
         specifier: workspace:*
         version: link:../resource-resolver
@@ -1872,11 +1872,11 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -1930,17 +1930,17 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -1988,11 +1988,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2189,20 +2189,20 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.x509-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2235,17 +2235,17 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@types/node':
         specifier: ^20.17.1
         version: 20.17.19
@@ -2314,14 +2314,14 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.contact-manager':
         specifier: workspace:*
         version: link:../contact-manager
@@ -2393,8 +2393,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2453,14 +2453,14 @@ importers:
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2611,8 +2611,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -2921,14 +2921,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -2973,11 +2973,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3102,11 +3102,11 @@ importers:
         specifier: 1.6.1
         version: 1.6.1
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3196,20 +3196,20 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-sdk-ext.did-provider-lto':
         specifier: 0.23.0
         version: 0.23.0(encoding@0.1.13)(typescript@5.6.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@transmute/lds-ecdsa-secp256k1-recovery2020':
         specifier: ^0.0.7
         version: 0.0.7(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)
@@ -3298,14 +3298,14 @@ importers:
         specifier: 0.16.1-feature.MWALL.715.397
         version: 0.16.1-feature.MWALL.715.397(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3371,11 +3371,11 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3423,14 +3423,14 @@ importers:
         specifier: 0.16.1-feature.MWALL.715.397
         version: 0.16.1-feature.MWALL.715.397(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3519,11 +3519,11 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3571,14 +3571,14 @@ importers:
         specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3623,11 +3623,11 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -3711,20 +3711,20 @@ importers:
         version: 1.0.1(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))
     devDependencies:
       '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.vc-handler-ld-local':
         specifier: workspace:*
         version: link:../vc-handler-ld-local
@@ -3838,23 +3838,23 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-provider-oyd':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -4087,11 +4087,11 @@ importers:
         version: 2.0.6
     devDependencies:
       '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15
       '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.27.1-next.14
-        version: 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+        specifier: 0.27.1-next.15
+        version: 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -6172,8 +6172,8 @@ packages:
     resolution: {integrity: sha512-vzNbgtTtjQjLuWYcOX2CB90yHxFGXFO+aUHch3vZvGYXO8BNzzPzMBDceoAb+R28eXM/HFYmsVFYs0a/IQ7YpQ==}
     engines: {node: '>=18'}
 
-  '@sphereon/did-provider-oyd@0.27.1-next.14':
-    resolution: {integrity: sha512-O6GvTTW4ILOC9u6FHffrO+1qAxki1D4bqdRH8VBorSYk/JK4tGTB+byMb7Hd01sXdQHyuzx9u1t6xuqJQ21Jig==}
+  '@sphereon/did-provider-oyd@0.27.1-next.15':
+    resolution: {integrity: sha512-OS0RCBJ7ecHHqHU6pr+kstKeU4ZTXcQgatztF7CyG5aFBvBMcd8VUh7g/6WwhHLZIhiqlzWPY4Cl+wKl/Eq+eA==}
 
   '@sphereon/did-uni-client@0.4.0':
     resolution: {integrity: sha512-PJr0xi46iEMtQ7vJW6rAoc2T+gPT8P7q0FjVcOVI3l8so4XJ+iY+wkeF2osEFGmjVS/Q76uhcDCBXTXxPDFdcQ==}
@@ -6272,62 +6272,62 @@ packages:
       passport-http-bearer:
         optional: true
 
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.27.1-next.14':
-    resolution: {integrity: sha512-ZIuP0E5H2uy+TiCrBBlsaO2Q1Wx4mF2oZGhJhqJIIHMTBcyRv2pqR0BOuADx2k2/qHwdbcuv+nUtYtpbDo4sIw==}
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.27.1-next.15':
+    resolution: {integrity: sha512-MouezKCsphdC8T4+9XiqCFjo0NZHFfD/UCBtwngu1GcL+l1yYfDn+8CZ1w1v/xFRBpBp0WCtFFx3GvJW87znZQ==}
 
-  '@sphereon/ssi-sdk-ext.did-provider-key@0.27.1-next.14':
-    resolution: {integrity: sha512-G2suouV4eOMCNn1pkS8utaJDynVrINdG2zDe7w5wSzHO9dAb7WbIdjM30AEDZi4QjbH+cEry0rujcSk83r8Trw==}
+  '@sphereon/ssi-sdk-ext.did-provider-key@0.27.1-next.15':
+    resolution: {integrity: sha512-Mtf5SUz+rNebuEJO8OOc0B/Sen6E3xQ2k/aJEL0J9Iak4Nrf9nO2B5ne/hL6RniFNHXj7aFLPu4gIvwe1MG23w==}
 
   '@sphereon/ssi-sdk-ext.did-provider-lto@0.23.0':
     resolution: {integrity: sha512-PxG20HB72+VGdawqpO7Vl/uZIVLOEoNv+mngplSTMErhkF1S7V/X4TFaSfZciWg/dYoXRVkDqxZNRIj6Hq9sug==}
 
-  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.27.1-next.14':
-    resolution: {integrity: sha512-2ogh89kQOhGUg1DEs8XQfhu6mesRQ0qUkXfgc2Jj7Wz1PtkUq3KsFgrtTCI1HNDpInBcOd6LMSAeLpIbz7RrAA==}
+  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.27.1-next.15':
+    resolution: {integrity: sha512-TukwB/UYO27rWh6O3v5P3WOZFaYStQ96PicFBosiugzfe6DUkE4wrY9YLRYinTxWEc9xIvFiLBcJ7xILx2LerA==}
 
-  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.27.1-next.14':
-    resolution: {integrity: sha512-J1x1nqKCCIfoKhbQTEfASNpN+mq9gcAk+JQTbyBryIfEUiLLQA/9nnSoQ0wysdBjwKphAAitDZTvHQJ3Z/wucw==}
+  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.27.1-next.15':
+    resolution: {integrity: sha512-MBrhbm0TUR2a8CR+JDPM/zyUZ8u9+8hkc7fm0c6Gt+8NEqYpBsEMZzLxNNXiUXoAfQDNtUr257l0sUkCrohB0Q==}
 
-  '@sphereon/ssi-sdk-ext.did-resolver-key@0.27.1-next.14':
-    resolution: {integrity: sha512-hbaS7Mh9k/GSIlImSVsQXtvePi2KTr73r5A3GZvGdub6ZxlCVNUgRcHk9cIf7HmkM2KAZu7QAQYo3HZT1Dqs5g==}
+  '@sphereon/ssi-sdk-ext.did-resolver-key@0.27.1-next.15':
+    resolution: {integrity: sha512-xz4Jt0W6tYcvNNwiBqIzAwphHSWypBUWUxhiEYizDtEroYiImyVabH5JYxfuT+en9MYu9EFykfiNARqzmTLEnw==}
 
   '@sphereon/ssi-sdk-ext.did-utils@0.25.0':
     resolution: {integrity: sha512-S9mOHmX4WVVp5kM5OJsfsywLTki08I93iROFwkuaycWmssjKgIo6qO30hJQKw3xpW6oA+j8tqBnTXQb8+R87IA==}
 
-  '@sphereon/ssi-sdk-ext.did-utils@0.27.1-next.14':
-    resolution: {integrity: sha512-iNsJ5CP0qJc8NkHA3W51l3TMqdorNmReVCUXdQQzo1P6K7sf94jMH2ron05FmQtL5YOkBOiqbqLDKxIs5WS7kw==}
+  '@sphereon/ssi-sdk-ext.did-utils@0.27.1-next.15':
+    resolution: {integrity: sha512-vPERW/UAYpFWZnQVFOG+xuD8hOTIUCB1IVmWRrX93Tkrr5Jb2HnWm+KpXwVb8mG8mtVqMT4eUWbJj63TdU3sgQ==}
 
   '@sphereon/ssi-sdk-ext.identifier-resolution@0.25.0':
     resolution: {integrity: sha512-lQcOWAB5bfQZWraU/LJVgSrom+Q9Vm2/volJ5Fv+lCLVZTnZQF17WfLqNncg9ESu/S0S0tXFdbz8Om3hQfEu0A==}
 
-  '@sphereon/ssi-sdk-ext.identifier-resolution@0.27.1-next.14':
-    resolution: {integrity: sha512-Ja+JprFLMQ+0AytBrkTcNDzTHSt9Zb8IHCN5HNS/GZLUlrhETkBII3ftGSWbcefokaelY37rap/USxuBVLlk5g==}
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.27.1-next.15':
+    resolution: {integrity: sha512-pJKqkjrrs1R7ipVPA8vQi3iK1U2jvdQV0tFOojdMve0opD63CLqi7Pl1rWOTwVuToZtyfg5cdtz1/8fiCoNDJg==}
 
   '@sphereon/ssi-sdk-ext.jwt-service@0.25.0':
     resolution: {integrity: sha512-YGV/iOmfXFhz933hoZr6U9n3ZhHb844rqxH8OHq0egiFLWpZ5DMXdxZJPM8GzvZOTwg/AMkhFXR6xHp8BYk0KA==}
 
-  '@sphereon/ssi-sdk-ext.jwt-service@0.27.1-next.14':
-    resolution: {integrity: sha512-ZgjX73EZmkyZXUm74Y5DryavxHpi9eXug0mogqhOJlTBbqt3iWGXlmIbjco96CP8ym4RMcIhMNSp5BFGP4Ox7A==}
+  '@sphereon/ssi-sdk-ext.jwt-service@0.27.1-next.15':
+    resolution: {integrity: sha512-zL9KcSTn+imFUoy2EWfzFJQYMb+jJlOXT/bWMuBs2MxoJgZ3UCNd27lrqSYCUmeAjgwu5ZF5rTvJ05Pfl2g2bQ==}
 
   '@sphereon/ssi-sdk-ext.key-manager@0.25.0':
     resolution: {integrity: sha512-Gmmlmz/WgnlM+adOs/ofgpN1HMZB7DTiT6NRgppzNfG+uwpgMH3dWw8yUXdccZZAJOq6vxTaws+yNQ/DstKr4g==}
 
-  '@sphereon/ssi-sdk-ext.key-manager@0.27.1-next.14':
-    resolution: {integrity: sha512-OQ2NNHZhfhWcTlBIN9M3xG7XwIf1nJ3X88H5qHPjPu/x3i3PxChljHMx9lkiFHu8ou/SujUVINSV99KHvMP+tg==}
+  '@sphereon/ssi-sdk-ext.key-manager@0.27.1-next.15':
+    resolution: {integrity: sha512-wTNhHmekcjuRpaxWYd7dPPfTBXPvmYTFtyb9l4Aav2LteVyyXAD2AMPs+TNPE2Gr4P1qvNCNsO8qSwIWkj7AmA==}
 
   '@sphereon/ssi-sdk-ext.key-utils@0.25.0':
     resolution: {integrity: sha512-AEU53x61JUkhIMK/QZD53ImuD6QR2qRsuuUdvL1rrGi54y+iIKXU3X25pxA8yAMfPU6lt/lAFO1BbYZZXv/JMA==}
 
-  '@sphereon/ssi-sdk-ext.key-utils@0.27.1-next.14':
-    resolution: {integrity: sha512-DFVI6FM+bPvZQYY/8h6yn1unCSe7Jk/jdHP5mrxhXTONnGODjdN/yBUgcq07zBEL40cH2ty+dIpY59fR4RVzjQ==}
+  '@sphereon/ssi-sdk-ext.key-utils@0.27.1-next.15':
+    resolution: {integrity: sha512-9llvlibtxEZ5JqZU20q0fIZwm5cVjbCXjCRTydX1EqcpoilCkNcjEiemp/763rd6W5DQm1CjUzazvWQNDAwBfw==}
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.27.1-next.14':
-    resolution: {integrity: sha512-RHMfprxcumjvIcwH2VsOiJA98XxtbsdYmMxU+xtW0Ts7zk0yIseAScBvivVjdY+Cr7dEDHfpZx2n2mLw5atzNA==}
+  '@sphereon/ssi-sdk-ext.kms-local@0.27.1-next.15':
+    resolution: {integrity: sha512-TBRBZRGUz2l+CAsbeoXkWHlJ+kmErrM+M556+v8B/Qy6741AJy0KuoEu4o/X8K9/Pt82c8gwlmphR9v8bu9nVg==}
 
   '@sphereon/ssi-sdk-ext.x509-utils@0.25.0':
     resolution: {integrity: sha512-eX9YiQy0Uhx9pBexwkpdW2KmulGr4DDIxA+WIrgGLYGyYj/zJ3pBfPHAkpuZPxtK+KG67tbUhk9Z3Ye6sR2N0g==}
 
-  '@sphereon/ssi-sdk-ext.x509-utils@0.27.1-next.14':
-    resolution: {integrity: sha512-R6d8jpkXcEf8mjTZ5VTaBIzoPN+Nuz8MosobMLlH2JA3p3JJHi3wmCFaYSSVvekhxhSlxhmLUBJHpQBcAnB63g==}
+  '@sphereon/ssi-sdk-ext.x509-utils@0.27.1-next.15':
+    resolution: {integrity: sha512-YiWoXJOU2mMYnVFKuMsrd7FdUy+aBYlVBomhynR28ujf826MHfpViONLE53Qa9t91VIGUrzUIt4RIcTmwUkUwg==}
 
   '@sphereon/ssi-sdk.agent-config@0.30.1':
     resolution: {integrity: sha512-8IRct+v8l9T+NACJzm78fH9LzoLiU7q+nHj8keOjFcLrV4CmdpyfuMYdRwrbFXTrLqV1rndAJQ7GGxX+UEq4JA==}
@@ -17160,7 +17160,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-provider-oyd@0.27.1-next.14(encoding@0.1.13)':
+  '@sphereon/did-provider-oyd@0.27.1-next.15(encoding@0.1.13)':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -17386,11 +17386,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-provider-jwk@0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
     dependencies:
       '@ethersproject/random': 5.7.0
-      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
@@ -17420,10 +17420,10 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.did-provider-key@0.27.1-next.14(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)':
+  '@sphereon/ssi-sdk-ext.did-provider-key@0.27.1-next.15(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.27.1-next.14
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.did-resolver-key': 0.27.1-next.15
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
       '@transmute/did-key-bls12381': 0.3.0-unstable.10(encoding@0.1.13)(expo@52.0.35(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(encoding@0.1.13)(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.77.1(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/did-manager': 4.2.0
@@ -17456,7 +17456,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.27.1-next.14(encoding@0.1.13)':
+  '@sphereon/ssi-sdk-ext.did-resolver-ebsi@0.27.1-next.15(encoding@0.1.13)':
     dependencies:
       cross-fetch: 3.2.0(encoding@0.1.13)
       did-resolver: 4.1.0
@@ -17464,7 +17464,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.27.1-next.14':
+  '@sphereon/ssi-sdk-ext.did-resolver-jwk@0.27.1-next.15':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       base64url: 3.0.1
@@ -17474,9 +17474,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.did-resolver-key@0.27.1-next.14':
+  '@sphereon/ssi-sdk-ext.did-resolver-key@0.27.1-next.15':
     dependencies:
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.3.1
       did-resolver: 4.1.0
@@ -17528,13 +17528,13 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.did-utils@0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.did-utils@0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
     dependencies:
       '@ethersproject/networks': 5.7.1
       '@ethersproject/transactions': 5.7.0
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config': 0.30.2-feature.SDK.41.oidf.support.286(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.core': link:packages/ssi-sdk-core
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17599,11 +17599,11 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.identifier-resolution@0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config': 0.30.2-feature.SDK.41.oidf.support.286(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-sdk.oidf-client': 0.30.2-feature.SDK.41.oidf.support.286(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17672,13 +17672,13 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-sdk-ext.jwt-service@0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.jwt-service@0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.key-manager': 0.27.1-next.14
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-manager': 0.27.1-next.15
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.15
       '@sphereon/ssi-sdk.agent-config': 0.30.2-feature.SDK.41.oidf.support.286(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/random': 1.0.2
@@ -17719,7 +17719,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.key-manager@0.27.1-next.14':
+  '@sphereon/ssi-sdk-ext.key-manager@0.27.1-next.15':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -17749,12 +17749,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.key-utils@0.27.1-next.14':
+  '@sphereon/ssi-sdk-ext.key-utils@0.27.1-next.15':
     dependencies:
       '@ethersproject/random': 5.7.0
       '@noble/curves': 1.7.0
       '@noble/hashes': 1.6.1
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.15
       '@sphereon/ssi-types': link:packages/ssi-types
       '@stablelib/ed25519': 1.0.3
       '@trust/keyto': 1.0.1
@@ -17772,11 +17772,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.kms-local@0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
+  '@sphereon/ssi-sdk-ext.kms-local@0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))':
     dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.14(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.14
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.14
+      '@sphereon/ssi-sdk-ext.did-utils': 0.27.1-next.15(encoding@0.1.13)(pg@8.13.3)(sqlite3@5.1.7)(ts-node@10.9.2(@types/node@20.17.19)(typescript@5.6.3))
+      '@sphereon/ssi-sdk-ext.key-utils': 0.27.1-next.15
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.27.1-next.15
       '@trust/keyto': 2.0.0-alpha1
       '@veramo/core': 4.2.0(patch_hash=c5oempznsz4br5w3tcuk2i2mau)
       '@veramo/key-manager': 4.2.0
@@ -17814,7 +17814,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-sdk-ext.x509-utils@0.27.1-next.14':
+  '@sphereon/ssi-sdk-ext.x509-utils@0.27.1-next.15':
     dependencies:
       '@peculiar/asn1-schema': 2.3.15
       '@peculiar/asn1-x509': 2.3.15
