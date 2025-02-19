@@ -16,7 +16,7 @@
     "@sphereon/ssi-sdk-ext.jwt-service": "0.27.1-next.14",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
-    "@sphereon/oid4vci-common": "0.16.1-feature.MWALL.715.394",
+    "@sphereon/oid4vci-common": "0.16.1-feature.MWALL.715.397",
     "@sphereon/kmp-cbor": "0.2.0-SNAPSHOT.25",
     "@sd-jwt/core": "^0.7.2",
     "@sd-jwt/sd-jwt-vc": "^0.7.2",
