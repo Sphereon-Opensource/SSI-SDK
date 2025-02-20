@@ -7,6 +7,7 @@ import {
   StatusListType,
   StatusPurpose2021,
   ProofFormat,
+  RequireOneOf,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
 
@@ -32,16 +33,15 @@ export interface IOAuthStatusListEntity extends IStatusListEntity {
   expiresAt?: Date
 }
 
-export interface IStatusListEntryEntity {
-  statusList: StatusListEntity | string // string is here to accept the id, so we can query it easily with typeorm
-
-  value?: string
-
-  statusListIndex: number
-
-  credentialHash?: string
-
-  credentialId?: string
-
-  correlationId?: string
-}
+export type IStatusListEntryEntity = RequireOneOf<
+  {
+    statusList: StatusListEntity
+    statusListId: string
+    value?: string
+    statusListIndex: number
+    credentialHash?: string
+    credentialId?: string
+    correlationId?: string
+  },
+  'statusList' | 'statusListId'
+>

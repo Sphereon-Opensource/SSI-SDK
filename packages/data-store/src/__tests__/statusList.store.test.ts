@@ -66,7 +66,7 @@ describe('Status list store tests', () => {
     await statusListStore.addStatusList(statusList)
 
     const entry: IStatusListEntryEntity = {
-      statusList: statusList.id,
+      statusListId: statusList.id,
       statusListIndex: 1,
       credentialId: 'credential-1',
       credentialHash: 'hash-1',
@@ -215,7 +215,7 @@ describe('Status list store tests', () => {
 
     await statusListStore.addStatusList(statusList)
     const entry: IStatusListEntryEntity = {
-      statusList: statusList.id,
+      statusListId: statusList.id,
       statusListIndex: 1,
       credentialId: 'credential-1',
       credentialHash: 'hash-1',

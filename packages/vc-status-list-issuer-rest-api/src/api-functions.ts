@@ -161,7 +161,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
 
       if (!entry) {
         entry = {
-          statusList: details.id,
+          statusListId: details.id,
           value: '0',
           statusListIndex: resultStatusIndex,
         }
@@ -222,7 +222,7 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
       if (!entry) {
         // The fact we have nothing on it means the status is okay
         entry = {
-          statusList: details.id,
+          statusListId: details.id,
           value: '0',
           statusListIndex,
         }
@@ -295,8 +295,11 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         }
 
         const value = updateItem.status === '0' || updateItem.status.toLowerCase() === 'false' ? '0' : '1'
-        const statusList = statusListId ?? statusListEntry.statusList
-        await driver.updateStatusListEntry({ ...statusListEntry, statusList, value })
+        const updStatusListId = statusListId ?? statusListEntry.statusList?.id // When input was statusListCorrelationId the statusList id should come from statusListEntry
+        if (!updStatusListId) {
+          return sendErrorResponse(response, 400, 'statuslist id could not be determined')
+        }
+        await driver.updateStatusListEntry({ ...statusListEntry, statusListId: updStatusListId, value })
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
         statusListResult = await updateStatusIndexFromStatusListCredential(

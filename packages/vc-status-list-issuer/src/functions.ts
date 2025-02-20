@@ -1,4 +1,4 @@
-import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
+import { IAddStatusListEntryArgs, IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialWithStatusSupport,
   IIssueCredentialStatusOpts,
@@ -126,11 +126,11 @@ async function processStatusListEntry(params: {
     })
     debug(`Random statusListIndex ${statusListIndex} assigned for ${params.debugCredentialInfo}`)
   }
-  const updateArgs: any = {
-    statusList: params.statusListId,
+  const updateArgs: IAddStatusListEntryArgs = {
+    statusListId: params.statusListId,
     statusListIndex,
     correlationId: params.statusEntryCorrelationId,
-    value: params.opts?.value ?? 0,
+    value: params.opts?.value ?? '0',
   }
   if (params.credentialId) {
     updateArgs.credentialId = params.credentialId

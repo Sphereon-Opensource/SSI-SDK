@@ -58,8 +58,7 @@ export class StatusListStore implements IStatusListStore {
   }
 
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
-    const statusListId = typeof args.statusList === 'string' ? args.statusList : args.statusList.id
-    const statusList = typeof args.statusList === 'string' ? { id: args.statusList } : args.statusList
+    const statusListId = args.statusListId ?? args.statusList?.id
     const result = await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: false })
     const updatedEntry: Partial<IStatusListEntryEntity> = {
       value: args.value,
@@ -68,16 +67,17 @@ export class StatusListStore implements IStatusListStore {
       credentialId: args.credentialId,
     }
 
+    const updStatusListId = result?.statusListId ?? statusListId
     const updateResult = await (
       await this.getStatusListEntryRepo()
     ).upsert(
-      { ...(result ?? { statusList, statusListIndex: args.statusListIndex }), ...updatedEntry },
+      { ...(result ?? { statusListId: updStatusListId, statusListIndex: args.statusListIndex }), ...updatedEntry },
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
     console.log(updateResult)
     return (await this.getStatusListEntryByIndex({
       ...args,
-      statusListId,
+      statusListId: updStatusListId,
       errorOnNotFound: true,
     })) as IStatusListEntryEntity
   }
@@ -101,7 +101,7 @@ export class StatusListStore implements IStatusListStore {
       await this.getStatusListEntryRepo()
     ).findOne({
       where: {
-        ...(statusListId && { statusList: { id: statusListId } }),
+        ...(statusListId && { statusListId }),
         ...(!statusListId && statusListCorrelationId && { statusList: { correlationId: statusListCorrelationId } }),
         ...(statusListIndex && { statusListIndex }),
         ...(entryCorrelationId && { entryCorrelationId }),
@@ -251,7 +251,7 @@ export class StatusListStore implements IStatusListStore {
   async removeStatusList(args: IRemoveStatusListArgs): Promise<boolean> {
     const result = await this.getStatusListEntity(args)
 
-    await (await this.getStatusListEntryRepo()).delete({ statusList: result.id })
+    await (await this.getStatusListEntryRepo()).delete({ statusListId: result.id })
     const deletedEntity = await (await this.getStatusListRepo()).remove(result)
 
     return Boolean(deletedEntity)

@@ -6,6 +6,11 @@
 export type OrPromise<T> = T | Promise<T>
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
 
+export type RequireOneOf<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
+  }[Keys]
+
 export type BearerTokenArg = (() => Promise<string>) | string
 
 /**
