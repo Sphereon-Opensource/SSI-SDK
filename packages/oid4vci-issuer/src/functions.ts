@@ -54,7 +54,8 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
       const kid = args.kid ?? header.kid
-      const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
+      //const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
+      const jwk = jwkInfo.jwk // FIXME workaround IATAB2B-57
       return {
         alg,
         ...identifier,
