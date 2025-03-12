@@ -161,7 +161,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
 
       if (!entry) {
         entry = {
-          statusList: details.id,
+          statusListId: details.id,
           value: '0',
           statusListIndex: resultStatusIndex,
         }
@@ -222,13 +222,13 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
       if (!entry) {
         // The fact we have nothing on it means the status is okay
         entry = {
-          statusList: details.id,
+          statusListId: details.id,
           value: '0',
           statusListIndex,
         }
       }
       response.statusCode = 200
-      return response.json({ ...entry, status }) // FIXME content type?
+      return response.json({ ...entry, status })
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }
@@ -258,7 +258,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         ...(statusListCorrelationId ? { correlationId: statusListCorrelationId } : { id: buildStatusListId(request) }),
         dbName: opts.dbName,
       })
-      let details: StatusListResult = await driver.getStatusList()
+      let statusListResult: StatusListResult = await driver.getStatusList()
 
       // Get status list entry based on request type
       let statusListEntry: IStatusListEntryEntity | undefined
@@ -276,8 +276,9 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         })
       } else {
         statusListEntry = await driver.getStatusListEntryByIndex({
-          statusListId: details.id,
-          ...(entryCorrelationId ? { correlationId: entryCorrelationId } : { statusListIndex: updateRequest.statusListIndex }),
+          ...(statusListResult.id && { statusListId: statusListResult.id }),
+          ...(statusListResult.correlationId && { statusListCorrelationId: statusListResult.correlationId }),
+          ...(entryCorrelationId ? { entryCorrelationId } : { statusListIndex: updateRequest.statusListIndex }),
           errorOnNotFound: true,
         })
       }
@@ -287,7 +288,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         return sendErrorResponse(response, 404, `Status list entry for ${identifier} not found for ${statusListId}`)
       }
 
-      let statusListCredential = details.statusListCredential
+      let statusListCredential = statusListResult.statusListCredential
       for (const updateItem of updateRequest.credentialStatus) {
         if (!updateItem.status) {
           return sendErrorResponse(response, 400, `Required 'status' value was missing in the credentialStatus array`)
@@ -306,11 +307,14 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           value = `${parseInt(updateItem.status)}`
         }
 
-        const statusList = statusListId ?? statusListEntry.statusList
-        await driver.updateStatusListEntry({ ...statusListEntry, statusList, value })
+        const updStatusListId = statusListId ?? statusListEntry.statusList?.id // When input was statusListCorrelationId the statusList id should come from statusListEntry
+        if (!updStatusListId) {
+          return sendErrorResponse(response, 400, 'statuslist id could not be determined')
+        }
+        await driver.updateStatusListEntry({ ...statusListEntry, statusListId: updStatusListId, value })
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
-        details = await updateStatusIndexFromStatusListCredential(
+        statusListResult = await updateStatusIndexFromStatusListCredential(
           {
             statusListCredential: statusListCredential,
             statusListIndex: statusListEntry.statusListIndex,
@@ -319,10 +323,10 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           },
           context,
         )
-        details = await driver.updateStatusList({ statusListCredential: details.statusListCredential })
+        statusListResult = await driver.updateStatusList({ statusListCredential: statusListResult.statusListCredential })
       }
 
-      return sendStatuslistResponse(details, details.statusListCredential, response)
+      return sendStatuslistResponse(statusListResult, statusListResult.statusListCredential, response)
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }

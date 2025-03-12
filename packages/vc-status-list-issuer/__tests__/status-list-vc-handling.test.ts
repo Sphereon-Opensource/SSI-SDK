@@ -203,7 +203,7 @@ describe('Status List VC handling', () => {
   })
 
   describe('slAddStatusToCredential', () => {
-    it('should inject a status to a credential', async () => {
+    it('should inject a status to a credential using statusListId', async () => {
       const mockCredential: IVerifiableCredential = {
         ...baseCredential,
       }
@@ -225,6 +225,23 @@ describe('Status List VC handling', () => {
       expect(result.issuer).toBe(identifier.did)
     })
 
+    it('should inject a status to a credential using statuslistCorrelationId', async () => {
+      const mockCredential: IVerifiableCredential = {
+        ...baseCredential,
+      }
+      const result = await agent.slAddStatusToCredential({
+        credential: mockCredential,
+        statusLists: [
+          {
+            statusListCorrelationId: 'test-sl',
+            statusListIndex: 456,
+          },
+        ],
+      })
+      expect(result).toBeTruthy()
+      expect(result.credentialStatus).toBeTruthy()
+    })
+
     it('should add status when credential has no credentialStatus', async () => {
       const mockCredential = {
         ...baseCredential,
@@ -242,34 +259,34 @@ describe('Status List VC handling', () => {
     })
 
     /*  it('should handle array of credential statuses', async () => { TODO this is only true for VCDM v2.0  SSISDK-2
-          const mockCredential: IVerifiableCredential = {
-            ...baseCredential,
-            credentialStatus: [
-              {
-                id: 'http://localhost/test/1#0',
-                type: 'StatusList2021Entry',
-                statusPurpose: 'revocation',
-                statusListIndex: '0',
-                statusListCredential: 'http://localhost/test/1',
-              },
-            ],
-          }
-    
-          const result = await agent.slAddStatusToCredential({
-            credential: mockCredential,
-            statusListOpts: [
-              {
-                statusListId: 'list456',
-                statusListIndex: 5,
-              },
-            ],
-          })
-    
-          expect(Array.isArray(result.credentialStatus)).toBe(true)
-          expect((result.credentialStatus as ICredentialStatus[]).length).toBe(2)
-          expect((result.credentialStatus as ICredentialStatus[])[1].statusListCredential).toBe('list456')
-        })
-    */
+              const mockCredential: IVerifiableCredential = {
+                ...baseCredential,
+                credentialStatus: [
+                  {
+                    id: 'http://localhost/test/1#0',
+                    type: 'StatusList2021Entry',
+                    statusPurpose: 'revocation',
+                    statusListIndex: '0',
+                    statusListCredential: 'http://localhost/test/1',
+                  },
+                ],
+              }
+        
+              const result = await agent.slAddStatusToCredential({
+                credential: mockCredential,
+                statusListOpts: [
+                  {
+                    statusListId: 'list456',
+                    statusListIndex: 5,
+                  },
+                ],
+              })
+        
+              expect(Array.isArray(result.credentialStatus)).toBe(true)
+              expect((result.credentialStatus as ICredentialStatus[]).length).toBe(2)
+              expect((result.credentialStatus as ICredentialStatus[])[1].statusListCredential).toBe('list456')
+            })
+        */
     it('should use correlation IDs when provided', async () => {
       const mockCredential: IVerifiableCredential = {
         ...baseCredential,
@@ -289,21 +306,21 @@ describe('Status List VC handling', () => {
     })
 
     /* 
-        it('should handle multiple status list options', async () => { TODO this is only true for VCDM v2.0  SSISDK-2
-          const mockCredential: IVerifiableCredential = {
-            ...baseCredential,
-          }
-    
-          const result = await agent.slAddStatusToCredential({
-            credential: mockCredential,
-            statusListOpts: [{ statusListId: 'list1' }, { statusListId: 'list2', statusListIndex: 5 }],
-          })
-    
-          expect(Array.isArray(result.credentialStatus)).toBe(true)
-          const credStatus = result.credentialStatus as ICredentialStatus[]
-          expect(credStatus.length).toBe(2)
-        }) 
-    */
+            it('should handle multiple status list options', async () => { TODO this is only true for VCDM v2.0  SSISDK-2
+              const mockCredential: IVerifiableCredential = {
+                ...baseCredential,
+              }
+        
+              const result = await agent.slAddStatusToCredential({
+                credential: mockCredential,
+                statusListOpts: [{ statusListId: 'list1' }, { statusListId: 'list2', statusListIndex: 5 }],
+              })
+        
+              expect(Array.isArray(result.credentialStatus)).toBe(true)
+              const credStatus = result.credentialStatus as ICredentialStatus[]
+              expect(credStatus.length).toBe(2)
+            }) 
+        */
 
     it('should handle credential with no options but existing status', async () => {
       const mockCredential: IVerifiableCredential = {

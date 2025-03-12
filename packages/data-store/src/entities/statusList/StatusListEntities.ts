@@ -10,6 +10,7 @@ import {
 } from '@sphereon/ssi-types'
 import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])
@@ -110,6 +111,6 @@ export class StatusList2021Entity extends StatusListEntity {
 export class OAuthStatusListEntity extends StatusListEntity {
   @Column({ type: 'integer', name: 'bitsPerStatus', nullable: false })
   bitsPerStatus!: number
-  @Column({ type: process.env.DB_TYPE === 'postgres' ? 'timestamp' : 'datetime', name: 'expiresAt', nullable: true })
+  @Column({ name: 'expiresAt', nullable: true, type: typeOrmDateTime() })
   expiresAt?: Date
 }
