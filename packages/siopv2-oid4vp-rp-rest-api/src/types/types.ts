@@ -10,6 +10,7 @@ export interface ISIOPv2RPRestAPIOpts {
   enableFeatures?: SiopFeatures[]
   endpointOpts?: {
     basePath?: string
+    trustProxy?: boolean | Array<string>
     globalAuth?: GenericAuthArgs & { secureSiopEndpoints?: boolean }
     webappCreateAuthRequest?: ICreateAuthRequestWebappEndpointOpts // Override the create Auth Request path. Needs to contain correlationId and definitionId path params!
     webappDeleteAuthRequest?: ISingleEndpointOpts // Override the delete Auth Request path. Needs to contain correlationId and definitionId path params!

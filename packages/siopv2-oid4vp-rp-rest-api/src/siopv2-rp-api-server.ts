@@ -53,7 +53,7 @@ export class SIOPv2RPApiServer {
     }
     this._basePath = opts?.endpointOpts?.basePath ?? ''
     this._express.use(this._basePath, this.router)
-    this._express.set('trust proxy', true)
+    this._express.set('trust proxy', opts?.endpointOpts?.trustProxy ?? true)
     this.setupSwaggerUi()
   }
 

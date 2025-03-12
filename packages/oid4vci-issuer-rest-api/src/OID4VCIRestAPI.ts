@@ -135,8 +135,9 @@ export class OID4VCIRestAPI {
       .then((res) => res.json())
       .then((swagger) => {
         const apiDocs = `/api-docs`
-        console.log(`[OID4VCI] API docs available at ${this._basePath}${apiDocs}`)
+        console.log(`[OID4VCI] API docs available at ${this._baseUrl.toString()}${this._basePath}${apiDocs}`)
         swagger.servers = [{ url: this._baseUrl.toString(), description: 'This server' }]
+        this.express.set('trust proxy', this.opts?.endpointOpts?.trustProxy ?? true)
         this._router.use(
           apiDocs,
           (req: Request, res: Response, next: any) => {
