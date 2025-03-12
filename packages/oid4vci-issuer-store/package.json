@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
+    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@types/uuid": "^9.0.8",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

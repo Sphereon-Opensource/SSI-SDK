@@ -12,7 +12,7 @@ import {
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
-import { IStatusListPlugin, StatusListResult } from '@sphereon/ssi-sdk.vc-status-list'
+import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
@@ -94,21 +94,21 @@ describe('Status List VC handling', () => {
     },
   }
 
+  const defaultStatuslistImport = {
+    id: 'http://localhost/test/default',
+    correlationId: 'default-sl',
+    driverType: StatusListDriverType.AGENT_TYPEORM,
+    type: StatusListType.StatusList2021,
+    issuer: 'temp',
+  }
+
   beforeAll(async () => {
     agent = createAgent<Plugins>({
       plugins: [
         new DataStore(dbConnection),
         new DataStoreORM(dbConnection),
         new StatusListPlugin({
-          instances: [
-            {
-              id: 'http://localhost/test/1',
-              correlationId: 'test-sl',
-              driverType: StatusListDriverType.AGENT_TYPEORM,
-              dataSource: dbConnection,
-            },
-          ],
-          defaultInstanceId: 'http://localhost/test/1',
+          defaultStatusListId: 'http://localhost/test/default',
           allDataSources: DataSources.singleInstance(),
         }),
         new KeyManager({
@@ -164,6 +164,8 @@ describe('Status List VC handling', () => {
         return identifier
       })
     baseCredential.issuer = identifier.did
+    defaultStatuslistImport.issuer = identifier.did
+    await agent.slImportStatusLists([defaultStatuslistImport])
   })
 
   describe('slCreateStatusList', () => {
@@ -172,8 +174,8 @@ describe('Status List VC handling', () => {
         agent.slCreateStatusList({
           type: StatusListType.OAuthStatusList,
           issuer: identifier.did,
-          id: 'http://localhost/test/1',
-          correlationId: 'test-sl',
+          id: 'http://localhost/test/fails',
+          correlationId: 'test-fails',
           proofFormat: 'lds',
           oauthStatusList: {
             bitsPerStatus: 2,
@@ -186,8 +188,8 @@ describe('Status List VC handling', () => {
       const result = await agent.slCreateStatusList({
         type: StatusListType.OAuthStatusList,
         issuer: identifier.did,
-        id: 'http://localhost/test/1',
-        correlationId: 'test-sl',
+        id: 'http://localhost/test/jwt',
+        correlationId: 'test-jwt',
         proofFormat: 'jwt',
         oauthStatusList: {
           bitsPerStatus: 2,
@@ -209,7 +211,7 @@ describe('Status List VC handling', () => {
         credential: mockCredential,
         statusLists: [
           {
-            statusListId: 'http://localhost/test/1',
+            statusListId: 'http://localhost/test/jwt',
             statusListIndex: 123,
           },
         ],
@@ -217,9 +219,9 @@ describe('Status List VC handling', () => {
 
       const credentialStatus = Array.isArray(result.credentialStatus) ? result.credentialStatus[0] : result.credentialStatus
       expect(credentialStatus?.type).toBe('OAuthStatusListEntry')
-      expect(credentialStatus?.id).toMatch(/^http:\/\/localhost\/test\/1#\d+$/)
+      expect(credentialStatus?.id).toMatch(/^http:\/\/localhost\/test\/jwt#\d+$/)
       expect(credentialStatus?.statusListIndex).toBe('123')
-      expect(credentialStatus?.statusListCredential).toBe('http://localhost/test/1') // TODO should we not return the status list payload? If not, the name is weird
+      expect(credentialStatus?.statusListCredential).toBe('http://localhost/test/jwt') // TODO should we not return the status list payload? If not, the name is weird
       expect(result.issuer).toBe(identifier.did)
     })
 
@@ -231,7 +233,7 @@ describe('Status List VC handling', () => {
         credential: mockCredential,
         statusLists: [
           {
-            statusListId: 'http://localhost/test/1',
+            statusListId: 'http://localhost/test/jwt',
           },
         ],
       })
@@ -277,7 +279,7 @@ describe('Status List VC handling', () => {
         credential: mockCredential,
         statusLists: [
           {
-            statusListCorrelationId: 'test-sl',
+            statusListCorrelationId: 'test-jwt',
             statusEntryCorrelationId: 'entry-456',
           },
         ],
@@ -307,10 +309,10 @@ describe('Status List VC handling', () => {
       const mockCredential: IVerifiableCredential = {
         ...baseCredential,
         credentialStatus: {
-          id: 'http://localhost/test/1#5',
+          id: 'http://localhost/test/jwt#5',
           type: 'StatusList2021Entry',
           statusListIndex: '5',
-          statusListCredential: 'http://localhost/test/1',
+          statusListCredential: 'http://localhost/test/jwt',
         },
       }
       const result = await agent.slAddStatusToCredential({ credential: mockCredential })
@@ -330,10 +332,10 @@ describe('Status List VC handling', () => {
 
       const result = await agent.slAddStatusToSdJwtCredential({
         credential: mockCredential,
-        statusLists: [{ statusListId: 'http://localhost/test/1' }],
+        statusLists: [{ statusListId: 'http://localhost/test/jwt' }],
       })
 
-      expect(result.status?.status_list.uri).toBe('http://localhost/test/1')
+      expect(result.status?.status_list.uri).toBe('http://localhost/test/jwt')
       expect(result.status?.status_list.idx).toBeGreaterThan(1)
     })
 
@@ -343,7 +345,7 @@ describe('Status List VC handling', () => {
         vct: 'VerifiableCredential',
         status: {
           status_list: {
-            uri: 'http://localhost/test/1',
+            uri: 'http://localhost/test/jwt',
             idx: 5,
           },
         },
@@ -353,7 +355,7 @@ describe('Status List VC handling', () => {
         credential: mockCredential,
         statusLists: [
           {
-            statusListId: 'http://localhost/test/1',
+            statusListId: 'http://localhost/test/jwt',
             statusListIndex: 10,
           },
         ],
@@ -365,34 +367,19 @@ describe('Status List VC handling', () => {
 
   describe('slGetStatusList', () => {
     it('should retrieve an existing status list', async () => {
-      const mockResult: StatusListResult = {
-        type: StatusListType.OAuthStatusList,
-        proofFormat: 'jwt',
-        statusListCredential: 'ey_mockJWT',
-        encodedList: 'AAAA',
-        id: 'http://localhost/test/1',
-        issuer: identifier.did,
-        length: 250000,
-        statuslistContentType: 'application/statuslist+jwt',
-        oauthStatusList: {
-          bitsPerStatus: 2,
-        },
-      }
+      const result = await agent.slGetStatusList({ id: 'http://localhost/test/jwt' })
 
-      jest.spyOn(agent, 'slGetStatusList').mockResolvedValue(mockResult)
-
-      const result = await agent.slGetStatusList({ id: 'http://localhost/test/1' })
-
-      expect(result.id).toBe('http://localhost/test/1')
+      expect(result.id).toBe('http://localhost/test/jwt')
       expect(result.type).toBe(StatusListType.OAuthStatusList)
-      expect(result.encodedList).toBe('AAAA')
-      expect(result.statusListCredential).toBe('ey_mockJWT')
+      expect(result.encodedList).toBe(
+        'eNrtwTEBAAAAwqD1T20IX6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgM_QkAAE',
+      )
+      expect(result.statusListCredential).toMatch(/^ey/)
       expect(result.length).toBe(250000)
     })
 
     it('should throw when status list not found', async () => {
-      jest.spyOn(agent, 'slGetStatusList').mockRejectedValue(new Error('Status list not found'))
-      await expect(agent.slGetStatusList({ id: 'nonexistent' })).rejects.toThrow('Status list not found')
+      await expect(agent.slGetStatusList({ id: 'nonexistent' })).rejects.toThrow('No status list found for id nonexistent')
     })
   })
 })
