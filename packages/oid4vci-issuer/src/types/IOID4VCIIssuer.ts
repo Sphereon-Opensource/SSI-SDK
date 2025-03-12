@@ -40,7 +40,6 @@ export interface IOID4VCIIssuerOpts {
 }
 
 export interface ICreateOfferArgs extends IIssuerInstanceArgs {
-  offerMode: CredentialOfferMode
   grants?: Grant
   credentials?: Record<string, CredentialConfigurationSupported>
   credentialDefinition?: IssuerCredentialDefinition

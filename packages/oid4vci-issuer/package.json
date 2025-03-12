@@ -14,12 +14,12 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-feature.MWALL.715.397",
-    "@sphereon/oid4vci-issuer": "0.16.1-feature.MWALL.715.397",
-    "@sphereon/oid4vci-client": "0.16.1-feature.MWALL.715.397",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.27.1-next.15",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.1-next.15",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.1-next.15",
+    "@sphereon/oid4vci-common": "0.16.1-next.401",
+    "@sphereon/oid4vci-issuer": "0.16.1-next.401",
+    "@sphereon/oid4vci-client": "0.16.1-next.401",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.27.1-next.21",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.1-next.21",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.1-next.21",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
@@ -38,7 +38,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-feature.MWALL.715.397",
+    "@sphereon/did-auth-siop": "0.16.1-next.401",
     "@sphereon/did-uni-client": "^0.6.3",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

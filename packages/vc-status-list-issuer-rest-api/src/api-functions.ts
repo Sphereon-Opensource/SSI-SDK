@@ -298,7 +298,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
         if (updateItem.status === '0' || updateItem.status.toLowerCase() === 'false') {
           value = '0'
         } else if (updateItem.status !== '1' && updateItem.status.toLowerCase() !== 'true') {
-          if (details.type === StatusListType.StatusList2021) {
+          if (updateItem.type === StatusListType.StatusList2021) {
             // 2021 only allows 0 and 1
             return sendErrorResponse(response, 400, `Invalid 'status' value in the credentialStatus array: ${updateItem.status}`)
           } else if (parseInt(updateItem.status) < 0 || parseInt(updateItem.status) > 255) {

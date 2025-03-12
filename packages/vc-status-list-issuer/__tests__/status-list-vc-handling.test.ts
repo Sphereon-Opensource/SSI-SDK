@@ -233,7 +233,7 @@ describe('Status List VC handling', () => {
         credential: mockCredential,
         statusLists: [
           {
-            statusListCorrelationId: 'test-sl',
+            statusEntryCorrelationId: 'test-sl',
             statusListIndex: 456,
           },
         ],

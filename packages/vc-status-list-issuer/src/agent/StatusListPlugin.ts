@@ -38,7 +38,7 @@ export class StatusListPlugin implements IAgentPlugin {
 
   constructor(opts: {
     instances?: Array<StatusListInstance>
-      defaultStatusListId?: string
+    defaultStatusListId?: string
     allDataSources?: DataSources
     autoCreateInstances?: boolean
   }) {
