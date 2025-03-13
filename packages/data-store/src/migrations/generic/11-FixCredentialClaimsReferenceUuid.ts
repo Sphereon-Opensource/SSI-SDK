@@ -2,6 +2,8 @@ import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
 import { CreateIssuanceBranding1685628974232 } from '../postgres/1685628974232-CreateIssuanceBranding'
 import { CreateIssuanceBranding1685628973231 } from '../sqlite/1685628973231-CreateIssuanceBranding'
+import { FixCredentialClaimsReferencesUuidPG1741895822987 } from '../postgres/1741895822987-FixCredentialClaimsReferencesUuid'
+import { FixCredentialClaimsReferencesUuidSqlite1741895822987 } from '../sqlite/1741895822987-FixCredentialClaimsReferencesUuid'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 
@@ -14,7 +16,7 @@ export class FixCredentialClaimsReferencesUuid1741895822987 implements Migration
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: FixCredentialClaimsReferencesUuid1741895822987 = new FixCredentialClaimsReferencesUuid1741895822987()
+        const mig: FixCredentialClaimsReferencesUuidPG1741895822987 = new FixCredentialClaimsReferencesUuidPG1741895822987()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -23,7 +25,7 @@ export class FixCredentialClaimsReferencesUuid1741895822987 implements Migration
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: FixCredentialClaimsReferencesUuid1741895822987 = new FixCredentialClaimsReferencesUuid1741895822987()
+        const mig: FixCredentialClaimsReferencesUuidSqlite1741895822987 = new FixCredentialClaimsReferencesUuidSqlite1741895822987()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return

@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class FixCredentialClaimsReferencesUuid1741895822987 implements MigrationInterface {
+export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements MigrationInterface {
   name = 'FixCredentialClaimsReferencesUuid1741895822987'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
