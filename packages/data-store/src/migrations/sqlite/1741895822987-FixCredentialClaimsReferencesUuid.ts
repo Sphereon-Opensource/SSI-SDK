@@ -4,7 +4,6 @@ export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements Mig
   name = 'FixCredentialClaimsReferencesUuid1741895822987'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`BEGIN TRANSACTION;`)
 
     // Create a new table with the updated column type (uuid)
     await queryRunner.query(`
@@ -37,12 +36,10 @@ export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements Mig
                 ON "CredentialClaims" ("credentialLocaleBrandingId", "key")
         `)
 
-    await queryRunner.query(`COMMIT;`)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Migrate uuid back to varchar
-    await queryRunner.query(`BEGIN TRANSACTION;`)
 
     // Create a new table reverting the column back to character varying
     await queryRunner.query(`
@@ -75,6 +72,5 @@ export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements Mig
                 ON "CredentialClaims" ("credentialLocaleBrandingId", "key")
         `)
 
-    await queryRunner.query(`COMMIT;`)
   }
 }
