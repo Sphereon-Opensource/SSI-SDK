@@ -4,7 +4,6 @@ export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements Mig
   name = 'FixCredentialClaimsReferencesUuid1741895822987'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-
     // Create a new table with the updated column type (uuid)
     await queryRunner.query(`
             CREATE TABLE "CredentialClaims_new"
@@ -35,7 +34,6 @@ export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements Mig
             CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale"
                 ON "CredentialClaims" ("credentialLocaleBrandingId", "key")
         `)
-
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -71,6 +69,5 @@ export class FixCredentialClaimsReferencesUuidSqlite1741895822987 implements Mig
             CREATE UNIQUE INDEX "IDX_CredentialClaimsEntity_credentialLocaleBranding_locale"
                 ON "CredentialClaims" ("credentialLocaleBrandingId", "key")
         `)
-
   }
 }

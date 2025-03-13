@@ -9,7 +9,6 @@ export class FixCredentialClaimsReferencesUuidPG1741895822987 implements Migrati
       ALTER TABLE "CredentialClaims"
       ALTER COLUMN "credentialLocaleBrandingId" TYPE uuid USING "credentialLocaleBrandingId"::uuid;
     `)
-
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -18,6 +17,5 @@ export class FixCredentialClaimsReferencesUuidPG1741895822987 implements Migrati
       ALTER TABLE "CredentialClaims"
       ALTER COLUMN "credentialLocaleBrandingId" TYPE character varying USING "credentialLocaleBrandingId"::text;
     `)
-
   }
 }
