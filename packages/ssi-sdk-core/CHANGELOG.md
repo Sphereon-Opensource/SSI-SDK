@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.32.0...v0.33.0) (2025-03-14)
+
+### Features
+
+- add default hasher implementation ([0a17930](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/0a179306e0f4ae2c2ffc822b424eccd6a7d8794b))
+- Make sure we set default hasher implementations in case an app forgets to provide them ([ad3a60d](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/ad3a60d95aced138cf228a2d3eb16e4103c09eb6))
+
 # [0.32.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.31.0...v0.32.0) (2024-12-05)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.core

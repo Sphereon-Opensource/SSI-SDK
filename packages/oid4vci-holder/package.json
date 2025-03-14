@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,10 +14,10 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
+    "@sphereon/did-auth-siop": "0.17.0",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/oid4vci-client": "0.17.0",
     "@sphereon/oid4vci-common": "0.17.0",
-    "@sphereon/did-auth-siop": "0.17.0",
     "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
@@ -31,8 +31,8 @@
     "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
     "@sphereon/ssi-sdk.oidf-client": "workspace:*",
     "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
-    "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
+    "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth": "workspace:*",
     "@sphereon/ssi-sdk.xstate-machine-persistence": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
@@ -47,8 +47,8 @@
   },
   "devDependencies": {
     "@sphereon/oid4vc-common": "0.17.0",
-    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.0",
+    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
     "@types/uuid": "^9.0.8",
