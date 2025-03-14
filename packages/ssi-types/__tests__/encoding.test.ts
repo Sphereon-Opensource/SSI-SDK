@@ -1,4 +1,3 @@
-import { createHash } from 'crypto'
 import * as fs from 'fs'
 import {
   CredentialMapper,
