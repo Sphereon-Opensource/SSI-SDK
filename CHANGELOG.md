@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.32.0...v0.33.0) (2025-03-14)
+
+### Bug Fixes
+
+- Do not retrieve AS metadata from store in case an external AS is used. Fetch from remote ([7f46a5a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7f46a5a5fbe68828773cce7e05e79b26399f4a08))
+- Do not retrieve AS metadata from store in case an external AS is used. Fetch from remote ([99c3f8e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/99c3f8e784f7b47c48aa7b0d4f1f270f37c37315))
+- Do not try OIDF resolution on http:// urls ([fe88114](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fe88114c0faaba18602f756121392651bffdc2b1))
+- Export branding functions ([9a04ac4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a04ac4734f5c4e7b1569d48c528dbfa972c33d3))
+- Fixed merging issue ([6fc5099](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6fc50991b1acaa9b8c56f440956fbf1dadabc9e2))
+- Fixed the encoded presentation creation ([f8a8c17](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f8a8c17bb5a28de650b3a0cd58bc7e24590c0808))
+- Fixed type issues ([c3754e6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c3754e6d84963bb6c636762d010e5e9cb972ce2e))
+- Fixed type issues and updated oid4vc dependency ([f919a29](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f919a297d56517da7cbe1db845dd164a848ffc2e))
+- Fixes to bit length handling and changing default length from 2 to 1 to have more compact lists and not all parties support multiple bits yet ([f6d3940](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f6d3940588a83daf20414d97080156601f3a28fc))
+- Fixes to bit length handling and changing default length from 2 to 1 to have more compact lists and not all parties support multiple bits yet ([90e82b6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/90e82b60f5876581edf40c4a71e50520c7df4a1a))
+- Issue with credential local branding in Postgresql where a uuid column was compared with a varchar ([2d51dd8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2d51dd82b660a30ab830416cadc0f2f03a88f5ee))
+- Issuer opts are not AS opts. Make sure we actually return issuer opts when requested ([18b4ced](https://github.com/Sphereon-Opensource/SSI-SDK/commit/18b4ced48911a04c546262da6f5cf5b2d82ed8f9))
+- Make OID4VCI access token signer more resiliant ([6e09be4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6e09be4ab7d3566a921286272d21b0fe37a02c81))
+- match jwk from jwt header by kid and load into JwtVerifyResult ([84bbb0f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/84bbb0fc66ce12a9a453054e4f39306c9871547f))
+- Removed local dependencies ([a50eb33](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a50eb3370348285cfab74db09584821fe2b1be42))
+- Updated dependencies ([2b871d5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2b871d53b3e94929ffad1b329f5e8e3425b0acee))
+- Updated dependencies and fixed broken code ([4982faa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4982faa1bdf78d03f53f28f4fe9ec3471ed34cc8))
+- Updated pnpm-lock.yaml ([d2c23db](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d2c23db6a2649d9bf02b005e44f044d3e6bc56d6))
+
+### Features
+
+- add default hasher implementation ([0a17930](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0a179306e0f4ae2c2ffc822b424eccd6a7d8794b))
+- Add oid4vci state store ([56ec3e0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/56ec3e0d65066a2331b5f46aab74308405e4bb2a))
+- Add QR code generation to OID$VP Auth Request API ([c9749f7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c9749f7356545d8ff9c36c499f56afc0fc9a5ac9))
+- Add swagger Ui to the hosted context, so we have a swagger API per OID4VCI instance ([4de300e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4de300eab19c15b7fff596e2d049cf5a8cef8f3e))
+- added first party flow to holder plugin ([2f19e12](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2f19e125be1fb5bd06c97d3d409dd776c9368af6))
+- added sd-jwt vct metadata branding support ([a21d812](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a21d812ca0027eb0da8955d629a4022f9bab0a10))
+- Enabled Swagger UI on OID4VP instance endpoints below /api-docs ([a6c9fb4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a6c9fb4ac98f74ee4fbc41ca3d2363faec383c44))
+- Improve status list handling and default status list handling ([ab043c7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ab043c790480fc1e69e3252ac1458cd61f53ae1d))
+- Initial credential configuration REST API to add new and remove existing credentials from OID4VCI ([c120d45](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c120d4560cb8733fcc0193441ecd54e9a60ad8b1))
+- Make sure we set default hasher implementations in case an app forgets to provide them ([ad3a60d](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ad3a60d95aced138cf228a2d3eb16e4103c09eb6))
+
+### Reverts
+
+- Revert "chore: reverted updateStatusListEntry for sd-jwt status lists" ([7978dec](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7978dec89fab2be586093c0e2f4abb998c2a9ad7))
+
 # [0.32.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.31.0...v0.32.0) (2024-12-05)
 
 ### Bug Fixes

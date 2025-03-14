@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.data-store",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,11 +21,11 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "dcql": "0.2.19",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.2.1",
     "class-validator": "^0.14.1",
+    "dcql": "0.2.19",
     "debug": "^4.3.5",
     "typeorm": "^0.3.21"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oid4vci-issuer-rest-api",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -65,8 +65,8 @@
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
-    "did-resolver": "^4.1.0",
     "debug": "^4.4.0",
+    "did-resolver": "^4.1.0",
     "nock": "^13.5.4",
     "ts-node": "^10.9.2",
     "typeorm": "^0.3.21",

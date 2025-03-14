@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.32.0...v0.33.0) (2025-03-14)
+
+### Bug Fixes
+
+- Do not retrieve AS metadata from store in case an external AS is used. Fetch from remote ([99c3f8e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/99c3f8e784f7b47c48aa7b0d4f1f270f37c37315))
+
+### Features
+
+- add default hasher implementation ([0a17930](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/0a179306e0f4ae2c2ffc822b424eccd6a7d8794b))
+- Add swagger Ui to the hosted context, so we have a swagger API per OID4VCI instance ([4de300e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/4de300eab19c15b7fff596e2d049cf5a8cef8f3e))
+- added sd-jwt vct metadata branding support ([a21d812](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/a21d812ca0027eb0da8955d629a4022f9bab0a10))
+
 # [0.32.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.31.0...v0.32.0) (2024-12-05)
 
 ### Bug Fixes
