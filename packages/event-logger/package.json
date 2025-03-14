@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.event-logger",
-  "version": "0.30.1",
+  "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "jest": "^27.5.1",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.21",
     "typescript": "^5.5.3"
   },
   "files": [

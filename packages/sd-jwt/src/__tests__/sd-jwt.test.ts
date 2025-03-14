@@ -8,6 +8,7 @@ import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-e
 import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { ImDLMdoc, MDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { createAgent, IDIDManager, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -15,7 +16,7 @@ import { DIDDocument, Resolver, VerificationMethod } from 'did-resolver'
 import { defaultGenerateDigest } from '../defaultCallbacks'
 import { ISDJwtPlugin, SDJwtPlugin } from '../index'
 
-type AgentType = IDIDManager & IKeyManager & IIdentifierResolution & IJwtService & IResolver & ISDJwtPlugin
+type AgentType = IDIDManager & IKeyManager & IIdentifierResolution & IJwtService & IResolver & ISDJwtPlugin & ImDLMdoc
 
 describe('Agent plugin', () => {
   let agent: TAgent<AgentType>
@@ -49,6 +50,7 @@ describe('Agent plugin', () => {
     agent = createAgent<AgentType>({
       plugins: [
         new SDJwtPlugin(),
+        new MDLMdoc(),
         new IdentifierResolution(),
         new JwtService(),
         new SphereonKeyManager({
@@ -138,6 +140,19 @@ describe('Agent plugin', () => {
     })
     await agent.verifySdJwtVc({
       credential: credential.credential,
+    })
+  }, 5000)
+
+  // FIXME: Cert expired
+  xit('verify a funke sd-jwt', async () => {
+    const signature = 'JAd5ZLl2_vXOwLBhyd6ceIMY9OlBasubHs5pa1gIJu2njs9VoIOMNiybFPvjuUm2IwmEcHFE_wJpvRaAwNcp6Q'
+    const headerAndPayload =
+      'eyJ0eXAiOiJ2YytzZC1qd3QiLCJraWQiOiIwM2RmMDg3ZGVhZTc2ZjMxMDgzYTUzMDg3MDFkZDViODIzODc5YzMyYjYwNTM0YTk2Mjg2ZTE3M2EyODQ3NGU5NWYiLCJ4NWMiOlsiTUlJRFNEQ0NBdTZnQXdJQkFnSVNLOTB5Mm9vN2xPVGFDZ0lMWlBzSHBvSTFNQW9HQ0NxR1NNNDlCQU1DTUZveEN6QUpCZ05WQkFZVEFrNU1NU1F3SWdZRFZRUUtEQnRUY0dobGNtVnZiaUJKYm5SbGNtNWhkR2x2Ym1Gc0lFSXVWaTR4Q3pBSkJnTlZCQXNNQWtsVU1SZ3dGZ1lEVlFRRERBOWpZUzV6Y0dobGNtVnZiaTVqYjIwd0hoY05NalF4TVRJMk1UazBPVE15V2hjTk1qVXdNakkwTWpFME9UTXlXakNCampFTE1Ba0dBMVVFQmhNQ1Rrd3hGakFVQmdOVkJBZ01EVTV2YjNKa0xVaHZiR3hoYm1ReEVqQVFCZ05WQkFjTUNVRnRjM1JsY21SaGJURWtNQ0lHQTFVRUNnd2JVM0JvWlhKbGIyNGdTVzUwWlhKdVlYUnBiMjVoYkNCQ0xsWXVNUXN3Q1FZRFZRUUxEQUpKVkRFZ01CNEdBMVVFQXd3WFpuVnVhMlV1WkdWdGJ5NXpjR2hsY21WdmJpNWpiMjB3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVRmQ0gzcTUyOHhDRHBUQ0hBZDFiZ2poNXd5dGdVMHFXS0c0WE9paEhUcFh5Rlc5YnVkbVd3T0Zpb1JPSWJTeDFtTjZFbjhFNTYwUWpsWnpSa25Jek96bzRJQlhUQ0NBVmt3SFFZRFZSME9CQllFRklkUHNRMzlDZnhPSlkxVDJxbGRkZzdHd3Y2bk1COEdBMVVkSXdRWU1CYUFGT2NIeWwyVlhQbklvUDdPNDJSRkhvQ3pMRExCTUdFR0NDc0dBUVVGQndFQkJGVXdVekJSQmdnckJnRUZCUWN3QW9aRmFIUjBjRG92TDJWMUxtTmxjblF1WlhwallTNXBieTlqWlhKMGN5OWtZV0V4WWpSaU5DMDROV1prTFRSaVlUUXRZamsyWWkwek16SmhaR1E0T1RsalpUa3VZMlZ5TUIwR0ExVWRKUVFXTUJRR0NDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREFUQWlCZ05WSFJFRUd6QVpnaGRtZFc1clpTNWtaVzF2TG5Od2FHVnlaVzl1TG1OdmJUQU9CZ05WSFE4QkFmOEVCQU1DQmFBd1lRWURWUjBmQkZvd1dEQldvRlNnVW9aUWFIUjBjRG92TDJWMUxtTnliQzVsZW1OaExtbHZMMk55YkM4eVkyUm1OMk0xWlMxaU9XTmtMVFF6TVRjdFltSTFOaTB6T0Raa01qUTBNemd3WlRJdlkyRnpjR2hsY21WdmJtTnZiUzVqY213d0NnWUlLb1pJemowRUF3SURTQUF3UlFJaEFMejBWKzg5RlZBSUVhbU5Fblh5L1RQMmJCSlI1eUU4aS8xbDRmaFNlR2RVQWlBazgvMWZ2bHFnZEQrRFM0OGJCWEswczBaZkFMZ2RBR08vak90dEErdExZZz09IiwiTUlJQ0NEQ0NBYTZnQXdJQkFnSVRBUE1ncXd0WXpXUEJYYW9iSGh4RzlpU3lkVEFLQmdncWhrak9QUVFEQWpCYU1Rc3dDUVlEVlFRR0V3Sk9UREVrTUNJR0ExVUVDZ3diVTNCb1pYSmxiMjRnU1c1MFpYSnVZWFJwYjI1aGJDQkNMbFl1TVFzd0NRWURWUVFMREFKSlZERVlNQllHQTFVRUF3d1BZMkV1YzNCb1pYSmxiMjR1WTI5dE1CNFhEVEkwTURjeU9ESXhNalkwT1ZvWERUTTBNRGN5T0RJeE1qWTBPVm93V2pFTE1Ba0dBMVVFQmhNQ1Rrd3hKREFpQmdOVkJBb01HMU53YUdWeVpXOXVJRWx1ZEdWeWJtRjBhVzl1WVd3Z1FpNVdMakVMTUFrR0ExVUVDd3dDU1ZReEdEQVdCZ05WQkFNTUQyTmhMbk53YUdWeVpXOXVMbU52YlRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkVpQTBLZUVTU05yT2NtQ0RnYThZc0JrVVRnb3daR3dxdkwybjkxSlVwQU1kUlN3dmxWRmRxZGlMWG5rMnBRcVQxdlpuREcwSSt4K2l6MkViZHNHMGFhalV6QlJNQjBHQTFVZERnUVdCQlRuQjhwZGxWejV5S0QrenVOa1JSNkFzeXd5d1RBT0JnTlZIUThCQWY4RUJBTUNBYVl3RHdZRFZSMGxCQWd3QmdZRVZSMGxBREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJSEg3aWUxT0FBYmZmNTI2MnJ6WlZRYThKOXpFTkc4QVFsSEhGeWRNZGdhWEFpRUExSWI4Mm1oSElZRHppRTBERGJIRUFYT3M5OGFsKzdkcG84ZlBHVkdUZUtJPSJdLCJhbGciOiJFUzI1NiJ9.eyJhZ2VHcm91cCI6eyJfc2QiOlsiT01pWFpoV1FwaGdhdzdpSjVESHN5bmFNOUthTU9Vc3VQU0ZubGpySTFIOCJdfSwidmN0IjoiQWdlR3JvdXAiLCJleHAiOjE3NjQxOTYzNjgsImlzcyI6ImZ1bmtlLmRlbW8uc3BoZXJlb24uY29tIiwiaWF0IjoxNzMzMDkyMzY4LCJfc2RfYWxnIjoiU0hBLTI1NiJ9'
+    const disclusure = '~WyJmNmU2OWUyYy1iM2ZkLTRiMzUtOWFlOS03NjgwMGY1YzZlZjQiLCJhZ2VPdmVyIiwxOF0~'
+    const credential = `${headerAndPayload}.${signature}${disclusure}`
+    console.log(credential)
+    await agent.verifySdJwtVc({
+      credential: credential,
     })
   }, 5000)
 

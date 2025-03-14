@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.32.0...v0.33.0) (2025-03-14)
+
+### Features
+
+- Add QR code generation to OID$VP Auth Request API ([c9749f7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c9749f7356545d8ff9c36c499f56afc0fc9a5ac9))
+- Enabled Swagger UI on OID4VP instance endpoints below /api-docs ([a6c9fb4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a6c9fb4ac98f74ee4fbc41ca3d2363faec383c44))
+
+# [0.32.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.31.0...v0.32.0) (2024-12-05)
+
+**Note:** Version bump only for package @sphereon/ssi-express-support
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-express-support

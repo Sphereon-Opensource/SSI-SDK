@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "EmployeeAgencyCredential",
+  "title": "Employee Agency Verifiable Credential",
+  "description": "A Verifiable Credential for employees working at a travel agency.",
+  "type": "object",
+  "required": ["employee", "iss", "iat", "vct", "cnf"],
+  "properties": {
+    "employee": {
+      "title": "Employee",
+      "description": "An individual employed by a travel agency.",
+      "type": "object",
+      "required": ["salutation", "givenName", "surname", "phoneNumber", "employeeID", "email", "jobTitle"],
+      "properties": {
+        "salutation": {
+          "title": "Credential Subject Salutation",
+          "description": "Honorific or title prefix (e.g., Mr., Mrs., Ms.).",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10
+        },
+        "givenName": {
+          "title": "Credential Subject Given Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "surname": {
+          "title": "Credential Subject Surname",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "phoneNumber": {
+          "title": "Credential Subject Phone Number",
+          "description": "Employee's phone number, separated into country code and local number.",
+          "type": "object",
+          "required": ["countryCode", "localNumber"],
+          "properties": {
+            "countryCode": {
+              "title": "Country Code",
+              "description": "Phone number country code in E.164 format (e.g., +1, +44).",
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 4
+            },
+            "localNumber": {
+              "title": "Local Number",
+              "description": "The local portion of the phone number (area code + number).",
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 20
+            }
+          }
+        },
+        "employeeID": {
+          "title": "Credential Subject Employee ID",
+          "description": "Unique identifier for the employee within the organization.",
+          "type": "string",
+          "maxLength": 35
+        },
+        "email": {
+          "title": "Credential Subject Email",
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "jobTitle": {
+          "title": "Credential Subject Job Title",
+          "description": "Official title or role of the employee within the travel agency.",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 88
+        },
+        "pcc": {
+          "title": "Credential Subject PCC Codes",
+          "description": "An array of Pseudo City Codes (PCCs) associated with the employee.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Pseudo City Code for a branch or agency."
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "iss": {
+      "title": "Issuer",
+      "description": "URI identifying the issuer of the credential.",
+      "type": "string",
+      "format": "uri"
+    },
+    "iat": {
+      "title": "Issued At",
+      "description": "The time at which the credential was issued (Unix timestamp).",
+      "type": "integer"
+    },
+    "exp": {
+      "title": "Expiration",
+      "description": "The time at which the credential expires (Unix timestamp).",
+      "type": "integer"
+    },
+    "vct": {
+      "title": "Verifiable Credential Type",
+      "description": "A URI or string identifying the type or context of this credential.",
+      "type": "string"
+    },
+    "cnf": {
+      "title": "Confirmation",
+      "description": "Proof-of-possession key information used to bind the credential to a specific holder.",
+      "type": "object"
+    }
+  }
+}

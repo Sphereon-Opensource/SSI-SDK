@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-express-support",
-  "version": "0.30.1",
+  "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -44,7 +44,7 @@
     "typescript": "5.4.2"
   },
   "peerDependencies": {
-    "@noble/hashes": "1.2.0",
+    "@noble/hashes": "1.6.1",
     "passport-azure-ad": "^4.3.5",
     "passport-http-bearer": "^1.0.1"
   },

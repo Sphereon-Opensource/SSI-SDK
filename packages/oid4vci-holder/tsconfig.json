@@ -40,6 +40,12 @@
     },
     {
       "path": "../oidf-client"
+    },
+    {
+      "path": "../siopv2-oid4vp-op-auth"
+    },
+    {
+      "path": "../siopv2-oid4vp-common"
     }
   ]
 }

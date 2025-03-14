@@ -31,9 +31,7 @@ A Sphereon geolocation store plugin. This plugin stores the result of the locati
 import { GeoLocationStore } from '@sphereon/ssi-sdk.geolocation-store'
 
 const agent = createAgent<IGeoLocationStore>({
-  plugins: [
-    new GeoLocationStore()
-  ],
+  plugins: [new GeoLocationStore()],
 })
 ```
 
@@ -41,18 +39,18 @@ const agent = createAgent<IGeoLocationStore>({
 
 ```typescript
 await agent.geolocationStorePersistLocation({
-    ipOrHostname: '77.247.248.1',
-    locationArgs: { continent: 'EU', country: 'AL' }
+  ipOrHostname: '77.247.248.1',
+  locationArgs: { continent: 'EU', country: 'AL' },
 })
 ```
 
-### Check if a location exists in the database 
+### Check if a location exists in the database
 
 ```typescript
 await agent.geolocationStoreHasLocation({
-        ipOrHostname: '77.247.248.1',
-        storeId: '_default',
-        namespace: 'anomaly-detection'
+  ipOrHostname: '77.247.248.1',
+  storeId: '_default',
+  namespace: 'anomaly-detection',
 })
 ```
 
@@ -60,19 +58,20 @@ await agent.geolocationStoreHasLocation({
 
 ```typescript
 await agent.geolocationStoreGetLocation({
-        ipOrHostname: '77.247.248.1',
-        storeId: '_default',
-        namespace: 'anomaly-detection' 
+  ipOrHostname: '77.247.248.1',
+  storeId: '_default',
+  namespace: 'anomaly-detection',
 })
 ```
+
 ### Remove a location
 
 ```typescript
 await agent.geolocationStoreRemoveLocation({
-        ipOrHostname: '77.247.248.1',
-        storeId: '_default',
-        namespace: 'anomaly-detection'
-      })
+  ipOrHostname: '77.247.248.1',
+  storeId: '_default',
+  namespace: 'anomaly-detection',
+})
 ```
 
 ### Delete all locations

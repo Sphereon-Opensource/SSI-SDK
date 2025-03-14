@@ -11,10 +11,22 @@ import * as u8a from 'uint8arrays'
 import { RequiredAgentMethods } from '../../ld-suites'
 
 import { JsonWebKey } from './JsonWebKeyWithRSASupport'
+import { VerificationMethod } from '@sphereon/ssi-types'
+import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021 } from '@transmute/web-crypto-key-pair'
+import { Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
+import { EcdsaSecp256k1VerificationKey2019 } from '@transmute/secp256k1-key-pair'
 
 // import { getJwaAlgFromJwk } from '@transmute/web-crypto-key-pair/dist/signatures/jws'
 
-const subtle = crypto.subtle
+const subtle = (
+  typeof crypto !== 'undefined'
+    ? crypto
+    : typeof global?.crypto !== 'undefined'
+      ? global.crypto
+      : typeof global?.window?.crypto !== 'undefined'
+        ? global.window.crypto
+        : require('crypto')
+).subtle
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -248,7 +260,18 @@ export class JsonWebSignature {
       return framed
     }
 
-    return await JsonWebKey.from(document, { signer: false, context: this.context })
+    const vmDocument = document.verificationMethod.find((vmDocument: VerificationMethod) => vmDocument.id === verificationMethod) as
+      | JsonWebKey2020
+      | P256Key2021
+      | P384Key2021
+      | P521Key2021
+      | Ed25519VerificationKey2018
+      | EcdsaSecp256k1VerificationKey2019
+      | undefined
+    if (!vmDocument) {
+      return Promise.reject(Error(`No proof payload found for verificationMethod ${verificationMethod}`))
+    }
+    return await JsonWebKey.from(vmDocument, { signer: false, context: this.context })
   }
 
   async verifySignature({ verifyData, verificationMethod, proof, document }: any) {

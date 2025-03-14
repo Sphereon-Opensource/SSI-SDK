@@ -116,23 +116,22 @@ describe('Issuer Auth', (): void => {
     expect(issuerAuth.signature.encodeTo(Encoding.HEX)).toEqual(ietfSignature)
 
     // We use a key as the vector has no x5c and we do not extract the cose key yet in case no x5c is present
-    await expect(
-      coseCrypto.verify1(
-        issuerAuth,
-        new KeyInfo(
-          '11',
-          Jwk.Static.fromDTO({
-            kty: 'EC',
-            kid: '11',
-            crv: 'P-256',
-            x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
-            y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
-            // 'd': 'V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM'  // do not pass in the private key, as we check for that
-          }).jwkToCoseKeyCbor(),
-        ),
-        false,
+    const result = await coseCrypto.verify1(
+      issuerAuth,
+      new KeyInfo(
+        '11',
+        Jwk.Static.fromDTO({
+          kty: 'EC',
+          kid: '11',
+          crv: 'P-256',
+          x: 'usWxHK2PmfnHKwXPS54m0kTcGJ90UiglWiGahtagnv8',
+          y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
+          // 'd': 'V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM'  // do not pass in the private key, as we check for that
+        }).jwkToCoseKeyCbor(),
       ),
-    ).resolves.toMatchObject({
+      false,
+    )
+    expect(result).toMatchObject({
       critical: true,
       error: false,
     })

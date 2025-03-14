@@ -27,6 +27,7 @@ import { Resolver } from 'did-resolver'
 import { StatuslistManagementApiServer } from '../src'
 import { IRequiredPlugins } from '@sphereon/ssi-sdk.vc-status-list-issuer-drivers'
 import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, postgresConfig } from './database'
+import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 const debug = Debug('sphereon:status-list-api')
 
@@ -66,7 +67,7 @@ const dbConnection = DataSources.singleInstance()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent: TAgent<IRequiredPlugins> = createAgent<
-  IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin & IIdentifierResolution
+  IDIDManager & IKeyManager & IDataStoreORM & IResolver & ICredentialHandlerLDLocal & ICredentialPlugin & IIdentifierResolution & IJwtService
 >({
   plugins: [
     new DataStore(dbConnection),
@@ -86,6 +87,7 @@ const agent: TAgent<IRequiredPlugins> = createAgent<
       resolver,
     }),
     new IdentifierResolution({ crypto: global.crypto }),
+    new JwtService(),
     new CredentialPlugin(),
     new CredentialHandlerLDLocal({
       contextMaps: [LdDefaultContexts],

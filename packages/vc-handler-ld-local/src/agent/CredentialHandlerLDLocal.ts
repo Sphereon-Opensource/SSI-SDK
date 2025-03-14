@@ -196,7 +196,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     try {
       identifier = await context.agent.didManagerGet({ did: presentation.holder })
     } catch (e) {
-      throw new Error('invalid_argument: args.presentation.holderDID must be a DID managed by this agent')
+      throw new Error(`invalid_argument: args.presentation.holderDID ${presentation.holder} must be a DID managed by this agent`)
     }
     try {
       const { managedKey, verificationMethod } = await this.getSigningKey(identifier, args.keyRef)

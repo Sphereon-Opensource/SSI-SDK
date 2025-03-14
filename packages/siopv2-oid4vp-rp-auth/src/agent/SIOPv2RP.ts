@@ -7,8 +7,20 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
-import { OriginalVerifiablePresentation } from '@sphereon/ssi-types/dist'
+import {
+  AdditionalClaims,
+  CredentialMapper,
+  HasherSync,
+  ICredentialSubject,
+  IPresentation,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  JwtDecodedVerifiablePresentation,
+  MdocDeviceResponse,
+  MdocOid4vpMdocVpToken,
+  OriginalVerifiablePresentation,
+  SdJwtDecodedVerifiableCredential,
+} from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
   AuthorizationResponseStateWithVerifiedData,
@@ -32,7 +44,8 @@ import {
 import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import { defaultHasher } from '@sphereon/oid4vc-common'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
+import { DcqlQuery } from 'dcql'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -117,7 +130,7 @@ export class SIOPv2RP implements IAgentPlugin {
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
-      let hasher: Hasher | undefined
+      let hasher: HasherSync | undefined
       if (
         CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) &&
         (!rpInstance.rpOptions.credentialOpts?.hasher || typeof rpInstance.rpOptions.credentialOpts?.hasher !== 'function')
@@ -130,14 +143,13 @@ export class SIOPv2RP implements IAgentPlugin {
         //todo: later we want to conditionally pass in options for mdl-mdoc here
         hasher,
       )
-      const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
       switch (args.includeVerifiedData) {
         case VerifiedDataMode.VERIFIED_PRESENTATION:
-          responseState.response.payload.verifiedData = presentation
+          responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
           break
-        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
+        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
           const allClaims: AdditionalClaims = {}
-          for (const credential of presentation.verifiableCredential || []) {
+          for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
             const vc = credential as IVerifiableCredential
             const schemaValidationResult = await context.agent.cvVerifySchema({
               credential,
@@ -167,6 +179,18 @@ export class SIOPv2RP implements IAgentPlugin {
     }
     return responseState
   }
+
+  private presentationOrClaimsFrom = (
+    presentationDecoded:
+      | JwtDecodedVerifiablePresentation
+      | IVerifiablePresentation
+      | SdJwtDecodedVerifiableCredential
+      | MdocOid4vpMdocVpToken
+      | MdocDeviceResponse,
+  ): AdditionalClaims | IPresentation =>
+    CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
+      ? presentationDecoded.decodedPayload
+      : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
     if (args.state !== 'sent') {
@@ -203,7 +227,8 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          presentationDefinitions: args.presentationDefinitions,
+          ...(args.presentationDefinitions && !args.dcqlQuery ? { presentationDefinitions: args.presentationDefinitions } : {}),
+          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery as DcqlQuery } : {}), // TODO BEFORE PR, check compatibility and whether we can remove local type
           audience: args.audience,
         }),
       ),
@@ -213,15 +238,17 @@ export class SIOPv2RP implements IAgentPlugin {
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
     const { definitions, tenantId, version, versionControlMode } = args
     await Promise.all(
-      definitions.map(async (definition) => {
-        await context.agent.pexValidateDefinition({ definition: definition })
+      definitions.map(async (definitionPair) => {
+        const definitionPayload = definitionPair.definitionPayload
+        await context.agent.pexValidateDefinition({ definition: definitionPayload })
 
-        console.log(`persisting definition ${definition.id} / ${definition.name} with versionControlMode ${versionControlMode}`)
+        console.log(`persisting definition ${definitionPayload.id} / ${definitionPayload.name} with versionControlMode ${versionControlMode}`)
         return context.agent.pdmPersistDefinition({
           definitionItem: {
             tenantId: tenantId,
             version: version,
-            definitionPayload: definition,
+            definitionPayload,
+            dcqlPayload: definitionPair.dcqlPayload,
           },
           opts: { versionControlMode: versionControlMode },
         })
@@ -230,8 +257,6 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined> {
-    /*
-    FIXME: Re-anable once redirect uri is re-enabled
     const instanceId = args.definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (this.instances.has(instanceId)) {
       const rpInstance = this.instances.get(instanceId)
@@ -243,7 +268,7 @@ export class SIOPv2RP implements IAgentPlugin {
           ...(args.state && { state: args.state }),
         })
       }
-    }*/
+    }
     return undefined
   }
 

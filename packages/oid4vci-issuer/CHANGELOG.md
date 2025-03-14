@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.33.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.32.0...v0.33.0) (2025-03-14)
+
+### Bug Fixes
+
+- Do not retrieve AS metadata from store in case an external AS is used. Fetch from remote ([7f46a5a](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7f46a5a5fbe68828773cce7e05e79b26399f4a08))
+- Do not retrieve AS metadata from store in case an external AS is used. Fetch from remote ([99c3f8e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/99c3f8e784f7b47c48aa7b0d4f1f270f37c37315))
+- Do not try OIDF resolution on http:// urls ([fe88114](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fe88114c0faaba18602f756121392651bffdc2b1))
+- Fixed merging issue ([6fc5099](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6fc50991b1acaa9b8c56f440956fbf1dadabc9e2))
+- Fixed type issues and updated oid4vc dependency ([f919a29](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f919a297d56517da7cbe1db845dd164a848ffc2e))
+- Issuer opts are not AS opts. Make sure we actually return issuer opts when requested ([18b4ced](https://github.com/Sphereon-Opensource/SSI-SDK/commit/18b4ced48911a04c546262da6f5cf5b2d82ed8f9))
+- Make OID4VCI access token signer more resiliant ([6e09be4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6e09be4ab7d3566a921286272d21b0fe37a02c81))
+- match jwk from jwt header by kid and load into JwtVerifyResult ([84bbb0f](https://github.com/Sphereon-Opensource/SSI-SDK/commit/84bbb0fc66ce12a9a453054e4f39306c9871547f))
+- Removed local dependencies ([a50eb33](https://github.com/Sphereon-Opensource/SSI-SDK/commit/a50eb3370348285cfab74db09584821fe2b1be42))
+- Updated dependencies and fixed broken code ([4982faa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4982faa1bdf78d03f53f28f4fe9ec3471ed34cc8))
+
+### Features
+
+- Add oid4vci state store ([56ec3e0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/56ec3e0d65066a2331b5f46aab74308405e4bb2a))
+- Add QR code generation to OID$VP Auth Request API ([c9749f7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c9749f7356545d8ff9c36c499f56afc0fc9a5ac9))
+- Add swagger Ui to the hosted context, so we have a swagger API per OID4VCI instance ([4de300e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4de300eab19c15b7fff596e2d049cf5a8cef8f3e))
+- added first party flow to holder plugin ([2f19e12](https://github.com/Sphereon-Opensource/SSI-SDK/commit/2f19e125be1fb5bd06c97d3d409dd776c9368af6))
+- Initial credential configuration REST API to add new and remove existing credentials from OID4VCI ([c120d45](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c120d4560cb8733fcc0193441ecd54e9a60ad8b1))
+
+# [0.32.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.31.0...v0.32.0) (2024-12-05)
+
+### Bug Fixes
+
+- Format mapping for PD ([4e18635](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4e1863586ff7d27c4fa8ccd1094e7618c364425f))
+
+### Features
+
+- Remove crypto.subtle as it is giving too many issues on RN. Moved to new implementation based on [@noble](https://github.com/noble) libs ([d86e7fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/d86e7fabdb83e73ff9c31b9308eb9c5e8110e61b))
+- Validation improvements ([b742fbe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b742fbe5931813b705ad376bf8a5ccf98c011cdf))
+
 ## [0.30.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.30.0...v0.30.1) (2024-10-01)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.oid4vci-issuer

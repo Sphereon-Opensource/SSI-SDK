@@ -4,6 +4,7 @@ import agent from './agent'
 
 const opts: ISIOPv2RPRestAPIOpts = {
   endpointOpts: {
+    basePath: '/oid4vp',
     globalAuth: {
       authentication: {
         enabled: true,
@@ -11,8 +12,8 @@ const opts: ISIOPv2RPRestAPIOpts = {
       },
     },
     webappCreateAuthRequest: {
-      webappBaseURI: 'http://192.168.2.18:5000',
-      siopBaseURI: 'http://192.168.2.18:5000',
+      webappBaseURI: 'http://localhost:5000/oid4vp',
+      siopBaseURI: 'http://localhost:5000',
     },
   },
 }

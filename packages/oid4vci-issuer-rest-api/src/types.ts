@@ -2,6 +2,7 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import { IOID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export type IRequiredContext = IAgentContext<IPlugins>
 
@@ -12,4 +13,5 @@ export type IPlugins = IDIDManager &
   IOID4VCIStore &
   IOID4VCIIssuer &
   ICredentialVerifier &
-  ICredentialIssuer
+  ICredentialIssuer &
+  IJwtService

@@ -2,6 +2,7 @@ import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentatio
 import { decodeSdJwt, decodeSdJwtSync, getClaims, getClaimsSync } from '@sd-jwt/decode'
 import { CompactJWT, IVerifiableCredential } from './w3c-vc'
 import { IProofPurpose, IProofType } from './did'
+import { OrPromise } from './generic'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -167,6 +168,9 @@ export interface WrappedSdJwtVerifiableCredential {
   credential: SdJwtDecodedVerifiableCredential
 }
 
+export type HasherSync = (data: string | ArrayBuffer, alg: string) => Uint8Array
+export type Hasher = (data: string | ArrayBuffer, alg: string) => OrPromise<Uint8Array>
+
 export interface WrappedSdJwtVerifiablePresentation {
   /**
    * Original VP that we've received. Can be either the encoded or decoded variant.
@@ -203,9 +207,6 @@ export function isWrappedSdJwtVerifiablePresentation(vp: WrappedVerifiablePresen
   return vp.format === 'vc+sd-jwt'
 }
 
-export type Hasher = (data: string, alg: string) => Uint8Array
-export type AsyncHasher = (data: string, alg: string) => Promise<Uint8Array>
-
 /**
  * Decode an SD-JWT vc from its compact format (string) to an object containing the disclosures,
  * signed payload, decoded payload and the compact SD-JWT vc.
@@ -213,7 +214,7 @@ export type AsyncHasher = (data: string, alg: string) => Promise<Uint8Array>
  * Both the input and output interfaces of this method are defined in `@sphereon/ssi-types`, so
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
-export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): SdJwtDecodedVerifiableCredential {
+export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: HasherSync): SdJwtDecodedVerifiableCredential {
   const { jwt, disclosures, kbJwt } = decodeSdJwtSync(compactSdJwtVc, hasher)
 
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
@@ -251,7 +252,7 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): S
  * Both the input and output interfaces of this method are defined in `@sphereon/ssi-types`, so
  * this method hides the actual implementation of SD-JWT (which is currently based on @sd-jwt/core)
  */
-export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher: AsyncHasher): Promise<SdJwtDecodedVerifiableCredential> {
+export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher: Hasher): Promise<SdJwtDecodedVerifiableCredential> {
   const { jwt, disclosures, kbJwt } = await decodeSdJwt(compactSdJwtVc, hasher)
 
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload

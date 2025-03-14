@@ -5,7 +5,7 @@ import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@s
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
 import { ICreateAuthRequestWebappEndpointOpts, IRequiredContext } from './types'
-import { defaultHasher } from '@sphereon/ssi-sdk.data-store'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export function createAuthRequestWebappEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {
@@ -17,33 +17,49 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
     try {
       // if (!request.agent) throw Error('No agent configured')
       const definitionId = request.params.definitionId
-      const state: string = uuid.uuid()
-      const correlationId = state
+      if (!definitionId) {
+        return sendErrorResponse(response, 400, 'No definitionId query parameter provided')
+      }
+      const state: string = request.body.state ?? uuid.uuid()
+      const correlationId = request.body.correlationId ?? state
+      const qrCodeOpts = request.body.qrCodeOpts ?? opts?.qrCodeOpts
 
-      const requestByReferenceURI = uriWithBase(`/siop/definitions/${definitionId}/auth-requests/${correlationId}`, {
+      const requestByReferenceURI = uriWithBase(`/siop/definitions/${definitionId}/auth-requests/${state}`, {
         baseURI: opts?.siopBaseURI,
       })
-      const responseURI = uriWithBase(`/siop/definitions/${definitionId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
-      const responseRedirectURI = 'response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)
+      const responseURI = uriWithBase(`/siop/definitions/${definitionId}/auth-responses/${state}`, { baseURI: opts?.siopBaseURI })
+      // first version is for backwards compat
+      const responseRedirectURI =
+        ('response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)) ??
+        ('responseRedirectURI' in request.body && (request.body.responseRedirectURI as string | undefined))
 
       const authRequestURI = await context.agent.siopCreateAuthRequestURI({
         definitionId,
         correlationId,
         state,
-        nonce: opts?.nonce,
+        nonce: uuid.uuid(),
         requestByReferenceURI,
         responseURIType: 'response_uri',
         responseURI,
         ...(responseRedirectURI && { responseRedirectURI }),
       })
+
+      let qrCodeDataUri: string | undefined
+      if (qrCodeOpts) {
+        const { AwesomeQR } = await import('awesome-qr')
+        const qrCode = new AwesomeQR({ ...qrCodeOpts, text: authRequestURI })
+        qrCodeDataUri = `data:image/png;base64,${(await qrCode.draw())!.toString('base64')}`
+      }
       const authRequestBody: GenerateAuthRequestURIResponse = {
         correlationId,
+        state,
         definitionId,
         authRequestURI,
         authStatusURI: `${uriWithBase(opts?.webappAuthStatusPath ?? '/webapp/auth-status', { baseURI: opts?.webappBaseURI })}`,
+        ...(qrCodeDataUri && { qrCodeDataUri }),
       }
       console.log(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
-      return response.send(authRequestBody)
+      return response.json(authRequestBody)
     } catch (error) {
       return sendErrorResponse(response, 500, 'Could not create an authorization request URI', error)
     }
@@ -82,7 +98,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
           definitionId,
           lastUpdated: requestState ? requestState.lastUpdated : Date.now(),
         }
-        return response.send(statusBody)
+        return response.json(statusBody)
       }
 
       let includeVerifiedData: VerifiedDataMode = VerifiedDataMode.NONE
@@ -114,13 +130,13 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
             }
           : {}),
       }
-      console.log(`Will send auth status: ${JSON.stringify(statusBody)}`)
+      console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
       if (overallState.status === 'error') {
         response.statusCode = 500
-        return response.send(statusBody)
+        return response.json(statusBody)
       }
       response.statusCode = 200
-      return response.send(statusBody)
+      return response.json(statusBody)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
     }
@@ -142,7 +158,24 @@ export function removeAuthRequestStateWebappEndpoint(router: Router, context: IR
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
       response.statusCode = 200
-      return response.send(context.agent.siopDeleteAuthState({ definitionId, correlationId }))
+      return response.json(await context.agent.siopDeleteAuthState({ definitionId, correlationId }))
+    } catch (error) {
+      return sendErrorResponse(response, 500, error.message, error)
+    }
+  })
+}
+
+export function getDefinitionsEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
+  if (opts?.enabled === false) {
+    console.log(`getDefinitions Webapp endpoint is disabled`)
+    return
+  }
+  const path = opts?.path ?? '/webapp/definitions'
+  router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
+    try {
+      const definitions = await context.agent.pdmGetDefinitions()
+      response.statusCode = 200
+      return response.json(definitions)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
     }

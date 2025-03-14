@@ -16,10 +16,11 @@ import {
   SupportedVersion,
   VerifyJwtCallback,
 } from '@sphereon/did-auth-siop'
-import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload } from '@sphereon/oid4vc-common'
+import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload, SigningAlgo } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
+  isExternalIdentifierOIDFEntityIdOpts,
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
   isManagedIdentifierX5cOpts,
@@ -27,17 +28,16 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
-import { SigningAlgo } from '@sphereon/oid4vc-common'
 import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
-import { createHash } from 'crypto'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
-import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { DcqlQuery } from 'dcql'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -64,7 +64,7 @@ export function getPresentationVerificationCallback(
 ): PresentationVerificationCallback {
   async function presentationVerificationCallback(
     args: any, // FIXME any
-    presentationSubmission: PresentationSubmission,
+    presentationSubmission?: PresentationSubmission,
   ): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
@@ -80,11 +80,14 @@ export function getPresentationVerificationCallback(
       if (context.agent.mdocOid4vpRPVerify === undefined) {
         return Promise.reject('ImDLMdoc agent plugin must be enabled to support MsoMdoc types')
       }
-      const verifyResult = await context.agent.mdocOid4vpRPVerify({
-        vp_token: args,
-        presentation_submission: presentationSubmission,
-      })
-      return { verified: !verifyResult.error }
+      if (presentationSubmission !== undefined && presentationSubmission !== null) {
+        const verifyResult = await context.agent.mdocOid4vpRPVerify({
+          vp_token: args,
+          presentation_submission: presentationSubmission,
+        })
+        return { verified: !verifyResult.error }
+      }
+      throw Error(`mdocOid4vpRPVerify(...) method requires a presentation submission`)
     }
 
     const result = await context.agent.verifyPresentation({
@@ -102,11 +105,13 @@ export async function createRPBuilder(args: {
   rpOpts: IRPOptions
   pexOpts?: IPEXOptions | undefined
   definition?: IPresentationDefinition
+  dcql?: DcqlQuery
   context: IRequiredContext
 }): Promise<RPBuilder> {
   const { rpOpts, pexOpts, context } = args
   const { identifierOpts } = rpOpts
   let definition: IPresentationDefinition | undefined = args.definition
+  let dcqlQuery: DcqlQuery | undefined = args.dcql
 
   if (!definition && pexOpts && pexOpts.definitionId) {
     const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
@@ -119,7 +124,13 @@ export async function createRPBuilder(args: {
       ],
     })
 
-    definition = presentationDefinitionItems.length > 0 ? presentationDefinitionItems[0].definitionPayload : undefined
+    if (presentationDefinitionItems.length > 0) {
+      const presentationDefinitionItem = presentationDefinitionItems[0]
+      definition = presentationDefinitionItem.definitionPayload
+      if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
+        dcqlQuery = presentationDefinitionItem.dcqlPayload as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
+      }
+    }
   }
 
   const didMethods = identifierOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
@@ -152,7 +163,7 @@ export async function createRPBuilder(args: {
   //todo: probably wise to first look and see if we actually need the hasher to begin with
   let hasher: Hasher | undefined = rpOpts.credentialOpts?.hasher
   if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
-    hasher = (data, algorithm) => createHash(algorithm).update(data).digest()
+    hasher = defaultHasher
   }
 
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })
@@ -213,6 +224,9 @@ export async function createRPBuilder(args: {
 
   if (definition) {
     builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
+  }
+  if (dcqlQuery) {
+    builder.withDcqlQuery(dcqlQuery)
   }
 
   if (rpOpts.responseRedirectUri) {

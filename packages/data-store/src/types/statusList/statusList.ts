@@ -1,14 +1,15 @@
 import {
   IIssuer,
-  OriginalVerifiableCredential,
+  StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
+  ProofFormat,
+  RequireOneOf,
 } from '@sphereon/ssi-types'
-import { ProofFormat } from '@veramo/core'
-import { StatusListEntity } from '../../entities/statusList2021/StatusList2021Entity'
+import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
 
 export interface IStatusListEntity {
   id: string
@@ -19,21 +20,28 @@ export interface IStatusListEntity {
   issuer: string | IIssuer
   type: StatusListType
   proofFormat: ProofFormat
+  statusListCredential?: StatusListCredential
+}
+
+export interface IStatusList2021Entity extends IStatusListEntity {
   indexingDirection: StatusListIndexingDirection
   statusPurpose: StatusPurpose2021
-  statusListCredential?: OriginalVerifiableCredential
 }
 
-export interface IStatusListEntryEntity {
-  statusList: StatusListEntity | string // string is here to accept the id, so we can query it easily with typeorm
-
-  value?: string
-
-  statusListIndex: number
-
-  credentialHash?: string
-
-  credentialId?: string
-
-  correlationId?: string
+export interface IOAuthStatusListEntity extends IStatusListEntity {
+  bitsPerStatus: number
+  expiresAt?: Date
 }
+
+export type IStatusListEntryEntity = RequireOneOf<
+  {
+    statusList: StatusListEntity
+    statusListId: string
+    value?: string
+    statusListIndex: number
+    credentialHash?: string
+    credentialId?: string
+    correlationId?: string
+  },
+  'statusList' | 'statusListId'
+>

@@ -1,16 +1,24 @@
 // import crypto from '@sphereon/isomorphic-webcrypto'
+import { globalCrypto } from '@sphereon/ssi-sdk-ext.key-utils'
 import { Ed25519KeyPair, Ed25519VerificationKey2018 } from '@transmute/ed25519-key-pair'
 import { JWS, Verifier } from '@transmute/jose-ld'
 import { EcdsaSecp256k1VerificationKey2019, Secp256k1KeyPair } from '@transmute/secp256k1-key-pair'
+import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021, WebCryptoKey } from '@transmute/web-crypto-key-pair'
+import { IAgentContext } from '@veramo/core'
+import Debug from 'debug'
 
 import { JsonWebKey as JWK } from 'did-resolver'
-
-const subtle = crypto.subtle
-
-import { JsonWebKey2020, P256Key2021, P384Key2021, P521Key2021, WebCryptoKey } from '@transmute/web-crypto-key-pair'
-import Debug from 'debug'
-import { IAgentContext } from '@veramo/core'
 import { RequiredAgentMethods } from '../../ld-suites'
+
+const subtle = (
+  typeof crypto !== 'undefined'
+    ? crypto
+    : typeof global?.crypto !== 'undefined'
+      ? global.crypto
+      : typeof global?.window?.crypto !== 'undefined'
+        ? global.window.crypto
+        : require('crypto')
+).subtle
 
 export { JsonWebKey2020 }
 
@@ -162,7 +170,7 @@ export class JsonWebKey {
     const KeyPair = getKeyPairForKtyAndCrv(options.kty, options.crv)
     if (!options.secureRandom) {
       options.secureRandom = () => {
-        return crypto.getRandomValues(new Uint8Array(32))
+        return globalCrypto(false).getRandomValues(new Uint8Array(32))
       }
     }
     const kp = await KeyPair.generate({

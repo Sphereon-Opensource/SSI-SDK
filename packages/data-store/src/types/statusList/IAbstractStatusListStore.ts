@@ -1,7 +1,7 @@
 import { FindOptionsWhere } from 'typeorm'
-import { IStatusListEntity, IStatusListEntryEntity } from './statusList'
+import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity, IStatusListEntryEntity } from './statusList'
 
-export type FindStatusListArgs = FindOptionsWhere<IStatusListEntity>[]
+export type FindStatusListArgs = FindOptionsWhere<IStatusList2021Entity | IOAuthStatusListEntity>[]
 export type FindStatusListEntryArgs = FindOptionsWhere<IStatusListEntryEntity>[] | FindOptionsWhere<IStatusListEntryEntity>
 
 export interface IStatusListEntryAvailableArgs {
@@ -12,8 +12,9 @@ export interface IStatusListEntryAvailableArgs {
 
 export interface IGetStatusListEntryByIndexArgs {
   statusListId?: string
-  correlationId?: string
-  statusListIndex: number
+  statusListCorrelationId?: string
+  statusListIndex?: number
+  entryCorrelationId?: string
   errorOnNotFound?: boolean
 }
 

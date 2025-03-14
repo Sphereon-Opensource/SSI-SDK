@@ -98,7 +98,7 @@ export function getMdocDecodedPayload(mdoc: MdocDocument): MdocDecodedPayload {
     throw Error(`Cannot access Issuer Signed items from the Mdoc`)
   }
 
-  const issuerSignedJson = mdocJson.issuerSigned.toJsonDTO<IssuerSignedJson>()
+  const issuerSignedJson = mdoc.issuerSigned.toJsonDTO()
   const namespaces = issuerSignedJson.nameSpaces as unknown as Record<string, IssuerSignedItemJson[]>
 
   const decodedPayload: MdocDecodedPayload = {}

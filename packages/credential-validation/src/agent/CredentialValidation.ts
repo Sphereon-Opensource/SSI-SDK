@@ -1,4 +1,17 @@
+import { com } from '@sphereon/kmp-mdoc-core'
+import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
+import {
+  CredentialMapper,
+  ICoseKeyJson,
+  ICredentialSchemaType,
+  IVerifyResult,
+  OriginalVerifiableCredential,
+  WrappedVerifiableCredential,
+} from '@sphereon/ssi-types'
 import { IAgentPlugin, IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
+import addFormats from 'ajv-formats'
+import Ajv2020 from 'ajv/dist/2020'
+import fetch from 'cross-fetch'
 import {
   CredentialVerificationError,
   ICredentialValidation,
@@ -12,22 +25,10 @@ import {
   VerifyMdocCredentialArgs,
   VerifySDJWTCredentialArgs,
 } from '../index'
-import {
-  CredentialMapper,
-  ICoseKeyJson,
-  ICredentialSchemaType,
-  IVerifyResult,
-  OriginalVerifiableCredential,
-  WrappedVerifiableCredential,
-} from '@sphereon/ssi-types'
-import fetch from 'cross-fetch'
-import Ajv2020 from 'ajv/dist/2020'
-import addFormats from 'ajv-formats'
-import { com } from '@sphereon/kmp-mdoc-core'
-import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
+import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
-import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 // Exposing the methods here for any REST implementation
 export const credentialValidationMethods: Array<string> = [
@@ -70,7 +71,7 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifyCredential(args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
-    const { credential, hasher, policies } = args
+    const { credential, hasher = defaultHasher, policies } = args
     // defaulting the schema validation to when_present
     const schemaResult = await this.cvVerifySchema({
       credential,
@@ -85,12 +86,18 @@ export class CredentialValidation implements IAgentPlugin {
     } else if (CredentialMapper.isSdJwtEncoded(credential)) {
       return await this.cvVerifySDJWTCredential({ credential, hasher }, context)
     } else {
-      return await this.cvVerifyW3CCredential({ ...args, credential: credential as VeramoW3CVerifiableCredential }, context)
+      return await this.cvVerifyW3CCredential(
+        {
+          ...args,
+          credential: credential as VeramoW3CVerifiableCredential,
+        },
+        context,
+      )
     }
   }
 
   private async cvVerifySchema(args: ValidateSchemaArgs): Promise<VerificationResult> {
-    const { credential, hasher, validationPolicy } = args
+    const { credential, hasher = defaultHasher, validationPolicy } = args
     const wrappedCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
     if (validationPolicy === SchemaValidation.NEVER) {
       return {
@@ -105,17 +112,22 @@ export class CredentialValidation implements IAgentPlugin {
   private async validateSchema(wrappedVC: WrappedVerifiableCredential, validationPolicy?: SchemaValidation): Promise<VerificationResult> {
     const schemas: ICredentialSchemaType[] | undefined = this.detectSchemas(wrappedVC)
     if (!schemas) {
-      return validationPolicy === SchemaValidation.ALWAYS
-        ? {
-            result: false,
-            source: wrappedVC,
-            subResults: [],
-          }
-        : {
-            result: true,
-            source: wrappedVC,
-            subResults: [],
-          }
+      if (validationPolicy === SchemaValidation.ALWAYS) {
+        console.error(
+          `No schema found for credential, but validation policy is set to ALWAYS. Returning false. Credential: ${JSON.stringify(wrappedVC.credential, null, 2)}`,
+        )
+        return {
+          result: false,
+          source: wrappedVC,
+          subResults: [],
+        }
+      } else {
+        return {
+          result: true,
+          source: wrappedVC,
+          subResults: [],
+        }
+      }
     }
 
     const subResults: VerificationSubResult[] = await Promise.all(schemas.map((schema) => this.verifyCredentialAgainstSchema(wrappedVC, schema)))
@@ -140,10 +152,11 @@ export class CredentialValidation implements IAgentPlugin {
     let schemaValue
     try {
       schemaValue = await this.fetchSchema(schemaUrl)
-    } catch (e) {
+    } catch (error) {
+      console.error(error)
       return {
         result: false,
-        error: e,
+        error: error,
       }
     }
 
@@ -152,6 +165,9 @@ export class CredentialValidation implements IAgentPlugin {
 
     const validate = await ajv.compileAsync(schemaValue)
     const valid = validate(wrappedVC.credential)
+    if (!valid) {
+      console.error(`Schema validation failed for `, wrappedVC.credential)
+    }
     return {
       result: valid,
     }
@@ -163,16 +179,17 @@ export class CredentialValidation implements IAgentPlugin {
     const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, com.sphereon.kmp.Encoding.BASE64URL))
 
     const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
+      console.error(error)
       return {
         name: 'mdoc',
         critical: true,
         error: true,
-        message: error.message ?? 'SD-JWT VC could not be verified',
+        message: error.message ?? 'Mdoc Issuer Signed VC could not be verified',
       } satisfies IVerifySignatureResult<ICoseKeyJson>
     })
 
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: defaultHasher }),
       result: !verification.error,
       subResults: [],
       ...(verification.error && {
@@ -190,7 +207,7 @@ export class CredentialValidation implements IAgentPlugin {
     if (typeof result === 'boolean') {
       return {
         // FIXME the source is never used, need to start using this as the source of truth
-        source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
+        source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential, { hasher: defaultHasher }),
         result,
         ...(!result && {
           error: 'Invalid JWT VC',
@@ -213,10 +230,11 @@ export class CredentialValidation implements IAgentPlugin {
             (errorDetails !== '' ? `${errorDetails}, ` : '') +
             result.error?.errors?.map((error) => (error?.details?.code ? `${error.details.code}, ` : '') + (error?.details?.url ?? '')).join(', ')
         }
+        console.error(error)
       }
 
       return {
-        source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
+        source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: defaultHasher }),
         result: result.verified,
         subResults,
         error,
@@ -226,11 +244,12 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifySDJWTCredential(args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
-    const { credential, hasher } = args
+    const { credential, hasher = defaultHasher } = args
 
     const verification: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
       .verifySdJwtVc({ credential })
       .catch((error: Error): CredentialVerificationError => {
+        console.error(error)
         return {
           error: 'Invalid SD-JWT VC',
           errorDetails: error.message ?? 'SD-JWT VC could not be verified',
@@ -239,7 +258,7 @@ export class CredentialValidation implements IAgentPlugin {
 
     const result = 'header' in verification && 'payload' in verification
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: hasher ?? defaultHasher }),
       result,
       subResults: [],
       ...(!result && { ...verification }),

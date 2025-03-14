@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api",
-  "version": "0.30.1",
+  "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.16.1-next.224",
+    "@sphereon/did-auth-siop": "0.17.0",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",
@@ -23,6 +23,7 @@
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
+    "awesome-qr": "^2.1.5-rc.0",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -30,14 +31,16 @@
     "dotenv-flow": "^3.3.0",
     "express": "^4.19.2",
     "short-uuid": "^4.2.2",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
+    "@sphereon/did-auth-siop-adapter": "0.17.0",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.26.0",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.0",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@types/body-parser": "^1.19.5",
@@ -51,6 +54,7 @@
     "@types/node": "^20.17.1",
     "@types/passport": "^1.0.16",
     "@types/passport-http-bearer": "^1.0.41",
+    "@types/swagger-ui-express": "^4.1.7",
     "@types/uuid": "^9.0.8",
     "@veramo/data-store": "4.2.0",
     "@veramo/did-manager": "4.2.0",
@@ -62,13 +66,14 @@
     "@veramo/key-manager": "4.2.0",
     "@veramo/kms-local": "4.2.0",
     "@veramo/utils": "4.2.0",
+    "debug": "^4.4.0",
     "did-resolver": "^4.1.0",
     "morgan": "^1.10.0",
     "nock": "^13.5.4",
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.21"
   },
   "files": [
     ".yalc/**/*",

@@ -2,15 +2,15 @@ import { PresentationDefinitionWithLocation, PresentationExchange } from '@spher
 import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
 import { Format } from '@sphereon/pex-models'
 import {
-  isOID4VCIssuerIdentifier,
   isManagedIdentifierDidResult,
+  isOID4VCIssuerIdentifier,
   ManagedIdentifierOptsOrResult,
   ManagedIdentifierResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { ProofOptions } from '@sphereon/ssi-sdk.core'
+import { defaultHasher, ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
-import { CompactJWT, Hasher, IProof, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import { CompactJWT, HasherSync, IProof, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import {
   DEFAULT_JWT_PROOF_TYPE,
   IGetPresentationExchangeArgs,
@@ -24,17 +24,17 @@ import { OpSession } from './OpSession'
 export class OID4VP {
   private readonly session: OpSession
   private readonly allIdentifiers: string[]
-  private readonly hasher?: Hasher
+  private readonly hasher?: HasherSync
 
   private constructor(args: IOID4VPArgs) {
-    const { session, allIdentifiers, hasher } = args
+    const { session, allIdentifiers, hasher = defaultHasher } = args
 
     this.session = session
     this.allIdentifiers = allIdentifiers ?? []
     this.hasher = hasher
   }
 
-  public static async init(session: OpSession, allIdentifiers: string[], hasher?: Hasher): Promise<OID4VP> {
+  public static async init(session: OpSession, allIdentifiers: string[], hasher?: HasherSync): Promise<OID4VP> {
     return new OID4VP({ session, allIdentifiers: allIdentifiers ?? (await session.getSupportedDIDs()), hasher })
   }
 
@@ -68,7 +68,7 @@ export class OID4VP {
       skipDidResolution?: boolean
       holderDID?: string
       subjectIsHolder?: boolean
-      hasher?: Hasher
+      hasher?: HasherSync
       applyFilter?: boolean
     },
   ): Promise<VerifiablePresentationWithDefinition[]> {
@@ -88,7 +88,7 @@ export class OID4VP {
       holder?: string
       subjectIsHolder?: boolean
       applyFilter?: boolean
-      hasher?: Hasher
+      hasher?: HasherSync
     },
   ): Promise<VerifiablePresentationWithDefinition> {
     const { subjectIsHolder, holder, forceNoCredentialsInVP = false } = { ...opts }

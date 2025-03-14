@@ -1,6 +1,5 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { IVerifiablePresentation } from '@sphereon/ssi-types'
-import { createHash } from 'crypto'
 import { DataSource } from 'typeorm'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
@@ -15,6 +14,7 @@ import {
   GetCredentialsArgs,
   GetCredentialsResponse,
 } from '../types'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -188,7 +188,7 @@ describe('Database entities tests', (): void => {
       credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
       opts: {
-        hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),
+        hasher: defaultHasher,
       },
     }
 

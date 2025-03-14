@@ -1,13 +1,7 @@
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { IAgentPlugin } from '@veramo/core'
 import { CountryResponse, Reader } from 'mmdb-lib'
-import {
-  AnomalyDetectionLookupLocationArgs,
-  AnomalyDetectionLookupLocationResult,
-  IAnomalyDetection,
-  IRequiredContext,
-  schema
-} from '../index'
+import { AnomalyDetectionLookupLocationArgs, AnomalyDetectionLookupLocationResult, IAnomalyDetection, IRequiredContext, schema } from '../index'
 
 type DnsLookupFn = (hostname: string) => Promise<string>
 
@@ -21,7 +15,7 @@ export class AnomalyDetection implements IAgentPlugin {
   private readonly db: Uint8Array
   private readonly dnsLookup?: DnsLookupFn
   readonly methods: IAnomalyDetection = {
-    anomalyDetectionLookupLocation: this.anomalyDetectionLookupLocation.bind(this)
+    anomalyDetectionLookupLocation: this.anomalyDetectionLookupLocation.bind(this),
   }
 
   constructor(args: { geoIpDB: Uint8Array; dnsLookupCallback?: DnsLookupFn }) {
@@ -35,7 +29,7 @@ export class AnomalyDetection implements IAgentPlugin {
 
   private async anomalyDetectionLookupLocation(
     args: AnomalyDetectionLookupLocationArgs,
-    context: IRequiredContext
+    context: IRequiredContext,
   ): Promise<AnomalyDetectionLookupLocationResult> {
     const { ipOrHostname, storeId, namespace } = { ...args }
     const reader = new Reader<CountryResponse>(Buffer.from(this.db))
@@ -53,7 +47,7 @@ export class AnomalyDetection implements IAgentPlugin {
 
     const lookupResult = {
       continent: result?.continent?.code,
-      country: result?.country?.iso_code
+      country: result?.country?.iso_code,
     }
 
     if (contextHasPlugin(context, 'geolocationStorePersistLocation'))
@@ -61,7 +55,7 @@ export class AnomalyDetection implements IAgentPlugin {
         namespace,
         storeId,
         ipOrHostname,
-        locationArgs: lookupResult
+        locationArgs: lookupResult,
       })
     return Promise.resolve(lookupResult)
   }
@@ -78,7 +72,7 @@ export class AnomalyDetection implements IAgentPlugin {
     } catch (e) {
       console.error(e)
       throw new Error(
-        `DNS resolution not available on this platform, use the dnsLookupCallback in the AnomalyDetection constructor to implement DNS resolution for your platform.\r\n${e.message}`
+        `DNS resolution not available on this platform, use the dnsLookupCallback in the AnomalyDetection constructor to implement DNS resolution for your platform.\r\n${e.message}`,
       )
     }
 

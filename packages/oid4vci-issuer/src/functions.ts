@@ -3,56 +3,94 @@ import {
   CredentialRequest,
   IssuerMetadata,
   Jwt,
+  JWTHeader,
+  JWTPayload,
   JwtVerifyResult,
   OID4VCICredentialFormat,
+  StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
+import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
-import { CredentialPayload, DIDDocument, ProofFormat } from '@veramo/core'
+import { CredentialPayload, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
+import { jwtDecode } from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
-import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
+import fetch from 'cross-fetch'
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
-  return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult<DIDDocument>> => {
+  return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult> => {
     const resolver = getAgentResolver(_context, {
       resolverResolution: true,
       uniresolverResolution: true,
       localResolution: true,
     })
-    verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver seperately as that is a function
+    verifyOpts = { ...verifyOpts, resolver: verifyOpts?.resolver } // Resolver separately as that is a function
     if (!verifyOpts?.resolver || typeof verifyOpts?.resolver?.resolve !== 'function') {
       verifyOpts.resolver = resolver
     }
-    const result = await verifyJWT(args.jwt, verifyOpts)
-    if (!result.verified) {
+    const result = await _context.agent.jwtVerifyJwsSignature({ jws: args.jwt })
+    if (!result.error) {
+      const identifier = result.jws.signatures[0].identifier
+      if (!identifier) {
+        return Promise.reject(Error('the jws did not contain a signature with an identifier'))
+      }
+      const jwkInfo = identifier.jwks[0]
+      if (!jwkInfo) {
+        return Promise.reject(Error(`the identifier of type ${identifier.method} is missing jwks (ExternalJwkInfo)`))
+      }
+      const { alg } = jwkInfo.jwk
+      const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
+      const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
+      const kid = args.kid ?? header.kid
+      //const jwk = !kid ? jwkInfo.jwk : undefined // TODO double-check if this is correct
+      const jwk = jwkInfo.jwk // FIXME workaround IATAB2B-57
+      return {
+        alg,
+        ...identifier,
+        jwt: { header, payload },
+        ...(kid && { kid }),
+        ...(jwk && { jwk }),
+      } as JwtVerifyResult
+    }
+
+    const decodedJwt = (await decodeJWT(args.jwt)) as Jwt
+    const kid = args.kid ?? decodedJwt.header.kid
+
+    if (!kid || !kid.startsWith('did:')) {
+      // No DID method present in header. We already performed the validation above. So return that
+      return {
+        alg: decodedJwt.header.alg,
+        jwt: decodedJwt,
+      } as JwtVerifyResult
+    }
+    const did = kid.split('#')[0]
+
+    const didResult = await verifyJWT(args.jwt, verifyOpts)
+    if (!didResult.verified) {
       console.log(`JWT invalid: ${args.jwt}`)
       throw Error('JWT did not verify successfully')
     }
-    const jwt = (await decodeJWT(args.jwt)) as Jwt
-    const kid = args.kid ?? jwt.header.kid
-    if (!kid) {
-      throw Error('No kid value found')
-    }
-    const did = kid.split('#')[0]
+
     const didResolution = await resolver.resolve(did)
     if (!didResolution || !didResolution.didDocument) {
       throw Error(`Could not resolve did: ${did}, metadata: ${didResolution?.didResolutionMetadata}`)
     }
-    const didDocument = didResolution.didDocument
-    const alg = jwt.header.alg
+
+    const alg = decodedJwt.header.alg
     return {
       alg,
       kid,
       did,
-      didDocument,
-      jwt,
+      didDocument: didResolution.didDocument,
+      jwt: decodedJwt,
     }
   }
 }
@@ -122,11 +160,25 @@ export async function getAccessTokenSignerCallback(
   }
 
   async function accessTokenSignerCallback(jwt: Jwt, kid?: string): Promise<string> {
-    const issuer = opts?.iss ?? opts.didOpts?.idOpts?.identifier.toString()
+    const issuer =
+      opts.idOpts?.issuer ??
+      (typeof opts.idOpts?.identifier === 'string' ? opts.idOpts.identifier : (opts.didOpts?.idOpts?.identifier?.toString() ?? opts?.iss))
     if (!issuer) {
       throw Error('No issuer configured for access tokens')
     }
-    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, typ: 'JWT' })
+
+    let kidHeader: string | undefined = jwt?.header?.kid ?? kid
+    if (!kidHeader) {
+      if (
+        opts.idOpts?.method === 'did' ||
+        opts.idOpts?.method === 'kid' ||
+        (typeof opts.didOpts?.idOpts.identifier === 'string' && opts.didOpts?.idOpts?.identifier?.startsWith('did:'))
+      ) {
+        // @ts-ignore
+        kidHeader = opts.idOpts?.kid ?? opts.didOpts?.idOpts?.kid ?? opts?.didOpts?.identifierOpts?.kid
+      }
+    }
+    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT' })
   }
 
   return accessTokenSignerCallback
@@ -137,14 +189,15 @@ export async function getCredentialSignerCallback(
     crypto?: Crypto
   },
   context: IRequiredContext,
-): Promise<CredentialSignerCallback<DIDDocument>> {
+): Promise<CredentialSignerCallback> {
   async function issueVCCallback(args: {
     credentialRequest: CredentialRequest
     credential: CredentialIssuanceInput
-    jwtVerifyResult: JwtVerifyResult<DIDDocument>
+    jwtVerifyResult: JwtVerifyResult
     format?: OID4VCICredentialFormat
+    statusLists?: Array<StatusListOpts>
   }): Promise<W3CVerifiableCredential | CompactSdJwtVc> {
-    const { jwtVerifyResult, format } = args
+    const { jwtVerifyResult, format, statusLists } = args
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
@@ -171,9 +224,10 @@ export async function getCredentialSignerCallback(
       // TODO: We should extend the plugin capabilities of issuance so we do not have to tuck this into the sign callback
       if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToCredential')) {
         // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
-        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential })
+        const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusLists })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
+          // TODO update statusLists somehow?
         }
       }
 
@@ -204,6 +258,28 @@ export async function getCredentialSignerCallback(
           _sd: credential['_sd'],
         }
       }
+
+      if (contextHasPlugin<IStatusListPlugin>(context, 'slAddStatusToSdJwtCredential')) {
+        if ((sdJwtPayload.status && sdJwtPayload.status.status_list) || (statusLists && statusLists.length > 0)) {
+          // Add status list if enabled (and when the input has a credentialStatus object (can be empty))
+          const sdJwtPayloadWithStatus = await context.agent.slAddStatusToSdJwtCredential({ credential: sdJwtPayload, statusLists })
+          if (sdJwtPayload.status?.status_list?.idx) {
+            if (!sdJwtPayloadWithStatus.status || !sdJwtPayloadWithStatus.status.status_list) {
+              // sdJwtPayload and sdJwtPayloadWithStatus is the same for now, but we should use the result anyway as this could be subject to change
+              return Promise.reject(Error('slAddStatusToSdJwtCredential did not return a status_list'))
+            }
+
+            // Update statusListId & statusListIndex back to the credential session TODO SSISDK-4 This is not a clean way to do this.
+            if (statusLists && statusLists.length > 0) {
+              const statusList = statusLists[0]
+              statusList.statusListId = sdJwtPayloadWithStatus.status.status_list.uri
+              statusList.statusListIndex = sdJwtPayloadWithStatus.status.status_list.idx
+            }
+            sdJwtPayload.status.status_list.idx = sdJwtPayloadWithStatus.status.status_list.idx
+          }
+        }
+      }
+
       const result = await context.agent.createSdJwtVc({
         credentialPayload: sdJwtPayload,
         disclosureFrame: disclosureFrame,
@@ -228,10 +304,10 @@ export async function createVciIssuerBuilder(
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
-): Promise<VcIssuerBuilder<DIDDocument>> {
+): Promise<VcIssuerBuilder> {
   const { issuerOpts, issuerMetadata, authorizationServerMetadata } = args
 
-  const builder = new VcIssuerBuilder<DIDDocument>()
+  const builder = new VcIssuerBuilder()
   // @ts-ignore
   const resolver =
     args.resolver ??
@@ -252,14 +328,23 @@ export async function createVciIssuerBuilder(
   builder.withAuthorizationMetadata(authorizationServerMetadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
+
+  if (issuerOpts.asClientOpts) {
+    builder.withASClientMetadata(issuerOpts.asClientOpts)
+    // @ts-ignore
+    // const authorizationServer = issuerMetadata.authorization_servers[0] as string
+    // Set the OIDC verifier
+    // builder.withJWTVerifyCallback(oidcAccessTokenVerifyCallback({clientMetadata: issuerOpts.asClientOpts, credentialIssuer: issuerMetadata.credential_issuer as string, authorizationServer}))
+  }
+  // Do not use it when asClient is used
   builder.withJWTVerifyCallback(getJwtVerifyCallback({ verifyOpts: jwtVerifyOpts }, context))
+
   if (args.credentialDataSupplier) {
     builder.withCredentialDataSupplier(args.credentialDataSupplier)
   }
   builder.withInMemoryCNonceState()
   builder.withInMemoryCredentialOfferState()
   builder.withInMemoryCredentialOfferURIState()
-  builder.build()
 
   return builder
 }
@@ -277,6 +362,71 @@ export async function createVciIssuer(
     credentialDataSupplier?: CredentialDataSupplier
   },
   context: IRequiredContext,
-): Promise<VcIssuer<DIDDocument>> {
-  return (await createVciIssuerBuilder({ issuerOpts, issuerMetadata, authorizationServerMetadata, credentialDataSupplier }, context)).build()
+): Promise<VcIssuer> {
+  return (
+    await createVciIssuerBuilder(
+      {
+        issuerOpts,
+        issuerMetadata,
+        authorizationServerMetadata,
+        credentialDataSupplier,
+      },
+      context,
+    )
+  ).build()
+}
+
+export async function createAuthRequestUriCallback(opts: { path: string; presentationDefinitionId: string }): Promise<() => Promise<string>> {
+  async function authRequestUriCallback(): Promise<string> {
+    const path = opts.path.replace(':definitionId', opts.presentationDefinitionId)
+    return fetch(path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(async (response): Promise<string> => {
+      if (response.status >= 400) {
+        return Promise.reject(Error(await response.text()))
+      } else {
+        const responseData = await response.json()
+
+        if (!responseData.authRequestURI) {
+          return Promise.reject(Error('Missing auth request uri in response body'))
+        }
+
+        return responseData.authRequestURI
+      }
+    })
+  }
+
+  return authRequestUriCallback
+}
+
+export async function createVerifyAuthResponseCallback(opts: {
+  path: string
+  presentationDefinitionId: string
+}): Promise<(correlationId: string) => Promise<boolean>> {
+  async function verifyAuthResponseCallback(correlationId: string): Promise<boolean> {
+    return fetch(opts.path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ definitionId: opts.presentationDefinitionId, correlationId }),
+    }).then(async (response): Promise<boolean> => {
+      if (response.status >= 400) {
+        return Promise.reject(Error(await response.text()))
+      } else {
+        const responseData = await response.json()
+
+        if (!responseData.status) {
+          return Promise.reject(Error('Missing status in response body'))
+        }
+
+        return responseData.status === AuthorizationResponseStateStatus.VERIFIED
+      }
+    })
+  }
+
+  return verifyAuthResponseCallback
 }

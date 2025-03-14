@@ -20,7 +20,7 @@ export interface ICredential {
   expirationDate?: string
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
-  credentialStatus?: ICredentialStatus
+  credentialStatus?: ICredentialStatus // ArrayOr<ICredentialStatus>  TODO this is only true for VCDM v2.0  SSISDK-2
   description?: string
   name?: string
 
@@ -276,9 +276,11 @@ export interface IErrorDetails {
   cause?: IError
 }
 
+/* FIXME figurae out how to handle this, we can't have duplicates and we need one in ssi-types for the data store logic
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
 }
+*/
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 

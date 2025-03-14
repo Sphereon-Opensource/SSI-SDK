@@ -7,7 +7,7 @@ import {
   UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store'
 import {
-  Hasher,
+  HasherSync,
   ICredential,
   IPresentation,
   IVerifiableCredential,
@@ -121,7 +121,7 @@ export type AddDigitalCredential = Omit<
 
 export type AddCredentialArgs = {
   credential: AddDigitalCredential
-  opts?: { maxTimeSkewInMS?: number; hasher?: Hasher }
+  opts?: { maxTimeSkewInMS?: number; hasher?: HasherSync }
 }
 
 export interface UniqueDigitalCredential {
