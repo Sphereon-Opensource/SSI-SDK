@@ -28,7 +28,7 @@
     "@types/express-serve-static-core": "^4.19.5",
     "@types/http-terminator": "^2.0.5",
     "@types/semver": "^7.5.8",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.21"
   },
   "files": [
     "dist/**/*",

@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.prod.contactlesstravel.iata.org/BoardingPassVC.json",
+  "title": "Boarding Pass",
+  "description": "Verifiable Credential for a boarding pass.",
+  "type": "object",
+  "required": ["boardingPass", "iss", "iat", "vct", "cnf"],
+  "properties": {
+    "boardingPass": {
+      "title": "Boarding Pass",
+      "description": "A type of accountable document, given to a passenger during check-in, that gives the passenger authorization to board aircraft for a specific set of flights.",
+      "type": "object",
+      "required": ["barcodeString", "paxName", "paxSegments", "segmentCount", "ticketLessOrElectronicTicketInd"],
+      "properties": {
+        "barcodeString": {
+          "title": "Barcode String",
+          "description": "Encoded string containing the entire barcode of the boarding pass. Format as ASCII hexadecimal.",
+          "type": "string"
+        },
+        "paxName": {
+          "title": "Passenger Name",
+          "description": "Full name of the passenger. Surname of passenger followed by an oblique and the given name, when available.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "segmentCount": {
+          "title": "Segment Count",
+          "description": "Number of segments on the boarding pass.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "ticketLessOrElectronicTicketInd": {
+          "title": "Ticketless or Electronic Ticket Indicator",
+          "description": "Indicates if the boarding pass is issued against an electronic ticket or is ticketless. 'E' indicates electronic ticket, and 'L' indicates ticketless.",
+          "type": "string",
+          "maxLength": 1,
+          "enum": ["E", "L"]
+        },
+        "paxSegments": {
+          "title": "Passenger Segments",
+          "description": "Transportation of a passenger on a Dated Operating Segment.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "bookingRefID",
+              "checkInOrdinal",
+              "compartmentTypeCode",
+              "destStationIATALocationCode",
+              "flightIdentifierDate",
+              "operatingCarrierAirlineDesigCode",
+              "operatingCarrierFlightNumber",
+              "originStationIATALocationCode",
+              "paxRelatedStatusCode",
+              "seatAssignmentStatusOrSeatNumberCode"
+            ],
+            "properties": {
+              "bookingRefID": {
+                "title": "Booking Reference Identifier",
+                "description": "Booking reference, also called Record Locator or PNR Code, of the operating carrier.",
+                "type": "string",
+                "maxLength": 7
+              },
+              "checkInOrdinal": {
+                "title": "Check-In Sequence Number",
+                "description": "The ordinal in which the passenger checked in for the flight. Usually appears as 4 numerics and an optional alpha or a blank.",
+                "type": "string",
+                "maxLength": 5
+              },
+              "compartmentTypeCode": {
+                "title": "Compartment Type Code",
+                "description": "Code of the class of compartment in an operational context, not the booking fare class.",
+                "type": "string",
+                "maxLength": 1
+              },
+              "destStationIATALocationCode": {
+                "title": "Destination Station IATA Location Code",
+                "description": "IATA location code for the arrival station.",
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              "flightIdentifierDate": {
+                "title": "Flight Identifier Date",
+                "description": "Day in the year of the scheduled aircraft departure from the station of origin; expressed as Julian Date.",
+                "type": "string",
+                "pattern": "^[0-9]{3}$"
+              },
+              "operatingCarrierAirlineDesigCode": {
+                "title": "Operating Carrier Airline Designator Code",
+                "description": "The IATA Airline code or ICAO Airline code of the operating airline.",
+                "type": "string",
+                "pattern": "^([A-Z]{3}|[A-Z]{2})|([0-9][A-Z])|([A-Z][0-9])$"
+              },
+              "operatingCarrierFlightNumber": {
+                "title": "Operating Carrier Flight Number",
+                "description": "The numerical designation of a flight as assigned by the operating carrier.",
+                "type": "string",
+                "pattern": "^[0-9]{1,4}$"
+              },
+              "originStationIATALocationCode": {
+                "title": "Origin Station IATA Location Code",
+                "description": "IATA location code for the departure station.",
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              "paxRelatedStatusCode": {
+                "title": "Passenger Related Status Code",
+                "description": "Combination of passenger, baggage item(s), ticket and other statuses and process directives.",
+                "type": "string",
+                "pattern": "^[0-9A-Z]$"
+              },
+              "seatAssignmentStatusOrSeatNumberCode": {
+                "title": "Seat Assignment Status or Seat Number Code",
+                "description": "Seat Number assigned to the passenger or the word GATE if the seat has not been allocated.",
+                "type": "string",
+                "maxLength": 4
+              }
+            }
+          }
+        }
+      }
+    },
+    "iss": {
+      "title": "Issuer",
+      "description": "URI identifying the issuer of the credential.",
+      "type": "string",
+      "format": "uri"
+    },
+    "iat": {
+      "title": "Issued At",
+      "description": "The time at which the credential was issued (Unix timestamp).",
+      "type": "integer"
+    },
+    "exp": {
+      "title": "Expiration",
+      "description": "The time at which the credential expires (Unix timestamp).",
+      "type": "integer"
+    },
+    "vct": {
+      "title": "Verifiable Credential Type",
+      "description": "A URI or string identifying the type or context of this credential.",
+      "type": "string"
+    },
+    "cnf": {
+      "title": "Confirmation",
+      "description": "Proof-of-possession key information used to bind the credential to a specific holder.",
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "name": "ePassport Verifiable Credential",
+  "schema_uri": "https://iata.trustregistry.nborbit.ca/.well-known/schema/epassport.json",
+  "schema_uri#integrity": "sha256-ro3/ER87HPcrdV1JliUeH5JRDKNO+PThBd1gMf84EKc",
+  "vct": "https://iata.trustregistry.nborbit.ca/epassport",
+  "description": "A Verifiable Credential for an ePassport.",
+  "display": [
+    {
+      "description": "A Verifiable Credential for an ePassport.",
+      "lang": "en-US",
+      "name": "ePassport Verifiable Credential",
+      "rendering": {
+        "simple": {
+          "background_color": "#CB2210",
+          "logo": {
+            "alt_text": "ePassport Verifiable Credential Logo",
+            "uri": "https://iata.trustregistry.nborbit.ca/logo/epassport-logo.png",
+            "uri#integrity": "sha256-SSp0p9SBIotc7FIi/pkqbMthx4Gmx+g+IXnMdOOQXl4"
+          },
+          "text_color": "#F9F9F9"
+        },
+        "svg_template": {
+          "properties": {
+            "color_scheme": "light",
+            "contrast": "high",
+            "orientation": "landscape"
+          },
+          "uri": "https://iata.trustregistry.nborbit.ca/svg/epassport.svg",
+          "uri#integrity": "sha256-+2b8yT2jzbRuoHh5KnI6RzorWNTN/eL67ZvEV+abEfA"
+        }
+      }
+    }
+  ],
+  "claims": [
+    {
+      "display": [
+        {
+          "description": "Information about the electronic passport.",
+          "label": "Electronic Passport",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport"]
+    },
+    {
+      "display": [
+        {
+          "description": "Data Group 1 of the electronic passport.",
+          "label": "Data Group 1",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1"]
+    },
+    {
+      "display": [
+        {
+          "description": "Date of birth of the passport holder.",
+          "label": "Birthdate",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "birthdate"]
+    },
+    {
+      "display": [
+        {
+          "description": "Document type code, such as 'P' for an ePassport.",
+          "label": "Document Type Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "docTypeCode"]
+    },
+    {
+      "display": [
+        {
+          "description": "Expiry date of the ePassport.",
+          "label": "Expiry Date",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "expiryDate"]
+    },
+    {
+      "display": [
+        {
+          "description": "Sex of the passport holder.",
+          "label": "Sex Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "sexCode"]
+    },
+    {
+      "display": [
+        {
+          "description": "Full name of the passport holder.",
+          "label": "Holder's Name",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "holdersName"]
+    },
+    {
+      "display": [
+        {
+          "description": "Issuer code of the ePassport.",
+          "label": "Issuer Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "issuerCode"]
+    },
+    {
+      "display": [
+        {
+          "description": "Nationality code of the passport holder.",
+          "label": "Nationality Code",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "natlCode"]
+    },
+    {
+      "display": [
+        {
+          "description": "Unique identifier for the passport.",
+          "label": "Passport Number",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup1", "passportNumberIdentifier"]
+    },
+    {
+      "display": [
+        {
+          "description": "Encoded face biometric data from Data Group 2.",
+          "label": "Encoded Face Biometrics",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup2EncodedFaceBiometrics", "faceBiometricDataEncodedPicture"]
+    },
+    {
+      "display": [
+        {
+          "description": "Data group 15 containing the public key for active authentication.",
+          "label": "Data Group 15",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup15"]
+    },
+    {
+      "display": [
+        {
+          "description": "Public key for active authentication.",
+          "label": "Active Authentication Public Key",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "dataGroup15", "activeAuthentication", "publicKeyBinaryObject"]
+    },
+    {
+      "display": [
+        {
+          "description": "Document security object containing hashing information.",
+          "label": "Document Security Object",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "docSecurityObject"]
+    },
+    {
+      "display": [
+        {
+          "description": "Digest hash algorithm used for the document security object.",
+          "label": "Digest Hash Algorithm",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "docSecurityObject", "digestHashAlgorithmIdentifier"]
+    },
+    {
+      "display": [
+        {
+          "description": "Version number of the document security object.",
+          "label": "Version Number",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "docSecurityObject", "versionNumber"]
+    },
+    {
+      "display": [
+        {
+          "description": "Data group hash values within the document security object.",
+          "label": "Data Group Hash",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "docSecurityObject", "dataGroupHash", null]
+    },
+    {
+      "display": [
+        {
+          "description": "Data group number for the hash.",
+          "label": "Data Group Number",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "docSecurityObject", "dataGroupHash", null, "dataGroupNumber"]
+    },
+    {
+      "display": [
+        {
+          "description": "Hash value for the data group.",
+          "label": "Hash Value",
+          "lang": "en-US"
+        }
+      ],
+      "path": ["electronicPassport", "docSecurityObject", "dataGroupHash", null, "valueBinaryObject"]
+    }
+  ]
+}

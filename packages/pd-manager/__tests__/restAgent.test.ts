@@ -12,7 +12,7 @@ import pdManagerAgentLogic from './shared/pdManagerAgentLogic'
 
 jest.setTimeout(60000)
 
-const port = 4102
+const port = 4502
 const basePath = '/agent'
 
 let serverAgent: IAgent

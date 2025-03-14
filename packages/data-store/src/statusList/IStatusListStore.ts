@@ -1,4 +1,4 @@
-import { StatusListEntryEntity } from '../entities/statusList2021/StatusList2021EntryEntity'
+import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
@@ -18,7 +18,7 @@ export interface IStatusListStore {
 
   getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity>>
 
-  removeStatusList(args: IRemoveStatusListArgs): Promise<void>
+  removeStatusList(args: IRemoveStatusListArgs): Promise<boolean>
 
   addStatusList(args: IAddStatusListArgs): Promise<IStatusListEntity>
 

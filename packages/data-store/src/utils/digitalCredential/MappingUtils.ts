@@ -19,6 +19,7 @@ import {
   RegulationType,
 } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)
@@ -123,14 +124,14 @@ const safeStringify = (object: any): string => {
 export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs: AddCredentialArgs): NonPersistedDigitalCredential => {
   const documentType: DocumentType = determineDocumentType(addCredentialArgs.rawDocument)
   const documentFormat: DocumentFormat = CredentialMapper.detectDocumentType(addCredentialArgs.rawDocument)
+  const hasher = addCredentialArgs?.opts?.hasher ?? defaultHasher
   if (documentFormat === DocumentFormat.SD_JWT_VC && !addCredentialArgs.opts?.hasher) {
     throw new Error('No hasher function is provided for SD_JWT credential.')
   }
-  const hasher = addCredentialArgs.opts?.hasher
   const uniformDocument =
     documentType === DocumentType.VC || documentType === DocumentType.C
       ? CredentialMapper.toUniformCredential(addCredentialArgs.rawDocument, { hasher })
-      : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument)
+      : CredentialMapper.toUniformPresentation(addCredentialArgs.rawDocument, { hasher })
   const validFrom: Date | undefined = getValidFrom(uniformDocument)
   const validUntil: Date | undefined = getValidUntil(uniformDocument)
   const hash = computeEntryHash(addCredentialArgs.rawDocument)

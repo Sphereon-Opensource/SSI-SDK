@@ -16,8 +16,8 @@ import { ImageDimensionsEntity } from './entities/issuanceBranding/ImageDimensio
 import { IssuerLocaleBrandingEntity } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { IssuerBrandingEntity } from './entities/issuanceBranding/IssuerBrandingEntity'
 import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributesEntity'
-import { StatusListEntity } from './entities/statusList2021/StatusList2021Entity'
-import { StatusListEntryEntity } from './entities/statusList2021/StatusList2021EntryEntity'
+import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from './entities/statusList/StatusListEntities'
+import { StatusListEntryEntity } from './entities/statusList/StatusList2021EntryEntity'
 import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
 import { IStatusListEntity, IStatusListEntryEntity } from './types'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
@@ -31,6 +31,8 @@ import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCre
 import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
+
+import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity'
 
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
@@ -81,6 +83,7 @@ export const DataStoreContactEntities = [
   ContactMetadataItemEntity,
 ]
 
+export const DataStoreOid4vcStateEntities = [Oid4vcStateEntity]
 export const DataStoreIssuanceBrandingEntities = [
   BackgroundAttributesEntity,
   CredentialBrandingEntity,
@@ -96,7 +99,7 @@ export const DataStoreIssuanceBrandingEntities = [
 
 export const DataStorePresentationDefinitionEntities = [PresentationDefinitionItemEntity]
 
-export const DataStoreStatusListEntities = [StatusListEntity, StatusListEntryEntity]
+export const DataStoreStatusListEntities = [StatusListEntity, StatusList2021Entity, OAuthStatusListEntity, StatusListEntryEntity]
 
 export const DataStoreEventLoggerEntities = [AuditEventEntity]
 
@@ -113,6 +116,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
+  // ...DataStoreOid4vcStateEntities,
 ]
 
 export {
@@ -146,4 +150,5 @@ export {
   PresentationDefinitionItemEntity,
   ContactMetadataItemEntity,
   CredentialClaimsEntity,
+  Oid4vcStateEntity,
 }

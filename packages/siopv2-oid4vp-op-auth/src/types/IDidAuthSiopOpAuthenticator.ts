@@ -1,4 +1,5 @@
 import {
+  DcqlResponseOpts,
   PresentationDefinitionWithLocation,
   PresentationSignCallback,
   ResponseMode,
@@ -18,7 +19,7 @@ import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.cre
 import { Party } from '@sphereon/ssi-sdk.data-store'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { Hasher, OriginalVerifiableCredential, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { HasherSync, OriginalVerifiableCredential, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import {
   IAgentContext,
@@ -122,7 +123,9 @@ export interface IOpsSendSiopAuthorizationResponseArgs {
   // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
-  hasher?: Hasher
+  dcqlResponse?: DcqlResponseOpts
+  hasher?: HasherSync
+  isFirstParty?: boolean
 }
 
 export enum events {
@@ -159,7 +162,7 @@ export interface IOPOptions {
   presentationSignCallback?: PresentationSignCallback
 
   resolveOpts?: ResolveOpts
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 /*
@@ -182,19 +185,30 @@ export interface VerifiablePresentationWithDefinition extends VerifiablePresenta
 
 export interface IOpSessionGetOID4VPArgs {
   allIdentifiers?: string[]
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export interface IOID4VPArgs {
   session: OpSession
   allIdentifiers?: string[]
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export interface IGetPresentationExchangeArgs {
   verifiableCredentials: OriginalVerifiableCredential[]
   allIdentifiers?: string[]
-  hasher?: Hasher
+  hasher?: HasherSync
 }
+
+// It was added here because it's not exported from DCQL anymore
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | {
+      [key: string]: Json
+    }
+  | Json[]
 
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

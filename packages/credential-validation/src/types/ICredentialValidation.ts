@@ -1,5 +1,5 @@
 import { IAgentContext, ICredentialVerifier, IPluginMethodMap } from '@veramo/core'
-import { Hasher, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
+import { HasherSync, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types/dist'
 
@@ -19,7 +19,7 @@ export enum SchemaValidation {
 
 export type VerifyCredentialArgs = {
   credential: OriginalVerifiableCredential
-  hasher?: Hasher
+  hasher?: HasherSync
   fetchRemoteContexts: boolean
   policies?: VerificationPolicies
 }
@@ -34,14 +34,14 @@ export type VerificationPolicies = {
 export type ValidateSchemaArgs = {
   credential: OriginalVerifiableCredential
   validationPolicy?: SchemaValidation
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export type VerifyMdocCredentialArgs = { credential: string }
 
 export type VerifySDJWTCredentialArgs = {
   credential: string
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export type VerifyW3CCredentialArgs = {}

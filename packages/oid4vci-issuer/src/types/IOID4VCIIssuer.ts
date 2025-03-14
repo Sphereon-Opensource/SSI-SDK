@@ -1,14 +1,18 @@
 import {
   AccessTokenRequest,
   AccessTokenResponse,
+  ClientMetadata,
   CredentialConfigurationSupported,
   CredentialDataSupplierInput,
   CredentialIssuerMetadataOpts,
+  CredentialOfferMode,
   CredentialOfferSession,
   CredentialRequest,
   CredentialResponse,
   Grant,
   JsonLdIssuerCredentialDefinition,
+  QRCodeOpts,
+  StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -17,7 +21,7 @@ import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { ICredential } from '@sphereon/ssi-types/dist'
 import { IAgentContext, ICredentialIssuer, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { IssuerInstance } from '../IssuerInstance'
-import { IJwtService } from '@sphereon/ssi-sdk-ext.identifier-resolution/src/types/IJwtService'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 
 export type IssuerCredentialDefinition = JsonLdIssuerCredentialDefinition
 
@@ -41,6 +45,16 @@ export interface ICreateOfferArgs extends IIssuerInstanceArgs {
   credentialDefinition?: IssuerCredentialDefinition
   credentialOfferUri?: string
   credentialDataSupplierInput?: CredentialDataSupplierInput // Optional storage that can help the credential Data Supplier. For instance to store credential input data during offer creation, if no additional data can be supplied later on
+
+  redirectUri?: string
+  // auth_session?: string; Would be a nice extension to support, to allow external systems to determine what the auth_session value should be
+  // @Deprecated use tx_code in the grant object
+  correlationId?: string
+  sessionLifeTimeInSec?: number
+  qrCodeOpts?: QRCodeOpts
+  client_id?: string
+  statusListOpts?: Array<StatusListOpts>
+  offerMode?: CredentialOfferMode
   baseUri?: string
   scheme?: string
   pinLength?: number
@@ -74,6 +88,7 @@ export interface IIssuerInstanceOptions extends IMetadataOptions {
 }
 
 export interface IIssuerOptions {
+  asClientOpts?: ClientMetadata
   idOpts?: ManagedIdentifierOptsOrResult
   resolveOpts?: ResolveOpts
   /**
@@ -82,6 +97,12 @@ export interface IIssuerOptions {
   didOpts?: IDIDOptions
   userPinRequired?: boolean
   cNonceExpiresIn?: number
+
+  /**
+   * Used in the callbacks for the first party flow
+   */
+  // FIXME SPRIND-151 we need to start supporting a map with a definition id per credential, we can use the credential offer session to check which credential is being issued and then look it up in this map
+  presentationDefinitionId?: string
 }
 
 export interface IMetadataOptions {

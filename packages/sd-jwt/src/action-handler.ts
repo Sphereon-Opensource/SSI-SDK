@@ -1,17 +1,20 @@
 import { Jwt, SDJwt } from '@sd-jwt/core'
 import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { DisclosureFrame, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
+import { DisclosureFrame, Hasher, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { JWK } from '@sphereon/ssi-types'
+import { HasherSync, JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
-import { SdJwtVerifySignature, SignKeyArgs, SignKeyResult } from './index'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
+import { assertValidTypeMetadata, fetchUrlWithErrorHandling, validateIntegrity } from './utils'
 import {
   Claims,
+  FetchSdJwtTypeMetadataFromVctUrlArgs,
+  GetSignerForIdentifierArgs,
+  GetSignerResult,
   ICreateSdJwtPresentationArgs,
   ICreateSdJwtPresentationResult,
   ICreateSdJwtVcArgs,
@@ -23,8 +26,10 @@ import {
   IVerifySdJwtVcArgs,
   IVerifySdJwtVcResult,
   SdJWTImplementation,
+  SdJwtVerifySignature,
+  SignKeyArgs,
+  SignKeyResult,
 } from './types'
-import { ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
@@ -69,16 +74,11 @@ export class SDJwtPlugin implements IAgentPlugin {
     createSdJwtPresentation: this.createSdJwtPresentation.bind(this),
     verifySdJwtVc: this.verifySdJwtVc.bind(this),
     verifySdJwtPresentation: this.verifySdJwtPresentation.bind(this),
+    fetchSdJwtTypeMetadataFromVctUrl: this.fetchSdJwtTypeMetadataFromVctUrl.bind(this),
   }
 
-  private async getSignerForIdentifier(
-    { identifier, resolution }: { identifier: string; resolution?: ManagedIdentifierResult },
-    context: IRequiredContext,
-  ): Promise<{
-    signer: Signer
-    alg?: string
-    signingKey?: SignKeyResult
-  }> {
+  private async getSignerForIdentifier(args: GetSignerForIdentifierArgs, context: IRequiredContext): Promise<GetSignerResult> {
+    const { identifier, resolution } = args
     if (Object.keys(this._signers).includes(identifier) && typeof this._signers[identifier] === 'function') {
       return { signer: this._signers[identifier] }
     } else if (typeof this._defaultSigner === 'function') {
@@ -111,7 +111,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       hasher: this.registeredImplementations.hasher,
       saltGenerator: this.registeredImplementations.saltGenerator,
       signAlg: alg ?? 'ES256',
-      hashAlg: 'SHA-256',
+      hashAlg: 'sha-256',
     })
 
     const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
@@ -202,7 +202,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const { alg, signer } = await this.getSignerForIdentifier({ identifier: holder }, context)
 
     const sdjwt = new SDJwtVcInstance({
-      hasher: this.registeredImplementations.hasher,
+      hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest,
       saltGenerator: this.registeredImplementations.saltGenerator,
       kbSigner: signer,
       kbSignAlg: alg ?? 'ES256',
@@ -221,7 +221,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
     // callback
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
-    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
+    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
     const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
 
     return { header, payload: payload as SdJwtVcPayload, kb }
@@ -243,28 +243,6 @@ export class SDJwtPlugin implements IAgentPlugin {
     return this.verifySignatureCallback(context)(data, signature, this.getJwk(payload))
   }
 
-  private getJwk(payload: JwtPayload): JsonWebKey {
-    if (payload.cnf?.jwk !== undefined) {
-      return payload.cnf.jwk as JsonWebKey
-    } else if (payload.cnf !== undefined && 'kid' in payload.cnf && typeof payload.cnf.kid === 'string' && payload.cnf.kid.startsWith('did:jwk:')) {
-      // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
-      // FIXME this is a quick-fix to make verification but we need a real solution
-      const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
-      const decoded = decodeBase64url(encoded)
-      const jwt = JSON.parse(decoded)
-      return jwt as JsonWebKey
-    }
-    throw Error('Unable to extract JWK from SD-JWT payload')
-  }
-
-  private extractBase64FromDIDJwk(did: string): string {
-    const parts = did.split(':')
-    if (parts.length < 3) {
-      throw new Error('Invalid DID format')
-    }
-    return parts[2].split('#')[0]
-  }
-
   /**
    * Validates the signature of a SD-JWT
    * @param sdjwt - SD-JWT instance
@@ -273,7 +251,13 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string, opts?: {x5cValidation?: X509CertificateChainValidationOpts}): Promise<boolean> {
+  async verify(
+    sdjwt: SDJwtVcInstance,
+    context: IRequiredContext,
+    data: string,
+    signature: string,
+    opts?: { x5cValidation?: X509CertificateChainValidationOpts },
+  ): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
     const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
@@ -289,7 +273,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         chain: x5c,
         trustAnchors: Array.from(trustAnchors),
         // TODO: Defaults to allowing untrusted certs! Fine for now, not when wallets go mainstream
-        opts: opts?.x5cValidation ?? {trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true},
+        opts: opts?.x5cValidation ?? { trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true },
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {
@@ -357,11 +341,88 @@ export class SDJwtPlugin implements IAgentPlugin {
     return sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
   }
 
+  /**
+   * Fetch and validate Type Metadata.
+   * @param args - Arguments necessary for fetching and validating the type metadata.
+   * @param context - This reserved param is automatically added and handled by the framework, *do not override*
+   * @returns
+   */
+  async fetchSdJwtTypeMetadataFromVctUrl(args: FetchSdJwtTypeMetadataFromVctUrlArgs, context: IRequiredContext): Promise<SdJwtTypeMetadata> {
+    const { vct, vctIntegrity, opts } = args
+    const url = new URL(vct)
+
+    const response = await fetchUrlWithErrorHandling(url.toString())
+    const metadata: SdJwtTypeMetadata = await response.json()
+    assertValidTypeMetadata(metadata, vct)
+
+    const validate = async (vct: string, input: unknown, integrityValue?: string, hasher?: Hasher | HasherSync) => {
+      if (hasher && integrityValue) {
+        const validation = await validateIntegrity({ integrityValue, input, hasher })
+        if (!validation) {
+          return Promise.reject(Error(`Integrity check failed for vct: ${vct}, extends: ${metadata.extends}, integrity: ${integrityValue}}`))
+        }
+      }
+    }
+
+    const hasher = (opts?.hasher ?? this.registeredImplementations.hasher ?? defaultGenerateDigest) as Hasher | HasherSync | undefined
+    if (hasher) {
+      if (vctIntegrity) {
+        await validate(vct, metadata, vctIntegrity, hasher)
+        const vctValidation = await validateIntegrity({ integrityValue: vctIntegrity, input: metadata, hasher })
+        if (!vctValidation) {
+          return Promise.reject(Error(`Integrity check failed for vct: ${vct}, integrity: ${vctIntegrity}`))
+        }
+      }
+
+      if (metadata['extends#integrity']) {
+        const extendsMetadata = await this.fetchSdJwtTypeMetadataFromVctUrl({ vct: metadata['extends#integrity'], opts }, context)
+        await validate(vct, extendsMetadata, metadata['extends#integrity'], hasher)
+      }
+
+      if (metadata['schema_uri#integrity']) {
+        const schemaResponse = await fetchUrlWithErrorHandling(metadata.schema_uri!)
+        const schema = await schemaResponse.json()
+        await validate(vct, schema, metadata['schema_uri#integrity'], hasher)
+      }
+
+      metadata.display?.forEach((display) => {
+        const simpleLogoIntegrity = display.rendering?.simple?.logo?.['uri#integrity']
+        if (simpleLogoIntegrity) {
+          console.log('TODO: Logo integrity check')
+        }
+      })
+    }
+
+    return metadata
+  }
+
   private verifySignatureCallback(context: IRequiredContext): SdJwtVerifySignature {
     if (typeof this.registeredImplementations.verifySignature === 'function') {
       return this.registeredImplementations.verifySignature
     }
 
     return defaultVerifySignature(context)
+  }
+
+  private getJwk(payload: JwtPayload): JsonWebKey {
+    if (payload.cnf?.jwk !== undefined) {
+      return payload.cnf.jwk as JsonWebKey
+    } else if (payload.cnf !== undefined && 'kid' in payload.cnf && typeof payload.cnf.kid === 'string' && payload.cnf.kid.startsWith('did:jwk:')) {
+      // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
+      // FIXME this is a quick-fix to make verification but we need a real solution
+      const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
+      const decoded = decodeBase64url(encoded)
+      const jwt = JSON.parse(decoded)
+      return jwt as JsonWebKey
+    }
+    throw Error('Unable to extract JWK from SD-JWT payload')
+  }
+
+  private extractBase64FromDIDJwk(did: string): string {
+    const parts = did.split(':')
+    if (parts.length < 3) {
+      throw new Error('Invalid DID format')
+    }
+    return parts[2].split('#')[0]
   }
 }

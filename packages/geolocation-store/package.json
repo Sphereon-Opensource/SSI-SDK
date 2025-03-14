@@ -22,7 +22,7 @@
     "@types/node": "^20.17.1",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.21"
   },
   "files": [
     "dist/**/*",

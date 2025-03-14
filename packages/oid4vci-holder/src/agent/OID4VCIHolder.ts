@@ -4,6 +4,8 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
+  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13,
+  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
@@ -29,6 +31,7 @@ import {
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
+  ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
   CredentialRole,
@@ -44,7 +47,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
-  Hasher,
+  HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
@@ -69,12 +72,12 @@ import {
 import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
-import { OID4VCIMachine } from '../machine/oid4vciMachine'
+import { OID4VCIMachine } from '../machines/oid4vciMachine'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
   Attribute,
-  createCredentialsToSelectFromArgs,
+  CreateCredentialsToSelectFromArgs,
   CredentialToAccept,
   CredentialToSelectFromResult,
   GetContactArgs,
@@ -90,6 +93,8 @@ import {
   OID4VCIHolderOptions,
   OID4VCIMachine as OID4VCIMachineId,
   OID4VCIMachineInstanceOpts,
+  OID4VCIMachineServiceDefinitions,
+  OID4VCIMachineServices,
   OnContactIdentityCreatedArgs,
   OnCredentialStoredArgs,
   OnIdentifierCreatedArgs,
@@ -97,6 +102,7 @@ import {
   RequestType,
   RequiredContext,
   SendNotificationArgs,
+  StartFirstPartApplicationMachine,
   StartResult,
   StoreCredentialBrandingArgs,
   StoreCredentialsArgs,
@@ -113,10 +119,11 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
+  startFirstPartApplicationMachine,
   verifyCredentialToAccept,
-} from './OID4VCIHolderService'
-
+} from '../services/OID4VCIHolderService'
 import 'cross-fetch/polyfill'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -198,7 +205,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
 }
 
 export class OID4VCIHolder implements IAgentPlugin {
-  private readonly hasher?: Hasher
+  private readonly hasher?: HasherSync
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
     OID4VCIHolderEvent.CREDENTIAL_STORED,
@@ -209,7 +216,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStart: this.oid4vciHolderStart.bind(this),
     oid4vciHolderGetIssuerMetadata: this.oid4vciHolderGetIssuerMetadata.bind(this),
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
-    oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHoldercreateCredentialsToSelectFrom.bind(this),
+    oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHolderCreateCredentialsToSelectFrom.bind(this),
     oid4vciHolderGetContact: this.oid4vciHolderGetContact.bind(this),
     oid4vciHolderGetCredentials: this.oid4vciHolderGetCredentials.bind(this),
     oid4vciHolderGetCredential: this.oid4vciHolderGetCredential.bind(this),
@@ -260,7 +267,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher,
+      hasher = defaultHasher,
     } = { ...options }
 
     this.hasher = hasher
@@ -306,8 +313,8 @@ export class OID4VCIHolder implements IAgentPlugin {
    */
   private async oid4vciHolderGetMachineInterpreter(opts: OID4VCIMachineInstanceOpts, context: RequiredContext): Promise<OID4VCIMachineId> {
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...opts.authorizationRequestOpts }
-    const services = {
-      start: (args: PrepareStartArgs) =>
+    const services: OID4VCIMachineServiceDefinitions = {
+      [OID4VCIMachineServices.start]: (args: PrepareStartArgs) =>
         this.oid4vciHolderStart(
           {
             ...args,
@@ -315,18 +322,22 @@ export class OID4VCIHolder implements IAgentPlugin {
           },
           context,
         ),
-      createCredentialsToSelectFrom: (args: createCredentialsToSelectFromArgs) => this.oid4vciHoldercreateCredentialsToSelectFrom(args, context),
-      getContact: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
-      getCredentials: (args: GetCredentialsArgs) =>
+      [OID4VCIMachineServices.startFirstPartApplicationFlow]: (args: StartFirstPartApplicationMachine) =>
+        startFirstPartApplicationMachine({ ...args, stateNavigationListener: opts.firstPartyStateNavigationListener }, context),
+      [OID4VCIMachineServices.createCredentialsToSelectFrom]: (args: CreateCredentialsToSelectFromArgs) =>
+        this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
+      [OID4VCIMachineServices.getContact]: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
+      [OID4VCIMachineServices.getCredentials]: (args: GetCredentialsArgs) =>
         this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
-      addContactIdentity: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
-      getIssuerBranding: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
-      storeIssuerBranding: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
-      assertValidCredentials: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
-      storeCredentialBranding: (args: StoreCredentialBrandingArgs) => this.oid4vciHolderStoreCredentialBranding(args, context),
-      storeCredentials: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
-      sendNotification: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
-      getFederationTrust: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context),
+      [OID4VCIMachineServices.addContactIdentity]: (args: AddContactIdentityArgs) => this.oid4vciHolderAddContactIdentity(args, context),
+      [OID4VCIMachineServices.getIssuerBranding]: (args: GetIssuerBrandingArgs) => this.oid4vciHolderGetIssuerBranding(args, context),
+      [OID4VCIMachineServices.storeIssuerBranding]: (args: StoreIssuerBrandingArgs) => this.oid4vciHolderStoreIssuerBranding(args, context),
+      [OID4VCIMachineServices.assertValidCredentials]: (args: AssertValidCredentialsArgs) => this.oid4vciHolderAssertValidCredentials(args, context),
+      [OID4VCIMachineServices.storeCredentialBranding]: (args: StoreCredentialBrandingArgs) =>
+        this.oid4vciHolderStoreCredentialBranding(args, context),
+      [OID4VCIMachineServices.storeCredentials]: (args: StoreCredentialsArgs) => this.oid4vciHolderStoreCredentials(args, context),
+      [OID4VCIMachineServices.sendNotification]: (args: SendNotificationArgs) => this.oid4vciHolderSendNotification(args, context),
+      [OID4VCIMachineServices.getFederationTrust]: (args: GetFederationTrustArgs) => this.getFederationTrust(args, context),
     }
 
     const oid4vciMachineInstanceArgs: OID4VCIMachineInstanceOpts = {
@@ -461,8 +472,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
   }
 
-  private async oid4vciHoldercreateCredentialsToSelectFrom(
-    args: createCredentialsToSelectFromArgs,
+  private async oid4vciHolderCreateCredentialsToSelectFrom(
+    args: CreateCredentialsToSelectFromArgs,
     context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>> {
     const { credentialBranding, locale, selectedCredentials /*, openID4VCIClientState*/, credentialsSupported } = args
@@ -628,7 +639,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     // The VCI lib either expects a jwk or a kid
     const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
 
-    const callbacks: ProofOfPossessionCallbacks<never> = {
+    const callbacks: ProofOfPossessionCallbacks = {
       signCallback: signCallback(identifier, context),
     }
 
@@ -674,7 +685,10 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!credentialTypes || credentialTypes.length === 0) {
         return Promise.reject(Error('cannot determine credential id to request'))
       }
+
+      const credentialDefinition = this.getCredentialDefinition(issuanceOpt)
       const credentialResponse = await client.acquireCredentials({
+        ...(credentialDefinition && { context: credentialDefinition['@context'] }),
         credentialTypes,
         proofCallbacks: callbacks,
         format: issuanceOpt.format,
@@ -725,6 +739,20 @@ export class OID4VCIHolder implements IAgentPlugin {
         type: identifierType,
         correlationId,
       },
+      ...(identifierType === CorrelationIdentifierType.URL && {
+        connection: {
+          type: ConnectionType.OPENID_CONNECT,
+          config: {
+            clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
+            clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
+            scopes: ['auth'],
+            issuer: 'https://example.com/app-test',
+            redirectUrl: 'app:/callback',
+            dangerouslyAllowInsecureHttpRequests: true,
+            clientAuthMethod: 'post' as const,
+          },
+        },
+      }),
     }
 
     await context.agent.emit(OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED, {
@@ -893,7 +921,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
         const issuerVC = mappedCredentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
-        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, { hasher: this.hasher })
+        const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, { hasher: this.hasher ?? defaultHasher })
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
 
@@ -1060,6 +1088,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     const params = new URLSearchParams(url.search)
     const openidFederation = params.get('openid_federation')
     const entityIdentifier = openidFederation ?? serverMetadata.issuer
+    if (entityIdentifier.startsWith('http://')) {
+      console.warn(`OpenID federation does not support http://, only https:// allowed; got: (${url.toString()})`)
+      // OIDF always needs to be https
+      return []
+    }
 
     const result = await context.agent.identifierExternalResolveByOIDFEntityId({
       method: 'entity_id',
@@ -1109,6 +1142,13 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
     } else {
       return wrappedIssuerVC.credential?.credentialSubject?.id
+    }
+    return undefined
+  }
+
+  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13 | undefined {
+    if (issuanceOpt.format == 'ldp_vc' || issuanceOpt.format == 'jwt_vc_json-ld') {
+      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13).credential_definition
     }
     return undefined
   }

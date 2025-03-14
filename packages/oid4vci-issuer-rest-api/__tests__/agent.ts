@@ -1,6 +1,6 @@
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
-import { IssuerMetadata } from '@sphereon/oid4vci-common'
+import { AuthorizationServerMetadata, CredentialIssuerMetadataOptsV1_0_13 } from '@sphereon/oid4vci-common'
 import { JwkDIDProvider } from '@sphereon/ssi-sdk-ext.did-provider-jwk'
 import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -39,7 +39,7 @@ export const DIF_UNIRESOLVER_RESOLVE_URL = 'https://dev.uniresolver.io/1.0/ident
 export const APP_ID = 'sphereon:rp-demo'
 export const DID_PREFIX = 'did'
 
-export const baseUrl = 'https://oid4vci.ngrok.dev'
+export const baseUrl = 'http://localhost:5000/test'
 
 export enum KeyManagementSystemEnum {
   LOCAL = 'local',
@@ -110,10 +110,20 @@ const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new S
 
 let importMetadatas = [
   {
+    metadataType: 'authorizationServer',
+    correlationId: `${baseUrl}/sphereon`,
+    overwriteExisting: true,
+
+    metadata: {
+      issuer: `${baseUrl}/sphereon`,
+      response_types_supported: ['code', 'code id_token'],
+      'pre-authorized_grant_anonymous_access_supported': true,
+    } satisfies AuthorizationServerMetadata,
+  },
+  {
     metadataType: 'issuer',
     correlationId: `${baseUrl}/sphereon`,
     overwriteExisting: true,
-    // @ts-ignore
     metadata: {
       credential_issuer: `${baseUrl}/sphereon`,
       credential_endpoint: `${baseUrl}/sphereon/credentials`,
@@ -124,8 +134,8 @@ let importMetadatas = [
           description: 'Sphereon Example OID4VCI Issuer',
         },
       ],
-      credentials_supported: [
-        {
+      credential_configurations_supported: {
+        'verified-employee': {
           display: [
             {
               name: 'Verified Employee',
@@ -143,7 +153,7 @@ let importMetadatas = [
           cryptographic_binding_methods_supported: ['did:web', 'did:ion', 'did:jwk'],
           cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
         },
-        {
+        'membership-example': {
           display: [
             {
               name: 'Example Membership',
@@ -161,423 +171,23 @@ let importMetadatas = [
           cryptographic_binding_methods_supported: ['did:web', 'did:ion', 'did:jwk', 'did:key'],
           cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
         },
-      ],
-    } as IssuerMetadata,
+      },
+    } satisfies CredentialIssuerMetadataOptsV1_0_13,
   },
   {
-    metadataType: 'issuer',
-
-    correlationId: `${baseUrl}/dbc2023`,
-    overwriteExisting: true,
-    // @ts-ignore
-    metadata: {
-      credential_issuer: `${baseUrl}/dbc2023`,
-      credential_endpoint: `${baseUrl}/dbc2023/credentials`,
-      // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
-      display: [
-        {
-          name: 'Dutch Blockchain Coalition',
-          description: 'Dutch Blockchain Coalition Issuer',
-        },
-      ],
-      credentials_supported: [
-        {
-          display: [
-            {
-              name: 'Conference Attendee',
-              description: 'The DBC Conference Attendee credential is given to all visitors of the DBC conference.',
-              background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              logo: {
-                url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
-                alt_text:
-                  'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
-              },
-              background_image: {
-                url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
-                alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
-              },
-            },
-            {
-              locale: 'en-US',
-              name: 'Conference Attendee',
-              description: 'The DBC Conference Attendee credential is given to all visitors of the DBC conference.',
-              background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              logo: {
-                url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
-                alt_text:
-                  'An orange block shape, with the text Dutch Blockchain Coalition next to it, portraying the logo of the Dutch Blockchain Coalition.',
-              },
-              background_image: {
-                url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
-                alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
-              },
-            },
-            {
-              locale: 'nl-NL',
-              name: 'Conferentie Deelnemer',
-              description: 'De DBC Conferentie Deelnemer credential wordt uitgegeven aan alle bezoekers van de DBC conferentie.',
-              background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              logo: {
-                url: 'https://dutchblockchaincoalition.org/assets/images/icons/Logo-DBC.png',
-                alt_text:
-                  'Aaneengesloten open blokken in de kleur blauw, met een blok in de kleur oranje, die tesamen de achtergrond van de kaart vormen.',
-              },
-              background_image: {
-                url: 'https://i.ibb.co/CHqjxrJ/dbc-card-hig-res.png',
-                alt_text: 'Connected open cubes in blue with one orange cube as a background of the card',
-              },
-            },
-          ],
-          order: ['firstName', 'lastName', 'email'],
-          credentialSubject: {
-            firstName: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'FirstName',
-                },
-                {
-                  name: 'FirstName',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Voornaam',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            lastName: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'LastName',
-                },
-                {
-                  name: 'LastName',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Achternaam',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            email: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'Email',
-                },
-                {
-                  name: 'Email',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Email',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-          },
-          id: 'dbc2023',
-          types: ['VerifiableCredential', 'DBCConferenceAttendee'],
-          format: 'jwt_vc_json',
-          cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
-          cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
-        },
-      ],
-    } as IssuerMetadata,
-  },
-  {
-    metadataType: 'issuer',
-    correlationId: `${baseUrl}/fma2023`,
-    overwriteExisting: true,
-    // @ts-ignore
-    metadata: {
-      credential_issuer: `${baseUrl}/fma2023`,
-      credential_endpoint: `${baseUrl}/fma2023/credentials`,
-      // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
-      display: [
-        {
-          name: 'Future Mobility Alliance',
-          description: 'Future Data Market Place Issuer',
-        },
-      ],
-      credentials_supported: [
-        {
-          display: [
-            {
-              name: 'FMA Guest',
-              description: 'Future Mobility Data Marketplace Guest credential for demo purposes.',
-              background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              background_image: {
-                url: 'https://i.ibb.co/P9SpRDX/fmdm.png',
-                alt_text: 'Multiple green bikes in a row as the card background',
-              },
-              logo: {
-                url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
-                alt_text:
-                  'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
-              },
-            },
-            {
-              locale: 'en-US',
-              name: 'FMA Guest',
-              description: 'Future Mobility Data Marketplace Guest credential for demo purposes.',
-              background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              background_image: {
-                url: 'https://i.ibb.co/P9SpRDX/fmdm.png',
-                alt_text: 'Multiple green bikes in a row as the card background',
-              },
-              logo: {
-                url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
-                alt_text:
-                  'A green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
-              },
-            },
-            {
-              locale: 'nl-NL',
-              name: 'FMA gast',
-              description: 'Future Mobility Alliance gast credential wordt uitgegeven voor demo doeleinden.',
-              background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              background_image: {
-                url: 'https://i.ibb.co/P9SpRDX/fmdm.png',
-                alt_text: 'Meerdere groene fietsen op een rij die samen de kaart achtergrond vormen',
-              },
-              logo: {
-                url: 'https://i.ibb.co/vkfZCvr/FMDM-card-logo.png',
-                alt_text:
-                  'An green and blue circle shape, with the text Future Mobility Data Marketplace next to it, portraying the logo of the Future Mobility Alliance.',
-              },
-            },
-          ],
-          order: ['firstName', 'lastName', 'email', 'type'],
-          credentialSubject: {
-            firstName: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'FirstName',
-                },
-                {
-                  name: 'FirstName',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Voornaam',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            lastName: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'LastName',
-                },
-                {
-                  name: 'LastName',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Achternaam',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            email: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'Email',
-                },
-                {
-                  name: 'Email',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Email',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            type: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'Type',
-                },
-                {
-                  name: 'Type',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Type',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-          },
-          id: 'fma2023',
-          types: ['VerifiableCredential', 'GuestCredential'],
-          format: 'jwt_vc_json',
-          cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
-          cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
-        },
-      ],
-    } as IssuerMetadata,
-  },
-  {
-    metadataType: 'issuer',
+    metadataType: 'authorizationServer',
     correlationId: `${baseUrl}/triall2023`,
     overwriteExisting: true,
-    // @ts-ignore
+
     metadata: {
-      credential_issuer: `${baseUrl}/triall2023`,
-      credential_endpoint: `${baseUrl}/triall2023/credentials`,
-      // token_endpoint: 'https://oid4vci.ngrok.dev/test/token',
-      display: [
-        {
-          name: 'Triall',
-          description: 'Triall (Clinblocks B.V.) Issuer',
-        },
-      ],
-      credentials_supported: [
-        {
-          display: [
-            {
-              name: 'Triall guest',
-              description: 'Triall guest credential for demo purposes.',
-              // background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              background_image: {
-                url: 'https://i.ibb.co/8dVhGJj/Triall.png',
-                alt_text: 'Depicting a syringe being filled from a bottle ',
-              },
-              logo: {
-                url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
-                alt_text:
-                  '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
-              },
-            },
-            {
-              locale: 'en-US',
-              name: 'Triall guest',
-              description: 'Triall guest credential for demo purposes.',
-              // background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              background_image: {
-                url: 'https://i.ibb.co/8dVhGJj/Triall.png',
-                alt_text: 'Depicting a syringe being filled from a bottle ',
-              },
-              logo: {
-                url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
-                alt_text:
-                  '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
-              },
-            },
-            {
-              locale: 'nl-NL',
-              name: 'Triall gast',
-              description: 'Triall gast credential wordt uitgegeven voor demo doeleinden.',
-              // background_color: '#3B6F6D',
-              text_color: '#FFFFFF',
-              background_image: {
-                url: 'https://i.ibb.co/8dVhGJj/Triall.png',
-                alt_text: 'Depicting a syringe being filled from a bottle ',
-              },
-              logo: {
-                url: 'https://i.ibb.co/WV6Rmsj/triall-White.png',
-                alt_text:
-                  '9 white circles of which 5 are connected in a rectangular shape, with the text Triall next to it, portraying the logo of Triall.',
-              },
-            },
-          ],
-          order: ['firstName', 'lastName', 'email', 'type'],
-          credentialSubject: {
-            firstName: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'FirstName',
-                },
-                {
-                  name: 'FirstName',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Voornaam',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            lastName: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'LastName',
-                },
-                {
-                  name: 'LastName',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Achternaam',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            email: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'Email',
-                },
-                {
-                  name: 'Email',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Email',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-            type: {
-              value_type: 'string',
-              display: [
-                {
-                  name: 'Type',
-                },
-                {
-                  name: 'Type',
-                  locale: 'en-US',
-                },
-                {
-                  name: 'Type',
-                  locale: 'nl-NL',
-                },
-              ],
-            },
-          },
-          id: 'triall2023',
-          types: ['VerifiableCredential', 'GuestCredential'],
-          format: 'jwt_vc_json',
-          cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
-          cryptographic_suites_supported: ['ES256', 'ES256K', 'EdDSA'],
-        },
-      ],
-    } as IssuerMetadata,
+      issuer: `${baseUrl}/triall2023`,
+      response_types_supported: ['code', 'code id_token'],
+      'pre-authorized_grant_anonymous_access_supported': true,
+    } satisfies AuthorizationServerMetadata,
   },
 ] satisfies Array<IMetadataImportArgs>
 
-console.log(JSON.stringify(importMetadatas, null, 2))
+// console.log(JSON.stringify(importMetadatas, null, 2))
 
 const agent = createAgent<IPlugins>({
   plugins: [
@@ -609,7 +219,7 @@ const agent = createAgent<IPlugins>({
       },
       instanceOpts: [
         {
-          credentialIssuer: `${baseUrl}/sphereonDISABLED`,
+          credentialIssuer: `${baseUrl}/sphereon`,
           issuerOpts: {
             didOpts: {
               idOpts: {
@@ -622,7 +232,7 @@ const agent = createAgent<IPlugins>({
       ],
       importIssuerOpts: [
         {
-          correlationId: `${baseUrl}/sphereonDISABLED`,
+          correlationId: `${baseUrl}/sphereon`,
           issuerOpts: {
             didOpts: {
               idOpts: {

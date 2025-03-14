@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Loyalty Program Account",
+  "title": "Loyalty Program Account",
+  "description": "Verifiable Credential for loyalty program account.",
+  "type": "object",
+  "required": ["loyaltyProgramAccount", "iss", "iat", "vct", "cnf"],
+  "properties": {
+    "loyaltyProgramAccount": {
+      "title": "Loyalty Program Account",
+      "description": "An account set up for a customer within a rewards program which holds funds on behalf of that customer.",
+      "required": [
+        "givenName",
+        "loyaltyProgramAccountIdentifier",
+        "loyaltyProgramAccountTierLevelCode",
+        "loyaltyProgramCode",
+        "loyaltyProgramName",
+        "providerName",
+        "surname",
+        "titleName"
+      ],
+      "properties": {
+        "givenName": {
+          "title": "Credential Subject Given Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "loyaltyProgramAccountIdentifier": {
+          "title": "Loyalty Credential Subject Loyalty Program Account Identifier",
+          "type": "string",
+          "maxLength": 35
+        },
+        "loyaltyProgramAccountTierLevelCode": {
+          "title": "Loyalty Credential Subject Loyalty Program Account Tier Level Code",
+          "type": "string",
+          "maxLength": 35
+        },
+        "loyaltyProgramCode": {
+          "title": "Credential Subject Loyalty Program Code",
+          "type": "string",
+          "maxLength": 35
+        },
+        "loyaltyProgramName": {
+          "title": "Credential Subject Loyalty Program Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "providerName": {
+          "title": "Credential Subject Provider Name",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "surname": {
+          "title": "Credential Subject Surname",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "titleName": {
+          "title": "Credential Subject Title Name",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 88
+        }
+      }
+    },
+    "iss": {
+      "title": "Issuer",
+      "description": "URI identifying the issuer of the credential.",
+      "type": "string",
+      "format": "uri"
+    },
+    "iat": {
+      "title": "Issued At",
+      "description": "The time at which the credential was issued (Unix timestamp).",
+      "type": "integer"
+    },
+    "exp": {
+      "title": "Expiration",
+      "description": "The time at which the credential expires (Unix timestamp).",
+      "type": "integer"
+    },
+    "vct": {
+      "title": "Verifiable Credential Type",
+      "description": "A URI or string identifying the type or context of this credential.",
+      "type": "string"
+    },
+    "cnf": {
+      "title": "Confirmation",
+      "description": "Proof-of-possession key information used to bind the credential to a specific holder.",
+      "type": "object"
+    }
+  }
+}

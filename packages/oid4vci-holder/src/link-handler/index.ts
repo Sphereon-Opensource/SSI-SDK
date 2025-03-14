@@ -3,23 +3,26 @@ import { AuthorizationRequestOpts, AuthorizationServerClientOpts, AuthzFlowType,
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '../types/IOID4VCIHolder'
+import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineStateNavigationListener } from '../types/IOID4VCIHolder'
+import { FirstPartyMachineStateNavigationListener } from '../types/FirstPartyMachine'
 
 /**
  * This handler only handles credential offer links (either by value or by reference)
  */
 export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly context: IAgentContext<IOID4VCIHolder & IMachineStatePersistence>
-  private readonly stateNavigationListener:
-    | ((oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>)
-    | undefined
+  private readonly stateNavigationListener?: OID4VCIMachineStateNavigationListener
+  private readonly firstPartyStateNavigationListener?: FirstPartyMachineStateNavigationListener
   private readonly noStateMachinePersistence: boolean
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
   private readonly clientOpts?: AuthorizationServerClientOpts
   private readonly trustAnchors?: Array<string>
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'trustAnchors'> & {
+    args: Pick<
+      GetMachineArgs,
+      'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'trustAnchors' | 'firstPartyStateNavigationListener'
+    > & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -32,6 +35,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.context = args.context
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
+    this.firstPartyStateNavigationListener = args.firstPartyStateNavigationListener
     this.trustAnchors = args.trustAnchors
   }
 
@@ -63,6 +67,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
       stateNavigationListener: this.stateNavigationListener,
+      firstPartyStateNavigationListener: this.firstPartyStateNavigationListener,
     })
 
     const interpreter = oid4vciMachine.interpreter

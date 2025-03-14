@@ -25,7 +25,7 @@ function getFileAsJson(path: string) {
   return JSON.parse(getFile(path))
 }
 
-const port = 3002
+const port = 3008
 const basePath = '/agent'
 let serverAgent: IAgent
 let restServer: Server
@@ -43,7 +43,7 @@ const getAgent = (options?: IAgentOptions) =>
   createAgent<IDidAuthSiopOpAuthenticator>({
     ...options,
     plugins: [
-      new DidAuthSiopOpAuthenticator(presentationSignCallback),
+      new DidAuthSiopOpAuthenticator({ presentationSignCallback }),
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...getDidKeyResolver(),

@@ -13,7 +13,7 @@ import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLo
 
 jest.setTimeout(60000)
 
-const port = 3002
+const port = 3012
 const basePath = '/agent'
 
 let serverAgent: IAgent

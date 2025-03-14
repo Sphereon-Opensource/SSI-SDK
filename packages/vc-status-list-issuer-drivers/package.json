@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
@@ -21,7 +21,7 @@
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.21",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {

@@ -21,6 +21,6 @@ export class CredentialLocaleBrandingEntity extends BaseLocaleBrandingEntity {
   @JoinColumn({ name: 'claim_id' })
   claims!: Array<CredentialClaimsEntity>
 
-  @Column('text', { name: 'credentialBrandingId', nullable: false })
+  @Column('uuid', { name: 'credentialBrandingId', nullable: false })
   credentialBrandingId!: string
 }
