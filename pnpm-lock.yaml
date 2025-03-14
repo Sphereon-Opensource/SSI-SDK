@@ -4050,8 +4050,8 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0
       elliptic:
-        specifier: 6.5.4
-        version: 6.5.4
+        specifier: 6.6.1
+        version: 6.6.1
       ethereum-cryptography:
         specifier: ^2.2.1
         version: 2.2.1
@@ -8643,6 +8643,9 @@ packages:
 
   elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
+
+  elliptic@6.5.7:
+    resolution: {integrity: sha512-ESVCtTwiA+XhY3wyh24QqRGBoP3rEdDUl3EDUUo9tft074fi19IrdpH7hLCMMP3CIj7jb3W96rn8lt/BqIlt5Q==}
 
   elliptic@6.6.1:
     resolution: {integrity: sha512-RaddvvMatK2LJHqFJ+YA4WysVN5Ita9E35botqIYspQ4TkRAlCicdzKOjlyv/1Za5RyTNn7di//eEV0uTAfe3g==}
@@ -17614,7 +17617,7 @@ snapshots:
       '@veramo/utils': 4.2.0(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=afqywxnnjnsy6hwgax66dyyiey)
       did-resolver: 4.1.0
-      elliptic: 6.5.4
+      elliptic: 6.6.1
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -17855,7 +17858,7 @@ snapshots:
       base64url: 3.0.1
       debug: 4.4.0
       did-resolver: 4.1.0
-      elliptic: 6.5.4
+      elliptic: 6.6.1
       lodash.isplainobject: 4.0.6
       multiformats: 9.9.0
       uint8arrays: 3.1.1
@@ -18612,19 +18615,19 @@ snapshots:
     dependencies:
       asn1.js: 5.4.1
       base64url: 3.0.1
-      elliptic: 6.5.4
+      elliptic: 6.6.1
 
   '@trust/keyto@1.0.1':
     dependencies:
       asn1.js: 5.4.1
       base64url: 3.0.1
-      elliptic: 6.5.4
+      elliptic: 6.6.1
 
   '@trust/keyto@2.0.0-alpha1':
     dependencies:
       asn1.js: 5.4.1
       base64url: 3.0.1
-      elliptic: 6.5.4
+      elliptic: 6.6.1
 
   '@tsconfig/node10@1.0.11': {}
 
@@ -21130,7 +21133,7 @@ snapshots:
       bech32: 2.0.0
       canonicalize: 2.0.0
       did-resolver: 4.1.0
-      elliptic: 6.5.4
+      elliptic: 6.6.1
       js-sha3: 0.8.0
       multiformats: 9.9.0
       uint8arrays: 3.1.1
@@ -21237,6 +21240,16 @@ snapshots:
   electron-to-chromium@1.5.118: {}
 
   elliptic@6.5.4:
+    dependencies:
+      bn.js: 4.12.1
+      brorand: 1.1.0
+      hash.js: 1.1.7
+      hmac-drbg: 1.0.1
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+      minimalistic-crypto-utils: 1.0.1
+
+  elliptic@6.5.7:
     dependencies:
       bn.js: 4.12.1
       brorand: 1.1.0
@@ -23526,7 +23539,7 @@ snapshots:
     dependencies:
       asn1.js: 5.4.1
       buffer: 6.0.3
-      elliptic: 6.5.4
+      elliptic: 6.5.7
       js-crypto-env: 1.0.5
       js-crypto-hash: 1.0.7
       js-crypto-key-utils: 1.0.7
@@ -23553,7 +23566,7 @@ snapshots:
       asn1.js: 5.4.1
       buffer: 6.0.3
       des.js: 1.1.0
-      elliptic: 6.5.4
+      elliptic: 6.5.7
       js-crypto-aes: 1.0.6
       js-crypto-hash: 1.0.7
       js-crypto-pbkdf: 1.0.7
