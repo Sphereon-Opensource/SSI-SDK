@@ -14,7 +14,8 @@ import {
   OriginalVerifiablePresentation,
   OriginalType,
   decodeMdocIssuerSigned,
-  decodeMdocDeviceResponse, defaultHasher,
+  decodeMdocDeviceResponse,
+  defaultHasher,
 } from '../src'
 
 import { com } from '@sphereon/kmp-mdoc-core'

@@ -47,7 +47,7 @@ import { com } from '@sphereon/kmp-mdoc-core'
 import { jwtDecode } from 'jwt-decode'
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
 
-export const sha256 = (data: string | ArrayBuffer): Uint8Array  => {
+export const sha256 = (data: string | ArrayBuffer): Uint8Array => {
   return defaultHasher(data, 'sha256')
 }
 

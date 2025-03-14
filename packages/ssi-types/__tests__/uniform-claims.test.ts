@@ -1,7 +1,8 @@
 import * as crypto from 'node:crypto'
 import * as fs from 'fs'
 import {
-  CredentialMapper, defaultHasher,
+  CredentialMapper,
+  defaultHasher,
   DocumentFormat,
   ICredential,
   ICredentialSubject,

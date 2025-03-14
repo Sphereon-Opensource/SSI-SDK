@@ -47,10 +47,6 @@ export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOpt
         return Promise.reject(Error(`the identifier of type ${identifier.method} is missing jwks (ExternalJwkInfo)`))
       }
       const { alg } = jwkInfo.jwk
-      if (!alg) {
-        return Promise.reject(Error(`the ExternalJwkInfo of identifier of type ${identifier.method} is missing alg in its jwk`))
-      }
-
       const header = jwtDecode<JWTHeader>(args.jwt, { header: true })
       const payload = jwtDecode<JWTPayload>(args.jwt, { header: false })
       const kid = args.kid ?? header.kid
