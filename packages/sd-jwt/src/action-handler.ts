@@ -3,7 +3,7 @@ import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { DisclosureFrame, Hasher, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import { HasherSync, JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
@@ -30,7 +30,6 @@ import {
   SignKeyArgs,
   SignKeyResult,
 } from './types'
-import { HasherSync } from '@sd-jwt/types/src/type'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
@@ -203,7 +202,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const { alg, signer } = await this.getSignerForIdentifier({ identifier: holder }, context)
 
     const sdjwt = new SDJwtVcInstance({
-      hasher: this.registeredImplementations.hasher,
+      hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest,
       saltGenerator: this.registeredImplementations.saltGenerator,
       kbSigner: signer,
       kbSignAlg: alg ?? 'ES256',
@@ -222,7 +221,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
     // callback
     const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
-    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher })
+    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
     const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
 
     return { header, payload: payload as SdJwtVcPayload, kb }
@@ -365,7 +364,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       }
     }
 
-    const hasher = (opts?.hasher ?? this.registeredImplementations.hasher) as Hasher | HasherSync | undefined
+    const hasher = (opts?.hasher ?? this.registeredImplementations.hasher ?? defaultGenerateDigest) as Hasher | HasherSync | undefined
     if (hasher) {
       if (vctIntegrity) {
         await validate(vct, metadata, vctIntegrity, hasher)

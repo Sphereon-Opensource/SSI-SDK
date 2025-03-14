@@ -19,7 +19,7 @@ import {
 } from '../types'
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
+import { defaultHasher, encodeJoseBlob } from '@sphereon/ssi-sdk.core'
 import { DcqlCredential, DcqlCredentialPresentation, DcqlPresentation, DcqlQuery } from 'dcql'
 import { convertToDcqlCredentials } from '../utils/dcql'
 import { getOriginalVerifiableCredential } from '../utils/CredentialUtils'
@@ -59,7 +59,7 @@ export const siopSendAuthorizationResponse = async (
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { idOpts, isFirstParty, hasher } = args
+  let { idOpts, isFirstParty, hasher = defaultHasher } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))

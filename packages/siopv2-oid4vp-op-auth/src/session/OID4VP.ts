@@ -7,7 +7,7 @@ import {
   ManagedIdentifierOptsOrResult,
   ManagedIdentifierResult,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { ProofOptions } from '@sphereon/ssi-sdk.core'
+import { defaultHasher, ProofOptions } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 import { CompactJWT, HasherSync, IProof, OriginalVerifiableCredential } from '@sphereon/ssi-types'
@@ -27,7 +27,7 @@ export class OID4VP {
   private readonly hasher?: HasherSync
 
   private constructor(args: IOID4VPArgs) {
-    const { session, allIdentifiers, hasher } = args
+    const { session, allIdentifiers, hasher = defaultHasher } = args
 
     this.session = session
     this.allIdentifiers = allIdentifiers ?? []

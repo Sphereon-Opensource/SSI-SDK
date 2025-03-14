@@ -28,6 +28,7 @@ import {
 import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
 import decodeFrom = com.sphereon.kmp.decodeFrom
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 // Exposing the methods here for any REST implementation
 export const credentialValidationMethods: Array<string> = [
@@ -70,7 +71,7 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifyCredential(args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
-    const { credential, hasher, policies } = args
+    const { credential, hasher = defaultHasher, policies } = args
     // defaulting the schema validation to when_present
     const schemaResult = await this.cvVerifySchema({
       credential,
@@ -96,7 +97,7 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifySchema(args: ValidateSchemaArgs): Promise<VerificationResult> {
-    const { credential, hasher, validationPolicy } = args
+    const { credential, hasher = defaultHasher, validationPolicy } = args
     const wrappedCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
     if (validationPolicy === SchemaValidation.NEVER) {
       return {
@@ -243,7 +244,7 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifySDJWTCredential(args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
-    const { credential, hasher } = args
+    const { credential, hasher = defaultHasher } = args
 
     const verification: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
       .verifySdJwtVc({ credential })

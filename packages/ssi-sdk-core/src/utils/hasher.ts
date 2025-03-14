@@ -13,3 +13,5 @@ export const shaHasher: HasherSync = (data, algorithm) => {
   const hasher = sanitizedAlgorithm === 'sha384' ? sha384 : sanitizedAlgorithm === 'sha512' ? sha512 : sha256
   return hasher(u8a.fromString(data))
 }
+
+export const defaultHasher: HasherSync = shaHasher

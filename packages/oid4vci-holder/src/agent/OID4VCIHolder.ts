@@ -123,6 +123,7 @@ import {
   verifyCredentialToAccept,
 } from '../services/OID4VCIHolderService'
 import 'cross-fetch/polyfill'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -266,7 +267,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       didMethodPreferences,
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
-      hasher,
+      hasher = defaultHasher,
     } = { ...options }
 
     this.hasher = hasher

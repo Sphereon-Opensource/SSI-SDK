@@ -1,6 +1,6 @@
 import { SdJwtTypeMetadata } from '@sphereon/ssi-types'
 import * as u8a from 'uint8arrays'
-import { HasherSync } from '@sd-jwt/types/src/type'
+import { HasherSync } from '@sd-jwt/types'
 import { Hasher } from '@sd-jwt/types'
 
 // Helper function to fetch API with error handling
