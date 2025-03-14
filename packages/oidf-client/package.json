@@ -18,7 +18,7 @@
     "@sphereon/openid-federation-client": "0.1.1-unstable.0647eb6",
     "@sphereon/openid-federation-common": "0.1.1-unstable.0647eb6",
     "@sphereon/openid-federation-open-api": "0.1.1-unstable.0647eb6",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.27.1-next.21",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
     "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
     "@sphereon/ssi-types": "workspace:*"
   },
