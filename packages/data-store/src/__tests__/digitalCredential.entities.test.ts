@@ -5,8 +5,8 @@ import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 import { computeEntryHash } from '@veramo/utils'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
-import { createHash } from 'crypto'
 import { AddCredentialArgs, CredentialCorrelationType, CredentialDocumentFormat, DocumentType, NonPersistedDigitalCredential } from '../types'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -257,7 +257,7 @@ describe('Database entities tests', (): void => {
       credentialRole: CredentialRole.VERIFIER,
       tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
       opts: {
-        hasher: (data, algorithm) => createHash(algorithm).update(data).digest(),
+        hasher: defaultHasher,
       },
     })
     expect(digitalCredential.documentType).toEqual(DocumentType.VC)

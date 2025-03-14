@@ -3,12 +3,7 @@ import { AuthorizationRequestOpts, AuthorizationServerClientOpts, AuthzFlowType,
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import {
-  GetMachineArgs,
-  IOID4VCIHolder,
-  OID4VCIMachineEvents,
-  OID4VCIMachineStateNavigationListener
-} from '../types/IOID4VCIHolder'
+import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineStateNavigationListener } from '../types/IOID4VCIHolder'
 import { FirstPartyMachineStateNavigationListener } from '../types/FirstPartyMachine'
 
 /**
@@ -24,7 +19,10 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly trustAnchors?: Array<string>
 
   constructor(
-    args: Pick<GetMachineArgs, 'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'trustAnchors' | 'firstPartyStateNavigationListener'> & {
+    args: Pick<
+      GetMachineArgs,
+      'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'trustAnchors' | 'firstPartyStateNavigationListener'
+    > & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
       noStateMachinePersistence?: boolean
@@ -69,7 +67,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       authorizationRequestOpts: { ...this.authorizationRequestOpts, ...opts?.authorizationRequestOpts },
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
       stateNavigationListener: this.stateNavigationListener,
-      firstPartyStateNavigationListener: this.firstPartyStateNavigationListener
+      firstPartyStateNavigationListener: this.firstPartyStateNavigationListener,
     })
 
     const interpreter = oid4vciMachine.interpreter

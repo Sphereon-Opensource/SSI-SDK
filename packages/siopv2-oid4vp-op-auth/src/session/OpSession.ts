@@ -20,7 +20,7 @@ import { encodeBase64url } from '@sphereon/ssi-sdk.core'
 import {
   CompactSdJwtVc,
   CredentialMapper,
-  Hasher,
+  HasherSync,
   OriginalVerifiableCredential,
   parseDid,
   PresentationSubmission,
@@ -380,7 +380,7 @@ export class OpSession {
     }
   }
 
-  private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[], hasher?: Hasher) {
+  private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[], hasher?: HasherSync) {
     return verifiablePresentations.reduce((sum, vp) => {
       if (CredentialMapper.isMsoMdocDecodedPresentation(vp) || CredentialMapper.isMsoMdocOid4VPEncoded(vp)) {
         return sum + 1

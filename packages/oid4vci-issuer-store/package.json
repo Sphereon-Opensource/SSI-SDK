@@ -14,9 +14,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.16.1-next.339",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.27.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.27.0",
+    "@sphereon/oid4vci-common": "0.17.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
+    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@types/uuid": "^9.0.8",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

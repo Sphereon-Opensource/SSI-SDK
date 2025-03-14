@@ -95,6 +95,7 @@ describe('Status list', () => {
         { agent },
       )
       expect(statusList.type).toBe(StatusListType.StatusList2021)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+ld+json')
       expect(statusList.proofFormat).toBe('lds')
       expect(statusList.statusList2021?.indexingDirection).toBe('rightToLeft')
 
@@ -107,6 +108,7 @@ describe('Status list', () => {
         statusListIndex: '2',
       })
       expect(status).toBe(Status2021.Invalid)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+ld+json')
     })
 
     it('should create and update using JWT format', async () => {
@@ -134,6 +136,8 @@ describe('Status list', () => {
         statusListIndex: '3',
       })
       expect(status).toBe(Status2021.Invalid)
+      expect(statusList.type).toBe(StatusListType.StatusList2021)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+jwt')
     })
   })
 
@@ -163,6 +167,8 @@ describe('Status list', () => {
         statusListIndex: '4',
       })
       expect(status).toBe(StatusOAuth.Invalid)
+      expect(statusList.type).toBe(StatusListType.OAuthStatusList)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+jwt')
     })
 
     it('should create and update using CBOR format', async () => {
@@ -194,6 +200,7 @@ describe('Status list', () => {
         statusListIndex: '5',
       })
       expect(status).toBe(StatusOAuth.Suspended)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+cwt')
     })
 
     it('should reject LD-Signatures format', async () => {
@@ -251,6 +258,7 @@ describe('Status list', () => {
       )
 
       expect(result.type).toBe(StatusListType.StatusList2021)
+      expect(result.statuslistContentType).toBe('application/statuslist+jwt')
       expect(result.encodedList).toBeDefined()
       expect(result.statusListCredential).toBeDefined()
     })
@@ -288,6 +296,7 @@ describe('Status list', () => {
       )
 
       expect(result.type).toBe(StatusListType.OAuthStatusList)
+      expect(result.statuslistContentType).toBe('application/statuslist+jwt')
       expect(result.oauthStatusList?.bitsPerStatus).toBe(2)
     })
   })
@@ -307,6 +316,7 @@ describe('Status list', () => {
       )
 
       expect(result).toBeDefined()
+
       expect(typeof result === 'string' || 'proof' in result).toBeTruthy()
     })
 
@@ -372,6 +382,7 @@ describe('Status list', () => {
       expect(details.correlationId).toBe('test-details-1')
       expect(details.driverType).toBe(StatusListDriverType.AGENT_TYPEORM)
       expect(details.statusList2021?.indexingDirection).toBe('rightToLeft')
+      expect(details.statuslistContentType).toBe('application/statuslist+jwt')
     })
 
     it('should handle OAuthStatusList credential', async () => {
@@ -399,6 +410,7 @@ describe('Status list', () => {
       expect(details.type).toBe(StatusListType.OAuthStatusList)
       expect(details.proofFormat).toBe('jwt')
       expect(details.correlationId).toBe('test-details-2')
+      expect(details.statuslistContentType).toBe('application/statuslist+jwt')
       expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
       expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
     })
@@ -428,6 +440,7 @@ describe('Status list', () => {
       expect(details.type).toBe(StatusListType.OAuthStatusList)
       expect(details.proofFormat).toBe('cbor')
       expect(details.correlationId).toBe('test-details-3')
+      expect(details.statuslistContentType).toBe('application/statuslist+cwt')
       expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
       expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
     })

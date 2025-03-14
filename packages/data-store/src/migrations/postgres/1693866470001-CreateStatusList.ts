@@ -5,7 +5,7 @@ export class CreateStatusList1693866470001 implements MigrationInterface {
   name = 'CreateStatusList1693866470001'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`CREATE TYPE "StatusList_type_enum" AS ENUM('StatusList2021', 'OAuthStatusList')`)
+    await queryRunner.query(`CREATE TYPE "StatusList_type_enum" AS ENUM('StatusList2021')`)
     await queryRunner.query(`CREATE TYPE "StatusList_drivertype_enum" AS ENUM('agent_typeorm', 'agent_kv_store', 'github', 'agent_filesystem')`)
     await queryRunner.query(`CREATE TYPE "StatusList_credentialidmode_enum" AS ENUM('ISSUANCE', 'PERSISTENCE', 'NEVER')`)
 
@@ -21,9 +21,6 @@ export class CreateStatusList1693866470001 implements MigrationInterface {
                  CONSTRAINT "PK_68704d2d13857360c6b44a3d1d0" PRIMARY KEY ("statusListId", "statusListIndex")
              )`,
     )
-    await queryRunner.query(`CREATE TYPE "StatusList_type_enum" AS ENUM('StatusList2021')`)
-    await queryRunner.query(`CREATE TYPE "StatusList_drivertype_enum" AS ENUM('agent_typeorm', 'agent_kv_store', 'github', 'agent_filesystem')`)
-    await queryRunner.query(`CREATE TYPE "StatusList_credentialidmode_enum" AS ENUM('ISSUANCE', 'PERSISTENCE', 'NEVER')`)
     await queryRunner.query(
       `CREATE TABLE "StatusList"
              (

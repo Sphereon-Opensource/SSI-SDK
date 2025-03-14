@@ -7,7 +7,7 @@ export interface ClaimPayloadCommonOpts {
 }
 
 export interface AuthorizationChallengeValidationResponse {
-  presentation_during_issuance_session: string;
+  presentation_during_issuance_session: string
 }
 
 export type AuthorizationRequestStateStatus = 'created' | 'sent' | 'received' | 'verified' | 'error'
@@ -16,6 +16,7 @@ export type AuthorizationResponseStateStatus = 'created' | 'sent' | 'received' |
 
 export interface GenerateAuthRequestURIResponse {
   correlationId: string
+  state: string
   definitionId: string
   authRequestURI: string
   authStatusURI: string

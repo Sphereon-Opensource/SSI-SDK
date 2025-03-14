@@ -30,6 +30,7 @@ import {
 
 import { v4 } from 'uuid'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export const ebsiSupportMethods: Array<string> = [
   'ebsiCreateDidOnLedger',
@@ -139,7 +140,7 @@ export class EbsiSupport implements IAgentPlugin {
         })
         if (pexResult.filteredCredentials.length > 0) {
           const filtered = pexResult.filteredCredentials
-            .map((cred) => CredentialMapper.toUniformCredential(cred))
+            .map((cred) => CredentialMapper.toUniformCredential(cred, { hasher: defaultHasher }))
             .filter((cred) => {
               if (!cred.expirationDate) {
                 return cred

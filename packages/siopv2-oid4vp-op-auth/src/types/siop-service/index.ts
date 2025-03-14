@@ -1,7 +1,8 @@
 import {
   PresentationDefinitionWithLocation,
   PresentationSignCallback,
-  RPRegistrationMetadataPayload, VerifiedAuthorizationRequest
+  RPRegistrationMetadataPayload,
+  VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
@@ -12,14 +13,14 @@ import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
 import { DcqlQuery } from 'dcql'
-import { Hasher } from '@sphereon/ssi-types'
+import { HasherSync } from '@sphereon/ssi-types'
 
 export type DidAuthSiopOpAuthenticatorOptions = {
   presentationSignCallback?: PresentationSignCallback
   customApprovals?: Record<string, (verifiedAuthorizationRequest: VerifiedAuthorizationRequest, sessionId: string) => Promise<void>>
   onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export type GetMachineArgs = {
@@ -30,14 +31,14 @@ export type GetMachineArgs = {
 
 export type CreateConfigArgs = { url: string }
 export type CreateConfigResult = Omit<DidAuthConfig, 'stateId' | 'idOpts'>
-export type GetSiopRequestArgs = { didAuthConfig?: Omit<DidAuthConfig, 'identifier'>, url: string }
+export type GetSiopRequestArgs = { didAuthConfig?: Omit<DidAuthConfig, 'identifier'>; url: string }
 // FIXME it would be nicer if these function are not tied to a certain machine so that we can start calling them for anywhere
 export type RetrieveContactArgs = Pick<Siopv2MachineContext, 'url' | 'authorizationRequestData'>
 // FIXME it would be nicer if these function are not tied to a certain machine so that we can start calling them for anywhere
 export type AddIdentityArgs = Pick<Siopv2MachineContext, 'contact' | 'authorizationRequestData'>
 export type SendResponseArgs = {
-  didAuthConfig?: Omit<DidAuthConfig, 'identifier'>,
-  authorizationRequestData?: Siopv2AuthorizationRequestData,
+  didAuthConfig?: Omit<DidAuthConfig, 'identifier'>
+  authorizationRequestData?: Siopv2AuthorizationRequestData
   selectedCredentials: Array<UniqueDigitalCredential>
   idOpts?: ManagedIdentifierOptsOrResult
   isFirstParty?: boolean

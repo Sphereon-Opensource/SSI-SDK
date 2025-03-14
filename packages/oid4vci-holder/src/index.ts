@@ -3,6 +3,7 @@
  */
 
 export { OID4VCIHolder, oid4vciHolderContextMethods, signCallback } from './agent/OID4VCIHolder'
+export * from './mappers/OIDC4VCIBrandingMapper'
 export * from './services/OID4VCIHolderService'
 export * from './services/FirstPartyMachineServices'
 export * from './types/IOID4VCIHolder'

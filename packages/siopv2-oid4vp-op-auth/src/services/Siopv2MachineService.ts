@@ -4,7 +4,7 @@ import { InputDescriptorV1, InputDescriptorV2, PresentationDefinitionV1, Present
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType, CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, Hasher, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, HasherSync, Loggers, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { OID4VP, OpSession } from '../session'
 import {
   DidAgents,
@@ -19,8 +19,8 @@ import {
 } from '../types'
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
-import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
-import { DcqlCredential, DcqlQuery, DcqlCredentialPresentation, DcqlPresentation } from 'dcql'
+import { defaultHasher, encodeJoseBlob } from '@sphereon/ssi-sdk.core'
+import { DcqlCredential, DcqlCredentialPresentation, DcqlPresentation, DcqlQuery } from 'dcql'
 import { convertToDcqlCredentials } from '../utils/dcql'
 import { getOriginalVerifiableCredential } from '../utils/CredentialUtils'
 
@@ -52,14 +52,14 @@ export const siopSendAuthorizationResponse = async (
     verifiableCredentialsWithDefinition?: VerifiableCredentialsWithDefinition[]
     idOpts?: ManagedIdentifierOptsOrResult
     isFirstParty?: boolean
-    hasher?: Hasher
+    hasher?: HasherSync
     dcqlQuery?: DcqlQuery
   },
   context: RequiredContext,
 ) => {
   const { agent } = context
   const agentContext = { ...context, agent: context.agent as DidAgents }
-  let { idOpts, isFirstParty, hasher } = args
+  let { idOpts, isFirstParty, hasher = defaultHasher } = args
 
   if (connectionType !== ConnectionType.SIOPv2_OpenID4VP) {
     return Promise.reject(Error(`No supported authentication provider for type: ${connectionType}`))
@@ -129,11 +129,18 @@ export const siopSendAuthorizationResponse = async (
           break
         // TODO other implementations?
         default:
-          // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
-          identifier = await session.context.agent.identifierManagedGetByKid({
-            identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
-            kmsKeyRef: digitalCredential.kmsKeyRef,
-          })
+          if (digitalCredential.subjectCorrelationId?.startsWith('did:') || holder?.startsWith('did:')) {
+            identifier = await session.context.agent.identifierManagedGetByDid({
+              identifier: digitalCredential.subjectCorrelationId ?? holder,
+              kmsKeyRef: digitalCredential.kmsKeyRef,
+            })
+          } else {
+            // Since we are using the kmsKeyRef we will find the KID regardless of the identifier. We set it for later access though
+            identifier = await session.context.agent.identifierManagedGetByKid({
+              identifier: digitalCredential.subjectCorrelationId ?? holder ?? digitalCredential.kmsKeyRef,
+              kmsKeyRef: digitalCredential.kmsKeyRef,
+            })
+          }
       }
     }
 
@@ -168,7 +175,7 @@ export const siopSendAuthorizationResponse = async (
       ...(presentationSubmission && { presentationSubmission }),
       // todo: Change issuer value in case we do not use identifier. Use key.meta.jwkThumbprint then
       responseSignerOpts: idOpts!,
-    isFirstParty,
+      isFirstParty,
     })
   } else if (request.dcqlQuery) {
     if (args.verifiableCredentialsWithDefinition !== undefined && args.verifiableCredentialsWithDefinition !== null) {

@@ -1,13 +1,10 @@
-import { ClientMetadataOpts, VerifyJwtCallback } from '@sphereon/did-auth-siop'
-import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { AdditionalClaims, DcqlQueryREST, Hasher, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
   AuthorizationResponsePayload,
   AuthorizationResponseState,
   ClaimPayloadCommonOpts,
+  ClientMetadataOpts,
   IRPSessionManager,
   PresentationDefinitionWithLocation,
   PresentationVerificationCallback,
@@ -17,10 +14,12 @@ import {
   SupportedVersion,
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationResponse,
+  VerifyJwtCallback,
   VPTokenLocation,
 } from '@sphereon/did-auth-siop'
-
-import { ExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { AdditionalClaims, DcqlQueryREST, HasherSync, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 
 import { Resolvable } from 'did-resolver'
 import { DIDDocument } from '@sphereon/did-uni-client'
@@ -208,7 +207,7 @@ export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
 
 // todo make the necessary changes for mdl-mdoc types
 export type CredentialOpts = {
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {

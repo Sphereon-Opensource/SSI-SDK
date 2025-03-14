@@ -44,6 +44,16 @@ export class UpdateStatusList1737110469000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+     ALTER TABLE "StatusListEntry"
+     RENAME COLUMN "entryCorrelationId" TO "correlationId"
+   `)
+
+    await queryRunner.query(`
+     ALTER TABLE "StatusListEntry"
+     DROP COLUMN "statusListCorrelationId"
+   `)
+
     // Create temporary table with old schema
     await queryRunner.query(
       `CREATE TABLE "temporary_StatusList" (

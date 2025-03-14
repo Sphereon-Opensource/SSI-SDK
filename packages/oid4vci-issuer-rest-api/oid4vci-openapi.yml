@@ -5,13 +5,13 @@ info:
   description: |
     API for OpenID for Verifiable Credential Issuance
     This API allows issuers to provide verifiable credentials to wallets following the OID4VCI specification.
-    
+
     It describes the complete API, including the wallets perspective. Any wallet conforming to OID4VCI should work with these endpoints out of the box.
     The backend/webapp endpoint describe:
     - How to create a session and get a URI to include in a QR code or link
     - How to poll the issueance status
     - How to access a specific credential offer
-    
+
 tags:
   - name: Backend
     description: The backend/webapp endpoints that want to issue a credential
@@ -43,7 +43,7 @@ components:
             - type: string
             - type: object
           description: The issued credential, either as a JWT string or JSON object
-          example: "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9..."
+          example: 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9...'
         format:
           type: string
           enum:
@@ -58,7 +58,7 @@ components:
         c_nonce:
           type: string
           description: Nonce for subsequent credential requests
-          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
         c_nonce_expires_in:
           type: number
           description: Expiration time of the c_nonce in seconds
@@ -100,7 +100,7 @@ components:
         clientId:
           type: string
           description: Client identifier
-          example: "https://wallet.example.com"
+          example: 'https://wallet.example.com'
 
     AuthorizationChallengeRequest:
       type: object
@@ -109,22 +109,22 @@ components:
         client_id:
           type: string
           description: Client identifier
-          example: "https://wallet.example.com"
+          example: 'https://wallet.example.com'
         issuer_state:
           type: string
           description: Opaque state from issuer
-          example: "a81bc81b-dead-4563-8692-3bc3c7f12897"
+          example: 'a81bc81b-dead-4563-8692-3bc3c7f12897'
         auth_session:
           type: string
           description: Session identifier for associating subsequent requests
-          example: "d270fee1-9185-4e60-9901-d291e1338d7a"
+          example: 'd270fee1-9185-4e60-9901-d291e1338d7a'
         scope:
           type: string
         code_challenge:
           type: string
         code_challenge_method:
           type: string
-          enum: [ plain, S256 ]
+          enum: [plain, S256]
         presentation_during_issuance_session:
           type: string
 
@@ -145,15 +145,15 @@ components:
         client_id:
           type: string
           description: Unique identifier for the client making the request
-          example: "client-12345"
+          example: 'client-12345'
         code:
           type: string
           description: Authorization code received from the authorization server
-          example: "abc123xyz"
+          example: 'abc123xyz'
         code_verifier:
           type: string
           description: Code verifier used in the PKCE flow
-          example: "s256-code-verifier"
+          example: 's256-code-verifier'
         grant_type:
           type: string
           description: OAuth 2.0 grant type
@@ -161,27 +161,27 @@ components:
             - authorization_code
             - urn:ietf:params:oauth:grant-type:pre-authorized_code
             - password
-          example: "authorization_code"
+          example: 'authorization_code'
         pre-authorized_code:
           type: string
           description: Pre-authorized code used for credential issuance
-          example: "pre-auth-code-xyz"
+          example: 'pre-auth-code-xyz'
         redirect_uri:
           type: string
           description: The redirect URI where the response should be sent
-          example: "https://wallet.example.com/callback"
+          example: 'https://wallet.example.com/callback'
         scope:
           type: string
           description: The scope of access requested by the client
-          example: "openid credential"
+          example: 'openid credential'
         user_pin:
           type: string
           description: PIN required for pre-authorized flows (if applicable)
-          example: "1234"
+          example: '1234'
         tx_code:
           type: string
           description: Transaction code for authorization (if applicable)
-          example: "tx-56789"
+          example: 'tx-56789'
 
     AccessTokenResponse:
       type: object
@@ -191,15 +191,15 @@ components:
         access_token:
           type: string
           description: The issued access token
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
         scope:
           type: string
           description: The granted scope(s) of the access token
-          example: "openid credential"
+          example: 'openid credential'
         token_type:
           type: string
           description: The type of token issued (typically "Bearer")
-          example: "Bearer"
+          example: 'Bearer'
         expires_in:
           type: number
           description: The duration in seconds for which the token is valid
@@ -207,7 +207,7 @@ components:
         c_nonce:
           type: string
           description: A nonce to be used in credential requests
-          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
         c_nonce_expires_in:
           type: number
           description: Expiration time of the c_nonce in seconds
@@ -230,15 +230,15 @@ components:
         event:
           type: string
           description: Type of the event being notified
-          example: "CREDENTIAL_ISSUED"
+          example: 'CREDENTIAL_ISSUED'
         event_description:
           type: string
           description: A human-readable description of the event
-          example: "Credential issuance was successful."
+          example: 'Credential issuance was successful.'
         notification_id:
           type: string
           description: Unique identifier for the notification event
-          example: "notif-12345"
+          example: 'notif-12345'
 
     CredentialRequest:
       type: object
@@ -256,11 +256,11 @@ components:
             - jwt_vc_json-ld
             - vc+sd-jwt
             - mso_mdoc
-          example: "jwt_vc_json"
+          example: 'jwt_vc_json'
         credential_identifier:
           type: string
           description: Identifier of the credential configuration to be issued
-          example: "UniversityDegree_JWT"
+          example: 'UniversityDegree_JWT'
         proof:
           $ref: '#/components/schemas/ProofOfPossession'
         credential_response_encryption:
@@ -270,20 +270,15 @@ components:
             jwk:
               type: object
               description: JWK for encryption
-              example: {
-                "kty": "EC",
-                "crv": "P-256",
-                "x": "...",
-                "y": "..."
-              }
+              example: { 'kty': 'EC', 'crv': 'P-256', 'x': '...', 'y': '...' }
             alg:
               type: string
               description: Algorithm for encryption
-              example: "ES256"
+              example: 'ES256'
             enc:
               type: string
               description: Content encryption algorithm
-              example: "A256GCM"
+              example: 'A256GCM'
 
     ProofOfPossession:
       type: object
@@ -295,12 +290,12 @@ components:
         proof_type:
           type: string
           description: The type of proof provided
-          enum: [ jwt ]
-          example: "jwt"
+          enum: [jwt]
+          example: 'jwt'
         jwt:
           type: string
           description: A signed JWT containing the proof of possession
-          example: "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9..."
+          example: 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9...'
 
     CredentialOfferPayload:
       type: object
@@ -312,23 +307,23 @@ components:
         credential_issuer:
           type: string
           description: URL of the credential issuer
-          example: "https://issuer.example.com"
+          example: 'https://issuer.example.com'
         credential_configuration_ids:
           type: array
           description: Identifiers for the offered credential configurations
           items:
             type: string
-          example: [ "university_degree_1", "verified_email_2" ]
+          example: ['university_degree_1', 'verified_email_2']
         grants:
           type: object
           description: Supported authorization grant types
           example:
-            "urn:ietf:params:oauth:grant-type:pre-authorized_code":
-              "pre-authorized_code": "d270fee1-9185-4e60-9901-d291e1338d7a"
+            'urn:ietf:params:oauth:grant-type:pre-authorized_code':
+              'pre-authorized_code': 'd270fee1-9185-4e60-9901-d291e1338d7a'
         client_id:
           type: string
           description: Client identifier
-          example: "https://wallet.example.com"
+          example: 'https://wallet.example.com'
 
     CredentialOfferRequest:
       description: Request to create a credential offer
@@ -339,15 +334,15 @@ components:
         credential_offer_uri:
           type: string
           description: URI pointing to the credential offer
-          example: "https://issuer.example.com/credential-offer/123"
+          example: 'https://issuer.example.com/credential-offer/123'
         baseUri:
           type: string
           description: Base URI for constructing offer-related links
-          example: "https://issuer.example.com"
+          example: 'https://issuer.example.com'
         scheme:
           type: string
           description: URI scheme for offer delivery
-          example: "openid-credential-offer"
+          example: 'openid-credential-offer'
         pinLength:
           type: number
           description: Length of the user PIN if required for authentication
@@ -358,7 +353,6 @@ components:
         credentialDataSupplierInput:
           type: object
           description: Additional input for the credential data supplier, if needed
-
 
     IssuerMetadata:
       description: Credential issuer metadata as defined in the OID4VCI specification
@@ -376,11 +370,11 @@ components:
         credential_issuer:
           type: string
           description: URL identifying the credential issuer
-          example: "https://issuer.example.com"
+          example: 'https://issuer.example.com'
         credential_endpoint:
           type: string
           description: URL of the credential endpoint
-          example: "https://issuer.example.com/credentials"
+          example: 'https://issuer.example.com/credentials'
         authorization_servers:
           type: array
           items:
@@ -407,11 +401,11 @@ components:
         format:
           type: string
           description: Format of the credential being issued
-          example: "jwt_vc_json"
+          example: 'jwt_vc_json'
         scope:
           type: string
           description: Scope of the credential request, if applicable
-          example: "openid credential"
+          example: 'openid credential'
         cryptographic_binding_methods_supported:
           type: array
           items:
@@ -437,11 +431,11 @@ components:
         name:
           type: string
           description: Display name for the credential or issuer
-          example: "University Degree"
+          example: 'University Degree'
         locale:
           type: string
           description: Language locale for the display information
-          example: "en-US"
+          example: 'en-US'
         logo:
           type: object
           properties:
@@ -489,7 +483,7 @@ paths:
     post:
       summary: Create credential offer
       description: Generate and return a new credential offer
-      tags: ["Backend"]
+      tags: ['Backend']
       requestBody:
         required: true
         content:
@@ -507,11 +501,11 @@ paths:
                   uri:
                     type: string
                     description: Credential offer URI
-                    example: "https://issuer.example.com/credential-offer/123"
+                    example: 'https://issuer.example.com/credential-offer/123'
                   userPin:
                     type: string
                     description: User PIN for access if required
-                    example: "1234"
+                    example: '1234'
                   txCode:
                     type: object
                     description: Transaction code details for tracking
@@ -519,7 +513,7 @@ paths:
     post:
       summary: Get credential issuance status
       description: Check the current status of a credential issuance request
-      tags: ["Backend"]
+      tags: ['Backend']
       requestBody:
         required: true
         content:
@@ -532,7 +526,7 @@ paths:
                 id:
                   type: string
                   description: Identifier of the credential offer
-                  example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+                  example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
       responses:
         '200':
           description: Successful response
@@ -551,7 +545,7 @@ paths:
     get:
       summary: Get credential offer
       description: Retrieve a specific credential offer by ID
-      tags: ["Backend"]
+      tags: ['Backend']
       parameters:
         - name: id
           in: path
@@ -559,7 +553,7 @@ paths:
           description: Unique identifier of the credential offer
           schema:
             type: string
-          example: "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
       responses:
         '200':
           description: Successful response
@@ -568,12 +562,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/CredentialOfferPayload'
 
-
   /.well-known/openid-credential-issuer:
     get:
       summary: Get credential issuer metadata
       description: Returns the metadata about the credential issuer's capabilities, conforms to OID4VCI
-      tags: ["Wallet"]
+      tags: ['Wallet']
       responses:
         '200':
           description: Successful response
@@ -585,7 +578,7 @@ paths:
   /.well-known/oauth-authorization-server:
     get:
       summary: Get authorization server metadata, if the integrated authorization server is enabled. Conforms to OAuth2
-      tags: ["Integrated Authorization Server"]
+      tags: ['Integrated Authorization Server']
       responses:
         '200':
           description: Successful response
@@ -594,11 +587,10 @@ paths:
               schema:
                 type: object
 
-  
   /authorization-challenge:
     post:
       summary: Authorization challenge endpoint in case a first party flow is enabled with the integrated authorization server
-      tags: ["Integrated Authorization Server"]
+      tags: ['Integrated Authorization Server']
       requestBody:
         required: true
         content:
@@ -617,7 +609,7 @@ paths:
     post:
       summary: Access token endpoint
       description: Issues an access token based on an authorization request, in case the integrated authorization server is enabled
-      tags: ["Integrated Authorization Server"]
+      tags: ['Integrated Authorization Server']
       requestBody:
         required: true
         content:
@@ -636,9 +628,9 @@ paths:
     post:
       summary: Get credential endpoint
       description: Request issuance of a credential
-      tags: ["Wallet"]
+      tags: ['Wallet']
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -656,9 +648,9 @@ paths:
   /notification:
     post:
       summary: Notification endpoint
-      tags: ["Wallet"]
+      tags: ['Wallet']
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       requestBody:
         required: true
         content:

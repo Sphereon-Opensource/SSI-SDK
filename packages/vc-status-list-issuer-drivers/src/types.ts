@@ -49,6 +49,8 @@ export interface IStatusListDriver {
 
   getStatusList(args?: { correlationId?: string }): Promise<StatusListResult>
 
+  getStatusLists(): Promise<Array<StatusListResult>>
+
   updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
     credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus
     statusListEntry: IStatusListEntryEntity

@@ -10,7 +10,7 @@ import {
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
-  AuthorizationChallengeCodeResponse
+  AuthorizationChallengeCodeResponse,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -26,6 +26,7 @@ import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
+  Hasher,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
@@ -58,15 +59,12 @@ import {
   VerificationResult,
   VerifyCredentialToAcceptArgs,
   StartFirstPartApplicationMachine,
-  RequiredContext
+  RequiredContext,
 } from '../types/IOID4VCIHolder'
-import {
-  oid4vciGetCredentialBrandingFrom,
-  sdJwtGetCredentialBrandingFrom,
-  issuerLocaleBrandingFrom
-} from '../mappers/OIDC4VCIBrandingMapper'
+import { oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom, issuerLocaleBrandingFrom } from '../mappers/OIDC4VCIBrandingMapper'
 import { FirstPartyMachine } from '../machines/firstPartyMachine'
 import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -88,14 +86,14 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       if (sdJwtTypeMetadata) {
         mappedLocaleBranding = await sdJwtGetCredentialBrandingFrom({
           credentialDisplay: sdJwtTypeMetadata.display,
-          claimsMetadata: sdJwtTypeMetadata.claims
+          claimsMetadata: sdJwtTypeMetadata.claims,
         })
       } else {
         mappedLocaleBranding = await oid4vciGetCredentialBrandingFrom({
           credentialDisplay: credentialsConfigSupported.display,
           issuerCredentialSubject:
-          // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
-          credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
+            // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
+            credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
         })
       }
       // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use
@@ -160,7 +158,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
+  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher: hasher ?? defaultHasher })
   if (
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
@@ -226,7 +224,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     if (!hasher) {
       return Promise.reject('a hasher is required for encoded SD-JWT credentials')
     }
-    const asyncHasher = (data: string, algorithm: string) => Promise.resolve(hasher(data, algorithm))
+    const asyncHasher: Hasher = (data: string | ArrayBuffer, algorithm: string) => Promise.resolve(hasher(data, algorithm))
     const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedVerifiableCredential.credential, asyncHasher)
     uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>decodedSdJwt)
   } else if (CredentialMapper.isMsoMdocDecodedCredential(wrappedVerifiableCredential.credential)) {
@@ -621,7 +619,10 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
   }
 }
 
-export const startFirstPartApplicationMachine = async (args: StartFirstPartApplicationMachine, context: RequiredContext): Promise<AuthorizationChallengeCodeResponse | string> => {
+export const startFirstPartApplicationMachine = async (
+  args: StartFirstPartApplicationMachine,
+  context: RequiredContext,
+): Promise<AuthorizationChallengeCodeResponse | string> => {
   const { openID4VCIClientState, stateNavigationListener, contact } = args
 
   if (!openID4VCIClientState) {
@@ -636,8 +637,8 @@ export const startFirstPartApplicationMachine = async (args: StartFirstPartAppli
     openID4VCIClientState,
     contact,
     agentContext: context,
-    stateNavigationListener
-  });
+    stateNavigationListener,
+  })
 
   return new Promise((resolve, reject) => {
     try {
@@ -645,20 +646,20 @@ export const startFirstPartApplicationMachine = async (args: StartFirstPartAppli
         if (state.matches(FirstPartyMachineStateTypes.done)) {
           const authorizationCodeResponse = state.context.authorizationCodeResponse
           if (!authorizationCodeResponse) {
-            reject(Error('No authorizationCodeResponse acquired'));
+            reject(Error('No authorizationCodeResponse acquired'))
           }
-          resolve(authorizationCodeResponse!);
+          resolve(authorizationCodeResponse!)
         } else if (state.matches(FirstPartyMachineStateTypes.aborted)) {
-          resolve(FirstPartyMachineStateTypes.aborted);
+          resolve(FirstPartyMachineStateTypes.aborted)
         } else if (state.matches(FirstPartyMachineStateTypes.declined)) {
-          resolve(FirstPartyMachineStateTypes.declined);
+          resolve(FirstPartyMachineStateTypes.declined)
         } else if (state.matches(FirstPartyMachineStateTypes.error)) {
-          reject(state.context.error);
+          reject(state.context.error)
         }
       })
-      firstPartyMachineInstance.start();
+      firstPartyMachineInstance.start()
     } catch (error) {
-      reject(error);
+      reject(error)
     }
-  });
-};
+  })
+}

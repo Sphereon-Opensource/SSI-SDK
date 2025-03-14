@@ -1,5 +1,5 @@
 import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
-import { OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
+import { getBasePath, OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
 import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import {
@@ -7,11 +7,11 @@ import {
   getAccessTokenSignerCallback,
   IIssuerInstanceArgs,
   IssuerInstance,
-  createVerifyAuthResponseCallback
+  createVerifyAuthResponseCallback,
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { DIDDocument } from 'did-resolver'
-import { Express } from 'express'
+import express, { Express, Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
+import swaggerUi from 'swagger-ui-express'
 
 export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {}
 
@@ -19,9 +19,12 @@ export class OID4VCIRestAPI {
   private readonly _expressSupport: ExpressSupport
   private readonly _context: IRequiredContext
   private readonly _opts?: IOID4VCIRestAPIOpts
-  private readonly _restApi: OID4VCIServer<DIDDocument>
+  private readonly _restApi: OID4VCIServer
   private readonly _instance: IssuerInstance
-  private readonly _issuer: VcIssuer<DIDDocument>
+  private readonly _issuer: VcIssuer
+  private readonly _router: Router
+  private _baseUrl: URL
+  private _basePath: string
 
   static async init(args: {
     context: IRequiredContext
@@ -65,60 +68,93 @@ export class OID4VCIRestAPI {
 
     if (opts?.endpointOpts.authorizationChallengeOpts?.enabled === true) {
       if (!instance.issuerOptions.presentationDefinitionId) {
-        throw Error(
-          `Unable to set createAuthRequestUriCallback. No presentationDefinitionId present in issuer options`,
-        )
+        throw Error(`Unable to set createAuthRequestUriCallback. No presentationDefinitionId present in issuer options`)
       }
 
       if (typeof opts?.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback !== 'function') {
         if (!opts.endpointOpts.authorizationChallengeOpts?.createAuthRequestUriEndpointPath) {
-          throw Error(
-            `Unable to set createAuthRequestUriCallback. No createAuthRequestUriEndpointPath present in options`,
-          )
+          throw Error(`Unable to set createAuthRequestUriCallback. No createAuthRequestUriEndpointPath present in options`)
         }
 
-        opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback = await createAuthRequestUriCallback(
-          {
-            path: opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriEndpointPath,
-            presentationDefinitionId: instance.issuerOptions.presentationDefinitionId
-          }
-        )
+        opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriCallback = await createAuthRequestUriCallback({
+          path: opts.endpointOpts.authorizationChallengeOpts.createAuthRequestUriEndpointPath,
+          presentationDefinitionId: instance.issuerOptions.presentationDefinitionId,
+        })
       }
 
       if (typeof opts?.endpointOpts.authorizationChallengeOpts?.verifyAuthResponseCallback !== 'function') {
         if (!opts.endpointOpts.authorizationChallengeOpts?.verifyAuthResponseEndpointPath) {
-          throw Error(
-            `Unable to set verifyAuthResponseCallback. No createAuthRequestUriEndpointPath present in options`,
-          )
+          throw Error(`Unable to set verifyAuthResponseCallback. No createAuthRequestUriEndpointPath present in options`)
         }
 
-        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await createVerifyAuthResponseCallback(
-          {
-            path: opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseEndpointPath,
-            presentationDefinitionId: instance.issuerOptions.presentationDefinitionId
-          }
-        )
+        opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseCallback = await createVerifyAuthResponseCallback({
+          path: opts.endpointOpts.authorizationChallengeOpts.verifyAuthResponseEndpointPath,
+          presentationDefinitionId: instance.issuerOptions.presentationDefinitionId,
+        })
       }
     }
 
     return new OID4VCIRestAPI({ context, issuerInstanceArgs, expressSupport, opts, instance, issuer })
   }
 
+  private readonly OID4VCI_SWAGGER_URL = 'https://api.swaggerhub.com/apis/SphereonInt/OID4VCI/0.1.1'
+
   private constructor(args: {
-    issuer: VcIssuer<DIDDocument>
+    issuer: VcIssuer
     instance: IssuerInstance
     context: IRequiredContext
     issuerInstanceArgs: IIssuerInstanceArgs
     expressSupport: ExpressSupport
     opts: IOID4VCIRestAPIOpts
   }) {
-    const { context, opts } = args
+    const { context, opts, issuerInstanceArgs } = args
+    this._baseUrl = new URL(
+      opts?.baseUrl ??
+        process.env.BASE_URL ??
+        opts?.issuer?.issuerMetadata?.credential_issuer ??
+        issuerInstanceArgs.credentialIssuer ??
+        'http://localhost',
+    )
+    this._basePath = getBasePath(this._baseUrl)
     this._context = context
     this._opts = opts ?? {}
     this._expressSupport = args.expressSupport
     this._issuer = args.issuer
     this._instance = args.instance
-    this._restApi = new OID4VCIServer<DIDDocument>(args.expressSupport, { ...opts, issuer: this._issuer })
+    this._restApi = new OID4VCIServer(args.expressSupport, { ...opts, issuer: this._issuer })
+
+    // The above setups the generic OID4VCI management and wallet APIs from the OID4VCI lib.
+    // Below sets up the management of configurations
+    this._router = express.Router()
+    this.express.use(this._basePath, this._router)
+    this.setupSwaggerUi()
+  }
+
+  private setupSwaggerUi() {
+    fetch(this.OID4VCI_SWAGGER_URL)
+      .then((res) => res.json())
+      .then((swagger) => {
+        const apiDocs = `/api-docs`
+        console.log(`[OID4VCI] API docs available at ${this._baseUrl.toString()}${this._basePath}${apiDocs}`)
+        swagger.servers = [{ url: this._baseUrl.toString(), description: 'This server' }]
+        this.express.set('trust proxy', this.opts?.endpointOpts?.trustProxy ?? true)
+        this._router.use(
+          apiDocs,
+          (req: Request, res: Response, next: any) => {
+            // @ts-ignore
+            req.swaggerDoc = swagger
+            next()
+          },
+          swaggerUi.serveFiles(swagger, options),
+          swaggerUi.setup(),
+        )
+      })
+      .catch((err) => {
+        console.log(`[OID4VCI] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
+      })
+    const options = {
+      // customCss: '.swagger-ui .topbar { display: none }',
+    }
   }
 
   get express(): Express {
@@ -133,7 +169,7 @@ export class OID4VCIRestAPI {
     return this._opts
   }
 
-  get restApi(): OID4VCIServer<DIDDocument> {
+  get restApi(): OID4VCIServer {
     return this._restApi
   }
 
@@ -141,7 +177,7 @@ export class OID4VCIRestAPI {
     return this._instance
   }
 
-  get issuer(): VcIssuer<DIDDocument> {
+  get issuer(): VcIssuer {
     return this._issuer
   }
 

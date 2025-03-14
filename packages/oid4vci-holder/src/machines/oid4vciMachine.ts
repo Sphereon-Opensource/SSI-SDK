@@ -1,8 +1,4 @@
-import {
-  AuthorizationChallengeCodeResponse,
-  AuthzFlowType,
-  toAuthorizationResponsePayload
-} from '@sphereon/oid4vci-common'
+import { AuthorizationChallengeCodeResponse, AuthzFlowType, toAuthorizationResponsePayload } from '@sphereon/oid4vci-common'
 import { IBasicIssuerLocaleBranding, Identity, IIssuerLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { translate } from '../localization/Localization'
@@ -456,18 +452,20 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           },
         ],
       },
-      [OID4VCIMachineStates.startFirstPartApplicationFlow] :{
+      [OID4VCIMachineStates.startFirstPartApplicationFlow]: {
         id: OID4VCIMachineStates.startFirstPartApplicationFlow,
         invoke: {
           src: OID4VCIMachineServices.startFirstPartApplicationFlow,
           onDone: [
             {
               target: OID4VCIMachineStates.aborted,
-              cond: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<FirstPartyMachineStateTypes>): boolean => _event.data === FirstPartyMachineStateTypes.aborted,
+              cond: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<FirstPartyMachineStateTypes>): boolean =>
+                _event.data === FirstPartyMachineStateTypes.aborted,
             },
             {
               target: OID4VCIMachineStates.declined,
-              cond: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<FirstPartyMachineStateTypes>): boolean => _event.data === FirstPartyMachineStateTypes.declined,
+              cond: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<FirstPartyMachineStateTypes>): boolean =>
+                _event.data === FirstPartyMachineStateTypes.declined,
             },
             {
               target: OID4VCIMachineStates.getCredentials,
@@ -475,9 +473,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
                 openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<AuthorizationChallengeCodeResponse>) => {
                   const authorizationCodeResponse = toAuthorizationResponsePayload(_event.data)
                   return { ..._ctx.openID4VCIClientState!, authorizationCodeResponse }
-                }
-              })
-            }
+                },
+              }),
+            },
           ],
           onError: {
             target: OID4VCIMachineStates.handleError,

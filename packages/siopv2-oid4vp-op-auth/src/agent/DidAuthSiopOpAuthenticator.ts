@@ -10,7 +10,7 @@ import {
   NonPersistedIdentity,
   Party,
 } from '@sphereon/ssi-sdk.data-store'
-import { Hasher, Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
+import { HasherSync, Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -33,16 +33,19 @@ import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
 import {
-  AddIdentityArgs,
-  CreateConfigArgs,
-  CreateConfigResult,
-  GetSiopRequestArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
+} from '../types'
+
+import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
+  GetSiopRequestArgs,
   OnContactIdentityCreatedArgs,
   OnIdentifierCreatedArgs,
   RetrieveContactArgs,
@@ -94,7 +97,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly onContactIdentityCreated?: (args: OnContactIdentityCreatedArgs) => Promise<void>
   private readonly onIdentifierCreated?: (args: OnIdentifierCreatedArgs) => Promise<void>
   private readonly eventEmitter?: EventEmitter
-  private readonly hasher?: Hasher
+  private readonly hasher?: HasherSync
 
   constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
     const { onContactIdentityCreated, onIdentifierCreated, hasher, customApprovals = {}, presentationSignCallback } = { ...options }
@@ -363,11 +366,13 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
             let uniqueDigitalCredentials: UniqueDigitalCredential[] = []
             uniqueDigitalCredentials = verifiableCredentials.map((vc) => {
               // @ts-ignore FIXME Funke
-              const hash = computeEntryHash(vc)
-              const udc = selectedCredentials.find((udc) => udc.hash == hash)
+              const hash = typeof vc === 'string' ? computeEntryHash(vc.split('~'[0])) : computeEntryHash(vc)
+              const udc = selectedCredentials.find((udc) => udc.hash == hash || udc.originalVerifiableCredential == vc)
 
               if (!udc) {
-                throw Error('UniqueDigitalCredential could not be found')
+                throw Error(
+                  `UniqueDigitalCredential could not be found in store. Either the credential is not present in the store or the hash is not correct.`,
+                )
               }
               return udc
             })

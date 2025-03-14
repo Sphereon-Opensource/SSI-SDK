@@ -7,8 +7,20 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { AdditionalClaims, CredentialMapper, Hasher, ICredentialSubject, IVerifiableCredential } from '@sphereon/ssi-types'
-import { OriginalVerifiablePresentation } from '@sphereon/ssi-types'
+import {
+  AdditionalClaims,
+  CredentialMapper,
+  HasherSync,
+  ICredentialSubject,
+  IPresentation,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  JwtDecodedVerifiablePresentation,
+  MdocDeviceResponse,
+  MdocOid4vpMdocVpToken,
+  OriginalVerifiablePresentation,
+  SdJwtDecodedVerifiableCredential,
+} from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
   AuthorizationResponseStateWithVerifiedData,
@@ -118,7 +130,7 @@ export class SIOPv2RP implements IAgentPlugin {
       args.includeVerifiedData &&
       args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
-      let hasher: Hasher | undefined
+      let hasher: HasherSync | undefined
       if (
         CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) &&
         (!rpInstance.rpOptions.credentialOpts?.hasher || typeof rpInstance.rpOptions.credentialOpts?.hasher !== 'function')
@@ -131,14 +143,13 @@ export class SIOPv2RP implements IAgentPlugin {
         //todo: later we want to conditionally pass in options for mdl-mdoc here
         hasher,
       )
-      const presentation = CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
       switch (args.includeVerifiedData) {
         case VerifiedDataMode.VERIFIED_PRESENTATION:
-          responseState.response.payload.verifiedData = presentation
+          responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
           break
-        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED:
+        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
           const allClaims: AdditionalClaims = {}
-          for (const credential of presentation.verifiableCredential || []) {
+          for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
             const vc = credential as IVerifiableCredential
             const schemaValidationResult = await context.agent.cvVerifySchema({
               credential,
@@ -168,6 +179,18 @@ export class SIOPv2RP implements IAgentPlugin {
     }
     return responseState
   }
+
+  private presentationOrClaimsFrom = (
+    presentationDecoded:
+      | JwtDecodedVerifiablePresentation
+      | IVerifiablePresentation
+      | SdJwtDecodedVerifiableCredential
+      | MdocOid4vpMdocVpToken
+      | MdocDeviceResponse,
+  ): AdditionalClaims | IPresentation =>
+    CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
+      ? presentationDecoded.decodedPayload
+      : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
     if (args.state !== 'sent') {

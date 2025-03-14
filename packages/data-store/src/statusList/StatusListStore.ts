@@ -58,7 +58,7 @@ export class StatusListStore implements IStatusListStore {
   }
 
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
-    const statusListId = typeof args.statusList === 'string' ? args.statusList : args.statusList.id
+    const statusListId = args.statusListId ?? args.statusList?.id
     const result = await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: false })
     const updatedEntry: Partial<IStatusListEntryEntity> = {
       value: args.value,
@@ -67,37 +67,54 @@ export class StatusListStore implements IStatusListStore {
       credentialId: args.credentialId,
     }
 
+    const updStatusListId = result?.statusListId ?? statusListId
     const updateResult = await (
       await this.getStatusListEntryRepo()
     ).upsert(
-      { ...(result ?? { statusList: args.statusList, statusListIndex: args.statusListIndex }), ...updatedEntry },
+      { ...(result ?? { statusListId: updStatusListId, statusListIndex: args.statusListIndex }), ...updatedEntry },
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
     console.log(updateResult)
     return (await this.getStatusListEntryByIndex({
       ...args,
-      statusListId,
+      statusListId: updStatusListId,
       errorOnNotFound: true,
     })) as IStatusListEntryEntity
   }
 
-  async getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
-    if (!args.statusListId && !args.correlationId) {
-      throw Error(`Cannot get statusList entry if not either a statusList id or correlationId is provided`)
+  async getStatusListEntryByIndex({
+    statusListId,
+    statusListCorrelationId,
+    statusListIndex,
+    entryCorrelationId,
+    errorOnNotFound,
+  }: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
+    if (!statusListId && !statusListCorrelationId) {
+      throw Error(`Cannot get statusList entry without either a statusList id or statusListCorrelationId`)
     }
+
+    if (!statusListIndex && !entryCorrelationId) {
+      throw Error(`Cannot get statusList entry without either a statusListIndex or entryCorrelationId`)
+    }
+
     const result = await (
       await this.getStatusListEntryRepo()
     ).findOne({
       where: {
-        ...(args.statusListId && { statusList: args.statusListId }),
-        ...(args.correlationId && { correlationId: args.correlationId }),
-        statusListIndex: args.statusListIndex,
+        ...(statusListId && { statusListId }),
+        ...(!statusListId && statusListCorrelationId && { statusList: { correlationId: statusListCorrelationId } }),
+        ...(statusListIndex && { statusListIndex }),
+        ...(entryCorrelationId && { entryCorrelationId }),
+      },
+      relations: {
+        statusList: true,
       },
     })
 
-    if (!result && args.errorOnNotFound) {
-      throw Error(`Could not find status list index ${args.statusListIndex} for status list id ${args.statusListId}`)
+    if (!result && errorOnNotFound) {
+      throw Error(`Could not find status list entry with provided filters`)
     }
+
     return result ?? undefined
   }
 
@@ -111,7 +128,7 @@ export class StatusListStore implements IStatusListStore {
       correlationId: args.statusListCorrelationId,
     })
     const where = {
-      statusList: statusList.id,
+      statusList: { id: statusList.id },
       ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
       credentialId,
     }
@@ -158,7 +175,7 @@ export class StatusListStore implements IStatusListStore {
         await this.getStatusListEntryRepo()
       ).delete({
         ...(args.statusListId && { statusList: args.statusListId }),
-        ...(args.correlationId && { correlationId: args.correlationId }),
+        ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
         statusListIndex: args.statusListIndex,
       })
       error = !result.affected || result.affected !== 1
@@ -234,7 +251,7 @@ export class StatusListStore implements IStatusListStore {
   async removeStatusList(args: IRemoveStatusListArgs): Promise<boolean> {
     const result = await this.getStatusListEntity(args)
 
-    await (await this.getStatusListEntryRepo()).delete({ statusList: result.id })
+    await (await this.getStatusListEntryRepo()).delete({ statusListId: result.id })
     const deletedEntity = await (await this.getStatusListRepo()).remove(result)
 
     return Boolean(deletedEntity)

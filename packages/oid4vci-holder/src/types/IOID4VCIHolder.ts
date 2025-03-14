@@ -7,12 +7,12 @@ import {
   CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
   CredentialResponse,
+  CredentialsSupportedDisplay,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
+  IssuerCredentialSubject,
   MetadataDisplay,
   NotificationRequest,
-  CredentialsSupportedDisplay,
-  IssuerCredentialSubject,
 } from '@sphereon/oid4vci-common'
 import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -40,16 +40,16 @@ import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {
-  Hasher,
+  HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
   JoseSignatureAlgorithmString,
   OriginalVerifiableCredential,
-  SdJwtTypeDisplayMetadata,
   SdJwtClaimMetadata,
+  SdJwtTypeDisplayMetadata,
   W3CVerifiableCredential,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
+  WrappedVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import {
   IAgentContext,
@@ -110,7 +110,7 @@ export type OID4VCIHolderOptions = {
   defaultAuthorizationRequestOptions?: AuthorizationRequestOpts
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -173,7 +173,9 @@ export type SendNotificationArgs = Pick<
   'credentialsToAccept' | 'serverMetadata' | 'credentialsSupported' | 'openID4VCIClientState'
 > & { notificationRequest?: NotificationRequest; stored: boolean }
 export type GetFederationTrustArgs = Pick<OID4VCIMachineContext, 'requestData' | 'trustAnchors' | 'serverMetadata'>
-export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState' | 'contact'> & { stateNavigationListener?: FirstPartyMachineStateNavigationListener }
+export type StartFirstPartApplicationMachine = Pick<OID4VCIMachineContext, 'openID4VCIClientState' | 'contact'> & {
+  stateNavigationListener?: FirstPartyMachineStateNavigationListener
+}
 
 export enum OID4VCIHolderEvent {
   CONTACT_IDENTITY_CREATED = 'contact_identity_created',
@@ -199,7 +201,7 @@ export enum SupportedLanguage {
 export type VerifyCredentialToAcceptArgs = {
   mappedCredential: MappedCredentialToAccept
   onVerifyEBSICredentialIssuer?: (args: VerifyEBSICredentialIssuerArgs) => Promise<VerifyEBSICredentialIssuerResult>
-  hasher?: Hasher
+  hasher?: HasherSync
   schemaValidation?: SchemaValidation
   context: RequiredContext
 }
@@ -319,7 +321,11 @@ export type CreateOID4VCIMachineOpts = {
   issuanceOpt?: IssuanceOpts
 }
 
-export type OID4VCIMachineStateNavigationListener = (oid4vciMachine: OID4VCIMachineInterpreter, state: OID4VCIMachineState, navigation?: any) => Promise<void>
+export type OID4VCIMachineStateNavigationListener = (
+  oid4vciMachine: OID4VCIMachineInterpreter,
+  state: OID4VCIMachineState,
+  navigation?: any,
+) => Promise<void>
 
 export type OID4VCIMachineInstanceOpts = {
   services?: any
@@ -378,7 +384,7 @@ export enum OID4VCIMachineGuards {
   hasSelectedCredentialsGuard = 'oid4vciHasSelectedCredentialsGuard',
   isOIDFOriginGuard = 'oid4vciIsOIDFOriginGuard',
   contactHasLowTrustGuard = 'oid4vciContactHasLowTrustGuard',
-  isFirstPartyApplication = 'oid4vciIsFirstPartyApplication'
+  isFirstPartyApplication = 'oid4vciIsFirstPartyApplication',
 }
 
 export enum OID4VCIMachineServices {
@@ -394,13 +400,10 @@ export enum OID4VCIMachineServices {
   storeCredentialBranding = 'storeCredentialBranding',
   sendNotification = 'sendNotification',
   storeCredentials = 'storeCredentials',
-  startFirstPartApplicationFlow = 'startFirstPartApplicationFlow'
+  startFirstPartApplicationFlow = 'startFirstPartApplicationFlow',
 }
 
-export type OID4VCIMachineServiceDefinitions = Record<
-  keyof typeof OID4VCIMachineServices,
-  (...args: Array<any>) => any
->;
+export type OID4VCIMachineServiceDefinitions = Record<keyof typeof OID4VCIMachineServices, (...args: Array<any>) => any>
 
 export type NextEvent = { type: OID4VCIMachineEvents.NEXT }
 export type PreviousEvent = { type: OID4VCIMachineEvents.PREVIOUS }
@@ -411,8 +414,8 @@ export type VerificationCodeEvent = { type: OID4VCIMachineEvents.SET_VERIFICATIO
 export type ContactConsentEvent = { type: OID4VCIMachineEvents.SET_CONTACT_CONSENT; data: boolean }
 export type ContactAliasEvent = { type: OID4VCIMachineEvents.SET_CONTACT_ALIAS; data: string }
 export type SetAuthorizationCodeURLEvent = { type: OID4VCIMachineEvents.SET_AUTHORIZATION_CODE_URL; data: string }
-export type InvokeAuthorizationRequestEvent = { type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST, data: string }
-export type AuthorizationResponseEvent = { type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE, data: string | AuthorizationResponse }
+export type InvokeAuthorizationRequestEvent = { type: OID4VCIMachineEvents.INVOKED_AUTHORIZATION_CODE_REQUEST; data: string }
+export type AuthorizationResponseEvent = { type: OID4VCIMachineEvents.PROVIDE_AUTHORIZATION_CODE_RESPONSE; data: string | AuthorizationResponse }
 
 export type OID4VCIMachineEventTypes =
   | NextEvent
@@ -539,7 +542,7 @@ export type GetPreferredCredentialFormatsArgs = {
 
 export type MapCredentialToAcceptArgs = {
   credentialToAccept: CredentialToAccept
-  hasher?: Hasher
+  hasher?: HasherSync
 }
 
 export type GetDefaultIssuanceOptsArgs = {
@@ -632,7 +635,7 @@ export type CredentialVerificationError = {
 
 export type VerifyMdocArgs = { credential: string }
 
-export type VerifySDJWTCredentialArgs = { credential: string; hasher?: Hasher }
+export type VerifySDJWTCredentialArgs = { credential: string; hasher?: HasherSync }
 
 export interface VerifyCredentialArgs {
   credential: OriginalVerifiableCredential
@@ -720,17 +723,17 @@ export type DidAgents = TAgent<IResolver & IDIDManager>
 
 export type RequiredContext = IAgentContext<
   IIssuanceBranding &
-  IContactManager &
-  ICredentialValidation &
-  ICredentialVerifier &
-  ICredentialIssuer &
-  ICredentialStore &
-  IIdentifierResolution &
-  IJwtService &
-  IDIDManager &
-  IResolver &
-  IKeyManager &
-  ISDJwtPlugin &
-  ImDLMdoc &
-  IDidAuthSiopOpAuthenticator
+    IContactManager &
+    ICredentialValidation &
+    ICredentialVerifier &
+    ICredentialIssuer &
+    ICredentialStore &
+    IIdentifierResolution &
+    IJwtService &
+    IDIDManager &
+    IResolver &
+    IKeyManager &
+    ISDJwtPlugin &
+    ImDLMdoc &
+    IDidAuthSiopOpAuthenticator
 >

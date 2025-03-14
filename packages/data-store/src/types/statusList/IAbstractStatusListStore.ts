@@ -12,8 +12,9 @@ export interface IStatusListEntryAvailableArgs {
 
 export interface IGetStatusListEntryByIndexArgs {
   statusListId?: string
-  correlationId?: string
-  statusListIndex: number
+  statusListCorrelationId?: string
+  statusListIndex?: number
+  entryCorrelationId?: string
   errorOnNotFound?: boolean
 }
 

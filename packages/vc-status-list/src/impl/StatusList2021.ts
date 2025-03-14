@@ -57,6 +57,7 @@ export class StatusList2021Implementation implements IStatusList {
       id,
       correlationId,
       issuer,
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -75,13 +76,14 @@ export class StatusList2021Implementation implements IStatusList {
     statusList.setStatus(index, args.value != 0)
     const encodedList = await statusList.encode()
 
+    const proofFormat = CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'jwt' : 'lds'
     const updatedCredential = await this.createVerifiableCredential(
       {
         ...args,
         id,
         issuer,
         encodedList,
-        proofFormat: CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'jwt' : 'lds',
+        proofFormat: proofFormat,
       },
       context,
     )
@@ -95,9 +97,10 @@ export class StatusList2021Implementation implements IStatusList {
       },
       length: statusList.length - 1,
       type: StatusListType.StatusList2021,
-      proofFormat: CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'jwt' : 'lds',
+      proofFormat: proofFormat,
       id,
       issuer,
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -141,6 +144,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat: args.proofFormat ?? 'lds',
       id: id,
       issuer: issuer,
+      statuslistContentType: this.buildContentType(proofFormat),
     }
   }
 
@@ -173,6 +177,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat,
       length: list.length,
       statusListCredential: statusListPayload,
+      statuslistContentType: this.buildContentType(proofFormat),
       statusList2021: {
         indexingDirection: 'rightToLeft',
         statusPurpose,
@@ -219,5 +224,18 @@ export class StatusList2021Implementation implements IStatusList {
     })
 
     return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListCredential).original as StatusListCredential
+  }
+
+  private buildContentType(proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor' | undefined) {
+    switch (proofFormat) {
+      case 'jwt':
+        return `application/statuslist+jwt`
+      case 'cbor':
+        return `application/statuslist+cwt`
+      case 'lds':
+        return 'application/statuslist+ld+json'
+      default:
+        throw Error(`Unsupported content type '${proofFormat}' for status lists`)
+    }
   }
 }

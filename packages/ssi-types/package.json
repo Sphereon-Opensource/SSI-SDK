@@ -9,8 +9,9 @@
     "build:clean": "tsc --build --clean && tsc --build"
   },
   "dependencies": {
-    "@sd-jwt/decode": "^0.7.2",
+    "@sd-jwt/decode": "^0.9.2",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
+    "@noble/hashes": "1.6.1",
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "jwt-decode": "^4.0.0",

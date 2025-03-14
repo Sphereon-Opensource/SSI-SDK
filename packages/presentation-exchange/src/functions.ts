@@ -43,7 +43,7 @@ export async function createPEXPresentationSignCallback(
     if (!formatOptions) {
       if (CredentialMapper.isSdJwtDecodedCredentialPayload(presentation.decodedPayload)) {
         return 'vc+sd-jwt'
-      } else if (      CredentialMapper.isMsoMdocDecodedPresentation(presentation.decodedPayload as OriginalVerifiablePresentation)) {
+      } else if (CredentialMapper.isMsoMdocDecodedPresentation(presentation.decodedPayload as OriginalVerifiablePresentation)) {
         return 'mso_mdoc'
       } else if (CredentialMapper.isW3cPresentation(presentation.decodedPayload)) {
         if (typeof presentation.signedPayload === 'string') {

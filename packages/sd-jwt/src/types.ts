@@ -5,7 +5,7 @@ import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { AsyncHasher, JoseSignatureAlgorithm, SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import { HasherSync, JoseSignatureAlgorithm, SdJwtTypeMetadata } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
 export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
@@ -233,7 +233,7 @@ export type IRequiredContext = IAgentContext<IDIDManager & IIdentifierResolution
 export type SdJwtVerifySignature = (data: string, signature: string, publicKey: JsonWebKey) => Promise<boolean>
 export interface SdJWTImplementation {
   saltGenerator?: SaltGenerator
-  hasher?: Hasher
+  hasher?: HasherSync
   verifySignature?: SdJwtVerifySignature
 }
 
@@ -252,12 +252,12 @@ export interface Claims {
 
 export type FetchSdJwtTypeMetadataFromVctUrlArgs = {
   vct: string
+  vctIntegrity?: string
   opts?: FetchSdJwtTypeMetadataFromVctUrlOpts
 }
 
 export type FetchSdJwtTypeMetadataFromVctUrlOpts = {
-  hasher?: AsyncHasher
-  integrity?: string
+  hasher?: HasherSync | Hasher
 }
 
 export type GetSignerForIdentifierArgs = {

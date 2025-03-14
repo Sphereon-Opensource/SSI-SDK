@@ -9,7 +9,7 @@ import {
   GetSiopRequestArgs,
   SendAuthorizationChallengeRequestArgs,
   SendAuthorizationResponseArgs,
-  SiopV2AuthorizationRequestData
+  SiopV2AuthorizationRequestData,
 } from '../types/FirstPartyMachine'
 
 export const sendAuthorizationChallengeRequest = async (args: SendAuthorizationChallengeRequestArgs): Promise<AuthorizationChallengeCodeResponse> => {
@@ -19,31 +19,32 @@ export const sendAuthorizationChallengeRequest = async (args: SendAuthorizationC
   return oid4vciClient.acquireAuthorizationChallengeCode({
     clientId: oid4vciClient.clientId ?? uuidv4(),
     ...(authSession && { authSession }),
-    ...(!authSession && openID4VCIClientState.credentialOffer?.preAuthorizedCode && { issuerState: openID4VCIClientState.credentialOffer?.preAuthorizedCode }),
+    ...(!authSession &&
+      openID4VCIClientState.credentialOffer?.preAuthorizedCode && { issuerState: openID4VCIClientState.credentialOffer?.preAuthorizedCode }),
     ...(!authSession && openID4VCIClientState.credentialOffer?.issuerState && { issuerState: openID4VCIClientState.credentialOffer?.issuerState }),
-    ...(presentationDuringIssuanceSession && { presentationDuringIssuanceSession })
+    ...(presentationDuringIssuanceSession && { presentationDuringIssuanceSession }),
   })
 }
 
 export const createConfig = async (args: CreateConfigArgs, context: RequiredContext): Promise<CreateConfigResult> => {
-  const { presentationUri } = args;
+  const { presentationUri } = args
 
   if (!presentationUri) {
-    return Promise.reject(Error('Missing presentation uri in context'));
+    return Promise.reject(Error('Missing presentation uri in context'))
   }
 
   return context.agent.siopCreateConfig({ url: presentationUri })
-};
+}
 
 export const getSiopRequest = async (args: GetSiopRequestArgs, context: RequiredContext): Promise<SiopV2AuthorizationRequestData> => {
-  const {didAuthConfig, presentationUri} = args;
+  const { didAuthConfig, presentationUri } = args
 
   if (presentationUri === undefined) {
-    return Promise.reject(Error('Missing presentation uri in context'));
+    return Promise.reject(Error('Missing presentation uri in context'))
   }
 
   if (didAuthConfig === undefined) {
-    return Promise.reject(Error('Missing did auth config in context'));
+    return Promise.reject(Error('Missing did auth config in context'))
   }
 
   return context.agent.siopGetSiopRequest({ didAuthConfig, url: presentationUri })
@@ -56,7 +57,7 @@ export const sendAuthorizationResponse = async (args: SendAuthorizationResponseA
     authorizationRequestData,
     selectedCredentials,
     didAuthConfig,
-    isFirstParty: true
+    isFirstParty: true,
   })
 
   return (<AuthorizationChallengeValidationResponse>responseData.body).presentation_during_issuance_session
