@@ -189,7 +189,7 @@ export class CredentialValidation implements IAgentPlugin {
     })
 
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: defaultHasher }),
       result: !verification.error,
       subResults: [],
       ...(verification.error && {
@@ -207,7 +207,7 @@ export class CredentialValidation implements IAgentPlugin {
     if (typeof result === 'boolean') {
       return {
         // FIXME the source is never used, need to start using this as the source of truth
-        source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential),
+        source: CredentialMapper.toWrappedVerifiableCredential(args.credential as OriginalVerifiableCredential, { hasher: defaultHasher }),
         result,
         ...(!result && {
           error: 'Invalid JWT VC',
@@ -234,7 +234,7 @@ export class CredentialValidation implements IAgentPlugin {
       }
 
       return {
-        source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential),
+        source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: defaultHasher }),
         result: result.verified,
         subResults,
         error,
@@ -258,7 +258,7 @@ export class CredentialValidation implements IAgentPlugin {
 
     const result = 'header' in verification && 'payload' in verification
     return {
-      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher }),
+      source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: hasher ?? defaultHasher }),
       result,
       subResults: [],
       ...(!result && { ...verification }),

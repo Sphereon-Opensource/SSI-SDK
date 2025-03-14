@@ -69,7 +69,7 @@
     "debug": "^4.4.0",
     "nock": "^13.5.4",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.21",
     "web-did-resolver": "^2.0.27"
   },
   "files": [

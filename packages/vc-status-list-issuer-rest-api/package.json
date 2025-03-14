@@ -25,8 +25,8 @@
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
     "express": "^4.19.2",
-    "reflect-metadata": "^0.1.14",
-    "typeorm": "^0.3.20",
+    "reflect-metadata": "0.2.2",
+    "typeorm": "^0.3.21",
     "uint8arrays": "^3.1.1",
     "uuid": "^9.0.1"
   },

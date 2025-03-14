@@ -5,9 +5,9 @@ import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { JoseSignatureAlgorithm, SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import {HasherSync, JoseSignatureAlgorithm, SdJwtTypeMetadata} from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { HasherSync } from '@sd-jwt/types'
+
 
 export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
 

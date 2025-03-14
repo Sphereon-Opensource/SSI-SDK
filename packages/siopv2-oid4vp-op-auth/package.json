@@ -61,7 +61,7 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.5.4",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.21"
   },
   "files": [
     "dist/**/*",

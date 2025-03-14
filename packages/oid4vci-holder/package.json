@@ -55,7 +55,7 @@
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "nock": "^13.5.4",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.21",
     "typescript": "5.5.3"
   },
   "files": [

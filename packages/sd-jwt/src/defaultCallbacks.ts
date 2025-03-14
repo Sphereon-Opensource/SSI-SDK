@@ -4,8 +4,8 @@ import { v4 } from 'uuid'
 import * as u8a from 'uint8arrays'
 import { IRequiredContext, SdJwtVerifySignature } from './types'
 
-export const defaultGenerateDigest: HasherSync = (data: string, alg: string): Uint8Array => {
-  return digestMethodParams(alg.includes('256') ? 'SHA-256' : 'SHA-512').hash(u8a.fromString(data, 'utf-8'))
+export const defaultGenerateDigest: HasherSync = (data: string | ArrayBuffer, alg: string): Uint8Array => {
+  return digestMethodParams(alg.includes('256') ? 'SHA-256' : 'SHA-512').hash(typeof data === 'string' ? u8a.fromString(data, 'utf-8'): new Uint8Array(data))
 }
 
 export const defaultGenerateSalt = (): string => {

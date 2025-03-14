@@ -168,8 +168,8 @@ export interface WrappedSdJwtVerifiableCredential {
   credential: SdJwtDecodedVerifiableCredential
 }
 
-export type HasherSync = (data: string, alg: string) => Uint8Array
-export type Hasher = (data: string, alg: string) => OrPromise<Uint8Array>
+export type HasherSync = (data: string | ArrayBuffer, alg: string) => Uint8Array
+export type Hasher = (data: string | ArrayBuffer, alg: string) => OrPromise<Uint8Array>
 
 export interface WrappedSdJwtVerifiablePresentation {
   /**

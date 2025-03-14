@@ -16,10 +16,11 @@ import {
   SupportedVersion,
   VerifyJwtCallback,
 } from '@sphereon/did-auth-siop'
-import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload } from '@sphereon/oid4vc-common'
+import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload, SigningAlgo } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
+  isExternalIdentifierOIDFEntityIdOpts,
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
   isManagedIdentifierX5cOpts,
@@ -27,18 +28,16 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
-import { SigningAlgo } from '@sphereon/oid4vc-common'
 import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
-import { createHash } from 'crypto'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
-import { isExternalIdentifierOIDFEntityIdOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { DcqlQuery } from 'dcql'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
@@ -164,7 +163,7 @@ export async function createRPBuilder(args: {
   //todo: probably wise to first look and see if we actually need the hasher to begin with
   let hasher: Hasher | undefined = rpOpts.credentialOpts?.hasher
   if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
-    hasher = (data, algorithm) => createHash(algorithm).update(data).digest()
+    hasher = defaultHasher
   }
 
   const builder = RP.builder({ requestVersion: getRequestVersion(rpOpts) })

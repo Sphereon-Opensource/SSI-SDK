@@ -5,6 +5,7 @@ import {
   decodeSdJwtVc,
   decodeSdJwtVcAsync,
   DocumentFormat,
+  getMdocDecodedPayload,
   Hasher,
   HasherSync,
   ICredential,
@@ -24,6 +25,7 @@ import {
   JwtDecodedVerifiablePresentation,
   mdocDecodedCredentialToUniformCredential,
   MdocDeviceResponse,
+  MdocDocument,
   MdocOid4vpMdocVpToken,
   OriginalType,
   OriginalVerifiableCredential,
@@ -40,11 +42,14 @@ import {
   WrappedVerifiablePresentation,
   WrappedW3CVerifiableCredential,
 } from '../types'
-import { getMdocDecodedPayload, MdocDocument } from '../types/mso_mdoc'
-import { ObjectUtils } from '../utils'
+import { defaultHasher, ObjectUtils } from '../utils'
 import { com } from '@sphereon/kmp-mdoc-core'
 import { jwtDecode } from 'jwt-decode'
 import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
+
+export const sha256 = (data: string | ArrayBuffer): Uint8Array  => {
+  return defaultHasher(data, 'sha256')
+}
 
 export class CredentialMapper {
   /**
@@ -52,7 +57,7 @@ export class CredentialMapper {
    * with the other decode methods.
    */
   static decodeSdJwtVcAsync(compactSdJwtVc: string, hasher: Hasher) {
-    return decodeSdJwtVcAsync(compactSdJwtVc, hasher)
+    return decodeSdJwtVcAsync(compactSdJwtVc, hasher ?? sha256)
   }
 
   /**
@@ -84,10 +89,7 @@ export class CredentialMapper {
     } else if (CredentialMapper.isJwtDecodedPresentation(presentation)) {
       return presentation as JwtDecodedVerifiablePresentation
     } else if (CredentialMapper.isSdJwtEncoded(presentation)) {
-      if (!hasher) {
-        throw new Error('Hasher implementation is required to decode SD-JWT')
-      }
-      return decodeSdJwtVc(presentation, hasher)
+      return decodeSdJwtVc(presentation, hasher ?? sha256)
     } else if (CredentialMapper.isSdJwtDecodedCredential(presentation)) {
       return presentation as SdJwtDecodedVerifiableCredential
     } else if (CredentialMapper.isMsoMdocOid4VPEncoded(presentation)) {
@@ -130,10 +132,7 @@ export class CredentialMapper {
     } else if (CredentialMapper.isJsonLdAsString(credential)) {
       return JSON.parse(credential as string) as IVerifiableCredential
     } else if (CredentialMapper.isSdJwtEncoded(credential)) {
-      if (!hasher) {
-        throw new Error('Hasher implementation is required to decode SD-JWT')
-      }
-      return decodeSdJwtVc(credential, hasher)
+      return decodeSdJwtVc(credential, hasher ?? sha256)
     } else if (CredentialMapper.isSdJwtDecodedCredential(credential)) {
       return credential
     } else {
@@ -186,10 +185,7 @@ export class CredentialMapper {
     if (CredentialMapper.isSdJwtDecodedCredential(originalPresentation) || CredentialMapper.isSdJwtEncoded(originalPresentation)) {
       let decodedPresentation: SdJwtDecodedVerifiableCredential
       if (CredentialMapper.isSdJwtEncoded(originalPresentation)) {
-        if (!opts?.hasher) {
-          throw new Error('Hasher implementation is required to decode SD-JWT')
-        }
-        decodedPresentation = decodeSdJwtVc(originalPresentation, opts.hasher)
+        decodedPresentation = decodeSdJwtVc(originalPresentation, opts?.hasher ?? sha256)
       } else {
         decodedPresentation = originalPresentation
       }
@@ -305,10 +301,8 @@ export class CredentialMapper {
     if (CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) || CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
       let decodedCredential: SdJwtDecodedVerifiableCredential
       if (CredentialMapper.isSdJwtEncoded(verifiableCredential)) {
-        if (!opts?.hasher) {
-          throw new Error('Hasher implementation is required to decode SD-JWT')
-        }
-        decodedCredential = decodeSdJwtVc(verifiableCredential, opts.hasher)
+        const hasher = opts?.hasher ?? sha256
+        decodedCredential = decodeSdJwtVc(verifiableCredential, hasher)
       } else {
         decodedCredential = verifiableCredential
       }
@@ -601,7 +595,7 @@ export class CredentialMapper {
         'Could not determine original credential from passed in credential. Probably because a JWT proof type was present, but now is not available anymore',
       )
     }
-    const decoded = CredentialMapper.decodeVerifiableCredential(original, opts?.hasher)
+    const decoded = CredentialMapper.decodeVerifiableCredential(original, opts?.hasher ?? sha256)
 
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedCredential(original)
@@ -636,7 +630,7 @@ export class CredentialMapper {
         'Could not determine original presentation, probably it was a converted JWT presentation, that is now missing the JWT value in the proof',
       )
     }
-    const decoded = CredentialMapper.decodeVerifiablePresentation(original, opts?.hasher)
+    const decoded = CredentialMapper.decodeVerifiablePresentation(original, opts?.hasher ?? sha256)
     const isJwtEncoded: boolean = CredentialMapper.isJwtEncoded(original)
     const isJwtDecoded: boolean = CredentialMapper.isJwtDecodedPresentation(original)
     const uniformPresentation =

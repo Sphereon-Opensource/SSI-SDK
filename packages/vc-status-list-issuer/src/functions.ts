@@ -151,7 +151,7 @@ export const createStatusList = async (
       ...(args.id && { id: args.id }),
       ...(args.correlationId && { correlationId: args.correlationId }),
       ...(args.dbName && { dbName: args.dbName }),
-      dataSource,
+      dataSource: await dataSource,
     })
   } catch (e) {
     const id = args.id

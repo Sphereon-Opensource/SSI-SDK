@@ -64,6 +64,7 @@ import {
 import { oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom, issuerLocaleBrandingFrom } from '../mappers/OIDC4VCIBrandingMapper'
 import { FirstPartyMachine } from '../machines/firstPartyMachine'
 import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -157,7 +158,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
     return Promise.reject(Error('No credential found in credential response'))
   }
 
-  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher })
+  const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher: hasher ?? defaultHasher })
   if (
     wrappedVC.decoded?.iss?.includes('did:ebsi:') ||
     (typeof wrappedVC.decoded?.vc?.issuer === 'string'
@@ -223,7 +224,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     if (!hasher) {
       return Promise.reject('a hasher is required for encoded SD-JWT credentials')
     }
-    const asyncHasher: Hasher = (data: string, algorithm: string) => Promise.resolve(hasher(data, algorithm))
+    const asyncHasher: Hasher = (data: string | ArrayBuffer, algorithm: string) => Promise.resolve(hasher(data, algorithm))
     const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedVerifiableCredential.credential, asyncHasher)
     uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>decodedSdJwt)
   } else if (CredentialMapper.isMsoMdocDecodedCredential(wrappedVerifiableCredential.credential)) {
