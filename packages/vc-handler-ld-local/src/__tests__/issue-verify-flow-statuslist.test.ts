@@ -1,10 +1,11 @@
+import { beforeAll, describe, expect, it } from 'vitest'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListType } from '@sphereon/ssi-types'
 import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
+import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
@@ -18,7 +19,7 @@ import { ContextDoc } from '../types/types'
 
 import { bedrijfsInformatieV1, exampleV1 } from './mocks'
 
-jest.setTimeout(100000)
+//jest.setTimeout(100000)
 
 const customContext = new Map<string, ContextDoc>([
   [`https://www.w3.org/2018/credentials/examples/v1`, exampleV1],
@@ -29,7 +30,7 @@ describe('credential-LD full flow', () => {
   let didKeyIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
 
-  // jest.setTimeout(1000000)
+  // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
@@ -41,7 +42,7 @@ describe('credential-LD full flow', () => {
         }),
         new DIDManager({
           providers: {
-            'did:key': new KeyDIDProvider({ defaultKms: 'local' }),
+            'did:key': new SphereonKeyDidProvider({ defaultKms: 'local' }),
           },
           store: new MemoryDIDStore(),
           defaultProvider: 'did:key',
@@ -65,7 +66,8 @@ describe('credential-LD full flow', () => {
         }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate()
+    didKeyIdentifier = await agent.didManagerCreate({options: { type: 'Ed25519'}})
+    console.log(JSON.stringify(didKeyIdentifier, null, 2))
   })
 
   it('create a new status list', async () => {

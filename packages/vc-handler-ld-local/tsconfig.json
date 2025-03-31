@@ -1,13 +1,8 @@
 {
-  "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+      "module": "esnext"
   },
+  "extends": "../../tsconfig-base.json",
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {

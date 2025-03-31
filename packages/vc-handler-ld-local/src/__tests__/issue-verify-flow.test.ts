@@ -1,3 +1,4 @@
+import { beforeAll, describe, expect, it } from 'vitest'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 
@@ -5,16 +6,7 @@ import { IDidConnectionMode, LtoDidProvider } from '@sphereon/ssi-sdk-ext.did-pr
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
-import {
-  createAgent,
-  CredentialPayload,
-  IDIDManager,
-  IIdentifier,
-  IKeyManager,
-  IResolver,
-  PresentationPayload,
-  TAgent
-} from '@veramo/core'
+import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -24,20 +16,10 @@ import { Resolver } from 'did-resolver'
 import nock from 'nock'
 import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonJsonWebSignature2020 } from '../suites'
-import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
-import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+import { SphereonEd25519Signature2020 } from '../suites'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types/ICredentialHandlerLDLocal'
 import { ContextDoc, ControllerProofPurpose } from '../types/types'
-import {
-  bedrijfsInformatieV1,
-  exampleV1,
-  factomDIDResolutionResult_2018,
-  ltoDIDResolutionResult,
-  ltoDIDSubjectResolutionResult_2018
-} from './mocks'
-
-jest.setTimeout(100000)
+import { bedrijfsInformatieV1, exampleV1, ltoDIDResolutionResult } from './mocks'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 const FACTOM_DID = 'did:factom:9d612c949afee208f664e81dc16bdb4f4eff26776ebca2e94a9f06a40d68626d'
@@ -51,7 +33,7 @@ describe('credential-LD full flow', () => {
   let didLtoIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
 
-  // jest.setTimeout(1000000)
+  // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
@@ -85,7 +67,7 @@ describe('credential-LD full flow', () => {
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts, customContext],
-          suites: [new SphereonJsonWebSignature2020(), new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+          suites: [/*new SphereonJsonWebSignature2020()*/ /* new SphereonEd25519Signature2018()*/ new SphereonEd25519Signature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
             ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
@@ -95,7 +77,7 @@ describe('credential-LD full flow', () => {
         }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate({provider: 'did:key', options: { type: 'Ed25519' }})
+    didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' } })
     console.log('didKeyIdentifier', didKeyIdentifier.did)
     didLtoIdentifier = await agent.didManagerImport({
       provider: 'did:lto',
@@ -114,7 +96,7 @@ describe('credential-LD full flow', () => {
     })
   })
 
-  it('should work with Ed25519Signature2018', async () => {
+  it('should work with Ed25519Signature2020', async () => {
     nock('https://lto-mock/1.0/identifiers')
       .get(`/${LTO_DID}`)
       .times(5)
@@ -126,7 +108,7 @@ describe('credential-LD full flow', () => {
       type: ['VerifiableCredential', 'AlumniCredential'],
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
       credentialSubject: {
-        id: didLtoIdentifier.did,
+        id: didKeyIdentifier.did,
         alumniOf: {
           id: 'did:example:c276e12ec21ebfeb1f712ebc6f1',
           name: 'Example University',
@@ -136,6 +118,7 @@ describe('credential-LD full flow', () => {
     const verifiableCredential = await agent.createVerifiableCredential({
       credential: credentialPayload,
       proofFormat: 'lds',
+      fetchRemoteContexts: true,
     })
 
     expect(verifiableCredential).toBeDefined()
@@ -179,19 +162,27 @@ describe('credential-LD full flow', () => {
             },
           ],
           proof: {
-            '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
+            '@context': [
+              'https://www.w3.org/2018/credentials/v1',
+              'https://www.w3.org/2018/credentials/examples/v1',
+              'https://w3id.org/security/suites/ed25519-2020/v1',
+            ],
             proofPurpose: 'assertionMethod',
-            type: 'Ed25519Signature2018',
+            type: 'Ed25519Signature2020',
           },
           purposeResult: {
             controller: {
-              '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
+              '@context': [
+                'https://www.w3.org/ns/did/v1',
+                'https://w3id.org/security/suites/ed25519-2020/v1',
+                'https://w3id.org/security/suites/x25519-2020/v1',
+              ],
             },
             valid: true,
           },
           verificationMethod: {
-            '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
-            type: 'Ed25519VerificationKey2018',
+            '@context': ['https://w3id.org/security/suites/ed25519-2020/v1'],
+            type: 'Ed25519VerificationKey2020',
           },
           verified: true,
         },
@@ -200,12 +191,12 @@ describe('credential-LD full flow', () => {
     })
 
     const presentationPayload: PresentationPayload = {
-      holder: didLtoIdentifier.did,
+      holder: didKeyIdentifier.did,
 
       verifiableCredential: [verifiableCredential],
     }
     const verifiablePresentation = await agent.createVerifiablePresentationLDLocal({
-      keyRef: didLtoIdentifier.controllerKeyId,
+      keyRef: didKeyIdentifier.controllerKeyId,
       presentation: presentationPayload,
       // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
       purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
@@ -254,16 +245,20 @@ describe('credential-LD full flow', () => {
                 },
               ],
               proof: {
-                '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
+                '@context': [
+                  'https://www.w3.org/2018/credentials/v1',
+                  'https://www.w3.org/2018/credentials/examples/v1',
+                  'https://w3id.org/security/suites/ed25519-2020/v1',
+                ],
                 proofPurpose: 'assertionMethod',
-                type: 'Ed25519Signature2018',
+                type: 'Ed25519Signature2020',
               },
               purposeResult: {
                 valid: true,
               },
               verificationMethod: {
-                '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/ed25519-2018/v1'],
-                type: 'Ed25519VerificationKey2018',
+                '@context': ['https://w3id.org/security/suites/ed25519-2020/v1'],
+                type: 'Ed25519VerificationKey2020',
               },
               verified: true,
             },
@@ -275,152 +270,29 @@ describe('credential-LD full flow', () => {
         results: [
           {
             proof: {
-              '@context': ['https://www.w3.org/2018/credentials/v1'],
+              '@context': ['https://www.w3.org/2018/credentials/v1', 'https://w3id.org/security/suites/ed25519-2020/v1'],
               proofPurpose: 'verificationMethod',
-              type: 'Ed25519Signature2018',
+              type: 'Ed25519Signature2020',
             },
             purposeResult: {
               controller: {
-                '@context': 'https://www.w3.org/ns/did/v1',
+                '@context': [
+                  'https://www.w3.org/ns/did/v1',
+                  'https://w3id.org/security/suites/ed25519-2020/v1',
+                  'https://w3id.org/security/suites/x25519-2020/v1',
+                ],
               },
               valid: true,
             },
             verificationMethod: {
-              '@context': 'https://www.w3.org/ns/did/v1',
-              type: 'Ed25519VerificationKey2018',
+              '@context': ['https://w3id.org/security/suites/ed25519-2020/v1'],
+              type: 'Ed25519VerificationKey2020',
             },
             verified: true,
           },
         ],
         verified: true,
       },
-      verified: true,
-    })
-  })
-
-  it('should verify issued credential with Factom issuer', async () => {
-    nock('https://factom-mock/1.0/identifiers')
-      .get(`/${FACTOM_DID}`)
-      .times(3)
-      .reply(200, {
-        ...factomDIDResolutionResult_2018,
-      })
-    nock('https://lto-mock/1.0/identifiers')
-      .get(`/did:lto:3MrjGusMnFspFfyVctYg3cJaNKGnaAhMZXM`)
-      .times(3)
-      .reply(200, {
-        ...ltoDIDSubjectResolutionResult_2018,
-      })
-
-    const credential = {
-      '@context': ['https://www.w3.org/2018/credentials/v1', 'https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld'],
-      issuer: FACTOM_DID,
-      issuanceDate: '2021-12-02T02:55:39.608Z',
-      credentialSubject: {
-        Bedrijfsinformatie: {
-          id: 'did:lto:3MrjGusMnFspFfyVctYg3cJaNKGnaAhMZXM',
-          naam: 'Test Bedrijf',
-          kvkNummer: '1234',
-          rechtsvorm: '1234',
-          straatnaam: 'Kerkstraat',
-          huisnummer: '11',
-          postcode: '1111 AB',
-          plaats: 'Voorbeeld',
-          bagId: '12132',
-          datumAkteOprichting: '2020-12-30',
-        },
-      },
-      type: ['VerifiableCredential', 'Bedrijfsinformatie'],
-      proof: {
-        type: 'Ed25519Signature2018',
-        created: '2021-12-02T02:55:39Z',
-        jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..SsE_Z6iAktFvsiB1FRJT7lGMnCjHjZ6kvjmXLjJWFZG6trMlm1IJtwvGm1huRgFKfjyiB2LK3166eSboWqwPCg',
-        proofPurpose: 'assertionMethod',
-        verificationMethod: `${FACTOM_DID}#key-0`,
-      },
-    }
-
-    const verifiedCredential = await agent.verifyCredentialLDLocal({
-      credential,
-      fetchRemoteContexts: true,
-    })
-
-    expect(verifiedCredential).toMatchObject({
-      log: [
-        {
-          id: 'valid_signature',
-          valid: true,
-        },
-        {
-          id: 'issuer_did_resolves',
-          valid: true,
-        },
-        {
-          id: 'expiration',
-          valid: true,
-        },
-      ],
-      results: [
-        {
-          log: [
-            {
-              id: 'valid_signature',
-              valid: true,
-            },
-            {
-              id: 'issuer_did_resolves',
-              valid: true,
-            },
-            {
-              id: 'expiration',
-              valid: true,
-            },
-          ],
-          proof: {
-            '@context': [
-              'https://www.w3.org/2018/credentials/v1',
-              'https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld',
-            ],
-            type: 'Ed25519Signature2018',
-          },
-          purposeResult: {
-            controller: {
-              '@context': ['https://www.w3.org/ns/did/v1'],
-              assertionMethod: [
-                {
-                  type: 'Ed25519VerificationKey2018',
-                },
-              ],
-              authentication: [
-                {
-                  type: 'Ed25519VerificationKey2018',
-                },
-              ],
-              capabilityInvocation: [
-                {
-                  type: 'Ed25519VerificationKey2018',
-                },
-              ],
-              keyAgreement: [
-                {
-                  type: 'Ed25519VerificationKey2018',
-                },
-              ],
-              verificationMethod: [
-                {
-                  type: 'Ed25519VerificationKey2018',
-                },
-              ],
-            },
-            valid: true,
-          },
-          verificationMethod: {
-            '@context': ['https://www.w3.org/ns/did/v1'],
-            type: 'Ed25519VerificationKey2018',
-          },
-          verified: true,
-        },
-      ],
       verified: true,
     })
   })

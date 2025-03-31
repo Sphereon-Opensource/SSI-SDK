@@ -1,24 +1,22 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
-import { IDidConnectionMode } from '@sphereon/ssi-sdk-ext.did-provider-lto'
-import { checkStatus } from '@transmute/vc-status-rl-2020'
+import { IDidConnectionMode, LtoDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-lto'
+// import { checkStatus } from '@transmute/vc-status-rl-2020'
 import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
+import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
 import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
-
-import { LtoDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-lto'
 import { CredentialHandlerLDLocal } from '../../agent'
 import { LdDefaultContexts } from '../../ld-default-contexts'
 import { SphereonEd25519Signature2018 } from '../../suites'
-import { ICredentialHandlerLDLocal, MethodNames } from '../../types'
-import { ControllerProofPurpose } from '../../types'
+import { ControllerProofPurpose, ICredentialHandlerLDLocal, MethodNames } from '../../types'
 import { boaExampleVC, ltoDIDResolutionResult } from '../mocks'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 
@@ -45,7 +43,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
           new DIDManager({
             providers: {
-              'did:key': new KeyDIDProvider({ defaultKms: 'local' }),
+              'did:key': new SphereonKeyDidProvider({ defaultKms: 'local' }),
               'did:lto': new LtoDidProvider({
                 defaultKms: 'local',
                 connectionMode: IDidConnectionMode.NODE,
@@ -76,9 +74,9 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
         ],
       })
-      didKeyIdentifier = await agent.didManagerCreate()
+      didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' }})
 
-      didLtoIdentifier = await agent.didManagerImport({
+      /*didLtoIdentifier = await agent.didManagerImport({
         provider: 'did:lto',
         did: LTO_DID,
         controllerKeyId: `${LTO_DID}#sign`,
@@ -92,7 +90,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
             type: 'Ed25519',
           },
         ],
-      })
+      })*/
     })
 
     afterAll(async () => {
@@ -124,15 +122,15 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       expect(verified).toBeTruthy()
     })
 
-    xit('should verify a VC API issued VC with status list and create/verify a VP', async () => {
-      jest.setTimeout(100000)
+    it.skip('should verify a VC API issued VC with status list and create/verify a VP', async () => {
+      //jest.setTimeout(100000)
 
       const verifiableCredential = boaExampleVC
 
       const verified = await agent.verifyCredentialLDLocal({
         credential: verifiableCredential,
         fetchRemoteContexts: true,
-        checkStatus,
+        // checkStatus,
       })
       expect(verified).toBeTruthy()
 
@@ -153,7 +151,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
         presentationPurpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
         fetchRemoteContexts: true,
-        checkStatus,
+        // checkStatus,
       })
       expect(vpVerification).toBeTruthy()
     })

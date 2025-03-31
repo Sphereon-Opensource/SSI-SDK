@@ -1,7 +1,8 @@
+import { beforeAll, describe, expect, it } from 'vitest'
 import { createAgent, IDIDManager, IKeyManager, IResolver, TAgent, W3CVerifiableCredential } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
+import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { KeyManagementSystem } from '@veramo/kms-local'
@@ -14,32 +15,32 @@ import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../s
 import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 import { diwalaVC } from './fixtures/diwala'
 
-jest.setTimeout(100000)
+//jest.setTimeout(100000)
 
 describe('Diwala issued VC', () => {
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
 
-  // jest.setTimeout(1000000)
+  // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
         new KeyManager({
           store: new MemoryKeyStore(),
           kms: {
-            local: new KeyManagementSystem(new MemoryPrivateKeyStore())
-          }
+            local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
+          },
         }),
         new DIDManager({
           providers: {
-            'did:key': new KeyDIDProvider({ defaultKms: 'local' })
+            'did:key': new SphereonKeyDidProvider({ defaultKms: 'local' }),
           },
           store: new MemoryDIDStore(),
-          defaultProvider: 'did:key'
+          defaultProvider: 'did:key',
         }),
         new DIDResolverPlugin({
           resolver: new Resolver({
-            ...getDidKeyResolver()
-          })
+            ...getDidKeyResolver(),
+          }),
         }),
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
@@ -48,11 +49,11 @@ describe('Diwala issued VC', () => {
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
             ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal]
+            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
             // We test the verify methods by using the LDLocal versions directly in the tests
-          ])
-        })
-      ]
+          ]),
+        }),
+      ],
     })
   })
 
@@ -63,39 +64,39 @@ describe('Diwala issued VC', () => {
 
     const verifiedCredential = await agent.verifyCredentialLDLocal({
       credential: verifiableCredential,
-      fetchRemoteContexts: true
+      fetchRemoteContexts: true,
     })
 
     expect(verifiedCredential).toMatchObject({
       log: [
         {
           id: 'valid_signature',
-          valid: true
+          valid: true,
         },
         {
           id: 'issuer_did_resolves',
-          valid: true
+          valid: true,
         },
         {
           id: 'expiration',
-          valid: true
-        }
+          valid: true,
+        },
       ],
       results: [
         {
           log: [
             {
               id: 'valid_signature',
-              valid: true
+              valid: true,
             },
             {
               id: 'issuer_did_resolves',
-              valid: true
+              valid: true,
             },
             {
               id: 'expiration',
-              valid: true
-            }
+              valid: true,
+            },
           ],
           proof: {
             '@context': ['https://www.w3.org/2018/credentials/v1', 'https://purl.imsglobal.org/spec/ob/v3p0/context.json'],
@@ -103,37 +104,32 @@ describe('Diwala issued VC', () => {
             jws: 'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..d3MzWbyiG-gWH4LV15waD7UXXDC9-qKqJpx1g7tOeSrw7TdDeIrzzP9xr-e93ppWN0oYflp1xBxHZaUU2b2SCQ',
             proofPurpose: 'assertionMethod',
             type: 'Ed25519Signature2018',
-            verificationMethod: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9'
+            verificationMethod: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
           },
           purposeResult: {
             controller: {
-
               assertionMethod: ['did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9'],
               id: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
               verificationMethod: [
                 {
                   controller: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
                   id: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
-                  type: 'Ed25519VerificationKey2018'
-                }
-              ]
+                  type: 'Ed25519VerificationKey2020',
+                },
+              ],
             },
-            valid: true
+            valid: true,
           },
           verificationMethod: {
-            controller: {
-              id: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9'
-              // @fixme: The above is incorrect. Controller should be the DID not a VM, like below
-              //id: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
-            },
+            controller: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
             id: 'did:key:z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9#z6MkrzXCdarP1kaZcJb3pmNi295wfxerDrmTqPv5c6MkP2r9',
             // publicKeyBase58: 'DYGA3LbwgD66VokM9CQsB3XwrPNzoyX79P19mpPjTp4m',
-            type: 'Ed25519VerificationKey2018'
+            type: 'Ed25519VerificationKey2020',
           },
-          verified: true
-        }
+          verified: true,
+        },
       ],
-      verified: true
+      verified: true,
     })
   })
 })
