@@ -10,7 +10,8 @@ import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { IMsRequestApi } from '../src'
 import msRequestApiAgentLogic from './shared/msRequestApiAgentLogic'
 
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
+import { describe } from 'vitest'
 
 const port = 3003
 const basePath = '/agent'
@@ -63,6 +64,6 @@ const testContext = {
   tearDown,
 }
 
-xdescribe('REST integration tests', () => {
+describe.skip('REST integration tests', () => {
   msRequestApiAgentLogic(testContext)
 })

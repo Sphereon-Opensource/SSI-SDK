@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import base64url from 'base64url'
 import { DidCommOutOfBandMessage } from '../src/agent/utils'
 import { oobInvitation } from './shared/fixtures'

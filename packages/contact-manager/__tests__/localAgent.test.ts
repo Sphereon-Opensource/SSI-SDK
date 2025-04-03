@@ -1,8 +1,8 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 
-jest.setTimeout(60000)
-
+//jest.setTimeout(60000)
+import { describe } from 'vitest'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
 let dbConnection: Promise<DataSource>

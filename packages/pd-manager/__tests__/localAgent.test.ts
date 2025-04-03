@@ -1,8 +1,7 @@
+import { describe } from 'vitest'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
-
-jest.setTimeout(60000)
-
+//jest.setTimeout(60000)
 import pdManagerAgentLogic from './shared/pdManagerAgentLogic'
 
 let dbConnection: Promise<DataSource>
@@ -18,7 +17,9 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
+  if (dbConnection) {
+    await (await dbConnection)?.close()
+  }
   return true
 }
 

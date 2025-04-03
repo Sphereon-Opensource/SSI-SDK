@@ -2,6 +2,7 @@ import { TAgent } from '@veramo/core'
 import { ICredentialValidation, SchemaValidation, VerificationResult } from '../../src'
 import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import * as fs from 'fs'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<ICredentialValidation>
 

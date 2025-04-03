@@ -1,8 +1,7 @@
 import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '../../agent-config/dist'
-
-jest.setTimeout(60000)
-
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 import eventLoggerAgentLogic from './shared/eventLoggerAgentLogic'
 
 let dbConnection: Promise<DataSource>

@@ -15,11 +15,8 @@
     "object-hash": "^3.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.5.2",
     "@types/object-hash": "^3.0.6",
-    "jest": "^27.5.1",
-    "prettier": "^2.8.8",
-    "ts-jest": "^27.1.5"
+    "prettier": "^2.8.8"
   },
   "engines": {
     "node": ">= 20.0.0 < 22"

@@ -1,6 +1,7 @@
 import { ValidationStatusEnum } from '@sphereon/wellknown-dids-client'
-import { TAgent, IResolver } from '@veramo/core'
+import { IResolver, TAgent } from '@veramo/core'
 import { IWellKnownDidVerifier } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const nock = require('nock')

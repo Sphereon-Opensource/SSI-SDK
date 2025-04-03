@@ -1,5 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { IVcApiIssuerClient } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IVcApiIssuerClient>
 

@@ -1,8 +1,8 @@
+import { describe } from 'vitest'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 
-jest.setTimeout(60000)
-
+//jest.setTimeout(60000)
 import mdlMdocLogic from './shared/mdlMdocAgentLogic'
 
 let dbConnection: Promise<DataSource>

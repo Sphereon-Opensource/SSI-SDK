@@ -14,7 +14,6 @@
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
-    "@types/jest": "^27.5.2",
     "@types/node": "^20.17.1",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",

@@ -1,5 +1,5 @@
 import 'cross-fetch/polyfill'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 // @ts-ignore
 import express from 'express'
@@ -9,8 +9,8 @@ import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
 import { IVcApiIssuerClient, VcApiIssuerClient } from '../src'
 import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 3011
 const basePath = '/agent'

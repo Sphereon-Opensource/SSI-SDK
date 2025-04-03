@@ -4,6 +4,7 @@ import { TAgent } from '@veramo/core'
 import { IOIDFMetadataStore } from '../src'
 import { DataSource } from 'typeorm'
 import oidfMetadataServerAgentLogic from './shared/OidfMetadataServerAgentLogic'
+import { describe } from 'vitest'
 
 let dbConnection: Promise<DataSource>
 let agent: TAgent<IOIDFMetadataStore>

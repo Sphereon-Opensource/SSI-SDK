@@ -5,6 +5,7 @@ import { IOIDFClient, OIDFClient } from '../../src'
 
 import { mockResponses } from './TrustChainMockResponses'
 import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
 

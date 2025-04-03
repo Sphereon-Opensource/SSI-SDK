@@ -1,8 +1,8 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 
-jest.setTimeout(60000)
-
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 import anomalyDetectionAgentLogic from './shared/anomalyDetectionAgentLogic'
 
 let dbConnection: Promise<DataSource>

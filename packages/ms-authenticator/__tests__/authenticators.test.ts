@@ -1,7 +1,8 @@
 import * as process from 'process'
 import { AuthenticationResult } from '@azure/msal-node'
 import { getMSClientCredentialAccessToken, UsernamePasswordAuthenticator } from '../src'
-jest.setTimeout(100000)
+//jest.setTimeout(100000)
+import { describe, expect, it } from 'vitest'
 
 describe('@sphereon/ssi-sdk.ms-authenticator', (): void => {
   it.skip('should authenticate using clientCredential', async (): Promise<void> => {

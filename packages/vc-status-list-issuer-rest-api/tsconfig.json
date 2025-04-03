@@ -30,5 +30,5 @@
       "path": "../ssi-express-support"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig-base.json"
 }

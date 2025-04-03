@@ -1,8 +1,8 @@
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
-
-jest.setTimeout(30000)
+import { describe } from 'vitest'
+//jest.setTimeout(30000)
 
 let agent: any
 let dbConnection: Promise<DataSource>
@@ -51,7 +51,7 @@ const setup = async (): Promise<boolean> => {
     null,
   )
 
-  localAgent.didManagerGet = jest.fn().mockReturnValue(
+  localAgent.didManagerGet = vi.fn().mockReturnValue(
     Promise.resolve({
       did: DID,
       services: [

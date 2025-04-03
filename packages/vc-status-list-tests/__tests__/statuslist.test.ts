@@ -31,14 +31,14 @@ import {
 import nock from 'nock'
 import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-
-jest.setTimeout(100000)
+import { beforeAll, describe, expect, it } from 'vitest'
+//jest.setTimeout(100000)
 
 describe('Status list', () => {
   let didKeyIdentifier: IIdentifier
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
 
-  // jest.setTimeout(1000000)
+  // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [

@@ -1,7 +1,6 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
-
-jest.setTimeout(60000)
-
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
 import nock from 'nock'
 

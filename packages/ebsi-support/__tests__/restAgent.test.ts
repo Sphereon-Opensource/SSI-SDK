@@ -12,8 +12,8 @@ import { createObjects, getConfig } from '../../agent-config/src'
 import authClientAgentLogic from './shared/ebsiAuthorizationClientAgentLogic'
 import { IEbsiSupport } from '../src'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 4302
 const basePath = '/agent'

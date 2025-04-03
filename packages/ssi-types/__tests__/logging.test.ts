@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import { Loggers, LogMethod } from '../src'
 
 describe('Simple logging', () => {

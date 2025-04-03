@@ -1,12 +1,11 @@
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import KeyvSqlite from '@keyv/sqlite'
 
 import timekeeper from 'timekeeper'
 import { Keyv } from '../keyv/keyv'
 import { DataSource } from 'typeorm'
-import { KeyValueStoreEntity } from '../store-adapters'
-import { KeyValueTieredStoreAdapter, KeyValueTypeORMStoreAdapter } from '../store-adapters'
+import { KeyValueStoreEntity, KeyValueTieredStoreAdapter, KeyValueTypeORMStoreAdapter, kvStoreMigrations } from '../store-adapters'
 import { KeyvOptions } from '../keyv/keyv-types'
-import { kvStoreMigrations } from '../store-adapters'
 
 let dbConnection: DataSource
 beforeEach(async () => {

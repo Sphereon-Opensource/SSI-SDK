@@ -1,10 +1,10 @@
 import { TAgent } from '@veramo/core'
 import {
   CorrelationIdentifierType,
+  CredentialRole,
   ElectronicAddress,
   GetPartiesArgs,
   Identity,
-  CredentialRole,
   IdentityOrigin,
   NaturalPerson,
   NonPersistedElectronicAddress,
@@ -17,6 +17,8 @@ import {
   PhysicalAddress,
 } from '../../../data-store/src'
 import { AddContactArgs, IContactManager } from '../../src'
+
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IContactManager>
 

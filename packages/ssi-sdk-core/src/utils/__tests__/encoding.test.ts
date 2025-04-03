@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { hexToMultibase, MultibaseFormat, multibaseToHex } from '../encoding'
 
 describe('@sphereon/ssi-sdk.core:encoding', () => {

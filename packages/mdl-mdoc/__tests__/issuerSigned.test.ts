@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { com } from '@sphereon/kmp-mdoc-core'
 import { CoseCryptoService } from '../src/functions'
 import { funkePdTestVector, funkeTestCA, sphereonCA } from './shared/testvectors'

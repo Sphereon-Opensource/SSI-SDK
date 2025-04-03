@@ -1,4 +1,6 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+// import KeyInfo = com.sphereon.crypto.KeyInfo
+import {describe, expect, it} from 'vitest'
+import {com} from '@sphereon/kmp-mdoc-core'
 import { CoseCryptoService } from '../src/functions'
 import CoseSign1Cbor = com.sphereon.crypto.cose.CoseSign1Cbor
 import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
@@ -10,7 +12,6 @@ import encodeTo = com.sphereon.kmp.encodeTo
 import Encoding = com.sphereon.kmp.Encoding
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
 import KeyInfo = com.sphereon.crypto.KeyInfo
-// import KeyInfo = com.sphereon.crypto.KeyInfo
 
 describe('Issuer Auth', (): void => {
   const iso18013_5_IssuerAuthTestVector =

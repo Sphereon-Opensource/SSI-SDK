@@ -1,6 +1,7 @@
 import { TAgent } from '@veramo/core'
 
 import { IAnomalyDetection } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IAnomalyDetection>
 
@@ -10,8 +11,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   describe('Anomaly Detection Agent Plugin', (): void => {
     let agent: ConfiguredAgent
 
-
-
     beforeAll(async (): Promise<void> => {
       if (!hasGeoIpPathEnv) {
         return
@@ -20,7 +19,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       agent = testContext.getAgent()
     })
 
-    afterAll(() =>{
+    afterAll(() => {
       if (!hasGeoIpPathEnv) {
         return
       }
@@ -29,7 +28,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should lookup the location of an IPv4 address', async () => {
       if (!hasGeoIpPathEnv) {
-        console.log("No GEO IP Path env var set. Skipping test")
+        console.log('No GEO IP Path env var set. Skipping test')
         return
       }
       await expect(
@@ -44,7 +43,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should lookup the location of an IPv6 address', async () => {
       if (!hasGeoIpPathEnv) {
-        console.log("No GEO IP Path env var set. Skipping test")
+        console.log('No GEO IP Path env var set. Skipping test')
         return
       }
       await expect(
@@ -59,7 +58,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should lookup the location of a hostname', async () => {
       if (!hasGeoIpPathEnv) {
-        console.log("No GEO IP Path env var set. Skipping test")
+        console.log('No GEO IP Path env var set. Skipping test')
         return
       }
       await expect(
