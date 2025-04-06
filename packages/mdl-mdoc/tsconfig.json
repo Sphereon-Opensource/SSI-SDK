@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
@@ -11,16 +11,22 @@
   },
   "references": [
     {
-      "path": "../agent-config"
-    },
-    {
       "path": "../ssi-types"
     },
     {
       "path": "../ssi-sdk-core"
     },
     {
+      "path": "../public-key-hosting"
+    },
+    {
       "path": "../data-store"
+    },
+    {
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

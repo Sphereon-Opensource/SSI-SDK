@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -7,12 +7,6 @@
     "esModuleInterop": true
   },
   "references": [
-    {
-      "path": "../ssi-types"
-    },
-    {
-      "path": "../ssi-sdk-core"
-    },
     {
       "path": "../kv-store"
     },

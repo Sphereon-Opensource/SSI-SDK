@@ -11,5 +11,5 @@
       "path": "../ssi-types"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

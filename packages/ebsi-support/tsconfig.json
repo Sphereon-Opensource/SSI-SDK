@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
@@ -11,28 +11,34 @@
   },
   "references": [
     {
-      "path": "../agent-config"
+      "path": "../ssi-types"
     },
     {
       "path": "../siopv2-oid4vp-op-auth"
     },
     {
+      "path": "../presentation-exchange"
+    },
+    {
       "path": "../oid4vci-holder"
     },
     {
-      "path": "../data-store"
+      "path": "../ssi-sdk-core"
     },
     {
-      "path": "../presentation-exchange"
+      "path": "../contact-manager"
     },
     {
       "path": "../public-key-hosting"
     },
     {
-      "path": "../ssi-types"
+      "path": "../data-store"
     },
     {
-      "path": "../ssi-sdk-core"
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -11,13 +11,22 @@
       "path": "../ssi-types"
     },
     {
-      "path": "../ssi-express-support"
+      "path": "../kv-store"
+    },
+    {
+      "path": "../data-store"
     },
     {
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../kv-store"
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-express-support"
     }
   ]
 }

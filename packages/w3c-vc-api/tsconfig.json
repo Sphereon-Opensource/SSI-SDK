@@ -8,35 +8,38 @@
   },
   "references": [
     {
-      "path": "../agent-config"
+      "path": "../ssi-types"
     },
     {
-      "path": "../ssi-express-support"
+      "path": "../vc-status-list-issuer"
     },
     {
-      "path": "../siopv2-oid4vp-common"
-    },
-    {
-      "path": "../siopv2-oid4vp-rp-auth"
+      "path": "../vc-status-list"
     },
     {
       "path": "../presentation-exchange"
     },
     {
-      "path": "../credential-store"
+      "path": "../kv-store"
     },
     {
-      "path": "../ssi-types"
+      "path": "../credential-store"
     },
     {
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../kv-store"
+      "path": "../ssi-express-support"
     },
     {
-      "path": "../vc-status-list-issuer"
+      "path": "../vc-handler-ld-local"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../agent-config"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

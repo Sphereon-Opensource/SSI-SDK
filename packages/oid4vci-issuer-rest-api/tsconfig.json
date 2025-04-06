@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -11,19 +11,22 @@
       "path": "../ssi-types"
     },
     {
-      "path": "../ssi-sdk-core"
+      "path": "../oid4vci-issuer-store"
     },
     {
-      "path": "../ssi-express-support"
+      "path": "../oid4vci-issuer"
     },
     {
       "path": "../kv-store"
     },
     {
-      "path": "../oid4vci-issuer-store"
+      "path": "../ssi-express-support"
     },
     {
-      "path": "../oid4vci-issuer"
+      "path": "../vc-handler-ld-local"
+    },
+    {
+      "path": "../data-store"
     }
   ]
 }

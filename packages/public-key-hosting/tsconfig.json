@@ -20,5 +20,5 @@
       "path": "../ssi-sdk-core"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

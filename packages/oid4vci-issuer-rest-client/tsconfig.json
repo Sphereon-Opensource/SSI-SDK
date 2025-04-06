@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "esModuleInterop": true,
     "rootDir": "src",
@@ -8,6 +8,12 @@
   "references": [
     {
       "path": "../ssi-types"
+    },
+    {
+      "path": "../dev"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

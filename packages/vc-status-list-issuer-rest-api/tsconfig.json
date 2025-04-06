@@ -12,23 +12,26 @@
       "path": "../ssi-types"
     },
     {
-      "path": "../ssi-sdk-core"
-    },
-    {
-      "path": "../agent-config"
-    },
-    {
-      "path": "../data-store"
+      "path": "../vc-status-list-issuer-drivers"
     },
     {
       "path": "../vc-status-list"
     },
     {
-      "path": "../vc-status-list-issuer-drivers"
+      "path": "../ssi-sdk-core"
     },
     {
       "path": "../ssi-express-support"
+    },
+    {
+      "path": "../vc-handler-ld-local"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../agent-config"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -11,16 +11,13 @@
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
+      "path": "../ssi-types"
+    },
+    {
       "path": "../vc-status-list"
     },
     {
-      "path": "../vc-status-list-issuer"
-    },
-    {
       "path": "../data-store"
-    },
-    {
-      "path": "../ssi-types"
     },
     {
       "path": "../ssi-sdk-core"

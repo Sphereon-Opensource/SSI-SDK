@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -8,13 +8,13 @@
   },
   "references": [
     {
-      "path": "../ssi-express-support"
-    },
-    {
-      "path": "../siopv2-oid4vp-common"
+      "path": "../ssi-types"
     },
     {
       "path": "../siopv2-oid4vp-rp-auth"
+    },
+    {
+      "path": "../siopv2-oid4vp-common"
     },
     {
       "path": "../presentation-exchange"
@@ -23,13 +23,22 @@
       "path": "../pd-manager"
     },
     {
-      "path": "../ssi-types"
+      "path": "../kv-store"
+    },
+    {
+      "path": "../credential-validation"
     },
     {
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../kv-store"
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../vc-handler-ld-local"
+    },
+    {
+      "path": "../data-store"
     }
   ]
 }

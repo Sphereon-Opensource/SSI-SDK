@@ -8,14 +8,20 @@
   },
   "references": [
     {
-      "path": "../ssi-express-support"
-    },
-    {
       "path": "../ssi-types"
     },
     {
       "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../vc-handler-ld-local"
+    },
+    {
+      "path": "../data-store"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

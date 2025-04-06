@@ -8,10 +8,14 @@
   },
   "references": [
     {
-      "path": "../ssi-types",
-      "path": "../vc-status-list",
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../vc-status-list"
+    },
+    {
       "path": "../vc-handler-ld-local"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

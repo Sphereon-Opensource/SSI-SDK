@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -9,43 +9,46 @@
   "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
-      "path": "../agent-config"
-    },
-    {
-      "path": "../contact-manager"
-    },
-    {
-      "path": "../credential-store"
-    },
-    {
-      "path": "../data-store"
-    },
-    {
-      "path": "../issuance-branding"
-    },
-    {
       "path": "../ssi-types"
-    },
-    {
-      "path": "../ssi-sdk-core"
-    },
-    {
-      "path": "../sd-jwt"
-    },
-    {
-      "path": "../mdl-mdoc"
     },
     {
       "path": "../xstate-persistence"
     },
     {
-      "path": "../oidf-client"
-    },
-    {
       "path": "../siopv2-oid4vp-op-auth"
     },
     {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../oidf-client"
+    },
+    {
+      "path": "../mdl-mdoc"
+    },
+    {
+      "path": "../issuance-branding"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../credential-validation"
+    },
+    {
+      "path": "../credential-store"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../contact-manager"
+    },
+    {
       "path": "../siopv2-oid4vp-common"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }
