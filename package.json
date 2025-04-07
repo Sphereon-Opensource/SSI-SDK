@@ -43,10 +43,10 @@
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.24.8",
-    "@babel/plugin-transform-runtime": "^7.24.7",
-    "@babel/preset-env": "^7.24.8",
-    "@babel/preset-typescript": "^7.24.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.26.3",
+    "@babel/plugin-transform-runtime": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-typescript": "^7.27.0",
     "@nx/eslint": "20.7.1",
     "@nx/jest": "20.7.1",
     "@nx/js": "20.7.1",
@@ -79,6 +79,7 @@
     "jest-environment-node": "27.5.1",
     "jest-fetch-mock": "^3.0.3",
     "jiti": "2.4.2",
+    "jsdom": "~22.1.0",
     "json-schema": "^0.4.0",
     "lerna": "^8.1.6",
     "lerna-changelog": "^2.2.0",

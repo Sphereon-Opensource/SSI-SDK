@@ -30,7 +30,7 @@
     "\\.tsx?$": [
       "ts-jest",
       {
-        "tsconfig": "./packages/tsconfig-base.json"
+        "tsconfig": "./tsconfig.base.json"
       }
     ]
   },
@@ -49,7 +49,7 @@
   ],
   "globals": {
     "ts-jest": {
-      "tsconfig": "./packages/tsconfig-base.json"
+      "tsconfig": "./tsconfig.base.json"
     }
   },
   "testEnvironment": "node",
