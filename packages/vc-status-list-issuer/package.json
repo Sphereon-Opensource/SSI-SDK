@@ -34,7 +34,7 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.24.7",
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/oid4vci-common": "0.17.0",
+    "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.26",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.0",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",

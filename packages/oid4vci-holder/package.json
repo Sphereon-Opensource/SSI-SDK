@@ -13,10 +13,10 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.0",
+    "@sphereon/did-auth-siop": "0.17.1-feature.esm.cjs.26",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/oid4vci-client": "0.17.0",
-    "@sphereon/oid4vci-common": "0.17.0",
+    "@sphereon/oid4vci-client": "0.17.1-feature.esm.cjs.26",
+    "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.26",
     "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
@@ -45,7 +45,7 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/oid4vc-common": "0.17.0",
+    "@sphereon/oid4vc-common": "0.17.1-feature.esm.cjs.26",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.0",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@types/i18n-js": "^3.8.9",
