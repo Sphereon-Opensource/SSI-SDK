@@ -3,15 +3,14 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
       "IWellknownDidIssuer": "./src/types/IWellKnownDidIssuer.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
@@ -35,7 +34,7 @@
     "did-resolver": "^4.1.0",
     "express": "^4.19.2",
     "nock": "^13.5.4",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
@@ -59,5 +58,12 @@
     "Well-Known DIDs",
     "Verifiable Credential"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

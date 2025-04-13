@@ -4,7 +4,7 @@
   "description": "Common SIOPv2 and OID4VP types between modules",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
   "private": false,
@@ -17,9 +17,7 @@
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "3.1.1"
   },
-  "scripts": {
-    "build": "tsc"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/node": "^20.17.1",
     "typeorm": "^0.3.21"
@@ -27,5 +25,12 @@
   "files": [
     "dist/**/*"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

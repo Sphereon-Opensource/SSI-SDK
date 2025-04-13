@@ -3,10 +3,9 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "veramo": {
     "pluginInterfaces": {
@@ -45,7 +44,7 @@
     "@veramo/did-resolver": "4.2.0",
     "did-resolver": "^4.1.0",
     "typeorm": "^0.3.21",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
@@ -71,5 +70,12 @@
     "Selective Disclosure",
     "Verifiable Credential"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import { IProofPurpose, IProofType } from './did'
-import { PresentationSubmission } from './pex'
-import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
+import { type PresentationSubmission } from './pex'
+import { OriginalType, type WrappedVerifiableCredential, type WrappedVerifiablePresentation } from './vc'
 
 export type AdditionalClaims = Record<string, any>
 

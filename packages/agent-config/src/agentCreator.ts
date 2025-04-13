@@ -1,5 +1,5 @@
 import { TAgent, IPluginMethodMap, IAgentOptions } from '@veramo/core'
-import { createObjects } from './objectCreator'
+import { createObjects } from './objectCreator.js'
 import yaml from 'yaml'
 
 /**

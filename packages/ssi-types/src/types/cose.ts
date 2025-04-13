@@ -1,7 +1,7 @@
-import { com } from '@sphereon/kmp-mdoc-core'
-import SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
-import KeyType = com.sphereon.crypto.generic.KeyType
-import KeyOperations = com.sphereon.crypto.generic.KeyOperations
+import * as mdoc from '@sphereon/kmp-mdoc-core'
+type KeyType = mdoc.com.sphereon.crypto.generic.KeyType
+type KeyOperations = mdoc.com.sphereon.crypto.generic.KeyOperations
+type SignatureAlgorithm = mdoc.com.sphereon.crypto.generic.SignatureAlgorithm
 
 /**
  * See our mdl-mdoc and crypto library for more information

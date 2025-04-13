@@ -1,4 +1,4 @@
-import {
+import type {
   MdocDeviceResponse,
   MdocDocument,
   MdocOid4vpIssuerSigned,
@@ -6,8 +6,8 @@ import {
   WrappedMdocCredential,
   WrappedMdocPresentation,
 } from './mso_mdoc'
-import { SdJwtDecodedVerifiableCredential, WrappedSdJwtVerifiableCredential, WrappedSdJwtVerifiablePresentation } from './sd-jwt-vc'
-import {
+import type { SdJwtDecodedVerifiableCredential, WrappedSdJwtVerifiableCredential, WrappedSdJwtVerifiablePresentation } from './sd-jwt-vc'
+import type {
   JwtDecodedVerifiableCredential,
   JwtDecodedVerifiablePresentation,
   W3CVerifiableCredential,

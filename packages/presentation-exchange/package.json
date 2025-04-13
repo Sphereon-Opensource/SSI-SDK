@@ -3,15 +3,14 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
       "IPresentationExchange": "./src/types/IPresentationExchange.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@sphereon/pex": "5.0.0-unstable.28",
@@ -63,5 +62,12 @@
     "OpenID Connect",
     "Authenticator"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

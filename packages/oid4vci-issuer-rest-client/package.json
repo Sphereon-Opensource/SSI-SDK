@@ -4,15 +4,14 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
       "IOID4VCIRestClient": "./src/types/IOID4VCIRestClient.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
@@ -28,7 +27,7 @@
     "@veramo/remote-server": "4.2.0",
     "nock": "^13.5.4",
     "ts-node": "^10.9.2",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
@@ -51,5 +50,12 @@
     "Verifiable Credentials",
     "SSI"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

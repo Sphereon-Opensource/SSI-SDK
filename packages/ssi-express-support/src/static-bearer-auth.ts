@@ -1,6 +1,7 @@
 import passport from 'passport'
+// @ts-ignore
 import * as u8a from 'uint8arrays'
-import { BearerUser, IStaticBearerVerifyOptions } from './types'
+import { BearerUser, IStaticBearerVerifyOptions } from './types.js'
 export class StaticBearerAuth {
   private readonly strategy: string
   private static providers: Map<string, StaticBearerUserProvider> = new Map()

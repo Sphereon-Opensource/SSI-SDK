@@ -1,4 +1,4 @@
-import { IssuerType } from '@veramo/core'
+import type { IssuerType } from '@veramo/core'
 import {
   decodeMdocDeviceResponse,
   decodeMdocIssuerSigned,
@@ -6,11 +6,11 @@ import {
   decodeSdJwtVcAsync,
   DocumentFormat,
   getMdocDecodedPayload,
-  Hasher,
-  HasherSync,
-  ICredential,
-  IPresentation,
-  IProof,
+  type Hasher,
+  type HasherSync,
+  type ICredential,
+  type IPresentation,
+  type IProof,
   IProofPurpose,
   IProofType,
   isWrappedMdocCredential,
@@ -19,33 +19,33 @@ import {
   isWrappedSdJwtVerifiablePresentation,
   isWrappedW3CVerifiableCredential,
   isWrappedW3CVerifiablePresentation,
-  IVerifiableCredential,
-  IVerifiablePresentation,
-  JwtDecodedVerifiableCredential,
-  JwtDecodedVerifiablePresentation,
+  type IVerifiableCredential,
+  type IVerifiablePresentation,
+  type JwtDecodedVerifiableCredential,
+  type JwtDecodedVerifiablePresentation,
   mdocDecodedCredentialToUniformCredential,
-  MdocDeviceResponse,
-  MdocDocument,
-  MdocOid4vpMdocVpToken,
+  type MdocDeviceResponse,
+  type MdocDocument,
+  type MdocOid4vpMdocVpToken,
   OriginalType,
-  OriginalVerifiableCredential,
-  OriginalVerifiablePresentation,
+  type OriginalVerifiableCredential,
+  type OriginalVerifiablePresentation,
   sdJwtDecodedCredentialToUniformCredential,
-  SdJwtDecodedVerifiableCredential,
-  SdJwtDecodedVerifiableCredentialPayload,
-  UniformVerifiablePresentation,
-  W3CVerifiableCredential,
-  W3CVerifiablePresentation,
-  WrappedMdocCredential,
-  WrappedSdJwtVerifiableCredential,
-  WrappedVerifiableCredential,
-  WrappedVerifiablePresentation,
-  WrappedW3CVerifiableCredential,
+  type SdJwtDecodedVerifiableCredential,
+  type SdJwtDecodedVerifiableCredentialPayload,
+  type UniformVerifiablePresentation,
+  type W3CVerifiableCredential,
+  type W3CVerifiablePresentation,
+  type WrappedMdocCredential,
+  type WrappedSdJwtVerifiableCredential,
+  type WrappedVerifiableCredential,
+  type WrappedVerifiablePresentation,
+  type WrappedW3CVerifiableCredential,
 } from '../types'
 import { defaultHasher, ObjectUtils } from '../utils'
-import { com } from '@sphereon/kmp-mdoc-core'
+import * as mdoc from '@sphereon/kmp-mdoc-core'
 import { jwtDecode } from 'jwt-decode'
-import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
+type DeviceResponseCbor = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export const sha256 = (data: string | ArrayBuffer): Uint8Array => {
   return defaultHasher(data, 'sha256')

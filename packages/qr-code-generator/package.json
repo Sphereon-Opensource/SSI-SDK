@@ -4,15 +4,14 @@
   "description": "QR Code provider (react)",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
       "IQRCodeGenerator": "./src/types/IQRCodeGenerator.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@veramo/core": "4.2.0",
@@ -58,5 +57,12 @@
     "OpenID4VCI",
     "QR Code"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

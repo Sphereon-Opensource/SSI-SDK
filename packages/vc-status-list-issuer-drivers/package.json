@@ -4,10 +4,9 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
@@ -28,7 +27,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/debug": "^4.1.12",
     "@types/node": "^20.17.1",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
@@ -48,5 +47,12 @@
     "SSI",
     "StatusList2021"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

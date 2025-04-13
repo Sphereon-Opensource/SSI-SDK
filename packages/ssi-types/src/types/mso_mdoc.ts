@@ -4,30 +4,28 @@
  * but it would be nice if we can remove the imports and just have some interfaces here we can then use, like done
  * for sd-jwts
  */
-
-import { com } from '@sphereon/kmp-mdoc-core'
+import * as mdoc from '@sphereon/kmp-mdoc-core'
 import { IProofPurpose, IProofType } from './did'
-import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
-import { IVerifiableCredential } from './w3c-vc'
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import encodeTo = com.sphereon.kmp.encodeTo
-import Encoding = com.sphereon.kmp.Encoding
-import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
-import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
-import IssuerSignedItemJson = com.sphereon.mdoc.data.device.IssuerSignedItemJson
+import { OriginalType, type WrappedVerifiableCredential, type WrappedVerifiablePresentation } from './vc'
+import { type IVerifiableCredential } from './w3c-vc'
+import decodeFrom = mdoc.com.sphereon.kmp.decodeFrom
+import encodeTo = mdoc.com.sphereon.kmp.encodeTo
+class DeviceResponseCbor extends mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor {}
+type DocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
+class IssuerSignedCbor extends mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor {}
+type IssuerSignedItemJson = mdoc.com.sphereon.mdoc.data.device.IssuerSignedItemJson
 
 /**
  * Represents a selective disclosure JWT vc in compact form.
  */
 export type MdocOid4vpIssuerSigned = string
 export type MdocOid4vpMdocVpToken = string
-export type MdocIssuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor
-export type MdocDocument = com.sphereon.mdoc.data.device.DocumentCbor
-export type MdocDocumentJson = com.sphereon.mdoc.data.device.DocumentJson
-export type IssuerSignedJson = com.sphereon.mdoc.data.device.IssuerSignedJson
-export type DeviceSignedJson = com.sphereon.mdoc.data.device.DeviceSignedJson
-export type MdocDeviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor
+export type MdocIssuerSigned = mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor
+export type MdocDocument = mdoc.com.sphereon.mdoc.data.device.DocumentCbor
+export type MdocDocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
+export type IssuerSignedJson = mdoc.com.sphereon.mdoc.data.device.IssuerSignedJson
+export type DeviceSignedJson = mdoc.com.sphereon.mdoc.data.device.DeviceSignedJson
+export type MdocDeviceResponse = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export interface WrappedMdocCredential {
   /**
@@ -122,14 +120,14 @@ export function getMdocDecodedPayload(mdoc: MdocDocument): MdocDecodedPayload {
  */
 export function decodeMdocIssuerSigned(oid4vpIssuerSigned: MdocOid4vpIssuerSigned): MdocDocument {
   // Issuer signed according to 18013-7 in base64url
-  const issuerSigned: MdocIssuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(oid4vpIssuerSigned, Encoding.BASE64URL))
+  const issuerSigned: MdocIssuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(oid4vpIssuerSigned, mdoc.com.sphereon.kmp.Encoding.BASE64URL))
   // Create an mdoc from it. // Validations need to be performed by the caller after this!
   const holderMdoc: MdocDocument = issuerSigned.toDocument()
   return holderMdoc
 }
 
 export function encodeMdocIssuerSigned(issuerSigned: MdocIssuerSigned, encoding: 'base64url' = 'base64url') {
-  return encodeTo(issuerSigned.cborEncode(), Encoding.BASE64URL)
+  return encodeTo(issuerSigned.cborEncode(), mdoc.com.sphereon.kmp.Encoding.BASE64URL)
 }
 
 /**
@@ -138,7 +136,7 @@ export function encodeMdocIssuerSigned(issuerSigned: MdocIssuerSigned, encoding:
  *
  */
 export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDeviceResponse {
-  const deviceResponse = DeviceResponseCbor.Static.cborDecode(decodeFrom(vpToken, Encoding.BASE64URL))
+  const deviceResponse = DeviceResponseCbor.Static.cborDecode(decodeFrom(vpToken, mdoc.com.sphereon.kmp.Encoding.BASE64URL))
   return deviceResponse
 }
 
@@ -200,7 +198,7 @@ export const mdocDecodedCredentialToUniformCredential = (
       created: issuanceDate,
       proofPurpose: IProofPurpose.authentication,
       verificationMethod: json.issuerSigned.issuerAuth.payload,
-      mso_mdoc: encodeTo(decoded.cborEncode(), Encoding.BASE64URL),
+      mso_mdoc: encodeTo(decoded.cborEncode(), mdoc.com.sphereon.kmp.Encoding.BASE64URL),
     },
   }
 

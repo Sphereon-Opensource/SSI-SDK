@@ -1,8 +1,8 @@
-import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
+import { OriginalType, type WrappedVerifiableCredential, type WrappedVerifiablePresentation } from './vc'
 import { decodeSdJwt, decodeSdJwtSync, getClaims, getClaimsSync } from '@sd-jwt/decode'
-import { CompactJWT, IVerifiableCredential } from './w3c-vc'
+import { type CompactJWT, type IVerifiableCredential } from './w3c-vc'
 import { IProofPurpose, IProofType } from './did'
-import { OrPromise } from './generic'
+import { type OrPromise } from './generic'
 
 type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 

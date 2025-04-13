@@ -3,15 +3,14 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "veramo": {
     "pluginInterfaces": {
       "IEventLogger": "./src/types/IEventLogger.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
@@ -29,7 +28,7 @@
     "@veramo/remote-server": "4.2.0",
     "jest": "^27.5.1",
     "typeorm": "^0.3.21",
-    "typescript": "^5.5.3"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
@@ -53,5 +52,12 @@
     "Logger",
     "Audit"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

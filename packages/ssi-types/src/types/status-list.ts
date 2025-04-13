@@ -1,5 +1,5 @@
-import { W3CVerifiableCredential } from './w3c-vc'
-import { ProofFormat as VeramoProofFormat } from '@veramo/core'
+import { type W3CVerifiableCredential } from './w3c-vc'
+import { type ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',

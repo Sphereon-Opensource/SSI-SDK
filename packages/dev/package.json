@@ -1,23 +1,21 @@
 {
   "name": "@sphereon/ssi-sdk.dev",
   "version": "0.33.0",
-  "source": "lib/index.ts",
+  "source": "src/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/cli.d.ts",
-      "import": "./dist/cli.js"
-    },
-    "./package.json": "./package.json"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
   },
-  "main": "dist/cli.js",
-  "types": "dist/cli.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/esm/index.d.ts",
   "bin": {
     "sphereon": "./bin/sphereon.js"
   },
   "scripts": {
-    "build": "tsc",
     "build:copyfilesdis": "copyfiles package.json ./dist/",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@microsoft/api-extractor": "^7.47.2",
@@ -39,12 +37,12 @@
     "@types/inquirer": "^9.0.7",
     "@types/inquirer-autocomplete-prompt": "^3.0.3",
     "@types/url-parse": "^1.4.11",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
     "bin/**/*",
-    "lib/**/*",
+    "src/**/*",
     "package.json",
     "README.md",
     "LICENSE"
@@ -63,7 +61,8 @@
   "type": "module",
   "moduleDirectories": [
     "node_modules",
-    "lib"
+    "src"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js"
 }

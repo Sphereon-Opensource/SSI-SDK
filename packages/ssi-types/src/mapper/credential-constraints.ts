@@ -1,4 +1,4 @@
-import { CredentialFormat, PresentationFormat } from '../types'
+import type { CredentialFormat, PresentationFormat } from '../types'
 
 export type CredentialEncoding = 'json' /*includes json-ld*/ | 'jwt' | 'cbor'
 

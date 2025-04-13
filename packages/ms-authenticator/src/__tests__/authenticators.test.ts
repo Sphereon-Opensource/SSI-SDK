@@ -1,6 +1,6 @@
 import * as process from 'process'
 import { AuthenticationResult } from '@azure/msal-node'
-import { getMSClientCredentialAccessToken, UsernamePasswordAuthenticator } from '../src'
+import { getMSClientCredentialAccessToken, UsernamePasswordAuthenticator } from '../index'
 jest.setTimeout(100000)
 
 describe('@sphereon/ssi-sdk.ms-authenticator', (): void => {

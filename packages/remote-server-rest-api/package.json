@@ -3,13 +3,13 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "start:prod": "node build/index.js"
   },
   "dependencies": {
+    "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-express-support": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/remote-server": "4.2.0",
@@ -39,5 +39,12 @@
     "REST",
     "API"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

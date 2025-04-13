@@ -8,6 +8,9 @@
   },
   "references": [
     {
+      "path": "../ssi-types"
+    },
+    {
       "path": "../ssi-express-support"
     }
   ]

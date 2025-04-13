@@ -3,14 +3,14 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "start:dev": "cross-env ENVIRONMENT=dev NODE_ENV=local ts-node __tests__/index.ts",
     "start:energyshr": "cross-env ENVIRONMENT=EnergySHR NODE_ENV=energyshr node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/index.ts"
   },
   "dependencies": {
+    "@sphereon/ssi-types": "workspace:*",
     "body-parser": "^1.20.2",
     "casbin": "^5.30.0",
     "cookie-session": "^2.1.0",
@@ -41,7 +41,7 @@
     "@types/qs": "^6.9.15",
     "cross-env": "^7.0.3",
     "jose": "^4.15.9",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "peerDependencies": {
     "@noble/hashes": "1.6.1",
@@ -76,5 +76,12 @@
     "SSI",
     "Agent"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

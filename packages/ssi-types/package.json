@@ -2,11 +2,22 @@
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
   "version": "0.33.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@noble/hashes": "1.6.1",
@@ -24,11 +35,10 @@
     "jest": "^27.5.1",
     "prettier": "^2.8.8",
     "ts-jest": "^27.1.5",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
     "plugin.schema.json",
     "README.md",
     "LICENSE"
@@ -46,6 +56,5 @@
     "Credential Mapping",
     "Verifiable Credentials",
     "DIDs"
-  ],
-  "nx": {}
+  ]
 }

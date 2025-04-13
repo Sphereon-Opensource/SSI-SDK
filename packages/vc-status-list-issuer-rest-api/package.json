@@ -4,10 +4,9 @@
   "version": "0.33.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "start:dev": "node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/agent.ts",
     "start:dev2": "node --experimental-specifier-resolution=node --loader ts-node/esm  __tests__/agent.ts"
   },
@@ -59,7 +58,7 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "morgan": "^1.10.0",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
     "dist/**/*",
@@ -79,5 +78,12 @@
     "SSI",
     "StatusList2021"
   ],
-  "nx": {}
+  "nx": {},
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

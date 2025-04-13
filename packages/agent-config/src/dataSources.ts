@@ -1,7 +1,9 @@
 import Debug from 'debug'
 import { DataSource } from 'typeorm'
+// @ts-ignore
 import { BaseDataSourceOptions } from 'typeorm/data-source/BaseDataSourceOptions'
 
+// @ts-ignore
 import { DataSourceOptions } from 'typeorm/data-source/DataSourceOptions'
 
 const debug = Debug(`sphereon:ssi-sdk:database`)

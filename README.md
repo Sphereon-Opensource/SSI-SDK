@@ -25,7 +25,7 @@ the REST APIs.
 This is a new [set of specifications](https://openid.net/openid4vc/) by the [OpenID Foundation](https://openid.net/), that enable peer to peer authentication ([SIOPv2](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html)),
 Credential Issuance ([OID4VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)) and Credential Presentation/Verification ([OID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)). The SSI-SDK modules offer
 higher-level and more tight integrations for these specification than our lower level libraries,
-like [OID4VCI](https://github.com/Sphereon-OpenSource/OID4VCI), [SIOPv2 & OID4VP](https://github.com/Sphereon-Opensource/SIOP-OID4VP) and [Well-known DIDs](https://github.com/Sphereon-Opensource/wellknown-did-client).
+like [OID4VCI](https://github.com/Sphereon-OpenSource/OID4VC), [SIOPv2 & OID4VP](https://github.com/Sphereon-Opensource/SIOP-OID4VP) and [Well-known DIDs](https://github.com/Sphereon-Opensource/wellknown-did-client).
 
 These low-level libraries are typically not too opinionated and require an implementor to do some more work like providing
 signature/key callback functions. Contrary this

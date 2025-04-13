@@ -1,8 +1,12 @@
 {
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./packages/dev"
+    },
+    {
+      "path": "./packages/ssi-types"
     },
     {
       "path": "./packages/ssi-express-support"
@@ -10,9 +14,7 @@
     {
       "path": "./packages/agent-config"
     },
-    {
-      "path": "./packages/ssi-types"
-    },
+
     {
       "path": "./packages/ssi-sdk-core"
     },
@@ -48,9 +50,6 @@
     },
     {
       "path": "./packages/vc-status-list"
-    },
-    {
-      "path": "./packages/vc-status-list-tests"
     },
     {
       "path": "./packages/vc-status-list-issuer-drivers"
@@ -160,5 +159,9 @@
     {
       "path": "./packages/xstate-persistence"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "declaration": true,
+    "composite": true
+  }
 }

@@ -1,6 +1,8 @@
 import { sha256, sha384, sha512 } from '@noble/hashes/sha2'
+
+// @ts-ignore
 import * as u8a from 'uint8arrays'
-import { HasherSync } from '../types'
+import type { HasherSync } from '../types'
 
 const supportedAlgorithms = ['sha256', 'sha384', 'sha512'] as const
 type SupportedAlgorithms = (typeof supportedAlgorithms)[number]

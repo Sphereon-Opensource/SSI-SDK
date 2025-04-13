@@ -197,7 +197,7 @@ export class MDLMdoc implements IAgentPlugin {
    */
   private async mdocOid4vpRPVerify(args: MdocOid4vpRPVerifyArgs, _context: IRequiredContext): Promise<MdocOid4vpRPVerifyResult> {
     const { vp_token, presentation_submission, trustAnchors } = args
-    const deviceResponse = DeviceResponseCbor.Static.cborDecode(decodeFrom(vp_token, Encoding.BASE64URL))
+    const deviceResponse = MdocDeviceResponseCbor.Static.cborDecode(decodeFrom(vp_token, Encoding.BASE64URL))
     if (!deviceResponse.documents) {
       return Promise.reject(Error(`No documents found in vp_token`))
     }

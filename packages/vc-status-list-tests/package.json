@@ -2,8 +2,7 @@
   "name": "@sphereon/vc-status-list-tests",
   "version": "0.33.0",
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk-ext.did-provider-key": "0.28.0",
@@ -24,7 +23,7 @@
     "did-resolver": "^4.1.0",
     "nock": "^13.5.4",
     "ts-node": "^10.9.2",
-    "typescript": "5.6.3"
+    "typescript": "5.8.3"
   },
   "files": [],
   "private": true,
@@ -46,5 +45,14 @@
   "peerDependencies": {
     "react-native-securerandom": "^1.0.1"
   },
-  "nx": {}
+  "nx": {},
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    }
+  }
 }

@@ -11,9 +11,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { PartyEntity } from './PartyEntity'
-import { getConstraint } from '../../utils/ValidatorUtils'
-import { ElectronicAddressType, ValidationConstraint } from '../../types'
+import type { ElectronicAddressType, ValidationConstraint } from '../../types/index.js'
+import { PartyEntity } from './PartyEntity.js'
+import { getConstraint } from '../../utils/ValidatorUtils.js'
 
 @Entity('ElectronicAddress')
 export class ElectronicAddressEntity extends BaseEntity {

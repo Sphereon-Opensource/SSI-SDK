@@ -1,4 +1,4 @@
-import { BearerTokenArg } from '@sphereon/ssi-types'
+import type { BearerTokenArg } from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
   IssueStatusResponse,
