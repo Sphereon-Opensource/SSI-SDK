@@ -284,7 +284,7 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       signingKey = extendedKeys.find((k) => supportedTypes.filter((value) => value.startsWith(k.meta.verificationMethod.type)))
     }
 
-    if (!signingKey) throw Error(`key_not_found: No suitable signing key found for ${identifier.did}`)
+    if (!signingKey) throw Error(`key_not_found: No suitable signing key found for ${identifier.did}. ${JSON.stringify(didDocument)}`)
     const verificationMethodId = signingKey.meta.verificationMethod.id
     debug(`Signing key for id ${identifier.did} and verification method id ${verificationMethodId} found.`)
     return { signingKey, verificationMethodId }

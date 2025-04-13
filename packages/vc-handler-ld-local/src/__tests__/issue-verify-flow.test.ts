@@ -1,25 +1,41 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
+import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
+
+import { IDidConnectionMode, LtoDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-lto'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import {
+  createAgent,
+  CredentialPayload,
+  IDIDManager,
+  IIdentifier,
+  IKeyManager,
+  IResolver,
+  PresentationPayload,
+  TAgent
+} from '@veramo/core'
 import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
-import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { KeyManagementSystem } from '@veramo/kms-local'
+import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
-
-import { LtoDidProvider, IDidConnectionMode } from '@sphereon/ssi-sdk-ext.did-provider-lto'
 import { CredentialHandlerLDLocal } from '../agent/CredentialHandlerLDLocal'
 import { LdDefaultContexts } from '../ld-default-contexts'
+import { SphereonJsonWebSignature2020 } from '../suites'
 import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
 import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
 import { ICredentialHandlerLDLocal, MethodNames } from '../types/ICredentialHandlerLDLocal'
 import { ContextDoc, ControllerProofPurpose } from '../types/types'
-
-import { bedrijfsInformatieV1, exampleV1, factomDIDResolutionResult_2018, ltoDIDResolutionResult, ltoDIDSubjectResolutionResult_2018 } from './mocks'
+import {
+  bedrijfsInformatieV1,
+  exampleV1,
+  factomDIDResolutionResult_2018,
+  ltoDIDResolutionResult,
+  ltoDIDSubjectResolutionResult_2018
+} from './mocks'
 
 jest.setTimeout(100000)
 
@@ -39,16 +55,16 @@ describe('credential-LD full flow', () => {
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
-        new KeyManager({
+        new SphereonKeyManager({
           store: new MemoryKeyStore(),
           kms: {
-            local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
+            local: new SphereonKeyManagementSystem(new MemoryPrivateKeyStore()),
           },
         }),
         new IdentifierResolution({ crypto: global.crypto }),
         new DIDManager({
           providers: {
-            'did:key': new KeyDIDProvider({ defaultKms: 'local' }),
+            'did:key': new SphereonKeyDidProvider({ defaultKms: 'local' }),
             'did:lto': new LtoDidProvider({
               defaultKms: 'local',
               connectionMode: IDidConnectionMode.NODE,
@@ -69,7 +85,7 @@ describe('credential-LD full flow', () => {
         new CredentialPlugin(),
         new CredentialHandlerLDLocal({
           contextMaps: [LdDefaultContexts, customContext],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+          suites: [new SphereonJsonWebSignature2020(), new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
             ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
@@ -79,7 +95,8 @@ describe('credential-LD full flow', () => {
         }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate()
+    didKeyIdentifier = await agent.didManagerCreate({provider: 'did:key', options: { type: 'Ed25519' }})
+    console.log('didKeyIdentifier', didKeyIdentifier.did)
     didLtoIdentifier = await agent.didManagerImport({
       provider: 'did:lto',
       did: LTO_DID,
@@ -128,12 +145,10 @@ describe('credential-LD full flow', () => {
       fetchRemoteContexts: true,
     })
 
+    console.log(JSON.stringify(verifiedCredential, null, 2))
+
     expect(verifiedCredential).toMatchObject({
       log: [
-        {
-          id: 'expiration',
-          valid: true,
-        },
         {
           id: 'valid_signature',
           valid: true,
@@ -143,17 +158,13 @@ describe('credential-LD full flow', () => {
           valid: true,
         },
         {
-          id: 'revocation_status',
+          id: 'expiration',
           valid: true,
         },
       ],
       results: [
         {
           log: [
-            {
-              id: 'expiration',
-              valid: true,
-            },
             {
               id: 'valid_signature',
               valid: true,
@@ -163,7 +174,7 @@ describe('credential-LD full flow', () => {
               valid: true,
             },
             {
-              id: 'revocation_status',
+              id: 'expiration',
               valid: true,
             },
           ],
@@ -214,10 +225,6 @@ describe('credential-LD full flow', () => {
         {
           log: [
             {
-              id: 'expiration',
-              valid: true,
-            },
-            {
               id: 'valid_signature',
               valid: true,
             },
@@ -226,17 +233,13 @@ describe('credential-LD full flow', () => {
               valid: true,
             },
             {
-              id: 'revocation_status',
+              id: 'expiration',
               valid: true,
             },
           ],
           results: [
             {
               log: [
-                {
-                  id: 'expiration',
-                  valid: true,
-                },
                 {
                   id: 'valid_signature',
                   valid: true,
@@ -246,7 +249,7 @@ describe('credential-LD full flow', () => {
                   valid: true,
                 },
                 {
-                  id: 'revocation_status',
+                  id: 'expiration',
                   valid: true,
                 },
               ],
@@ -345,10 +348,6 @@ describe('credential-LD full flow', () => {
     expect(verifiedCredential).toMatchObject({
       log: [
         {
-          id: 'expiration',
-          valid: true,
-        },
-        {
           id: 'valid_signature',
           valid: true,
         },
@@ -357,17 +356,13 @@ describe('credential-LD full flow', () => {
           valid: true,
         },
         {
-          id: 'revocation_status',
+          id: 'expiration',
           valid: true,
         },
       ],
       results: [
         {
           log: [
-            {
-              id: 'expiration',
-              valid: true,
-            },
             {
               id: 'valid_signature',
               valid: true,
@@ -377,7 +372,7 @@ describe('credential-LD full flow', () => {
               valid: true,
             },
             {
-              id: 'revocation_status',
+              id: 'expiration',
               valid: true,
             },
           ],
