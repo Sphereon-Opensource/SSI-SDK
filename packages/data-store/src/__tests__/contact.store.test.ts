@@ -4,6 +4,7 @@ import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, Identity
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
+  CredentialRole,
   ElectronicAddress,
   GetElectronicAddressesArgs,
   GetIdentitiesArgs,
@@ -11,7 +12,6 @@ import {
   GetPhysicalAddressesArgs,
   GetRelationshipsArgs,
   Identity,
-  CredentialRole,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -26,6 +26,7 @@ import {
   PartyTypeType,
   PhysicalAddress,
 } from '../types'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource

@@ -1,5 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { IOID4VCIRestClient } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IOID4VCIRestClient>
 

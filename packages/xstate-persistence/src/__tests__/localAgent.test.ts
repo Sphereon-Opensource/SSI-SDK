@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 import machineStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
+import { describe } from 'vitest'
 
 let dbConnection: Promise<DataSource>
 let agent: any

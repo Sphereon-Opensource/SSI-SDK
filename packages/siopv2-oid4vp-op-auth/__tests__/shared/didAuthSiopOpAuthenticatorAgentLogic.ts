@@ -14,9 +14,9 @@ import {
   VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
-import { CredentialMapper } from '@sphereon/ssi-types'
+import { CredentialMapper, WrappedW3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { WrappedW3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -29,12 +29,12 @@ function getFileAsJson(path: string) {
 const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
   ...jest.requireActual('@veramo/utils'),
-  mapIdentifierKeysToDoc: jest.fn(),
+  mapIdentifierKeysToDoc: vi.fn(),
 }))
 
 jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
   ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
-  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+  mapIdentifierKeysToDocWithJwkSupport: vi.fn(),
 }))
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
@@ -191,19 +191,19 @@ export default (testContext: {
       const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
       mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedparseAuthorizationRequestURIMethod = jest.fn()
+      const mockedparseAuthorizationRequestURIMethod = vi.fn()
       OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
       mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authorizationRequest))
 
-      const mockedverifyAuthorizationRequestMethod = jest.fn()
+      const mockedverifyAuthorizationRequestMethod = vi.fn()
       OP.prototype.verifyAuthorizationRequest = mockedverifyAuthorizationRequestMethod
       mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authorizationVerificationMockedResult))
 
-      const mockedcreateAuthorizationResponse = jest.fn()
+      const mockedcreateAuthorizationResponse = vi.fn()
       OP.prototype.createAuthorizationResponse = mockedcreateAuthorizationResponse
       mockedcreateAuthorizationResponse.mockReturnValue(Promise.resolve(createAuthorizationResponseMockedResult))
 
-      const mocksubmitAuthorizationResponseMethod = jest.fn()
+      const mocksubmitAuthorizationResponseMethod = vi.fn()
       OP.prototype.submitAuthorizationResponse = mocksubmitAuthorizationResponseMethod
       mocksubmitAuthorizationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 

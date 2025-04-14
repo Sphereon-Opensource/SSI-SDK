@@ -1,8 +1,8 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 import geolocationStoreAgentLogic from './shared/geolocationStoreAgentStoreLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 let dbConnection: Promise<DataSource>
 let agent: any

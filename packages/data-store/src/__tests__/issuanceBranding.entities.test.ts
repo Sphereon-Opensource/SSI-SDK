@@ -2,20 +2,21 @@ import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource, Repository } from 'typeorm'
 import { DataStoreMigrations } from '../migrations'
 import {
-  IBasicCredentialBranding,
-  IBasicIssuerBranding,
   CredentialBrandingEntity,
   credentialBrandingEntityFrom,
-  DataStoreIssuanceBrandingEntities,
-  issuerBrandingEntityFrom,
-  credentialLocaleBrandingEntityFrom,
   CredentialLocaleBrandingEntity,
-  issuerLocaleBrandingEntityFrom,
-  IssuerLocaleBrandingEntity,
+  credentialLocaleBrandingEntityFrom,
+  DataStoreIssuanceBrandingEntities,
+  IBasicCredentialBranding,
   IBasicCredentialLocaleBranding,
+  IBasicIssuerBranding,
   IBasicIssuerLocaleBranding,
   IssuerBrandingEntity,
+  issuerBrandingEntityFrom,
+  IssuerLocaleBrandingEntity,
+  issuerLocaleBrandingEntityFrom,
 } from '../index'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

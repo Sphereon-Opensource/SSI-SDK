@@ -1,14 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "experimentalDecorators": true,
-    "strictPropertyInitialization": false
-  },
   "references": [
     {
       "path": "../ssi-types"

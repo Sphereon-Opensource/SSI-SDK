@@ -1,7 +1,7 @@
 import oidfClientAgentLogic from './shared/oidfClientAgentLogic'
-import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
-
-jest.setTimeout(60000)
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 let agent: any
 

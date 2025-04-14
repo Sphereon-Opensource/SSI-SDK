@@ -3,15 +3,15 @@ import 'cross-fetch/polyfill'
 import express from 'express'
 import { Server } from 'http'
 import { Connection } from 'typeorm'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 import { IWellKnownDidIssuer } from '../src'
 import wellKnownDidIssuerAgentLogic from './shared/wellKnownDidIssuerAgentLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 3435
 const basePath = '/agent'
@@ -76,7 +76,7 @@ const setup = async (): Promise<boolean> => {
     null,
   )
 
-  agent.didManagerGet = jest.fn().mockReturnValue(
+  agent.didManagerGet = vi.fn().mockReturnValue(
     Promise.resolve({
       did: 'did:key:abc',
       services: [

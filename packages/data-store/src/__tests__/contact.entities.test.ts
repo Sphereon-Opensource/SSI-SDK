@@ -57,7 +57,7 @@ import {
   partyTypeEntityFrom,
   physicalAddressEntityFrom,
 } from '../utils/contact/MappingUtils'
-
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 // TODO write test adding two contacts reusing the same contactType
 
 describe('Database entities tests', (): void => {

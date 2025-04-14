@@ -1,7 +1,7 @@
 import { createObjects, getConfig } from '../../agent-config/src'
 import oid4vciHolderAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 let agent: any
 

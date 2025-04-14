@@ -3,14 +3,14 @@ import 'cross-fetch/polyfill'
 import express, { Router } from 'express'
 import { Server } from 'http'
 import { DataSource } from 'typeorm'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IIssuanceBranding } from '../src'
 import issuanceBrandingAgentLogic from './shared/issuanceBrandingAgentLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 3002
 const basePath = '/agent'

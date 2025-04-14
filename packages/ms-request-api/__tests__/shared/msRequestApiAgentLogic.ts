@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { createAgent, FindArgs, TAgent, TCredentialColumns, VerifiableCredential } from '@veramo/core'
 import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
 import { DataSource } from 'typeorm'
-import { CredentialRole, CredentialCorrelationType, ICredentialStore, DocumentType } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialCorrelationType, CredentialRole, DocumentType, ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IMsRequestApi & ICredentialStore>
 const did1 = 'did:test:111'
@@ -25,15 +26,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     beforeAll(async () => {
       jest.mock('../../src/IssuerUtil', () => {
         return {
-          fetchIssuanceRequestMs: jest.fn().mockResolvedValue(requestIssuanceResponse),
-          generatePin: jest.fn().mockResolvedValue(6363),
+          fetchIssuanceRequestMs: vi.fn().mockResolvedValue(requestIssuanceResponse),
+          generatePin: vi.fn().mockResolvedValue(6363),
         }
       })
 
       jest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
         return {
-          ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
-          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
+          ClientCredentialAuthenticator: vi.fn().mockResolvedValue('ey...'),
+          checkMsIdentityHostname: vi.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
         }
       })
       await testContext.setup()
@@ -74,7 +75,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       var id = uuidv4()
       clientIssueRequest.clientIssuanceConfig.callback.state = id
 
-      const fetchIssuanceRequestMsMock = jest.fn().mockResolvedValue(requestIssuanceResponse)
+      const fetchIssuanceRequestMsMock = vi.fn().mockResolvedValue(requestIssuanceResponse)
       fetchIssuanceRequestMs.prototype = fetchIssuanceRequestMsMock
 
       return await expect(agent.issuanceRequestMsVc(clientIssueRequest)).resolves.not.toBeNull

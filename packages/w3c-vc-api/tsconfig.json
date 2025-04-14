@@ -1,11 +1,4 @@
 {
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "resolveJsonModule": true,
-    "declarationDir": "dist",
-    "esModuleInterop": true
-  },
   "references": [
     {
       "path": "../ssi-types"

@@ -1,6 +1,7 @@
 import { verifyEBSICredentialIssuer } from '../src/agent/OID4VCIHolder'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { IssuerType } from '../src'
+import { describe, expect, it } from 'vitest'
 
 const nock = require('nock')
 

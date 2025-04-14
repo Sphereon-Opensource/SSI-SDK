@@ -10,7 +10,6 @@ import {
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.vc-handler-ld-local'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
@@ -27,6 +26,7 @@ import { Resolver } from 'did-resolver'
 import { StatusListPlugin } from '../src/agent/StatusListPlugin'
 import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
 import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { beforeAll, describe, expect, it } from 'vitest'
 
 const debug = Debug('sphereon:status-list-issuer')
 
@@ -133,7 +133,6 @@ describe('Status List VC handling', () => {
           suites: [
             new SphereonEd25519Signature2018(),
             new SphereonEd25519Signature2020(),
-            new SphereonJsonWebSignature2020(),
             new SphereonEcdsaSecp256k1RecoverySignature2020(),
           ],
           bindingOverrides: new Map([

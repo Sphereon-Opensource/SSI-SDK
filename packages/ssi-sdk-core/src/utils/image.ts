@@ -1,5 +1,6 @@
 import { Loggers } from '@sphereon/ssi-types'
 import fetch from 'cross-fetch'
+// @ts-ignore
 import { imageSize } from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
 

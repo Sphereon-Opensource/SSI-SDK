@@ -1,16 +1,16 @@
+import { describe } from 'vitest'
 import 'cross-fetch/polyfill'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
 import { DataSource } from 'typeorm'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IPDManager } from '../src'
 import pdManagerAgentLogic from './shared/pdManagerAgentLogic'
-
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
 
 const port = 4502
 const basePath = '/agent'

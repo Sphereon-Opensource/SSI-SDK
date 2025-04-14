@@ -1,3 +1,4 @@
+import { describe } from 'vitest'
 import 'cross-fetch/polyfill'
 import { createAgent, IAgent, IAgentOptions, IDIDManager, IKeyManager } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
@@ -10,7 +11,7 @@ import { createObjects, getConfig } from '../../agent-config/src'
 import { ImDLMdoc } from '../src'
 import authClientAgentLogic from './shared/mdlMdocAgentLogic'
 
-jest.setTimeout(15000)
+//jest.setTimeout(15000)
 
 const port = 4002
 const basePath = '/agent'

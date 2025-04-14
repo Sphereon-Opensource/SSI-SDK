@@ -3,6 +3,7 @@ import { Request } from 'cross-fetch'
 // @ts-ignore
 import nock from 'nock'
 import { IResourceResolver } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IResourceResolver>
 

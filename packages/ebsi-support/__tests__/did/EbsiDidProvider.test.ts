@@ -15,7 +15,7 @@ const ebsiDidProvider = new EbsiDidProvider({
 
 jest.mock('../../src/did/services/EbsiRPCService', () => ({
   ...jest.requireActual('../../src/did/services/EbsiRPCService'),
-  callRpcMethod: jest.fn().mockResolvedValue({ result: { r: '', s: '', v: '' } }),
+  callRpcMethod: vi.fn().mockResolvedValue({ result: { r: '', s: '', v: '' } }),
 }))
 
 const agent = createAgent<IKeyManager & IDIDManager>({

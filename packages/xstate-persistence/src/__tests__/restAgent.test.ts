@@ -9,6 +9,7 @@ import { DataSource } from 'typeorm'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IMachineStatePersistence, MachineStatePersistence, MachineStatePersistEventType } from '../index'
 import xStatePersistenceAgentLogic from './shared/MachineStatePersistenceAgentLogic'
+import { describe } from 'vitest'
 
 const port = 6403
 const basePath = '/agent'
@@ -58,7 +59,9 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   restServer?.close()
-  await (await dbConnection).destroy()
+  if (dbConnection) {
+    await (await dbConnection)?.destroy()
+  }
   return true
 }
 

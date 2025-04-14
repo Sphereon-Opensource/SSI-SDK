@@ -4,6 +4,7 @@ import { IPresentationExchange } from '../../src'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPresentationDefinition } from '@sphereon/pex'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -16,12 +17,12 @@ function getFileAsJson(path: string) {
 // const nock = require('nock')
 jest.mock('@veramo/utils', () => ({
   ...jest.requireActual('@veramo/utils'),
-  mapIdentifierKeysToDoc: jest.fn(),
+  mapIdentifierKeysToDoc: vi.fn(),
 }))
 
 jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
   ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
-  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+  mapIdentifierKeysToDocWithJwkSupport: vi.fn(),
 }))
 
 type ConfiguredAgent = TAgent<IPresentationExchange & IDataStore>

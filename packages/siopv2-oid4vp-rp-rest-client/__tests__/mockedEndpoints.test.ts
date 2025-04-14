@@ -2,7 +2,7 @@ import { createAgent, IResolver } from '@veramo/core'
 // @ts-ignore
 import nock from 'nock'
 import { ISIOPv2OID4VPRPRestClient, SIOPv2OID4VPRPRestClient } from '../src'
-
+import { afterEach, beforeEach, beforeAll, afterAll, describe, it, expect } from 'vitest'
 const definitionId = '9449e2db-791f-407c-b086-c21cc677d2e0'
 const baseUrl = 'https://my-siop-endpoint'
 

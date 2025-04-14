@@ -1,12 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-  },
   "references": [
     {
       "path": "../ms-authenticator"

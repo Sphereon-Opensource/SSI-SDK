@@ -9,8 +9,8 @@ import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IGeolocationStore } from '../src'
 import geolocationStoreAgentLogic from './shared/geolocationStoreAgentStoreLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 4105
 const basePath = '/agent'

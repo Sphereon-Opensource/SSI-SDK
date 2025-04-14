@@ -9,8 +9,8 @@ import { createObjects, getConfig } from '../../agent-config/dist'
 import oid4vciHolderAgentLogic from './shared/oid4vciHolderLogicAgentLogic'
 import { IOID4VCIHolder } from '../src'
 import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 3051
 const basePath = '/agent'

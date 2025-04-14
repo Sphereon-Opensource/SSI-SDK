@@ -36,15 +36,12 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.3.1",
-    "@types/jest": "^27.5.2",
     "@types/react": "^18.3.3",
     "@types/uuid": "^9.0.8",
     "global-jsdom": "^8.8.0",
-    "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "jsdom": "^21.1.2",
-    "react-dom": "^18.3.1",
-    "ts-jest": "^27.1.5"
+    "react-dom": "^18.3.1"
   },
   "files": [
     "dist",

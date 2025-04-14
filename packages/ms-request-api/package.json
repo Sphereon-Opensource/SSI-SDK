@@ -35,7 +35,6 @@
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^20.17.1",
     "@types/uuid": "^9.0.8",
     "@veramo/data-store": "4.2.0",
@@ -43,10 +42,8 @@
     "@veramo/remote-server": "4.2.0",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
-    "jest": "^27.5.1",
     "prettier": "^2.8.8",
     "sqlite3": "^5.1.7",
-    "ts-jest": "^27.1.5",
     "typeorm": "^0.3.22",
     "typescript": "5.8.3",
     "uuid": "^9.0.1"
