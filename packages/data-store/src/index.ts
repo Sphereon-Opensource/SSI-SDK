@@ -1,53 +1,52 @@
-import { BaseConfigEntity } from './entities/contact/BaseConfigEntity.js'
-import { BaseLocaleBrandingEntity } from './entities/issuanceBranding/BaseLocaleBrandingEntity.js'
-import { BaseContactEntity } from './entities/contact/BaseContactEntity.js'
-import { ConnectionEntity } from './entities/contact/ConnectionEntity.js'
-import { PartyEntity } from './entities/contact/PartyEntity.js'
-import { CorrelationIdentifierEntity } from './entities/contact/CorrelationIdentifierEntity.js'
-import { DidAuthConfigEntity } from './entities/contact/DidAuthConfigEntity.js'
-import { IdentityEntity } from './entities/contact/IdentityEntity.js'
-import { IdentityMetadataItemEntity } from './entities/contact/IdentityMetadataItemEntity.js'
-import { OpenIdConfigEntity } from './entities/contact/OpenIdConfigEntity.js'
-import { BackgroundAttributesEntity } from './entities/issuanceBranding/BackgroundAttributesEntity.js'
-import { CredentialBrandingEntity } from './entities/issuanceBranding/CredentialBrandingEntity.js'
-import { CredentialLocaleBrandingEntity } from './entities/issuanceBranding/CredentialLocaleBrandingEntity.js'
-import { ImageAttributesEntity } from './entities/issuanceBranding/ImageAttributesEntity.js'
-import { ImageDimensionsEntity } from './entities/issuanceBranding/ImageDimensionsEntity.js'
-import { IssuerLocaleBrandingEntity } from './entities/issuanceBranding/IssuerLocaleBrandingEntity.js'
-import { IssuerBrandingEntity } from './entities/issuanceBranding/IssuerBrandingEntity.js'
-import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributesEntity.js'
-import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from './entities/statusList/StatusListEntities.js'
-import { StatusListEntryEntity } from './entities/statusList/StatusList2021EntryEntity.js'
-import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity.js'
+import { BaseConfigEntity } from './entities/contact/BaseConfigEntity'
+import { BaseLocaleBrandingEntity } from './entities/issuanceBranding/BaseLocaleBrandingEntity'
+import { BaseContactEntity } from './entities/contact/BaseContactEntity'
+import { ConnectionEntity } from './entities/contact/ConnectionEntity'
+import { PartyEntity } from './entities/contact/PartyEntity'
+import { CorrelationIdentifierEntity } from './entities/contact/CorrelationIdentifierEntity'
+import { DidAuthConfigEntity } from './entities/contact/DidAuthConfigEntity'
+import { IdentityEntity } from './entities/contact/IdentityEntity'
+import { IdentityMetadataItemEntity } from './entities/contact/IdentityMetadataItemEntity'
+import { OpenIdConfigEntity } from './entities/contact/OpenIdConfigEntity'
+import { BackgroundAttributesEntity } from './entities/issuanceBranding/BackgroundAttributesEntity'
+import { CredentialBrandingEntity } from './entities/issuanceBranding/CredentialBrandingEntity'
+import { CredentialLocaleBrandingEntity } from './entities/issuanceBranding/CredentialLocaleBrandingEntity'
+import { ImageAttributesEntity } from './entities/issuanceBranding/ImageAttributesEntity'
+import { ImageDimensionsEntity } from './entities/issuanceBranding/ImageDimensionsEntity'
+import { IssuerLocaleBrandingEntity } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
+import { IssuerBrandingEntity } from './entities/issuanceBranding/IssuerBrandingEntity'
+import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributesEntity'
+import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from './entities/statusList/StatusListEntities'
+import { StatusListEntryEntity } from './entities/statusList/StatusList2021EntryEntity'
+import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
 // import { IStatusListEntity, IStatusListEntryEntity } from './types.'
-import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity.js'
-import { PartyTypeEntity } from './entities/contact/PartyTypeEntity.js'
-import { OrganizationEntity } from './entities/contact/OrganizationEntity.js'
-import { NaturalPersonEntity } from './entities/contact/NaturalPersonEntity.js'
-import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEntity.js'
-import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity.js'
-import { AuditEventEntity } from './entities/eventLogger/AuditEventEntity.js'
-import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity.js'
-import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity.js'
-import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity.js'
-import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity.js'
+import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
+import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
+import { OrganizationEntity } from './entities/contact/OrganizationEntity'
+import { NaturalPersonEntity } from './entities/contact/NaturalPersonEntity'
+import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEntity'
+import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity'
+import { AuditEventEntity } from './entities/eventLogger/AuditEventEntity'
+import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
+import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
+import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
+import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
 
-import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity.js'
-import { ElectronicAddressType, PhysicalAddressType } from './types/index.js'
+import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity'
 
-export { ContactStore } from './contact/ContactStore.js'
-export { AbstractContactStore } from './contact/AbstractContactStore.js'
-export { AbstractDigitalCredentialStore } from './digitalCredential/AbstractDigitalCredentialStore.js'
-export { DigitalCredentialStore } from './digitalCredential/DigitalCredentialStore.js'
-export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore.js'
-export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore.js'
-export { StatusListStore } from './statusList/StatusListStore.js'
-export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore.js'
-export { EventLoggerStore } from './eventLogger/EventLoggerStore.js'
-export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore.js'
-export { MachineStateStore } from './machineState/MachineStateStore.js'
-export { AbstractPDStore } from './presentationDefinition/AbstractPDStore.js'
-export { PDStore } from './presentationDefinition/PDStore.js'
+export { ContactStore } from './contact/ContactStore'
+export { AbstractContactStore } from './contact/AbstractContactStore'
+export { AbstractDigitalCredentialStore } from './digitalCredential/AbstractDigitalCredentialStore'
+export { DigitalCredentialStore } from './digitalCredential/DigitalCredentialStore'
+export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuanceBrandingStore'
+export { IssuanceBrandingStore } from './issuanceBranding/IssuanceBrandingStore'
+export { StatusListStore } from './statusList/StatusListStore'
+export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
+export { EventLoggerStore } from './eventLogger/EventLoggerStore'
+export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
+export { MachineStateStore } from './machineState/MachineStateStore'
+export { AbstractPDStore } from './presentationDefinition/AbstractPDStore'
+export { PDStore } from './presentationDefinition/PDStore'
 export {
   DataStoreMigrations,
   DataStoreEventLoggerMigrations,
@@ -57,13 +56,13 @@ export {
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
-} from './migrations/index.js'
-export * from './types/index.js'
-export * from './utils/contact/MappingUtils.js'
-export * from './utils/digitalCredential/MappingUtils.js'
-export * from './utils/eventLogger/MappingUtils.js'
-export * from './utils/issuanceBranding/MappingUtils.js'
-export * from './utils/presentationDefinition/MappingUtils.js'
+} from './migrations/index'
+export * from './types'
+export * from './utils/contact/MappingUtils'
+export * from './utils/digitalCredential/MappingUtils'
+export * from './utils/eventLogger/MappingUtils'
+export * from './utils/issuanceBranding/MappingUtils'
+export * from './utils/presentationDefinition/MappingUtils'
 
 export const DataStoreContactEntities = [
   BaseConfigEntity,
@@ -141,10 +140,10 @@ export {
   IssuerLocaleBrandingEntity,
   ElectronicAddressEntity,
   PhysicalAddressEntity,
-  // IStatusListEntity,
-  // IStatusListEntryEntity,
   StatusListEntity,
   StatusListEntryEntity,
+  OAuthStatusListEntity,
+  StatusList2021Entity,
   AuditEventEntity,
   DigitalCredentialEntity,
   MachineStateInfoEntity,
@@ -153,4 +152,3 @@ export {
   CredentialClaimsEntity,
   Oid4vcStateEntity,
 }
-export type { PhysicalAddressType, ElectronicAddressType }

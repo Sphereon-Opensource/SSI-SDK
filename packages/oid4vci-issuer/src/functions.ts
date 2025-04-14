@@ -13,7 +13,7 @@ import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallba
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
-import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
+import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, ProofFormat } from '@veramo/core'

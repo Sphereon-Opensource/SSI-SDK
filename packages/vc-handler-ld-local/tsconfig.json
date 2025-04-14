@@ -1,6 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
       "path": "../ssi-types"

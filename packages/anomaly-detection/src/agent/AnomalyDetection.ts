@@ -65,7 +65,7 @@ export class AnomalyDetection implements IAgentPlugin {
       return this.dnsLookup(hostname)
     }
 
-    // Fallback to Node.js dns
+    // Fallback to Node dns
     let dns
     try {
       dns = eval('require("dns")')

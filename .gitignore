@@ -50,6 +50,8 @@ test/*.js
 /packages/*/coverage/
 /packages/*/node_modules/
 /packages/*/yarn.lock
+packages/*/.turbo
+.turbo
 
 *.tsbuildinfo
 

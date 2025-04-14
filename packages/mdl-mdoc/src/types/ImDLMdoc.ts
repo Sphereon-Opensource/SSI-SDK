@@ -29,7 +29,6 @@ export type DocumentDescriptorMatchResult = com.sphereon.mdoc.oid4vp.DocumentDes
 export type IOid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
 export const Oid4VPPresentationSubmission = com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
 
-
 export interface ImDLMdoc extends IPluginMethodMap {
   // TODO: Extract cert methods to its own plugin
   x509VerifyCertificateChain(args: VerifyCertificateChainArgs, context: IRequiredContext): Promise<X509ValidationResult>

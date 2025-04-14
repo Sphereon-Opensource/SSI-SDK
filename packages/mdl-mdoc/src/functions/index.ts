@@ -7,12 +7,11 @@ import {
   getSubjectDN,
   pemOrDerToX509Certificate,
   validateX509CertificateChain,
-  X509ValidationResult
+  X509ValidationResult,
 } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
-// @ts-ignore
 import * as u8a from 'uint8arrays'
 import { IRequiredContext, VerifyCertificateChainArgs } from '../types/ImDLMdoc'
 
@@ -253,10 +252,8 @@ export class X509CallbackService implements IX509ServiceJS {
 }
 
 const defaultCryptoEngine = () => {
-
   // @ts-ignore
   if (typeof self !== 'undefined') {
-
     // @ts-ignore
     if ('crypto' in self) {
       let engineName = 'webcrypto'

@@ -60,7 +60,7 @@ export class SIOPv2RPApiServer {
   private setupSwaggerUi() {
     fetch(this.OID4VP_SWAGGER_URL)
       .then((res) => res.json())
-      .then((swagger) => {
+      .then((swagger: any) => {
         const apiDocs = `${this._basePath}/api-docs`
         console.log(`[OID4P] API docs available at ${apiDocs}`)
 

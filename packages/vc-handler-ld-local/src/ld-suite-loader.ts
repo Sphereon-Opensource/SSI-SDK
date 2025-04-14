@@ -33,8 +33,8 @@ export class LdSuiteLoader {
     // Always use verification type if supplied. This is the type denoted by the DID verification method type
 
     let verificationSuite = verificationType
-    if (verificationSuite === "Secp256k1VerificationKey2018" || verificationSuite === "Secp256r1VerificationKey2018") {
-      verificationSuite = "JsonWebKey2020"
+    if (verificationSuite === 'Secp256k1VerificationKey2018' || verificationSuite === 'Secp256r1VerificationKey2018') {
+      verificationSuite = 'JsonWebKey2020'
     }
 
     const suite = verificationSuite && this.signatureMap[verificationSuite] ? this.signatureMap[verificationSuite] : this.signatureMap[keyType]

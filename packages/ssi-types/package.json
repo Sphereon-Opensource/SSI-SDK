@@ -2,6 +2,7 @@
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
   "version": "0.33.0",
+  "source": "./src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -26,7 +27,7 @@
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "jwt-decode": "^4.0.0",
-    "uint8arrays": "3.1.1"
+    "uint8arrays": "^5.1.0"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
@@ -38,6 +39,7 @@
     "typescript": "5.8.3"
   },
   "files": [
+    "src",
     "dist",
     "plugin.schema.json",
     "README.md",

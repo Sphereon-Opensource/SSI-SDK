@@ -68,7 +68,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       // ngrok changes the URI
       clientIssueRequest.clientIssuanceConfig.callback.url = `https://6270-2a02-a458-e71a-1-68b4-31d2-b44f-12b.eu.ngrok.io/api/issuer/issuance-request-callback`
 
-      clientIssueRequest.clientIssuanceConfig.registration.clientName = 'Sphereon Node.js SDK API Issuer'
+      clientIssueRequest.clientIssuanceConfig.registration.clientName = 'Sphereon Node SDK API Issuer'
 
       // modify payload with new state, the state is used to be able to update the UI when callbacks are received from the VC Service
       var id = uuidv4()

@@ -8,7 +8,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
       "path": "../data-store"

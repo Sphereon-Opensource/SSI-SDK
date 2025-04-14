@@ -2,14 +2,20 @@
   "name": "@sphereon/ssi-sdk.dev",
   "version": "0.33.0",
   "source": "src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
     }
   },
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
   "bin": {
     "sphereon": "./bin/sphereon.js"
   },
@@ -40,9 +46,9 @@
     "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "bin/**/*",
-    "src/**/*",
+    "dist",
+    "bin",
+    "src",
     "package.json",
     "README.md",
     "LICENSE"
@@ -57,12 +63,5 @@
     "Sphereon",
     "SSI",
     "Agent"
-  ],
-  "type": "module",
-  "moduleDirectories": [
-    "node_modules",
-    "src"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js"
+  ]
 }

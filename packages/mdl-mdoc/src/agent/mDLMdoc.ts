@@ -3,14 +3,7 @@ import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
 import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import {
-  MdocOid4vpPresentArgs,
-  MdocOid4VPPresentationAuth,
-  MdocOid4vpRPVerifyArgs,
-  MdocOid4vpRPVerifyResult,
-  MdocOid4vpService,
-  schema
-} from '..'
+import { MdocOid4vpPresentArgs, MdocOid4VPPresentationAuth, MdocOid4vpRPVerifyArgs, MdocOid4vpRPVerifyResult, MdocOid4vpService, schema } from '..'
 import { CoseCryptoService, X509CallbackService } from '../functions'
 import {
   CborByteString,
@@ -35,7 +28,6 @@ import {
   MdocVerifyIssuerSignedArgs,
   VerifyCertificateChainArgs,
 } from '../types/ImDLMdoc'
-
 
 export const mdocSupportMethods: Array<string> = [
   'x509VerifyCertificateChain',

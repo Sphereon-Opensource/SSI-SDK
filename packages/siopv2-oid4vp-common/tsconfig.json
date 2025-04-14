@@ -1,13 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true,
-    "strictPropertyInitialization": false,
-    "noUnusedLocals": false
-  },
   "references": [
     {
       "path": "../ssi-types"
@@ -15,6 +7,5 @@
     {
       "path": "../ssi-sdk-core"
     }
-  ],
-  "include": ["src/**/*"]
+  ]
 }

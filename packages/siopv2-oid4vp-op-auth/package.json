@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IDidAuthSiopOpAuthenticator": "./src/types/IDidAuthSiopOpAuthenticator.ts"
@@ -60,11 +72,11 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.5.4",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.22"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "src/localization/translations/*",
     "README.md",
     "plugin.schema.json",
@@ -88,13 +100,5 @@
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

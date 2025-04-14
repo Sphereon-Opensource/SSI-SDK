@@ -1,5 +1,6 @@
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import { JsonWebKey } from '@sphereon/ssi-types'
 import { IAgentContext, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { VerificationMethod } from 'did-resolver'
 

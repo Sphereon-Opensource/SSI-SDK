@@ -195,7 +195,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
     throw Error('The issuer of the VC cannot be trusted')
   }
 
-  const payload = await response.json()
+  const payload = (await response.json()) as VerifyEBSICredentialIssuerResult
 
   if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
     throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)

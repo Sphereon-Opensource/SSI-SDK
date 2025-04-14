@@ -294,5 +294,6 @@ export function bytesToMultibase(byteArray: Uint8Array, type: TKeyType): string 
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function concat(arrays: ArrayLike<number>[], length?: number): Uint8Array {
+  // @ts-ignore
   return u8a.concatArrays(arrays, length)
 }

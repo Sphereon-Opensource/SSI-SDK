@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.xstate-machine-persistence",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IMachineStatePersistence": "./src/types/IMachineStatePersistence.ts"
@@ -29,12 +41,12 @@
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.21",
+    "typeorm": "^0.3.22",
     "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -51,13 +63,5 @@
     "Veramo",
     "XState",
     "state machine"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.credential-store",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "ICredentialStore": "./src/types/ICredentialStore.ts"
@@ -20,7 +32,7 @@
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.4",
-    "typeorm": "^0.3.21",
+    "typeorm": "^0.3.22",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -31,8 +43,8 @@
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -49,13 +61,5 @@
     "SSI",
     "Veramo",
     "Credential Manager"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

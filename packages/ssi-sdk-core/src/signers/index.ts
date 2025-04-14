@@ -1,1 +1,1 @@
-export { KeyAlgo, SuppliedSigner } from './SuppliedSigner.js'
+export { KeyAlgo, SuppliedSigner } from './SuppliedSigner'

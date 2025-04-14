@@ -3,8 +3,20 @@
   "version": "0.33.0",
   "description": "QR Code provider (react)",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IQRCodeGenerator": "./src/types/IQRCodeGenerator.ts"
@@ -35,8 +47,8 @@
     "ts-jest": "^27.1.5"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -56,13 +68,5 @@
     "OpenID4VP",
     "OpenID4VCI",
     "QR Code"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

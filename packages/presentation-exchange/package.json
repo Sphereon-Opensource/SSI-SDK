@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.presentation-exchange",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IPresentationExchange": "./src/types/IPresentationExchange.ts"
@@ -36,9 +48,8 @@
     "nock": "^13.5.4"
   },
   "files": [
-    ".yalc/**/*",
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -61,13 +72,5 @@
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

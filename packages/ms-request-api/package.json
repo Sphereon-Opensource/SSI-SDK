@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.ms-request-api",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IMsRequestApi": "./src/types/IMsRequestApi.ts"
@@ -35,13 +47,13 @@
     "prettier": "^2.8.8",
     "sqlite3": "^5.1.7",
     "ts-jest": "^27.1.5",
-    "typeorm": "^0.3.21",
+    "typeorm": "^0.3.22",
     "typescript": "5.8.3",
     "uuid": "^9.0.1"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -63,13 +75,5 @@
     "VC",
     "API",
     "Issuer"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

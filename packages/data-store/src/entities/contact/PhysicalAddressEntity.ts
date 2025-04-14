@@ -12,7 +12,7 @@ import {
 } from 'typeorm'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { getConstraint } from '../../utils/ValidatorUtils'
-import type { PhysicalAddressType, ValidationConstraint } from '../../types/index.js'
+import type { PhysicalAddressType, ValidationConstraint } from '../../types/index'
 import { PartyEntity } from './PartyEntity'
 import { IsNonEmptyStringConstraint } from '../validators'
 

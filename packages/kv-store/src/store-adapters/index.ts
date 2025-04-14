@@ -1,2 +1,2 @@
-export * from './tiered/index.js'
-export * from './typeorm/index.js'
+export * from './tiered/index'
+export * from './typeorm/index'

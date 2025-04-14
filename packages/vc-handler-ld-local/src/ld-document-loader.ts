@@ -105,7 +105,10 @@ export class LdDocumentLoader {
               .filter((x) => x.getSupportedVerificationType() === component.type)
               .filter((value, index, self) => self.indexOf(value) === index)
               .map((value) => value.getContext())
-            const fragment = { ...component , ...((Array.isArray(contexts) && contexts.length > 0) ? {'@context': contexts} : {'@context': didDoc['@context']}) }
+            const fragment = {
+              ...component,
+              ...(Array.isArray(contexts) && contexts.length > 0 ? { '@context': contexts } : { '@context': didDoc['@context'] }),
+            }
 
             return {
               contextUrl: null,

@@ -5,6 +5,7 @@ import { calculateJwkThumbprint, calculateJwkThumbprintForKey, JwkKeyUse, toJwk 
 import { W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IKey, IKeyManager, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { getBytes, SigningKey, Transaction } from 'ethers'
+// @ts-ignore
 import { base58btc } from 'multiformats/bases/base58'
 import * as u8a from 'uint8arrays'
 import { getEbsiApiBaseUrl, wait } from '../functions'

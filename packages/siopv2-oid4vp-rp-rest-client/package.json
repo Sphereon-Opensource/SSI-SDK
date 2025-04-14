@@ -3,8 +3,20 @@
   "description": "contains the client side to call REST endpoints of relying party",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "ISIOPv2OID4VPRPRestClient": "./src/types/ISIOPv2OID4VPRPRestClient.ts"
@@ -14,8 +26,8 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8"
   },
@@ -27,8 +39,8 @@
     "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "plugin.schema.json",
     "README.md",
     "LICENSE"
@@ -39,13 +51,5 @@
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
-  "keywords": [],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  "keywords": []
 }

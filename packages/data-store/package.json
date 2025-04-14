@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.data-store",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/.pnpm/typeorm@0.3.12_sqlite3@5.1.6_ts-node@10.9.1/node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
@@ -26,7 +38,7 @@
     "class-validator": "^0.14.1",
     "dcql": "0.2.19",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@types/sha.js": "^2.4.4",
@@ -34,8 +46,8 @@
     "sqlite3": "^5.1.7"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -51,13 +63,5 @@
     "SQLite",
     "PostgreSQL",
     "Contact Store"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

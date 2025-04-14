@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.contact-manager-rest-api",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "start:prod": "node build/index.js",
@@ -56,11 +68,11 @@
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.22"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -78,13 +90,5 @@
     "contact-management",
     "REST",
     "API"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

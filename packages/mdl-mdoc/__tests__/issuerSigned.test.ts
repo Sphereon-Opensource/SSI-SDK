@@ -76,7 +76,9 @@ describe('Issuer Auth', (): void => {
   })
 
   it('should verify Funke Issuer Signed Test Vector of 12-08-2024', async () => {
-    const issuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(decodeFrom(funkePidIssuerSignedTestVector_20240812, Encoding.BASE64URL))
+    const issuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(
+      decodeFrom(funkePidIssuerSignedTestVector_20240812, Encoding.BASE64URL),
+    )
     await expect(coseCrypto.verify1(issuerSigned.issuerAuth, null, true)).resolves.toMatchObject({
       critical: true,
       error: false,
@@ -87,7 +89,9 @@ describe('Issuer Auth', (): void => {
 
   it('should show a full flow from issuer to holder to RP', async () => {
     // Issuer signed according to 18013-7 in base64url
-    const issuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(decodeFrom(funkePidIssuerSignedTestVector_20240812, Encoding.BASE64URL))
+    const issuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(
+      decodeFrom(funkePidIssuerSignedTestVector_20240812, Encoding.BASE64URL),
+    )
     // Let's create an mdoc from it.
     const holderMdoc = issuerSigned.toDocument()
 

@@ -1,5 +1,5 @@
 import { FindOptionsWhere } from 'typeorm'
-import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity, IStatusListEntryEntity } from './statusList.js'
+import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity, IStatusListEntryEntity } from './statusList'
 
 export type FindStatusListArgs = FindOptionsWhere<IStatusList2021Entity | IOAuthStatusListEntity>[]
 export type FindStatusListEntryArgs = FindOptionsWhere<IStatusListEntryEntity>[] | FindOptionsWhere<IStatusListEntryEntity>

@@ -1,12 +1,10 @@
-// import { Ed25519Signature2018 } from '@sphereon/ed25519-signature-2018'
+import { Ed25519Signature2018 } from '@digitalbazaar/ed25519-signature-2018'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import suiteContext2018 from 'ed25519-signature-2018-context'
 import * as u8a from 'uint8arrays'
-const Ed25519VerificationKey2018 = await import('@digitalbazaar/ed25519-verification-key-2018')
-// import { Ed25519VerificationKey2018 } from '@digitalbazaar/ed25519-verification-key-2018'
-// import { Ed25519Signature2018 } from '@digitalbazaar/ed25519-signature-2018'
-const Ed25519Signature2018 = await import('@digitalbazaar/ed25519-signature-2018')
+import { Ed25519VerificationKey2018 } from '@digitalbazaar/ed25519-verification-key-2018'
+// const Ed25519Signature2018 = await import('@digitalbazaar/ed25519-signature-2018')
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 import { DIDDocument } from 'did-resolver'
 import { base64ToBytes, bytesToBase64 } from '@sphereon/ssi-sdk.core'

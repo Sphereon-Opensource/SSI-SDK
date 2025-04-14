@@ -74,7 +74,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
           }),
         ],
       })
-      didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' }})
+      didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' } })
 
       /*didLtoIdentifier = await agent.didManagerImport({
         provider: 'did:lto',

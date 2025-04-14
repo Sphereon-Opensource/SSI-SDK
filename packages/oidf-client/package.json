@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.oidf-client",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IOIDFClient": "./src/types/IOIDFClient.ts"
@@ -27,8 +39,8 @@
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -45,12 +57,5 @@
     "SSI",
     "Veramo",
     "OpenID Federation"
-  ],
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

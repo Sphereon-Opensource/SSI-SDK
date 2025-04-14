@@ -23,7 +23,7 @@ import {
   IPluginMethodMap,
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
+import { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { StatusListOpts } from '@sphereon/oid4vci-common'
 

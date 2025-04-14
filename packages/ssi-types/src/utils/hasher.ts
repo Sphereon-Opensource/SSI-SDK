@@ -1,6 +1,5 @@
 import { sha256, sha384, sha512 } from '@noble/hashes/sha2'
 
-// @ts-ignore
 import * as u8a from 'uint8arrays'
 import type { HasherSync } from '../types'
 

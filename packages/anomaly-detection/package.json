@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.anomaly-detection",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IAnomalyDetection": "./src/types/IAnomalyDetection.ts"
@@ -20,7 +32,7 @@
     "debug": "^4.3.5",
     "dns-query": "^0.11.2",
     "mmdb-lib": "^2.1.1",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
@@ -29,8 +41,8 @@
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -47,13 +59,5 @@
     "SSI",
     "Veramo",
     "Anomaly Detection"
-  ],
-  "nx": {},
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

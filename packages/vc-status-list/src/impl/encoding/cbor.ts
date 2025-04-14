@@ -4,7 +4,7 @@ import { com, kotlin } from '@sphereon/kmp-cbor'
 import base64url from 'base64url'
 import { IRequiredContext, SignedStatusListData } from '../../types'
 import { DecodedStatusListPayload, resolveIdentifier } from './common'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
+import { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 
 const cbor = com.sphereon.cbor
 const kmp = com.sphereon.kmp

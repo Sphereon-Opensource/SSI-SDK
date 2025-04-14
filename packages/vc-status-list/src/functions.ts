@@ -11,6 +11,8 @@ import {
 import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
+
+// @ts-ignore
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
   CreateNewStatusListFuncArgs,

@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import module from 'module'
-import { dev } from './dev.js'
+import { dev } from './dev'
 
 const requireCjs = module.createRequire(import.meta.url)
 const { version } = requireCjs('../package.json')

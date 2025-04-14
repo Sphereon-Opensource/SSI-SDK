@@ -2,8 +2,20 @@
   "name": "@sphereon/ssi-sdk.credential-validation",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/esm/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "ICredentialValidation": "./src/types/ICredentialValidation.ts"
@@ -26,15 +38,15 @@
     "ajv-formats": "^3.0.1",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -52,12 +64,5 @@
     "Veramo",
     "Credential",
     "VerifiableCredential"
-  ],
-  "module": "dist/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
-    }
-  }
+  ]
 }

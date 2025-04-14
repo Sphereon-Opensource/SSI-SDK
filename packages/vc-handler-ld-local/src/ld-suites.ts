@@ -6,7 +6,7 @@ export type RequiredAgentMethods = IResolver & IDIDManager & Pick<ISphereonKeyMa
 
 export abstract class SphereonLdSignature {
   // LinkedDataSignature Suites according to
-  // https://github.com/digitalbazaar/jsonld-signatures/blob/main/lib/suites/LinkedDataSignature.js
+  // https://github.com/digitalbazaar/jsonld-signatures/blob/main/lib/suites/LinkedDataSignature
   // Add type definition as soon as https://github.com/digitalbazaar/jsonld-signatures
   // supports those.
 

@@ -9,7 +9,7 @@ import {
   ProofFormat,
   RequireOneOf,
 } from '@sphereon/ssi-types'
-import { StatusListEntity } from '../../entities/statusList/StatusListEntities.js'
+import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
 
 export interface IStatusListEntity {
   id: string

@@ -1,10 +1,10 @@
 import { Request, Response, Router } from 'express'
 import { checkAuth, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { LOG, VcIssuer } from '@sphereon/oid4vci-issuer'
-import { determinePath } from '@sphereon/oid4vci-issuer-server/lib/oid4vci-api-functions'
-import { IGetIssueStatusEndpointOpts } from '@sphereon/oid4vci-issuer-server/lib/OID4VCIServer'
+import { determinePath } from '@sphereon/oid4vci-issuer-server'
+import { IGetIssueStatusEndpointOpts } from '@sphereon/oid4vci-issuer-server'
 import { IRequiredContext } from './types'
-import { CredentialConfigurationSupportedV1_0_13 } from '@sphereon/oid4vci-common/lib/types/v1_0_13.types'
+import { CredentialConfigurationSupportedV1_0_13 } from '@sphereon/oid4vci-common'
 import { IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { IssuerMetadataV1_0_13 } from '@sphereon/oid4vci-common'
 

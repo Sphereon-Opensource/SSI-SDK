@@ -2,6 +2,7 @@ import { Loggers } from '@sphereon/ssi-types'
 import fetch from 'cross-fetch'
 import { imageSize } from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
+
 import * as u8a from 'uint8arrays'
 
 const logger = Loggers.DEFAULT.get('sphereon:core')

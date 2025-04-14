@@ -1,2 +1,2 @@
-export * from './contact.js'
-export * from './IAbstractContactStore.js'
+export * from './contact'
+export * from './IAbstractContactStore'

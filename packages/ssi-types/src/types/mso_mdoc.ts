@@ -7,12 +7,13 @@
 import * as mdoc from '@sphereon/kmp-mdoc-core'
 import { IProofPurpose, IProofType } from './did'
 import { OriginalType, type WrappedVerifiableCredential, type WrappedVerifiablePresentation } from './vc'
-import { type IVerifiableCredential } from './w3c-vc'
-import decodeFrom = mdoc.com.sphereon.kmp.decodeFrom
-import encodeTo = mdoc.com.sphereon.kmp.encodeTo
-class DeviceResponseCbor extends mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor {}
+const IssuerSignedCbor = mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor
+const decodeFrom = mdoc.com.sphereon.kmp.decodeFrom
+const encodeTo = mdoc.com.sphereon.kmp.encodeTo
+const DeviceResponseCbor = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
+import { IVerifiableCredential } from './w3c-vc'
+
 type DocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
-class IssuerSignedCbor extends mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor {}
 type IssuerSignedItemJson = mdoc.com.sphereon.mdoc.data.device.IssuerSignedItemJson
 
 /**
@@ -146,10 +147,10 @@ export const mdocDecodedCredentialToUniformCredential = (
   // @ts-ignore
   opts?: { maxTimeSkewInMS?: number },
 ): IVerifiableCredential => {
-  const mdoc = decoded.toJson()
-  const json = mdoc.toJsonDTO<DocumentJson>()
+  const document = decoded.toJson()
+  const json = document.toJsonDTO<DocumentJson>()
   const type = 'Personal Identification Data'
-  const MSO = mdoc.MSO
+  const MSO = document.MSO
   if (!MSO || !json.issuerSigned?.nameSpaces) {
     throw Error(`Cannot access Mobile Security Object or Issuer Signed items from the Mdoc`)
   }

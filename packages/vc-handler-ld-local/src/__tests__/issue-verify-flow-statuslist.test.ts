@@ -66,7 +66,7 @@ describe('credential-LD full flow', () => {
         }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate({options: { type: 'Ed25519'}})
+    didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })
     console.log(JSON.stringify(didKeyIdentifier, null, 2))
   })
 

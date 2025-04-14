@@ -1,12 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "strictPropertyInitialization": false
-  },
-  "include": ["src/**/*.json", "src/**/*.ts"],
   "references": [
     {
       "path": "../ssi-types"
