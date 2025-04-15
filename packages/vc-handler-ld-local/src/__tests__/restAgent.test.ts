@@ -1,3 +1,4 @@
+import { describe } from 'vitest'
 import 'cross-fetch/polyfill'
 import { Server } from 'http'
 
@@ -13,7 +14,7 @@ import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../s
 
 import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
 
 const port = 4009
 const basePath = '/agent'

@@ -1,6 +1,5 @@
 import { purposes } from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
-import { CredentialIssuancePurpose } from '@digitalcredentials/vc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { IIssueCredentialStatusOpts, IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
@@ -62,7 +61,7 @@ export class LdCredentialModule {
     context: IAgentContext<RequiredAgentMethods>,
   ): Promise<VerifiableCredentialSP> {
     const { key, issuerDid, verificationMethodId, credential } = args
-    const purpose = args.purpose ?? new CredentialIssuancePurpose()
+    const purpose = args.purpose
     debug(`Issue VC method called for ${key.kid}...`)
     const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
     const documentLoader = this.ldDocumentLoader.getLoader(context, {

@@ -1,11 +1,15 @@
 // import { Ed25519Signature2018 } from '@sphereon/ed25519-signature-2018'
-import { Ed25519Signature2018, Ed25519VerificationKey2018 } from '@transmute/ed25519-signature-2018'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
-import { asArray, encodeJoseBlob } from '@veramo/utils'
+import { asArray } from '@veramo/utils'
 import suiteContext2018 from 'ed25519-signature-2018-context'
 import * as u8a from 'uint8arrays'
-
+const Ed25519VerificationKey2018 = await import('@digitalbazaar/ed25519-verification-key-2018')
+// import { Ed25519VerificationKey2018 } from '@digitalbazaar/ed25519-verification-key-2018'
+// import { Ed25519Signature2018 } from '@digitalbazaar/ed25519-signature-2018'
+const Ed25519Signature2018 = await import('@digitalbazaar/ed25519-signature-2018')
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+import { DIDDocument } from 'did-resolver'
+import { base64ToBytes, bytesToBase64 } from '@sphereon/ssi-sdk.core'
 
 export class SphereonEd25519Signature2018 extends SphereonLdSignature {
   constructor() {
@@ -34,31 +38,23 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
 
     const signer = {
       // returns a JWS detached
-      sign: async (args: { data: Uint8Array }): Promise<string> => {
-        const header = {
-          alg: 'EdDSA',
-          b64: false,
-          crit: ['b64'],
-        }
-        const headerString = encodeJoseBlob(header)
-        const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
-        const messageString = u8a.toString(messageBuffer, 'base64')
+      sign: async (args: { data: Uint8Array }): Promise<Uint8Array> => {
+        const messageString = bytesToBase64(args.data)
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: 'EdDSA',
           data: messageString,
           encoding: 'base64',
         })
-        return `${headerString}..${signature}`
-        // return u8a.fromString(`${headerString}..${signature}`)
+        return base64ToBytes(signature)
       },
     }
 
     const options = {
       id,
       controller,
-      publicKey: u8a.fromString(key.publicKeyHex, 'base16'),
-      signer: () => signer,
+      publicKeyBase58: u8a.toString(u8a.fromString(key.publicKeyHex, 'base16'), 'base58btc'),
+      signer: signer,
       type: this.getSupportedVerificationType(),
     }
 
@@ -66,14 +62,14 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     const verificationKey = new Ed25519VerificationKey2018(options)
     // overwrite the signer since we're not passing the private key and transmute doesn't support that behavior
     verificationKey.signer = () => signer as any
-    // verificationKey.type = this.getSupportedVerificationType()
+    // verificationKey.type = this.getSupportedVerificationType()*/
 
     return new Ed25519Signature2018({ key: verificationKey, signer: signer })
   }
 
   preVerificationCredModification(credential: VerifiableCredential): void {
     const vcJson = JSON.stringify(credential)
-    if (vcJson.indexOf('Ed25519Signature2018 DISABLED!!!!!') > -1) {
+    if (vcJson.indexOf('Ed25519Signature2018 DISABLED') > -1) {
       if (vcJson.indexOf(this.getContext()) === -1) {
         credential['@context'] = [...asArray(credential['@context'] || []), this.getContext()]
       }
@@ -99,7 +95,12 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
   }
 
   // preDidResolutionModification(didUrl: string, didDoc: DIDDocument): void {
-  preDidResolutionModification(): void {
-    // nothing to do here
+  preDidResolutionModification(didUrl: string, didDoc: DIDDocument) {
+    /*const vcJson = JSON.stringify(didDoc)
+    if (vcJson.indexOf('Ed25519Signature2018') > -1) {
+      if (vcJson.indexOf(this.getContext()) === -1) {
+        didDoc['@context'] = [...asArray(didDoc['@context'] || []), this.getContext()]
+      }
+    }*/
   }
 }

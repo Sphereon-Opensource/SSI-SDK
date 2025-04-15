@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ContextDoc } from '@veramo/credential-ld'
 
 import { LdContextLoader } from '../ld-context-loader'
