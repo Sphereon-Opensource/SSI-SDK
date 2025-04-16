@@ -39,5 +39,6 @@ export default defineConfig({
     'node:stream',
     'node:string_decoder',
     'whatwg-url',
+    'whatwg-fetch'
   ],
 })
