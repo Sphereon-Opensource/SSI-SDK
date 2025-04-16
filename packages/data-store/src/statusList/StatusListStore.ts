@@ -1,6 +1,6 @@
 import { OrPromise, StatusListType } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { DataSource, In, Repository } from 'typeorm'
+import { DataSource, In, type Repository } from 'typeorm'
 import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
 import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import {

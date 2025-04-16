@@ -1,4 +1,3 @@
-import { describe } from 'vitest'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 
@@ -7,6 +6,8 @@ import mdlMdocLogic from './shared/mdlMdocAgentLogic'
 
 let dbConnection: Promise<DataSource>
 let agent: any
+
+import { describe } from 'vitest'
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/mdl-mdoc/agent.yml')
@@ -18,7 +19,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
+  await (await dbConnection)?.close()
   return true
 }
 

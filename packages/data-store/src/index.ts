@@ -33,6 +33,7 @@ import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataIte
 import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
 
 import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity'
+// import {PartyCorrelationType} from "@sphereon/ssi-sdk.core";
 
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
@@ -94,7 +95,7 @@ export const DataStoreIssuanceBrandingEntities = [
   TextAttributesEntity,
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
-  CredentialClaimsEntity,
+  CredentialClaimsEntity
 ]
 
 export const DataStorePresentationDefinitionEntities = [PresentationDefinitionItemEntity]

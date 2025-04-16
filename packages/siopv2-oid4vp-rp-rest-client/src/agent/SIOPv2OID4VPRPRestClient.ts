@@ -7,11 +7,11 @@ import {
   Siopv2RestClientAuthenticationOpts,
   Siopv2RestClientOpts,
 } from '../types/ISIOPv2OID4VPRPRestClient'
-import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { Loggers } from '@sphereon/ssi-types'
 
-const debug = Debug('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client')
+const debug = Loggers.DEFAULT.get('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client').debug
 
 /**
  * @beta

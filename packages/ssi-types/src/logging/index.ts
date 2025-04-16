@@ -1,4 +1,5 @@
-import { debug } from 'debug'
+import createDebug from 'debug'
+
 import { EventEmitter } from 'events'
 
 export enum LogLevel {
@@ -102,7 +103,7 @@ export type ISimpleLogger<LogType> = {
 
 export class SimpleLogger implements ISimpleLogger<any> {
   private _eventEmitter = new EventEmitter({ captureRejections: true })
-  private _options: Required<SimpleLogOptions>
+  private readonly _options: Required<SimpleLogOptions>
 
   constructor(opts?: SimpleLogOptions) {
     this._options = logOptions(opts)
@@ -160,9 +161,10 @@ export class SimpleLogger implements ISimpleLogger<any> {
     if (arg) {
       logArgs.push(args)
     }
-    let debugPkgEnabled = this.options.methods.includes(LogMethod.DEBUG_PKG)
+    // FIXME: !!!!!!!!!!!!!!!!!!!!!!
+    let debugPkgEnabled = false && this.options.methods.includes(LogMethod.DEBUG_PKG)
     if (debugPkgEnabled) {
-      const debugPkgDebugger = debug(this._options.namespace)
+      const debugPkgDebugger = createDebug.default(this._options.namespace)
       // It was enabled at the options level in code, but could be disabled at runtime using env vars
       debugPkgEnabled = debugPkgDebugger.enabled
       if (debugPkgEnabled) {

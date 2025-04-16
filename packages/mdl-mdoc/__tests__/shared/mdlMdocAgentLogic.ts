@@ -12,6 +12,7 @@ import decodeFrom = com.sphereon.kmp.decodeFrom
 import Encoding = com.sphereon.kmp.Encoding
 import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
 import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<ImDLMdoc>
 
@@ -24,7 +25,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       agent = testContext.getAgent()
     })
 
-    xit('should verify IETF Test Vector', async () => {
+    it.skip('should verify IETF Test Vector', async () => {
       const ietfTestVector =
         '8443a10126a10442313154546869732069732074686520636f6e74656e742e58408eb33e4ca31d1c465ab05aac34cc6b23d58fef5c083106c4d25a91aef0b0117e2af9a291aa32e14ab834dc56ed2a223444547e01f11d3b0916e5a4c345cacb36'
 
@@ -98,7 +99,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       console.log(present.vp_token)*/
     })
 
-    xit('should be verified for Sphereon issued cert from CA', async () => {
+    it.skip('should be verified for Sphereon issued cert from CA', async () => {
       await expect(
         agent.x509VerifyCertificateChain({
           chain: [sphereonTest, sphereonCA],
@@ -125,7 +126,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    xit('should validate a valid certificate SDJWT chain without providing a CA as trust anchor, but with trustRoot enabled', async () => {
+    it.skip('should validate a valid certificate SDJWT chain without providing a CA as trust anchor, but with trustRoot enabled', async () => {
       const chain = [
         'MIIDSDCCAu6gAwIBAgISK90y2oo7lOTaCgILZPsHpoI1MAoGCCqGSM49BAMCMFoxCzAJBgNVBAYTAk5MMSQwIgYDVQQKDBtTcGhlcmVvbiBJbnRlcm5hdGlvbmFsIEIuVi4xCzAJBgNVBAsMAklUMRgwFgYDVQQDDA9jYS5zcGhlcmVvbi5jb20wHhcNMjQxMTI2MTk0OTMyWhcNMjUwMjI0MjE0OTMyWjCBjjELMAkGA1UEBhMCTkwxFjAUBgNVBAgMDU5vb3JkLUhvbGxhbmQxEjAQBgNVBAcMCUFtc3RlcmRhbTEkMCIGA1UECgwbU3BoZXJlb24gSW50ZXJuYXRpb25hbCBCLlYuMQswCQYDVQQLDAJJVDEgMB4GA1UEAwwXZnVua2UuZGVtby5zcGhlcmVvbi5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATfCH3q528xCDpTCHAd1bgjh5wytgU0qWKG4XOihHTpXyFW9budmWwOFioROIbSx1mN6En8E560QjlZzRknIzOzo4IBXTCCAVkwHQYDVR0OBBYEFIdPsQ39CfxOJY1T2qlddg7Gwv6nMB8GA1UdIwQYMBaAFOcHyl2VXPnIoP7O42RFHoCzLDLBMGEGCCsGAQUFBwEBBFUwUzBRBggrBgEFBQcwAoZFaHR0cDovL2V1LmNlcnQuZXpjYS5pby9jZXJ0cy9kYWExYjRiNC04NWZkLTRiYTQtYjk2Yi0zMzJhZGQ4OTljZTkuY2VyMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAiBgNVHREEGzAZghdmdW5rZS5kZW1vLnNwaGVyZW9uLmNvbTAOBgNVHQ8BAf8EBAMCBaAwYQYDVR0fBFowWDBWoFSgUoZQaHR0cDovL2V1LmNybC5lemNhLmlvL2NybC8yY2RmN2M1ZS1iOWNkLTQzMTctYmI1Ni0zODZkMjQ0MzgwZTIvY2FzcGhlcmVvbmNvbS5jcmwwCgYIKoZIzj0EAwIDSAAwRQIhALz0V+89FVAIEamNEnXy/TP2bBJR5yE8i/1l4fhSeGdUAiAk8/1fvlqgdD+DS48bBXK0s0ZfALgdAGO/jOttA+tLYg==',
         'MIICCDCCAa6gAwIBAgITAPMgqwtYzWPBXaobHhxG9iSydTAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJOTDEkMCIGA1UECgwbU3BoZXJlb24gSW50ZXJuYXRpb25hbCBCLlYuMQswCQYDVQQLDAJJVDEYMBYGA1UEAwwPY2Euc3BoZXJlb24uY29tMB4XDTI0MDcyODIxMjY0OVoXDTM0MDcyODIxMjY0OVowWjELMAkGA1UEBhMCTkwxJDAiBgNVBAoMG1NwaGVyZW9uIEludGVybmF0aW9uYWwgQi5WLjELMAkGA1UECwwCSVQxGDAWBgNVBAMMD2NhLnNwaGVyZW9uLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEiA0KeESSNrOcmCDga8YsBkUTgowZGwqvL2n91JUpAMdRSwvlVFdqdiLXnk2pQqT1vZnDG0I+x+iz2EbdsG0aajUzBRMB0GA1UdDgQWBBTnB8pdlVz5yKD+zuNkRR6AsywywTAOBgNVHQ8BAf8EBAMCAaYwDwYDVR0lBAgwBgYEVR0lADAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAMCA0gAMEUCIHH7ie1OAAbff5262rzZVQa8J9zENG8AQlHHFydMdgaXAiEA1Ib82mhHIYDziE0DDbHEAXOs98al+7dpo8fPGVGTeKI=',
@@ -152,7 +153,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    xit('should get certificate info and SANs', async () => {
+    it.skip('should get certificate info and SANs', async () => {
       await expect(
         agent.x509GetCertificateInfo({
           certificates: [sphereonCA, sphereonTest],
@@ -211,7 +212,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       ])
     })
 
-    xit('should be verified for Funke issued cert from CA', async () => {
+    it.skip('should be verified for Funke issued cert from CA', async () => {
       await expect(
         agent.x509VerifyCertificateChain({
           chain: [funkeTestIssuer, funkeTestCA],
@@ -224,7 +225,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    xit('should be verified for Funke test issuer and Funke CA', async () => {
+    it.skip('should be verified for Funke test issuer and Funke CA', async () => {
       await expect(
         agent.x509VerifyCertificateChain({
           chain: [
@@ -244,7 +245,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    xit('should not be verified for Sphereon issued cert from CA when CA is not in trust anchors', async () => {
+    it.skip('should not be verified for Sphereon issued cert from CA when CA is not in trust anchors', async () => {
       const result = await agent.x509VerifyCertificateChain({
         chain: [sphereonTest],
         trustAnchors: [funkeTestCA],

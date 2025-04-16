@@ -12,7 +12,8 @@ import {
 import { JWK } from '@sphereon/ssi-types'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
-import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
 import { IRequiredContext, VerifyCertificateChainArgs } from '../types/ImDLMdoc'
 
 type CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
@@ -142,8 +143,8 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
     const recalculatedToBeSigned = input.toBeSignedJson(issuerCoseKeyInfo, SignatureAlgorithm.Static.fromCose(coseAlg))
     const key = CoseJoseKeyMappingService.toJoseJwk(issuerCoseKeyInfo.key!).toJsonDTO<JWK>()
     const valid = await verifyRawSignature({
-      data: u8a.fromString(recalculatedToBeSigned.base64UrlValue, 'base64url'),
-      signature: u8a.fromString(sign1Json.signature, 'base64url'),
+      data: fromString(recalculatedToBeSigned.base64UrlValue, 'base64url'),
+      signature: fromString(sign1Json.signature, 'base64url'),
       key,
     })
 

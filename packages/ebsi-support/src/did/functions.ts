@@ -7,7 +7,11 @@ import { IAgentContext, IKey, IKeyManager, MinimalImportableKey, TKeyType } from
 import { getBytes, SigningKey, Transaction } from 'ethers'
 // @ts-ignore
 import { base58btc } from 'multiformats/bases/base58'
-import * as u8a from 'uint8arrays'
+
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
 import { getEbsiApiBaseUrl, wait } from '../functions'
 import { logger } from '../index'
 import { ApiOpts, EbsiApiVersion, EbsiEnvironment, IRequiredContext, WellknownOpts } from '../types/IEbsiSupport'
@@ -50,9 +54,9 @@ export function generateOrUseProvidedEbsiPrivateKeyHex(specInfo?: EbsiDidSpecInf
     if (privateKeyBytes.length !== length) {
       throw Error(`Invalid private key length supplied (${privateKeyBytes.length}. Expected ${length} for ${spec.type}`)
     }
-    return u8a.toString(privateKeyBytes, 'base16')
+    return toString(privateKeyBytes, 'base16')
   }
-  return u8a.toString(randomBytes(length), 'base16')
+  return toString(randomBytes(length), 'base16')
 }
 
 /**
@@ -84,7 +88,7 @@ export const formatEbsiPublicKey = (args: { key: IKey; type: TKeyType }): string
                                                   in the future.
                                                  */
       const jwkString = JSON.stringify(jwk, null, 2)
-      return `0x${u8a.toString(u8a.fromString(jwkString), 'base16')}`
+      return `0x${toString(fromString(jwkString), 'base16')}`
     }
     default:
       throw new Error(`Unsupported EBSI key type: ${type}`)
@@ -199,7 +203,7 @@ export const ebsiGenerateOrUseKeyPair = async (
   const { keyOpts, keyType, kms, controllerKey = false } = args
   let privateKeyHex = generateOrUseProvidedEbsiPrivateKeyHex(
     EBSI_DID_SPEC_INFOS.V1,
-    keyOpts?.privateKeyHex ? u8a.fromString(keyOpts.privateKeyHex, 'base16') : undefined,
+    keyOpts?.privateKeyHex ? fromString(keyOpts.privateKeyHex, 'base16') : undefined,
   )
   if (privateKeyHex.startsWith('0x')) {
     privateKeyHex = privateKeyHex.substring(2)

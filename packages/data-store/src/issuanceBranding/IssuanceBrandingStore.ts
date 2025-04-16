@@ -1,6 +1,6 @@
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { DataSource, DeleteResult, In, Not, Repository } from 'typeorm'
+import { DataSource, type DeleteResult, In, Not, type Repository } from 'typeorm'
 import {
   credentialBrandingEntityFrom,
   credentialBrandingFrom,

@@ -27,14 +27,14 @@ import {
   W3CVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
-import Debug from 'debug'
 import { v4 } from 'uuid'
 import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
 import { PEX } from '@sphereon/pex'
+import { Loggers } from '@sphereon/ssi-types'
 
-const debug = Debug(`sphereon:sdk:siop:op-session`)
+const debug = Loggers.DEFAULT.get('sphereon:oid4vp:OpSession').debug
 
 export class OpSession {
   public readonly ts = new Date().getDate()

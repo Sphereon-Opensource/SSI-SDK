@@ -1,7 +1,7 @@
 import { SdJwtTypeMetadata } from '@sphereon/ssi-types'
-import * as u8a from 'uint8arrays'
-import { HasherSync } from '@sd-jwt/types'
-import { Hasher } from '@sd-jwt/types'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
+import { Hasher, HasherSync } from '@sd-jwt/types'
 
 // Helper function to fetch API with error handling
 export async function fetchUrlWithErrorHandling(url: string): Promise<Response> {
@@ -56,7 +56,7 @@ export async function createIntegrity({
   alg?: IntegrityAlg
 }): Promise<string> {
   const calculatedHash = await hasher(typeof input === 'string' ? input : JSON.stringify(input), alg)
-  return `${alg}-${u8a.toString(calculatedHash, 'base64')}`
+  return `${alg}-${toString(calculatedHash, 'base64')}`
 }
 
 export function assertValidTypeMetadata(metadata: SdJwtTypeMetadata, vct: string): void {

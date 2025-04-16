@@ -18,7 +18,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
+  await (await dbConnection)?.close()
   return true
 }
 

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
+import typeorm from 'typeorm'
+const { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } = typeorm
 import { IMetadataEntity, ValidationConstraint } from '../../types'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseContactEntity } from './BaseContactEntity'

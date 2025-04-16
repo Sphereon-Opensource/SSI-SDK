@@ -27,11 +27,11 @@
   },
   "dependencies": {
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/ssi-sdk.core": "workspace:*",
-    "@sphereon/ssi-sdk.mdl-mdoc": "workspace:*",
-    "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
-    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:^",
+    "@sphereon/ssi-sdk.core": "workspace:^",
+    "@sphereon/ssi-sdk.mdl-mdoc": "workspace:^",
+    "@sphereon/ssi-sdk.sd-jwt": "workspace:^",
+    "@sphereon/ssi-types": "workspace:^",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "ajv": "^8.17.1",
@@ -41,6 +41,7 @@
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
+    "@veramo/data-store": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

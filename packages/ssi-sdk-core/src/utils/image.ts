@@ -4,7 +4,10 @@ import fetch from 'cross-fetch'
 import { imageSize } from 'image-size'
 import { IImageDimensions, IImageResource } from '../types'
 
-import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
 
 const logger = Loggers.DEFAULT.get('sphereon:core')
 type SizeCalculationResult = {
@@ -17,7 +20,7 @@ type SizeCalculationResult = {
 // TODO: here we're handling svg separately, remove this section when image-size starts supporting it in version 2
 const isSvg = (uint8Array: Uint8Array): boolean => {
   const maxCheckLength: number = Math.min(80, uint8Array.length)
-  const initialText: string = u8a.toString(uint8Array.subarray(0, maxCheckLength))
+  const initialText: string = toString(uint8Array.subarray(0, maxCheckLength))
   const normalizedText: string = initialText.trim().toLowerCase()
   return normalizedText.startsWith('<svg') || normalizedText.startsWith('<?xml')
 }
@@ -53,7 +56,7 @@ const getSvgDimensions = (uint8Array: Uint8Array): SizeCalculationResult => {
  * @param value can be both (base64) string and Uint8Array
  */
 export const getImageMediaType = async (value: string | Uint8Array): Promise<string | undefined> => {
-  const uint8Array = typeof value === 'string' ? u8a.fromString(value, 'base64') : value
+  const uint8Array = typeof value === 'string' ? fromString(value, 'base64') : value
   if (isSvg(uint8Array)) {
     return `image/svg+xml`
   }
@@ -66,7 +69,7 @@ export const getImageMediaType = async (value: string | Uint8Array): Promise<str
  * @param value can be both (base64) string and Uint8Array
  */
 export const getImageDimensions = async (value: string | Uint8Array): Promise<IImageDimensions> => {
-  const uint8Array = typeof value === 'string' ? u8a.fromString(value, 'base64') : value
+  const uint8Array = typeof value === 'string' ? fromString(value, 'base64') : value
   const dimensions: SizeCalculationResult = isSvg(uint8Array) ? getSvgDimensions(uint8Array) : imageSize(uint8Array)
 
   if (!dimensions.width || !dimensions.height) {

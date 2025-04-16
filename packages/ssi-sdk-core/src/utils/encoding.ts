@@ -1,6 +1,12 @@
 import { TKeyType } from '@veramo/core'
-import { concat as concatArrays, fromString, toString } from 'uint8arrays'
+// @ts-ignore
+import { concat as concatArrays } from 'uint8arrays/concat'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
 import varint from './varint/varint'
+const { decode } = varint
 
 export enum MultibaseFormat {
   BASE58 = 'z',
@@ -19,8 +25,6 @@ export function multibaseToHex(multibase: string): { value: string; keyType: TKe
   return { value: bytesToHex(multibaseKeyToBytes(multibase)), keyType: props.keyType, format: MultibaseFormat.BASE58 }
 }
 
-const u8a = { toString, fromString, concatArrays }
-
 /**
  * Converts a Uint8Array to a base64url string
  * @param b - the array to be converted
@@ -28,7 +32,7 @@ const u8a = { toString, fromString, concatArrays }
  * @public
  */
 export function bytesToBase64url(b: Uint8Array): string {
-  return u8a.toString(b, 'base64url')
+  return toString(b, 'base64url')
 }
 
 /**
@@ -42,7 +46,7 @@ export function bytesToBase64url(b: Uint8Array): string {
  */
 export function base64ToBytes(s: string): Uint8Array {
   const inputBase64Url = s.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-  return u8a.fromString(inputBase64Url, 'base64url')
+  return fromString(inputBase64Url, 'base64url')
 }
 /**
  * Encodes a Uint8Array to a base64 string representation with padding.
@@ -51,7 +55,7 @@ export function base64ToBytes(s: string): Uint8Array {
  * @public
  */
 export function bytesToBase64(b: Uint8Array): string {
-  return u8a.toString(b, 'base64pad')
+  return toString(b, 'base64pad')
 }
 
 /**
@@ -61,7 +65,7 @@ export function bytesToBase64(b: Uint8Array): string {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function encodeBase64url(s: string): string {
-  return bytesToBase64url(u8a.fromString(s))
+  return bytesToBase64url(fromString(s))
 }
 
 /**
@@ -71,7 +75,7 @@ export function encodeBase64url(s: string): string {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function decodeBase64url(s: string): string {
-  return u8a.toString(base64ToBytes(s))
+  return toString(base64ToBytes(s))
 }
 
 /**
@@ -81,7 +85,7 @@ export function decodeBase64url(s: string): string {
  * @public
  */
 export function bytesToUtf8String(b: Uint8Array): string {
-  return u8a.toString(b, 'utf-8')
+  return toString(b, 'utf-8')
 }
 
 /**
@@ -91,7 +95,7 @@ export function bytesToUtf8String(b: Uint8Array): string {
  * @public
  */
 export function stringToUtf8Bytes(s: string): Uint8Array {
-  return u8a.fromString(s, 'utf-8')
+  return fromString(s, 'utf-8')
 }
 
 /**
@@ -101,7 +105,7 @@ export function stringToUtf8Bytes(s: string): Uint8Array {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function encodeJoseBlob(payload: {}) {
-  return u8a.toString(u8a.fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
+  return toString(fromString(JSON.stringify(payload), 'utf-8'), 'base64url')
 }
 
 /**
@@ -112,7 +116,7 @@ export function encodeJoseBlob(payload: {}) {
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function decodeJoseBlob(blob: string) {
-  return JSON.parse(u8a.toString(u8a.fromString(blob, 'base64url'), 'utf-8'))
+  return JSON.parse(toString(fromString(blob, 'base64url'), 'utf-8'))
 }
 
 /**
@@ -135,7 +139,7 @@ export function hexToBytes(hexString: string): Uint8Array {
   }
   const noPrefix = hexString.startsWith('0x') ? hexString.substring(2) : hexString
   const padded = noPrefix.length % 2 !== 0 ? `0${noPrefix}` : noPrefix
-  return u8a.fromString(padded.toLowerCase(), 'base16')
+  return fromString(padded.toLowerCase(), 'base16')
 }
 
 /**
@@ -154,7 +158,7 @@ export function bytesToHex(byteArray: Uint8Array, prefix: boolean = false): stri
   if (!(byteArray instanceof Uint8Array)) {
     throw new Error('illegal_argument: only byte arrays can be converted to hex encoding')
   }
-  const result = u8a.toString(byteArray, 'base16')
+  const result = toString(byteArray, 'base16')
   return prefix ? `0x${result}` : result
 }
 
@@ -168,7 +172,7 @@ export function bytesToHex(byteArray: Uint8Array, prefix: boolean = false): stri
  * @public
  */
 export function base58ToBytes(s: string): Uint8Array {
-  return u8a.fromString(s, 'base58btc')
+  return fromString(s, 'base58btc')
 }
 
 /**
@@ -181,7 +185,7 @@ export function base58ToBytes(s: string): Uint8Array {
  * @public
  */
 export function bytesToBase58(byteArray: Uint8Array): string {
-  return u8a.toString(byteArray, 'base58btc')
+  return toString(byteArray, 'base58btc')
 }
 
 /**
@@ -197,7 +201,7 @@ export function multibaseKeyToBytes(s: string): Uint8Array {
   if (s.charAt(0) !== 'z') {
     throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
   }
-  const bytes = u8a.fromString(s.substring(1), 'base58btc')
+  const bytes = fromString(s.substring(1), 'base58btc')
   const props = multibaseKeyToProps(s)
   const keyLength = props.code.length / 2
 
@@ -220,8 +224,8 @@ export function multibaseKeyToProps(s: string): MultiCodedLookup {
     throw new Error('invalid multibase string: string is not base58 encoded (does not start with "z")')
   }
 
-  const bytes = u8a.fromString(s.substring(1), 'base58btc')
-  const code = varint.decode(bytes)
+  const bytes = fromString(s.substring(1), 'base58btc')
+  const code = decode(bytes)
   return getMultibasePropsByCode(code)
 }
 
@@ -278,12 +282,12 @@ export function bytesToMultibase(byteArray: Uint8Array, type: TKeyType): string 
   const length = props.code.length / 2
   const varType = new Uint8Array(length)
   varint.encode(varCode, varType)
-  const bytes = u8a.concatArrays([
+  const bytes = concatArrays([
     varType,
-    props.keyType === 'RSA' || props.keyType === 'Secp256r1' ? new Uint8Array(0) : u8a.fromString(multicodec, 'base16'),
+    props.keyType === 'RSA' || props.keyType === 'Secp256r1' ? new Uint8Array(0) : fromString(multicodec, 'base16'),
     byteArray,
   ])
-  return 'z' + u8a.toString(bytes, 'base58btc')
+  return 'z' + toString(bytes, 'base58btc')
 }
 
 /**
@@ -295,5 +299,5 @@ export function bytesToMultibase(byteArray: Uint8Array, type: TKeyType): string 
  */
 export function concat(arrays: ArrayLike<number>[], length?: number): Uint8Array {
   // @ts-ignore
-  return u8a.concatArrays(arrays, length)
+  return concatArrays(arrays, length)
 }

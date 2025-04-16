@@ -29,12 +29,12 @@
     "@sphereon/openid-federation-client": "0.1.1-unstable.0647eb6",
     "@sphereon/openid-federation-common": "0.1.1-unstable.0647eb6",
     "@sphereon/openid-federation-open-api": "0.1.1-unstable.0647eb6",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
-    "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
-    "@sphereon/ssi-types": "workspace:*"
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.11",
+    "@sphereon/ssi-sdk.resource-resolver": "workspace:^",
+    "@sphereon/ssi-types": "workspace:^"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

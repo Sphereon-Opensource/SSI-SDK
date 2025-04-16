@@ -22,18 +22,19 @@
   },
   "dependencies": {
     "@veramo/utils": "4.2.0",
+    "reflect-metadata": "^0.2.2",
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "json-buffer": "^3.0.1",
     "typeorm": "^0.3.22",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
     "@keyv/compress-brotli": "^1.1.6",
     "@keyv/compress-gzip": "^1.2.3",
     "@keyv/sqlite": "3.6.5",
     "@keyv/test-suite": "^1.9.5",
-    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@types/debug": "^4.1.12",
     "@types/json-buffer": "^3.0.2",
     "eslint": "^8.57.0",

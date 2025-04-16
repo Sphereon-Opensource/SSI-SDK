@@ -6,7 +6,7 @@ import { createAgent, FindArgs, TAgent, TCredentialColumns, VerifiableCredential
 import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
 import { DataSource } from 'typeorm'
 import { CredentialCorrelationType, CredentialRole, DocumentType, ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vitest } from 'vitest'
 
 type ConfiguredAgent = TAgent<IMsRequestApi & ICredentialStore>
 const did1 = 'did:test:111'
@@ -24,17 +24,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
-      jest.mock('../../src/IssuerUtil', () => {
+      vitest.mock('../../src/IssuerUtil', () => {
         return {
-          fetchIssuanceRequestMs: vi.fn().mockResolvedValue(requestIssuanceResponse),
-          generatePin: vi.fn().mockResolvedValue(6363),
+          fetchIssuanceRequestMs: vitest.fn().mockResolvedValue(requestIssuanceResponse),
+          generatePin: vitest.fn().mockResolvedValue(6363),
         }
       })
 
-      jest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
+      vitest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
         return {
-          ClientCredentialAuthenticator: vi.fn().mockResolvedValue('ey...'),
-          checkMsIdentityHostname: vi.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
+          ClientCredentialAuthenticator: vitest.fn().mockResolvedValue('ey...'),
+          checkMsIdentityHostname: vitest.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
         }
       })
       await testContext.setup()
@@ -75,7 +75,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       var id = uuidv4()
       clientIssueRequest.clientIssuanceConfig.callback.state = id
 
-      const fetchIssuanceRequestMsMock = vi.fn().mockResolvedValue(requestIssuanceResponse)
+      const fetchIssuanceRequestMsMock = vitest.fn().mockResolvedValue(requestIssuanceResponse)
       fetchIssuanceRequestMs.prototype = fetchIssuanceRequestMsMock
 
       return await expect(agent.issuanceRequestMsVc(clientIssueRequest)).resolves.not.toBeNull
@@ -155,7 +155,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(credentials[0].digitalCredential.id).toEqual('vc5')
       const count = await localAgent.crsGetCredentialsByClaimsCount({ filter: vc5Filter })
       expect(count).toEqual(1)
-      await (await dbConnection).close()
+      await (await dbConnection)?.close()
     })
   })
 }

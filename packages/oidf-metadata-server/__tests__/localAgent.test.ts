@@ -26,7 +26,7 @@ const setup = async (): Promise<ExpressSupport> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
+  await (await dbConnection)?.close()
   return true
 }
 

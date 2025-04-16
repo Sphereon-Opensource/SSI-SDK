@@ -21,8 +21,8 @@
     "start:prod": "node build/index.js"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "workspace:*",
-    "@sphereon/ssi-express-support": "workspace:*",
+    "@sphereon/ssi-types": "workspace:^",
+    "@sphereon/ssi-express-support": "workspace:^",
     "@veramo/core": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "express": "^4.19.2"

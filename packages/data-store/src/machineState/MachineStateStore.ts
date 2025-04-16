@@ -1,6 +1,6 @@
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { Brackets, DataSource, FindOptionsWhere, IsNull, LessThan, Not } from 'typeorm'
+import { Brackets, DataSource, type FindOptionsWhere, IsNull, LessThan, Not } from 'typeorm'
 
 import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 import {

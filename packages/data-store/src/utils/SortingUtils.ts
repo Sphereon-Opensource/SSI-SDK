@@ -1,4 +1,4 @@
-import { BaseEntity, FindOptionsOrder } from 'typeorm'
+import { BaseEntity, type FindOptionsOrder } from 'typeorm'
 
 export const parseAndValidateOrderOptions = <T extends BaseEntity>(order: string): FindOptionsOrder<T> => {
   const orderPairs = order.split(',').map((pair) => pair.trim().split('.'))

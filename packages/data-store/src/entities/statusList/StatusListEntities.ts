@@ -8,7 +8,8 @@ import {
   StatusPurpose2021,
   ProofFormat,
 } from '@sphereon/ssi-types'
-import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
+import typeorm from 'typeorm'
+const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 

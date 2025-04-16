@@ -12,12 +12,10 @@ import {
   UpdateCredentialStateArgs,
 } from '../types'
 import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, FindOptionsOrder, Repository } from 'typeorm'
+import { DataSource, type FindOptionsOrder, type FindOptionsWhere, Repository } from 'typeorm'
 import Debug from 'debug'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 
-// @ts-ignore
-import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere'
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from '../../src'
 import { parseAndValidateOrderOptions } from '../utils/SortingUtils'
 

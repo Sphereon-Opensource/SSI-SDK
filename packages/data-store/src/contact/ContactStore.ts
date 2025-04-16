@@ -1,5 +1,5 @@
 import { OrPromise } from '@sphereon/ssi-types'
-import { BaseEntity, DataSource, FindOptionsWhere, In, Repository } from 'typeorm'
+import { BaseEntity, DataSource, type FindOptionsWhere, In, type Repository } from 'typeorm'
 import Debug from 'debug'
 import { AbstractContactStore } from './AbstractContactStore'
 import { PartyEntity } from '../entities/contact/PartyEntity'

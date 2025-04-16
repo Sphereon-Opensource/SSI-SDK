@@ -16,7 +16,7 @@ import {
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { CredentialMapper, WrappedW3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, Mock, vitest } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -27,14 +27,14 @@ function getFileAsJson(path: string) {
 }
 
 const nock = require('nock')
-jest.mock('@veramo/utils', () => ({
-  ...jest.requireActual('@veramo/utils'),
-  mapIdentifierKeysToDoc: vi.fn(),
+vitest.mock('@veramo/utils', () => ({
+  ...vitest.importActual('@veramo/utils'),
+  mapIdentifierKeysToDoc: vitest.fn(),
 }))
 
-jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
-  ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
-  mapIdentifierKeysToDocWithJwkSupport: vi.fn(),
+vitest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
+  ...vitest.importActual('@sphereon/ssi-sdk-ext.did-utils'),
+  mapIdentifierKeysToDocWithJwkSupport: vitest.fn(),
 }))
 
 type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
@@ -185,25 +185,25 @@ export default (testContext: {
 
       nock(redirectUrl).get(`?stateId=${stateId}`).times(5).reply(200, openIDURI)
 
-      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
+      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
+      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as Mock
       mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedparseAuthorizationRequestURIMethod = vi.fn()
+      const mockedparseAuthorizationRequestURIMethod = vitest.fn()
       OP.prototype.parseAuthorizationRequestURI = mockedparseAuthorizationRequestURIMethod
       mockedparseAuthorizationRequestURIMethod.mockReturnValue(Promise.resolve(authorizationRequest))
 
-      const mockedverifyAuthorizationRequestMethod = vi.fn()
+      const mockedverifyAuthorizationRequestMethod = vitest.fn()
       OP.prototype.verifyAuthorizationRequest = mockedverifyAuthorizationRequestMethod
       mockedverifyAuthorizationRequestMethod.mockReturnValue(Promise.resolve(authorizationVerificationMockedResult))
 
-      const mockedcreateAuthorizationResponse = vi.fn()
+      const mockedcreateAuthorizationResponse = vitest.fn()
       OP.prototype.createAuthorizationResponse = mockedcreateAuthorizationResponse
       mockedcreateAuthorizationResponse.mockReturnValue(Promise.resolve(createAuthorizationResponseMockedResult))
 
-      const mocksubmitAuthorizationResponseMethod = vi.fn()
+      const mocksubmitAuthorizationResponseMethod = vitest.fn()
       OP.prototype.submitAuthorizationResponse = mocksubmitAuthorizationResponseMethod
       mocksubmitAuthorizationResponseMethod.mockReturnValue(Promise.resolve({ status: 200, statusText: 'example_value' }))
 

@@ -1,6 +1,8 @@
 import passport from 'passport'
-import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
 import { BearerUser, IStaticBearerVerifyOptions } from './types'
+
 export class StaticBearerAuth {
   private readonly strategy: string
   private static providers: Map<string, StaticBearerUserProvider> = new Map()
@@ -72,7 +74,7 @@ export class StaticBearerAuth {
             if (hashTokens) {
               import('@noble/hashes/sha256')
                 .then((hash) => {
-                  findUser(u8a.toString(hash.sha256(token)), cb)
+                  findUser(toString(hash.sha256(token)), cb)
                 })
                 .catch((error) => {
                   console.log(`hash problem: ${error}`)
@@ -135,7 +137,7 @@ export class MapBasedStaticBearerUserProvider implements StaticBearerUserProvide
       }
       import('@noble/hashes/sha256')
         .then((hash) => {
-          users.forEach((user) => (user.token = u8a.toString(hash.sha256(user.token))))
+          users.forEach((user) => (user.token = toString(hash.sha256(user.token))))
         })
         .catch((error) => {
           console.log(`hash problem: ${error}`)

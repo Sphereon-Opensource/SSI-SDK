@@ -1,4 +1,4 @@
-import { describe, vi } from 'vitest'
+import { describe, vi, vitest } from 'vitest'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 
 //jest.setTimeout(60000)
@@ -19,7 +19,7 @@ const setup = async (): Promise<boolean> => {
   ]
   const { localAgent } = await createObjects(config, { localAgent: '/agent' })
   agent = localAgent
-  agent.getSupportedVeramoKeyType = vi.fn()
+  agent.getSupportedVeramoKeyType = vitest.fn()
   //jest.setTimeout(100000)
 
   return true

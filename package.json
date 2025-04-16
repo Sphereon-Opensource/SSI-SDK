@@ -5,8 +5,10 @@
   "description": "Sphereon SSI SDK (Workspace)",
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
-  "packageManager": "pnpm@9.15.3",
-  "workspaces": ["packages/*"],
+  "packageManager": "pnpm@10.8.1",
+  "workspaces": [
+    "packages/*"
+  ],
   "license": "Apache-2.0",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 turbo run build",
@@ -17,11 +19,11 @@
     "build:copyfiles": "pnpm -r --stream build:copyfiles",
     "bootstrap": "lerna bootstrap",
     "test:ci": "vitest",
-    "test": "vitest",
+    "test": "vitest run --config ./vitest.config.mjs",
     "test:watch": "pnpm test --watch --verbose",
     "test:lint": "eslint . --ext .ts",
     "prettier": "prettier --write \"{packages,__tests__,!dist}/**/*.{ts,tsx,js,json,md,yml}\"",
-    "build-clean": "rimraf --glob ./packages/*/.tsup ./packages/*/.turbo ./packages/*/dist ./packages/*/api ./packages/*/node_modules ./packages/*/tsconfig.tsbuildinfo ./node_modules ./coverage && jest --clearCache",
+    "build-clean": "rimraf --glob ./packages/*/.tsup ./packages/*/.turbo ./.turbo ./packages/*/dist ./packages/*/api ./packages/*/node_modules ./packages/*/tsconfig.tsbuildinfo ./node_modules ./coverage && jest --clearCache",
     "publish:latest": "lerna publish --conventional-commits --force-publish --include-merged-tags --sync-dist-version --create-release github --yes --dist-tag latest --registry https://registry.npmjs.org",
     "publish:next": "lerna publish --conventional-prerelease --force-publish --canary --sync-dist-version --no-git-tag-version --include-merged-tags --preid next --pre-dist-tag next --yes --registry https://registry.npmjs.org",
     "publish:unstable": "lerna publish --conventional-prerelease --force-publish --canary --sync-dist-version --no-git-tag-version --include-merged-tags --preid unstable --pre-dist-tag unstable --yes --registry https://registry.npmjs.org"
@@ -45,7 +47,6 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "@anatine/esbuild-decorators": "^0.2.19",
     "@babel/plugin-transform-modules-commonjs": "^7.26.3",
     "@babel/plugin-transform-runtime": "^7.26.10",
@@ -64,6 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vitest/ui": "^3.0.0",
+    "cross-env": "^7.0.3",
     "cross-fetch": "^3.1.8",
     "did-jwt": "6.11.6",
     "esbuild": "^0.25.2",
@@ -88,13 +90,11 @@
     "tsup": "^8.4.0",
     "turbo": "^2.5.0",
     "typescript": "5.8.3",
-    "vite": "^6.0.0",
-    "vitest": "^3.0.0",
     "vite": "^6.2.2",
     "vitest": "^3.0.8"
   },
   "engines": {
-    "node": ">= 20.0.0 < 22"
+    "node": ">= 20.6.0"
   },
   "prettier": {
     "endOfLine": "auto",
@@ -131,6 +131,13 @@
       "@sphereon/pex": "5.0.0-unstable.28",
       "@sphereon/pex-models": "^2.3.2",
       "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
+      "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.esm.cjs.11",
+      "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.11",
+      "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.11",
+      "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.11",
+      "@sphereon/ssi-sdk-ext.x509-utils": "0.28.1-feature.esm.cjs.11",
+      "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.11",
+      "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.11",
       "@noble/hashes": "1.6.1",
       "debug": "^4.3.5",
       "dcql": "0.2.19",
@@ -152,6 +159,22 @@
       "@veramo/data-store@4.2.0": "patches/@veramo__data-store@4.2.0.patch",
       "did-jwt@6.11.6": "patches/did-jwt@6.11.6.patch",
       "@veramo/credential-w3c@4.2.0": "patches/@veramo__credential-w3c@4.2.0.patch"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "@mattrglobal/node-bbs-signatures"
+    ],
+    "onlyBuiltDependencies": [
+      "@scarf/scarf",
+      "@sphereon/pex",
+      "@swc/core",
+      "canvas",
+      "dtrace-provider",
+      "esbuild",
+      "keccak",
+      "nx",
+      "secp256k1",
+      "sodium-native",
+      "sqlite3"
+    ]
   }
 }

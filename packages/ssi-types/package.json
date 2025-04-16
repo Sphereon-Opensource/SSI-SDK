@@ -27,7 +27,7 @@
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "jwt-decode": "^4.0.0",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.17.1",

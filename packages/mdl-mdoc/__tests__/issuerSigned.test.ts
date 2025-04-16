@@ -13,8 +13,7 @@ describe('Issuer Auth', (): void => {
     console.log(coseSign.toJson().toJsonDTO<CoseSign1Json>())
     expect(encodeTo(coseSign.cborEncode(), Encoding.HEX)).toEqual(iso18013_5_IssuerAuthTestVector)
     expect(encodeTo(coseSign.toSignature1Structure().cborEncode(), Encoding.HEX)).toEqual(iso18013_5_SignatureStructureTestVector)
-    // @ts-ignore // because of the null arg
-    expect(coseSign.toBeSignedJson(null, SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(
+    expect(coseSign.toBeSignedJson(null, com.sphereon.crypto.generic.SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(
       encodeTo(decodeFrom(iso18013_5_SignatureStructureTestVector, Encoding.HEX), Encoding.BASE64URL),
     )
   })

@@ -74,7 +74,7 @@
     "tsBuildInfoFile": "${configDir}/tsconfig.tsbuildinfo",
     "outDir": "${configDir}/dist",
     "baseUrl": "${configDir}",
-    "rootDir": "${configDir}/lib"
+    "rootDir": "${configDir}/src"
   },
 //  "include": ["${configDir}/lib","${configDir}/lib/**/*.json"],
   "exclude": ["${configDir}/node_modules", "${configDir}/dist", "**/__tests__/**/*", "**/dist/**/*", "**/.yalc/**/*", "**/node_modules", "**/vc-status-list-tests/**/*"]

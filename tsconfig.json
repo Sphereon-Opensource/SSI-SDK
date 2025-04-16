@@ -162,6 +162,7 @@
   ],
   "compilerOptions": {
     "declaration": true,
-    "composite": true
+    "composite": true,
+    "emitDecoratorMetadata": true
   }
 }

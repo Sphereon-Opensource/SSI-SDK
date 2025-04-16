@@ -24,10 +24,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.1-feature.esm.cjs.26",
-    "@sphereon/ssi-sdk.core": "workspace:*",
-    "@sphereon/ssi-types": "workspace:*",
-    "uint8arrays": "^5.1.0"
+    "@sphereon/did-auth-siop": "0.17.1-feature.esm.cjs.37",
+    "@sphereon/ssi-sdk.core": "workspace:^",
+    "@sphereon/ssi-types": "workspace:^",
+    "uint8arrays": "^3.1.1"
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"

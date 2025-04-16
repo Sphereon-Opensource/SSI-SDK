@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import 'reflect-metadata'
 import KeyvSqlite from '@keyv/sqlite'
 
 import timekeeper from 'timekeeper'

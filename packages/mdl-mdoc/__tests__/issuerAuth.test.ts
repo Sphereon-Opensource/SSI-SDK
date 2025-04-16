@@ -1,6 +1,8 @@
 import { com } from '@sphereon/kmp-mdoc-core'
 import { CoseCryptoService } from '../src'
 
+import { describe, expect, it } from 'vitest'
+
 describe('Issuer Auth', (): void => {
   const iso18013_5_IssuerAuthTestVector =
     '8443a10126a118215901f3308201ef30820195a00302010202143c4416eed784f3b413e48f56f075abfa6d87e' +
@@ -78,8 +80,7 @@ describe('Issuer Auth', (): void => {
       iso18013_5_SignatureStructureTestVector,
     )
 
-    //@ts-ignore // because of null value passed in
-    expect(coseSign.toBeSignedJson(null, SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(
+    expect(coseSign.toBeSignedJson(null, com.sphereon.crypto.generic.SignatureAlgorithm.ECDSA_SHA256).base64UrlValue).toEqual(
       com.sphereon.kmp.encodeTo(
         com.sphereon.kmp.decodeFrom(iso18013_5_SignatureStructureTestVector, com.sphereon.kmp.Encoding.HEX),
         com.sphereon.kmp.Encoding.BASE64URL,

@@ -1,10 +1,13 @@
 import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import ldsEcdsa from '@veramo-community/lds-ecdsa-secp256k1-recovery2020'
-import * as u8a from 'uint8arrays'
-const { EcdsaSecp256k1RecoveryMethod2020, EcdsaSecp256k1RecoverySignature2020 } = ldsEcdsa
-
+// @ts-ignore
+import { concat as concatArrays } from 'uint8arrays/concat'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+
+const { EcdsaSecp256k1RecoveryMethod2020, EcdsaSecp256k1RecoverySignature2020 } = ldsEcdsa
 
 export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSignature {
   getSupportedVerificationType(): string {
@@ -26,7 +29,7 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
           crit: ['b64'],
         }
         const headerString = encodeJoseBlob(header)
-        const messageBuffer = u8a.concat([u8a.fromString(`${headerString}.`, 'utf-8'), args.data])
+        const messageBuffer = concatArrays([fromString(`${headerString}.`, 'utf-8'), args.data])
         const signature = await context.agent.keyManagerSign({
           keyRef: key.kid,
           algorithm: 'ES256K-R',

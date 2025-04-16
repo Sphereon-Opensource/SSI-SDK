@@ -2,7 +2,10 @@ import { Ed25519Signature2018 } from '@digitalbazaar/ed25519-signature-2018'
 import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import suiteContext2018 from 'ed25519-signature-2018-context'
-import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
 import { Ed25519VerificationKey2018 } from '@digitalbazaar/ed25519-verification-key-2018'
 // const Ed25519Signature2018 = await import('@digitalbazaar/ed25519-signature-2018')
 import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
@@ -51,7 +54,7 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     const options = {
       id,
       controller,
-      publicKeyBase58: u8a.toString(u8a.fromString(key.publicKeyHex, 'base16'), 'base58btc'),
+      publicKeyBase58: toString(fromString(key.publicKeyHex, 'base16'), 'base58btc'),
       signer: signer,
       type: this.getSupportedVerificationType(),
     }

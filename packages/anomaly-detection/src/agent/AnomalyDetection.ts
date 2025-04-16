@@ -66,24 +66,22 @@ export class AnomalyDetection implements IAgentPlugin {
     }
 
     // Fallback to Node dns
-    let dns
     try {
-      dns = eval('require("dns")')
+      const dns = await import('dns')
+      return new Promise((resolve, reject) => {
+        dns.lookup(hostname, (error: NodeJS.ErrnoException | null, address: string, family: number) => {
+          if (error) {
+            reject(error)
+            return
+          }
+          resolve(address)
+        })
+      })
     } catch (e) {
       console.error(e)
       throw new Error(
         `DNS resolution not available on this platform, use the dnsLookupCallback in the AnomalyDetection constructor to implement DNS resolution for your platform.\r\n${e.message}`,
       )
     }
-
-    return new Promise((resolve, reject) => {
-      dns.lookup(hostname, (error: NodeJS.ErrnoException | null, address: string, family: number) => {
-        if (error) {
-          reject(error)
-          return
-        }
-        resolve(address)
-      })
-    })
   }
 }

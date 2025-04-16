@@ -1,5 +1,6 @@
 import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { CredentialPayload, IAgentContext, IDIDManager, IKey, IResolver, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
+// @ts-ignore
 import { DIDDocument } from 'did-resolver/lib/resolver'
 
 export type RequiredAgentMethods = IResolver & IDIDManager & Pick<ISphereonKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>

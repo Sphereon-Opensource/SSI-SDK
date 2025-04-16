@@ -8,10 +8,10 @@ import {
   IRestClientAuthenticationOpts,
 } from '../types/IOID4VCIRestClient'
 import { IssueStatusResponse } from '@sphereon/oid4vci-common'
-import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
+import { Loggers } from '@sphereon/ssi-types'
 
-const debug = Debug('sphereon:ssi-sdk:oid4vci:issuer:rest-client')
+const debug = Loggers.DEFAULT.get('sphereon:ssi-sdk:oid4vci:issuer:rest-client').debug
 
 /**
  * {@inheritDoc IOID4VCIRestClient}
@@ -31,6 +31,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     }
     this.authOpts = args?.authentication
   }
+
   private async createHeaders(existing?: Record<string, any>): Promise<HeadersInit> {
     const headers: HeadersInit = {
       ...existing,

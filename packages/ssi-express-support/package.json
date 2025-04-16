@@ -22,7 +22,7 @@
     "start:energyshr": "cross-env ENVIRONMENT=EnergySHR NODE_ENV=energyshr node --experimental-specifier-resolution=node --loader ts-node/esm __tests__/index.ts"
   },
   "dependencies": {
-    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-types": "workspace:^",
     "body-parser": "^1.20.2",
     "casbin": "^5.30.0",
     "cookie-session": "^2.1.0",
@@ -35,7 +35,7 @@
     "openid-client": "^5.6.5",
     "passport": "^0.6.0",
     "qs": "^6.12.3",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.5",

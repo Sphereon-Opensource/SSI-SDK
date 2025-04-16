@@ -26,15 +26,15 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.data-store": "workspace:^",
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
     "uuid": "^9.0.1",
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "workspace:^",
+    "@sphereon/ssi-sdk.core": "workspace:^",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
