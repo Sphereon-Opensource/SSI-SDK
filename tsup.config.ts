@@ -38,5 +38,6 @@ export default defineConfig({
     'node:events',
     'node:stream',
     'node:string_decoder',
+    'whatwg-url',
   ],
 })
