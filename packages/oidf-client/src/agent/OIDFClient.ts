@@ -1,4 +1,4 @@
-import oidf from '@sphereon/openid-federation-client'
+import * as oidf from '@sphereon/openid-federation-client'
 import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { Request } from 'cross-fetch'
