@@ -1,4 +1,4 @@
-import { FederationClient, ICryptoService, IFetchService, TrustChainResolveResponse } from '@sphereon/openid-federation-client'
+import oidf from '@sphereon/openid-federation-client'
 import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { Request } from 'cross-fetch'
@@ -8,8 +8,8 @@ import { IOIDFClient, OIDFClientArgs, IRequiredContext, ResolveTrustChainArgs } 
 export const oidfClientMethods: Array<string> = ['resolveTrustChain']
 
 export class OIDFClient implements IAgentPlugin {
-  private readonly fetchServiceCallback?: IFetchService
-  private readonly cryptoServiceCallback?: ICryptoService
+  private readonly fetchServiceCallback?: oidf.IFetchService
+  private readonly cryptoServiceCallback?: oidf.ICryptoService
   readonly methods: IOIDFClient = {
     resolveTrustChain: this.resolveTrustChain.bind(this),
   }
@@ -22,7 +22,7 @@ export class OIDFClient implements IAgentPlugin {
     this.cryptoServiceCallback = cryptoServiceCallback
   }
 
-  private defaultCryptoJSImpl(context: IRequiredContext): ICryptoService {
+  private defaultCryptoJSImpl(context: IRequiredContext): oidf.ICryptoService {
     return {
       verify: async (jwt: string, key: JWK): Promise<boolean> => {
         const verification = await context.agent.jwtVerifyJwsSignature({ jws: jwt, jwk: key })
@@ -31,7 +31,7 @@ export class OIDFClient implements IAgentPlugin {
     }
   }
 
-  private defaultFetchJSImpl(context: IRequiredContext): IFetchService {
+  private defaultFetchJSImpl(context: IRequiredContext): oidf.IFetchService {
     return {
       async fetchStatement(endpoint: string): Promise<string> {
         const requestInfo = new Request(endpoint, {
@@ -52,14 +52,14 @@ export class OIDFClient implements IAgentPlugin {
     }
   }
 
-  private getOIDFClient(context: IRequiredContext): FederationClient {
-    return new FederationClient(
+  private getOIDFClient(context: IRequiredContext): oidf.FederationClient {
+    return new oidf.FederationClient(
       this.fetchServiceCallback || this.defaultFetchJSImpl(context),
       this.cryptoServiceCallback || this.defaultCryptoJSImpl(context),
     )
   }
 
-  private async resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<TrustChainResolveResponse> {
+  private async resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<oidf.TrustChainResolveResponse> {
     const { entityIdentifier, trustAnchors } = args
 
     const oidfClient = this.getOIDFClient(context)

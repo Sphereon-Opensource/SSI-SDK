@@ -1,13 +1,13 @@
 import { IResourceResolver } from '@sphereon/ssi-sdk.resource-resolver'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { ICryptoService, IFetchService, TrustChainResolveResponse } from '@sphereon/openid-federation-client'
+import oidf from '@sphereon/openid-federation-client'
 
 export type IRequiredPlugins = IJwtService & IResourceResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface IOIDFClient extends IPluginMethodMap {
-  resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<TrustChainResolveResponse>
+  resolveTrustChain(args: ResolveTrustChainArgs, context: IRequiredContext): Promise<oidf.TrustChainResolveResponse>
 }
 
 export type ResolveTrustChainArgs = {
@@ -16,6 +16,6 @@ export type ResolveTrustChainArgs = {
 }
 
 export type OIDFClientArgs = {
-  fetchServiceCallback?: IFetchService
-  cryptoServiceCallback?: ICryptoService
+  fetchServiceCallback?: oidf.IFetchService
+  cryptoServiceCallback?: oidf.ICryptoService
 }
