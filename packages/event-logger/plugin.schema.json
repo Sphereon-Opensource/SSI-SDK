@@ -1,0 +1,713 @@
+{
+  "IEventLogger": {
+    "components": {
+      "schemas": {
+        "GetActivityEventsArgs": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "$ref": "#/components/schemas/FindActivityLoggingEventArgs"
+            }
+          }
+        },
+        "FindActivityLoggingEventArgs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/PartialActivityLoggingEvent"
+          }
+        },
+        "PartialActivityLoggingEvent": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "object",
+              "properties": {}
+            },
+            "correlationId": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "object",
+              "properties": {},
+              "format": "date-time"
+            },
+            "diagnosticData": {},
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "object",
+              "properties": {}
+            },
+            "originalCredential": {
+              "type": "string"
+            },
+            "credentialHash": {
+              "type": "string"
+            },
+            "parentCredentialHash": {
+              "type": "string"
+            },
+            "credentialType": {
+              "type": "object",
+              "properties": {}
+            },
+            "sharePurpose": {
+              "type": "string"
+            },
+            "system": {
+              "type": "object",
+              "properties": {}
+            },
+            "subSystemType": {
+              "type": "object",
+              "properties": {}
+            },
+            "actionType": {
+              "type": "object",
+              "properties": {}
+            },
+            "actionSubType": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {}
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "initiatorType": {
+              "type": "object",
+              "properties": {}
+            },
+            "systemCorrelationIdType": {
+              "type": "object",
+              "properties": {}
+            },
+            "systemCorrelationId": {
+              "type": "string"
+            },
+            "systemAlias": {
+              "type": "string"
+            },
+            "partyCorrelationType": {
+              "type": "object",
+              "properties": {}
+            },
+            "partyCorrelationId": {
+              "type": "string"
+            },
+            "partyAlias": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "data": {}
+          }
+        },
+        "ActivityLoggingEvent": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "activity"
+            },
+            "originalCredential": {
+              "type": "string"
+            },
+            "credentialHash": {
+              "type": "string"
+            },
+            "parentCredentialHash": {
+              "type": "string"
+            },
+            "credentialType": {
+              "$ref": "#/components/schemas/CredentialType"
+            },
+            "sharePurpose": {
+              "type": "string"
+            },
+            "correlationId": {
+              "type": "string"
+            },
+            "system": {
+              "$ref": "#/components/schemas/System"
+            },
+            "subSystemType": {
+              "$ref": "#/components/schemas/SubSystem"
+            },
+            "actionType": {
+              "$ref": "#/components/schemas/ActionType"
+            },
+            "actionSubType": {
+              "$ref": "#/components/schemas/ActionSubType"
+            },
+            "initiatorType": {
+              "$ref": "#/components/schemas/InitiatorType"
+            },
+            "systemCorrelationIdType": {
+              "$ref": "#/components/schemas/SystemCorrelationIdType"
+            },
+            "systemCorrelationId": {
+              "type": "string"
+            },
+            "systemAlias": {
+              "type": "string"
+            },
+            "partyCorrelationType": {
+              "$ref": "#/components/schemas/PartyCorrelationType"
+            },
+            "partyCorrelationId": {
+              "type": "string"
+            },
+            "partyAlias": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "data": {},
+            "level": {
+              "$ref": "#/components/schemas/LogLevel"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "diagnosticData": {}
+          },
+          "required": [
+            "actionSubType",
+            "actionType",
+            "correlationId",
+            "description",
+            "id",
+            "initiatorType",
+            "level",
+            "subSystemType",
+            "system",
+            "timestamp",
+            "type"
+          ]
+        },
+        "CredentialType": {
+          "type": "string",
+          "enum": [
+            "JSON_LD",
+            "JWT",
+            "SD_JWT",
+            "MSO_MDOC"
+          ]
+        },
+        "System": {
+          "type": "string",
+          "enum": [
+            "general",
+            "kms",
+            "identity",
+            "oid4vci",
+            "oid4vp",
+            "siopv2",
+            "PE",
+            "credentials",
+            "web3",
+            "profile",
+            "contact"
+          ]
+        },
+        "SubSystem": {
+          "type": "string",
+          "enum": [
+            "key",
+            "did_provider",
+            "did_resolver",
+            "oid4vp_op",
+            "oid4vci_client",
+            "siopv2_op",
+            "contact_manager",
+            "vc_issuer",
+            "vc_verifier",
+            "vc_persistence",
+            "transport",
+            "profile",
+            "api"
+          ]
+        },
+        "ActionType": {
+          "type": "string",
+          "enum": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "execute"
+          ]
+        },
+        "ActionSubType": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/DefaultActionSubType"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "DefaultActionSubType": {
+          "type": "string",
+          "enum": [
+            "Key generation",
+            "Key import",
+            "Key persistence",
+            "Key removal",
+            "DID creation",
+            "DID resolution",
+            "DID service update",
+            "VC issue",
+            "VC verify",
+            "VC share",
+            "VC delete",
+            "VC issue decline",
+            "VC share decline"
+          ]
+        },
+        "InitiatorType": {
+          "type": "string",
+          "enum": [
+            "user",
+            "system",
+            "external"
+          ]
+        },
+        "SystemCorrelationIdType": {
+          "type": "string",
+          "enum": [
+            "did",
+            "url",
+            "email",
+            "hostname",
+            "phone",
+            "user"
+          ]
+        },
+        "PartyCorrelationType": {
+          "type": "string",
+          "enum": [
+            "did",
+            "url",
+            "email",
+            "hostname",
+            "phone"
+          ]
+        },
+        "LogLevel": {
+          "type": "number",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "GetAuditEventsArgs": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "$ref": "#/components/schemas/FindAuditLoggingEventArgs"
+            }
+          }
+        },
+        "FindAuditLoggingEventArgs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/PartialAuditLoggingEvent"
+          }
+        },
+        "PartialAuditLoggingEvent": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "object",
+              "properties": {}
+            },
+            "correlationId": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "object",
+              "properties": {},
+              "format": "date-time"
+            },
+            "diagnosticData": {},
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "object",
+              "properties": {}
+            },
+            "system": {
+              "type": "object",
+              "properties": {}
+            },
+            "subSystemType": {
+              "type": "object",
+              "properties": {}
+            },
+            "actionType": {
+              "type": "object",
+              "properties": {}
+            },
+            "actionSubType": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {}
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "initiatorType": {
+              "type": "object",
+              "properties": {}
+            },
+            "systemCorrelationIdType": {
+              "type": "object",
+              "properties": {}
+            },
+            "systemCorrelationId": {
+              "type": "string"
+            },
+            "systemAlias": {
+              "type": "string"
+            },
+            "partyCorrelationType": {
+              "type": "object",
+              "properties": {}
+            },
+            "partyCorrelationId": {
+              "type": "string"
+            },
+            "partyAlias": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "data": {}
+          }
+        },
+        "AuditLoggingEvent": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "audit"
+            },
+            "correlationId": {
+              "type": "string"
+            },
+            "system": {
+              "$ref": "#/components/schemas/System"
+            },
+            "subSystemType": {
+              "$ref": "#/components/schemas/SubSystem"
+            },
+            "actionType": {
+              "$ref": "#/components/schemas/ActionType"
+            },
+            "actionSubType": {
+              "$ref": "#/components/schemas/ActionSubType"
+            },
+            "initiatorType": {
+              "$ref": "#/components/schemas/InitiatorType"
+            },
+            "systemCorrelationIdType": {
+              "$ref": "#/components/schemas/SystemCorrelationIdType"
+            },
+            "systemCorrelationId": {
+              "type": "string"
+            },
+            "systemAlias": {
+              "type": "string"
+            },
+            "partyCorrelationType": {
+              "$ref": "#/components/schemas/PartyCorrelationType"
+            },
+            "partyCorrelationId": {
+              "type": "string"
+            },
+            "partyAlias": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "data": {},
+            "level": {
+              "$ref": "#/components/schemas/LogLevel"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "diagnosticData": {}
+          },
+          "required": [
+            "actionSubType",
+            "actionType",
+            "correlationId",
+            "description",
+            "id",
+            "initiatorType",
+            "level",
+            "subSystemType",
+            "system",
+            "timestamp",
+            "type"
+          ]
+        },
+        "LogEventArgs": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "$ref": "#/components/schemas/LogEventType"
+            }
+          },
+          "required": [
+            "event"
+          ]
+        },
+        "LogEventType": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/NonPersistedAuditLoggingEvent"
+            },
+            {
+              "$ref": "#/components/schemas/NonPersistedActivityLoggingEvent"
+            }
+          ]
+        },
+        "NonPersistedAuditLoggingEvent": {
+          "type": "object",
+          "properties": {
+            "system": {
+              "$ref": "#/components/schemas/System"
+            },
+            "subSystemType": {
+              "$ref": "#/components/schemas/SubSystem"
+            },
+            "initiatorType": {
+              "$ref": "#/components/schemas/InitiatorType"
+            },
+            "diagnosticData": {},
+            "actionType": {
+              "type": "object",
+              "properties": {}
+            },
+            "actionSubType": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {}
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "systemCorrelationIdType": {
+              "type": "object",
+              "properties": {}
+            },
+            "systemCorrelationId": {
+              "type": "string"
+            },
+            "systemAlias": {
+              "type": "string"
+            },
+            "partyCorrelationType": {
+              "type": "object",
+              "properties": {}
+            },
+            "partyCorrelationId": {
+              "type": "string"
+            },
+            "partyAlias": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "data": {},
+            "level": {
+              "type": "object",
+              "properties": {}
+            },
+            "correlationId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "actionSubType",
+            "actionType",
+            "description",
+            "initiatorType",
+            "subSystemType",
+            "system"
+          ]
+        },
+        "NonPersistedActivityLoggingEvent": {
+          "type": "object",
+          "properties": {
+            "system": {
+              "$ref": "#/components/schemas/System"
+            },
+            "subSystemType": {
+              "$ref": "#/components/schemas/SubSystem"
+            },
+            "initiatorType": {
+              "$ref": "#/components/schemas/InitiatorType"
+            },
+            "originalCredential": {
+              "type": "string"
+            },
+            "credentialHash": {
+              "type": "string"
+            },
+            "parentCredentialHash": {
+              "type": "string"
+            },
+            "credentialType": {
+              "type": "object",
+              "properties": {}
+            },
+            "sharePurpose": {
+              "type": "string"
+            },
+            "data": {},
+            "diagnosticData": {},
+            "actionType": {
+              "type": "object",
+              "properties": {}
+            },
+            "actionSubType": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {}
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "systemCorrelationIdType": {
+              "type": "object",
+              "properties": {}
+            },
+            "systemCorrelationId": {
+              "type": "string"
+            },
+            "systemAlias": {
+              "type": "string"
+            },
+            "partyCorrelationType": {
+              "type": "object",
+              "properties": {}
+            },
+            "partyCorrelationId": {
+              "type": "string"
+            },
+            "partyAlias": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "level": {
+              "type": "object",
+              "properties": {}
+            },
+            "correlationId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "actionSubType",
+            "actionType",
+            "description",
+            "initiatorType",
+            "subSystemType",
+            "system"
+          ]
+        }
+      },
+      "methods": {
+        "loggerGetActivityEvents": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetActivityEventsArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActivityLoggingEvent"
+            }
+          }
+        },
+        "loggerGetAuditEvents": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GetAuditEventsArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLoggingEvent"
+            }
+          }
+        },
+        "loggerLogActivityEvent": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/LogEventArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/ActivityLoggingEvent"
+          }
+        },
+        "loggerLogAuditEvent": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/LogEventArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/AuditLoggingEvent"
+          }
+        },
+        "loggerLogGeneralEvent": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/LogEventArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/LogEventType"
+          }
+        }
+      }
+    }
+  }
+}

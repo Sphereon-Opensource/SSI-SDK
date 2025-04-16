@@ -1,0 +1,50 @@
+{
+  "IAnomalyDetection": {
+    "components": {
+      "schemas": {
+        "AnomalyDetectionLookupLocationArgs": {
+          "$ref": "#/components/schemas/PartialBy<GeolocationStoreArgs,(\"storeId\"|\"namespace\")>"
+        },
+        "PartialBy<GeolocationStoreArgs,(\"storeId\"|\"namespace\")>": {
+          "type": "object",
+          "properties": {
+            "storeId": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            },
+            "ipOrHostname": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ipOrHostname"
+          ]
+        },
+        "AnomalyDetectionLookupLocationResult": {
+          "type": "object",
+          "properties": {
+            "continent": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "methods": {
+        "anomalyDetectionLookupLocation": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/AnomalyDetectionLookupLocationArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/AnomalyDetectionLookupLocationResult"
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,20 +2,8 @@
   "name": "@sphereon/ssi-sdk.dev",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    "import": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "require": {
-      "types": "./dist/index.d.cts",
-      "require": "./dist/index.cjs"
-    }
-  },
   "bin": {
     "sphereon": "./bin/sphereon.js"
   },

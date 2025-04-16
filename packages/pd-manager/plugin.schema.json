@@ -1,0 +1,1078 @@
+{
+  "IPDManager": {
+    "components": {
+      "schemas": {
+        "DeleteDefinitionItemArgs": {
+          "type": "object",
+          "properties": {
+            "itemId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "itemId"
+          ]
+        },
+        "DeleteDefinitionItemsArgs": {
+          "$ref": "#/components/schemas/GetDefinitionItemsArgs"
+        },
+        "GetDefinitionItemsArgs": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "$ref": "#/components/schemas/FindDefinitionArgs"
+            },
+            "opts": {
+              "$ref": "#/components/schemas/FetchOptions"
+            }
+          }
+        },
+        "FindDefinitionArgs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/PresentationDefinitionItemFilter"
+          }
+        },
+        "PresentationDefinitionItemFilter": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "definitionId": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "FetchOptions": {
+          "type": "object",
+          "properties": {
+            "showVersionHistory": {
+              "type": "boolean"
+            }
+          }
+        },
+        "GetDefinitionItemArgs": {
+          "type": "object",
+          "properties": {
+            "itemId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "itemId"
+          ]
+        },
+        "PresentationDefinitionItem": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "definitionId": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "definitionPayload": {
+              "$ref": "#/components/schemas/IPresentationDefinition"
+            },
+            "dcqlPayload": {
+              "$ref": "#/components/schemas/DcqlQueryREST"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "definitionId",
+            "version",
+            "definitionPayload",
+            "createdAt",
+            "lastUpdatedAt"
+          ]
+        },
+        "IPresentationDefinition": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/PresentationDefinitionV1"
+            },
+            {
+              "$ref": "#/components/schemas/PresentationDefinitionV2"
+            }
+          ]
+        },
+        "PresentationDefinitionV1": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "format": {
+              "$ref": "#/components/schemas/Format"
+            },
+            "submission_requirements": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SubmissionRequirement"
+              }
+            },
+            "input_descriptors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/InputDescriptorV1"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "input_descriptors"
+          ]
+        },
+        "Format": {
+          "type": "object",
+          "properties": {
+            "jwt": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vc": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vc_json": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vp": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "jwt_vp_json": {
+              "$ref": "#/components/schemas/JwtObject"
+            },
+            "ldp": {
+              "$ref": "#/components/schemas/LdpObject"
+            },
+            "ldp_vc": {
+              "$ref": "#/components/schemas/LdpObject"
+            },
+            "ldp_vp": {
+              "$ref": "#/components/schemas/LdpObject"
+            },
+            "di": {
+              "$ref": "#/components/schemas/DiObject"
+            },
+            "di_vc": {
+              "$ref": "#/components/schemas/DiObject"
+            },
+            "di_vp": {
+              "$ref": "#/components/schemas/DiObject"
+            },
+            "vc+sd-jwt": {
+              "$ref": "#/components/schemas/SdJwtObject"
+            },
+            "mso_mdoc": {
+              "$ref": "#/components/schemas/MsoMdocObject"
+            }
+          }
+        },
+        "JwtObject": {
+          "type": "object",
+          "properties": {
+            "alg": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "alg"
+          ]
+        },
+        "LdpObject": {
+          "type": "object",
+          "properties": {
+            "proof_type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "proof_type"
+          ]
+        },
+        "DiObject": {
+          "type": "object",
+          "properties": {
+            "proof_type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cryptosuite": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "proof_type",
+            "cryptosuite"
+          ]
+        },
+        "SdJwtObject": {
+          "type": "object",
+          "properties": {
+            "sd-jwt_alg_values": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "kb-jwt_alg_values": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "MsoMdocObject": {
+          "type": "object",
+          "properties": {
+            "alg": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "alg"
+          ]
+        },
+        "SubmissionRequirement": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "rule": {
+              "$ref": "#/components/schemas/Rules"
+            },
+            "count": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "from": {
+              "type": "string"
+            },
+            "from_nested": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SubmissionRequirement"
+              }
+            }
+          },
+          "required": [
+            "rule"
+          ]
+        },
+        "Rules": {
+          "type": "string",
+          "enum": [
+            "all",
+            "pick"
+          ]
+        },
+        "InputDescriptorV1": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "group": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Schema"
+              }
+            },
+            "issuance": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Issuance"
+              }
+            },
+            "constraints": {
+              "$ref": "#/components/schemas/ConstraintsV1"
+            }
+          },
+          "required": [
+            "id",
+            "schema"
+          ]
+        },
+        "Schema": {
+          "type": "object",
+          "properties": {
+            "uri": {
+              "type": "string"
+            },
+            "required": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "uri"
+          ]
+        },
+        "Issuance": {
+          "type": "object",
+          "properties": {
+            "manifest": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {}
+        },
+        "ConstraintsV1": {
+          "type": "object",
+          "properties": {
+            "limit_disclosure": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "statuses": {
+              "$ref": "#/components/schemas/Statuses"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FieldV1"
+              }
+            },
+            "subject_is_issuer": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "is_holder": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HolderSubject"
+              }
+            },
+            "same_subject": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HolderSubject"
+              }
+            }
+          }
+        },
+        "Optionality": {
+          "type": "string",
+          "enum": [
+            "required",
+            "preferred"
+          ]
+        },
+        "Statuses": {
+          "type": "object",
+          "properties": {
+            "active": {
+              "$ref": "#/components/schemas/PdStatus"
+            },
+            "suspended": {
+              "$ref": "#/components/schemas/PdStatus"
+            },
+            "revoked": {
+              "$ref": "#/components/schemas/PdStatus"
+            }
+          }
+        },
+        "PdStatus": {
+          "type": "object",
+          "properties": {
+            "directive": {
+              "$ref": "#/components/schemas/Directives"
+            }
+          }
+        },
+        "Directives": {
+          "type": "string",
+          "enum": [
+            "required",
+            "allowed",
+            "disallowed"
+          ]
+        },
+        "FieldV1": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "filter": {
+              "$ref": "#/components/schemas/FilterV1"
+            },
+            "predicate": {
+              "$ref": "#/components/schemas/Optionality"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "FilterV1": {
+          "type": "object",
+          "properties": {
+            "const": {
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+            },
+            "enum": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+              }
+            },
+            "exclusiveMinimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "exclusiveMaximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "format": {
+              "type": "string"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "minimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "maximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "not": {
+              "type": "object"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        },
+        "OneOfNumberStringBoolean": {
+          "type": [
+            "boolean",
+            "number",
+            "string"
+          ]
+        },
+        "OneOfNumberString": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "HolderSubject": {
+          "type": "object",
+          "properties": {
+            "field_id": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "directive": {
+              "$ref": "#/components/schemas/Optionality"
+            }
+          },
+          "required": [
+            "field_id",
+            "directive"
+          ]
+        },
+        "PresentationDefinitionV2": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "format": {
+              "$ref": "#/components/schemas/Format"
+            },
+            "submission_requirements": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SubmissionRequirement"
+              }
+            },
+            "input_descriptors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/InputDescriptorV2"
+              }
+            },
+            "frame": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "id",
+            "input_descriptors"
+          ]
+        },
+        "InputDescriptorV2": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "format": {
+              "$ref": "#/components/schemas/Format"
+            },
+            "group": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "issuance": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Issuance"
+              }
+            },
+            "constraints": {
+              "$ref": "#/components/schemas/ConstraintsV2"
+            }
+          },
+          "required": [
+            "id",
+            "constraints"
+          ]
+        },
+        "ConstraintsV2": {
+          "type": "object",
+          "properties": {
+            "limit_disclosure": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "statuses": {
+              "$ref": "#/components/schemas/Statuses"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FieldV2"
+              }
+            },
+            "subject_is_issuer": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "is_holder": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HolderSubject"
+              }
+            },
+            "same_subject": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HolderSubject"
+              }
+            }
+          }
+        },
+        "FieldV2": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "filter": {
+              "$ref": "#/components/schemas/FilterV2"
+            },
+            "predicate": {
+              "$ref": "#/components/schemas/Optionality"
+            },
+            "intent_to_retain": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            },
+            "optional": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "FilterV2": {
+          "type": "object",
+          "properties": {
+            "const": {
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+            },
+            "enum": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+              }
+            },
+            "exclusiveMinimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "exclusiveMaximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "format": {
+              "type": "string"
+            },
+            "formatMaximum": {
+              "type": "string"
+            },
+            "formatMinimum": {
+              "type": "string"
+            },
+            "formatExclusiveMaximum": {
+              "type": "string"
+            },
+            "formatExclusiveMinimum": {
+              "type": "string"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "minimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "maximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "not": {
+              "type": "object"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "contains": {
+              "$ref": "#/components/schemas/FilterV2"
+            },
+            "items": {
+              "$ref": "#/components/schemas/FilterV2Items"
+            }
+          }
+        },
+        "FilterV2Items": {
+          "type": "object",
+          "properties": {
+            "const": {
+              "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+            },
+            "enum": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/OneOfNumberStringBoolean"
+              }
+            },
+            "exclusiveMinimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "exclusiveMaximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "format": {
+              "type": "string"
+            },
+            "formatMaximum": {
+              "type": "string"
+            },
+            "formatMinimum": {
+              "type": "string"
+            },
+            "formatExclusiveMaximum": {
+              "type": "string"
+            },
+            "formatExclusiveMinimum": {
+              "type": "string"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "minimum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "maximum": {
+              "$ref": "#/components/schemas/OneOfNumberString"
+            },
+            "not": {
+              "type": "object"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "contains": {
+              "$ref": "#/components/schemas/FilterV2"
+            },
+            "items": {
+              "$ref": "#/components/schemas/FilterV2Items"
+            }
+          }
+        },
+        "DcqlQueryREST": {
+          "type": "object",
+          "properties": {
+            "credentials": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/DcqlCredentialQuery"
+              }
+            }
+          },
+          "required": [
+            "credentials"
+          ]
+        },
+        "DcqlCredentialQuery": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "format": {
+              "type": "string"
+            },
+            "alg": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/DcqlClaim"
+              }
+            },
+            "meta": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "id",
+            "format",
+            "claims"
+          ]
+        },
+        "DcqlClaim": {
+          "type": "object",
+          "properties": {
+            "namespace": {
+              "type": "string"
+            },
+            "claim_name": {
+              "type": "string"
+            },
+            "filter": {
+              "$ref": "#/components/schemas/DcqlFilter"
+            }
+          },
+          "required": [
+            "namespace",
+            "claim_name"
+          ]
+        },
+        "DcqlFilter": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        "HasDefinitionItemArgs": {
+          "$ref": "#/components/schemas/GetDefinitionItemArgs"
+        },
+        "HasDefinitionItemsArgs": {
+          "$ref": "#/components/schemas/GetDefinitionItemsArgs"
+        },
+        "PersistDefinitionArgs": {
+          "type": "object",
+          "properties": {
+            "definitionItem": {
+              "$ref": "#/components/schemas/PersistPresentationDefinitionItem"
+            },
+            "opts": {
+              "$ref": "#/components/schemas/PersistOptions"
+            }
+          },
+          "required": [
+            "definitionItem"
+          ]
+        },
+        "PersistPresentationDefinitionItem": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "definitionId": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "definitionPayload": {
+              "$ref": "#/components/schemas/IPresentationDefinition"
+            },
+            "dcqlPayload": {
+              "$ref": "#/components/schemas/DcqlQueryREST"
+            }
+          },
+          "required": [
+            "definitionPayload"
+          ]
+        },
+        "PersistOptions": {
+          "type": "object",
+          "properties": {
+            "versionControlMode": {
+              "$ref": "#/components/schemas/VersionControlMode"
+            },
+            "versionIncrementReleaseType": {
+              "$ref": "#/components/schemas/ReleaseType"
+            }
+          }
+        },
+        "VersionControlMode": {
+          "type": "string",
+          "enum": [
+            "AutoIncrement",
+            "Manual",
+            "Overwrite",
+            "OverwriteLatest"
+          ]
+        },
+        "ReleaseType": {
+          "type": "string",
+          "enum": [
+            "major",
+            "premajor",
+            "minor",
+            "preminor",
+            "patch",
+            "prepatch",
+            "prerelease"
+          ]
+        }
+      },
+      "methods": {
+        "pdmDeleteDefinition": {
+          "description": "Delete a single presentation definition records by primary key",
+          "arguments": {
+            "$ref": "#/components/schemas/DeleteDefinitionItemArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "pdmDeleteDefinitions": {
+          "description": "Delete multiple presentation definitions records using filters",
+          "arguments": {
+            "$ref": "#/components/schemas/DeleteDefinitionItemsArgs"
+          },
+          "returnType": {
+            "type": "number"
+          }
+        },
+        "pdmGetDefinition": {
+          "description": "Get a single presentation definition records by primary key",
+          "arguments": {
+            "$ref": "#/components/schemas/GetDefinitionItemArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/PresentationDefinitionItem"
+          }
+        },
+        "pdmGetDefinitions": {
+          "description": "Find one or more presentation definition records using filters",
+          "arguments": {
+            "$ref": "#/components/schemas/GetDefinitionItemsArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PresentationDefinitionItem"
+            }
+          }
+        },
+        "pdmHasDefinition": {
+          "description": "Checks whether a presentation definition record exists by primary key",
+          "arguments": {
+            "$ref": "#/components/schemas/HasDefinitionItemArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "pdmHasDefinitions": {
+          "description": "Checks whether one or more presentation definition records exist using filters",
+          "arguments": {
+            "$ref": "#/components/schemas/HasDefinitionItemsArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "pdmPersistDefinition": {
+          "description": "Check in a presentation definition. It has version control logic which will add or update presentation definition records and has settings for automatic version numbering.",
+          "arguments": {
+            "$ref": "#/components/schemas/PersistDefinitionArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/PresentationDefinitionItem"
+          }
+        }
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ export default defineConfig({
   cjsInterop: false,
   experimentalDts: false,
   // onSuccess: "tsc -p ../../../../tsconfig.build.json --emitDeclarationOnly",
-  // shims: true,
+  shims: true,
   sourcemap: true,
   splitting: false,
   outDir: 'dist',

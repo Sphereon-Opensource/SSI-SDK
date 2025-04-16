@@ -61,26 +61,6 @@ packages/*/.turbo
 *.swp
 *~
 
-/packages/mnemonic-seed-manager/plugin.schema.json
-/packages/w3c-vc-api-issuer-rest-client/plugin.schema.json
-/packages/w3c-vc-api-verifier-rest-client/plugin.schema.json
-/packages/contact-manager/plugin.schema.json
-/packages/bls-key-manager/plugin.schema.json
-/packages/ms-request-api/plugin.schema.json
-/packages/siopv2-oid4vp-rp-rest-client/plugin.schema.json
-/packages/vc-handler-ld-local/plugin.schema.json
-/packages/issuance-branding/plugin.schema.json
-/packages/oid4vci-issuer-rest-client/plugin.schema.json
-/packages/xstate-persistence/plugin.schema.json
-/packages/credential-store/plugin.schema.json
-/packages/pd-manager/plugin.schema.json
-/packages/event-logger/plugin.schema.json
-/packages/credential-validation/plugin.schema.json
-/packages/oidf-client/plugin.schema.json
-/packages/anomaly-detection/plugin.schema.json
-/packages/geolocation-store/plugin.schema.json
-/packages/oidf-metadata-server/plugin.schema.json
-
 **/.env.energyshr
 **/.env.local
 /packages/web3-provider-headless/__tests__/config.json
