@@ -1,14 +1,13 @@
 import { JoseCurveString, JoseSignatureAlgorithmString, JwkKeyTypeString } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { Request } from 'cross-fetch'
 import { schema } from '../'
 import { IOIDFClient, IRequiredContext, OIDFClientArgs, ResolveTrustChainArgs } from '../types/IOIDFClient'
-import { FederationClient, ICryptoService, IFetchService, Jwk, TrustChainResolveResponse } from '@sphereon/openid-federation-client'
+import { FederationClient, ICryptoService, Jwk, TrustChainResolveResponse } from '@sphereon/openid-federation-client'
 
 export const oidfClientMethods: Array<string> = ['resolveTrustChain']
 
 export class OIDFClient implements IAgentPlugin {
-  private readonly fetchServiceCallback?: IFetchService
+  // private readonly fetchServiceCallback?: IFetchService
   private readonly cryptoServiceCallback?: ICryptoService
   readonly methods: IOIDFClient = {
     resolveTrustChain: this.resolveTrustChain.bind(this),
@@ -16,9 +15,9 @@ export class OIDFClient implements IAgentPlugin {
   readonly schema = schema.IOIDFClient
 
   constructor(args?: OIDFClientArgs) {
-    const { fetchServiceCallback, cryptoServiceCallback } = { ...args }
+    const { /*fetchServiceCallback,*/ cryptoServiceCallback } = { ...args }
 
-    this.fetchServiceCallback = fetchServiceCallback
+    // this.fetchServiceCallback = fetchServiceCallback
     this.cryptoServiceCallback = cryptoServiceCallback
   }
 
@@ -43,7 +42,7 @@ export class OIDFClient implements IAgentPlugin {
       },
     }
   }
-
+  /*
   private defaultFetchJSImpl(context: IRequiredContext): IFetchService {
     return {
       async fetchStatement(endpoint: string): Promise<string> {
@@ -63,12 +62,12 @@ export class OIDFClient implements IAgentPlugin {
         return await response.text()
       },
     }
-  }
+  }*/
 
   private getOIDFClient(context: IRequiredContext): FederationClient {
     return new FederationClient(
       this.cryptoServiceCallback || this.defaultCryptoJSImpl(context),
-      this.fetchServiceCallback || this.defaultFetchJSImpl(context),
+      // this.fetchServiceCallback || this.defaultFetchJSImpl(context),
     )
   }
 
