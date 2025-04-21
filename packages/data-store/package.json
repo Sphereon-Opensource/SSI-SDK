@@ -27,8 +27,8 @@
   "dependencies": {
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/pex": "5.0.0-unstable.28",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.11",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.11",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.13",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.13",
     "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-types": "workspace:^",

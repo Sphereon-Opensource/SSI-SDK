@@ -57,7 +57,7 @@ export {
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
-} from './migrations/index'
+} from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
 export * from './utils/digitalCredential/MappingUtils'

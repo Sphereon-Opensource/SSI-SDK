@@ -18,8 +18,8 @@ import { afterAll, beforeAll, describe, expect, it, vitest } from 'vitest'
 type ConfiguredAgent = TAgent<IIssuanceBranding>
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
-  vitest.mock('@sphereon/ssi-sdk.core', () => {
-    const coreModule = vitest.importActual('@sphereon/ssi-sdk.core')
+  vitest.mock('@sphereon/ssi-sdk.core',  async (importOriginal) => {
+    const coreModule = await importOriginal() as any
     return {
       ...coreModule,
       downloadImage: vitest.fn().mockResolvedValue({

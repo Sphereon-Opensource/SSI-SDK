@@ -110,7 +110,7 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   await (await dbConnection)?.close()
-  restServer.close()
+  restServer?.close()
   return true
 }
 

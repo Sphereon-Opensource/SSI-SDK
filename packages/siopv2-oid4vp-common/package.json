@@ -24,7 +24,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.1-feature.esm.cjs.37",
+    "@sphereon/did-auth-siop": "0.17.1-feature.esm.cjs.39",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-types": "workspace:^",
     "uint8arrays": "^3.1.1"

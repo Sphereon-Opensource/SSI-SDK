@@ -34,6 +34,7 @@
     "@sphereon/ssi-types": "workspace:^",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
+    "@veramo/data-store": "4.2.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "cross-fetch": "^3.1.8",
@@ -41,7 +42,6 @@
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
-    "@veramo/data-store": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

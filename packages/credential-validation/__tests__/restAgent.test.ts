@@ -8,7 +8,7 @@ import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import credentialValidationAgentLogic from './shared/credentialValidationAgentLogic'
-import { ICredentialValidation } from '../src'
+import { ICredentialValidation } from '../dist'
 //jest.setTimeout(60000)
 import { describe } from 'vitest'
 
@@ -55,7 +55,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   await (await dbConnection)?.close()
   return true
 }

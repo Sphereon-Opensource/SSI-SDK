@@ -8,7 +8,7 @@ export default defineConfig({
   tsconfig: '../../tsconfig.tsup.json',
   dts: true,
   target: ['es2022'],
-  platform: 'node',
+  platform: 'neutral',
   cjsInterop: false,
   experimentalDts: false,
   // onSuccess: "tsc -p ../../../../tsconfig.build.json --emitDeclarationOnly",
@@ -17,8 +17,8 @@ export default defineConfig({
   splitting: false,
   outDir: 'dist',
   clean: true,
-  skipNodeModulesBundle: false,
-  external: [
+  skipNodeModulesBundle: true,
+  /*external: [
     'module',
     'fs',
     'crypto',
@@ -40,5 +40,5 @@ export default defineConfig({
     'node:string_decoder',
     'whatwg-url',
     'whatwg-fetch'
-  ],
+  ],*/
 })
