@@ -37,6 +37,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@types/debug": "^4.1.12",
     "@types/json-buffer": "^3.0.2",
+    "@types/node": "20.17.30",
     "eslint": "^8.57.0",
     "eslint-plugin-promise": "^6.4.0",
     "keyv": "^4.5.4",

@@ -1,8 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "emitDecoratorMetadata": true
-  },
   "references": [
     {
       "path": "../agent-config"

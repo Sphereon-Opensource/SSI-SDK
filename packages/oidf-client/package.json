@@ -29,7 +29,7 @@
     "@sphereon/openid-federation-client": "0.20.9-unstable.48ddfa1",
     "@sphereon/openid-federation-common": "0.20.9-unstable.48ddfa1",
     "@sphereon/openid-federation-open-api": "0.20.9-unstable.48ddfa1",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.13",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.15",
     "@sphereon/ssi-sdk.resource-resolver": "workspace:^",
     "@sphereon/ssi-types": "workspace:^"
   },

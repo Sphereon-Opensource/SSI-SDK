@@ -34,7 +34,6 @@
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
-    "whatwg-url": "^14.2.0",
     "nock": "^13.5.4",
     "web-did-resolver": "^2.0.27"
   },

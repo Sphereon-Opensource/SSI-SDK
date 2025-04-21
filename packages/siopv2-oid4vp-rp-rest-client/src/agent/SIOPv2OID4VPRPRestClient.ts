@@ -11,7 +11,7 @@ import { IAgentPlugin } from '@veramo/core'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Loggers } from '@sphereon/ssi-types'
 
-const debug = Loggers.DEFAULT.get('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client').debug
+const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client')
 
 /**
  * @beta
@@ -71,7 +71,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
         definitionId,
       }),
     })
-    debug(`auth status response: ${statusResponse}`)
+    logger.debug(`auth status response: ${statusResponse}`)
     try {
       return await statusResponse.json()
     } catch (err) {

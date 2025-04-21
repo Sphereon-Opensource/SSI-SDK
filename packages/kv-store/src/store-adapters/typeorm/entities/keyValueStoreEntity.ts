@@ -6,15 +6,13 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm'
  */
 @Entity('keyvaluestore')
 export class KeyValueStoreEntity extends BaseEntity {
-  @PrimaryColumn()
-  // @ts-ignore
-  key: string
+  @PrimaryColumn("text")
+  key!: string
 
   @Column({
     type: 'text',
   })
-  // @ts-ignore
-  data: string
+  data!: string
 
   expires?: number
 }
