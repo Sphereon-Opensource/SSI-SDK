@@ -83,23 +83,25 @@ export async function createObjects(config: object, pointers: Record<string, str
 
   async function objectFromConfig(objectConfig: any): Promise<any> {
     let object
-    // console.log('Requiring', objectConfig['$require'])
+    console.log('Requiring', objectConfig['$require'])
     const parsed = parse(objectConfig['$require'], {}, true)
-    let module = parsed.pathname
+    let npmModule = parsed.pathname
     const member = parsed.hash.length > 1 ? parsed.hash.slice(1) : undefined
+    console.log(`member: ${member}`)
     const type = parsed.query['t'] || 'class'
     const pointer = parsed.query['p']
     const args = objectConfig['$args']
-    // console.log({module, member, type, query: parsed.query})
+    console.log({module, member, type, query: parsed.query})
 
-    if (module.slice(0, 2) === './' || module.slice(0, 3) === '../') {
+    if (npmModule.slice(0, 2) === './' || npmModule.slice(0, 3) === '../') {
+      console.log('objectFromConfig: Resolving relative path', npmModule)
       const { resolve } = await import('path')
-      module = resolve(module)
+      npmModule = resolve(npmModule)
     }
 
     const resolvedArgs = args !== undefined ? await resolveRefs(args) : []
     try {
-      let required = member ? (await import(module))[member] : await import(module)
+      let required = member ? (await import(npmModule))[member] : await import(npmModule)
       if (type === 'class') {
         object = new required(...resolvedArgs)
       } else if (type === 'function') {
@@ -108,7 +110,8 @@ export async function createObjects(config: object, pointers: Record<string, str
         object = required
       }
     } catch (e: any) {
-      throw new Error(`Error creating ${module}['${member}']: ${e.message}`)
+      console.log(e)
+      throw new Error(`Error creating ${npmModule}['${member}']: ${e.message}`)
     }
     if (pointer) {
       return get(object, pointer)
@@ -137,6 +140,7 @@ export async function createObjects(config: object, pointers: Record<string, str
         set(objects, pointer, object)
         return object
       } catch (e: any) {
+        console.log(e)
         throw Error(e.message + '. While creating object from pointer: ' + pointer)
       }
     }
