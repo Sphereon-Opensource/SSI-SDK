@@ -99,8 +99,10 @@ export async function createObjects(config: object, pointers: Record<string, str
     }
 
     const resolvedArgs = args !== undefined ? await resolveRefs(args) : []
+    console.error(`npmModule: ${npmModule}`)
     // try {
-    return import(npmModule)
+    return await Promise.resolve(await import(/*@metro-ignore*/npmModule)
+
       .then((mod) => {
         if (member) {
           return mod[member]
@@ -130,7 +132,7 @@ export async function createObjects(config: object, pointers: Record<string, str
       .catch((e) => {
         console.error(e)
         return Promise.reject(Error(`Error creating ${npmModule}['${member}']: ${e.message}`))
-      })
+      }))
 
     /*let required = member ? (await import(npmModule))[member] : await import(npmModule)
     if (type === 'class') {
