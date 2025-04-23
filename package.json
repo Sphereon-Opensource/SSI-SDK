@@ -6,8 +6,8 @@
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
+  "packageManager": "pnpm@10.8.1",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "build": "rimraf --glob ./packages/*/tsconfig.tsbudinfo && pnpm build:js && pnpm build:copyfiles && pnpm build:api && pnpm build:schema",
     "build:clean": "lerna clean -y && pnpm install && lerna run build:clean --concurrency 1 && pnpm build:copyfiles && pnpm build:schema",
     "build:js": "pnpm -r --stream build",
@@ -16,7 +16,6 @@
     "build:copyfiles": "pnpm -r --stream build:copyfiles",
     "bootstrap": "lerna bootstrap",
     "test:ci": "jest --config=jest.json",
-
     "test": "jest --verbose --config=jest.json --coverage=true --detectOpenHandles",
     "test:watch": "pnpm test --watch --verbose",
     "test:lint": "eslint . --ext .ts",
@@ -39,9 +38,9 @@
     ]
   },
   "dependencies": {
-    "@veramo/core": "4.2.0",
     "@digitalcredentials/jsonld": "^6.0.0",
-    "@digitalcredentials/jsonld-signatures": "^9.4.0"
+    "@digitalcredentials/jsonld-signatures": "^9.4.0",
+    "@veramo/core": "4.2.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.24.8",
@@ -80,7 +79,8 @@
     "typescript": "5.6.3"
   },
   "engines": {
-    "node": ">= 20.0.0 < 22"
+    "node": ">= 20.0.0 < 22",
+    "pnpm": ">=10"
   },
   "prettier": {
     "endOfLine": "auto",
@@ -135,6 +135,20 @@
       "@veramo/data-store@4.2.0": "patches/@veramo__data-store@4.2.0.patch",
       "did-jwt@6.11.6": "patches/did-jwt@6.11.6.patch",
       "@veramo/credential-w3c@4.2.0": "patches/@veramo__credential-w3c@4.2.0.patch"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "@mattrglobal/node-bbs-signatures"
+    ],
+    "onlyBuiltDependencies": [
+      "@scarf/scarf",
+      "@sphereon/pex",
+      "canvas",
+      "dtrace-provider",
+      "keccak",
+      "nx",
+      "secp256k1",
+      "sodium-native",
+      "sqlite3"
+    ]
   }
 }
