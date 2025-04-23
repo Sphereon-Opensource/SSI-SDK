@@ -23,7 +23,7 @@
     "casbin": "^5.30.0",
     "cors": "^2.8.5",
     "dotenv-flow": "^3.3.0",
-    "elliptic": "6.5.4",
+    "elliptic": "6.6.1",
     "ethereum-cryptography": "^2.2.1",
     "ethers": "^5.7.2",
     "express": "^4.19.2",
