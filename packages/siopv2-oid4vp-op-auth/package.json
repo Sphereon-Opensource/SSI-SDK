@@ -7,6 +7,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -30,9 +31,9 @@
     "@sphereon/oid4vc-common": "0.17.1-feature.esm.cjs.39",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.contact-manager": "workspace:^",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-sdk.credential-store": "workspace:^",
@@ -58,7 +59,7 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
@@ -72,7 +73,7 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.5.4",
-    "typeorm": "^0.3.22"
+    "typeorm": "0.3.20"
   },
   "files": [
     "dist",

@@ -7,6 +7,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -23,8 +24,8 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:^",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.contact-manager": "workspace:^",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-sdk.data-store": "workspace:^",
@@ -68,7 +69,7 @@
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.22"
+    "typeorm": "0.3.20"
   },
   "files": [
     "dist",

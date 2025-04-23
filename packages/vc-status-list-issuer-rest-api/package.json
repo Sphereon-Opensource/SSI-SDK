@@ -8,6 +8,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -24,9 +25,9 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:^",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-sdk.data-store": "workspace:^",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:^",
@@ -37,14 +38,14 @@
     "debug": "^4.3.5",
     "express": "^4.19.2",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.22",
+    "typeorm": "0.3.20",
     "uint8arrays": "^3.1.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@sphereon/ssi-sdk.data-store": "workspace:^",
     "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:^",

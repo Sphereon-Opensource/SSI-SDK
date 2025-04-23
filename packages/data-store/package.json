@@ -7,6 +7,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -27,8 +28,8 @@
   "dependencies": {
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/pex": "5.0.0-unstable.28",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-types": "workspace:^",
@@ -38,7 +39,7 @@
     "class-validator": "^0.14.1",
     "dcql": "0.2.19",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.22"
+    "typeorm": "0.3.20"
   },
   "devDependencies": {
     "@types/sha.js": "^2.4.4",

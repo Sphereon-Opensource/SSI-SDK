@@ -8,6 +8,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -34,7 +35,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.17.1",
-    "typeorm": "^0.3.22"
+    "typeorm": "0.3.20"
   },
   "files": [
     "src",

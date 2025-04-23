@@ -7,8 +7,8 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
-      "react-native": "./dist/index.js",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
@@ -25,7 +25,7 @@
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
     "jsonpointer": "^5.0.1",
-    "typeorm": "^0.3.22",
+    "typeorm": "0.3.20",
     "url-parse": "^1.5.10",
     "yaml": "^2.4.5"
   },

@@ -8,6 +8,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -26,9 +27,9 @@
     "@sd-jwt/sd-jwt-vc": "^0.9.2",
     "@sphereon/kmp-cbor": "0.2.0-SNAPSHOT.25",
     "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.39",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-types": "workspace:^",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
@@ -38,7 +39,7 @@
     "debug": "^4.3.5",
     "jwt-decode": "^4.0.0",
     "pako": "^2.1.0",
-    "typeorm": "^0.3.22",
+    "typeorm": "0.3.20",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {

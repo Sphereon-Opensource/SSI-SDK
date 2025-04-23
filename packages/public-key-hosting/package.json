@@ -7,6 +7,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "react-native": "./dist/index.js",
     "import": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -23,10 +24,10 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:^",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.core": "workspace:^",
     "@sphereon/ssi-types": "workspace:^",
     "@veramo/core": "4.2.0",
@@ -44,8 +45,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.1-feature.esm.cjs.16",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.16",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk.agent-config": "workspace:^",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
@@ -69,7 +70,7 @@
     "passport": "^0.6.0",
     "passport-azure-ad": "^4.3.5",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.22"
+    "typeorm": "0.3.20"
   },
   "files": [
     "dist",
