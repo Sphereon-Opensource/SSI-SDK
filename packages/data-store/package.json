@@ -1,7 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.data-store",
   "version": "0.33.0",
-  "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -48,7 +47,6 @@
   },
   "files": [
     "dist",
-    "src",
     "README.md",
     "LICENSE"
   ],
