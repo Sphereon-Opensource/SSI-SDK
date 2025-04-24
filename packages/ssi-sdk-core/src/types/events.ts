@@ -1,13 +1,12 @@
 import {
-  ActionSubType,
-  ActionType,
+  ActionType, DefaultActionSubType,
   InitiatorType,
   LoggingEventType,
   LogLevel,
   SimpleLogEvent,
   SubSystem,
   System,
-  SystemCorrelationIdType,
+  SystemCorrelationIdType
 } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
 
@@ -28,7 +27,7 @@ export type AuditLoggingEvent = Omit<SimpleLogEvent, 'type' | 'data'> & {
   system: System
   subSystemType: SubSystem
   actionType: ActionType
-  actionSubType: ActionSubType
+  actionSubType: DefaultActionSubType | string
   initiatorType: InitiatorType
   systemCorrelationIdType?: SystemCorrelationIdType
   systemCorrelationId?: string
@@ -62,7 +61,7 @@ export type ActivityLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
   system: System
   subSystemType: SubSystem
   actionType: ActionType
-  actionSubType: ActionSubType
+  actionSubType: DefaultActionSubType | string
   initiatorType: InitiatorType
   systemCorrelationIdType?: SystemCorrelationIdType
   systemCorrelationId?: string

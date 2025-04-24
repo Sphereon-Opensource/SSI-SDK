@@ -55,7 +55,8 @@ export enum DefaultActionSubType {
   VC_SHARE_DECLINE = 'VC share decline',
 }
 
-export type ActionSubType = DefaultActionSubType | string
+// TODO: Somehow esbuild/tsup does not export this type
+// export type ActionSubType = DefaultActionSubType | string
 
 export enum InitiatorType {
   USER = 'user',
