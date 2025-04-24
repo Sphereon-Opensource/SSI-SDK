@@ -1,5 +1,5 @@
 import { type W3CVerifiableCredential } from './w3c-vc'
-import { type ProofFormat as VeramoProofFormat } from '@veramo/core'
+
 
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
@@ -9,4 +9,4 @@ export type CWT = string
 
 export type StatusListCredential = W3CVerifiableCredential | CWT
 
-export type ProofFormat = VeramoProofFormat | 'cbor'
+export type ProofFormat = 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor'
