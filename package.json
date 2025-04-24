@@ -10,6 +10,7 @@
     "packages/*"
   ],
   "license": "Apache-2.0",
+  "packageManager": "pnpm@10.8.1",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 turbo run build",
     "build:clean": "lerna clean -y && pnpm install && lerna run build:clean --concurrency 1 && pnpm build:copyfiles && pnpm build:schema",
@@ -94,7 +95,8 @@
     "vitest": "^3.0.8"
   },
   "engines": {
-    "node": ">= 20.6.0"
+    "node": ">= 20.6.0",
+    "pnpm": ">=10"
   },
   "prettier": {
     "endOfLine": "auto",

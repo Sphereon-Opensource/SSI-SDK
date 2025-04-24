@@ -930,7 +930,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         if (CredentialMapper.isWrappedSdJwtVerifiableCredential(wrappedIssuerVC)) {
           issuer = trimmed(wrappedIssuerVC.decoded?.sub)
         } else if (CredentialMapper.isWrappedW3CVerifiableCredential(wrappedIssuerVC)) {
-          issuer = trimmed(wrappedIssuerVC.credential?.sub) ?? trimmed(this.idFromW3cCredentialSubject(wrappedIssuerVC))
+          // @ts-ignore
+          issuer = trimmed(wrappedIssuerVC.credential?.sub) ?? trimmed(wrappedIssuerVC.credential?.credentialSubject?.id) ?? trimmed(this.idFromW3cCredentialSubject(wrappedIssuerVC))
         } else if (CredentialMapper.isWrappedMdocCredential(wrappedIssuerVC)) {
           return Promise.reject(Error('mdoc not yet supported'))
         }
@@ -990,7 +991,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
         logger.log(`Subject issuance/signing will sign credential of type ${proofFormat}:`, holderCredentialToSign)
         const issuedVC = await context.agent.createVerifiableCredential({
-          credential: holderCredentialToSign as CredentialPayload,
+          credential: ('vc' in holderCredentialToSign ? holderCredentialToSign.vc : holderCredentialToSign) as CredentialPayload,
           fetchRemoteContexts: true,
           save: false,
           proofFormat,
