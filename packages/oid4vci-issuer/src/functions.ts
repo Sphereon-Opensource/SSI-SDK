@@ -6,7 +6,7 @@ import {
   JWTHeader,
   JWTPayload,
   JwtVerifyResult,
-  OID4VCICredentialFormat,
+  type OID4VCICredentialFormat,
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
