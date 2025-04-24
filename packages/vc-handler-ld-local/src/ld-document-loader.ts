@@ -1,4 +1,4 @@
-import { extendContextLoader } from '@digitalcredentials/jsonld-signatures'
+import * as sigpkg from '@digitalcredentials/jsonld-signatures'
 import vc from '@digitalcredentials/vc'
 import {
   CredentialPayload,
@@ -52,7 +52,7 @@ export class LdDocumentLoader {
       verifiableData,
     }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiablePresentation | CredentialPayload | PresentationPayload },
   ) {
-    return extendContextLoader(async (url: string) => {
+    return sigpkg.extendContextLoader(async (url: string) => {
       if (!url || url.trim().length === 0) {
         throw Error('URL needs to be provided to load a context!')
       }

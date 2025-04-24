@@ -36,6 +36,7 @@ const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 export const VCDM_CREDENTIAL_CONTEXT_V1 = 'https://www.w3.org/2018/credentials/v1'
 export const VCDM_CREDENTIAL_CONTEXT_V2 = 'https://www.w3.org/ns/credentials/v2'
 export const VCDM_CREDENTIAL_CONTEXT_VERSIONS = [VCDM_CREDENTIAL_CONTEXT_V2, VCDM_CREDENTIAL_CONTEXT_V1]
+
 /**
  * {@inheritDoc IVcLocalIssuerJsonLd}
  */
@@ -164,8 +165,16 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     args: ICreateVerifiablePresentationLDArgs,
     context: IRequiredContext,
   ): Promise<VerifiablePresentationSP> {
+    const credentials = args?.presentation?.verifiableCredential ?? []
+    const v1Credential = credentials.find((cred) => typeof cred === 'object' && cred['@context'].includes(VCDM_CREDENTIAL_CONTEXT_V1))
+      ? VCDM_CREDENTIAL_CONTEXT_V1
+      : undefined
+    const v2Credential = credentials.find((cred) => typeof cred === 'object' && cred['@context'].includes(VCDM_CREDENTIAL_CONTEXT_V2))
+      ? VCDM_CREDENTIAL_CONTEXT_V2
+      : undefined
     const presentationContext = args?.presentation?.['@context'] ?? []
-    addVcdmContextIfNeeded(presentationContext)
+
+    addVcdmContextIfNeeded(presentationContext, v2Credential ?? v1Credential ?? VCDM_CREDENTIAL_CONTEXT_V2)
     const presentationType = processEntryToArray(args?.presentation?.type, 'VerifiablePresentation')
 
     const presentation: PresentationPayload = {
@@ -296,8 +305,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   }
 }
 
-function addVcdmContextIfNeeded(context: string[]): void {
+function addVcdmContextIfNeeded(context: string[], defaultValue: string = VCDM_CREDENTIAL_CONTEXT_V2): void {
   if (context.filter((val) => VCDM_CREDENTIAL_CONTEXT_VERSIONS.includes(val)).length === 0) {
-    context.unshift(VCDM_CREDENTIAL_CONTEXT_V2)
+    context.unshift(defaultValue)
   }
 }
