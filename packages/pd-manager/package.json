@@ -29,14 +29,14 @@
   "dependencies": {
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
-    "@sphereon/ssi-sdk.data-store": "workspace:^",
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
     "semver": "^7.6.3",
     "typeorm": "0.3.20"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:^",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/semver": "^7.5.8",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"

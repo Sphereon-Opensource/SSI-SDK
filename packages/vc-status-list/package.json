@@ -30,7 +30,7 @@
     "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.17",
     "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.esm.cjs.17",
-    "@sphereon/ssi-types": "workspace:^",
+    "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
     "@veramo/credential-status": "4.2.0",

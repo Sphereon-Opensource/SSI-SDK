@@ -27,13 +27,13 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.core": "workspace:^",
-    "@sphereon/ssi-sdk.data-store": "workspace:^",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "debug": "^4.3.5",
     "typeorm": "0.3.20"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:^",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },

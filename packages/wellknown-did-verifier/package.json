@@ -30,7 +30,7 @@
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:^",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/remote-client": "4.2.0",

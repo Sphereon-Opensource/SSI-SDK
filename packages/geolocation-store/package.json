@@ -27,10 +27,10 @@
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.kv-store-temp": "workspace:^"
+    "@sphereon/ssi-sdk.kv-store-temp": "workspace:*"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:^",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/node": "^20.17.1",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",

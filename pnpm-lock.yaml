@@ -39,6 +39,18 @@ overrides:
   '@sphereon/ssi-sdk-ext.x509-utils': 0.28.1-feature.esm.cjs.17
   '@sphereon/ssi-sdk-ext.jwt-service': 0.28.1-feature.esm.cjs.17
   '@sphereon/ssi-sdk-ext.identifier-resolution': 0.28.1-feature.esm.cjs.17
+  '@digitalcredentials/credentials-v2-context': ~0.0.1-beta.0
+  '@digitalcredentials/open-badges-context': ^2.1.0
+  '@digitalcredentials/ed25519-signature-2020': ~6.0.0
+  '@digitalcredentials/ed25519-verification-key-2020': ^4.0.0
+  '@digitalcredentials/jsonld': ^9.0.0
+  '@digitalcredentials/jsonld-signatures': ^12.0.1
+  '@digitalcredentials/rdf-canonize': ^1.0.0
+  '@digitalcredentials/vc': ^9.0.1
+  '@digitalcredentials/http-client': ^5.0.4
+  '@digitalcredentials/x25519-key-agreement-2020-context': ^1.0.0
+  '@digitalbazaar/ed25519-signature-2018': ^4.1.0
+  '@digitalbazaar/ed25519-verification-key-2018': ^4.0.0
   '@noble/hashes': 1.6.1
   debug: ^4.3.5
   dcql: 0.2.19
@@ -258,10 +270,10 @@ importers:
   packages/anomaly-detection:
     dependencies:
       '@sphereon/ssi-sdk.geolocation-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../geolocation-store
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       cross-fetch:
         specifier: ^3.1.8
@@ -280,7 +292,7 @@ importers:
         version: 0.3.20(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/node':
         specifier: ^20.17.1
@@ -295,7 +307,7 @@ importers:
   packages/contact-manager:
     dependencies:
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       cross-fetch:
         specifier: ^3.1.8
@@ -308,7 +320,7 @@ importers:
         version: 0.3.20(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -320,7 +332,7 @@ importers:
   packages/contact-manager-rest-api:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -329,16 +341,16 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../contact-manager
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -381,7 +393,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/body-parser':
         specifier: ^1.19.5
@@ -468,7 +480,7 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       cross-fetch:
         specifier: ^3.1.8
@@ -484,7 +496,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -505,16 +517,16 @@ importers:
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../mdl-mdoc
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -566,7 +578,7 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
@@ -697,19 +709,19 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../contact-manager
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.oid4vci-holder':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../oid4vci-holder
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-op-auth
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -758,7 +770,7 @@ importers:
         specifier: 0.17.1-feature.esm.cjs.39
         version: 0.17.1-feature.esm.cjs.39(encoding@0.1.13)
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -767,13 +779,13 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.public-key-hosting':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../public-key-hosting
       '@transmute/json-web-signature':
         specifier: 0.7.0-unstable.81
@@ -824,7 +836,7 @@ importers:
   packages/event-logger:
     dependencies:
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -834,7 +846,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
@@ -858,11 +870,11 @@ importers:
   packages/geolocation-store:
     dependencies:
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/node':
         specifier: ^20.17.1
@@ -883,7 +895,7 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       debug:
         specifier: ^4.3.5
@@ -893,7 +905,7 @@ importers:
         version: 0.3.20(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -939,7 +951,7 @@ importers:
         specifier: ^1.9.5
         version: 1.9.5
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/debug':
         specifier: ^4.1.12
@@ -1033,7 +1045,7 @@ importers:
         specifier: 0.17.1-feature.esm.cjs.39
         version: 0.17.1-feature.esm.cjs.39(encoding@0.1.13)
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -1042,13 +1054,13 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.public-key-hosting':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../public-key-hosting
       '@transmute/json-web-signature':
         specifier: 0.7.0-unstable.81
@@ -1121,7 +1133,7 @@ importers:
   packages/ms-request-api:
     dependencies:
       '@sphereon/ssi-sdk.ms-authenticator':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ms-authenticator
       '@veramo/core':
         specifier: 4.2.0
@@ -1131,10 +1143,10 @@ importers:
         version: 3.2.0(encoding@0.1.13)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.credential-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-store
       '@types/express':
         specifier: ^4.17.21
@@ -1206,40 +1218,40 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../contact-manager
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.credential-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-store
       '@sphereon/ssi-sdk.credential-validation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-validation
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.issuance-branding':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../issuance-branding
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../mdl-mdoc
       '@sphereon/ssi-sdk.oidf-client':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../oidf-client
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sd-jwt
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-op-auth
       '@sphereon/ssi-sdk.xstate-machine-persistence':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../xstate-persistence
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -1324,31 +1336,31 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../mdl-mdoc
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../oid4vci-issuer-store
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sd-jwt
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-sdk.vc-status-list-issuer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list-issuer
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -1361,7 +1373,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       cross-fetch:
         specifier: ^3.1.8
         version: 3.2.0(encoding@0.1.13)
@@ -1406,7 +1418,7 @@ importers:
         specifier: 0.17.1-feature.esm.cjs.39
         version: 0.17.1-feature.esm.cjs.39(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -1415,13 +1427,13 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-sdk.oid4vci-issuer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../oid4vci-issuer
       '@sphereon/ssi-sdk.oid4vci-issuer-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../oid4vci-issuer-store
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -1431,7 +1443,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       awesome-qr:
         specifier: ^2.1.5-rc.0
         version: 2.1.5-rc.0(encoding@0.1.13)
@@ -1488,10 +1500,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
@@ -1588,7 +1600,7 @@ importers:
         version: 3.2.0(encoding@0.1.13)
     devDependencies:
       '@sphereon/ssi-sdk.dev':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../dev
       '@types/node':
         specifier: ^20.17.1
@@ -1621,14 +1633,14 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       cross-fetch:
         specifier: ^3.1.8
         version: 3.2.0(encoding@0.1.13)
@@ -1640,7 +1652,7 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@types/uuid':
         specifier: ^9.0.8
@@ -1676,14 +1688,14 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.resource-resolver':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../resource-resolver
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -1695,10 +1707,10 @@ importers:
   packages/oidf-metadata-server:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -1714,7 +1726,7 @@ importers:
         version: 7.7.1
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/express':
         specifier: ^4.17.21
@@ -1741,7 +1753,7 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       cross-fetch:
         specifier: ^3.1.8
@@ -1757,7 +1769,7 @@ importers:
         version: 0.3.20(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/semver':
         specifier: ^7.5.8
@@ -1772,16 +1784,16 @@ importers:
   packages/pd-manager-rest-api:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../pd-manager
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -1824,7 +1836,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/body-parser':
         specifier: ^1.19.5
@@ -1914,13 +1926,13 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.credential-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -1933,7 +1945,7 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/json-buffer':
         specifier: ^3.0.2
@@ -1963,7 +1975,7 @@ importers:
   packages/public-key-hosting:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -2030,7 +2042,7 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/body-parser':
         specifier: ^1.19.5
@@ -2121,7 +2133,7 @@ importers:
         specifier: ^1.8.0
         version: 1.8.0
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@testing-library/jest-dom':
         specifier: ^5.17.0
@@ -2151,7 +2163,7 @@ importers:
   packages/remote-server-rest-api:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -2176,10 +2188,10 @@ importers:
   packages/resource-resolver:
     dependencies:
       '@sphereon/ssi-sdk.anomaly-detection':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../anomaly-detection
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       cross-fetch:
         specifier: ^3.1.8
@@ -2195,7 +2207,7 @@ importers:
         version: 3.1.1
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@veramo/remote-client':
         specifier: 4.2.0
@@ -2234,10 +2246,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../mdl-mdoc
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -2353,37 +2365,37 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.contact-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../contact-manager
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.credential-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-store
       '@sphereon/ssi-sdk.credential-validation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-validation
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.issuance-branding':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../issuance-branding
       '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sd-jwt
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-sdk.xstate-machine-persistence':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../xstate-persistence
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -2396,7 +2408,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       cross-fetch:
         specifier: ^3.1.8
         version: 3.2.0(encoding@0.1.13)
@@ -2426,7 +2438,7 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/i18n-js':
         specifier: ^3.8.9
@@ -2495,25 +2507,25 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.credential-validation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-validation
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-sdk.mdl-mdoc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../mdl-mdoc
       '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.sd-jwt':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sd-jwt
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -2526,7 +2538,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       cross-fetch:
         specifier: ^3.1.8
         version: 3.2.0(encoding@0.1.13)
@@ -2565,28 +2577,28 @@ importers:
         specifier: 0.17.1-feature.esm.cjs.39
         version: 0.17.1-feature.esm.cjs.39(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.credential-validation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-validation
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-sdk.pd-manager':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../pd-manager
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-rp-auth
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -2596,7 +2608,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       awesome-qr:
         specifier: ^2.1.5-rc.0
         version: 2.1.5-rc.0(encoding@0.1.13)
@@ -2647,10 +2659,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
@@ -2749,7 +2761,7 @@ importers:
   packages/siopv2-oid4vp-rp-rest-client:
     dependencies:
       '@sphereon/ssi-sdk.siopv2-oid4vp-common':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../siopv2-oid4vp-common
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -2948,7 +2960,7 @@ importers:
   packages/uni-resolver-registrar-api:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -3009,10 +3021,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
@@ -3153,23 +3165,23 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
       '@veramo-community/lds-ecdsa-secp256k1-recovery2020':
         specifier: github:uport-project/EcdsaSecp256k1RecoverySignature2020
-        version: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -3233,10 +3245,10 @@ importers:
         version: 4.33.0(eslint@8.57.1)(typescript@5.8.3)
       '@veramo/credential-ld':
         specifier: 4.2.0
-        version: 4.2.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(encoding@0.1.13)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
@@ -3320,7 +3332,7 @@ importers:
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: 7.0.0-next.0
-        version: 7.0.0-next.0(encoding@0.1.13)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -3389,17 +3401,17 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list-issuer-drivers
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: 7.0.0-next.0
-        version: 7.0.0-next.0(encoding@0.1.13)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -3441,13 +3453,13 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
@@ -3484,7 +3496,7 @@ importers:
         version: 9.0.8
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
@@ -3522,7 +3534,7 @@ importers:
   packages/vc-status-list-issuer-drivers:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -3531,23 +3543,23 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: 7.0.0-next.0
-        version: 7.0.0-next.0(encoding@0.1.13)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -3574,7 +3586,7 @@ importers:
   packages/vc-status-list-issuer-rest-api:
     dependencies:
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: 0.28.1-feature.esm.cjs.17
@@ -3589,20 +3601,20 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-sdk.vc-status-list-issuer-drivers':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list-issuer-drivers
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
       '@sphereon/vc-status-list':
         specifier: 7.0.0-next.0
-        version: 7.0.0-next.0(encoding@0.1.13)
+        version: 7.0.0-next.0
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -3635,10 +3647,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
@@ -3675,7 +3687,7 @@ importers:
         version: 9.0.8
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       '@veramo/data-store':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
@@ -3732,10 +3744,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -3748,7 +3760,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       '@veramo/did-manager':
         specifier: 4.2.0
         version: 4.2.0
@@ -3777,28 +3789,28 @@ importers:
         specifier: 0.17.1-feature.esm.cjs.39
         version: 0.17.1-feature.esm.cjs.39(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.credential-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-store
       '@sphereon/ssi-sdk.kv-store-temp':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../kv-store
       '@sphereon/ssi-sdk.presentation-exchange':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../presentation-exchange
       '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list
       '@sphereon/ssi-sdk.vc-status-list-issuer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-status-list-issuer
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -3808,7 +3820,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-w3c':
         specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       body-parser:
         specifier: ^1.20.2
         version: 1.20.3
@@ -3859,10 +3871,10 @@ importers:
         specifier: 0.28.1-feature.esm.cjs.17
         version: 0.28.1-feature.esm.cjs.17(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
@@ -3961,7 +3973,7 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.dev':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../dev
       '@veramo/core':
         specifier: 4.2.0
@@ -3990,7 +4002,7 @@ importers:
         version: 3.2.0(encoding@0.1.13)
     devDependencies:
       '@sphereon/ssi-sdk.dev':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../dev
       '@veramo/cli':
         specifier: 4.2.0
@@ -4023,7 +4035,7 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
       '@sphereon/ssi-express-support':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ssi-express-support
       '@veramo/core':
         specifier: 4.2.0
@@ -4141,10 +4153,10 @@ importers:
         specifier: workspace:*
         version: link:../ssi-sdk-core
       '@sphereon/ssi-sdk.credential-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../credential-store
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@sphereon/ssi-types':
         specifier: workspace:*
@@ -4175,7 +4187,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@types/express':
         specifier: ^4.17.21
@@ -4215,7 +4227,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@veramo/did-provider-key':
         specifier: 4.2.0
@@ -4239,7 +4251,7 @@ importers:
   packages/xstate-persistence:
     dependencies:
       '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../data-store
       '@veramo/core':
         specifier: 4.2.0
@@ -4255,7 +4267,7 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../agent-config
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
@@ -5108,25 +5120,13 @@ packages:
     resolution: {integrity: sha512-i0AQXFnMeOqf2uKNBUcnN78mO8L9H91QKMdpDqsgDYzTIKGLnNCOOxbRbrJOimhR+soYO64xn54U8/R7Qx0nyA==}
     engines: {node: '>=18'}
 
-  '@digitalcredentials/ed25519-signature-2020@3.0.2':
-    resolution: {integrity: sha512-R8IrR21Dh+75CYriQov3nVHKaOVusbxfk9gyi6eCAwLHKn6fllUt+2LQfuUrL7Ts/sGIJqQcev7YvkX9GvyYRA==}
-    engines: {node: '>=14'}
-
   '@digitalcredentials/ed25519-signature-2020@6.0.0':
     resolution: {integrity: sha512-ncjJxGxMRtm7ooR1XdUT2dgXrGnFa4oAG1WMShBi93N5I1OUdUlNUtKrMiMzp6PlhVD+4x7VMuOA4oRM8adEgw==}
-    engines: {node: '>=14'}
-
-  '@digitalcredentials/ed25519-verification-key-2020@3.2.2':
-    resolution: {integrity: sha512-ZfxNFZlA379MZpf+gV2tUYyiZ15eGVgjtCQLWlyu3frWxsumUgv++o0OJlMnrDsWGwzFMRrsXcosd5+752rLOA==}
     engines: {node: '>=14'}
 
   '@digitalcredentials/ed25519-verification-key-2020@4.0.0':
     resolution: {integrity: sha512-GrfITgp1guFbExZckj2q6LOxxm08PFSScr0lBYtDRezJa6CTpA9XQ8yXSSXE3LvpEi5/2uOMFxxIfKAtL1J2ww==}
     engines: {node: '>=18'}
-
-  '@digitalcredentials/http-client@1.2.2':
-    resolution: {integrity: sha512-YOwaE+vUDSwiDhZT0BbXSWVg+bvp1HA1eg/gEc8OCwCOj9Bn9FRQdu8P9Y/fnYqyFCioDwwTRzGxgJLl50baEg==}
-    engines: {node: '>=12.0.0'}
 
   '@digitalcredentials/http-client@5.0.4':
     resolution: {integrity: sha512-TbbfFauhd5fUAcZ/6TDenTuYqkzqdEhxYk1Rqicxcz33B9rzvJcmT+/81KF9DrUXmu6gpoqCranT2UkZftsxZA==}
@@ -5135,18 +5135,6 @@ packages:
   '@digitalcredentials/jsonld-signatures@12.0.1':
     resolution: {integrity: sha512-KdyE7Bex+boqKRbvxofRyuI09BD6/8hQGSC5qbrXEmHd0oSLqePqKBM2pu9UZnzjxMZrN9sB3RqHxpijYEFh/w==}
     engines: {node: '>=18'}
-
-  '@digitalcredentials/jsonld-signatures@9.4.0':
-    resolution: {integrity: sha512-DnR+HDTm7qpcDd0wcD1w6GdlAwfHjQSgu+ahion8REkCkkMRywF+CLunU7t8AZpFB2Gr/+N8naUtiEBNje1Oew==}
-    engines: {node: '>=18'}
-
-  '@digitalcredentials/jsonld@5.2.2':
-    resolution: {integrity: sha512-hz7YR3kv6+8UUdgMyTGl1o8NjVKKwnMry/Rh/rWeAvwL+NqgoUHorWzI3rM+PW+MPFyDC0ieXStClt9n9D9SGA==}
-    engines: {node: '>=12'}
-
-  '@digitalcredentials/jsonld@6.0.0':
-    resolution: {integrity: sha512-5tTakj0/GsqAJi8beQFVMQ97wUJZnuxViW9xRuAATL6eOBIefGBwHkVryAgEq2I4J/xKgb/nEyw1ZXX0G8wQJQ==}
-    engines: {node: '>=12'}
 
   '@digitalcredentials/jsonld@9.0.0':
     resolution: {integrity: sha512-lWVpg65xQbi4lvXWs3BezCwPrGDAllFjHwTBUWJCoKsfGzxtxTwbRNXpfhii5psQ2vvpjPXSI+y0uyRNOzr4cw==}
@@ -5161,14 +5149,6 @@ packages:
 
   '@digitalcredentials/rdf-canonize@1.0.0':
     resolution: {integrity: sha512-z8St0Ex2doecsExCFK1uI4gJC+a5EqYYu1xpRH1pKmqSS9l/nxfuVxexNFyaeEum4dUdg1EetIC2rTwLIFhPRA==}
-    engines: {node: '>=12'}
-
-  '@digitalcredentials/vc@4.2.0':
-    resolution: {integrity: sha512-8Rxpn77JghJN7noBQdcMuzm/tB8vhDwPoFepr3oGd5w+CyJxOk2RnBlgIGlAAGA+mALFWECPv1rANfXno+hdjA==}
-    engines: {node: '>=12'}
-
-  '@digitalcredentials/vc@5.0.0':
-    resolution: {integrity: sha512-87ARRxlAdIuUPArbMYJ8vUY7QqkIvJGFrBwfTH1PcB8Wz1E/M4q3oc/WLrDyJNg4o/irVVB5gkA9iIntTYSpoA==}
     engines: {node: '>=12'}
 
   '@digitalcredentials/vc@9.0.1':
@@ -6516,11 +6496,9 @@ packages:
 
   '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
     resolution: {integrity: sha512-EFuAtA4zaONe1/BGOntx9m1Oov6iVSMhbjhht6ST/6hFx+VMCs5iDTnl8qay3dleIOoDEluK8AnSiufi56+IJA==}
-    bundledDependencies: []
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
-    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
@@ -8902,8 +8880,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.141:
-    resolution: {integrity: sha512-qS+qH9oqVYc1ooubTiB9l904WVyM6qNYxtOEEGReoZXw3xlqeYdFr5GclNzbkAufWgwWLEPoDi3d9MoRwwIjGw==}
+  electron-to-chromium@1.5.142:
+    resolution: {integrity: sha512-Ah2HgkTu/9RhTDNThBtzu2Wirdy4DC9b0sMT1pUhbkZQ5U/iwmE+PHZX1MpjD5IkJCc2wSghgGG/B04szAx07w==}
 
   elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -10594,20 +10572,6 @@ packages:
   kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
-
-  ky-universal@0.8.2:
-    resolution: {integrity: sha512-xe0JaOH9QeYxdyGLnzUOVGK4Z6FGvDVzcXFTdrYA1f33MZdEa45sUDaMBy98xQMcsd2XIBrTXRrRYnegcSdgVQ==}
-    engines: {node: '>=10.17'}
-    peerDependencies:
-      ky: '>=0.17.0'
-      web-streams-polyfill: '>=2.0.0'
-    peerDependenciesMeta:
-      web-streams-polyfill:
-        optional: true
-
-  ky@0.25.1:
-    resolution: {integrity: sha512-PjpCEWlIU7VpiMVrTwssahkYXX1by6NCT0fhTUX34F3DTinARlgMpriuroolugFPcMgpPWrOW4mTb984Qm1RXA==}
-    engines: {node: '>=10'}
 
   ky@1.8.1:
     resolution: {integrity: sha512-7Bp3TpsE+L+TARSnnDpk3xg8Idi8RwSLdj6CMbNWoOARIrGrbuLGusV0dYwbZOm4bB3jHNxSw8Wk/ByDqJEnDw==}
@@ -15211,47 +15175,19 @@ snapshots:
 
   '@digitalcredentials/credentials-v2-context@0.0.1-beta.0': {}
 
-  '@digitalcredentials/ed25519-signature-2020@3.0.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
-    dependencies:
-      '@digitalcredentials/base58-universal': 1.0.1
-      '@digitalcredentials/ed25519-verification-key-2020': 3.2.2
-      '@digitalcredentials/jsonld-signatures': 9.4.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      ed25519-signature-2018-context: 1.1.0
-      ed25519-signature-2020-context: 1.1.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
-
   '@digitalcredentials/ed25519-signature-2020@6.0.0':
     dependencies:
       '@digitalcredentials/base58-universal': 1.0.1
-      '@digitalcredentials/ed25519-verification-key-2020': 3.2.2
+      '@digitalcredentials/ed25519-verification-key-2020': 4.0.0
       '@digitalcredentials/jsonld-signatures': 12.0.1
       ed25519-signature-2018-context: 1.1.0
       ed25519-signature-2020-context: 1.1.0
-
-  '@digitalcredentials/ed25519-verification-key-2020@3.2.2':
-    dependencies:
-      '@digitalcredentials/base58-universal': 1.0.1
-      '@stablelib/ed25519': 1.0.3
-      base64url-universal: 1.1.0
-      crypto-ld: 6.0.0
 
   '@digitalcredentials/ed25519-verification-key-2020@4.0.0':
     dependencies:
       '@digitalcredentials/keypair': 1.0.5
       '@noble/ed25519': 1.7.5
       base-x: 4.0.1
-
-  '@digitalcredentials/http-client@1.2.2(encoding@0.1.13)(web-streams-polyfill@3.3.3)':
-    dependencies:
-      ky: 0.25.1
-      ky-universal: 0.8.2(encoding@0.1.13)(ky@0.25.1)(web-streams-polyfill@3.3.3)
-    transitivePeerDependencies:
-      - encoding
-      - web-streams-polyfill
 
   '@digitalcredentials/http-client@5.0.4':
     dependencies:
@@ -15264,43 +15200,6 @@ snapshots:
       '@digitalcredentials/jsonld': 9.0.0
       fast-text-encoding: 1.0.6
       serialize-error: 8.1.0
-
-  '@digitalcredentials/jsonld-signatures@9.4.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
-    dependencies:
-      '@digitalbazaar/security-context': 1.0.1
-      '@digitalcredentials/jsonld': 6.0.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      fast-text-encoding: 1.0.6
-      isomorphic-webcrypto: 2.3.8(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
-      serialize-error: 8.1.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
-
-  '@digitalcredentials/jsonld@5.2.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
-    dependencies:
-      '@digitalcredentials/http-client': 1.2.2(encoding@0.1.13)(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/rdf-canonize': 1.0.0(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
-      canonicalize: 1.0.8
-      lru-cache: 6.0.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
-
-  '@digitalcredentials/jsonld@6.0.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
-    dependencies:
-      '@digitalcredentials/http-client': 1.2.2(encoding@0.1.13)(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/rdf-canonize': 1.0.0(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
-      canonicalize: 1.0.8
-      lru-cache: 6.0.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
 
   '@digitalcredentials/jsonld@9.0.0':
     dependencies:
@@ -15320,28 +15219,6 @@ snapshots:
     transitivePeerDependencies:
       - expo
       - react-native
-
-  '@digitalcredentials/vc@4.2.0(encoding@0.1.13)':
-    dependencies:
-      '@digitalcredentials/jsonld': 5.2.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/jsonld-signatures': 9.4.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      credentials-context: 2.0.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
-
-  '@digitalcredentials/vc@5.0.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
-    dependencies:
-      '@digitalcredentials/jsonld': 5.2.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/jsonld-signatures': 9.4.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      credentials-context: 2.0.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
 
   '@digitalcredentials/vc@9.0.1':
     dependencies:
@@ -18300,17 +18177,12 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@sphereon/vc-status-list@7.0.0-next.0(encoding@0.1.13)':
+  '@sphereon/vc-status-list@7.0.0-next.0':
     dependencies:
       '@digitalbazaar/vc-status-list-context': 3.1.1
       '@digitalcredentials/bitstring': 2.0.1
-      '@digitalcredentials/vc': 4.2.0(encoding@0.1.13)
+      '@digitalcredentials/vc': 9.0.1
       credentials-context: 2.0.0
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
 
   '@sphereon/wellknown-dids-client@0.1.3(encoding@0.1.13)':
     dependencies:
@@ -19183,21 +19055,16 @@ snapshots:
       wonka: 6.3.5
     optional: true
 
-  '@veramo-community/lds-ecdsa-secp256k1-recovery2020@https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
+  '@veramo-community/lds-ecdsa-secp256k1-recovery2020@https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b':
     dependencies:
       '@bitauth/libauth': 1.19.1
-      '@digitalcredentials/jsonld': 5.2.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/jsonld-signatures': 9.4.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@digitalcredentials/jsonld': 9.0.0
+      '@digitalcredentials/jsonld-signatures': 12.0.1
       '@ethersproject/transactions': 5.8.0
       '@trust/keyto': 1.0.1
       base64url: 3.0.1
       crypto-ld: 7.0.0
       json-stringify-deterministic: 1.0.12
-    transitivePeerDependencies:
-      - encoding
-      - expo
-      - react-native
-      - web-streams-polyfill
 
   '@veramo/cli@4.2.0(@types/node@20.17.30)(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
     dependencies:
@@ -19207,8 +19074,8 @@ snapshots:
       '@types/swagger-ui-express': 4.1.8
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/credential-eip712': 4.2.0(encoding@0.1.13)
-      '@veramo/credential-ld': 4.2.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@veramo/credential-w3c': 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@veramo/credential-ld': 4.2.0(encoding@0.1.13)
+      '@veramo/credential-w3c': 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       '@veramo/data-store': 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@veramo/did-comm': 4.2.0(encoding@0.1.13)
       '@veramo/did-discovery': 4.2.0
@@ -19266,7 +19133,6 @@ snapshots:
       - bluebird
       - bufferutil
       - encoding
-      - expo
       - hdb-pool
       - ioredis
       - mongodb
@@ -19275,14 +19141,12 @@ snapshots:
       - oracledb
       - pg-native
       - pg-query-stream
-      - react-native
       - redis
       - sql.js
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
       - utf-8-validate
-      - web-streams-polyfill
 
   '@veramo/core@4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)':
     dependencies:
@@ -19306,16 +19170,16 @@ snapshots:
       - encoding
       - supports-color
 
-  '@veramo/credential-ld@4.2.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
+  '@veramo/credential-ld@4.2.0(encoding@0.1.13)':
     dependencies:
-      '@digitalcredentials/ed25519-signature-2020': 3.0.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/jsonld': 5.2.2(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/jsonld-signatures': 9.4.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/vc': 5.0.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@digitalcredentials/ed25519-signature-2020': 6.0.0
+      '@digitalcredentials/jsonld': 9.0.0
+      '@digitalcredentials/jsonld-signatures': 12.0.1
+      '@digitalcredentials/vc': 9.0.1
       '@transmute/credentials-context': 0.7.0-unstable.82
       '@transmute/ed25519-signature-2018': 0.7.0-unstable.82
       '@transmute/json-web-signature': 0.7.0-unstable.81
-      '@veramo-community/lds-ecdsa-secp256k1-recovery2020': https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@veramo-community/lds-ecdsa-secp256k1-recovery2020': https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/did-resolver': 4.2.0(encoding@0.1.13)
       '@veramo/utils': 4.2.0(encoding@0.1.13)
@@ -19324,10 +19188,7 @@ snapshots:
       uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
-      - expo
-      - react-native
       - supports-color
-      - web-streams-polyfill
 
   '@veramo/credential-status@4.2.0(encoding@0.1.13)':
     dependencies:
@@ -19340,7 +19201,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@veramo/credential-w3c@4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)':
+  '@veramo/credential-w3c@4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       '@veramo/did-jwt': 4.2.0
@@ -19354,13 +19215,10 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
     optionalDependencies:
-      '@veramo/credential-ld': 4.2.0(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@veramo/credential-ld': 4.2.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
-      - expo
-      - react-native
       - supports-color
-      - web-streams-polyfill
 
   '@veramo/data-store@4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.15.5)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.22(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
     dependencies:
@@ -19572,7 +19430,7 @@ snapshots:
   '@veramo/selective-disclosure@4.2.0(encoding@0.1.13)':
     dependencies:
       '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
-      '@veramo/credential-w3c': 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@veramo/credential-w3c': 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
       '@veramo/did-jwt': 4.2.0
       '@veramo/message-handler': 4.2.0
       debug: 4.4.0
@@ -19580,10 +19438,7 @@ snapshots:
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
-      - expo
-      - react-native
       - supports-color
-      - web-streams-polyfill
 
   '@veramo/url-handler@4.2.0(encoding@0.1.13)':
     dependencies:
@@ -20305,7 +20160,7 @@ snapshots:
   browserslist@4.24.4:
     dependencies:
       caniuse-lite: 1.0.30001715
-      electron-to-chromium: 1.5.141
+      electron-to-chromium: 1.5.142
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.4)
 
@@ -21317,7 +21172,7 @@ snapshots:
     dependencies:
       jake: 10.9.2
 
-  electron-to-chromium@1.5.141: {}
+  electron-to-chromium@1.5.142: {}
 
   elliptic@6.5.4:
     dependencies:
@@ -23631,18 +23486,6 @@ snapshots:
 
   kleur@3.0.3:
     optional: true
-
-  ky-universal@0.8.2(encoding@0.1.13)(ky@0.25.1)(web-streams-polyfill@3.3.3):
-    dependencies:
-      abort-controller: 3.0.0
-      ky: 0.25.1
-      node-fetch: 2.7.0(encoding@0.1.13)
-    optionalDependencies:
-      web-streams-polyfill: 3.3.3
-    transitivePeerDependencies:
-      - encoding
-
-  ky@0.25.1: {}
 
   ky@1.8.1: {}
 

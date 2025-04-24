@@ -29,12 +29,12 @@
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.39",
-    "@sphereon/ssi-types": "workspace:^",
+    "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.dev": "workspace:^",
+    "@sphereon/ssi-sdk.dev": "workspace:*",
     "@types/node": "^20.17.1",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
