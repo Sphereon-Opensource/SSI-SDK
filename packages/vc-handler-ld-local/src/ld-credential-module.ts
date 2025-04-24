@@ -1,4 +1,5 @@
-import { purposes } from '@digitalcredentials/jsonld-signatures'
+import * as sigpkg from '@digitalcredentials/jsonld-signatures'
+const { purposes } = sigpkg
 import * as vc from '@digitalcredentials/vc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'

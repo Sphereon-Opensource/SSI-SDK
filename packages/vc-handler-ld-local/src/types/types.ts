@@ -1,4 +1,5 @@
-import { purposes } from '@digitalcredentials/jsonld-signatures'
+import * as sigpkg from '@digitalcredentials/jsonld-signatures'
+const { purposes } = sigpkg
 import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
 import {
