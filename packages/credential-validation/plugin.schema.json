@@ -18,10 +18,7 @@
               "$ref": "#/components/schemas/VerificationPolicies"
             }
           },
-          "required": [
-            "credential",
-            "fetchRemoteContexts"
-          ]
+          "required": ["credential", "fetchRemoteContexts"]
         },
         "OriginalVerifiableCredential": {
           "anyOf": [
@@ -153,14 +150,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof",
-            "type"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof", "type"]
         },
         "IProof": {
           "type": "object",
@@ -219,12 +209,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ]
+          "required": ["type", "created", "proofPurpose", "verificationMethod"]
         },
         "IProofType": {
           "type": "string",
@@ -294,9 +279,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "IIssuerId": {
           "type": "string"
@@ -308,9 +291,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "ICredentialStatus": {
           "type": "object",
@@ -322,10 +303,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CompactJWT": {
           "type": "string",
@@ -353,14 +331,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "vc",
-            "exp",
-            "iss",
-            "nbf",
-            "sub",
-            "jti"
-          ]
+          "required": ["vc", "exp", "iss", "nbf", "sub", "jti"]
         },
         "SdJwtDecodedVerifiableCredential": {
           "type": "object",
@@ -413,10 +384,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "idx",
-                    "uri"
-                  ]
+                  "required": ["idx", "uri"]
                 },
                 "sub": {
                   "type": "string"
@@ -440,21 +408,11 @@
                     "not": {}
                   },
                   {
-                    "type": [
-                      "string",
-                      "number",
-                      "boolean",
-                      "object",
-                      "array"
-                    ]
+                    "type": ["string", "number", "boolean", "object", "array"]
                   }
                 ]
               },
-              "required": [
-                "iat",
-                "iss",
-                "vct"
-              ],
+              "required": ["iat", "iss", "vct"],
               "description": "The signed payload is the payload of the sd-jwt that is actually signed, and that includes the `_sd` and `...` digests."
             },
             "decodedPayload": {
@@ -474,19 +432,11 @@
                   "$ref": "#/components/schemas/CompactJWT"
                 }
               },
-              "required": [
-                "header",
-                "payload"
-              ],
+              "required": ["header", "payload"],
               "description": "Key binding JWT"
             }
           },
-          "required": [
-            "compactSdJwtVc",
-            "disclosures",
-            "signedPayload",
-            "decodedPayload"
-          ],
+          "required": ["compactSdJwtVc", "disclosures", "signedPayload", "decodedPayload"],
           "description": "The decoded SD JWT Verifiable Credential. This representation includes multiple representations of the same SD-JWT, and allows to fully process an SD-JWT, as well as create a presentation SD-JWT  (minus the KB-JWT) by removing certain disclosures from the compact SD-JWT.\n\nThis representation is useful as it doesn't require a hasher implementation to match the different digests in the signed SD-JWT payload, with the different disclosures."
         },
         "SdJwtDisclosure": {
@@ -502,11 +452,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "encoded",
-            "decoded",
-            "digest"
-          ]
+          "required": ["encoded", "decoded", "digest"]
         },
         "SdJwtDecodedDisclosure": {
           "anyOf": [
@@ -668,20 +614,13 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "idx",
-                "uri"
-              ]
+              "required": ["idx", "uri"]
             },
             "sub": {
               "type": "string"
             }
           },
-          "required": [
-            "vct",
-            "iss",
-            "iat"
-          ],
+          "required": ["vct", "iss", "iat"],
           "additionalProperties": {
             "anyOf": [
               {
@@ -730,10 +669,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "typ",
-            "alg"
-          ]
+          "required": ["typ", "alg"]
         },
         "SdJwtVcKbJwtPayload": {
           "type": "object",
@@ -751,12 +687,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "iat",
-            "aud",
-            "nonce",
-            "sd_hash"
-          ],
+          "required": ["iat", "aud", "nonce", "sd_hash"],
           "additionalProperties": {}
         },
         "MdocOid4vpIssuerSigned": {
@@ -789,9 +720,7 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "byteLength"
-                      ]
+                      "required": ["byteLength"]
                     }
                   ]
                 },
@@ -799,10 +728,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "data",
-                "alg"
-              ],
+              "required": ["data", "alg"],
               "additionalProperties": false
             }
           }
@@ -823,18 +749,11 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "expirationDate",
-            "issuanceDate"
-          ]
+          "required": ["expirationDate", "issuanceDate"]
         },
         "SchemaValidation": {
           "type": "string",
-          "enum": [
-            "ALWAYS",
-            "NEVER",
-            "WHEN_PRESENT"
-          ]
+          "enum": ["ALWAYS", "NEVER", "WHEN_PRESENT"]
         },
         "VerificationResult": {
           "type": "object",
@@ -865,11 +784,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "result",
-            "source",
-            "subResults"
-          ]
+          "required": ["result", "source", "subResults"]
         },
         "WrappedVerifiableCredential": {
           "anyOf": [
@@ -928,12 +843,7 @@
             },
             "format": {
               "type": "string",
-              "enum": [
-                "jwt_vc",
-                "ldp_vc",
-                "ldp",
-                "jwt"
-              ],
+              "enum": ["jwt_vc", "ldp_vc", "ldp", "jwt"],
               "description": "The claim format, typically used during exchange transport protocols"
             },
             "credential": {
@@ -941,13 +851,7 @@
               "description": "Internal stable representation of a Credential"
             }
           },
-          "required": [
-            "original",
-            "decoded",
-            "type",
-            "format",
-            "credential"
-          ]
+          "required": ["original", "decoded", "type", "format", "credential"]
         },
         "WrappedSdJwtVerifiableCredential": {
           "type": "object",
@@ -990,13 +894,7 @@
               "description": "Internal stable representation of a Credential"
             }
           },
-          "required": [
-            "original",
-            "decoded",
-            "type",
-            "format",
-            "credential"
-          ]
+          "required": ["original", "decoded", "type", "format", "credential"]
         },
         "CompactSdJwtVc": {
           "type": "string",
@@ -1043,24 +941,14 @@
               "description": "Internal stable representation of a Credential"
             }
           },
-          "required": [
-            "original",
-            "decoded",
-            "type",
-            "format",
-            "credential"
-          ]
+          "required": ["original", "decoded", "type", "format", "credential"]
         },
         "MdocDecodedPayload": {
           "type": "object",
           "additionalProperties": {
             "type": "object",
             "additionalProperties": {
-              "type": [
-                "string",
-                "number",
-                "boolean"
-              ]
+              "type": ["string", "number", "boolean"]
             }
           },
           "description": "Record where keys are the namespaces and the values are objects again with the namespace values"
@@ -1122,10 +1010,7 @@
             },
             "format": {
               "type": "string",
-              "enum": [
-                "jwt_vp",
-                "ldp_vp"
-              ],
+              "enum": ["jwt_vp", "ldp_vp"],
               "description": "The claim format, typically used during exchange transport protocols"
             },
             "presentation": {
@@ -1140,14 +1025,7 @@
               "description": "Wrapped Verifiable Credentials belonging to the Presentation"
             }
           },
-          "required": [
-            "original",
-            "decoded",
-            "type",
-            "format",
-            "presentation",
-            "vcs"
-          ]
+          "required": ["original", "decoded", "type", "format", "presentation", "vcs"]
         },
         "W3CVerifiablePresentation": {
           "anyOf": [
@@ -1221,10 +1099,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "proof"
-          ]
+          "required": ["@context", "proof"]
         },
         "PresentationSubmission": {
           "type": "object",
@@ -1245,11 +1120,7 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": [
-            "id",
-            "definition_id",
-            "descriptor_map"
-          ],
+          "required": ["id", "definition_id", "descriptor_map"],
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
         "Descriptor": {
@@ -1271,11 +1142,7 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": [
-            "id",
-            "path",
-            "format"
-          ],
+          "required": ["id", "path", "format"],
           "description": "descriptor map laying out the structure of the presentation submission."
         },
         "JwtDecodedVerifiablePresentation": {
@@ -1306,16 +1173,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "vp",
-            "exp",
-            "iss",
-            "nbf",
-            "sub",
-            "jti",
-            "aud",
-            "iat"
-          ]
+          "required": ["vp", "exp", "iss", "nbf", "sub", "jti", "aud", "iat"]
         },
         "UniformVerifiablePresentation": {
           "type": "object",
@@ -1359,11 +1217,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "type",
-            "verifiableCredential"
-          ]
+          "required": ["@context", "type", "verifiableCredential"]
         },
         "WrappedSdJwtVerifiablePresentation": {
           "type": "object",
@@ -1415,14 +1269,7 @@
               "description": "Wrapped Verifiable Credentials belonging to the Presentation. Will always be an array with a single SdJwtVerifiableCredential entry."
             }
           },
-          "required": [
-            "original",
-            "decoded",
-            "type",
-            "format",
-            "presentation",
-            "vcs"
-          ]
+          "required": ["original", "decoded", "type", "format", "presentation", "vcs"]
         },
         "WrappedMdocPresentation": {
           "type": "object",
@@ -1472,14 +1319,7 @@
               "description": "Wrapped Mdocs belonging to the Presentation. There can be multiple documents in a single device response"
             }
           },
-          "required": [
-            "original",
-            "decoded",
-            "type",
-            "format",
-            "presentation",
-            "vcs"
-          ]
+          "required": ["original", "decoded", "type", "format", "presentation", "vcs"]
         },
         "MdocDeviceResponse": {
           "$ref": "#/components/schemas/com.sphereon.mdoc.data.device.DeviceResponseCbor"
@@ -1504,9 +1344,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "result"
-          ]
+          "required": ["result"]
         },
         "VerifyMdocCredentialArgs": {
           "type": "object",
@@ -1515,9 +1353,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "credential"
-          ]
+          "required": ["credential"]
         },
         "ValidateSchemaArgs": {
           "type": "object",
@@ -1532,9 +1368,7 @@
               "$ref": "#/components/schemas/HasherSync"
             }
           },
-          "required": [
-            "credential"
-          ]
+          "required": ["credential"]
         },
         "VerifySDJWTCredentialArgs": {
           "type": "object",
@@ -1546,9 +1380,7 @@
               "$ref": "#/components/schemas/HasherSync"
             }
           },
-          "required": [
-            "credential"
-          ]
+          "required": ["credential"]
         },
         "VerifyW3CCredentialArgs": {
           "type": "object"

@@ -9,9 +9,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "itemId"
-          ]
+          "required": ["itemId"]
         },
         "DeleteDefinitionItemsArgs": {
           "$ref": "#/components/schemas/GetDefinitionItemsArgs"
@@ -79,9 +77,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "itemId"
-          ]
+          "required": ["itemId"]
         },
         "PresentationDefinitionItem": {
           "type": "object",
@@ -119,14 +115,7 @@
               "format": "date-time"
             }
           },
-          "required": [
-            "id",
-            "definitionId",
-            "version",
-            "definitionPayload",
-            "createdAt",
-            "lastUpdatedAt"
-          ]
+          "required": ["id", "definitionId", "version", "definitionPayload", "createdAt", "lastUpdatedAt"]
         },
         "IPresentationDefinition": {
           "anyOf": [
@@ -166,10 +155,7 @@
               }
             }
           },
-          "required": [
-            "id",
-            "input_descriptors"
-          ]
+          "required": ["id", "input_descriptors"]
         },
         "Format": {
           "type": "object",
@@ -225,9 +211,7 @@
               }
             }
           },
-          "required": [
-            "alg"
-          ]
+          "required": ["alg"]
         },
         "LdpObject": {
           "type": "object",
@@ -239,9 +223,7 @@
               }
             }
           },
-          "required": [
-            "proof_type"
-          ]
+          "required": ["proof_type"]
         },
         "DiObject": {
           "type": "object",
@@ -259,10 +241,7 @@
               }
             }
           },
-          "required": [
-            "proof_type",
-            "cryptosuite"
-          ]
+          "required": ["proof_type", "cryptosuite"]
         },
         "SdJwtObject": {
           "type": "object",
@@ -291,9 +270,7 @@
               }
             }
           },
-          "required": [
-            "alg"
-          ]
+          "required": ["alg"]
         },
         "SubmissionRequirement": {
           "type": "object",
@@ -326,16 +303,11 @@
               }
             }
           },
-          "required": [
-            "rule"
-          ]
+          "required": ["rule"]
         },
         "Rules": {
           "type": "string",
-          "enum": [
-            "all",
-            "pick"
-          ]
+          "enum": ["all", "pick"]
         },
         "InputDescriptorV1": {
           "type": "object",
@@ -371,10 +343,7 @@
               "$ref": "#/components/schemas/ConstraintsV1"
             }
           },
-          "required": [
-            "id",
-            "schema"
-          ]
+          "required": ["id", "schema"]
         },
         "Schema": {
           "type": "object",
@@ -386,9 +355,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "uri"
-          ]
+          "required": ["uri"]
         },
         "Issuance": {
           "type": "object",
@@ -433,10 +400,7 @@
         },
         "Optionality": {
           "type": "string",
-          "enum": [
-            "required",
-            "preferred"
-          ]
+          "enum": ["required", "preferred"]
         },
         "Statuses": {
           "type": "object",
@@ -462,11 +426,7 @@
         },
         "Directives": {
           "type": "string",
-          "enum": [
-            "required",
-            "allowed",
-            "disallowed"
-          ]
+          "enum": ["required", "allowed", "disallowed"]
         },
         "FieldV1": {
           "type": "object",
@@ -490,9 +450,7 @@
               "$ref": "#/components/schemas/Optionality"
             }
           },
-          "required": [
-            "path"
-          ]
+          "required": ["path"]
         },
         "FilterV1": {
           "type": "object",
@@ -539,17 +497,10 @@
           }
         },
         "OneOfNumberStringBoolean": {
-          "type": [
-            "boolean",
-            "number",
-            "string"
-          ]
+          "type": ["boolean", "number", "string"]
         },
         "OneOfNumberString": {
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         },
         "HolderSubject": {
           "type": "object",
@@ -564,10 +515,7 @@
               "$ref": "#/components/schemas/Optionality"
             }
           },
-          "required": [
-            "field_id",
-            "directive"
-          ]
+          "required": ["field_id", "directive"]
         },
         "PresentationDefinitionV2": {
           "type": "object",
@@ -600,10 +548,7 @@
               "type": "object"
             }
           },
-          "required": [
-            "id",
-            "input_descriptors"
-          ]
+          "required": ["id", "input_descriptors"]
         },
         "InputDescriptorV2": {
           "type": "object",
@@ -636,10 +581,7 @@
               "$ref": "#/components/schemas/ConstraintsV2"
             }
           },
-          "required": [
-            "id",
-            "constraints"
-          ]
+          "required": ["id", "constraints"]
         },
         "ConstraintsV2": {
           "type": "object",
@@ -704,9 +646,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "path"
-          ]
+          "required": ["path"]
         },
         "FilterV2": {
           "type": "object",
@@ -842,9 +782,7 @@
               }
             }
           },
-          "required": [
-            "credentials"
-          ]
+          "required": ["credentials"]
         },
         "DcqlCredentialQuery": {
           "type": "object",
@@ -871,11 +809,7 @@
               "type": "object"
             }
           },
-          "required": [
-            "id",
-            "format",
-            "claims"
-          ]
+          "required": ["id", "format", "claims"]
         },
         "DcqlClaim": {
           "type": "object",
@@ -890,21 +824,14 @@
               "$ref": "#/components/schemas/DcqlFilter"
             }
           },
-          "required": [
-            "namespace",
-            "claim_name"
-          ]
+          "required": ["namespace", "claim_name"]
         },
         "DcqlFilter": {
           "type": "object",
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "string",
-                "number",
-                "boolean"
-              ]
+              "enum": ["string", "number", "boolean"]
             },
             "pattern": {
               "type": "string"
@@ -916,9 +843,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "type"
-          ]
+          "required": ["type"]
         },
         "HasDefinitionItemArgs": {
           "$ref": "#/components/schemas/GetDefinitionItemArgs"
@@ -936,9 +861,7 @@
               "$ref": "#/components/schemas/PersistOptions"
             }
           },
-          "required": [
-            "definitionItem"
-          ]
+          "required": ["definitionItem"]
         },
         "PersistPresentationDefinitionItem": {
           "type": "object",
@@ -968,9 +891,7 @@
               "$ref": "#/components/schemas/DcqlQueryREST"
             }
           },
-          "required": [
-            "definitionPayload"
-          ]
+          "required": ["definitionPayload"]
         },
         "PersistOptions": {
           "type": "object",
@@ -985,24 +906,11 @@
         },
         "VersionControlMode": {
           "type": "string",
-          "enum": [
-            "AutoIncrement",
-            "Manual",
-            "Overwrite",
-            "OverwriteLatest"
-          ]
+          "enum": ["AutoIncrement", "Manual", "Overwrite", "OverwriteLatest"]
         },
         "ReleaseType": {
           "type": "string",
-          "enum": [
-            "major",
-            "premajor",
-            "minor",
-            "preminor",
-            "patch",
-            "prepatch",
-            "prerelease"
-          ]
+          "enum": ["major", "premajor", "minor", "preminor", "patch", "prepatch", "prerelease"]
         }
       },
       "methods": {

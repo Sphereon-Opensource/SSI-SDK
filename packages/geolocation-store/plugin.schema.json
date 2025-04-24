@@ -9,9 +9,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "storeId"
-          ],
+          "required": ["storeId"],
           "additionalProperties": false
         },
         "GeolocationStoreLocationResult": {
@@ -34,11 +32,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "ipOrHostname",
-            "storeId",
-            "namespace"
-          ]
+          "required": ["ipOrHostname", "storeId", "namespace"]
         },
         "GeolocationStoreLocationResultOrUndefined": {
           "anyOf": [
@@ -86,10 +80,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "ipOrHostname",
-            "locationArgs"
-          ]
+          "required": ["ipOrHostname", "locationArgs"]
         },
         "GeolocationStoreLocationResultIValueData": {
           "$ref": "#/components/schemas/IValueData<GeolocationStoreLocation>"

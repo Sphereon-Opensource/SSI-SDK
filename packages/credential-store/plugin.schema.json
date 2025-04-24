@@ -20,9 +20,7 @@
               }
             }
           },
-          "required": [
-            "credential"
-          ]
+          "required": ["credential"]
         },
         "AddDigitalCredential": {
           "type": "object",
@@ -94,12 +92,7 @@
               "properties": {}
             }
           },
-          "required": [
-            "credentialRole",
-            "rawDocument",
-            "issuerCorrelationType",
-            "issuerCorrelationId"
-          ]
+          "required": ["credentialRole", "rawDocument", "issuerCorrelationType", "issuerCorrelationId"]
         },
         "HasherSync": {
           "$comment": "(data: string | ArrayBuffer, alg: string) => Uint8Array",
@@ -120,9 +113,7 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "byteLength"
-                      ]
+                      "required": ["byteLength"]
                     }
                   ]
                 },
@@ -130,10 +121,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "data",
-                "alg"
-              ],
+              "required": ["data", "alg"],
               "additionalProperties": false
             }
           }
@@ -250,56 +238,27 @@
         },
         "DocumentType": {
           "type": "string",
-          "enum": [
-            "VC",
-            "VP",
-            "P",
-            "C"
-          ]
+          "enum": ["VC", "VP", "P", "C"]
         },
         "CredentialDocumentFormat": {
           "type": "string",
-          "enum": [
-            "JSON_LD",
-            "JWT",
-            "SD_JWT",
-            "MSO_MDOC"
-          ]
+          "enum": ["JSON_LD", "JWT", "SD_JWT", "MSO_MDOC"]
         },
         "CredentialRole": {
           "type": "string",
-          "enum": [
-            "ISSUER",
-            "VERIFIER",
-            "HOLDER",
-            "FEDERATION_TRUST_ANCHOR"
-          ]
+          "enum": ["ISSUER", "VERIFIER", "HOLDER", "FEDERATION_TRUST_ANCHOR"]
         },
         "RegulationType": {
           "type": "string",
-          "enum": [
-            "PID",
-            "QEAA",
-            "EAA",
-            "NON_REGULATED"
-          ]
+          "enum": ["PID", "QEAA", "EAA", "NON_REGULATED"]
         },
         "CredentialCorrelationType": {
           "type": "string",
-          "enum": [
-            "DID",
-            "X509_SAN",
-            "KID",
-            "URL"
-          ]
+          "enum": ["DID", "X509_SAN", "KID", "URL"]
         },
         "CredentialStateType": {
           "type": "string",
-          "enum": [
-            "REVOKED",
-            "VERIFIED",
-            "EXPIRED"
-          ]
+          "enum": ["REVOKED", "VERIFIED", "EXPIRED"]
         },
         "DeleteCredentialArgs": {
           "anyOf": [
@@ -310,9 +269,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ]
+              "required": ["id"]
             },
             {
               "type": "object",
@@ -321,9 +278,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "hash"
-              ]
+              "required": ["hash"]
             }
           ]
         },
@@ -337,9 +292,7 @@
               "$ref": "#/components/schemas/FindDigitalCredentialArgs"
             }
           },
-          "required": [
-            "filter"
-          ]
+          "required": ["filter"]
         },
         "FindDigitalCredentialArgs": {
           "type": "array",
@@ -447,9 +400,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "GetCredentialsByClaimsArgs": {
           "type": "object",
@@ -464,9 +415,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "filter"
-          ]
+          "required": ["filter"]
         },
         "FindClaimsArgs": {
           "$ref": "#/components/schemas/FindArgs-TClaimsColumns"
@@ -515,39 +464,15 @@
             },
             "op": {
               "type": "string",
-              "enum": [
-                "LessThan",
-                "LessThanOrEqual",
-                "MoreThan",
-                "MoreThanOrEqual",
-                "Equal",
-                "Like",
-                "Between",
-                "In",
-                "Any",
-                "IsNull"
-              ]
+              "enum": ["LessThan", "LessThanOrEqual", "MoreThan", "MoreThanOrEqual", "Equal", "Like", "Between", "In", "Any", "IsNull"]
             }
           },
-          "required": [
-            "column"
-          ],
+          "required": ["column"],
           "description": "Represents a WHERE predicate for a  {@link  FindArgs }  query. In situations where multiple WHERE predicates are present, they are combined with AND."
         },
         "TClaimsColumns": {
           "type": "string",
-          "enum": [
-            "context",
-            "credentialType",
-            "type",
-            "value",
-            "isObj",
-            "id",
-            "issuer",
-            "subject",
-            "expirationDate",
-            "issuanceDate"
-          ]
+          "enum": ["context", "credentialType", "type", "value", "isObj", "id", "issuer", "subject", "expirationDate", "issuanceDate"]
         },
         "Order-TClaimsColumns": {
           "type": "object",
@@ -557,16 +482,10 @@
             },
             "direction": {
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
-          "required": [
-            "column",
-            "direction"
-          ],
+          "required": ["column", "direction"],
           "description": "Represents the sort order of results from a  {@link  FindArgs }  query."
         },
         "UniqueDigitalCredential": {
@@ -600,10 +519,7 @@
               "$ref": "#/components/schemas/IVerifiablePresentation"
             }
           },
-          "required": [
-            "hash",
-            "digitalCredential"
-          ]
+          "required": ["hash", "digitalCredential"]
         },
         "OriginalVerifiableCredential": {
           "anyOf": [
@@ -735,14 +651,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof",
-            "type"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof", "type"]
         },
         "IProof": {
           "type": "object",
@@ -801,12 +710,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ]
+          "required": ["type", "created", "proofPurpose", "verificationMethod"]
         },
         "IProofType": {
           "type": "string",
@@ -876,9 +780,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "IIssuerId": {
           "type": "string"
@@ -890,9 +792,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "ICredentialStatus": {
           "type": "object",
@@ -904,10 +804,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CompactJWT": {
           "type": "string",
@@ -935,14 +832,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "vc",
-            "exp",
-            "iss",
-            "nbf",
-            "sub",
-            "jti"
-          ]
+          "required": ["vc", "exp", "iss", "nbf", "sub", "jti"]
         },
         "SdJwtDecodedVerifiableCredential": {
           "type": "object",
@@ -995,10 +885,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "idx",
-                    "uri"
-                  ]
+                  "required": ["idx", "uri"]
                 },
                 "sub": {
                   "type": "string"
@@ -1022,21 +909,11 @@
                     "not": {}
                   },
                   {
-                    "type": [
-                      "string",
-                      "number",
-                      "boolean",
-                      "object",
-                      "array"
-                    ]
+                    "type": ["string", "number", "boolean", "object", "array"]
                   }
                 ]
               },
-              "required": [
-                "iat",
-                "iss",
-                "vct"
-              ],
+              "required": ["iat", "iss", "vct"],
               "description": "The signed payload is the payload of the sd-jwt that is actually signed, and that includes the `_sd` and `...` digests."
             },
             "decodedPayload": {
@@ -1056,19 +933,11 @@
                   "$ref": "#/components/schemas/CompactJWT"
                 }
               },
-              "required": [
-                "header",
-                "payload"
-              ],
+              "required": ["header", "payload"],
               "description": "Key binding JWT"
             }
           },
-          "required": [
-            "compactSdJwtVc",
-            "disclosures",
-            "signedPayload",
-            "decodedPayload"
-          ],
+          "required": ["compactSdJwtVc", "disclosures", "signedPayload", "decodedPayload"],
           "description": "The decoded SD JWT Verifiable Credential. This representation includes multiple representations of the same SD-JWT, and allows to fully process an SD-JWT, as well as create a presentation SD-JWT  (minus the KB-JWT) by removing certain disclosures from the compact SD-JWT.\n\nThis representation is useful as it doesn't require a hasher implementation to match the different digests in the signed SD-JWT payload, with the different disclosures."
         },
         "SdJwtDisclosure": {
@@ -1084,11 +953,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "encoded",
-            "decoded",
-            "digest"
-          ]
+          "required": ["encoded", "decoded", "digest"]
         },
         "SdJwtDecodedDisclosure": {
           "anyOf": [
@@ -1250,20 +1115,13 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "idx",
-                "uri"
-              ]
+              "required": ["idx", "uri"]
             },
             "sub": {
               "type": "string"
             }
           },
-          "required": [
-            "vct",
-            "iss",
-            "iat"
-          ],
+          "required": ["vct", "iss", "iat"],
           "additionalProperties": {
             "anyOf": [
               {
@@ -1312,10 +1170,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "typ",
-            "alg"
-          ]
+          "required": ["typ", "alg"]
         },
         "SdJwtVcKbJwtPayload": {
           "type": "object",
@@ -1333,12 +1188,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "iat",
-            "aud",
-            "nonce",
-            "sd_hash"
-          ],
+          "required": ["iat", "aud", "nonce", "sd_hash"],
           "additionalProperties": {}
         },
         "MdocOid4vpIssuerSigned": {
@@ -1443,10 +1293,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "proof"
-          ]
+          "required": ["@context", "proof"]
         },
         "PresentationSubmission": {
           "type": "object",
@@ -1467,11 +1314,7 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": [
-            "id",
-            "definition_id",
-            "descriptor_map"
-          ],
+          "required": ["id", "definition_id", "descriptor_map"],
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
         "Descriptor": {
@@ -1493,11 +1336,7 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": [
-            "id",
-            "path",
-            "format"
-          ],
+          "required": ["id", "path", "format"],
           "description": "descriptor map laying out the structure of the presentation submission."
         },
         "JwtDecodedVerifiablePresentation": {
@@ -1528,16 +1367,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "vp",
-            "exp",
-            "iss",
-            "nbf",
-            "sub",
-            "jti",
-            "aud",
-            "iat"
-          ]
+          "required": ["vp", "exp", "iss", "nbf", "sub", "jti", "aud", "iat"]
         },
         "MdocOid4vpMdocVpToken": {
           "type": "string"
@@ -1636,13 +1466,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "type",
-            "issuer",
-            "issuanceDate",
-            "credentialSubject"
-          ]
+          "required": ["@context", "type", "issuer", "issuanceDate", "credentialSubject"]
         },
         "IPresentation": {
           "type": "object",
@@ -1692,9 +1516,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context"
-          ]
+          "required": ["@context"]
         },
         "GetCredentialsByIdOrHashArgs": {
           "type": "object",
@@ -1706,10 +1528,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "credentialRole",
-            "idOrHash"
-          ]
+          "required": ["credentialRole", "idOrHash"]
         },
         "OptionalUniqueDigitalCredential": {
           "anyOf": [
@@ -1741,10 +1560,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id",
-                "verifiedState"
-              ]
+              "required": ["id", "verifiedState"]
             },
             {
               "type": "object",
@@ -1764,10 +1580,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "hash",
-                "verifiedState"
-              ]
+              "required": ["hash", "verifiedState"]
             }
           ]
         }

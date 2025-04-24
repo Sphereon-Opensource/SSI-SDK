@@ -95,7 +95,7 @@ export const DataStoreIssuanceBrandingEntities = [
   TextAttributesEntity,
   CredentialLocaleBrandingEntity,
   IssuerLocaleBrandingEntity,
-  CredentialClaimsEntity
+  CredentialClaimsEntity,
 ]
 
 export const DataStorePresentationDefinitionEntities = [PresentationDefinitionItemEntity]

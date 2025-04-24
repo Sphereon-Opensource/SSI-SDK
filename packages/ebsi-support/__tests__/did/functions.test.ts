@@ -1,6 +1,6 @@
 import { generateOrUseProvidedEbsiPrivateKeyHex } from '../../src/did/functions'
 
-import {describe, it, expect} from 'vitest'
+import { describe, it, expect } from 'vitest'
 
 describe('functions: key generator', () => {
   it('Secp256k1 should generate random keys', () => {

@@ -31,10 +31,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "credential_configuration_ids",
-            "credential_issuer"
-          ]
+          "required": ["credential_configuration_ids", "credential_issuer"]
         },
         "Grant": {
           "type": "object",
@@ -84,9 +81,7 @@
               "description": "OPTIONAL. Boolean value specifying whether the AS expects presentation of the End-User PIN along with the Token Request in a Pre-Authorized Code Flow. Default is false. This PIN is intended to bind the Pre-Authorized Code to a certain transaction to prevent replay of this code by an attacker that, for example, scanned the QR code while standing behind the legitimate End-User. It is RECOMMENDED to send a PIN via a separate channel. If the Wallet decides to use the Pre-Authorized Code Flow, a PIN value MUST be sent in the user_pin parameter with the respective Token Request."
             }
           },
-          "required": [
-            "pre-authorized_code"
-          ]
+          "required": ["pre-authorized_code"]
         },
         "TxCode": {
           "type": "object",
@@ -107,10 +102,7 @@
         },
         "InputCharSet": {
           "type": "string",
-          "enum": [
-            "numeric",
-            "text"
-          ]
+          "enum": ["numeric", "text"]
         },
         "CredentialDataSupplierInput": {
           "description": "Optional storage that can help the credential Data Supplier. For instance to store credential input data during offer creation, if no additional data can be supplied later on"
@@ -134,10 +126,7 @@
               "$ref": "#/components/schemas/TxCode"
             }
           },
-          "required": [
-            "uri",
-            "correlationId"
-          ]
+          "required": ["uri", "correlationId"]
         },
         "IOID4VCIClientGetIssueStatusArgs": {
           "type": "object",
@@ -149,9 +138,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "IssueStatusResponse": {
           "type": "object",
@@ -181,11 +168,7 @@
               }
             }
           },
-          "required": [
-            "createdAt",
-            "lastUpdatedAt",
-            "status"
-          ]
+          "required": ["createdAt", "lastUpdatedAt", "status"]
         },
         "IssueStatus": {
           "type": "string",

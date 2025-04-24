@@ -55,9 +55,7 @@
     "debug": "^4.3.5",
     "did-context": "^3.1.1",
     "ed25519-signature-2018-context": "^1.1.0",
-    "ed25519-signature-2020-context": "^1.1.0",
-    "jsonld": "^4.0.1",
-    "jsonld-signatures": "^7.0.0"
+    "ed25519-signature-2020-context": "^1.1.0"
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",

@@ -14,7 +14,7 @@ import {
   PresentationPayload,
 } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
-import { _ExtendedIKey, extractIssuer, isDefined, MANDATORY_CREDENTIAL_CONTEXT, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
+import { _ExtendedIKey, extractIssuer, isDefined, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
 import { IBindingOverrides, IRequiredContext, schema } from '../index'
@@ -33,6 +33,9 @@ import {
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
+export const VCDM_CREDENTIAL_CONTEXT_V1 = 'https://www.w3.org/2018/credentials/v1'
+export const VCDM_CREDENTIAL_CONTEXT_V2 = 'https://www.w3.org/ns/credentials/v2'
+export const VCDM_CREDENTIAL_CONTEXT_VERSIONS = [VCDM_CREDENTIAL_CONTEXT_V2, VCDM_CREDENTIAL_CONTEXT_V1]
 /**
  * {@inheritDoc IVcLocalIssuerJsonLd}
  */
@@ -91,7 +94,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     context: IRequiredContext,
   ): Promise<VerifiableCredentialSP> {
     debug('Entry of createVerifiableCredentialLDLocal')
-    const credentialContext = processEntryToArray(args?.credential?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
+    const credentialContext = args?.credential?.['@context'] ?? []
+    addVcdmContextIfNeeded(credentialContext)
     const credentialType = processEntryToArray(args?.credential?.type, 'VerifiableCredential')
     let issuanceDate = args?.credential?.issuanceDate || new Date().toISOString()
     if (issuanceDate instanceof Date) {
@@ -160,7 +164,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     args: ICreateVerifiablePresentationLDArgs,
     context: IRequiredContext,
   ): Promise<VerifiablePresentationSP> {
-    const presentationContext = processEntryToArray(args?.presentation?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
+    const presentationContext = args?.presentation?.['@context'] ?? []
+    addVcdmContextIfNeeded(presentationContext)
     const presentationType = processEntryToArray(args?.presentation?.type, 'VerifiablePresentation')
 
     const presentation: PresentationPayload = {
@@ -288,5 +293,11 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     const verificationMethodId = signingKey.meta.verificationMethod.id
     debug(`Signing key for id ${identifier.did} and verification method id ${verificationMethodId} found.`)
     return { signingKey, verificationMethodId }
+  }
+}
+
+function addVcdmContextIfNeeded(context: string[]): void {
+  if (context.filter((val) => VCDM_CREDENTIAL_CONTEXT_VERSIONS.includes(val)).length === 0) {
+    context.unshift(VCDM_CREDENTIAL_CONTEXT_V2)
   }
 }

@@ -39,9 +39,9 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
       .times(1)
       .reply(200, {})
 
-    const status = await  agent.siopClientGetAuthStatus({
-        correlationId: 'my-correlation-id',
-      })
+    const status = await agent.siopClientGetAuthStatus({
+      correlationId: 'my-correlation-id',
+    })
     expect(status).toBeDefined
   })
 })

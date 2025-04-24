@@ -23,9 +23,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "correlationId"
-          ]
+          "required": ["correlationId"]
         },
         "OptionalOpenidFederationMetadata": {
           "anyOf": [
@@ -50,10 +48,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "baseUrl",
-            "jwt"
-          ]
+          "required": ["baseUrl", "jwt"]
         },
         "FederationMetadataExistsArgs": {
           "$ref": "#/components/schemas/IFederationMetadataGetArgs"
@@ -65,17 +60,11 @@
               "$ref": "#/components/schemas/MetadataType"
             }
           },
-          "required": [
-            "metadataType"
-          ]
+          "required": ["metadataType"]
         },
         "MetadataType": {
           "type": "string",
-          "enum": [
-            "issuer",
-            "authorizationServer",
-            "openidFederation"
-          ]
+          "enum": ["issuer", "authorizationServer", "openidFederation"]
         },
         "IFederationMetadataListArgs": {
           "type": "object",
@@ -116,11 +105,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "correlationId",
-            "metadata",
-            "metadataType"
-          ]
+          "required": ["correlationId", "metadata", "metadataType"]
         },
         "OptionalOpenidFederationValueData": {
           "anyOf": [

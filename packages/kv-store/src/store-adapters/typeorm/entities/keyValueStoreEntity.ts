@@ -6,7 +6,7 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm'
  */
 @Entity('keyvaluestore')
 export class KeyValueStoreEntity extends BaseEntity {
-  @PrimaryColumn("text")
+  @PrimaryColumn('text')
   key!: string
 
   @Column({

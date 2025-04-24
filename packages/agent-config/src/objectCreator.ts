@@ -101,38 +101,40 @@ export async function createObjects(config: object, pointers: Record<string, str
     const resolvedArgs = args !== undefined ? await resolveRefs(args) : []
     console.error(`npmModule: ${npmModule}`)
     // try {
-    return await Promise.resolve(await import(/*@metro-ignore*/npmModule)
+    return await Promise.resolve(
+      await import(/*@metro-ignore*/ npmModule)
 
-      .then((mod) => {
-        if (member) {
-          return mod[member]
-        }
-        return mod
-      })
-      .then((required) => {
-        let object: any
-        if (type === 'class') {
-          object = new required(...resolvedArgs)
-        } else if (type === 'function') {
-          object = required(...resolvedArgs)
-        } else if (type === 'object') {
-          object = required
-        } else {
-          console.error(`Likely we have a bug in agent object creation. type = ${type} is not of type class, function or object`)
-        }
-        if (!pointer) {
-          return object
-        }
+        .then((mod) => {
+          if (member) {
+            return mod[member]
+          }
+          return mod
+        })
+        .then((required) => {
+          let object: any
+          if (type === 'class') {
+            object = new required(...resolvedArgs)
+          } else if (type === 'function') {
+            object = required(...resolvedArgs)
+          } else if (type === 'object') {
+            object = required
+          } else {
+            console.error(`Likely we have a bug in agent object creation. type = ${type} is not of type class, function or object`)
+          }
+          if (!pointer) {
+            return object
+          }
 
-        if (!object) {
-          return Promise.reject(Error(`Error creating ${npmModule}['${member}']: Object is undefined and pointer was present requiring an object.`))
-        }
-        return get(object, pointer)
-      })
-      .catch((e) => {
-        console.error(e)
-        return Promise.reject(Error(`Error creating ${npmModule}['${member}']: ${e.message}`))
-      }))
+          if (!object) {
+            return Promise.reject(Error(`Error creating ${npmModule}['${member}']: Object is undefined and pointer was present requiring an object.`))
+          }
+          return get(object, pointer)
+        })
+        .catch((e) => {
+          console.error(e)
+          return Promise.reject(Error(`Error creating ${npmModule}['${member}']: ${e.message}`))
+        }),
+    )
 
     /*let required = member ? (await import(npmModule))[member] : await import(npmModule)
     if (type === 'class') {

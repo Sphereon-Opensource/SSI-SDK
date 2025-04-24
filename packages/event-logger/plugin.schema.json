@@ -198,28 +198,11 @@
         },
         "CredentialType": {
           "type": "string",
-          "enum": [
-            "JSON_LD",
-            "JWT",
-            "SD_JWT",
-            "MSO_MDOC"
-          ]
+          "enum": ["JSON_LD", "JWT", "SD_JWT", "MSO_MDOC"]
         },
         "System": {
           "type": "string",
-          "enum": [
-            "general",
-            "kms",
-            "identity",
-            "oid4vci",
-            "oid4vp",
-            "siopv2",
-            "PE",
-            "credentials",
-            "web3",
-            "profile",
-            "contact"
-          ]
+          "enum": ["general", "kms", "identity", "oid4vci", "oid4vp", "siopv2", "PE", "credentials", "web3", "profile", "contact"]
         },
         "SubSystem": {
           "type": "string",
@@ -241,13 +224,7 @@
         },
         "ActionType": {
           "type": "string",
-          "enum": [
-            "create",
-            "read",
-            "update",
-            "delete",
-            "execute"
-          ]
+          "enum": ["create", "read", "update", "delete", "execute"]
         },
         "ActionSubType": {
           "anyOf": [
@@ -279,42 +256,19 @@
         },
         "InitiatorType": {
           "type": "string",
-          "enum": [
-            "user",
-            "system",
-            "external"
-          ]
+          "enum": ["user", "system", "external"]
         },
         "SystemCorrelationIdType": {
           "type": "string",
-          "enum": [
-            "did",
-            "url",
-            "email",
-            "hostname",
-            "phone",
-            "user"
-          ]
+          "enum": ["did", "url", "email", "hostname", "phone", "user"]
         },
         "PartyCorrelationType": {
           "type": "string",
-          "enum": [
-            "did",
-            "url",
-            "email",
-            "hostname",
-            "phone"
-          ]
+          "enum": ["did", "url", "email", "hostname", "phone"]
         },
         "LogLevel": {
           "type": "number",
-          "enum": [
-            0,
-            1,
-            2,
-            3,
-            4
-          ]
+          "enum": [0, 1, 2, 3, 4]
         },
         "GetAuditEventsArgs": {
           "type": "object",
@@ -486,9 +440,7 @@
               "$ref": "#/components/schemas/LogEventType"
             }
           },
-          "required": [
-            "event"
-          ]
+          "required": ["event"]
         },
         "LogEventType": {
           "anyOf": [
@@ -560,14 +512,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "actionSubType",
-            "actionType",
-            "description",
-            "initiatorType",
-            "subSystemType",
-            "system"
-          ]
+          "required": ["actionSubType", "actionType", "description", "initiatorType", "subSystemType", "system"]
         },
         "NonPersistedActivityLoggingEvent": {
           "type": "object",
@@ -645,14 +590,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "actionSubType",
-            "actionType",
-            "description",
-            "initiatorType",
-            "subSystemType",
-            "system"
-          ]
+          "required": ["actionSubType", "actionType", "description", "initiatorType", "subSystemType", "system"]
         }
       },
       "methods": {
