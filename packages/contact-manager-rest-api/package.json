@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@sphereon/ssi-express-support": "workspace:*",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.17",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.17",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.18",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.28.1-feature.esm.cjs.18",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",

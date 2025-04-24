@@ -1,5 +1,5 @@
 import * as sigpkg from '@digitalcredentials/jsonld-signatures'
-import vc from '@digitalcredentials/vc'
+import * as vc from '@digitalcredentials/vc'
 import {
   CredentialPayload,
   DIDDocument,
