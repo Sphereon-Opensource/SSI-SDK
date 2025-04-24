@@ -2,7 +2,7 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import {
   CredentialMapper,
   DocumentFormat,
-  ProofFormat,
+  CredentialProofFormat,
   StatusListCredential,
   StatusListDriverType,
   StatusListType,
@@ -231,7 +231,7 @@ export async function statusList2021ToVerifiableCredential(
     vmRelationship: 'assertionMethod',
     offlineWhenNoDIDRegistered: true, // FIXME Fix identifier resolution for EBSI
   })
-  const proofFormat: ProofFormat = args?.proofFormat ?? 'lds'
+  const proofFormat: CredentialProofFormat = args?.proofFormat ?? 'lds'
   assertValidProofType(StatusListType.StatusList2021, proofFormat)
   const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 

@@ -5,7 +5,7 @@ import {
   IIssuer,
   IVerifiableCredential,
   OrPromise,
-  ProofFormat,
+  CredentialProofFormat,
   StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
@@ -55,7 +55,7 @@ export type BaseCreateNewStatusListArgs = {
   issuer: string | IIssuer
   correlationId?: string
   length?: number
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
@@ -75,7 +75,7 @@ export interface UpdateStatusListFromEncodedListArgs {
   type?: StatusListType
   statusListIndex: number | string
   value: boolean
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   correlationId?: string
   encodedList: string
@@ -97,7 +97,7 @@ export interface StatusListResult {
   statusListCredential: StatusListCredential
   length: number
   type: StatusListType
-  proofFormat: ProofFormat
+  proofFormat: CredentialProofFormat
   id: string
   statuslistContentType: string
   issuer: string | IIssuer
@@ -139,7 +139,7 @@ export interface StatusList2021ToVerifiableCredentialArgs {
   issuer: string | IIssuer
   id: string
   type?: StatusListType
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   encodedList: string
   statusPurpose: StatusPurpose2021
@@ -148,7 +148,7 @@ export interface StatusList2021ToVerifiableCredentialArgs {
 export interface CreateStatusListArgs {
   issuer: string | IIssuer
   id: string
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   correlationId?: string
   length?: number

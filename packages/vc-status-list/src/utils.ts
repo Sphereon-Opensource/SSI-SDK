@@ -1,7 +1,7 @@
 import {
   CredentialMapper,
   IIssuer,
-  ProofFormat,
+  CredentialProofFormat,
   StatusListType,
   StatusListType as StatusListTypeW3C,
   StatusListCredential,
@@ -38,12 +38,12 @@ export function getAssertedProperty<T extends object>(propertyName: string, obj:
   return getAssertedValue(propertyName, (obj as any)[propertyName])
 }
 
-const ValidProofTypeMap = new Map<StatusListType, ProofFormat[]>([
+const ValidProofTypeMap = new Map<StatusListType, CredentialProofFormat[]>([
   [StatusListType.StatusList2021, ['jwt', 'lds', 'EthereumEip712Signature2021']],
   [StatusListType.OAuthStatusList, ['jwt', 'cbor']],
 ])
 
-export function assertValidProofType(type: StatusListType, proofFormat: ProofFormat) {
+export function assertValidProofType(type: StatusListType, proofFormat: CredentialProofFormat) {
   const validProofTypes = ValidProofTypeMap.get(type)
   if (!validProofTypes?.includes(proofFormat)) {
     throw Error(`Invalid proof format '${proofFormat}' for status list type ${type}`)
@@ -79,7 +79,7 @@ export function determineStatusListType(credential: StatusListCredential): Statu
   throw new Error('Cannot determine status list type from credential payload')
 }
 
-export function determineProofFormat(credential: StatusListCredential): ProofFormat {
+export function determineProofFormat(credential: StatusListCredential): CredentialProofFormat {
   const type: DocumentFormat = CredentialMapper.detectDocumentType(credential)
   switch (type) {
     case DocumentFormat.JWT:

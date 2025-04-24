@@ -1,7 +1,7 @@
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
-import { CredentialPayload } from '@veramo/core'
-import { ProofFormat } from '@veramo/core'
+import { CredentialPayload, ProofFormat } from '@veramo/core'
+
 import { W3CVerifiableCredential } from '@veramo/core'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
@@ -10,6 +10,7 @@ import Debug from 'debug'
 import { DocumentType, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
+import { CredentialProofFormat } from '@sphereon/ssi-types'
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
   if (opts?.enabled === false) {
@@ -22,7 +23,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
     try {
       const credential: CredentialPayload = request.body.credential
       const reqOpts = request.body.options ?? {}
-      let reqProofFormat: ProofFormat | undefined
+      let reqProofFormat: CredentialProofFormat | undefined
       if (reqOpts.proofFormat) {
         if (reqOpts?.proofFormat?.includes('ld')) {
           reqProofFormat = 'lds'
@@ -47,7 +48,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
       const vc = await context.agent.createVerifiableCredential({
         credential,
         save: opts?.persistIssuedCredentials !== false,
-        proofFormat: reqProofFormat ?? issueOpts?.proofFormat ?? 'lds',
+        proofFormat: (reqProofFormat ?? issueOpts?.proofFormat ?? 'lds') as ProofFormat,
         fetchRemoteContexts: issueOpts?.fetchRemoteContexts !== false,
       })
       response.statusCode = 201

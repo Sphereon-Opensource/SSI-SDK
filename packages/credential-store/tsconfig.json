@@ -2,16 +2,16 @@
   "extends": "../../tsconfig.base.json",
   "references": [
     {
-      "path": "../data-store"
+      "path": "../ssi-types"
     },
     {
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../ssi-types"
+      "path": "../agent-config"
     },
     {
-      "path": "../agent-config"
+      "path": "../data-store"
     }
   ]
 }

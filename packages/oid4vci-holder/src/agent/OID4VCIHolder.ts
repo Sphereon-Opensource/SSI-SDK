@@ -47,6 +47,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
+  CredentialProofFormat,
   HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
@@ -65,7 +66,6 @@ import {
   IDIDManager,
   IKeyManager,
   IResolver,
-  ProofFormat,
   VerifiableCredential,
   W3CVerifiableCredential,
 } from '@veramo/core'
@@ -930,8 +930,11 @@ export class OID4VCIHolder implements IAgentPlugin {
         if (CredentialMapper.isWrappedSdJwtVerifiableCredential(wrappedIssuerVC)) {
           issuer = trimmed(wrappedIssuerVC.decoded?.sub)
         } else if (CredentialMapper.isWrappedW3CVerifiableCredential(wrappedIssuerVC)) {
-          // @ts-ignore
-          issuer = trimmed(wrappedIssuerVC.credential?.sub) ?? trimmed(wrappedIssuerVC.credential?.credentialSubject?.id) ?? trimmed(this.idFromW3cCredentialSubject(wrappedIssuerVC))
+          issuer =
+            trimmed(wrappedIssuerVC.credential?.sub) ??
+            // @ts-ignore
+            trimmed(wrappedIssuerVC.credential?.credentialSubject?.id) ??
+            trimmed(this.idFromW3cCredentialSubject(wrappedIssuerVC))
         } else if (CredentialMapper.isWrappedMdocCredential(wrappedIssuerVC)) {
           return Promise.reject(Error('mdoc not yet supported'))
         }
@@ -963,7 +966,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         logger.log(`Issuer for self-issued credential will be: ${issuer}`)
 
         const holderCredentialToSign = wrappedIssuerVC.decoded
-        let proofFormat: ProofFormat = 'lds'
+        let proofFormat: CredentialProofFormat = 'lds'
         if (wrappedIssuerVC.format.includes('jwt') && !wrappedIssuerVC.format.includes('mso_mdoc')) {
           holderCredentialToSign.iss = issuer
           proofFormat = 'jwt'

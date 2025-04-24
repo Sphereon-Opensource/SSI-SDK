@@ -2,10 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "references": [
     {
-      "path": "../ssi-sdk-core"
+      "path": "../ssi-types"
     },
     {
-      "path": "../ssi-types"
+      "path": "../ssi-sdk-core"
     },
     {
       "path": "../agent-config"

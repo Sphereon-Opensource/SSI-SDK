@@ -1,12 +1,13 @@
 import {
-  ActionType, DefaultActionSubType,
+  ActionType,
+  DefaultActionSubType,
   InitiatorType,
   LoggingEventType,
   LogLevel,
   SimpleLogEvent,
   SubSystem,
   System,
-  SystemCorrelationIdType
+  SystemCorrelationIdType,
 } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
 

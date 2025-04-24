@@ -6,7 +6,7 @@ import {
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
-  ProofFormat,
+  CredentialProofFormat,
 } from '@sphereon/ssi-types'
 import typeorm from 'typeorm'
 const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
@@ -65,7 +65,7 @@ export abstract class StatusListEntity extends BaseEntity {
   credentialIdMode!: StatusListCredentialIdMode
 
   @Column({ type: 'varchar', name: 'proofFormat', enum: ['lds', 'jwt'], nullable: false, default: 'lds' })
-  proofFormat!: ProofFormat
+  proofFormat!: CredentialProofFormat
 
   @Column({
     name: 'statusListCredential',
