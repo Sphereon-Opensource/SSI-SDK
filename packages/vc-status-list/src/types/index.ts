@@ -5,7 +5,7 @@ import {
   IIssuer,
   IVerifiableCredential,
   OrPromise,
-  CredentialProofFormat,
+  type CredentialProofFormat,
   StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,

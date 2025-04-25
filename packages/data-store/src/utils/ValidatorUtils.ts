@@ -1,5 +1,5 @@
 import { ValidationError } from 'class-validator'
-import { ValidationConstraint } from '../types'
+import { type ValidationConstraint } from '../types'
 
 export const getConstraint = (validation: ValidationError): ValidationConstraint | undefined => {
   if (validation.children && validation.children.length > 0) {

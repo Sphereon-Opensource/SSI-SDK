@@ -1,12 +1,12 @@
 import {
-  IIssuer,
-  StatusListCredential,
+  type IIssuer,
+  type StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
-  StatusListIndexingDirection,
+  type StatusListIndexingDirection,
   StatusListType,
-  StatusPurpose2021,
-  CredentialProofFormat,
+  type StatusPurpose2021,
+  type CredentialProofFormat,
 } from '@sphereon/ssi-types'
 import typeorm from 'typeorm'
 const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm

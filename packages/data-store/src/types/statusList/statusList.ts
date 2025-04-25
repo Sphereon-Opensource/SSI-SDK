@@ -6,7 +6,7 @@ import {
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
-  CredentialProofFormat,
+  type CredentialProofFormat,
   RequireOneOf,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'

@@ -1,6 +1,6 @@
 import { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, DocumentFormat, IIssuer, CredentialProofFormat, StatusListCredential, StatusListType } from '@sphereon/ssi-types'
+import { CredentialMapper, DocumentFormat, IIssuer, type CredentialProofFormat, StatusListCredential, StatusListType } from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
 import { IStatusList } from './IStatusList'

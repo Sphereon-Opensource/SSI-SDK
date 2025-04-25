@@ -1,5 +1,5 @@
 import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
-import {
+import type {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
   IGetStatusListArgs,

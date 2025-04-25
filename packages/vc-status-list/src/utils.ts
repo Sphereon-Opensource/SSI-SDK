@@ -1,7 +1,7 @@
 import {
   CredentialMapper,
   IIssuer,
-  CredentialProofFormat,
+  type CredentialProofFormat,
   StatusListType,
   StatusListType as StatusListTypeW3C,
   StatusListCredential,

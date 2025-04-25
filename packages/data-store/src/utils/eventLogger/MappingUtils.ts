@@ -1,8 +1,8 @@
-import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import type { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
 import { LoggingEventType } from '@sphereon/ssi-types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 import { AuditEventEntity } from '../../entities/eventLogger/AuditEventEntity'
-import { NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../../types'
+import type { NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../../types'
 
 export const auditEventFrom = (event: AuditEventEntity): AuditLoggingEvent => {
   const result: AuditLoggingEvent = {

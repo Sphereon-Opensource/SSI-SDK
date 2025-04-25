@@ -5,7 +5,7 @@ import {
   CredentialDocumentFormat,
   CredentialRole,
   CredentialStateType,
-  DigitalCredential,
+  type DigitalCredential,
   DocumentType,
   RegulationType,
 } from '../../types'

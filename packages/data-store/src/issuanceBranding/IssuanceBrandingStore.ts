@@ -1,4 +1,4 @@
-import { OrPromise } from '@sphereon/ssi-types'
+import { type OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, type DeleteResult, In, Not, type Repository } from 'typeorm'
 import {
@@ -20,7 +20,7 @@ import { IssuerLocaleBrandingEntity } from '../entities/issuanceBranding/IssuerL
 import { BaseLocaleBrandingEntity } from '../entities/issuanceBranding/BaseLocaleBrandingEntity'
 import { TextAttributesEntity } from '../entities/issuanceBranding/TextAttributesEntity'
 import { AbstractIssuanceBrandingStore } from './AbstractIssuanceBrandingStore'
-import {
+import type {
   IAddCredentialBrandingArgs,
   IAddCredentialLocaleBrandingArgs,
   IAddIssuerBrandingArgs,

@@ -2,7 +2,7 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import {
   CredentialMapper,
   DocumentFormat,
-  CredentialProofFormat,
+  type CredentialProofFormat,
   StatusListCredential,
   StatusListDriverType,
   StatusListType,

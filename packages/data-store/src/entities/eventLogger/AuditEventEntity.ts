@@ -1,12 +1,12 @@
 import {
+  type ActionSubType,
   ActionType,
-  DefaultActionSubType,
   InitiatorType,
   LoggingEventType,
   LogLevel,
   SubSystem,
   System,
-  SystemCorrelationIdType,
+  SystemCorrelationIdType
 } from '@sphereon/ssi-types'
 import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
@@ -41,7 +41,7 @@ export class AuditEventEntity extends BaseEntity {
   actionType!: ActionType
 
   @Column({ name: 'actionSubType', type: 'varchar', nullable: false, unique: false })
-  actionSubType!: DefaultActionSubType | string
+  actionSubType!: ActionSubType
 
   @Column('simple-enum', { name: 'initiatorType', enum: InitiatorType, nullable: false, unique: false })
   initiatorType!: InitiatorType

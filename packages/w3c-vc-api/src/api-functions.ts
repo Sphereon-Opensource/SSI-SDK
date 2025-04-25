@@ -10,7 +10,7 @@ import Debug from 'debug'
 import { DocumentType, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialProofFormat } from '@sphereon/ssi-types'
+import type { CredentialProofFormat } from '@sphereon/ssi-types'
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
   if (opts?.enabled === false) {

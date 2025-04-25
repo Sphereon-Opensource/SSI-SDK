@@ -1,6 +1,6 @@
 import {
+  type ActionSubType,
   ActionType,
-  DefaultActionSubType,
   InitiatorType,
   LoggingEventType,
   LogLevel,
@@ -28,7 +28,7 @@ export type AuditLoggingEvent = Omit<SimpleLogEvent, 'type' | 'data'> & {
   system: System
   subSystemType: SubSystem
   actionType: ActionType
-  actionSubType: DefaultActionSubType | string
+  actionSubType: ActionSubType
   initiatorType: InitiatorType
   systemCorrelationIdType?: SystemCorrelationIdType
   systemCorrelationId?: string
@@ -62,7 +62,7 @@ export type ActivityLoggingEvent = Omit<SimpleLogEvent, 'data' | 'type'> & {
   system: System
   subSystemType: SubSystem
   actionType: ActionType
-  actionSubType: DefaultActionSubType | string
+  actionSubType: ActionSubType
   initiatorType: InitiatorType
   systemCorrelationIdType?: SystemCorrelationIdType
   systemCorrelationId?: string

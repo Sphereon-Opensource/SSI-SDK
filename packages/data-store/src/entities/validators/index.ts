@@ -1,4 +1,4 @@
-import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator'
+import { type ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator'
 
 @ValidatorConstraint({ name: 'isNonEmptyString', async: false })
 export class IsNonEmptyStringConstraint implements ValidatorConstraintInterface {

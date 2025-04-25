@@ -1,9 +1,9 @@
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
-import { IPresentationDefinition } from '@sphereon/pex'
-import { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
+import type { IPresentationDefinition } from '@sphereon/pex'
+import type { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import { blake2bHex } from 'blakejs'
 import { replaceNullWithUndefined } from '../FormattingUtils'
-import { DcqlQueryREST } from '@sphereon/ssi-types'
+import type { DcqlQueryREST } from '@sphereon/ssi-types'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
   const result: PresentationDefinitionItem = {

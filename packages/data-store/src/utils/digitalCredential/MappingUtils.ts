@@ -1,23 +1,21 @@
 import {
   CredentialMapper,
   DocumentFormat,
-  IVerifiableCredential,
-  IVerifiablePresentation,
+  type IVerifiableCredential,
+  type IVerifiablePresentation,
   ObjectUtils,
-  OriginalVerifiableCredential,
-  OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredentialPayload,
+  type OriginalVerifiableCredential,
+  type OriginalVerifiablePresentation,
+  type SdJwtDecodedVerifiableCredentialPayload,
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import {
+import type {
   AddCredentialArgs,
-  CredentialDocumentFormat,
   DigitalCredential,
-  DocumentType,
   NonPersistedDigitalCredential,
-  RegulationType,
 } from '../../types'
+import {CredentialDocumentFormat, DocumentType, RegulationType } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 

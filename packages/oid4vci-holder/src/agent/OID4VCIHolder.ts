@@ -47,7 +47,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
-  CredentialProofFormat,
+  type CredentialProofFormat,
   HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,

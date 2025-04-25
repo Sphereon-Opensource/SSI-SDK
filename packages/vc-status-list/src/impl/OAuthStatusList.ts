@@ -1,5 +1,5 @@
 import { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
-import { CompactJWT, CWT, CredentialProofFormat, StatusListType } from '@sphereon/ssi-types'
+import { CompactJWT, CWT, type CredentialProofFormat, StatusListType } from '@sphereon/ssi-types'
 import {
   CheckStatusIndexArgs,
   CreateStatusListArgs,

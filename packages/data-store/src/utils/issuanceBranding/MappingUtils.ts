@@ -10,7 +10,7 @@ import { IssuerLocaleBrandingEntity } from '../../entities/issuanceBranding/Issu
 import { CredentialLocaleBrandingEntity } from '../../entities/issuanceBranding/CredentialLocaleBrandingEntity'
 import { ImageDimensionsEntity } from '../../entities/issuanceBranding/ImageDimensionsEntity'
 import { CredentialClaimsEntity } from '../../entities/issuanceBranding/CredentialClaimsEntity'
-import {
+import type {
   IBasicBackgroundAttributes,
   IBasicCredentialBranding,
   IBasicCredentialClaim,
