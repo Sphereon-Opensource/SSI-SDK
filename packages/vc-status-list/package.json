@@ -25,7 +25,7 @@
     "@sd-jwt/core": "^0.9.2",
     "@sd-jwt/jwt-status-list": "^0.9.1",
     "@sd-jwt/sd-jwt-vc": "^0.9.2",
-    "@sphereon/kmp-cbor": "0.2.0-SNAPSHOT.25",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.39",
     "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.esm.cjs.18",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.esm.cjs.18",

@@ -3312,9 +3312,9 @@ importers:
       '@sd-jwt/sd-jwt-vc':
         specifier: ^0.9.2
         version: 0.9.2
-      '@sphereon/kmp-cbor':
-        specifier: 0.2.0-SNAPSHOT.25
-        version: 0.2.0-SNAPSHOT.25
+      '@sphereon/kmp-mdoc-core':
+        specifier: 0.2.0-SNAPSHOT.26
+        version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-common':
         specifier: 0.17.1-feature.esm.cjs.39
         version: 0.17.1-feature.esm.cjs.39(encoding@0.1.13)
@@ -6493,10 +6493,6 @@ packages:
   '@sphereon/jarm@0.17.1-feature.esm.cjs.39':
     resolution: {integrity: sha512-naZ9OszSFObsjLEKeYK1z24dHK27V7/a8yKur63puaw/2zOxb3Fmw4wmk2dP1oGwwBc/y6vfCCuhVhhRd/sVJQ==}
     engines: {node: '>=20'}
-
-  '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
-    resolution: {integrity: sha512-EFuAtA4zaONe1/BGOntx9m1Oov6iVSMhbjhht6ST/6hFx+VMCs5iDTnl8qay3dleIOoDEluK8AnSiufi56+IJA==}
-    bundledDependencies: []
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
@@ -16093,10 +16089,6 @@ snapshots:
 
   '@js-joda/core@5.6.3': {}
 
-  '@js-joda/timezone@2.3.0(@js-joda/core@3.2.0)':
-    dependencies:
-      '@js-joda/core': 3.2.0
-
   '@js-joda/timezone@2.3.0(@js-joda/core@5.6.3)':
     dependencies:
       '@js-joda/core': 5.6.3
@@ -17445,12 +17437,6 @@ snapshots:
       valibot: 0.42.1(typescript@5.8.3)
     transitivePeerDependencies:
       - typescript
-
-  '@sphereon/kmp-cbor@0.2.0-SNAPSHOT.25':
-    dependencies:
-      '@js-joda/core': 3.2.0
-      '@js-joda/timezone': 2.3.0(@js-joda/core@3.2.0)
-      format-util: 1.0.5
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     dependencies:
