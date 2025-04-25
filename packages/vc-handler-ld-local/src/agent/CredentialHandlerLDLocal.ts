@@ -1,7 +1,7 @@
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { vcLibCheckStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
-import type { IVerifyResult } from '@sphereon/ssi-types'
+import type { IVerifiableCredential, IVerifyResult } from '@sphereon/ssi-types'
 import type {
   CredentialPayload,
   DIDDocument,
@@ -97,8 +97,10 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
     debug('Entry of createVerifiableCredentialLDLocal')
     const credentialContext = args?.credential?.['@context'] ?? []
     addVcdmContextIfNeeded(credentialContext)
+    const isVdcm1 = isVcdm1Credential(args.credential)
+    const isVdcm2 = isVcdm2Credential(args.credential)
     const credentialType = processEntryToArray(args?.credential?.type, 'VerifiableCredential')
-    let issuanceDate = args?.credential?.issuanceDate || new Date().toISOString()
+    let issuanceDate = args?.credential?.validFrom ?? args?.credential?.issuanceDate  ?? new Date().toISOString()
     if (issuanceDate instanceof Date) {
       issuanceDate = issuanceDate.toISOString()
     }
@@ -106,7 +108,8 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
       ...args?.credential,
       '@context': credentialContext,
       type: credentialType,
-      issuanceDate,
+      ...(isVdcm1 && {issuanceDate}),
+      ...(isVdcm2 && {validFrom: issuanceDate}),
     }
     //fixme: Potential PII leak
     debug(JSON.stringify(credential))
@@ -305,6 +308,23 @@ export class CredentialHandlerLDLocal implements IAgentPlugin {
   }
 }
 
+function isVcdmCredential(credential: CredentialPayload| IVerifiableCredential, vcdmType: string): boolean {
+  if (typeof credential !== 'object') {
+    return false
+  } else if (!('@context' in credential && Array.isArray(credential['@context']))) {
+    return false
+  }
+  return credential['@context'].includes(vcdmType)
+}
+
+
+export function isVcdm1Credential(credential: CredentialPayload| IVerifiableCredential): boolean {
+  return isVcdmCredential(credential, VCDM_CREDENTIAL_CONTEXT_V1)
+}
+
+export function isVcdm2Credential(credential: CredentialPayload| IVerifiableCredential): boolean {
+  return isVcdmCredential(credential, VCDM_CREDENTIAL_CONTEXT_V2)
+}
 function addVcdmContextIfNeeded(context: string[], defaultValue: string = VCDM_CREDENTIAL_CONTEXT_V2): void {
   if (context.filter((val) => VCDM_CREDENTIAL_CONTEXT_VERSIONS.includes(val)).length === 0) {
     context.unshift(defaultValue)

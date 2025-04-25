@@ -69,6 +69,7 @@ describe('credential-LD full flow with VCDM2', () => {
       issuer: didKeyIdentifier.did,
       type: ['VerifiableCredential', 'AlumniCredential'],
       '@context': ['https://www.w3.org/ns/credentials/v2', 'https://www.w3.org/ns/credentials/examples/v2'],
+      issuanceDate: '2020-08-19T21:41:50Z',
       credentialSubject: {
         id: didKeyIdentifier.did,
         mySubjectProperty: 'mySubjectValue',
@@ -79,6 +80,7 @@ describe('credential-LD full flow with VCDM2', () => {
       proofFormat: 'lds',
       fetchRemoteContexts: true,
     })
+    console.log(JSON.stringify(verifiableCredential, null, 2))
 
     expect(verifiableCredential).toBeDefined()
 
