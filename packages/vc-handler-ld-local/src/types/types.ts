@@ -1,5 +1,5 @@
-import * as sigpkg from '@digitalcredentials/jsonld-signatures'
-const { purposes } = sigpkg
+import sigpkg from '@digitalcredentials/jsonld-signatures'
+
 import type { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import type { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
 import type {
@@ -226,7 +226,7 @@ export interface IAuthenticationProofPurpose extends IControllerProofPurpose {
  */
 export interface IAssertionProofPurpose extends IControllerProofPurpose {}
 
-export const ProofPurpose = purposes.ProofPurpose
-export const ControllerProofPurpose = purposes.ControllerProofPurpose
-export const AssertionProofPurpose = purposes.AssertionProofPurpose
-export const AuthenticationProofPurpose = purposes.AuthenticationProofPurpose
+export const ProofPurpose = sigpkg.purposes.ProofPurpose
+export const ControllerProofPurpose = sigpkg.purposes.ControllerProofPurpose
+export const AssertionProofPurpose = sigpkg.purposes.AssertionProofPurpose
+export const AuthenticationProofPurpose = sigpkg.purposes.AuthenticationProofPurpose

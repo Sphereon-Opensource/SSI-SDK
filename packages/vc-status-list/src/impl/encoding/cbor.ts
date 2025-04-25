@@ -1,20 +1,20 @@
 import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 import { deflate, inflate } from 'pako'
-import { com, kotlin } from '@sphereon/kmp-mdoc-core'
-// import * as cborpkg from '@sphereon/kmp-cbor'
+import pkg from '@sphereon/kmp-mdoc-core';
+const { com, kotlin } = pkg;
 import base64url from 'base64url'
 import type { IRequiredContext, SignedStatusListData } from '../../types'
 import { type DecodedStatusListPayload, resolveIdentifier } from './common'
 
-export type IKey = com.sphereon.crypto.IKey
-export type CborItem<T> = com.sphereon.cbor.CborItem<T>
+export type IKey = pkg.com.sphereon.crypto.IKey
+export type CborItem<T> = pkg.com.sphereon.cbor.CborItem<T>
 export const CborByteString = com.sphereon.cbor.CborByteString
-export type CborByteStringType = com.sphereon.cbor.CborByteString
+export type CborByteStringType = pkg.com.sphereon.cbor.CborByteString
 export const CborUInt = com.sphereon.cbor.CborUInt
-export type CborUIntType = com.sphereon.cbor.CborUInt
+export type CborUIntType = pkg.com.sphereon.cbor.CborUInt
 export const CborString = com.sphereon.cbor.CborString
-export type CborStringType = com.sphereon.cbor.CborString
+export type CborStringType = pkg.com.sphereon.cbor.CborString
 
 // const cbor = cborpkg.com.sphereon.cbor
 // const kmp = cborpkg.com.sphereon.kmp
@@ -90,7 +90,7 @@ export const createSignedCbor = async (
   }
 }
 
-function buildClaimsMap(id: string, issuerString: string, statusListMap: com.sphereon.cbor.CborMap<CborStringType, CborItem<any>>, expiresAt?: Date) {
+function buildClaimsMap(id: string, issuerString: string, statusListMap: pkg.com.sphereon.cbor.CborMap<CborStringType, CborItem<any>>, expiresAt?: Date) {
   const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
   const claimsEntries: Array<[CborUIntType, CborItem<any>]> = [
     [new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.SUBJECT)), new com.sphereon.cbor.CborString(id)], // "sub"

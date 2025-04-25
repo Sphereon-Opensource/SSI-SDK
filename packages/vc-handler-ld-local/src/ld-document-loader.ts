@@ -1,4 +1,4 @@
-import * as sigpkg from '@digitalcredentials/jsonld-signatures'
+import sigpkg from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import type {
   CredentialPayload,

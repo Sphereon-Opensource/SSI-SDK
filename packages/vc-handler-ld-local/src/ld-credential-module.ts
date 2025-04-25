@@ -1,4 +1,4 @@
-import * as sigpkg from '@digitalcredentials/jsonld-signatures'
+import sigpkg from '@digitalcredentials/jsonld-signatures'
 const { purposes } = sigpkg
 import * as vc from '@digitalcredentials/vc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
@@ -17,7 +17,7 @@ import { events } from './types'
 // import jsigs from '@digitalcredentials/jsonld-signatures'
 //Support for Typescript added in version 9.0.0
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const jsigs = require('jsonld-signatures')
+// const jsigs = require('jsonld-signatures')
 
 const ProofPurpose = purposes.ProofPurpose
 const AssertionProofPurpose = purposes.AssertionProofPurpose
@@ -89,7 +89,7 @@ export class LdCredentialModule {
     let verifiableCredential
     //Needs to be signed using jsonld-signaures@5.0.1
     if (key.type === 'Bls12381G2') {
-      verifiableCredential = await jsigs.sign(credential, {
+      verifiableCredential = await sigpkg.jsigs.sign(credential, {
         suite: signingSuite,
         purpose,
         documentLoader,
@@ -132,7 +132,7 @@ export class LdCredentialModule {
     suite.preSigningPresModification(presentation)
 
     if (key.type === 'Bls12381G2') {
-      return await jsigs.sign(presentation, {
+      return await sigpkg.jsigs.sign(presentation, {
         suite: await suite.getSuiteForSigning(key, holderDid, verificationMethodId, context),
         purpose,
         documentLoader,
