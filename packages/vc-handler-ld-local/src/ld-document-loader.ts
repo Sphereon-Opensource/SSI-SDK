@@ -1,6 +1,6 @@
 import * as sigpkg from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
-import {
+import type {
   CredentialPayload,
   DIDDocument,
   IAgentContext,

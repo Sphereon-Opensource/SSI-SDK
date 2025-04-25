@@ -1,19 +1,19 @@
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
-  ICredential,
-  ICredentialStatus,
-  IIssuer,
-  IVerifiableCredential,
-  OrPromise,
+  type ICredential,
+  type ICredentialStatus,
+  type IIssuer,
+  type IVerifiableCredential,
+  type OrPromise,
   type CredentialProofFormat,
-  StatusListCredential,
+  type StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
-  StatusListIndexingDirection,
+  type StatusListIndexingDirection,
   StatusListType,
-  StatusPurpose2021,
+  type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import {
+import type {
   CredentialPayload,
   IAgentContext,
   ICredentialIssuer,
@@ -23,9 +23,9 @@ import {
   IPluginMethodMap,
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list'
-import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { StatusListOpts } from '@sphereon/oid4vci-common'
+import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
+import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import type { StatusListOpts } from '@sphereon/oid4vci-common'
 
 export enum StatusOAuth {
   Valid = 0,

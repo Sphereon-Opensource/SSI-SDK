@@ -1,8 +1,8 @@
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import { vcLibCheckStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
-import { IVerifyResult } from '@sphereon/ssi-types'
-import {
+import type { IVerifyResult } from '@sphereon/ssi-types'
+import type {
   CredentialPayload,
   DIDDocument,
   IAgentContext,
@@ -14,15 +14,15 @@ import {
   PresentationPayload,
 } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
-import { _ExtendedIKey, extractIssuer, isDefined, OrPromise, processEntryToArray, RecordLike } from '@veramo/utils'
+import { type _ExtendedIKey, extractIssuer, isDefined, type OrPromise, processEntryToArray, type RecordLike } from '@veramo/utils'
 import Debug from 'debug'
 
-import { IBindingOverrides, IRequiredContext, schema } from '../index'
+import { type IBindingOverrides, type IRequiredContext, schema } from '../index'
 import { LdContextLoader } from '../ld-context-loader'
 import { LdCredentialModule } from '../ld-credential-module'
 import { LdSuiteLoader } from '../ld-suite-loader'
 import { SphereonLdSignature } from '../ld-suites'
-import {
+import type {
   ContextDoc,
   ICreateVerifiableCredentialLDArgs,
   ICreateVerifiablePresentationLDArgs,

@@ -1,4 +1,4 @@
-import { TKeyType } from '@veramo/core'
+import type { TKeyType } from '@veramo/core'
 import Debug from 'debug'
 
 import { SphereonLdSignature } from './ld-suites'

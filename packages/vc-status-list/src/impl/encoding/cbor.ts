@@ -2,9 +2,9 @@ import { StatusList } from '@sd-jwt/jwt-status-list'
 import { deflate, inflate } from 'pako'
 import * as cborpkg from '@sphereon/kmp-cbor'
 import base64url from 'base64url'
-import { IRequiredContext, SignedStatusListData } from '../../types'
-import { DecodedStatusListPayload, resolveIdentifier } from './common'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list'
+import type { IRequiredContext, SignedStatusListData } from '../../types'
+import { type DecodedStatusListPayload, resolveIdentifier } from './common'
+import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 
 const cbor = cborpkg.com.sphereon.cbor
 const kmp = cborpkg.com.sphereon.kmp

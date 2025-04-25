@@ -1,5 +1,5 @@
 import { Loggers } from '@sphereon/ssi-types'
-import { DefaultLinkPriorities, LinkHandler, LinkHandlerRegistry } from './types'
+import { DefaultLinkPriorities, type LinkHandler, type LinkHandlerRegistry } from './types'
 
 /**
  * Class registering multiple LinkHandlers, allowing the developer to use a single compound link handler.

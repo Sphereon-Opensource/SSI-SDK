@@ -1,4 +1,4 @@
-import { IProofPurpose, IProofType } from '@sphereon/ssi-types'
+import type { IProofPurpose, IProofType } from '@sphereon/ssi-types'
 
 export interface ProofOptions {
   /**

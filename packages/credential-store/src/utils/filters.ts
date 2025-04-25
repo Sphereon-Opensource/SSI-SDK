@@ -1,4 +1,4 @@
-import { CredentialRole, DigitalCredential, DocumentType, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole, type DigitalCredential, DocumentType, type FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
 import { validate as uuidValidate } from 'uuid'
 
 /**

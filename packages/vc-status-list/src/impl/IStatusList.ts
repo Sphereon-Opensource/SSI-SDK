@@ -1,6 +1,6 @@
-import { IAgentContext, ICredentialPlugin } from '@veramo/core'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import {
+import type { IAgentContext, ICredentialPlugin } from '@veramo/core'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   Status2021,

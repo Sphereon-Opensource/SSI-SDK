@@ -1,11 +1,11 @@
-import { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType } from '@veramo/core'
+import type { CredentialPayload, DIDDocument, IAgentContext, IKey, TKeyType } from '@veramo/core'
 import { asArray, encodeJoseBlob } from '@veramo/utils'
 import ldsEcdsa from '@veramo-community/lds-ecdsa-secp256k1-recovery2020'
 // @ts-ignore
 import { concat as concatArrays } from 'uint8arrays/concat'
 // @ts-ignore
 import { fromString } from 'uint8arrays/from-string'
-import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+import { type RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 const { EcdsaSecp256k1RecoveryMethod2020, EcdsaSecp256k1RecoverySignature2020 } = ldsEcdsa
 

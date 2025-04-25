@@ -4,7 +4,7 @@ import {
   InitiatorType,
   LoggingEventType,
   LogLevel,
-  SimpleLogEvent,
+  type SimpleLogEvent,
   SubSystem,
   System,
   SystemCorrelationIdType,

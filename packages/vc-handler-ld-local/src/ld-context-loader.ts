@@ -3,9 +3,9 @@
  * that it unifies into a single Map to provide to the documentLoader within
  * the w3c credential module.
  */
-import { isIterable, OrPromise, RecordLike } from '@veramo/utils'
+import { isIterable, type OrPromise, type RecordLike } from '@veramo/utils'
 
-import { ContextDoc } from './types'
+import type { ContextDoc } from './types'
 
 export class LdContextLoader {
   private readonly contexts: Record<string, OrPromise<ContextDoc>>

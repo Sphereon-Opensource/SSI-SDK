@@ -1,14 +1,14 @@
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
   DocumentFormat,
   type CredentialProofFormat,
-  StatusListCredential,
+  type StatusListCredential,
   StatusListDriverType,
   StatusListType,
-  StatusPurpose2021,
+  type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
 

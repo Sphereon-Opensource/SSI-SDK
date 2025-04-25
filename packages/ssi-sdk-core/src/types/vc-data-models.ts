@@ -1,4 +1,4 @@
-import {
+import type {
   VerifiablePresentation,
   CompactJWT,
   UnsignedCredential,
@@ -9,7 +9,7 @@ import {
   CredentialStatusReference,
 } from '@veramo/core'
 
-import { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'
+import type { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'
 
 export type W3CVerifiablePresentationSP = VerifiablePresentation | VerifiablePresentationSP | CompactJWT
 export type W3CVerifiableCredentialSP = VerifiableCredential | VerifiableCredentialSP | CompactJWT

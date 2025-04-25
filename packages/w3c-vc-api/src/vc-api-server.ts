@@ -1,8 +1,8 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
-import { ExpressSupport } from '@sphereon/ssi-express-support'
-import { TAgent } from '@veramo/core'
+import type { ExpressSupport } from '@sphereon/ssi-express-support'
+import type { TAgent } from '@veramo/core'
 
-import express, { Express, Router } from 'express'
+import express, { type Express, Router } from 'express'
 import {
   deleteCredentialEndpoint,
   getCredentialEndpoint,
@@ -10,7 +10,7 @@ import {
   issueCredentialEndpoint,
   verifyCredentialEndpoint,
 } from './api-functions'
-import { IRequiredPlugins, IVCAPIOpts } from './types'
+import type { IRequiredPlugins, IVCAPIOpts } from './types'
 
 export class VcApiServer {
   get router(): express.Router {

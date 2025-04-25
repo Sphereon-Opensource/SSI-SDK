@@ -1,10 +1,10 @@
 import { Ed25519Signature2020 } from '@digitalcredentials/ed25519-signature-2020'
 import { Ed25519VerificationKey2020 } from '@digitalcredentials/ed25519-verification-key-2020'
 import { base64ToBytes, bytesToBase64, hexToMultibase } from '@sphereon/ssi-sdk.core'
-import { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import type { IAgentContext, IKey, TKeyType, VerifiableCredential } from '@veramo/core'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 
-import { RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
+import { type RequiredAgentMethods, SphereonLdSignature } from '../ld-suites'
 
 export class SphereonEd25519Signature2020 extends SphereonLdSignature {
   constructor() {

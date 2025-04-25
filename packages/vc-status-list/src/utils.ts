@@ -1,10 +1,10 @@
 import {
   CredentialMapper,
-  IIssuer,
+  type IIssuer,
   type CredentialProofFormat,
   StatusListType,
   StatusListType as StatusListTypeW3C,
-  StatusListCredential,
+  type StatusListCredential,
   DocumentFormat,
 } from '@sphereon/ssi-types'
 import { jwtDecode } from 'jwt-decode'

@@ -1,4 +1,4 @@
-import { TKeyType } from '@veramo/core'
+import type { TKeyType } from '@veramo/core'
 // @ts-ignore
 import { concat as concatArrays } from 'uint8arrays/concat'
 // @ts-ignore

@@ -1,18 +1,26 @@
-import { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, DocumentFormat, IIssuer, type CredentialProofFormat, StatusListCredential, StatusListType } from '@sphereon/ssi-types'
+import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  CredentialMapper,
+  DocumentFormat,
+  type IIssuer,
+  type CredentialProofFormat,
+  type StatusListCredential,
+  StatusListType,
+} from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
-import { IStatusList } from './IStatusList'
-import {
+import type { IStatusList } from './IStatusList'
+import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
-  Status2021,
   StatusListResult,
   ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
+
+import { Status2021 } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 
 export const DEFAULT_LIST_LENGTH = 250000

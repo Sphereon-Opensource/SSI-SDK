@@ -1,8 +1,8 @@
 import * as sigpkg from '@digitalcredentials/jsonld-signatures'
 const { purposes } = sigpkg
-import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
-import { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
-import {
+import type { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import type { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
+import type {
   CredentialPayload,
   IAgentContext,
   IDIDManager,

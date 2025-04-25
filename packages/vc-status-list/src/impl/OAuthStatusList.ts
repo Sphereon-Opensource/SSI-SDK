@@ -1,6 +1,6 @@
-import { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
-import { CompactJWT, CWT, type CredentialProofFormat, StatusListType } from '@sphereon/ssi-types'
-import {
+import type { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
+import { type CompactJWT, type CWT, type CredentialProofFormat, StatusListType } from '@sphereon/ssi-types'
+import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   SignedStatusListData,
@@ -11,10 +11,10 @@ import {
   UpdateStatusListIndexArgs,
 } from '../types'
 import { determineProofFormat, getAssertedValue, getAssertedValues } from '../utils'
-import { IStatusList } from './IStatusList'
+import type { IStatusList } from './IStatusList'
 import { StatusList } from '@sd-jwt/jwt-status-list'
-import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createSignedJwt, decodeStatusListJWT } from './encoding/jwt'
 import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
 

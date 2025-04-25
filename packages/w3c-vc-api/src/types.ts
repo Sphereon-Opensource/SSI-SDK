@@ -1,5 +1,5 @@
-import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
-import {
+import type { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import type {
   IAgentContext,
   ICredentialIssuer,
   ICredentialPlugin,
@@ -9,8 +9,8 @@ import {
   IKeyManager,
   IResolver,
 } from '@veramo/core'
-import { ProofFormat } from '@veramo/core'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import type { ProofFormat } from '@veramo/core'
+import type { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export type IRequiredPlugins = IDataStoreORM &
   IDIDManager &

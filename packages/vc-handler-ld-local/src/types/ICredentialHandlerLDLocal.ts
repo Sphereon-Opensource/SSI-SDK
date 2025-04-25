@@ -1,14 +1,14 @@
-import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { IPluginMethodMap } from '@veramo/core'
+import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import type { IPluginMethodMap } from '@veramo/core'
 
-import {
+import type {
   ICreateVerifiableCredentialLDArgs,
   ICreateVerifiablePresentationLDArgs,
   IRequiredContext,
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from './types'
-import { IVerifyResult } from '@sphereon/ssi-types'
+import type { IVerifyResult } from '@sphereon/ssi-types'
 
 /**
  * The interface definition for a plugin that can issue and verify Verifiable Credentials and Presentations
