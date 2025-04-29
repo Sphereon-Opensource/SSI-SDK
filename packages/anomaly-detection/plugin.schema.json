@@ -7,6 +7,7 @@
         },
         "PartialBy<GeolocationStoreArgs,(\"storeId\"|\"namespace\")>": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "storeId": {
               "type": "string"
@@ -18,7 +19,9 @@
               "type": "string"
             }
           },
-          "required": ["ipOrHostname"]
+          "required": [
+            "ipOrHostname"
+          ]
         },
         "AnomalyDetectionLookupLocationResult": {
           "type": "object",
@@ -29,7 +32,8 @@
             "country": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "methods": {

@@ -17,20 +17,29 @@
                 "hasher": {
                   "$ref": "#/components/schemas/HasherSync"
                 }
-              }
+              },
+              "additionalProperties": false
             }
           },
-          "required": ["credential"]
+          "required": [
+            "credential"
+          ],
+          "additionalProperties": false
         },
         "AddDigitalCredential": {
+          "$ref": "#/components/schemas/Omit<NonPersistedDigitalCredential,(\"id\"|\"documentType\"|\"documentFormat\"|\"uniformDocument\"|\"hash\"|\"createdAt\"|\"lastUpdatedAt\"|\"validFrom\"|\"validUntil\")>"
+        },
+        "Omit<NonPersistedDigitalCredential,(\"id\"|\"documentType\"|\"documentFormat\"|\"uniformDocument\"|\"hash\"|\"createdAt\"|\"lastUpdatedAt\"|\"validFrom\"|\"validUntil\")>": {
+          "$ref": "#/components/schemas/Pick<NonPersistedDigitalCredential,Exclude<(\"parentId\"|\"documentType\"|\"documentFormat\"|\"credentialRole\"|\"rawDocument\"|\"uniformDocument\"|\"credentialId\"|\"hash\"|\"kmsKeyRef\"|\"identifierMethod\"|\"issuerCorrelationType\"|\"subjectCorrelationType\"|\"rpCorrelationType\"|\"isIssuerSigned\"|\"issuerCorrelationId\"|\"subjectCorrelationId\"|\"rpCorrelationId\"|\"verifiedState\"|\"tenantId\"|\"createdAt\"|\"presentedAt\"|\"lastUpdatedAt\"|\"validUntil\"|\"validFrom\"|\"verifiedAt\"|\"revokedAt\"|\"regulationType\"),(\"id\"|\"documentType\"|\"documentFormat\"|\"uniformDocument\"|\"hash\"|\"createdAt\"|\"lastUpdatedAt\"|\"validFrom\"|\"validUntil\")>>"
+        },
+        "Pick<NonPersistedDigitalCredential,Exclude<(\"parentId\"|\"documentType\"|\"documentFormat\"|\"credentialRole\"|\"rawDocument\"|\"uniformDocument\"|\"credentialId\"|\"hash\"|\"kmsKeyRef\"|\"identifierMethod\"|\"issuerCorrelationType\"|\"subjectCorrelationType\"|\"rpCorrelationType\"|\"isIssuerSigned\"|\"issuerCorrelationId\"|\"subjectCorrelationId\"|\"rpCorrelationId\"|\"verifiedState\"|\"tenantId\"|\"createdAt\"|\"presentedAt\"|\"lastUpdatedAt\"|\"validUntil\"|\"validFrom\"|\"verifiedAt\"|\"revokedAt\"|\"regulationType\"),(\"id\"|\"documentType\"|\"documentFormat\"|\"uniformDocument\"|\"hash\"|\"createdAt\"|\"lastUpdatedAt\"|\"validFrom\"|\"validUntil\")>>": {
           "type": "object",
           "properties": {
             "parentId": {
               "type": "string"
             },
             "credentialRole": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/components/schemas/CredentialRole"
             },
             "rawDocument": {
               "type": "string"
@@ -45,16 +54,13 @@
               "type": "string"
             },
             "issuerCorrelationType": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/components/schemas/CredentialCorrelationType"
             },
             "subjectCorrelationType": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/components/schemas/CredentialCorrelationType"
             },
             "rpCorrelationType": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/components/schemas/CredentialCorrelationType"
             },
             "isIssuerSigned": {
               "type": "boolean"
@@ -69,8 +75,7 @@
               "type": "string"
             },
             "verifiedState": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/components/schemas/CredentialStateType"
             },
             "tenantId": {
               "type": "string"
@@ -88,11 +93,51 @@
               "format": "date-time"
             },
             "regulationType": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/components/schemas/RegulationType"
             }
           },
-          "required": ["credentialRole", "rawDocument", "issuerCorrelationType", "issuerCorrelationId"]
+          "required": [
+            "credentialRole",
+            "rawDocument",
+            "issuerCorrelationType",
+            "issuerCorrelationId"
+          ],
+          "additionalProperties": false
+        },
+        "CredentialRole": {
+          "type": "string",
+          "enum": [
+            "ISSUER",
+            "VERIFIER",
+            "HOLDER",
+            "FEDERATION_TRUST_ANCHOR"
+          ]
+        },
+        "CredentialCorrelationType": {
+          "type": "string",
+          "enum": [
+            "DID",
+            "X509_SAN",
+            "KID",
+            "URL"
+          ]
+        },
+        "CredentialStateType": {
+          "type": "string",
+          "enum": [
+            "REVOKED",
+            "VERIFIED",
+            "EXPIRED"
+          ]
+        },
+        "RegulationType": {
+          "type": "string",
+          "enum": [
+            "PID",
+            "QEAA",
+            "EAA",
+            "NON_REGULATED"
+          ]
         },
         "HasherSync": {
           "$comment": "(data: string | ArrayBuffer, alg: string) => Uint8Array",
@@ -107,13 +152,7 @@
                       "type": "string"
                     },
                     {
-                      "type": "object",
-                      "properties": {
-                        "byteLength": {
-                          "type": "number"
-                        }
-                      },
-                      "required": ["byteLength"]
+                      "$ref": "#/components/schemas/ArrayBuffer"
                     }
                   ]
                 },
@@ -121,10 +160,25 @@
                   "type": "string"
                 }
               },
-              "required": ["data", "alg"],
+              "required": [
+                "data",
+                "alg"
+              ],
               "additionalProperties": false
             }
           }
+        },
+        "ArrayBuffer": {
+          "type": "object",
+          "properties": {
+            "byteLength": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "byteLength"
+          ],
+          "additionalProperties": false
         },
         "DigitalCredential": {
           "type": "object",
@@ -234,31 +288,27 @@
             "issuerCorrelationId",
             "createdAt",
             "lastUpdatedAt"
-          ]
+          ],
+          "additionalProperties": false,
+          "description": "DigitalCredential"
         },
         "DocumentType": {
           "type": "string",
-          "enum": ["VC", "VP", "P", "C"]
+          "enum": [
+            "VC",
+            "VP",
+            "P",
+            "C"
+          ]
         },
         "CredentialDocumentFormat": {
           "type": "string",
-          "enum": ["JSON_LD", "JWT", "SD_JWT", "MSO_MDOC"]
-        },
-        "CredentialRole": {
-          "type": "string",
-          "enum": ["ISSUER", "VERIFIER", "HOLDER", "FEDERATION_TRUST_ANCHOR"]
-        },
-        "RegulationType": {
-          "type": "string",
-          "enum": ["PID", "QEAA", "EAA", "NON_REGULATED"]
-        },
-        "CredentialCorrelationType": {
-          "type": "string",
-          "enum": ["DID", "X509_SAN", "KID", "URL"]
-        },
-        "CredentialStateType": {
-          "type": "string",
-          "enum": ["REVOKED", "VERIFIED", "EXPIRED"]
+          "enum": [
+            "JSON_LD",
+            "JWT",
+            "SD_JWT",
+            "MSO_MDOC"
+          ]
         },
         "DeleteCredentialArgs": {
           "anyOf": [
@@ -269,7 +319,10 @@
                   "type": "string"
                 }
               },
-              "required": ["id"]
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
             },
             {
               "type": "object",
@@ -278,7 +331,10 @@
                   "type": "string"
                 }
               },
-              "required": ["hash"]
+              "required": [
+                "hash"
+              ],
+              "additionalProperties": false
             }
           ]
         },
@@ -292,106 +348,113 @@
               "$ref": "#/components/schemas/FindDigitalCredentialArgs"
             }
           },
-          "required": ["filter"]
+          "required": [
+            "filter"
+          ],
+          "additionalProperties": false
         },
         "FindDigitalCredentialArgs": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "parentId": {
-                "type": "string"
-              },
-              "documentType": {
-                "$ref": "#/components/schemas/DocumentType"
-              },
-              "documentFormat": {
-                "$ref": "#/components/schemas/CredentialDocumentFormat"
-              },
-              "credentialRole": {
-                "$ref": "#/components/schemas/CredentialRole"
-              },
-              "regulationType": {
-                "$ref": "#/components/schemas/RegulationType"
-              },
-              "rawDocument": {
-                "type": "string"
-              },
-              "uniformDocument": {
-                "type": "string"
-              },
-              "credentialId": {
-                "type": "string"
-              },
-              "hash": {
-                "type": "string"
-              },
-              "kmsKeyRef": {
-                "type": "string"
-              },
-              "identifierMethod": {
-                "type": "string"
-              },
-              "issuerCorrelationType": {
-                "$ref": "#/components/schemas/CredentialCorrelationType"
-              },
-              "subjectCorrelationType": {
-                "$ref": "#/components/schemas/CredentialCorrelationType"
-              },
-              "rpCorrelationType": {
-                "$ref": "#/components/schemas/CredentialCorrelationType"
-              },
-              "isIssuerSigned": {
-                "type": "boolean"
-              },
-              "issuerCorrelationId": {
-                "type": "string"
-              },
-              "subjectCorrelationId": {
-                "type": "string"
-              },
-              "rpCorrelationId": {
-                "type": "string"
-              },
-              "verifiedState": {
-                "$ref": "#/components/schemas/CredentialStateType"
-              },
-              "tenantId": {
-                "type": "string"
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "presentedAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "lastUpdatedAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "validUntil": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "validFrom": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "verifiedAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "revokedAt": {
-                "type": "string",
-                "format": "date-time"
-              }
-            }
+            "$ref": "#/components/schemas/Partial<DigitalCredential>"
           }
+        },
+        "Partial<DigitalCredential>": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "parentId": {
+              "type": "string"
+            },
+            "documentType": {
+              "$ref": "#/components/schemas/DocumentType"
+            },
+            "documentFormat": {
+              "$ref": "#/components/schemas/CredentialDocumentFormat"
+            },
+            "credentialRole": {
+              "$ref": "#/components/schemas/CredentialRole"
+            },
+            "regulationType": {
+              "$ref": "#/components/schemas/RegulationType"
+            },
+            "rawDocument": {
+              "type": "string"
+            },
+            "uniformDocument": {
+              "type": "string"
+            },
+            "credentialId": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            },
+            "kmsKeyRef": {
+              "type": "string"
+            },
+            "identifierMethod": {
+              "type": "string"
+            },
+            "issuerCorrelationType": {
+              "$ref": "#/components/schemas/CredentialCorrelationType"
+            },
+            "subjectCorrelationType": {
+              "$ref": "#/components/schemas/CredentialCorrelationType"
+            },
+            "rpCorrelationType": {
+              "$ref": "#/components/schemas/CredentialCorrelationType"
+            },
+            "isIssuerSigned": {
+              "type": "boolean"
+            },
+            "issuerCorrelationId": {
+              "type": "string"
+            },
+            "subjectCorrelationId": {
+              "type": "string"
+            },
+            "rpCorrelationId": {
+              "type": "string"
+            },
+            "verifiedState": {
+              "$ref": "#/components/schemas/CredentialStateType"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "presentedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "validUntil": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "validFrom": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "verifiedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "revokedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": false
         },
         "GetCredentialArgs": {
           "type": "object",
@@ -400,7 +463,10 @@
               "type": "string"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "GetCredentialsByClaimsArgs": {
           "type": "object",
@@ -415,7 +481,10 @@
               "type": "string"
             }
           },
-          "required": ["filter"]
+          "required": [
+            "filter"
+          ],
+          "additionalProperties": false
         },
         "FindClaimsArgs": {
           "$ref": "#/components/schemas/FindArgs-TClaimsColumns"
@@ -445,7 +514,8 @@
               "type": "number",
               "description": "Returns at most this number of results from a  {@link  IDataStoreORM  }  query."
             }
-          }
+          },
+          "additionalProperties": false
         },
         "Where-TClaimsColumns": {
           "type": "object",
@@ -464,15 +534,40 @@
             },
             "op": {
               "type": "string",
-              "enum": ["LessThan", "LessThanOrEqual", "MoreThan", "MoreThanOrEqual", "Equal", "Like", "Between", "In", "Any", "IsNull"]
+              "enum": [
+                "LessThan",
+                "LessThanOrEqual",
+                "MoreThan",
+                "MoreThanOrEqual",
+                "Equal",
+                "Like",
+                "Between",
+                "In",
+                "Any",
+                "IsNull"
+              ]
             }
           },
-          "required": ["column"],
+          "required": [
+            "column"
+          ],
+          "additionalProperties": false,
           "description": "Represents a WHERE predicate for a  {@link  FindArgs }  query. In situations where multiple WHERE predicates are present, they are combined with AND."
         },
         "TClaimsColumns": {
           "type": "string",
-          "enum": ["context", "credentialType", "type", "value", "isObj", "id", "issuer", "subject", "expirationDate", "issuanceDate"]
+          "enum": [
+            "context",
+            "credentialType",
+            "type",
+            "value",
+            "isObj",
+            "id",
+            "issuer",
+            "subject",
+            "expirationDate",
+            "issuanceDate"
+          ]
         },
         "Order-TClaimsColumns": {
           "type": "object",
@@ -482,10 +577,17 @@
             },
             "direction": {
               "type": "string",
-              "enum": ["ASC", "DESC"]
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
             }
           },
-          "required": ["column", "direction"],
+          "required": [
+            "column",
+            "direction"
+          ],
+          "additionalProperties": false,
           "description": "Represents the sort order of results from a  {@link  FindArgs }  query."
         },
         "UniqueDigitalCredential": {
@@ -519,7 +621,11 @@
               "$ref": "#/components/schemas/IVerifiablePresentation"
             }
           },
-          "required": ["hash", "digitalCredential"]
+          "required": [
+            "hash",
+            "digitalCredential"
+          ],
+          "additionalProperties": false
         },
         "OriginalVerifiableCredential": {
           "anyOf": [
@@ -651,7 +757,14 @@
               "type": "string"
             }
           },
-          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof", "type"]
+          "required": [
+            "@context",
+            "credentialSubject",
+            "issuanceDate",
+            "issuer",
+            "proof",
+            "type"
+          ]
         },
         "IProof": {
           "type": "object",
@@ -710,7 +823,12 @@
               }
             }
           },
-          "required": ["type", "created", "proofPurpose", "verificationMethod"]
+          "required": [
+            "type",
+            "created",
+            "proofPurpose",
+            "verificationMethod"
+          ]
         },
         "IProofType": {
           "type": "string",
@@ -780,7 +898,10 @@
               "type": "string"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "IIssuerId": {
           "type": "string"
@@ -792,7 +913,9 @@
               "type": "string"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ]
         },
         "ICredentialStatus": {
           "type": "object",
@@ -804,7 +927,10 @@
               "type": "string"
             }
           },
-          "required": ["id", "type"]
+          "required": [
+            "id",
+            "type"
+          ]
         },
         "CompactJWT": {
           "type": "string",
@@ -832,7 +958,14 @@
               "type": "string"
             }
           },
-          "required": ["vc", "exp", "iss", "nbf", "sub", "jti"]
+          "required": [
+            "vc",
+            "exp",
+            "iss",
+            "nbf",
+            "sub",
+            "jti"
+          ]
         },
         "SdJwtDecodedVerifiableCredential": {
           "type": "object",
@@ -849,71 +982,7 @@
               "description": "The disclosures included within the SD-JWT in both encoded and decoded format. The digests are also included, and allows the disclosures to be linked against the digests in the signed payload."
             },
             "signedPayload": {
-              "type": "object",
-              "properties": {
-                "vct": {
-                  "type": "string"
-                },
-                "iss": {
-                  "type": "string"
-                },
-                "iat": {
-                  "type": "number"
-                },
-                "nbf": {
-                  "type": "number"
-                },
-                "exp": {
-                  "type": "number"
-                },
-                "cnf": {
-                  "type": "object",
-                  "properties": {
-                    "jwk": {},
-                    "kid": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "status": {
-                  "type": "object",
-                  "properties": {
-                    "idx": {
-                      "type": "number"
-                    },
-                    "uri": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["idx", "uri"]
-                },
-                "sub": {
-                  "type": "string"
-                },
-                "_sd": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "_sd_alg": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": {
-                "anyOf": [
-                  {
-                    "not": {}
-                  },
-                  {
-                    "not": {}
-                  },
-                  {
-                    "type": ["string", "number", "boolean", "object", "array"]
-                  }
-                ]
-              },
-              "required": ["iat", "iss", "vct"],
+              "$ref": "#/components/schemas/SdJwtSignedVerifiableCredentialPayload",
               "description": "The signed payload is the payload of the sd-jwt that is actually signed, and that includes the `_sd` and `...` digests."
             },
             "decodedPayload": {
@@ -933,11 +1002,21 @@
                   "$ref": "#/components/schemas/CompactJWT"
                 }
               },
-              "required": ["header", "payload"],
+              "required": [
+                "header",
+                "payload"
+              ],
+              "additionalProperties": false,
               "description": "Key binding JWT"
             }
           },
-          "required": ["compactSdJwtVc", "disclosures", "signedPayload", "decodedPayload"],
+          "required": [
+            "compactSdJwtVc",
+            "disclosures",
+            "signedPayload",
+            "decodedPayload"
+          ],
+          "additionalProperties": false,
           "description": "The decoded SD JWT Verifiable Credential. This representation includes multiple representations of the same SD-JWT, and allows to fully process an SD-JWT, as well as create a presentation SD-JWT  (minus the KB-JWT) by removing certain disclosures from the compact SD-JWT.\n\nThis representation is useful as it doesn't require a hasher implementation to match the different digests in the signed SD-JWT payload, with the different disclosures."
         },
         "SdJwtDisclosure": {
@@ -953,7 +1032,12 @@
               "type": "string"
             }
           },
-          "required": ["encoded", "decoded", "digest"]
+          "required": [
+            "encoded",
+            "decoded",
+            "digest"
+          ],
+          "additionalProperties": false
         },
         "SdJwtDecodedDisclosure": {
           "anyOf": [
@@ -968,36 +1052,7 @@
                   "type": "string"
                 },
                 {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    },
-                    {
-                      "type": "object",
-                      "additionalProperties": {
-                        "anyOf": [
-                          {
-                            "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
-                          },
-                          {
-                            "not": {}
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
-                      }
-                    }
-                  ]
+                  "$ref": "#/components/schemas/JsonValue"
                 }
               ],
               "maxItems": 3
@@ -1010,43 +1065,14 @@
                   "type": "string"
                 },
                 {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    },
-                    {
-                      "type": "object",
-                      "additionalProperties": {
-                        "anyOf": [
-                          {
-                            "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
-                          },
-                          {
-                            "not": {}
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
-                      }
-                    }
-                  ]
+                  "$ref": "#/components/schemas/JsonValue"
                 }
               ],
               "maxItems": 2
             }
           ]
         },
-        "alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006": {
+        "JsonValue": {
           "anyOf": [
             {
               "type": "string"
@@ -1062,7 +1088,7 @@
               "additionalProperties": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
+                    "$ref": "#/components/schemas/JsonValue"
                   },
                   {
                     "not": {}
@@ -1073,7 +1099,143 @@
             {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
+                "$ref": "#/components/schemas/JsonValue"
+              }
+            }
+          ]
+        },
+        "SdJwtSignedVerifiableCredentialPayload": {
+          "type": "object",
+          "properties": {
+            "vct": {
+              "type": "string"
+            },
+            "iss": {
+              "type": "string"
+            },
+            "iat": {
+              "type": "number"
+            },
+            "nbf": {
+              "type": "number"
+            },
+            "exp": {
+              "type": "number"
+            },
+            "cnf": {
+              "type": "object",
+              "properties": {
+                "jwk": {},
+                "kid": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "status": {
+              "type": "object",
+              "properties": {
+                "idx": {
+                  "type": "number"
+                },
+                "uri": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "idx",
+                "uri"
+              ],
+              "additionalProperties": false
+            },
+            "sub": {
+              "type": "string"
+            },
+            "_sd": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "_sd_alg": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SdJwtJsonValue"
+              },
+              {
+                "not": {}
+              },
+              {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              {
+                "not": {}
+              }
+            ]
+          },
+          "required": [
+            "iat",
+            "iss",
+            "vct"
+          ],
+          "description": "The signed payload of an SD-JWT. Includes fields such as `_sd`, `...` and `_sd_alg`"
+        },
+        "SdJwtJsonValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "_sd": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SdJwtJsonValue"
+                  },
+                  {
+                    "not": {}
+                  }
+                ]
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SdJwtJsonValue"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "...": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "..."
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
               }
             }
           ]
@@ -1103,7 +1265,8 @@
                 "kid": {
                   "type": "string"
                 }
-              }
+              },
+              "additionalProperties": false
             },
             "status": {
               "type": "object",
@@ -1115,42 +1278,25 @@
                   "type": "string"
                 }
               },
-              "required": ["idx", "uri"]
+              "required": [
+                "idx",
+                "uri"
+              ],
+              "additionalProperties": false
             },
             "sub": {
               "type": "string"
             }
           },
-          "required": ["vct", "iss", "iat"],
+          "required": [
+            "vct",
+            "iss",
+            "iat"
+          ],
           "additionalProperties": {
             "anyOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "object",
-                "additionalProperties": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
-                    },
-                    {
-                      "not": {}
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/alias-pes_sd-jwt-vc.d.ts-197-306-pes_sd-jwt-vc.d.ts-0-8006"
-                }
+                "$ref": "#/components/schemas/JsonValue"
               },
               {
                 "not": {}
@@ -1170,7 +1316,10 @@
               "type": "string"
             }
           },
-          "required": ["typ", "alg"]
+          "required": [
+            "typ",
+            "alg"
+          ]
         },
         "SdJwtVcKbJwtPayload": {
           "type": "object",
@@ -1188,7 +1337,12 @@
               "type": "string"
             }
           },
-          "required": ["iat", "aud", "nonce", "sd_hash"],
+          "required": [
+            "iat",
+            "aud",
+            "nonce",
+            "sd_hash"
+          ],
           "additionalProperties": {}
         },
         "MdocOid4vpIssuerSigned": {
@@ -1200,6 +1354,7 @@
         },
         "com.sphereon.mdoc.data.device.DocumentCbor": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {}
         },
         "OriginalVerifiablePresentation": {
@@ -1293,7 +1448,10 @@
               "type": "string"
             }
           },
-          "required": ["@context", "proof"]
+          "required": [
+            "@context",
+            "proof"
+          ]
         },
         "PresentationSubmission": {
           "type": "object",
@@ -1314,7 +1472,12 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": ["id", "definition_id", "descriptor_map"],
+          "required": [
+            "id",
+            "definition_id",
+            "descriptor_map"
+          ],
+          "additionalProperties": false,
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
         "Descriptor": {
@@ -1336,7 +1499,12 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": ["id", "path", "format"],
+          "required": [
+            "id",
+            "path",
+            "format"
+          ],
+          "additionalProperties": false,
           "description": "descriptor map laying out the structure of the presentation submission."
         },
         "JwtDecodedVerifiablePresentation": {
@@ -1367,7 +1535,16 @@
               "type": "string"
             }
           },
-          "required": ["vp", "exp", "iss", "nbf", "sub", "jti", "aud", "iat"]
+          "required": [
+            "vp",
+            "exp",
+            "iss",
+            "nbf",
+            "sub",
+            "jti",
+            "aud",
+            "iat"
+          ]
         },
         "MdocOid4vpMdocVpToken": {
           "type": "string"
@@ -1377,6 +1554,7 @@
         },
         "com.sphereon.mdoc.data.device.DeviceResponseCbor": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {}
         },
         "ICredential": {
@@ -1466,7 +1644,13 @@
               "type": "string"
             }
           },
-          "required": ["@context", "type", "issuer", "issuanceDate", "credentialSubject"]
+          "required": [
+            "@context",
+            "type",
+            "issuer",
+            "issuanceDate",
+            "credentialSubject"
+          ]
         },
         "IPresentation": {
           "type": "object",
@@ -1516,7 +1700,9 @@
               "type": "string"
             }
           },
-          "required": ["@context"]
+          "required": [
+            "@context"
+          ]
         },
         "GetCredentialsByIdOrHashArgs": {
           "type": "object",
@@ -1528,7 +1714,11 @@
               "type": "string"
             }
           },
-          "required": ["credentialRole", "idOrHash"]
+          "required": [
+            "credentialRole",
+            "idOrHash"
+          ],
+          "additionalProperties": false
         },
         "OptionalUniqueDigitalCredential": {
           "anyOf": [
@@ -1544,6 +1734,7 @@
           "anyOf": [
             {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "verifiedState": {
                   "$ref": "#/components/schemas/CredentialStateType"
@@ -1560,10 +1751,14 @@
                   "type": "string"
                 }
               },
-              "required": ["id", "verifiedState"]
+              "required": [
+                "id",
+                "verifiedState"
+              ]
             },
             {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "verifiedState": {
                   "$ref": "#/components/schemas/CredentialStateType"
@@ -1580,7 +1775,10 @@
                   "type": "string"
                 }
               },
-              "required": ["hash", "verifiedState"]
+              "required": [
+                "hash",
+                "verifiedState"
+              ]
             }
           ]
         }

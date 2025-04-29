@@ -1,7 +1,7 @@
 import { ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IIdentifier } from '@veramo/core'
 import { IIssuerLocaleBranding } from '../issuanceBranding/issuanceBranding'
-import { CredentialRole } from '../digitalCredential/digitalCredential'
+import { CredentialRole } from '../digitalCredential'
 
 export type MetadataTypes = string | number | Date | boolean | undefined
 

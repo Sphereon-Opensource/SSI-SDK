@@ -8,13 +8,13 @@ import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { OID4VCIIssuer } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import { IMetadataImportArgs, OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import {
-  CredentialHandlerLDLocal,
+  CredentialProviderJsonld,
   LdDefaultContexts,
   MethodNames,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.credential-jsonld'
 import { createAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
@@ -252,12 +252,12 @@ const agent = createAgent<IPlugins>({
       },
     }),
     new CredentialPlugin(),
-    new CredentialHandlerLDLocal({
+    new CredentialProviderJsonld({
       contextMaps: [LdDefaultContexts],
       suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonJsonWebSignature2020()],
       bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
       ]),
       keyStore: privateKeyStore,
     }),

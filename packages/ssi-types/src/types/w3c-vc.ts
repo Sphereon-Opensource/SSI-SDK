@@ -1,6 +1,6 @@
-import { IProofPurpose, IProofType } from './did'
 import { type PresentationSubmission } from './pex'
-import { OriginalType, type WrappedVerifiableCredential, type WrappedVerifiablePresentation } from './vc'
+import { OriginalType } from '../mapper'
+import { IProofPurpose, IProofType } from '../utils'
 
 export type AdditionalClaims = Record<string, any>
 
@@ -195,7 +195,6 @@ export interface JwtDecodedVerifiablePresentation {
   [x: string]: any
 }
 
-export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
 
 export interface IVerifyStatusResult {
   verified: boolean
@@ -284,25 +283,7 @@ export enum StatusListType {
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 
-export enum StatusListCredentialIdMode {
-  ISSUANCE = 'ISSUANCE',
-  // PERSISTENCE = 'PERSISTENCE',
-  NEVER = 'NEVER',
-}
 
 export type StatusListIndexingDirection = 'rightToLeft'
 
-export enum StatusListDriverType {
-  AGENT_TYPEORM = 'agent_typeorm',
-  /* AGENT_KV_STORE = 'agent_kv_store',
-  GITHUB = 'github',
-  AGENT_FILESYSTEM = 'agent_filesystem',*/
-}
 
-export function isWrappedW3CVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedW3CVerifiableCredential {
-  return vc.format === 'jwt_vc' || vc.format === 'ldp_vc'
-}
-
-export function isWrappedW3CVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedW3CVerifiablePresentation {
-  return vp.format === 'jwt_vp' || vp.format === 'ldp_vp'
-}

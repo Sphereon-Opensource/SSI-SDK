@@ -31,7 +31,11 @@
               "type": "string"
             }
           },
-          "required": ["credential_configuration_ids", "credential_issuer"]
+          "additionalProperties": false,
+          "required": [
+            "credential_configuration_ids",
+            "credential_issuer"
+          ]
         },
         "Grant": {
           "type": "object",
@@ -42,7 +46,8 @@
             "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
               "$ref": "#/components/schemas/GrantUrnIetf"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "GrantAuthorizationCode": {
           "type": "object",
@@ -55,7 +60,8 @@
               "type": "string",
               "description": "OPTIONAL string that the Wallet can use to identify the Authorization Server to use with this grant type when authorization_servers parameter in the Credential Issuer metadata has multiple entries. MUST NOT be used otherwise. The value of this parameter MUST match with one of the values in the authorization_servers array obtained from the Credential Issuer metadata"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "GrantUrnIetf": {
           "type": "object",
@@ -81,7 +87,10 @@
               "description": "OPTIONAL. Boolean value specifying whether the AS expects presentation of the End-User PIN along with the Token Request in a Pre-Authorized Code Flow. Default is false. This PIN is intended to bind the Pre-Authorized Code to a certain transaction to prevent replay of this code by an attacker that, for example, scanned the QR code while standing behind the legitimate End-User. It is RECOMMENDED to send a PIN via a separate channel. If the Wallet decides to use the Pre-Authorized Code Flow, a PIN value MUST be sent in the user_pin parameter with the respective Token Request."
             }
           },
-          "required": ["pre-authorized_code"]
+          "required": [
+            "pre-authorized_code"
+          ],
+          "additionalProperties": false
         },
         "TxCode": {
           "type": "object",
@@ -98,16 +107,26 @@
               "type": "string",
               "description": "OPTIONAL. String containing guidance for the Holder of the Wallet on how to obtain the Transaction Code, e.g., describing over which communication channel it is delivered. The Wallet is RECOMMENDED to display this description next to the Transaction Code input screen to improve the user experience. The length of the string MUST NOT exceed 300 characters. The description does not support internationalization, however the Issuer MAY detect the Holder's language by previous communication or an HTTP Accept-Language header within an HTTP GET request for a Credential Offer URI."
             }
-          }
+          },
+          "additionalProperties": false
         },
         "InputCharSet": {
           "type": "string",
-          "enum": ["numeric", "text"]
+          "enum": [
+            "numeric",
+            "text"
+          ]
         },
         "CredentialDataSupplierInput": {
           "description": "Optional storage that can help the credential Data Supplier. For instance to store credential input data during offer creation, if no additional data can be supplied later on"
         },
         "IOID4VCIClientCreateOfferUriResponse": {
+          "$ref": "#/components/schemas/Omit<CreateCredentialOfferURIResult,\"session\">"
+        },
+        "Omit<CreateCredentialOfferURIResult,\"session\">": {
+          "$ref": "#/components/schemas/Pick<CreateCredentialOfferURIResult,Exclude<(\"uri\"|\"correlationId\"|\"qrCodeDataUri\"|\"session\"|\"userPin\"|\"txCode\"),\"session\">>"
+        },
+        "Pick<CreateCredentialOfferURIResult,Exclude<(\"uri\"|\"correlationId\"|\"qrCodeDataUri\"|\"session\"|\"userPin\"|\"txCode\"),\"session\">>": {
           "type": "object",
           "properties": {
             "uri": {
@@ -126,7 +145,11 @@
               "$ref": "#/components/schemas/TxCode"
             }
           },
-          "required": ["uri", "correlationId"]
+          "required": [
+            "uri",
+            "correlationId"
+          ],
+          "additionalProperties": false
         },
         "IOID4VCIClientGetIssueStatusArgs": {
           "type": "object",
@@ -138,7 +161,10 @@
               "type": "string"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "IssueStatusResponse": {
           "type": "object",
@@ -168,7 +194,12 @@
               }
             }
           },
-          "required": ["createdAt", "lastUpdatedAt", "status"]
+          "required": [
+            "createdAt",
+            "lastUpdatedAt",
+            "status"
+          ],
+          "additionalProperties": false
         },
         "IssueStatus": {
           "type": "string",
@@ -199,7 +230,8 @@
             "statusEntryCorrelationId": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "methods": {

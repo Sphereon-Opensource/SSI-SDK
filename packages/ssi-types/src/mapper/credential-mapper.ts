@@ -1,50 +1,51 @@
 import type { IssuerType } from '@veramo/core'
+import type {
+  Hasher,
+  HasherSync,
+  ICredential,
+  IPresentation,
+  IProof,
+  IVerifiableCredential,
+  IVerifiablePresentation,
+  JwtDecodedVerifiableCredential,
+  JwtDecodedVerifiablePresentation,
+  MdocDeviceResponse,
+  MdocDocument,
+  MdocOid4vpMdocVpToken,
+  OriginalVerifiableCredential,
+  OriginalVerifiablePresentation,
+  SdJwtDecodedVerifiableCredential,
+  SdJwtDecodedVerifiableCredentialPayload,
+  UniformVerifiablePresentation,
+  W3CVerifiableCredential,
+  W3CVerifiablePresentation,
+  WrappedMdocCredential,
+  WrappedSdJwtVerifiableCredential,
+  WrappedSdJwtVerifiablePresentation,
+  WrappedVerifiableCredential,
+  WrappedVerifiablePresentation,
+  WrappedW3CVerifiableCredential,
+} from '../types'
 import {
   decodeMdocDeviceResponse,
   decodeMdocIssuerSigned,
   decodeSdJwtVc,
-  decodeSdJwtVcAsync,
-  DocumentFormat,
+  decodeSdJwtVcAsync as decodeSdJwtVcAsyncFunc,
+  defaultHasher,
   getMdocDecodedPayload,
-  type Hasher,
-  type HasherSync,
-  type ICredential,
-  type IPresentation,
-  type IProof,
   IProofPurpose,
   IProofType,
   isWrappedMdocCredential,
   isWrappedMdocPresentation,
-  isWrappedSdJwtVerifiableCredential,
-  isWrappedSdJwtVerifiablePresentation,
   isWrappedW3CVerifiableCredential,
   isWrappedW3CVerifiablePresentation,
-  type IVerifiableCredential,
-  type IVerifiablePresentation,
-  type JwtDecodedVerifiableCredential,
-  type JwtDecodedVerifiablePresentation,
   mdocDecodedCredentialToUniformCredential,
-  type MdocDeviceResponse,
-  type MdocDocument,
-  type MdocOid4vpMdocVpToken,
-  OriginalType,
-  type OriginalVerifiableCredential,
-  type OriginalVerifiablePresentation,
+  ObjectUtils,
   sdJwtDecodedCredentialToUniformCredential,
-  type SdJwtDecodedVerifiableCredential,
-  type SdJwtDecodedVerifiableCredentialPayload,
-  type UniformVerifiablePresentation,
-  type W3CVerifiableCredential,
-  type W3CVerifiablePresentation,
-  type WrappedMdocCredential,
-  type WrappedSdJwtVerifiableCredential,
-  type WrappedVerifiableCredential,
-  type WrappedVerifiablePresentation,
-  type WrappedW3CVerifiableCredential,
-} from '../types'
-import { defaultHasher, ObjectUtils } from '../utils'
+} from '../utils'
 import * as mdoc from '@sphereon/kmp-mdoc-core'
 import { jwtDecode } from 'jwt-decode'
+
 type DeviceResponseCbor = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export const sha256 = (data: string | ArrayBuffer): Uint8Array => {
@@ -57,7 +58,7 @@ export class CredentialMapper {
    * with the other decode methods.
    */
   static decodeSdJwtVcAsync(compactSdJwtVc: string, hasher: Hasher) {
-    return decodeSdJwtVcAsync(compactSdJwtVc, hasher ?? sha256)
+    return decodeSdJwtVcAsyncFunc(compactSdJwtVc, hasher ?? sha256)
   }
 
   /**
@@ -919,4 +920,46 @@ export class CredentialMapper {
       throw new Error('Invalid issuer type')
     }
   }
+}
+
+
+export function isWrappedSdJwtVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedSdJwtVerifiableCredential {
+  return vc.format === 'vc+sd-jwt'
+}
+
+export function isWrappedSdJwtVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedSdJwtVerifiablePresentation {
+  return vp.format === 'vc+sd-jwt'
+}
+
+
+
+
+export enum OriginalType {
+  // W3C
+  JSONLD = 'json-ld',
+  JWT_ENCODED = 'jwt-encoded',
+  JWT_DECODED = 'jwt-decoded',
+
+  // SD-JWT
+  SD_JWT_VC_ENCODED = 'sd-jwt-vc-encoded',
+  SD_JWT_VC_DECODED = 'sd-jwt-vc-decoded',
+
+  // MSO MDOCS
+  MSO_MDOC_ENCODED = 'mso_mdoc-encoded',
+  MSO_MDOC_DECODED = 'mso_mdoc-decoded',
+}
+
+
+export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
+
+
+export const enum DocumentFormat {
+  // W3C
+  JWT,
+  JSONLD,
+  // SD-JWT
+  SD_JWT_VC,
+  // Remaining
+  EIP712,
+  MSO_MDOC,
 }

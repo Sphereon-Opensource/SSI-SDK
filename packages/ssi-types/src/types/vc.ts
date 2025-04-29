@@ -20,21 +20,6 @@ export type WrappedVerifiableCredential = WrappedW3CVerifiableCredential | Wrapp
 
 export type WrappedVerifiablePresentation = WrappedW3CVerifiablePresentation | WrappedSdJwtVerifiablePresentation | WrappedMdocPresentation
 
-export enum OriginalType {
-  // W3C
-  JSONLD = 'json-ld',
-  JWT_ENCODED = 'jwt-encoded',
-  JWT_DECODED = 'jwt-decoded',
-
-  // SD-JWT
-  SD_JWT_VC_ENCODED = 'sd-jwt-vc-encoded',
-  SD_JWT_VC_DECODED = 'sd-jwt-vc-decoded',
-
-  // MSO MDOCS
-  MSO_MDOC_ENCODED = 'mso_mdoc-encoded',
-  MSO_MDOC_DECODED = 'mso_mdoc-decoded',
-}
-
 export type CredentialFormat =
   // W3C
   | 'jwt_vc'
@@ -74,14 +59,3 @@ export type OriginalVerifiablePresentation =
   | MdocOid4vpMdocVpToken
   | MdocDeviceResponse
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
-
-export const enum DocumentFormat {
-  // W3C
-  JWT,
-  JSONLD,
-  // SD-JWT
-  SD_JWT_VC,
-  // Remaining
-  EIP712,
-  MSO_MDOC,
-}

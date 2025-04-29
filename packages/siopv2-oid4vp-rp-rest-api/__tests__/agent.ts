@@ -2,13 +2,13 @@ import { createAgent, ICredentialVerifier, IDIDManager, IKeyManager, IResolver }
 import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import {
-  CredentialHandlerLDLocal,
+  CredentialProviderJsonld,
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.credential-jsonld'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -158,12 +158,12 @@ const agent = createAgent<
       ],
     }),
     new CredentialPlugin(),
-    new CredentialHandlerLDLocal({
+    new CredentialProviderJsonld({
       contextMaps: [LdDefaultContexts],
       suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
       bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
       ]),
       keyStore: privateKeyStore,
     }),

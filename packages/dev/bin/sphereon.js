@@ -1,2 +1,3 @@
-#!/usr/bin/env node
-import '../dist/index.mjs'
+#!/usr/bin/env -S pnpm tsx
+
+import '../dist/index.js'

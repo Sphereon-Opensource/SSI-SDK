@@ -2,28 +2,38 @@
   "name": "@sphereon/ssi-sdk.dev",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "./dist/index.js",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "sphereon": "./bin/sphereon.js"
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
   },
   "scripts": {
     "build:copyfilesdis": "copyfiles package.json ./dist/",
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@microsoft/api-extractor": "^7.47.2",
-    "@microsoft/api-extractor-model": "^7.29.3",
-    "commander": "^10.0.1",
+    "@microsoft/api-extractor": "^7.52.5",
+    "@microsoft/api-extractor-model": "^7.30.5",
+    "commander": "^13.1.0",
     "copyfiles": "^2.4.1",
-    "inquirer": "^9.3.5",
+    "inquirer": "^10.2.2",
     "inquirer-autocomplete-prompt": "^3.0.1",
     "json-schema": "^0.4.0",
     "json5": "^2.2.3",
     "jsonpointer": "^5.0.1",
     "oas-resolver": "^2.5.6",
     "openapi-types": "^12.1.3",
-    "ts-json-schema-generator": "^2.4.0-next.1",
+    "ts-json-schema-generator": "^2.4.0",
     "url-parse": "^1.5.10",
     "yaml": "^2.4.5"
   },

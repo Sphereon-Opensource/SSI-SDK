@@ -14,7 +14,6 @@
     {
       "path": "./packages/agent-config"
     },
-
     {
       "path": "./packages/ssi-sdk-core"
     },
@@ -61,7 +60,13 @@
       "path": "./packages/vc-status-list-issuer-rest-api"
     },
     {
-      "path": "./packages/vc-handler-ld-local"
+      "path": "./packages/credential-jsonld"
+    },
+    {
+      "path": "./packages/credential-vcdm"
+    },
+    {
+      "path": "./packages/credential-jwt"
     },
     {
       "path": "./packages/presentation-exchange"
@@ -161,6 +166,7 @@
     }
   ],
   "compilerOptions": {
+    "moduleResolution": "bundler",
     "declaration": true,
     "composite": true,
     "emitDecoratorMetadata": true

@@ -48,7 +48,7 @@
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.esm.cjs.18",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
+    "@sphereon/ssi-sdk.credential-jsonld": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

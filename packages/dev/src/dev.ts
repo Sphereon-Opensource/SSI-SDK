@@ -90,6 +90,7 @@ dev
     const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
       localBuild: true,
       showVerboseMessages: true,
+      showDiagnostics: true,
     })
 
     if (!extractorResult.succeeded) {
@@ -111,9 +112,12 @@ dev
 
       const generator = TJS.createGenerator({
         path: resolve(entryFile),
+        // tsconfig: resolve('../../tsconfig.json'),
         encodeRefs: false,
-        additionalProperties: true,
+        // additionalProperties: true,
         skipTypeCheck: true,
+        expose: 'all',
+        type: '*'
         // functions: 'hide',
       })
 
@@ -180,7 +184,7 @@ dev
 
     const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
       localBuild: true,
-      showVerboseMessages: true,
+      // showVerboseMessages: true,
     })
 
     if (!extractorResult.succeeded) {

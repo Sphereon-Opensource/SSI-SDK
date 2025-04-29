@@ -8,7 +8,8 @@
             "storeId": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IFederationMetadataGetArgs": {
           "type": "object",
@@ -23,7 +24,10 @@
               "type": "string"
             }
           },
-          "required": ["correlationId"]
+          "required": [
+            "correlationId"
+          ],
+          "additionalProperties": false
         },
         "OptionalOpenidFederationMetadata": {
           "anyOf": [
@@ -48,7 +52,11 @@
               "type": "boolean"
             }
           },
-          "required": ["baseUrl", "jwt"]
+          "required": [
+            "baseUrl",
+            "jwt"
+          ],
+          "additionalProperties": false
         },
         "FederationMetadataExistsArgs": {
           "$ref": "#/components/schemas/IFederationMetadataGetArgs"
@@ -60,11 +68,18 @@
               "$ref": "#/components/schemas/MetadataType"
             }
           },
-          "required": ["metadataType"]
+          "required": [
+            "metadataType"
+          ],
+          "additionalProperties": false
         },
         "MetadataType": {
           "type": "string",
-          "enum": ["issuer", "authorizationServer", "openidFederation"]
+          "enum": [
+            "issuer",
+            "authorizationServer",
+            "openidFederation"
+          ]
         },
         "IFederationMetadataListArgs": {
           "type": "object",
@@ -75,7 +90,8 @@
             "namespace": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IFederationMetadataPersistArgs": {
           "type": "object",
@@ -105,7 +121,12 @@
               "type": "string"
             }
           },
-          "required": ["correlationId", "metadata", "metadataType"]
+          "required": [
+            "correlationId",
+            "metadata",
+            "metadataType"
+          ],
+          "additionalProperties": false
         },
         "OptionalOpenidFederationValueData": {
           "anyOf": [
@@ -127,6 +148,7 @@
               "type": "number"
             }
           },
+          "additionalProperties": false,
           "description": "This is how the store will actually store the value. It contains an optional `expires` property, which indicates when the value would expire"
         },
         "FederationMetadataRemoveArgs": {

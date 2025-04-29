@@ -15,10 +15,15 @@
               }
             }
           },
-          "required": ["entityIdentifier", "trustAnchors"]
+          "required": [
+            "entityIdentifier",
+            "trustAnchors"
+          ],
+          "additionalProperties": false
         },
         "TrustChainResolveResponse": {
-          "type": "object"
+          "type": "object",
+          "additionalProperties": false
         }
       },
       "methods": {

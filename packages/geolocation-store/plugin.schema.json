@@ -3,13 +3,18 @@
     "components": {
       "schemas": {
         "GeolocationStoreClearAllLocationsArgs": {
+          "$ref": "#/components/schemas/Pick<GeolocationStoreArgs,\"storeId\">"
+        },
+        "Pick<GeolocationStoreArgs,\"storeId\">": {
           "type": "object",
           "properties": {
             "storeId": {
               "type": "string"
             }
           },
-          "required": ["storeId"],
+          "required": [
+            "storeId"
+          ],
           "additionalProperties": false
         },
         "GeolocationStoreLocationResult": {
@@ -17,6 +22,7 @@
         },
         "IKeyValueStore<GeolocationStoreLocation>": {
           "type": "object",
+          "additionalProperties": false,
           "description": "A Key Value store is responsible for managing Values identified by keys."
         },
         "GeolocationStoreArgs": {
@@ -32,7 +38,12 @@
               "type": "string"
             }
           },
-          "required": ["ipOrHostname", "storeId", "namespace"]
+          "required": [
+            "ipOrHostname",
+            "storeId",
+            "namespace"
+          ],
+          "additionalProperties": false
         },
         "GeolocationStoreLocationResultOrUndefined": {
           "anyOf": [
@@ -53,10 +64,12 @@
             "country": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "GeolocationStoreLocationPersistArgs": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "locationArgs": {
               "$ref": "#/components/schemas/GeolocationStoreLocation"
@@ -80,7 +93,10 @@
               "type": "string"
             }
           },
-          "required": ["ipOrHostname", "locationArgs"]
+          "required": [
+            "ipOrHostname",
+            "locationArgs"
+          ]
         },
         "GeolocationStoreLocationResultIValueData": {
           "$ref": "#/components/schemas/IValueData<GeolocationStoreLocation>"
@@ -95,6 +111,7 @@
               "type": "number"
             }
           },
+          "additionalProperties": false,
           "description": "This is how the store will actually store the value. It contains an optional `expires` property, which indicates when the value would expire"
         }
       },

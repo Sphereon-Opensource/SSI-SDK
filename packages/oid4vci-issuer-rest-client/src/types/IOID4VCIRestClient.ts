@@ -1,6 +1,6 @@
 import type { BearerTokenArg } from '@sphereon/ssi-types'
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import {
+import type { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import type {
   IssueStatusResponse,
   CredentialDataSupplierInput,
   CreateCredentialOfferURIResult,

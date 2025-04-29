@@ -7,7 +7,7 @@
       "path": "../vc-status-list"
     },
     {
-      "path": "../vc-handler-ld-local"
+      "path": "../credential-jsonld"
     }
   ],
   "extends": "../../tsconfig.base.json"

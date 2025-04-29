@@ -29,7 +29,7 @@
       "path": "../ssi-express-support"
     },
     {
-      "path": "../vc-handler-ld-local"
+      "path": "../credential-jsonld"
     },
     {
       "path": "../data-store"

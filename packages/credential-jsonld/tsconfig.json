@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../credential-vcdm"
+    },
+    {
+      "path": "../vc-status-list"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
+    }
+  ]
+}

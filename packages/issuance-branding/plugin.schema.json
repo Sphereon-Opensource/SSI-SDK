@@ -18,14 +18,25 @@
               }
             }
           },
-          "required": ["issuerCorrelationId", "vcHash", "localeBranding"]
+          "required": [
+            "issuerCorrelationId",
+            "vcHash",
+            "localeBranding"
+          ],
+          "additionalProperties": false
         },
         "IBasicCredentialLocaleBranding": {
           "type": "object",
           "properties": {
-            "alias": {},
-            "locale": {},
-            "description": {},
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
             "logo": {
               "$ref": "#/components/schemas/IBasicImageAttributes"
             },
@@ -42,7 +53,7 @@
               }
             }
           },
-          "required": ["alias", "description", "locale"]
+          "additionalProperties": false
         },
         "IBasicImageAttributes": {
           "type": "object",
@@ -62,10 +73,12 @@
             "dimensions": {
               "$ref": "#/components/schemas/IBasicImageDimensions"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IBasicImageDimensions": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "width": {
               "type": "number"
@@ -74,7 +87,10 @@
               "type": "number"
             }
           },
-          "required": ["height", "width"]
+          "required": [
+            "height",
+            "width"
+          ]
         },
         "IBasicBackgroundAttributes": {
           "type": "object",
@@ -85,10 +101,12 @@
             "image": {
               "$ref": "#/components/schemas/IBasicImageAttributes"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IBasicTextAttributes": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "color": {
               "type": "string"
@@ -97,6 +115,7 @@
         },
         "IBasicCredentialClaim": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "key": {
               "type": "string"
@@ -105,7 +124,10 @@
               "type": "string"
             }
           },
-          "required": ["key", "name"]
+          "required": [
+            "key",
+            "name"
+          ]
         },
         "ICredentialBranding": {
           "type": "object",
@@ -134,7 +156,15 @@
               "format": "date-time"
             }
           },
-          "required": ["id", "issuerCorrelationId", "vcHash", "localeBranding", "createdAt", "lastUpdatedAt"]
+          "required": [
+            "id",
+            "issuerCorrelationId",
+            "vcHash",
+            "localeBranding",
+            "createdAt",
+            "lastUpdatedAt"
+          ],
+          "additionalProperties": false
         },
         "ICredentialLocaleBranding": {
           "type": "object",
@@ -175,7 +205,12 @@
               }
             }
           },
-          "required": ["createdAt", "id", "lastUpdatedAt"]
+          "additionalProperties": false,
+          "required": [
+            "createdAt",
+            "id",
+            "lastUpdatedAt"
+          ]
         },
         "IImageAttributes": {
           "type": "object",
@@ -199,7 +234,10 @@
               "$ref": "#/components/schemas/IImageDimensions"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "IImageDimensions": {
           "type": "object",
@@ -214,7 +252,12 @@
               "type": "number"
             }
           },
-          "required": ["id", "width", "height"]
+          "required": [
+            "id",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false
         },
         "IBackgroundAttributes": {
           "type": "object",
@@ -229,7 +272,10 @@
               "$ref": "#/components/schemas/IImageAttributes"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "ITextAttributes": {
           "type": "object",
@@ -241,7 +287,10 @@
               "type": "string"
             }
           },
-          "required": ["id"]
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "ICredentialClaim": {
           "type": "object",
@@ -256,7 +305,12 @@
               "type": "string"
             }
           },
-          "required": ["id", "key", "name"]
+          "required": [
+            "id",
+            "key",
+            "name"
+          ],
+          "additionalProperties": false
         },
         "IAddCredentialLocaleBrandingArgs": {
           "type": "object",
@@ -271,7 +325,11 @@
               }
             }
           },
-          "required": ["credentialBrandingId", "localeBranding"]
+          "required": [
+            "credentialBrandingId",
+            "localeBranding"
+          ],
+          "additionalProperties": false
         },
         "IAddIssuerBrandingArgs": {
           "type": "object",
@@ -286,7 +344,11 @@
               }
             }
           },
-          "required": ["issuerCorrelationId", "localeBranding"]
+          "required": [
+            "issuerCorrelationId",
+            "localeBranding"
+          ],
+          "additionalProperties": false
         },
         "IBasicIssuerLocaleBranding": {
           "type": "object",
@@ -306,9 +368,15 @@
                 "type": "string"
               }
             },
-            "alias": {},
-            "locale": {},
-            "description": {},
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
             "logo": {
               "$ref": "#/components/schemas/IBasicImageAttributes"
             },
@@ -319,7 +387,7 @@
               "$ref": "#/components/schemas/IBasicTextAttributes"
             }
           },
-          "required": ["alias", "description", "locale"]
+          "additionalProperties": false
         },
         "IIssuerBranding": {
           "type": "object",
@@ -345,7 +413,14 @@
               "format": "date-time"
             }
           },
-          "required": ["id", "issuerCorrelationId", "localeBranding", "createdAt", "lastUpdatedAt"]
+          "required": [
+            "id",
+            "issuerCorrelationId",
+            "localeBranding",
+            "createdAt",
+            "lastUpdatedAt"
+          ],
+          "additionalProperties": false
         },
         "IIssuerLocaleBranding": {
           "type": "object",
@@ -395,7 +470,12 @@
               }
             }
           },
-          "required": ["createdAt", "id", "lastUpdatedAt"]
+          "additionalProperties": false,
+          "required": [
+            "createdAt",
+            "id",
+            "lastUpdatedAt"
+          ]
         },
         "IAddIssuerLocaleBrandingArgs": {
           "type": "object",
@@ -410,7 +490,11 @@
               }
             }
           },
-          "required": ["issuerBrandingId", "localeBranding"]
+          "required": [
+            "issuerBrandingId",
+            "localeBranding"
+          ],
+          "additionalProperties": false
         },
         "ICredentialBrandingFromArgs": {
           "type": "object",
@@ -419,7 +503,10 @@
               "$ref": "#/components/schemas/IBasicCredentialLocaleBranding"
             }
           },
-          "required": ["localeBranding"]
+          "required": [
+            "localeBranding"
+          ],
+          "additionalProperties": false
         },
         "IGetCredentialBrandingArgs": {
           "type": "object",
@@ -427,7 +514,8 @@
             "filter": {
               "$ref": "#/components/schemas/FindCredentialBrandingArgs"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "FindCredentialBrandingArgs": {
           "type": "array",
@@ -437,6 +525,7 @@
         },
         "ICredentialBrandingFilter": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "string"
@@ -463,12 +552,26 @@
         "IPartialCredentialLocaleBranding": {
           "type": "object",
           "properties": {
-            "id": {},
-            "alias": {},
-            "locale": {},
-            "description": {},
-            "createdAt": {},
-            "lastUpdatedAt": {},
+            "id": {
+              "type": "string"
+            },
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
             "logo": {
               "$ref": "#/components/schemas/IPartialImageAttributes"
             },
@@ -481,7 +584,8 @@
             "claims": {
               "$ref": "#/components/schemas/IPartialCredentialClaim"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IPartialImageAttributes": {
           "type": "object",
@@ -504,10 +608,12 @@
             "dimensions": {
               "$ref": "#/components/schemas/IPartialImageDimensions"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IPartialImageDimensions": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "string"
@@ -532,10 +638,12 @@
             "image": {
               "$ref": "#/components/schemas/IPartialImageAttributes"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IPartialTextAttributes": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "string"
@@ -547,6 +655,7 @@
         },
         "IPartialCredentialClaim": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "string"
@@ -565,7 +674,8 @@
             "filter": {
               "$ref": "#/components/schemas/FindCredentialLocaleBrandingArgs"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "FindCredentialLocaleBrandingArgs": {
           "type": "array",
@@ -576,12 +686,26 @@
         "ICredentialLocaleBrandingFilter": {
           "type": "object",
           "properties": {
-            "id": {},
-            "alias": {},
-            "locale": {},
-            "description": {},
-            "createdAt": {},
-            "lastUpdatedAt": {},
+            "id": {
+              "type": "string"
+            },
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
             "logo": {
               "$ref": "#/components/schemas/IPartialImageAttributes"
             },
@@ -597,7 +721,8 @@
             "credentialBranding": {
               "$ref": "#/components/schemas/IPartialCredentialBranding"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IPartialCredentialBranding": {
           "type": "object",
@@ -622,7 +747,8 @@
             "localeBranding": {
               "$ref": "#/components/schemas/IPartialCredentialLocaleBranding"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IGetIssuerBrandingArgs": {
           "type": "object",
@@ -630,7 +756,8 @@
             "filter": {
               "$ref": "#/components/schemas/FindIssuerBrandingArgs"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "FindIssuerBrandingArgs": {
           "type": "array",
@@ -640,6 +767,7 @@
         },
         "IIssuerBrandingFilter": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "string"
@@ -672,12 +800,26 @@
             "policyUri": {
               "type": "string"
             },
-            "id": {},
-            "alias": {},
-            "locale": {},
-            "description": {},
-            "createdAt": {},
-            "lastUpdatedAt": {},
+            "id": {
+              "type": "string"
+            },
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
             "logo": {
               "$ref": "#/components/schemas/IPartialImageAttributes"
             },
@@ -690,7 +832,8 @@
             "contacts": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IGetIssuerLocaleBrandingArgs": {
           "type": "object",
@@ -698,7 +841,8 @@
             "filter": {
               "$ref": "#/components/schemas/FindIssuerLocaleBrandingArgs"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "FindIssuerLocaleBrandingArgs": {
           "type": "array",
@@ -718,12 +862,26 @@
             "policyUri": {
               "type": "string"
             },
-            "id": {},
-            "alias": {},
-            "locale": {},
-            "description": {},
-            "createdAt": {},
-            "lastUpdatedAt": {},
+            "id": {
+              "type": "string"
+            },
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
             "logo": {
               "$ref": "#/components/schemas/IPartialImageAttributes"
             },
@@ -739,7 +897,8 @@
             "issuerBranding": {
               "$ref": "#/components/schemas/IPartialIssuerBranding"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IPartialIssuerBranding": {
           "type": "object",
@@ -761,7 +920,8 @@
             "localeBranding": {
               "$ref": "#/components/schemas/IPartialIssuerLocaleBranding"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IIssuerBrandingFromArgs": {
           "type": "object",
@@ -770,7 +930,10 @@
               "$ref": "#/components/schemas/IBasicIssuerLocaleBranding"
             }
           },
-          "required": ["localeBranding"]
+          "required": [
+            "localeBranding"
+          ],
+          "additionalProperties": false
         },
         "IRemoveCredentialBrandingArgs": {
           "type": "object",
@@ -779,7 +942,10 @@
               "$ref": "#/components/schemas/FindCredentialBrandingArgs"
             }
           },
-          "required": ["filter"]
+          "required": [
+            "filter"
+          ],
+          "additionalProperties": false
         },
         "IDeletionResult": {
           "type": "object",
@@ -791,7 +957,10 @@
               "type": "string"
             }
           },
-          "required": ["result"]
+          "required": [
+            "result"
+          ],
+          "additionalProperties": false
         },
         "IRemoveCredentialLocaleBrandingArgs": {
           "type": "object",
@@ -800,7 +969,10 @@
               "$ref": "#/components/schemas/FindCredentialLocaleBrandingArgs"
             }
           },
-          "required": ["filter"]
+          "required": [
+            "filter"
+          ],
+          "additionalProperties": false
         },
         "IRemoveIssuerBrandingArgs": {
           "type": "object",
@@ -809,7 +981,10 @@
               "$ref": "#/components/schemas/FindIssuerBrandingArgs"
             }
           },
-          "required": ["filter"]
+          "required": [
+            "filter"
+          ],
+          "additionalProperties": false
         },
         "IRemoveIssuerLocaleBrandingArgs": {
           "type": "object",
@@ -818,112 +993,133 @@
               "$ref": "#/components/schemas/FindIssuerLocaleBrandingArgs"
             }
           },
-          "required": ["filter"]
+          "required": [
+            "filter"
+          ],
+          "additionalProperties": false
         },
         "IUpdateCredentialBrandingArgs": {
           "type": "object",
           "properties": {
             "credentialBranding": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "issuerCorrelationId": {
-                  "type": "string"
-                },
-                "vcHash": {
-                  "type": "string"
-                }
-              },
-              "required": ["id", "issuerCorrelationId", "vcHash"]
+              "$ref": "#/components/schemas/Omit<ICredentialBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["credentialBranding"]
+          "required": [
+            "credentialBranding"
+          ],
+          "additionalProperties": false
+        },
+        "Omit<ICredentialBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>": {
+          "$ref": "#/components/schemas/Pick<ICredentialBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"vcHash\"|\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>"
+        },
+        "Pick<ICredentialBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"vcHash\"|\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "issuerCorrelationId": {
+              "type": "string"
+            },
+            "vcHash": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "issuerCorrelationId",
+            "vcHash"
+          ],
+          "additionalProperties": false
         },
         "IUpdateCredentialLocaleBrandingArgs": {
           "type": "object",
           "properties": {
             "localeBranding": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "alias": {
-                  "type": "string"
-                },
-                "locale": {
-                  "type": "string"
-                },
-                "logo": {
-                  "$ref": "#/components/schemas/IImageAttributes"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "background": {
-                  "$ref": "#/components/schemas/IBackgroundAttributes"
-                },
-                "text": {
-                  "$ref": "#/components/schemas/ITextAttributes"
-                }
-              },
-              "required": ["id"]
+              "$ref": "#/components/schemas/Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["localeBranding"]
+          "required": [
+            "localeBranding"
+          ],
+          "additionalProperties": false
+        },
+        "Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>": {
+          "$ref": "#/components/schemas/Pick<ILocaleBranding,Exclude<(\"id\"|\"alias\"|\"locale\"|\"logo\"|\"description\"|\"background\"|\"text\"|\"createdAt\"|\"lastUpdatedAt\"),(\"createdAt\"|\"lastUpdatedAt\")>>"
+        },
+        "Pick<ILocaleBranding,Exclude<(\"id\"|\"alias\"|\"locale\"|\"logo\"|\"description\"|\"background\"|\"text\"|\"createdAt\"|\"lastUpdatedAt\"),(\"createdAt\"|\"lastUpdatedAt\")>>": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "alias": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "logo": {
+              "$ref": "#/components/schemas/IImageAttributes"
+            },
+            "description": {
+              "type": "string"
+            },
+            "background": {
+              "$ref": "#/components/schemas/IBackgroundAttributes"
+            },
+            "text": {
+              "$ref": "#/components/schemas/ITextAttributes"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
         },
         "IUpdateIssuerBrandingArgs": {
           "type": "object",
           "properties": {
             "issuerBranding": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "issuerCorrelationId": {
-                  "type": "string"
-                }
-              },
-              "required": ["id", "issuerCorrelationId"]
+              "$ref": "#/components/schemas/Omit<IIssuerBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["issuerBranding"]
+          "required": [
+            "issuerBranding"
+          ],
+          "additionalProperties": false
+        },
+        "Omit<IIssuerBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>": {
+          "$ref": "#/components/schemas/Pick<IIssuerBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>"
+        },
+        "Pick<IIssuerBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "issuerCorrelationId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "issuerCorrelationId"
+          ],
+          "additionalProperties": false
         },
         "IUpdateIssuerLocaleBrandingArgs": {
           "type": "object",
           "properties": {
             "localeBranding": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "alias": {
-                  "type": "string"
-                },
-                "locale": {
-                  "type": "string"
-                },
-                "logo": {
-                  "$ref": "#/components/schemas/IImageAttributes"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "background": {
-                  "$ref": "#/components/schemas/IBackgroundAttributes"
-                },
-                "text": {
-                  "$ref": "#/components/schemas/ITextAttributes"
-                }
-              },
-              "required": ["id"]
+              "$ref": "#/components/schemas/Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["localeBranding"]
+          "required": [
+            "localeBranding"
+          ],
+          "additionalProperties": false
         }
       },
       "methods": {

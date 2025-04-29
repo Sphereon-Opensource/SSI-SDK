@@ -95,7 +95,7 @@ importers:
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
       vite-tsconfig-paths:
         specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1))
+        version: 5.1.4(typescript@5.8.3)(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
     devDependencies:
       '@anatine/esbuild-decorators':
         specifier: ^0.2.19
@@ -219,7 +219,10 @@ importers:
         version: 10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3)
       tsup:
         specifier: ^8.4.0
-        version: 8.4.0(@microsoft/api-extractor@7.52.4(@types/node@20.17.30))(@swc/core@1.11.21(@swc/helpers@0.5.17))(postcss@8.5.3)(typescript@5.8.3)(yaml@2.7.1)
+        version: 8.4.0(@microsoft/api-extractor@7.52.4(@types/node@20.17.30))(@swc/core@1.11.21(@swc/helpers@0.5.17))(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1)
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.3
       turbo:
         specifier: ^2.5.0
         version: 2.5.0
@@ -228,10 +231,10 @@ importers:
         version: 5.8.3
       vite:
         specifier: ^6.2.2
-        version: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+        version: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
       vitest:
         specifier: ^3.0.8
-        version: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+        version: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
 
   packages/agent-config:
     dependencies:
@@ -468,6 +471,257 @@ importers:
         specifier: 0.3.20
         version: 0.3.20(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
 
+  packages/credential-jsonld:
+    dependencies:
+      '@digitalbazaar/ed25519-signature-2018':
+        specifier: ^4.1.0
+        version: 4.1.0
+      '@digitalbazaar/ed25519-verification-key-2018':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@digitalcredentials/credentials-v2-context':
+        specifier: ~0.0.1-beta.0
+        version: 0.0.1-beta.0
+      '@digitalcredentials/ed25519-signature-2020':
+        specifier: ~6.0.0
+        version: 6.0.0
+      '@digitalcredentials/ed25519-verification-key-2020':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@digitalcredentials/http-client':
+        specifier: ^5.0.4
+        version: 5.0.4
+      '@digitalcredentials/jsonld':
+        specifier: ^9.0.0
+        version: 9.0.0
+      '@digitalcredentials/jsonld-signatures':
+        specifier: ^12.0.1
+        version: 12.0.1
+      '@digitalcredentials/open-badges-context':
+        specifier: ^2.1.0
+        version: 2.1.0
+      '@digitalcredentials/rdf-canonize':
+        specifier: ^1.0.0
+        version: 1.0.0(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
+      '@digitalcredentials/vc':
+        specifier: ^9.0.1
+        version: 9.0.1
+      '@digitalcredentials/x25519-key-agreement-2020-context':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@noble/hashes':
+        specifier: 1.6.1
+        version: 1.6.1
+      '@sphereon/ssi-sdk-ext.did-utils':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk-ext.key-utils':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo-community/lds-ecdsa-secp256k1-recovery2020':
+        specifier: github:uport-project/EcdsaSecp256k1RecoverySignature2020
+        version: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      credentials-context:
+        specifier: ^2.0.0
+        version: 2.0.0
+      crypto-ld:
+        specifier: ^6.0.0
+        version: 6.0.0
+      debug:
+        specifier: ^4.3.5
+        version: 4.4.0
+      did-context:
+        specifier: ^3.1.1
+        version: 3.1.1
+      ed25519-signature-2018-context:
+        specifier: ^1.1.0
+        version: 1.1.0
+      ed25519-signature-2020-context:
+        specifier: ^1.1.0
+        version: 1.1.0
+      react-native-securerandom:
+        specifier: ^1.0.1
+        version: 1.0.1(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
+    devDependencies:
+      '@sphereon/did-uni-client':
+        specifier: ^0.6.3
+        version: 0.6.3(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.did-provider-key':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.did-provider-lto':
+        specifier: 0.23.0
+        version: 0.23.0(encoding@0.1.13)(typescript@5.8.3)
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@transmute/lds-ecdsa-secp256k1-recovery2020':
+        specifier: ^0.0.7
+        version: 0.0.7
+      '@types/nock':
+        specifier: ^11.1.0
+        version: 11.1.0
+      '@types/node':
+        specifier: ^20.17.1
+        version: 20.17.30
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^4.33.0
+        version: 4.33.0(@typescript-eslint/parser@4.33.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
+      '@typescript-eslint/parser':
+        specifier: ^4.33.0
+        version: 4.33.0(eslint@8.57.1)(typescript@5.8.3)
+      '@veramo/credential-ld':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/credential-w3c':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-web':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/kms-local':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.21.2)
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      nock:
+        specifier: ^13.5.4
+        version: 13.5.6
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3)
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      uint8arrays:
+        specifier: ^3.1.1
+        version: 3.1.1
+      vite:
+        specifier: ^6.2.2
+        version: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
+      vitest:
+        specifier: ^3.0.8
+        version: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
+      web-did-resolver:
+        specifier: ^2.0.27
+        version: 2.0.30(encoding@0.1.13)
+
+  packages/credential-jwt:
+    dependencies:
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      canonicalize:
+        specifier: ^2.0.0
+        version: 2.1.0
+      debug:
+        specifier: ^4.3.5
+        version: 4.4.0
+      did-jwt-vc:
+        specifier: 3.1.3
+        version: 3.1.3
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+    devDependencies:
+      '@sphereon/ssi-sdk-ext.did-provider-key':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@types/debug':
+        specifier: 4.1.8
+        version: 4.1.8
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-ethr':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      ethr-did-resolver:
+        specifier: ^11.0.3
+        version: 11.0.3
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   packages/credential-store:
     dependencies:
       '@sphereon/pex':
@@ -563,6 +817,82 @@ importers:
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)(express@4.21.2)
 
+  packages/credential-vcdm:
+    dependencies:
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.vc-status-list':
+        specifier: workspace:*
+        version: link:../vc-status-list
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
+      '@veramo/message-handler':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      canonicalize:
+        specifier: ^2.0.0
+        version: 2.1.0
+      debug:
+        specifier: ^4.3.5
+        version: 4.4.0
+      did-jwt:
+        specifier: 6.11.6
+        version: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
+      did-jwt-vc:
+        specifier: 3.1.3
+        version: 3.1.3
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@sphereon/ssi-sdk-ext.did-provider-key':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: 0.28.1-feature.esm.cjs.18
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@types/debug':
+        specifier: 4.1.8
+        version: 4.1.8
+      '@types/uuid':
+        specifier: 9.0.2
+        version: 9.0.2
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-ethr':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      ethr-did-resolver:
+        specifier: ^11.0.3
+        version: 11.0.3
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   packages/data-store:
     dependencies:
       '@sphereon/kmp-mdoc-core':
@@ -621,23 +951,23 @@ importers:
   packages/dev:
     dependencies:
       '@microsoft/api-extractor':
-        specifier: ^7.47.2
-        version: 7.52.4(@types/node@20.17.30)
+        specifier: ^7.52.5
+        version: 7.52.5(@types/node@20.17.30)
       '@microsoft/api-extractor-model':
-        specifier: ^7.29.3
+        specifier: ^7.30.5
         version: 7.30.5(@types/node@20.17.30)
       commander:
-        specifier: ^10.0.1
-        version: 10.0.1
+        specifier: ^13.1.0
+        version: 13.1.0
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
       inquirer:
-        specifier: ^9.3.5
-        version: 9.3.7
+        specifier: ^10.2.2
+        version: 10.2.2
       inquirer-autocomplete-prompt:
         specifier: ^3.0.1
-        version: 3.0.1(inquirer@9.3.7)
+        version: 3.0.1(inquirer@10.2.2)
       json-schema:
         specifier: ^0.4.0
         version: 0.4.0
@@ -654,7 +984,7 @@ importers:
         specifier: ^12.1.3
         version: 12.1.3
       ts-json-schema-generator:
-        specifier: ^2.4.0-next.1
+        specifier: ^2.4.0
         version: 2.4.0
       url-parse:
         specifier: ^1.5.10
@@ -1499,12 +1829,12 @@ importers:
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.28.1-feature.esm.cjs.18
         version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk.credential-jsonld':
+        specifier: workspace:*
+        version: link:../credential-jsonld
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
-        version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -1631,7 +1961,7 @@ importers:
         version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -1924,7 +2254,7 @@ importers:
         version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk-ext.identifier-resolution':
         specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.credential-store':
         specifier: workspace:*
         version: link:../credential-store
@@ -2658,12 +2988,12 @@ importers:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: 0.28.1-feature.esm.cjs.18
         version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk.credential-jsonld':
+        specifier: workspace:*
+        version: link:../credential-jsonld
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
-        version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -3020,12 +3350,12 @@ importers:
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: 0.28.1-feature.esm.cjs.18
         version: 0.28.1-feature.esm.cjs.18
+      '@sphereon/ssi-sdk.credential-jsonld':
+        specifier: workspace:*
+        version: link:../credential-jsonld
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
-        version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -3113,190 +3443,6 @@ importers:
       typeorm:
         specifier: 0.3.20
         version: 0.3.20(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      web-did-resolver:
-        specifier: ^2.0.27
-        version: 2.0.30(encoding@0.1.13)
-
-  packages/vc-handler-ld-local:
-    dependencies:
-      '@digitalbazaar/ed25519-signature-2018':
-        specifier: ^4.1.0
-        version: 4.1.0
-      '@digitalbazaar/ed25519-verification-key-2018':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@digitalcredentials/credentials-v2-context':
-        specifier: ~0.0.1-beta.0
-        version: 0.0.1-beta.0
-      '@digitalcredentials/ed25519-signature-2020':
-        specifier: ~6.0.0
-        version: 6.0.0
-      '@digitalcredentials/ed25519-verification-key-2020':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@digitalcredentials/http-client':
-        specifier: ^5.0.4
-        version: 5.0.4
-      '@digitalcredentials/jsonld':
-        specifier: ^9.0.0
-        version: 9.0.0
-      '@digitalcredentials/jsonld-signatures':
-        specifier: ^12.0.1
-        version: 12.0.1
-      '@digitalcredentials/open-badges-context':
-        specifier: ^2.1.0
-        version: 2.1.0
-      '@digitalcredentials/rdf-canonize':
-        specifier: ^1.0.0
-        version: 1.0.0(expo@52.0.46(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(encoding@0.1.13)(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))(react@18.3.1))(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
-      '@digitalcredentials/vc':
-        specifier: ^9.0.1
-        version: 9.0.1
-      '@digitalcredentials/x25519-key-agreement-2020-context':
-        specifier: ^1.0.0
-        version: 1.0.0
-      '@noble/hashes':
-        specifier: 1.6.1
-        version: 1.6.1
-      '@sphereon/ssi-sdk-ext.did-utils':
-        specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk-ext.key-utils':
-        specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk.agent-config':
-        specifier: workspace:*
-        version: link:../agent-config
-      '@sphereon/ssi-sdk.core':
-        specifier: workspace:*
-        version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
-      '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:*
-        version: link:../vc-status-list
-      '@sphereon/ssi-types':
-        specifier: workspace:*
-        version: link:../ssi-types
-      '@veramo-community/lds-ecdsa-secp256k1-recovery2020':
-        specifier: github:uport-project/EcdsaSecp256k1RecoverySignature2020
-        version: https://codeload.github.com/uport-project/EcdsaSecp256k1RecoverySignature2020/tar.gz/ab0db52de6f4e6663ef271a48009ba26e688ef9b
-      '@veramo/core':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
-      '@veramo/utils':
-        specifier: 4.2.0
-        version: 4.2.0(encoding@0.1.13)
-      credentials-context:
-        specifier: ^2.0.0
-        version: 2.0.0
-      crypto-ld:
-        specifier: ^6.0.0
-        version: 6.0.0
-      debug:
-        specifier: ^4.3.5
-        version: 4.4.0
-      did-context:
-        specifier: ^3.1.1
-        version: 3.1.1
-      ed25519-signature-2018-context:
-        specifier: ^1.1.0
-        version: 1.1.0
-      ed25519-signature-2020-context:
-        specifier: ^1.1.0
-        version: 1.1.0
-      react-native-securerandom:
-        specifier: ^1.0.1
-        version: 1.0.1(react-native@0.79.1(@babel/core@7.26.10)(react@18.3.1))
-    devDependencies:
-      '@sphereon/did-uni-client':
-        specifier: ^0.6.3
-        version: 0.6.3(encoding@0.1.13)
-      '@sphereon/ssi-sdk-ext.did-provider-key':
-        specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)
-      '@sphereon/ssi-sdk-ext.did-provider-lto':
-        specifier: 0.23.0
-        version: 0.23.0(encoding@0.1.13)(typescript@5.8.3)
-      '@sphereon/ssi-sdk-ext.identifier-resolution':
-        specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk-ext.key-manager':
-        specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk-ext.kms-local':
-        specifier: 0.28.1-feature.esm.cjs.18
-        version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@transmute/lds-ecdsa-secp256k1-recovery2020':
-        specifier: ^0.0.7
-        version: 0.0.7
-      '@types/nock':
-        specifier: ^11.1.0
-        version: 11.1.0
-      '@types/node':
-        specifier: ^20.17.1
-        version: 20.17.30
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^4.33.0
-        version: 4.33.0(@typescript-eslint/parser@4.33.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
-      '@typescript-eslint/parser':
-        specifier: ^4.33.0
-        version: 4.33.0(eslint@8.57.1)(typescript@5.8.3)
-      '@veramo/credential-ld':
-        specifier: 4.2.0
-        version: 4.2.0(encoding@0.1.13)
-      '@veramo/credential-w3c':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=abcc7e761d8ed40afd17fe27e40a5b8c3c8e00b1d25ebf8c8bf9a3500179f336)(encoding@0.1.13)
-      '@veramo/data-store':
-        specifier: 4.2.0
-        version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@veramo/did-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/did-provider-web':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/did-resolver':
-        specifier: 4.2.0
-        version: 4.2.0(encoding@0.1.13)
-      '@veramo/key-manager':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/kms-local':
-        specifier: 4.2.0
-        version: 4.2.0
-      '@veramo/remote-client':
-        specifier: 4.2.0
-        version: 4.2.0(encoding@0.1.13)
-      '@veramo/remote-server':
-        specifier: 4.2.0
-        version: 4.2.0(encoding@0.1.13)(express@4.21.2)
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      did-resolver:
-        specifier: ^4.1.0
-        version: 4.1.0
-      nock:
-        specifier: ^13.5.4
-        version: 13.5.6
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
-      uint8arrays:
-        specifier: ^3.1.1
-        version: 3.1.1
-      vite:
-        specifier: ^6.2.2
-        version: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
-      vitest:
-        specifier: ^3.0.8
-        version: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
       web-did-resolver:
         specifier: ^2.0.27
         version: 2.0.30(encoding@0.1.13)
@@ -3455,12 +3601,12 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
+      '@sphereon/ssi-sdk.credential-jsonld':
+        specifier: workspace:*
+        version: link:../credential-jsonld
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
-        version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -3649,9 +3795,9 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
+      '@sphereon/ssi-sdk.credential-jsonld':
         specifier: workspace:*
-        version: link:../vc-handler-ld-local
+        version: link:../credential-jsonld
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -3743,9 +3889,9 @@ importers:
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.28.1-feature.esm.cjs.18
         version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
+      '@sphereon/ssi-sdk.credential-jsonld':
         specifier: workspace:*
-        version: link:../vc-handler-ld-local
+        version: link:../credential-jsonld
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -3870,12 +4016,12 @@ importers:
       '@sphereon/ssi-sdk-ext.kms-local':
         specifier: 0.28.1-feature.esm.cjs.18
         version: 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk.credential-jsonld':
+        specifier: workspace:*
+        version: link:../credential-jsonld
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
-      '@sphereon/ssi-sdk.vc-handler-ld-local':
-        specifier: workspace:*
-        version: link:../vc-handler-ld-local
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -5548,8 +5694,64 @@ packages:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
 
+  '@inquirer/checkbox@2.5.0':
+    resolution: {integrity: sha512-sMgdETOfi2dUHT8r7TT1BTKOwNvdDGFDXYWtQ2J69SvlYNntk9I/gJe7r5yvMwwsuKnYbuRs3pNhx4tgNck5aA==}
+    engines: {node: '>=18'}
+
+  '@inquirer/confirm@3.2.0':
+    resolution: {integrity: sha512-oOIwPs0Dvq5220Z8lGL/6LHRTEr9TgLHmiI99Rj1PJ1p1czTys+olrgBqZk4E2qC0YTzeHprxSQmoHioVdJ7Lw==}
+    engines: {node: '>=18'}
+
+  '@inquirer/core@9.2.1':
+    resolution: {integrity: sha512-F2VBt7W/mwqEU4bL0RnHNZmC/OxzNx9cOYxHqnXX3MP6ruYvZUZAW9imgN9+h/uBT/oP8Gh888J2OZSbjSeWcg==}
+    engines: {node: '>=18'}
+
+  '@inquirer/editor@2.2.0':
+    resolution: {integrity: sha512-9KHOpJ+dIL5SZli8lJ6xdaYLPPzB8xB9GZItg39MBybzhxA16vxmszmQFrRwbOA918WA2rvu8xhDEg/p6LXKbw==}
+    engines: {node: '>=18'}
+
+  '@inquirer/expand@2.3.0':
+    resolution: {integrity: sha512-qnJsUcOGCSG1e5DTOErmv2BPQqrtT6uzqn1vI/aYGiPKq+FgslGZmtdnXbhuI7IlT7OByDoEEqdnhUnVR2hhLw==}
+    engines: {node: '>=18'}
+
   '@inquirer/figures@1.0.11':
     resolution: {integrity: sha512-eOg92lvrn/aRUqbxRyvpEWnrvRuTYRifixHkYVpJiygTgVSBIHDqLh0SrMQXkafvULg3ck11V7xvR+zcgvpHFw==}
+    engines: {node: '>=18'}
+
+  '@inquirer/input@2.3.0':
+    resolution: {integrity: sha512-XfnpCStx2xgh1LIRqPXrTNEEByqQWoxsWYzNRSEUxJ5c6EQlhMogJ3vHKu8aXuTacebtaZzMAHwEL0kAflKOBw==}
+    engines: {node: '>=18'}
+
+  '@inquirer/number@1.1.0':
+    resolution: {integrity: sha512-ilUnia/GZUtfSZy3YEErXLJ2Sljo/mf9fiKc08n18DdwdmDbOzRcTv65H1jjDvlsAuvdFXf4Sa/aL7iw/NanVA==}
+    engines: {node: '>=18'}
+
+  '@inquirer/password@2.2.0':
+    resolution: {integrity: sha512-5otqIpgsPYIshqhgtEwSspBQE40etouR8VIxzpJkv9i0dVHIpyhiivbkH9/dGiMLdyamT54YRdGJLfl8TFnLHg==}
+    engines: {node: '>=18'}
+
+  '@inquirer/prompts@5.5.0':
+    resolution: {integrity: sha512-BHDeL0catgHdcHbSFFUddNzvx/imzJMft+tWDPwTm3hfu8/tApk1HrooNngB2Mb4qY+KaRWF+iZqoVUPeslEog==}
+    engines: {node: '>=18'}
+
+  '@inquirer/rawlist@2.3.0':
+    resolution: {integrity: sha512-zzfNuINhFF7OLAtGHfhwOW2TlYJyli7lOUoJUXw/uyklcwalV6WRXBXtFIicN8rTRK1XTiPWB4UY+YuW8dsnLQ==}
+    engines: {node: '>=18'}
+
+  '@inquirer/search@1.1.0':
+    resolution: {integrity: sha512-h+/5LSj51dx7hp5xOn4QFnUaKeARwUCLs6mIhtkJ0JYPBLmEYjdHSYh7I6GrLg9LwpJ3xeX0FZgAG1q0QdCpVQ==}
+    engines: {node: '>=18'}
+
+  '@inquirer/select@2.5.0':
+    resolution: {integrity: sha512-YmDobTItPP3WcEI86GvPo+T2sRHkxxOq/kXmsBjHS5BVXUgvgZ5AfJjkvQvZr03T81NnI3KrrRuMzeuYUQRFOA==}
+    engines: {node: '>=18'}
+
+  '@inquirer/type@1.5.5':
+    resolution: {integrity: sha512-MzICLu4yS7V8AA61sANROZ9vT1H3ooca5dSmI1FjZkzq7o/koMsRfQSzRtFo+F3Ao4Sf1C0bpLKejpKB/+j6MA==}
+    engines: {node: '>=18'}
+
+  '@inquirer/type@2.0.0':
+    resolution: {integrity: sha512-XvJRx+2KR3YXyYtPUUy+qd9i7p+GO9Ko6VIIpWlBrpWwXDv8WLFeHTxz35CfQFUiBMLXlGHhGzys7lqit9gWag==}
     engines: {node: '>=18'}
 
   '@inrupt/jest-jsdom-polyfills@1.8.0':
@@ -5737,6 +5939,10 @@ packages:
 
   '@microsoft/api-extractor@7.52.4':
     resolution: {integrity: sha512-mIEcqgx877CFwNrTuCdPnlIGak8FjlayZb8sSBwWXX+i4gxkZRpMsb5BQcFW3v1puuJB3jYMqQ08kyAc4Vldhw==}
+    hasBin: true
+
+  '@microsoft/api-extractor@7.52.5':
+    resolution: {integrity: sha512-6WWgjjg6FkoDWpF/O3sjB05OkszpI5wtKJqd8fUIR/JJUv8IqNCGr1lJUZJnc1HegcT9gAvyf98KfH0wFncU0w==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.17.1':
@@ -6335,6 +6541,9 @@ packages:
 
   '@rushstack/ts-command-line@4.23.7':
     resolution: {integrity: sha512-Gr9cB7DGe6uz5vq2wdr89WbVDKz0UeuFEn5H2CfWDe7JvjFFaiV15gi6mqDBTbHhHCWS7w8mF1h3BnIfUndqdA==}
+
+  '@rushstack/ts-command-line@5.0.0':
+    resolution: {integrity: sha512-SW6nqZVxH26Rxz25+lJQRlnXI/YCrNH7NfDEWPPm9i0rwkSE6Rgtmzw96cuZgQjacOh0sw77d6V4SvgarAfr8g==}
 
   '@scarf/scarf@1.4.0':
     resolution: {integrity: sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ==}
@@ -6985,6 +7194,9 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/debug@4.1.8':
+    resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
+
   '@types/dotenv-flow@3.3.3':
     resolution: {integrity: sha512-aJjBsKw4bfGjvaRwrxBtEOfYZxCAq+LiFTpZ4DGTEK2b9eLVt/IAClapSxMfgV4Mi/2bIBKKjoTCO0lOh4ACLg==}
 
@@ -7075,6 +7287,9 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
+  '@types/mute-stream@0.0.4':
+    resolution: {integrity: sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==}
+
   '@types/nock@11.1.0':
     resolution: {integrity: sha512-jI/ewavBQ7X5178262JQR0ewicPAcJhXS/iFaNJl0VHLfyosZ/kwSrsa6VNQNSO8i9d8SqdRgOtZSOKJ/+iNMw==}
     deprecated: This is a stub types definition. nock provides its own type definitions, so you do not need this installed.
@@ -7153,11 +7368,17 @@ packages:
   '@types/url-parse@1.4.11':
     resolution: {integrity: sha512-FKvKIqRaykZtd4n47LbK/W/5fhQQ1X7cxxzG9A48h0BGN+S04NH7ervcCjM8tyR0lyGru83FAHSmw2ObgKoESg==}
 
+  '@types/uuid@9.0.2':
+    resolution: {integrity: sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==}
+
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
   '@types/validator@13.15.0':
     resolution: {integrity: sha512-nh7nrWhLr6CBq9ldtw0wx+z9wKnnv/uTVLA9g/3/TcOYxbpOSZE+MhKPmWqU+K0NvThjhv12uD8MuqijB0WzEA==}
+
+  '@types/wrap-ansi@3.0.0':
+    resolution: {integrity: sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==}
 
   '@types/ws@8.5.3':
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
@@ -8315,10 +8536,6 @@ packages:
     resolution: {integrity: sha512-sH5ZSPr+7UStsloltmDh7Ce5fb8XPlHyoPzTpyyMuYCtervL65+ubVZ6Q61cFtFl62UyJlc8/JwERRbAFPUqgw==}
     engines: {node: '>=8.0.0'}
 
-  commander@10.0.1:
-    resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
-    engines: {node: '>=14'}
-
   commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
     engines: {node: '>=18'}
@@ -9161,6 +9378,9 @@ packages:
     resolution: {integrity: sha512-CUnVOQq7gSpDHZVVrQW8ExxUETWrnrvXYvYz55wOU8Uj4VCgw56XC2B/fVqQN+f7gmrnRHSLVnFAwsCuNwji8w==}
     engines: {node: '>=6.5.0', npm: '>=3'}
 
+  ethr-did-resolver@11.0.3:
+    resolution: {integrity: sha512-lQ1T/SZfgR6Kp05/GSIXnMELxQ5H6M6OCTH4wBTVSAgHzbJiDNVIYWzg/c+NniIM88B0ViAi4CaiCHaiUlvPQg==}
+
   ethr-did-resolver@8.1.2:
     resolution: {integrity: sha512-dnbE3GItE1YHp/eavR11KbGDi8Il01H9GeH+wKgoSgE95pKBZufHyHYce/EK2k8VOmj6MJf8u/TIpPvxjCbK+A==}
 
@@ -9610,6 +9830,9 @@ packages:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
 
+  get-tsconfig@4.10.0:
+    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
+
   getenv@1.0.0:
     resolution: {integrity: sha512-7yetJWqbS9sbn0vIfliPsFgoXMKn/YMF+Wuiog97x+urnSRRRZ7xB+uVkwGKzRgq9CDFfMQnE9ruL5DHv9c6Xg==}
     engines: {node: '>=6'}
@@ -9955,6 +10178,10 @@ packages:
     peerDependencies:
       inquirer: ^9.1.0
 
+  inquirer@10.2.2:
+    resolution: {integrity: sha512-tyao/4Vo36XnUItZ7DnUXX4f1jVao2mSrleV/5IPtW/XAEA26hRVsbc68nuTEKWcr5vMP/1mVoT2O7u8H4v1Vg==}
+    engines: {node: '>=18'}
+
   inquirer@7.3.3:
     resolution: {integrity: sha512-JG3eIAj5V9CwcGvuOmoo6LB9kbAYT8HXffUl6memuszlwDC/qvFAJw49XJ5NROSFNPxp3iQg1GqkFhaY/CR0IA==}
     engines: {node: '>=8.0.0'}
@@ -9962,10 +10189,6 @@ packages:
   inquirer@8.2.6:
     resolution: {integrity: sha512-M1WuAmb7pn9zdFRtQYk26ZBoY043Sse0wVDdk4Bppr+JOXyQYybdtvK+l9wUibhtjdjvtoiNy8tk+EgsYIUqKg==}
     engines: {node: '>=12.0.0'}
-
-  inquirer@9.3.7:
-    resolution: {integrity: sha512-LJKFHCSeIRq9hanN14IlOtPSTe3lNES7TYDTE2xxdAy1LS5rYphajK1qtwvj3YmQXvvk0U2Vbmcni8P9EIQW9w==}
-    engines: {node: '>=18'}
 
   internal-ip@4.3.0:
     resolution: {integrity: sha512-S1zBo1D6zcsyuC6PMmY5+55YMILQ9av8lotMx447Bq6SAgo/sDK6y6uUKmuYhW7eacnIhFfsPmCNYdDzsnnDCg==}
@@ -12419,6 +12642,9 @@ packages:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
 
+  resolve-pkg-maps@1.0.0:
+    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+
   resolve-workspace-root@2.0.0:
     resolution: {integrity: sha512-IsaBUZETJD5WsI11Wt8PKHwaIe45or6pwNc8yflvLJ4DWtImK9kuLoH5kUva/2Mmx/RdIyr4aONNSa2v9LTJsw==}
 
@@ -13282,6 +13508,11 @@ packages:
     engines: {node: '>= 6'}
     peerDependencies:
       typescript: 5.8.3
+
+  tsx@4.19.3:
+    resolution: {integrity: sha512-4H8vUNGNjQ4V2EOoGw005+c+dGuPSnhpPBPHBtsZdGZBk/iJb4kguGlPWaZTZ3q5nMtFOEsY0nRDlh9PJyd6SQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
 
   tsyringe@4.10.0:
     resolution: {integrity: sha512-axr3IdNuVIxnaK5XGEUFTu3YmAQ6lllgrvqfEoR16g/HGnYY/6We4oWENtAnzK6/LpJ2ur9PAb80RBt7/U4ugw==}
@@ -15945,7 +16176,105 @@ snapshots:
 
   '@hutson/parse-repository-url@3.0.2': {}
 
+  '@inquirer/checkbox@2.5.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/figures': 1.0.11
+      '@inquirer/type': 1.5.5
+      ansi-escapes: 4.3.2
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/confirm@3.2.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+
+  '@inquirer/core@9.2.1':
+    dependencies:
+      '@inquirer/figures': 1.0.11
+      '@inquirer/type': 2.0.0
+      '@types/mute-stream': 0.0.4
+      '@types/node': 20.17.30
+      '@types/wrap-ansi': 3.0.0
+      ansi-escapes: 4.3.2
+      cli-width: 4.1.0
+      mute-stream: 1.0.0
+      signal-exit: 4.1.0
+      strip-ansi: 6.0.1
+      wrap-ansi: 6.2.0
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/editor@2.2.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+      external-editor: 3.1.0
+
+  '@inquirer/expand@2.3.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+      yoctocolors-cjs: 2.1.2
+
   '@inquirer/figures@1.0.11': {}
+
+  '@inquirer/input@2.3.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+
+  '@inquirer/number@1.1.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+
+  '@inquirer/password@2.2.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+      ansi-escapes: 4.3.2
+
+  '@inquirer/prompts@5.5.0':
+    dependencies:
+      '@inquirer/checkbox': 2.5.0
+      '@inquirer/confirm': 3.2.0
+      '@inquirer/editor': 2.2.0
+      '@inquirer/expand': 2.3.0
+      '@inquirer/input': 2.3.0
+      '@inquirer/number': 1.1.0
+      '@inquirer/password': 2.2.0
+      '@inquirer/rawlist': 2.3.0
+      '@inquirer/search': 1.1.0
+      '@inquirer/select': 2.5.0
+
+  '@inquirer/rawlist@2.3.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/type': 1.5.5
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/search@1.1.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/figures': 1.0.11
+      '@inquirer/type': 1.5.5
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/select@2.5.0':
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/figures': 1.0.11
+      '@inquirer/type': 1.5.5
+      ansi-escapes: 4.3.2
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/type@1.5.5':
+    dependencies:
+      mute-stream: 1.0.0
+
+  '@inquirer/type@2.0.0':
+    dependencies:
+      mute-stream: 1.0.0
 
   '@inrupt/jest-jsdom-polyfills@1.8.0':
     dependencies:
@@ -16353,6 +16682,24 @@ snapshots:
       '@rushstack/rig-package': 0.5.3
       '@rushstack/terminal': 0.15.2(@types/node@20.17.30)
       '@rushstack/ts-command-line': 4.23.7(@types/node@20.17.30)
+      lodash: 4.17.21
+      minimatch: 3.0.8
+      resolve: 1.22.10
+      semver: 7.5.4
+      source-map: 0.6.1
+      typescript: 5.8.3
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@microsoft/api-extractor@7.52.5(@types/node@20.17.30)':
+    dependencies:
+      '@microsoft/api-extractor-model': 7.30.5(@types/node@20.17.30)
+      '@microsoft/tsdoc': 0.15.1
+      '@microsoft/tsdoc-config': 0.17.1
+      '@rushstack/node-core-library': 5.13.0(@types/node@20.17.30)
+      '@rushstack/rig-package': 0.5.3
+      '@rushstack/terminal': 0.15.2(@types/node@20.17.30)
+      '@rushstack/ts-command-line': 5.0.0(@types/node@20.17.30)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.10
@@ -17152,6 +17499,15 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
+  '@rushstack/ts-command-line@5.0.0(@types/node@20.17.30)':
+    dependencies:
+      '@rushstack/terminal': 0.15.2(@types/node@20.17.30)
+      '@types/argparse': 1.0.38
+      argparse: 1.0.10
+      string-argv: 0.3.2
+    transitivePeerDependencies:
+      - '@types/node'
+
   '@scarf/scarf@1.4.0': {}
 
   '@scure/base@1.1.9': {}
@@ -17771,42 +18127,6 @@ snapshots:
       - typeorm-aurora-data-api-driver
       - utf-8-validate
 
-  '@sphereon/ssi-sdk-ext.identifier-resolution@0.28.1-feature.esm.cjs.18(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
-    dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk-ext.key-utils': 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk.agent-config': 0.33.1-feature.vcdm2.tsup.28(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk.oidf-client': 0.33.1-feature.vcdm2.tsup.28(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-types': link:packages/ssi-types
-      '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
-      '@veramo/utils': 4.2.0(encoding@0.1.13)
-      debug: 4.4.0
-      pkijs: 3.2.5
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - bufferutil
-      - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-      - utf-8-validate
-
   '@sphereon/ssi-sdk-ext.jwt-service@0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
     dependencies:
       '@sphereon/ssi-sdk-ext.did-utils': 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
@@ -17843,45 +18163,6 @@ snapshots:
       - supports-color
       - ts-node
       - typeorm-aurora-data-api-driver
-
-  '@sphereon/ssi-sdk-ext.jwt-service@0.28.1-feature.esm.cjs.18(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
-    dependencies:
-      '@sphereon/ssi-sdk-ext.did-utils': 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk-ext.key-manager': 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk-ext.key-utils': 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk-ext.x509-utils': 0.28.1-feature.esm.cjs.18
-      '@sphereon/ssi-sdk.agent-config': 0.33.1-feature.vcdm2.tsup.28(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-types': link:packages/ssi-types
-      '@stablelib/random': 1.0.2
-      '@veramo/core': 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
-      '@veramo/utils': 4.2.0(encoding@0.1.13)
-      debug: 4.4.0
-      jose: 5.10.0
-      jwt-decode: 4.0.0
-      uint8arrays: 3.1.1
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - bufferutil
-      - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-      - utf-8-validate
 
   '@sphereon/ssi-sdk-ext.key-manager@0.28.1-feature.esm.cjs.18':
     dependencies:
@@ -18081,37 +18362,6 @@ snapshots:
       '@sphereon/openid-federation-common': 0.20.9-unstable.48ddfa1
       '@sphereon/openid-federation-open-api': 0.20.9-unstable.48ddfa1
       '@sphereon/ssi-sdk-ext.jwt-service': 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-sdk.resource-resolver': 0.33.1-feature.vcdm2.tsup.28(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
-      '@sphereon/ssi-types': link:packages/ssi-types
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - bufferutil
-      - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-      - utf-8-validate
-
-  '@sphereon/ssi-sdk.oidf-client@0.33.1-feature.vcdm2.tsup.28(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
-    dependencies:
-      '@sphereon/openid-federation-client': 0.20.9-unstable.48ddfa1
-      '@sphereon/openid-federation-common': 0.20.9-unstable.48ddfa1
-      '@sphereon/openid-federation-open-api': 0.20.9-unstable.48ddfa1
-      '@sphereon/ssi-sdk-ext.jwt-service': 0.28.1-feature.esm.cjs.18(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.resource-resolver': 0.33.1-feature.vcdm2.tsup.28(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-types': link:packages/ssi-types
     transitivePeerDependencies:
@@ -18653,6 +18903,10 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
+  '@types/debug@4.1.8':
+    dependencies:
+      '@types/ms': 2.1.0
+
   '@types/dotenv-flow@3.3.3': {}
 
   '@types/estree@1.0.7': {}
@@ -18758,6 +19012,10 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
+  '@types/mute-stream@0.0.4':
+    dependencies:
+      '@types/node': 20.17.30
+
   '@types/nock@11.1.0':
     dependencies:
       nock: 13.5.6
@@ -18847,9 +19105,13 @@ snapshots:
 
   '@types/url-parse@1.4.11': {}
 
+  '@types/uuid@9.0.2': {}
+
   '@types/uuid@9.0.8': {}
 
   '@types/validator@13.15.0': {}
+
+  '@types/wrap-ansi@3.0.0': {}
 
   '@types/ws@8.5.3':
     dependencies:
@@ -19057,7 +19319,7 @@ snapshots:
 
   '@veramo/cli@4.2.0(@types/node@20.17.30)(encoding@0.1.13)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))':
     dependencies:
-      '@microsoft/api-extractor': 7.52.4(@types/node@20.17.30)
+      '@microsoft/api-extractor': 7.52.5(@types/node@20.17.30)
       '@microsoft/api-extractor-model': 7.30.5(@types/node@20.17.30)
       '@types/blessed': 0.1.25
       '@types/swagger-ui-express': 4.1.8
@@ -19465,13 +19727,13 @@ snapshots:
       chai: 5.2.0
       tinyrainbow: 2.0.0
 
-  '@vitest/mocker@3.1.1(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1))':
+  '@vitest/mocker@3.1.1(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))':
     dependencies:
       '@vitest/spy': 3.1.1
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
-      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
 
   '@vitest/pretty-format@3.1.1':
     dependencies:
@@ -19501,7 +19763,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.12
       tinyrainbow: 2.0.0
-      vitest: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+      vitest: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
 
   '@vitest/utils@3.1.1':
     dependencies:
@@ -20531,8 +20793,6 @@ snapshots:
       table-layout: 1.0.2
       typical: 5.2.0
     optional: true
-
-  commander@10.0.1: {}
 
   commander@12.1.0: {}
 
@@ -21612,6 +21872,14 @@ snapshots:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
 
+  ethr-did-resolver@11.0.3:
+    dependencies:
+      did-resolver: 4.1.0
+      ethers: 6.13.5
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   ethr-did-resolver@8.1.2:
     dependencies:
       '@ethersproject/abi': 5.8.0
@@ -22257,6 +22525,10 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
 
+  get-tsconfig@4.10.0:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   getenv@1.0.0:
     optional: true
 
@@ -22638,13 +22910,24 @@ snapshots:
       run-async: 2.4.1
       rxjs: 7.8.2
 
-  inquirer-autocomplete-prompt@3.0.1(inquirer@9.3.7):
+  inquirer-autocomplete-prompt@3.0.1(inquirer@10.2.2):
     dependencies:
       ansi-escapes: 6.2.1
       figures: 5.0.0
-      inquirer: 9.3.7
+      inquirer: 10.2.2
       picocolors: 1.1.1
       run-async: 2.4.1
+      rxjs: 7.8.2
+
+  inquirer@10.2.2:
+    dependencies:
+      '@inquirer/core': 9.2.1
+      '@inquirer/prompts': 5.5.0
+      '@inquirer/type': 1.5.5
+      '@types/mute-stream': 0.0.4
+      ansi-escapes: 4.3.2
+      mute-stream: 1.0.0
+      run-async: 3.0.0
       rxjs: 7.8.2
 
   inquirer@7.3.3:
@@ -22681,21 +22964,6 @@ snapshots:
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
-
-  inquirer@9.3.7:
-    dependencies:
-      '@inquirer/figures': 1.0.11
-      ansi-escapes: 4.3.2
-      cli-width: 4.1.0
-      external-editor: 3.1.0
-      mute-stream: 1.0.0
-      ora: 5.4.1
-      run-async: 3.0.0
-      rxjs: 7.8.2
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.2
 
   internal-ip@4.3.0:
     dependencies:
@@ -25153,11 +25421,12 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  postcss-load-config@6.0.1(postcss@8.5.3)(yaml@2.7.1):
+  postcss-load-config@6.0.1(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.1):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       postcss: 8.5.3
+      tsx: 4.19.3
       yaml: 2.7.1
 
   postcss-selector-parser@6.1.2:
@@ -25631,6 +25900,8 @@ snapshots:
   resolve-from@4.0.0: {}
 
   resolve-from@5.0.0: {}
+
+  resolve-pkg-maps@1.0.0: {}
 
   resolve-workspace-root@2.0.0:
     optional: true
@@ -26605,7 +26876,7 @@ snapshots:
 
   tsscmp@1.0.6: {}
 
-  tsup@8.4.0(@microsoft/api-extractor@7.52.4(@types/node@20.17.30))(@swc/core@1.11.21(@swc/helpers@0.5.17))(postcss@8.5.3)(typescript@5.8.3)(yaml@2.7.1):
+  tsup@8.4.0(@microsoft/api-extractor@7.52.4(@types/node@20.17.30))(@swc/core@1.11.21(@swc/helpers@0.5.17))(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.2)
       cac: 6.7.14
@@ -26615,7 +26886,7 @@ snapshots:
       esbuild: 0.25.2
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(postcss@8.5.3)(yaml@2.7.1)
+      postcss-load-config: 6.0.1(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.1)
       resolve-from: 5.0.0
       rollup: 4.40.0
       source-map: 0.8.0-beta.0
@@ -26638,6 +26909,13 @@ snapshots:
     dependencies:
       tslib: 1.14.1
       typescript: 5.8.3
+
+  tsx@4.19.3:
+    dependencies:
+      esbuild: 0.25.2
+      get-tsconfig: 4.10.0
+    optionalDependencies:
+      fsevents: 2.3.3
 
   tsyringe@4.10.0:
     dependencies:
@@ -26952,13 +27230,13 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-node@3.1.1(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1):
+  vite-node@3.1.1(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0
       es-module-lexer: 1.6.0
       pathe: 2.0.3
-      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -26973,18 +27251,18 @@ snapshots:
       - tsx
       - yaml
 
-  vite-tsconfig-paths@5.1.4(typescript@5.8.3)(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.8.3)(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)):
     dependencies:
       debug: 4.4.0
       globrex: 0.1.2
       tsconfck: 3.1.5(typescript@5.8.3)
     optionalDependencies:
-      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1):
+  vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1):
     dependencies:
       esbuild: 0.25.2
       fdir: 6.4.3(picomatch@4.0.2)
@@ -26997,12 +27275,13 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.27.0
       terser: 5.39.0
+      tsx: 4.19.3
       yaml: 2.7.1
 
-  vitest@3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1):
+  vitest@3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(@vitest/ui@3.1.1)(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1):
     dependencies:
       '@vitest/expect': 3.1.1
-      '@vitest/mocker': 3.1.1(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1))
+      '@vitest/mocker': 3.1.1(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
       '@vitest/pretty-format': 3.1.1
       '@vitest/runner': 3.1.1
       '@vitest/snapshot': 3.1.1
@@ -27018,8 +27297,8 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.0.2
       tinyrainbow: 2.0.0
-      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
-      vite-node: 3.1.1(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(yaml@2.7.1)
+      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
+      vite-node: 3.1.1(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/debug': 4.1.12

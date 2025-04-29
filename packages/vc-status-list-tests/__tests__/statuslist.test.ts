@@ -19,14 +19,14 @@ import {
   updateStatusListIndexFromEncodedList,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import {
-  CredentialHandlerLDLocal,
+  CredentialProviderJsonld,
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.credential-jsonld'
 // @ts-ignore
 import nock from 'nock'
 import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
@@ -63,13 +63,13 @@ describe('Status list', () => {
           }),
         }),
         new CredentialPlugin(),
-        new CredentialHandlerLDLocal({
+        new CredentialProviderJsonld({
           contextMaps: [LdDefaultContexts],
           suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
           bindingOverrides: new Map([
             // Bindings to test overrides of credential-ld plugin methods
-            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
             // We test the verify methods by using the LDLocal versions directly in the tests
           ]),
         }),

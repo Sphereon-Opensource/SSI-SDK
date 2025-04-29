@@ -13,7 +13,7 @@
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../vc-handler-ld-local"
+      "path": "../credential-jsonld"
     },
     {
       "path": "../data-store"

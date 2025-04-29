@@ -3,14 +3,14 @@ import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
-  CredentialHandlerLDLocal,
+  CredentialProviderJsonld,
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.credential-jsonld'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
@@ -128,12 +128,12 @@ describe('Status List VC handling', () => {
         new IdentifierResolution({ crypto: global.crypto }),
         new CredentialPlugin(),
         new JwtService(),
-        new CredentialHandlerLDLocal({
+        new CredentialProviderJsonld({
           contextMaps: [LdDefaultContexts],
           suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
           bindingOverrides: new Map([
-            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
           ]),
           keyStore: privateKeyStore,
         }),

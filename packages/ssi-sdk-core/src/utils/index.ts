@@ -1,3 +1,4 @@
+export * from './generic'
 export * from './encoding'
 export * from './bearer-token'
 export * from './hasher'

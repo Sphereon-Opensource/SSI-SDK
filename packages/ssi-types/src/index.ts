@@ -3,7 +3,7 @@ import { Loggers } from './logging'
 const logger = Loggers.DEFAULT.get('sphereon:ssi')
 logger.debug(`Sphereon logger initialized`)
 
-export * from './types'
+export type * from './types'
 export * from './logging'
 export * from './events'
 export * from './utils'

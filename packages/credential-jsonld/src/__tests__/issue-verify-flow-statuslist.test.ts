@@ -1,0 +1,100 @@
+import { beforeAll, describe, expect, it } from 'vitest'
+import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
+import { StatusListType } from '@sphereon/ssi-types'
+import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
+import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
+import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
+import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
+import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
+import { KeyManagementSystem } from '@veramo/kms-local'
+import { Resolver } from 'did-resolver'
+import { CredentialProviderJsonld } from '../agent/CredentialProviderJsonld'
+import { LdDefaultContexts } from '../ld-default-contexts'
+import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
+import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+
+import { ContextDoc } from '../types/types'
+
+import { bedrijfsInformatieV1, exampleV1 } from './mocks'
+
+//jest.setTimeout(100000)
+
+const customContext = new Map<string, ContextDoc>([
+  [`https://www.w3.org/2018/credentials/examples/v1`, exampleV1],
+  ['https://sphereon-opensource.github.io/vc-contexts/myc/bedrijfsinformatie-v1.jsonld', bedrijfsInformatieV1],
+])
+
+describe('credential-LD full flow', () => {
+  let didKeyIdentifier: IIdentifier
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer>
+
+  // //jest.setTimeout(1000000)
+  beforeAll(async () => {
+    agent = createAgent({
+      plugins: [
+        new KeyManager({
+          store: new MemoryKeyStore(),
+          kms: {
+            local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
+          },
+        }),
+        new DIDManager({
+          providers: {
+            'did:key': new SphereonKeyDidProvider({ defaultKms: 'local' }),
+          },
+          store: new MemoryDIDStore(),
+          defaultProvider: 'did:key',
+        }),
+        new DIDResolverPlugin({
+          resolver: new Resolver({
+            ...getDidKeyResolver(),
+          }),
+        }),
+        new IdentifierResolution({}),
+        new CredentialPlugin(),
+        new CredentialProviderJsonld({
+          contextMaps: [LdDefaultContexts, customContext],
+          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+          bindingOverrides: new Map([
+            // Bindings to test overrides of credential-ld plugin methods
+            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
+            // We test the verify methods by using the LDLocal versions directly in the tests
+          ]),
+        }),
+      ],
+    })
+    didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })
+    console.log(JSON.stringify(didKeyIdentifier, null, 2))
+  })
+
+  it('create a new status list', async () => {
+    const statusList = await createNewStatusList(
+      {
+        type: StatusListType.StatusList2021,
+        proofFormat: 'lds',
+        id: 'http://localhost:9543/list1',
+        issuer: didKeyIdentifier.did,
+        length: 99999,
+        correlationId: '1234',
+        statusList2021: {
+          statusPurpose: 'revocation',
+          indexingDirection: 'rightToLeft',
+        },
+      },
+      { agent },
+    )
+    expect(statusList).toBeDefined()
+    expect(statusList.id).toEqual('http://localhost:9543/list1')
+    expect(statusList.encodedList).toBeDefined()
+    expect(statusList.issuer).toEqual(didKeyIdentifier.did)
+    expect(statusList.length).toEqual(99999)
+    expect(statusList.statusList2021).toBeTruthy()
+    expect(statusList.statusList2021!.indexingDirection).toEqual('rightToLeft')
+    expect(statusList.statusList2021!.statusPurpose).toEqual('revocation')
+    expect(statusList.proofFormat).toEqual('lds')
+    expect(statusList.statusListCredential).toBeDefined()
+  })
+})

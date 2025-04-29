@@ -118,7 +118,7 @@ functionalities in Veramo.
 | [SSI Types](./packages/ssi-types)                                                         | Generic interfaces for Verifiable Credentials (JWT and JSON-LD) and DIDs. Also supports creating a uniform representation of Credentials, no matter whether they are in JWT or JSON-LD format |
 | [SSI Core](./packages/ssi-sdk-core)                                                       | Adds generic functions used by other plugins, like signing, encoding/decoding                                                                                                                 |
 | [DID Utils & Key Utils](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions) | Generic key and DID utils can be found in our [SSI SDK Crypto Extensions repo](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions)                                              |
-| [JSON LD issuer/verified](./packages/vc-handler-ld-local)                                 | Adds JSON-LD issuance and verification for Verifiable Credentials. Integrates seamlessly with Veramo's W3C VC plugin                                                                          |
+| [JSON LD issuer/verified](./packages/credential-jsonld)                                 | Adds JSON-LD issuance and verification for Verifiable Credentials. Integrates seamlessly with Veramo's W3C VC plugin                                                                          |
 | [QR code generator](./packages/qr-code-generator)                                         | Create generic, SIOPv2/OID4VP, OID4VCI and WACI PEX QR codes. This package specifically targets React and React-Native                                                                        |
 
 # DID resolution

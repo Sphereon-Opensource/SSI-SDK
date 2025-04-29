@@ -175,7 +175,7 @@ const agent = createAgent<
     }),
     new PresentationExchange(),
     new CredentialPlugin(),
-    new CredentialHandlerLDLocal({
+    new CredentialProviderJsonld({
       contextMaps: [LdDefaultContexts],
       suites: [
         new SphereonEd25519Signature2018(),
@@ -185,8 +185,8 @@ const agent = createAgent<
         new SphereonEcdsaSecp256k1RecoverySignature2020(),
       ],
       bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
       ]),
       keyStore: privateKeyStore,
     }),
