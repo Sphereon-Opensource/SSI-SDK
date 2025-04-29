@@ -7,3 +7,8 @@ export function isWrappedW3CVerifiableCredential(vc: WrappedVerifiableCredential
 export function isWrappedW3CVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedW3CVerifiablePresentation {
   return vp.format === 'jwt_vp' || vp.format === 'ldp_vp'
 }
+
+export enum StatusListType {
+  StatusList2021 = 'StatusList2021',
+  OAuthStatusList = 'OAuthStatusList',
+}
