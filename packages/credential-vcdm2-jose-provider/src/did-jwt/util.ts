@@ -1,8 +1,8 @@
 // @ts-ignore
-import { concat, fromString, toString } from 'uint8arrays'
+import * as u8a from 'uint8arrays'
+// const { concat, fromString, toString } = u8a
 import { x25519 } from '@noble/curves/ed25519'
-// @ts-ignore
-import type { EphemeralKeyPair } from 'did-jwt-vc'
+
 // @ts-ignore
 import { varint } from 'multiformats'
 import { BaseName, decode, encode } from 'multibase'
@@ -10,8 +10,20 @@ import type { VerificationMethod } from 'did-resolver'
 import { secp256k1 } from '@noble/curves/secp256k1'
 import { p256 } from '@noble/curves/p256'
 
-const u8a = { toString, fromString, concat }
+// const u8a = { toString, fromString, concat }
 
+
+
+export interface EphemeralPublicKey {
+  kty?: string
+  //ECC
+  crv?: string
+  x?: string
+  y?: string
+  //RSA
+  n?: string
+  e?: string
+}
 /**
  * @deprecated Signers will be expected to return base64url `string` signatures.
  */
@@ -401,6 +413,7 @@ export function generateKeyPairFromSeed(seed: Uint8Array): { secretKey: Uint8Arr
     secretKey: seed,
   }
 }
+/*
 
 export function genX25519EphemeralKeyPair(): EphemeralKeyPair {
   const epk = generateKeyPair()
@@ -409,6 +422,7 @@ export function genX25519EphemeralKeyPair(): EphemeralKeyPair {
     secretKey: epk.secretKey,
   }
 }
+*/
 
 /**
  * Checks if a variable is defined and not null.

@@ -1,5 +1,5 @@
-import type { Signer, SignerAlgorithm } from './JWT.js'
-import { type EcdsaSignature, fromJose, toJose } from './util.js'
+import type { Signer, SignerAlgorithm } from './JWT'
+import { type EcdsaSignature, fromJose, toJose } from './util'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function instanceOfEcdsaSignature(object: any): object is EcdsaSignature {

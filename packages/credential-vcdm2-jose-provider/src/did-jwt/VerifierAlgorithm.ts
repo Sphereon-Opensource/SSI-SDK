@@ -1,21 +1,27 @@
-// @ts-ignore
-import { sha256, toEthereumAddress } from 'did-jwt-vc'
+import { toEthereumAddress } from 'did-jwt'
 import type { VerificationMethod } from 'did-resolver'
 import {
   base64ToBytes,
   bytesToHex,
-  EcdsaSignature,
-  ECDSASignature,
+  type EcdsaSignature,
+  type ECDSASignature,
   extractPublicKeyBytes,
-  KNOWN_JWA,
+  type KNOWN_JWA,
   stringToBytes,
-} from './util.js'
+} from './util'
 // @ts-ignore
-import { verifyBlockchainAccountId } from 'did-jwt-vc'
+// import { verifyBlockchainAccountId } from 'did-jwt'
 import { secp256k1 } from '@noble/curves/secp256k1'
 import { p256 } from '@noble/curves/p256'
 import { ed25519 } from '@noble/curves/ed25519'
+// @ts-ignore
+import * as u8a from 'uint8arrays'
+import { sha256 as hash } from '@noble/hashes/sha256'
 
+export function sha256(payload: string | Uint8Array): Uint8Array {
+  const data = typeof payload === 'string' ? u8a.fromString(payload) : payload
+  return hash(data)
+}
 // converts a JOSE signature to it's components
 export function toSignatureObject(signature: string, recoverable = false): EcdsaSignature {
   const rawSig: Uint8Array = base64ToBytes(signature)
@@ -120,8 +126,8 @@ export function verifyRecoverableES256K(
         keyHex === recoveredPublicKeyHex ||
         keyHex === recoveredCompressedPublicKeyHex ||
         a.ethereumAddress?.toLowerCase() === recoveredAddress ||
-        a.blockchainAccountId?.split('@eip155')?.[0].toLowerCase() === recoveredAddress || // CAIP-2
-        verifyBlockchainAccountId(recoveredPublicKeyHex, a.blockchainAccountId) // CAIP-10
+        a.blockchainAccountId?.split('@eip155')?.[0].toLowerCase() === recoveredAddress //|| // CAIP-2
+        // verifyBlockchainAccountId(recoveredPublicKeyHex, a.blockchainAccountId) // CAIP-10
       )
     })
   }

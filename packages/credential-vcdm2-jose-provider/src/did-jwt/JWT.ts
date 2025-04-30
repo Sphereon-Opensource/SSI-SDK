@@ -1,8 +1,8 @@
 import canonicalizeData from 'canonicalize'
-import { DIDDocument, DIDResolutionResult, parse, ParsedDID, Resolvable, VerificationMethod } from 'did-resolver'
-import SignerAlg from './SignerAlgorithm.js'
-import { decodeBase64url, EcdsaSignature, encodeBase64url, KNOWN_JWA, SUPPORTED_PUBLIC_KEY_TYPES } from './util.js'
-import VerifierAlgorithm from './VerifierAlgorithm.js'
+import { type DIDDocument, type DIDResolutionResult, parse, type ParsedDID, type Resolvable, type VerificationMethod } from 'did-resolver'
+import SignerAlg from './SignerAlgorithm'
+import { decodeBase64url, type EcdsaSignature, encodeBase64url, type KNOWN_JWA, SUPPORTED_PUBLIC_KEY_TYPES } from './util'
+import VerifierAlgorithm from './VerifierAlgorithm'
 import { JWT_ERROR } from 'did-jwt'
 
 
