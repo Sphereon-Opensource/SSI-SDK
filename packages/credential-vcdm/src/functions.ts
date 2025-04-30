@@ -1,18 +1,27 @@
 import type {
   CredentialPayload,
-  IAgentContext, ICredentialStatusVerifier,
+  IAgentContext,
+  ICredentialStatusVerifier,
+  IDIDManager,
   IIdentifier,
-  IKey,
+  IResolver,
   IssuerType,
   PresentationPayload,
   VerifiableCredential,
   W3CVerifiableCredential,
-  W3CVerifiablePresentation
+  W3CVerifiablePresentation,
 } from '@veramo/core'
-import { isDefined, processEntryToArray } from '@veramo/utils'
+import { _ExtendedIKey, isDefined, processEntryToArray } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
-import { addVcdmContextIfNeeded, isVcdm1Credential, isVcdm2Credential, VCDM_CREDENTIAL_CONTEXT_V1, VCDM_CREDENTIAL_CONTEXT_V2 } from '@sphereon/ssi-types'
+import {
+  addVcdmContextIfNeeded,
+  isVcdm1Credential,
+  isVcdm2Credential,
+  VCDM_CREDENTIAL_CONTEXT_V1,
+  VCDM_CREDENTIAL_CONTEXT_V2,
+} from '@sphereon/ssi-types'
 import { ICreateVerifiablePresentationLDArgs } from './types'
+import { getKey } from '@sphereon/ssi-sdk-ext.did-utils'
 
 /**
  * Decodes a credential or presentation and returns the issuer ID
@@ -25,13 +34,8 @@ import { ICreateVerifiablePresentationLDArgs } from './types'
  * @beta This API may change without a BREAKING CHANGE notice.
  */
 export function extractIssuer(
-  input?:
-    | W3CVerifiableCredential
-    | W3CVerifiablePresentation
-    | CredentialPayload
-    | PresentationPayload
-    | null,
-  options: { removeParameters?: boolean } = {}
+  input?: W3CVerifiableCredential | W3CVerifiablePresentation | CredentialPayload | PresentationPayload | null,
+  options: { removeParameters?: boolean } = {},
 ): string {
   if (!isDefined(input)) {
     return ''
@@ -59,7 +63,6 @@ export function extractIssuer(
   }
 }
 
-
 /**
  * Remove all DID parameters from a DID url after the query part (?)
  *
@@ -71,19 +74,12 @@ export function removeDIDParameters(did: string): string {
   return did.replace(/\?.*$/, '')
 }
 
-
-export function pickSigningKey(identifier: IIdentifier, keyRef?: string): IKey {
-  let key: IKey | undefined
-
-  if (!keyRef) {
-    key = identifier.keys.find((k) => k.type === 'Secp256k1' || k.type === 'Ed25519' || k.type === 'Secp256r1')
-    if (!key) throw Error('key_not_found: No signing key for ' + identifier.did)
-  } else {
-    key = identifier.keys.find((k) => k.kid === keyRef)
-    if (!key) throw Error('key_not_found: No signing key for ' + identifier.did + ' with kid ' + keyRef)
-  }
-
-  return key as IKey
+export async function pickSigningKey(
+  { identifier, kmsKeyRef }: { identifier: IIdentifier; kmsKeyRef?: string },
+  context: IAgentContext<IResolver & IDIDManager>,
+): Promise<_ExtendedIKey> {
+  const key = await getKey({ identifier, vmRelationship: 'assertionMethod', kmsKeyRef: kmsKeyRef }, context)
+  return key
 }
 
 export async function isRevoked(credential: VerifiableCredential, context: IAgentContext<ICredentialStatusVerifier>): Promise<boolean> {
@@ -97,14 +93,13 @@ export async function isRevoked(credential: VerifiableCredential, context: IAgen
   throw new Error(`invalid_setup: The credential status can't be verified because there is no ICredentialStatusVerifier plugin installed.`)
 }
 
-
-
-export function preProcessCredentialPayload({credential, now = new Date()}: {credential: CredentialPayload, now?: number | Date}) {
+export function preProcessCredentialPayload({ credential, now = new Date() }: { credential: CredentialPayload; now?: number | Date }) {
   const credentialContext = addVcdmContextIfNeeded(credential?.['@context'])
   const isVdcm1 = isVcdm1Credential(credential)
   const isVdcm2 = isVcdm2Credential(credential)
   const credentialType = processEntryToArray(credential?.type, 'VerifiableCredential')
   let issuanceDate = credential?.validFrom ?? credential?.issuanceDate ?? (typeof now === 'number' ? new Date(now) : now).toISOString()
+  let expirationDate = credential?.validUntil ?? credential?.expirationDate
   if (issuanceDate instanceof Date) {
     issuanceDate = issuanceDate.toISOString()
   }
@@ -113,18 +108,26 @@ export function preProcessCredentialPayload({credential, now = new Date()}: {cre
     '@context': credentialContext,
     type: credentialType,
     ...(isVdcm1 && { issuanceDate }),
+    ...(isVdcm1 && expirationDate && { expirationDate }),
     ...(isVdcm2 && { validFrom: issuanceDate }),
+    ...(isVdcm2 && expirationDate && { validUntil: expirationDate }),
+  }
+  if (isVdcm1) {
+    delete credentialPayload.validFrom
+    delete credentialPayload.validUntil
+  } else if (isVdcm2) {
+    delete credentialPayload.issuanceDate
+    delete credentialPayload.expirationDate
   }
 
   // debug(JSON.stringify(credentialPayload))
 
-  const issuer = extractIssuer(credentialPayload, {removeParameters: true})
+  const issuer = extractIssuer(credentialPayload, { removeParameters: true })
   if (!issuer || typeof issuer === 'undefined') {
     throw new Error('invalid_argument: args.credential.issuer must not be empty')
   }
   return { credential: credentialPayload, issuer, now }
 }
-
 
 export function preProcessPresentation(args: ICreateVerifiablePresentationLDArgs) {
   const { presentation, now = new Date() } = args
@@ -135,7 +138,10 @@ export function preProcessPresentation(args: ICreateVerifiablePresentationLDArgs
   const v2Credential = credentials.find((cred) => typeof cred === 'object' && cred['@context'].includes(VCDM_CREDENTIAL_CONTEXT_V2))
     ? VCDM_CREDENTIAL_CONTEXT_V2
     : undefined
-  const presentationContext = addVcdmContextIfNeeded(args?.presentation?.['@context'] ?? [], v2Credential ?? v1Credential ?? VCDM_CREDENTIAL_CONTEXT_V2)
+  const presentationContext = addVcdmContextIfNeeded(
+    args?.presentation?.['@context'] ?? [],
+    v2Credential ?? v1Credential ?? VCDM_CREDENTIAL_CONTEXT_V2,
+  )
   const presentationType = processEntryToArray(args?.presentation?.type, 'VerifiablePresentation')
 
   let issuanceDate = presentation?.validFrom ?? presentation?.issuanceDate ?? (typeof now === 'number' ? new Date(now) : now).toISOString()
@@ -168,5 +174,5 @@ export function preProcessPresentation(args: ICreateVerifiablePresentationLDArgs
       }
     })
   }
-  return {presentation: presentationPayload, holder: removeDIDParameters(presentationPayload.holder)}
+  return { presentation: presentationPayload, holder: removeDIDParameters(presentationPayload.holder) }
 }

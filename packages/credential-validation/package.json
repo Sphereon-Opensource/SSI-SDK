@@ -43,8 +43,8 @@
     "typeorm": "0.3.20"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.jose.vcdm.20",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.jose.vcdm.20",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.jose.vcdm.25",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.jose.vcdm.25",
     "@veramo/did-manager": "4.2.0",
     "@veramo/data-store": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",

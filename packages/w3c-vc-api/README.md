@@ -175,7 +175,7 @@ const agent = createAgent<
     }),
     new PresentationExchange(),
     new CredentialPlugin(),
-    new CredentialProviderJsonld({
+    new CredentialProviderVcdm2Jose({
       contextMaps: [LdDefaultContexts],
       suites: [
         new SphereonEd25519Signature2018(),

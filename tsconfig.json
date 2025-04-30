@@ -66,6 +66,9 @@
       "path": "./packages/credential-vcdm"
     },
     {
+      "path": "./packages/credential-provider-vcdm2-jose"
+    },
+    {
       "path": "./packages/credential-jwt"
     },
     {

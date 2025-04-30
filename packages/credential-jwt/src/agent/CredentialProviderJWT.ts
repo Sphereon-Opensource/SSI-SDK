@@ -15,7 +15,6 @@ import {
 
 import canonicalize from 'canonicalize'
 
-
 import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
@@ -24,7 +23,7 @@ import {
   verifyCredential as verifyCredentialJWT,
   verifyPresentation as verifyPresentationJWT,
   // @ts-ignore
-} from  'did-jwt-vc'
+} from 'did-jwt-vc'
 
 import { type Resolvable } from 'did-resolver'
 
@@ -32,6 +31,7 @@ import { decodeJWT } from 'did-jwt'
 
 import Debug from 'debug'
 import { asArray, intersect, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import { isVcdm1Credential } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:credential-jwt')
 
@@ -59,7 +59,17 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.canVerifyDocumentType */
   canVerifyDocumentType(args: ICanVerifyDocumentTypeArgs): boolean {
     const { document } = args
-    return typeof document === 'string' || (<VerifiableCredential>document)?.proof?.jwt
+    const jwt = typeof document === 'string' ? document : (<VerifiableCredential>document)?.proof?.jwt
+    if (!jwt) {
+      return false
+    }
+    const { payload } = decodeJWT(jwt)
+    if ('vc' in payload) {
+      return isVcdm1Credential(payload.vc)
+    } else if ('vp' in payload) {
+      return isVcdm1Credential(payload.vp)
+    }
+    return false
   }
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.createVerifiableCredential} */
@@ -74,7 +84,7 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
       throw new Error(`invalid_argument: ${credential.issuer} must be a DID managed by this agent. ${e}`)
     }
 
-    const key = pickSigningKey(identifier, keyRef)
+    const key = await pickSigningKey({ identifier, kmsKeyRef: keyRef }, context)
 
     debug('Signing VC with', identifier.did)
     let alg = 'ES256'
@@ -87,7 +97,7 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
     const signer = this.wrapSigner(context, key, alg)
     const jwt = await createVerifiableCredentialJwt(
       credential as any,
-      { did: identifier.did, signer, alg },
+      { did: identifier.did, signer, alg, ...(key.meta.verificationMethod.id && { kid: key.meta.verificationMethod.id }) },
       { removeOriginalFields, ...otherOptions },
     )
     //FIXME: flagging this as a potential privacy leak.
@@ -163,7 +173,7 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
     } catch (e) {
       throw new Error('invalid_argument: presentation.holder must be a DID managed by this agent')
     }
-    const key = pickSigningKey(identifier, keyRef)
+    const key = await pickSigningKey({ identifier, kmsKeyRef: keyRef }, context)
 
     debug('Signing VP with', identifier.did)
     let alg = 'ES256'

@@ -8,7 +8,7 @@ import type {
   IResolver,
   IVerifyResult,
   PresentationPayload,
-  VerificationPolicies,
+  VerificationPolicies
 } from '@veramo/core'
 
 import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'

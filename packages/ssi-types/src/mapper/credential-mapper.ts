@@ -120,6 +120,7 @@ export class CredentialMapper {
     if (CredentialMapper.isJwtEncoded(credential)) {
       const payload = jwtDecode(credential as string) as JwtDecodedVerifiableCredential
       const header = jwtDecode(credential as string, { header: true }) as Record<string, any>
+      payload.vc = payload.vc ?? {}
       payload.vc.proof = {
         type: IProofType.JwtProof2020,
         created: payload.nbf,

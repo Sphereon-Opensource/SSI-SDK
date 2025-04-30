@@ -73,7 +73,7 @@ constructor(connection: Promise<Connection>) {
           },
         }),
         new CredentialIssuer(),
-        new CredentialProviderJsonld({
+        new CredentialProviderVcdm2Jose({
           contextMaps: [LdDefaultContexts],
           suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonBbsBlsSignature2020()],
           keyStore: privateKeyStore
