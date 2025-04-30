@@ -44,7 +44,7 @@ export interface IVCAPIIssueOpts {
   /**
    * The desired format for the VerifiablePresentation to be created.
    */
-  proofFormat: CredentialProofFormat
+  proofFormat?: CredentialProofFormat
 
   /**
    * Remove payload members during JWT-JSON transformation. Defaults to `true`.

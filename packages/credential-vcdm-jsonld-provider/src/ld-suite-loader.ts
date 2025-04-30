@@ -29,17 +29,13 @@ export class LdSuiteLoader {
   private signatureMap: Record<string, Record<string, SphereonLdSignature[]>> = {}
 
   getSignatureSuiteForKeyType(keyType: TKeyType, verificationType?: string): SphereonLdSignature[] {
-    // Always use verification type if supplied. This is the type denoted by the DID verification method type
-
-    /* let verificationSuite = verificationType
-    if (verificationSuite === 'Secp256k1VerificationKey2018' || verificationSuite === 'Secp256r1VerificationKey2018') {
-      verificationSuite = 'JsonWebKey2020'
-    }
-
-    const suite = verificationSuite && this.signatureMap[verificationSuite] ? this.signatureMap[verificationSuite] : this.signatureMap[keyType]
-    if (suite) return suite*/
+    // Always use verification type if supplied. This is the type denoted by the DID verification method type.
+    // The only exception is JsonWebKey. We do not have a signature suite anymore for that (discontinued), so we take the first verification suite in that case. Just like no verification method was supplied
     const verificationToSuites = this.signatureMap[keyType]
-    const suites = verificationType && verificationType !== '' ? verificationToSuites?.[verificationType] : Object.values(verificationToSuites)?.[0]
+    const suites =
+      verificationType && verificationType !== '' && verificationType !== 'JsonWebKey2020'
+        ? verificationToSuites[verificationType]
+        : Object.values(verificationToSuites)?.[0]
     // const suite = this.signatureMap[keyType]?.[verificationType]
     if (Array.isArray(suites) && suites.length > 0) {
       return suites
