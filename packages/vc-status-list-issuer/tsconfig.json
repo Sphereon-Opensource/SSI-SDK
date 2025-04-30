@@ -13,7 +13,7 @@
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../credential-jsonld"
+      "path": "../credential-vcdm-jsonld-provider"
     },
     {
       "path": "../data-store"

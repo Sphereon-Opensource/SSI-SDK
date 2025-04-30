@@ -60,16 +60,16 @@
       "path": "./packages/vc-status-list-issuer-rest-api"
     },
     {
-      "path": "./packages/credential-jsonld"
+      "path": "./packages/credential-vcdm-jsonld-provider"
     },
     {
       "path": "./packages/credential-vcdm"
     },
     {
-      "path": "./packages/credential-provider-vcdm2-jose"
+      "path": "./packages/credential-vcdm2-jose-provider"
     },
     {
-      "path": "./packages/credential-jwt"
+      "path": "./packages/credential-vcdm1-jwt-provider"
     },
     {
       "path": "./packages/presentation-exchange"

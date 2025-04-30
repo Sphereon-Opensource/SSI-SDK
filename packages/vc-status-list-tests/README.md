@@ -27,7 +27,7 @@ This package, `@sphereon/vc-status-list-tests`, contains a comprehensive suite o
 
 This package is maintained as a separate testing module to:
 
-1. **Avoid Cyclic Dependencies**: Prevent cyclic dependency issues with `@sphereon/ssi-sdk.credential-jsonld` and other related packages.
+1. **Avoid Cyclic Dependencies**: Prevent cyclic dependency issues with `@sphereon/ssi-sdk.credential-vcdm-jsonld-provider` and other related packages.
 2. **More Flexible With Other Dependencies**: Allows imports from additional packages without adding them to `credential-jsonld`, where some of these tests originated.
 
 ## Dependencies

@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from 'vitest'
 
 import { CredentialPayload, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { VcdmCredentialPlugin } from '../vcdmCredentialPlugin'
-import { CredentialProviderJWT } from '../../../credential-jwt/src'
+import { CredentialProviderJWT } from '../../../credential-vcdm1-jwt-provider/src'
 
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { Resolver } from 'did-resolver'

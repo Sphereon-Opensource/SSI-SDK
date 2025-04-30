@@ -22,9 +22,10 @@ let serverAgent: IAgent
 let restServer: Server
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/credential-jsonld/agent.yml')
-  ;(config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]),
-    (config.agent.$args[0].plugins[0].$args[0].suites = [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()])
+  const config = await getConfig('packages/credential-vcdm-jsonld-provider/agent.yml')
+  config.agent.$args[0].plugins[0].$args[0].contextMaps = [LdDefaultContexts /*, customContext*/]
+  config.agent.$args[0].plugins[0].$args[0].suites = [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()]
+
   const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
 

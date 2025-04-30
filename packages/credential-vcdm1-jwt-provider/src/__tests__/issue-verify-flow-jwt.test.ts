@@ -16,7 +16,7 @@ import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 
 const infuraProjectId = '3586660d179141e3801c3895de1c2eba'
 
-describe('@sphereon/ssi-sdk.credential-jwt full flow', () => {
+describe('@sphereon/ssi-sdk.credential-vcdm1-jwt-provider full flow', () => {
   let didKeyIdentifier: IIdentifier
   let didEthrIdentifier: IIdentifier
   let agent: TAgent<IResolver & ISphereonKeyManager & IDIDManager & IVcdmCredentialPlugin>

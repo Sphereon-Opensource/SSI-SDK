@@ -16,7 +16,7 @@ import {
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.credential-jsonld'
+} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'

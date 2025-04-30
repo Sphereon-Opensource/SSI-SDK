@@ -19,7 +19,7 @@ A Veramo plugin to issue and verify JSON-LD based credentials and presentations 
 ### Installation
 
 ```shell
-yarn add @sphereon/ssi-sdk.credential-jsonld
+yarn add @sphereon/ssi-sdk.credential-vcdm-jsonld-provider
 ```
 
 ### Build

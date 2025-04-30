@@ -23,14 +23,14 @@ import {
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.credential-jsonld'
+} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 // @ts-ignore
 import nock from 'nock'
 import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
-import { CredentialProviderJWT } from '@sphereon/ssi-sdk.credential-jwt'
+import { CredentialProviderJWT } from '@sphereon/ssi-sdk.credential-vcdm1-jwt-provider'
 import { createAgent } from '@sphereon/ssi-sdk.agent-config'
 //jest.setTimeout(100000)
 

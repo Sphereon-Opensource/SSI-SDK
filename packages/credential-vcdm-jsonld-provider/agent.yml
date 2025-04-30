@@ -83,7 +83,7 @@ agent:
         - $require: ./packages/credential-vcdm/dist#VcdmCredentialPlugin
           $args:
               - issuers:
-                  - $require: ./packages/credential-jsonld/dist#CredentialProviderJsonld
+                  - $require: ./packages/credential-vcdm-jsonld-provider/dist#CredentialProviderJsonld
                     $args:
                       - contextMaps: []
                         suites: []

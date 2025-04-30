@@ -29,7 +29,10 @@
       "path": "../ssi-express-support"
     },
     {
-      "path": "../credential-jsonld"
+      "path": "../credential-vcdm"
+    },
+    {
+      "path": "../credential-vcdm-jsonld-provider"
     },
     {
       "path": "../data-store"

@@ -8,7 +8,7 @@ import {
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.credential-jsonld'
+} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { createAgent, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'

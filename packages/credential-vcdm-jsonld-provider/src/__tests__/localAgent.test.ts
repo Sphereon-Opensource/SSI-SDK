@@ -10,7 +10,7 @@ import vcHandlerLocalAgentLogic from './shared/vcHandlerLocalAgentLogic'
 let agent: any
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/credential-jsonld/agent.yml')
+  const config = await getConfig('packages/credential-vcdm-jsonld-provider/agent.yml')
   config.agent.$args[0].plugins[1].$args[0].contextMaps = [LdDefaultContexts]
   config.agent.$args[0].plugins[1].$args[0].suites = [
     SphereonEd25519Signature2018,

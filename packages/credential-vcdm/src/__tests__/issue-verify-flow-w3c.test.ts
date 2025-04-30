@@ -13,11 +13,11 @@ import {
   LdDefaultContexts,
   SphereonEcdsaSecp256k1RecoverySignature2020, SphereonEd25519Signature2018,
   SphereonEd25519Signature2020
-} from '../../../credential-jsonld/src'
+} from '../../../credential-vcdm-jsonld-provider/src'
 import { Resolver } from 'did-resolver'
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver'
 
-import { CredentialProviderJWT } from '../../../credential-jwt/src'
+import { CredentialProviderJWT } from '../../../credential-vcdm1-jwt-provider/src'
 import { VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
 
 const customContext: Record<string, ContextDoc> = {

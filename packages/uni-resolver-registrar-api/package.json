@@ -46,7 +46,7 @@
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.1-feature.jose.vcdm.25",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.1-feature.jose.vcdm.25",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-sdk.credential-jsonld": "workspace:*",
+    "@sphereon/ssi-sdk.credential-vcdm-jsonld-provider": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
