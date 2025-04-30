@@ -5,7 +5,7 @@ import { afterEach, beforeEach, beforeAll, afterAll, describe, it, expect } from
 type ConfiguredAgent = TAgent<IWellKnownDidIssuer | IDIDManager>
 
 export default (testContext: {
-  getAgent: () => ConfiguredAgent
+  getAgent: () => Promise<ConfiguredAgent>
   setup: () => Promise<boolean>
   tearDown: () => Promise<boolean>
   isRestTest: boolean
@@ -38,7 +38,7 @@ export default (testContext: {
 
     beforeAll(async () => {
       await testContext.setup()
-      agent = testContext.getAgent()
+      agent = await testContext.getAgent()
     })
 
     afterAll(testContext.tearDown)

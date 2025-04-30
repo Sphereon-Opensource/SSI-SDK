@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from 'vitest'
 
 import { CredentialPayload, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
-import { VcdmCredentialPlugin } from '../action-handler.js'
+import { VcdmCredentialPlugin } from '../vcdmCredentialPlugin'
 import { CredentialProviderJWT } from '../../../credential-jwt/src'
 
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
@@ -13,17 +13,18 @@ import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { EthrDIDProvider } from '@veramo/did-provider-ethr'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
+import { IVcdmCredentialPlugin } from '../types'
 
 const infuraProjectId = '3586660d179141e3801c3895de1c2eba'
 
 let didKeyIdentifier: IIdentifier
 let didEthrIdentifier: IIdentifier
-let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin>
+let agent: TAgent<IResolver & IKeyManager & IDIDManager & IVcdmCredentialPlugin>
 
 describe('@sphereon/ssi-sdk.credential-vcdm', () => {
   beforeAll(async () => {
     const jwt = new CredentialProviderJWT()
-    agent = await createAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin>({
+    agent = await createAgent<IResolver & IKeyManager & IDIDManager & IVcdmCredentialPlugin>({
       plugins: [
         new SphereonKeyManager({
           store: new MemoryKeyStore(),
@@ -79,7 +80,6 @@ describe('@sphereon/ssi-sdk.credential-vcdm', () => {
 
     const vc = await agent.createVerifiableCredential({
       credential,
-      save: false,
       proofFormat: 'jwt',
     })
     expect(vc.id).toEqual('vc1')
@@ -107,7 +107,6 @@ describe('@sphereon/ssi-sdk.credential-vcdm', () => {
           },
         },
       },
-      save: false,
       proofFormat: 'jwt',
     })
 
@@ -121,7 +120,6 @@ describe('@sphereon/ssi-sdk.credential-vcdm', () => {
 
     const vp = await agent.createVerifiablePresentation({
       presentation,
-      save: false,
       proofFormat: 'jwt',
     })
 

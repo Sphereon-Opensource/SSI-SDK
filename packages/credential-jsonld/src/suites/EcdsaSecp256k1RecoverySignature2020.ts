@@ -15,7 +15,11 @@ export class SphereonEcdsaSecp256k1RecoverySignature2020 extends SphereonLdSigna
     return 'EcdsaSecp256k1RecoveryMethod2020'
   }
 
-  getSupportedVeramoKeyType(): TKeyType {
+  getSupportedProofType(): string {
+    return 'EcdsaSecp256k1RecoverySignature2020'
+  }
+
+  getSupportedKeyType(): TKeyType {
     return 'Secp256k1'
   }
 

@@ -1,22 +1,25 @@
 import { getUniResolver } from '@sphereon/did-uni-client'
 import { IDidConnectionMode, LtoDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-lto'
 // import { checkStatus } from '@transmute/vc-status-rl-2020'
-import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
-import { CredentialIssuer, ICredentialIssuer } from '@veramo/credential-w3c'
+import { CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { KeyManagementSystem } from '@veramo/kms-local'
+import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
 import { CredentialProviderJsonld } from '../../agent'
 import { LdDefaultContexts } from '../../ld-default-contexts'
-import { SphereonEd25519Signature2018 } from '../../suites'
-import { ControllerProofPurpose, ICredentialHandlerLDLocal, MethodNames } from '../../types'
+import { SphereonEd25519Signature2020 } from '../../suites'
+
 import { boaExampleVC, ltoDIDResolutionResult } from '../mocks'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { ControllerProofPurpose } from '../../enums'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { createAgent } from '@sphereon/ssi-sdk.agent-config'
 
 const LTO_DID = 'did:lto:3MsS3gqXkcx9m4wYSbfprYfjdZTFmx2ofdX'
 
@@ -24,7 +27,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
   describe('Issuer Agent Plugin', () => {
     let didKeyIdentifier: IIdentifier
     let didLtoIdentifier: IIdentifier
-    let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialIssuer & ICredentialHandlerLDLocal>
+    let agent: TAgent<IResolver & IKeyManager & IDIDManager & IVcdmCredentialPlugin>
     nock('https://lto-mock/1.0/identifiers')
       .get(`/${LTO_DID}`)
       .times(10)
@@ -33,12 +36,17 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       })
 
     beforeAll(async () => {
-      agent = createAgent({
+      const jsonld = new CredentialProviderJsonld({
+        contextMaps: [LdDefaultContexts /*, customContext*/],
+        suites: [new SphereonEd25519Signature2020()],
+      })
+
+      agent = await createAgent({
         plugins: [
-          new KeyManager({
+          new SphereonKeyManager({
             store: new MemoryKeyStore(),
             kms: {
-              local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
+              local: new SphereonKeyManagementSystem(new MemoryPrivateKeyStore()),
             },
           }),
           new DIDManager({
@@ -61,19 +69,10 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
               ...getUniResolver('factom', { resolveUrl: 'https://uniresolver.sphereon.io/1.0/identifiers' }),
             }),
           }),
-          new CredentialIssuer(),
-          new CredentialProviderJsonld({
-            contextMaps: [LdDefaultContexts /*, customContext*/],
-            suites: [new SphereonEd25519Signature2018()],
-            bindingOverrides: new Map([
-              // Bindings to test overrides of credential-ld plugin methods
-              ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-              ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-              // We test the verify methods by using the LDLocal versions directly in the tests
-            ]),
-          }),
+          new VcdmCredentialPlugin({ issuers: [jsonld] }),
         ],
       })
+
       didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' } })
 
       /*didLtoIdentifier = await agent.didManagerImport({
@@ -98,7 +97,7 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
       await testContext.tearDown()
     })
 
-    it('should issue and verify a 2018 VC', async () => {
+    it('should issue and verify a VCDM 1 with 2020 ed25519 sig VC', async () => {
       const credential = {
         issuer: didKeyIdentifier.did,
         type: ['VerifiableCredential', 'AlumniCredential'],
@@ -110,9 +109,9 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
             name: 'Example University',
           },
         },
-      }
+      } satisfies CredentialPayload
 
-      const verifiableCredential = await agent.createVerifiableCredential({ credential })
+      const verifiableCredential = await agent.createVerifiableCredential({ credential, proofFormat: 'lds', fetchRemoteContexts: true })
       expect(verifiableCredential).not.toBeNull()
 
       const verified = await agent.verifyCredential({
@@ -143,6 +142,8 @@ export default (testContext: { setup: () => Promise<boolean>; tearDown: () => Pr
         keyRef: `${didLtoIdentifier.did}#sign`,
         // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
         purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
+        proofFormat: 'lds',
+        fetchRemoteContexts: true,
       })
       expect(vp).toBeDefined()
 

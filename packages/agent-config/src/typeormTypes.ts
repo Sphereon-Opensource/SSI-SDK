@@ -1,4 +1,4 @@
-import { DataSources, DateTimeType, DateType, SupportedDatabaseType } from './dataSources'
+import { DataSources, type DateTimeType, type DateType, type SupportedDatabaseType } from './dataSources'
 
 export const getDbType = (opts?: { defaultType: SupportedDatabaseType }): SupportedDatabaseType => {
   const type = (typeof process === 'object' ? process?.env?.DB_TYPE : undefined) ?? DataSources.singleInstance().defaultDbType ?? opts?.defaultType

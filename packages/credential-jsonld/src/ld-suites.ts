@@ -1,7 +1,8 @@
-import type { CredentialPayload, IKey, PresentationPayload, TKeyType, VerifiableCredential } from '@veramo/core'
+import type { CredentialPayload, IKey, PresentationPayload, TKeyType } from '@veramo/core'
 // @ts-ignore
 import type { DIDDocument } from 'did-resolver/lib/resolver'
 import { IVcdmIssuerAgentContext, IVcdmVerifierAgentContext } from '@sphereon/ssi-sdk.credential-vcdm'
+import { VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
 
 // export type RequiredAgentMethods = IResolver & IDIDManager & Pick<ISphereonKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>
 
@@ -11,9 +12,11 @@ export abstract class SphereonLdSignature {
   // Add type definition as soon as https://github.com/digitalbazaar/jsonld-signatures
   // supports those.
 
-  abstract getSupportedVerificationType(): string
+  abstract getSupportedVerificationType(): string | string[]
 
-  abstract getSupportedVeramoKeyType(): TKeyType
+  abstract getSupportedProofType(): string
+
+  abstract getSupportedKeyType(): TKeyType
 
   abstract getSuiteForSigning(key: IKey, issuerDid: string, verificationMethodId: string, context: IVcdmIssuerAgentContext): any
 
@@ -25,7 +28,7 @@ export abstract class SphereonLdSignature {
 
   abstract preSigningCredModification(credential: CredentialPayload): void
 
-  abstract preVerificationCredModification(credential: VerifiableCredential): void
+  abstract preVerificationCredModification(credential: VerifiableCredentialSP): void
 
   preSigningPresModification(presentation: PresentationPayload): void {
     // TODO: Remove invalid field 'verifiers' from Presentation. Needs to be adapted for LD verifiableCredentials

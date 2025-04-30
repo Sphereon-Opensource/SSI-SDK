@@ -8,6 +8,7 @@ import { LdContextLoader } from './ld-context-loader'
 import { LdSuiteLoader } from './ld-suite-loader'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IVcdmVerifierAgentContext } from '@sphereon/ssi-sdk.credential-vcdm'
+import { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 
 const debug = Debug('sphereon:ssi-sdk:credential-jsonld')
 
@@ -42,7 +43,7 @@ export class LdDocumentLoader {
     {
       attemptToFetchContexts = false,
       verifiableData,
-    }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiablePresentation | CredentialPayload | PresentationPayload },
+    }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiableCredentialSP | VerifiablePresentation |VerifiablePresentationSP | CredentialPayload | PresentationPayload },
   ) {
     return sigpkg.extendContextLoader(async (url: string) => {
       if (!url || url.trim().length === 0) {

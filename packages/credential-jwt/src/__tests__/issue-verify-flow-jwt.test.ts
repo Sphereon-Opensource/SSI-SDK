@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { CredentialPayload, IDIDManager, IIdentifier, IResolver, TAgent } from '@veramo/core'
+import type { CredentialPayload, IDIDManager, IIdentifier, IResolver, TAgent } from '@veramo/core'
 import { createAgent } from '@sphereon/ssi-sdk.agent-config'
-import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '../../../credential-vcdm/src'
+import { type IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -10,8 +10,8 @@ import { Resolver } from 'did-resolver'
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver'
 
 import 'cross-fetch/polyfill'
-import { CredentialProviderJWT } from '../agent/CredentialProviderJWT.js'
-import { ISphereonKeyManager, MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { CredentialProviderJWT } from '../agent/CredentialProviderJWT'
+import { type ISphereonKeyManager, MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 
 const infuraProjectId = '3586660d179141e3801c3895de1c2eba'
@@ -98,10 +98,11 @@ describe('@sphereon/ssi-sdk.credential-jwt full flow', () => {
 
     const verifiablePresentation = await agent.createVerifiablePresentation({
       presentation: {
+        // @ts-ignore
         verifiableCredential: [verifiableCredential1],
         holder: didEthrIdentifier.did,
       },
-      challenge: 'VERAMO',
+      challenge: 'SUCCESS',
       proofFormat: 'jwt',
     })
 
@@ -109,9 +110,16 @@ describe('@sphereon/ssi-sdk.credential-jwt full flow', () => {
 
     const result = await agent.verifyPresentation({
       presentation: verifiablePresentation,
-      challenge: 'VERAMO',
+      challenge: 'SUCCESS',
     })
 
     expect(result.verified).toBe(true)
+
+    const failResult = await agent.verifyPresentation({
+      presentation: verifiablePresentation,
+      challenge: 'FAILED',
+    })
+
+    expect(failResult.verified).toBe(false)
   })
 })

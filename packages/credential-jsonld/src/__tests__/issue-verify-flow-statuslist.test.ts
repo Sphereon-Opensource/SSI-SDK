@@ -1,23 +1,22 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeAll } from 'vitest'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createNewStatusList } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListType } from '@sphereon/ssi-types'
-import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
-import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
+import { createAgent, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { KeyManagementSystem } from '@veramo/kms-local'
+import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { Resolver } from 'did-resolver'
-import { CredentialProviderJsonld } from '../agent/CredentialProviderJsonld'
+import { CredentialProviderJsonld } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
-import { SphereonEd25519Signature2018 } from '../suites/Ed25519Signature2018'
-import { SphereonEd25519Signature2020 } from '../suites/Ed25519Signature2020'
+import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 
-import { ContextDoc } from '../types/types'
 
 import { bedrijfsInformatieV1, exampleV1 } from './mocks'
+import { ContextDoc, IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 
 //jest.setTimeout(100000)
 
@@ -28,16 +27,20 @@ const customContext = new Map<string, ContextDoc>([
 
 describe('credential-LD full flow', () => {
   let didKeyIdentifier: IIdentifier
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer>
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & IVcdmCredentialPlugin & IIdentifierResolution>
 
-  // //jest.setTimeout(1000000)
+  const jsonld = new CredentialProviderJsonld({
+    contextMaps: [LdDefaultContexts, customContext],
+    suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+  })
+
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
-        new KeyManager({
+        new SphereonKeyManager({
           store: new MemoryKeyStore(),
           kms: {
-            local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
+            local: new SphereonKeyManagementSystem(new MemoryPrivateKeyStore()),
           },
         }),
         new DIDManager({
@@ -53,17 +56,8 @@ describe('credential-LD full flow', () => {
           }),
         }),
         new IdentifierResolution({}),
-        new CredentialPlugin(),
-        new CredentialProviderJsonld({
-          contextMaps: [LdDefaultContexts, customContext],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
-          bindingOverrides: new Map([
-            // Bindings to test overrides of credential-ld plugin methods
-            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-            // We test the verify methods by using the LDLocal versions directly in the tests
-          ]),
-        }),
+        new VcdmCredentialPlugin({issuers: [jsonld]})
+
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })

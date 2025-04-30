@@ -4,7 +4,6 @@ import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-e
 import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { createAgent, CredentialPayload, IDIDManager, IIdentifier, IKeyManager, IResolver, PresentationPayload, TAgent } from '@veramo/core'
-import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
@@ -12,8 +11,10 @@ import { Resolver } from 'did-resolver'
 import { CredentialProviderJsonld } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2020 } from '../suites'
-import { ContextDoc, ControllerProofPurpose, ICredentialHandlerLDLocal, MethodNames } from '../types'
+
 import { bedrijfsInformatieV1, exampleV1 } from './mocks'
+import { ContextDoc, IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { ControllerProofPurpose } from '../enums'
 
 const customContext = new Map<string, ContextDoc>([
   [`https://www.w3.org/2018/credentials/examples/v1`, exampleV1],
@@ -22,8 +23,11 @@ const customContext = new Map<string, ContextDoc>([
 
 describe('credential-LD full flow with VCDM2', () => {
   let didKeyIdentifier: IIdentifier
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
-
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & IIdentifierResolution & IVcdmCredentialPlugin>
+  const jsonld = new CredentialProviderJsonld({
+    contextMaps: [LdDefaultContexts],
+    suites: [new SphereonEd25519Signature2020()],
+  })
   // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
@@ -47,17 +51,7 @@ describe('credential-LD full flow with VCDM2', () => {
             ...getDidKeyResolver(),
           }),
         }),
-        new CredentialPlugin(),
-        new CredentialProviderJsonld({
-          contextMaps: [LdDefaultContexts, customContext],
-          suites: [/*new SphereonJsonWebSignature2020()*/ /* new SphereonEd25519Signature2018()*/ new SphereonEd25519Signature2020()],
-          bindingOverrides: new Map([
-            // Bindings to test overrides of credential-ld plugin methods
-            ['createVerifiableCredential', MethodNames.createVerifiableCredential],
-            ['createVerifiablePresentation', MethodNames.createVerifiablePresentation],
-            // We test the verify methods by using the LDLocal versions directly in the tests
-          ]),
-        }),
+        new VcdmCredentialPlugin({ issuers: [jsonld] }),
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' } })
@@ -142,7 +136,11 @@ describe('credential-LD full flow with VCDM2', () => {
             valid: true,
           },
           verificationMethod: {
-            '@context': ['https://w3id.org/security/suites/ed25519-2020/v1'],
+            '@context': [
+              'https://www.w3.org/ns/did/v1',
+              'https://w3id.org/security/suites/ed25519-2020/v1',
+              'https://w3id.org/security/suites/x25519-2020/v1',
+            ],
             type: 'Ed25519VerificationKey2020',
           },
           verified: true,
@@ -158,6 +156,7 @@ describe('credential-LD full flow with VCDM2', () => {
     }
     const verifiablePresentation = await agent.createVerifiablePresentation({
       keyRef: didKeyIdentifier.controllerKeyId,
+      proofFormat: 'lds',
       presentation: presentationPayload,
       // We are overriding the purpose since the DID in this test does not have an authentication proof purpose
       purpose: new ControllerProofPurpose({ term: 'verificationMethod' }),
@@ -218,7 +217,12 @@ describe('credential-LD full flow with VCDM2', () => {
                 valid: true,
               },
               verificationMethod: {
-                '@context': ['https://w3id.org/security/suites/ed25519-2020/v1'],
+                '@context': [
+                  'https://www.w3.org/ns/did/v1',
+                  'https://w3id.org/security/suites/ed25519-2020/v1',
+                  'https://w3id.org/security/suites/x25519-2020/v1',
+                ],
+
                 type: 'Ed25519VerificationKey2020',
               },
               verified: true,
@@ -246,7 +250,11 @@ describe('credential-LD full flow with VCDM2', () => {
               valid: true,
             },
             verificationMethod: {
-              '@context': ['https://w3id.org/security/suites/ed25519-2020/v1'],
+              '@context': [
+                'https://www.w3.org/ns/did/v1',
+                'https://w3id.org/security/suites/ed25519-2020/v1',
+                'https://w3id.org/security/suites/x25519-2020/v1',
+              ],
               type: 'Ed25519VerificationKey2020',
             },
             verified: true,

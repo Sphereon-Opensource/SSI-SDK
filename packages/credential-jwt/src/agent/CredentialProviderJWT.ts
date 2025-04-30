@@ -1,24 +1,16 @@
-import type {
-  CredentialPayload,
-  IAgentContext,
-  IIdentifier,
-  IKey,
-  IKeyManager,
-  IVerifyCredentialArgs,
-  IVerifyPresentationArgs,
-  IVerifyResult,
-  VerifiableCredential,
-  VerifierAgentContext,
-} from '@veramo/core'
-import { MANDATORY_CREDENTIAL_CONTEXT, processEntryToArray } from '@veramo/utils'
+import type { IAgentContext, IIdentifier, IKey, IKeyManager, IVerifyResult, VerifiableCredential, VerifierAgentContext } from '@veramo/core'
 import {
-  extractIssuer, type ICanIssueCredentialTypeArgs, type ICanVerifyDocumentTypeArgs,
+  type ICanIssueCredentialTypeArgs,
+  type ICanVerifyDocumentTypeArgs,
   type ICreateVerifiableCredentialLDArgs,
   type ICreateVerifiablePresentationLDArgs,
   type IVcdmCredentialProvider,
   type IVcdmIssuerAgentContext,
+  IVerifyCredentialLDArgs,
+  IVerifyPresentationLDArgs,
   pickSigningKey,
-  removeDIDParameters
+  preProcessCredentialPayload,
+  preProcessPresentation,
 } from '@sphereon/ssi-sdk.credential-vcdm'
 
 import canonicalize from 'canonicalize'
@@ -31,15 +23,15 @@ import {
   normalizePresentation,
   verifyCredential as verifyCredentialJWT,
   verifyPresentation as verifyPresentationJWT,
-}// @ts-ignore
-from 'did-jwt-vc'
+  // @ts-ignore
+} from  'did-jwt-vc'
 
 import { type Resolvable } from 'did-resolver'
 
 import { decodeJWT } from 'did-jwt'
 
 import Debug from 'debug'
-import { asArray, intersect, isDefined, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import { asArray, intersect, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 
 const debug = Debug('sphereon:ssi-sdk:credential-jwt')
 
@@ -72,26 +64,14 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.createVerifiableCredential} */
   async createVerifiableCredential(args: ICreateVerifiableCredentialLDArgs, context: IVcdmIssuerAgentContext): Promise<VerifiableCredentialSP> {
-    let { proofFormat, keyRef, removeOriginalFields, now, ...otherOptions } = args
+    let { keyRef, removeOriginalFields, ...otherOptions } = args
 
-    const credentialContext = processEntryToArray(args?.credential?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
-    const credentialType = processEntryToArray(args?.credential?.type, 'VerifiableCredential')
-    const credential: CredentialPayload = {
-      ...args?.credential,
-      '@context': credentialContext,
-      type: credentialType,
-    }
-
-    const issuer = extractIssuer(credential, { removeParameters: true })
-    if (!issuer || typeof issuer === 'undefined') {
-      throw new Error('invalid_argument: args.credential.issuer must not be empty')
-    }
-
+    const { credential, issuer } = preProcessCredentialPayload(args)
     let identifier: IIdentifier
     try {
       identifier = await context.agent.didManagerGet({ did: issuer })
     } catch (e) {
-      throw new Error(`invalid_argument: args.credential.issuer must be a DID managed by this agent. ${e}`)
+      throw new Error(`invalid_argument: ${credential.issuer} must be a DID managed by this agent. ${e}`)
     }
 
     const key = pickSigningKey(identifier, keyRef)
@@ -116,11 +96,11 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
   }
 
   /** {@inheritdoc ICredentialVerifier.verifyCredential} */
-  async verifyCredential(args: IVerifyCredentialArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
+  async verifyCredential(args: IVerifyCredentialLDArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
     let { credential, policies, ...otherOptions } = args
     let verifiedCredential: VerifiableCredential
     let verificationResult: IVerifyResult = { verified: false }
-    let jwt: string = typeof credential === 'string' ? credential : credential.proof.jwt
+    let jwt: string = typeof credential === 'string' ? credential : asArray(credential.proof)[0].jwt
     let errorCode, message
     const resolver = {
       resolve: (didUrl: string) =>
@@ -144,7 +124,7 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
       verifiedCredential = verificationResult.verifiableCredential
 
       // if credential was presented with other fields, make sure those fields match what's in the JWT
-      if (typeof credential !== 'string' && credential.proof.type === 'JwtProof2020') {
+      if (typeof credential !== 'string' && asArray(credential.proof)[0].type === 'JwtProof2020') {
         const credentialCopy = JSON.parse(JSON.stringify(credential))
         delete credentialCopy.proof.jwt
 
@@ -174,31 +154,8 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.createVerifiablePresentation} */
   async createVerifiablePresentation(args: ICreateVerifiablePresentationLDArgs, context: IVcdmIssuerAgentContext): Promise<VerifiablePresentationSP> {
-    let { presentation, proofFormat, domain, challenge, removeOriginalFields, keyRef, now, ...otherOptions } = args
-    const presentationContext: string[] = processEntryToArray(args?.presentation?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
-    const presentationType = processEntryToArray(args?.presentation?.type, 'VerifiablePresentation')
-    presentation = {
-      ...presentation,
-      '@context': presentationContext,
-      type: presentationType,
-    }
-
-    if (!isDefined(presentation.holder)) {
-      throw new Error('invalid_argument: presentation.holder must not be empty')
-    }
-
-    if (presentation.verifiableCredential) {
-      presentation.verifiableCredential = presentation.verifiableCredential.map((cred) => {
-        // map JWT credentials to their canonical form
-        if (typeof cred !== 'string' && cred.proof.jwt) {
-          return cred.proof.jwt
-        } else {
-          return cred
-        }
-      })
-    }
-
-    const holder = removeDIDParameters(presentation.holder)
+    const { presentation, holder } = preProcessPresentation(args)
+    let { domain, challenge, removeOriginalFields, keyRef, now, ...otherOptions } = args
 
     let identifier: IIdentifier
     try {
@@ -207,11 +164,6 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
       throw new Error('invalid_argument: presentation.holder must be a DID managed by this agent')
     }
     const key = pickSigningKey(identifier, keyRef)
-    // only add issuanceDate for JWT
-    now = typeof now === 'number' ? new Date(now * 1000) : now
-    if (!Object.getOwnPropertyNames(presentation).includes('issuanceDate')) {
-      presentation.issuanceDate = (now instanceof Date ? now : new Date()).toISOString()
-    }
 
     debug('Signing VP with', identifier.did)
     let alg = 'ES256'
@@ -233,13 +185,13 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
   }
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.verifyPresentation} */
-  async verifyPresentation(args: IVerifyPresentationArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
+  async verifyPresentation(args: IVerifyPresentationLDArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
     let { presentation, domain, challenge, fetchRemoteContexts, policies, ...otherOptions } = args
     let jwt: string
     if (typeof presentation === 'string') {
       jwt = presentation
     } else {
-      jwt = presentation.proof.jwt
+      jwt = asArray(presentation.proof)[0].jwt
     }
     const resolver = {
       resolve: (didUrl: string) =>

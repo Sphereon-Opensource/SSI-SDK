@@ -1,10 +1,10 @@
 import { ResourceResolver } from '@sphereon/ssi-sdk.resource-resolver'
-import { createAgent, TAgent } from '@veramo/core'
-import { ICryptoService } from '@sphereon/openid-federation-client'
-import { IOIDFClient, OIDFClient } from '../../src'
+import { createAgent, type TAgent } from '@veramo/core'
+import type { ICryptoService } from '@sphereon/openid-federation-client'
+import { type IOIDFClient, OIDFClient } from '../../src'
 
 import { mockResponses } from './TrustChainMockResponses'
-import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { type IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
@@ -27,7 +27,7 @@ const cryptoService: ICryptoService = {
 }
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
-  describe('Credential Store Agent Plugin', (): void => {
+  describe('OIDF Agent Plugin', (): void => {
     let agent: ConfiguredAgent
 
     beforeAll(async (): Promise<void> => {
@@ -53,8 +53,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         trustAnchors: ['https://oidc.registry.servizicie.interno.gov.it'],
       })
 
-      expect(trustChainResolveResponse.error).toBeFalsy()
-      expect(trustChainResolveResponse.trustChain?.asJsReadonlyArrayView()).toHaveLength(4)
+      expect(trustChainResolveResponse.errorMessage).toBeFalsy()
+      expect(trustChainResolveResponse.trustChain).toHaveLength(4)
     })
 
     it('should build trust chain 2', async () => {
@@ -63,8 +63,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         trustAnchors: ['https://oidc.registry.servizicie.interno.gov.it'],
       })
 
-      expect(trustChainResolveResponse.error).toBeFalsy()
-      expect(trustChainResolveResponse.trustChain?.asJsReadonlyArrayView()).toHaveLength(3)
+      expect(trustChainResolveResponse.errorMessage).toBeFalsy()
+      expect(trustChainResolveResponse.trustChain).toHaveLength(3)
     })
   })
 }

@@ -3,8 +3,8 @@ import * as vc from '@digitalcredentials/vc'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import type { IIssueCredentialStatusOpts, IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
-import type { IVerifyResult } from '@sphereon/ssi-types'
-import type { CredentialPayload, IKey, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
+import type { IVerifyResult, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import type { CredentialPayload, IKey, PresentationPayload } from '@veramo/core'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'
@@ -65,11 +65,17 @@ export class LdCredentialModule {
     const { key, issuerDid, verificationMethodId, credential } = args
     const purpose = args.purpose
     debug(`Issue VC method called for ${key.kid}...`)
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
+    // TODO: try multiple matching suites until one works or list is exhausted
+    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(
+      key.type,
+      key.meta?.verificationMethod?.type ?? '',
+    )[0]
+
     const documentLoader = this.ldDocumentLoader.getLoader(context, {
       attemptToFetchContexts: true,
       verifiableData: credential,
     })
+
 
     // some suites can modify the incoming credential (e.g. add required contexts)
     suite.preSigningCredModification(credential)
@@ -124,7 +130,11 @@ export class LdCredentialModule {
         }),
     context: IVcdmIssuerAgentContext,
   ): Promise<VerifiablePresentationSP> {
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type)
+    // TODO: try multiple matching suites until one works or list is exhausted
+    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(
+      key.type,
+      key.meta?.verificationMethod?.type ?? '',
+    )[0]
     const documentLoader = this.ldDocumentLoader.getLoader(context, {
       attemptToFetchContexts: true,
       verifiableData: presentation,
@@ -152,7 +162,7 @@ export class LdCredentialModule {
   }
 
   async verifyCredential(
-    credential: VerifiableCredential,
+    credential: VerifiableCredentialSP,
     context: IVcdmVerifierAgentContext,
     fetchRemoteContexts = false,
     purpose: typeof ProofPurpose = new AssertionProofPurpose(),
@@ -208,7 +218,7 @@ export class LdCredentialModule {
   }
 
   async verifyPresentation(
-    presentation: VerifiablePresentation,
+    presentation: VerifiablePresentationSP | W3CVerifiablePresentation,
     challenge: string | undefined,
     domain: string | undefined,
     context: IVcdmVerifierAgentContext,
@@ -219,6 +229,14 @@ export class LdCredentialModule {
     checkStatus?: Function,
     //AssertionProofPurpose()
   ): Promise<IVerifyResult> {
+    if (typeof presentation === 'string') {
+      return {
+        verified: false,
+        error: {
+          message: 'Cannot verify a jwt/string presentation with the jsonld verifier',
+        },
+      }
+    }
     /* let result: IVerifyResult
     if (presentation.proof.type?.includes('BbsBlsSignature2020')) {
       //Should never be null or undefined
@@ -241,7 +259,7 @@ export class LdCredentialModule {
       suite: this.getAllVerificationSuites(context),
       documentLoader: this.ldDocumentLoader.getLoader(context, {
         attemptToFetchContexts: fetchRemoteContexts,
-        verifiableData: presentation,
+        verifiableData: presentation as VerifiablePresentationSP,
       }),
       challenge,
       domain,

@@ -1,33 +1,37 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { createAgent, IDIDManager, IKeyManager, IResolver, TAgent, W3CVerifiableCredential } from '@veramo/core'
-import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
-import { KeyManager, MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
-import { KeyManagementSystem } from '@veramo/kms-local'
+import { MemoryKeyStore, MemoryPrivateKeyStore } from '@veramo/key-manager'
 import { Resolver } from 'did-resolver'
 // @ts-ignore
 import nock from 'nock'
 import { CredentialProviderJsonld } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
-import { ICredentialHandlerLDLocal, MethodNames } from '../types'
 import { diwalaVC } from './fixtures/diwala'
+import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
+import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 //jest.setTimeout(100000)
 
 describe('Diwala issued VC', () => {
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialHandlerLDLocal>
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & IVcdmCredentialPlugin>
 
+  const jsonld = new CredentialProviderJsonld({
+    contextMaps: [LdDefaultContexts],
+    suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+  })
   // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = createAgent({
       plugins: [
-        new KeyManager({
+        new SphereonKeyManager({
           store: new MemoryKeyStore(),
           kms: {
-            local: new KeyManagementSystem(new MemoryPrivateKeyStore()),
+            local: new SphereonKeyManagementSystem(new MemoryPrivateKeyStore()),
           },
         }),
         new DIDManager({
@@ -42,17 +46,7 @@ describe('Diwala issued VC', () => {
             ...getDidKeyResolver(),
           }),
         }),
-        new CredentialPlugin(),
-        new CredentialProviderJsonld({
-          contextMaps: [LdDefaultContexts],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
-          bindingOverrides: new Map([
-            // Bindings to test overrides of credential-ld plugin methods
-            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-            // We test the verify methods by using the LDLocal versions directly in the tests
-          ]),
-        }),
+        new VcdmCredentialPlugin({ issuers: [jsonld] }),
       ],
     })
   })

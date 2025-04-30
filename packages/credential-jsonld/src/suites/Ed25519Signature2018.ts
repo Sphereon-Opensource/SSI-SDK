@@ -1,5 +1,5 @@
 import { Ed25519Signature2018 } from '@digitalbazaar/ed25519-signature-2018'
-import type { IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import type { IKey, TKeyType } from '@veramo/core'
 import { asArray } from '@veramo/utils'
 import suiteContext2018 from 'ed25519-signature-2018-context'
 // @ts-ignore
@@ -8,7 +8,7 @@ import { Ed25519VerificationKey2018 } from '@digitalbazaar/ed25519-verification-
 // const Ed25519Signature2018 = await import('@digitalbazaar/ed25519-signature-2018')
 import { SphereonLdSignature } from '../ld-suites'
 import type { DIDDocument } from 'did-resolver'
-import { base64ToBytes, bytesToBase64 } from '@sphereon/ssi-sdk.core'
+import { base64ToBytes, bytesToBase64, VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
 import { IVcdmIssuerAgentContext } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export class SphereonEd25519Signature2018 extends SphereonLdSignature {
@@ -22,7 +22,10 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     return 'Ed25519VerificationKey2018'
   }
 
-  getSupportedVeramoKeyType(): TKeyType {
+  getSupportedProofType(): string {
+    return 'Ed25519Signature2018'
+  }
+  getSupportedKeyType(): TKeyType {
     return 'Ed25519'
   }
 
@@ -67,7 +70,7 @@ export class SphereonEd25519Signature2018 extends SphereonLdSignature {
     return new Ed25519Signature2018({ key: verificationKey, signer: signer })
   }
 
-  preVerificationCredModification(credential: VerifiableCredential): void {
+  preVerificationCredModification(credential: VerifiableCredentialSP): void {
     const vcJson = JSON.stringify(credential)
     if (vcJson.indexOf('Ed25519Signature2018 DISABLED') > -1) {
       if (vcJson.indexOf(this.getContext()) === -1) {

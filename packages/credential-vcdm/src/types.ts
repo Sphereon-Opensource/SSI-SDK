@@ -3,21 +3,20 @@ import type {
   IAgentContext,
   IDIDManager,
   IKey,
+  IKeyManager,
+  IPluginMethodMap,
   IResolver,
   IVerifyResult,
   PresentationPayload,
-  VerifiableCredential,
-  VerifiablePresentation, VerificationPolicies,
+  VerificationPolicies,
 } from '@veramo/core'
 
 import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import type { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
+
 import type { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
-import type { IPluginMethodMap } from '@veramo/core'
-import { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import type { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 
 export type IVcdmCredentialPlugin = IVcdmCredentialIssuer & IVcdmCredentialVerifier
-
 
 /**
  * Encapsulates the parameters required to check if a credential type can be issued
@@ -39,7 +38,6 @@ export interface ICanVerifyDocumentTypeArgs {
    */
   document: W3CVerifiableCredential | W3CVerifiablePresentation
 }
-
 
 /**
  * Encapsulates the parameters required to create a
@@ -179,7 +177,7 @@ export interface IVerifyCredentialLDArgs {
    * of the `credential`
    *
    */
-  credential: VerifiableCredential
+  credential: VerifiableCredentialSP
 
   /**
    * Set this to true if you want the '@context' URLs to be fetched in case they are not pre-loaded.
@@ -207,6 +205,8 @@ export interface IVerifyCredentialLDArgs {
    * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
    */
   statusList?: StatusListCheck
+
+  [key: string]: any
 }
 
 export interface StatusListCheck {
@@ -236,7 +236,7 @@ export interface IVerifyPresentationLDArgs {
    * of the `credential`
    *
    */
-  presentation: VerifiablePresentation
+  presentation: VerifiablePresentationSP | W3CVerifiablePresentation
 
   /**
    * Optional (only for JWT) string challenge parameter to verify the verifiable presentation against
@@ -274,6 +274,8 @@ export interface IVerifyPresentationLDArgs {
    * Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored
    */
   statusList?: StatusListCheck
+
+  [key: string]: any
 }
 
 /**
@@ -290,8 +292,6 @@ export type IRequiredContext = IAgentContext<
 >
 */
 
-
-
 /**
  * Represents the requirements that this plugin has.
  * The agent that is using this plugin is expected to provide these methods.
@@ -301,11 +301,8 @@ export type IRequiredContext = IAgentContext<
  * @beta
  */
 export type IVcdmIssuerAgentContext = IAgentContext<
-  IResolver &
-  IDIDManager &
-  Pick<ISphereonKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>
+  IResolver & IDIDManager & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'>
 >
-
 
 export type ContextDoc = {
   '@context': string | Record<string, any>
@@ -446,10 +443,6 @@ export interface IVcdmCredentialProvider {
   verifyPresentation(args: IVerifyPresentationLDArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult>
 }
 
-
-
-
-
 /**
  * The interface definition for a plugin that can generate Verifiable Credentials and Presentations
  *
@@ -472,10 +465,7 @@ export interface IVcdmCredentialIssuer extends IPluginMethodMap {
    * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#presentations | Verifiable Presentation data model
    *   }
    */
-  createVerifiablePresentation(
-    args: ICreateVerifiablePresentationLDArgs,
-    context: IVcdmIssuerAgentContext,
-  ): Promise<VerifiablePresentationSP>
+  createVerifiablePresentation(args: ICreateVerifiablePresentationLDArgs, context: IVcdmIssuerAgentContext): Promise<VerifiablePresentationSP>
 
   /**
    * Creates a Verifiable Credential.
@@ -489,13 +479,8 @@ export interface IVcdmCredentialIssuer extends IPluginMethodMap {
    *
    * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
    */
-  createVerifiableCredential(
-    args: ICreateVerifiableCredentialLDArgs,
-    context: IVcdmIssuerAgentContext,
-  ): Promise<VerifiableCredentialSP>
+  createVerifiableCredential(args: ICreateVerifiableCredentialLDArgs, context: IVcdmIssuerAgentContext): Promise<VerifiableCredentialSP>
 }
-
-
 
 /**
  * The interface definition for a plugin that can generate Verifiable Credentials and Presentations
@@ -541,6 +526,4 @@ export interface IVcdmCredentialVerifier extends IPluginMethodMap {
  *
  * @beta
  */
-export type IVcdmVerifierAgentContext = IAgentContext<
-  IResolver & Pick<IDIDManager, 'didManagerGet' | 'didManagerFind'>
->
+export type IVcdmVerifierAgentContext = IAgentContext<IResolver & Pick<IDIDManager, 'didManagerGet' | 'didManagerFind'>>

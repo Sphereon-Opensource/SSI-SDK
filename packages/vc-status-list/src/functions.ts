@@ -157,7 +157,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
 
 export async function createNewStatusList(
   args: CreateNewStatusListFuncArgs,
-  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+  context: IAgentContext<(ICredentialPlugin | any /*IvcdMCredentialPlugin is not available*/) & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const { type } = getAssertedValues(args)
   const implementation = getStatusListImplementation(type)

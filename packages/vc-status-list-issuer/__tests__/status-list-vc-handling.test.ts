@@ -4,17 +4,14 @@ import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-e
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
   CredentialProviderJsonld,
-  ICredentialHandlerLDLocal,
   LdDefaultContexts,
-  MethodNames,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
 } from '@sphereon/ssi-sdk.credential-jsonld'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifiableCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
-import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
-import { CredentialPlugin } from '@veramo/credential-w3c'
+import { createAgent, IDataStoreORM, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
 import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
@@ -27,6 +24,7 @@ import { StatusListPlugin } from '../src/agent/StatusListPlugin'
 import { DB_CONNECTION_NAME_POSTGRES, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
 import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { beforeAll, describe, expect, it } from 'vitest'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 const debug = Debug('sphereon:status-list-issuer')
 
@@ -65,14 +63,7 @@ const dbConnection = DataSources.singleInstance()
   .getDbConnection(DB_CONNECTION_NAME_POSTGRES)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
-type Plugins = IDIDManager &
-  IKeyManager &
-  IDataStoreORM &
-  IResolver &
-  ICredentialHandlerLDLocal &
-  ICredentialPlugin &
-  IIdentifierResolution &
-  IStatusListPlugin
+type Plugins = IDIDManager & IKeyManager & IDataStoreORM & IResolver & IVcdmCredentialPlugin & IIdentifierResolution & IStatusListPlugin
 
 describe('Status List VC handling', () => {
   let agent: TAgent<Plugins>
@@ -103,6 +94,12 @@ describe('Status List VC handling', () => {
   }
 
   beforeAll(async () => {
+    const jsonld = new CredentialProviderJsonld({
+      contextMaps: [LdDefaultContexts],
+      suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
+      keyStore: privateKeyStore,
+    })
+
     agent = createAgent<Plugins>({
       plugins: [
         new DataStore(dbConnection),
@@ -126,17 +123,8 @@ describe('Status List VC handling', () => {
           resolver,
         }),
         new IdentifierResolution({ crypto: global.crypto }),
-        new CredentialPlugin(),
+        new VcdmCredentialPlugin({ issuers: [jsonld] }),
         new JwtService(),
-        new CredentialProviderJsonld({
-          contextMaps: [LdDefaultContexts],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
-          bindingOverrides: new Map([
-            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-          ]),
-          keyStore: privateKeyStore,
-        }),
       ],
     })
 

@@ -1,6 +1,5 @@
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { createAgent, ICredentialPlugin, IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
-import { CredentialPlugin, ICredentialIssuer } from '@veramo/credential-w3c'
+import { IDIDManager, IIdentifier, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { DIDManager, MemoryDIDStore } from '@veramo/did-manager'
 import { getDidKeyResolver, SphereonKeyDidProvider } from '@sphereon/ssi-sdk-ext.did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
@@ -20,9 +19,7 @@ import {
 } from '@sphereon/ssi-sdk.vc-status-list'
 import {
   CredentialProviderJsonld,
-  ICredentialHandlerLDLocal,
   LdDefaultContexts,
-  MethodNames,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
@@ -32,15 +29,24 @@ import nock from 'nock'
 import { StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { beforeAll, describe, expect, it } from 'vitest'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { CredentialProviderJWT } from '@sphereon/ssi-sdk.credential-jwt'
+import { createAgent } from '@sphereon/ssi-sdk.agent-config'
 //jest.setTimeout(100000)
 
 describe('Status list', () => {
   let didKeyIdentifier: IIdentifier
-  let agent: TAgent<IResolver & IKeyManager & IDIDManager & ICredentialPlugin & IIdentifierResolution & ICredentialIssuer & ICredentialHandlerLDLocal>
+  let agent: TAgent<IResolver & IKeyManager & IDIDManager & IIdentifierResolution & IVcdmCredentialPlugin>
 
+  const jsonld = new CredentialProviderJsonld({
+    contextMaps: [LdDefaultContexts],
+    suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
+  })
+
+  const jwt = new CredentialProviderJWT()
   // //jest.setTimeout(1000000)
   beforeAll(async () => {
-    agent = createAgent({
+    agent = await createAgent({
       plugins: [
         new SphereonKeyManager({
           store: new MemoryKeyStore(),
@@ -62,20 +68,11 @@ describe('Status list', () => {
             ...getDidKeyResolver(),
           }),
         }),
-        new CredentialPlugin(),
-        new CredentialProviderJsonld({
-          contextMaps: [LdDefaultContexts],
-          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
-          bindingOverrides: new Map([
-            // Bindings to test overrides of credential-ld plugin methods
-            ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-            ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-            // We test the verify methods by using the LDLocal versions directly in the tests
-          ]),
-        }),
+        new VcdmCredentialPlugin({ issuers: [jsonld, jwt] }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate()
+    didKeyIdentifier = await agent.didManagerCreate({options: {type: 'Ed25519'}})
+    console.log(JSON.stringify(didKeyIdentifier, null, 2))
   })
 
   describe('StatusList2021', () => {
@@ -83,6 +80,7 @@ describe('Status list', () => {
       const statusList = await createNewStatusList(
         {
           type: StatusListType.StatusList2021,
+          keyRef: didKeyIdentifier.keys[0].kid,
           proofFormat: 'lds',
           id: 'http://localhost:9543/list1',
           issuer: didKeyIdentifier.did,

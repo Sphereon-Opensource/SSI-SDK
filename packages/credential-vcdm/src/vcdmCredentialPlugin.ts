@@ -1,4 +1,4 @@
-import type { IAgentPlugin, IIdentifier, IVerifyResult, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
+import type { IAgentPlugin, IIdentifier, IVerifyResult, VerifiableCredential } from '@veramo/core'
 import { schema } from '@veramo/core'
 
 import type {
@@ -11,12 +11,10 @@ import type {
   IVerifyCredentialLDArgs,
   IVerifyPresentationLDArgs,
 } from './types'
-
-import { isDefined, MANDATORY_CREDENTIAL_CONTEXT, processEntryToArray } from '@veramo/utils'
 import Debug from 'debug'
-import { extractIssuer, isRevoked } from './functions'
+import { isRevoked, preProcessCredentialPayload, preProcessPresentation } from './functions'
 import type { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import { asArray, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 
 const debug = Debug('sphereon:ssi-sdk:vcdm')
 
@@ -67,27 +65,8 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
 
   /** {@inheritdoc @veramo/core#ICredentialIssuer.createVerifiableCredential} */
   async createVerifiableCredential(args: ICreateVerifiableCredentialLDArgs, context: IVcdmIssuerAgentContext): Promise<VerifiableCredentialSP> {
-    let { credential, proofFormat, /* keyRef, removeOriginalFields,*/ now /*, ...otherOptions */ } = args
-    const credentialContext = processEntryToArray(credential['@context'], MANDATORY_CREDENTIAL_CONTEXT)
-    const credentialType = processEntryToArray(credential.type, 'VerifiableCredential')
-
-    // only add issuanceDate for JWT
-    now = typeof now === 'number' ? new Date(now * 1000) : now
-    if (!Object.getOwnPropertyNames(credential).includes('issuanceDate')) {
-      credential.issuanceDate = (now instanceof Date ? now : new Date()).toISOString()
-    }
-
-    credential = {
-      ...credential,
-      '@context': credentialContext,
-      type: credentialType,
-    }
-
-    //FIXME: if the identifier is not found, the error message should reflect that.
-    const issuer = extractIssuer(credential, { removeParameters: true })
-    if (!issuer || typeof issuer === 'undefined') {
-      throw new Error('invalid_argument: credential.issuer must not be empty')
-    }
+    let { proofFormat /* keyRef, removeOriginalFields, now , ...otherOptions */ } = args
+    const { credential, issuer, now } = preProcessCredentialPayload(args)
 
     try {
       await context.agent.didManagerGet({ did: issuer })
@@ -98,10 +77,12 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
       async function findAndIssueCredential(issuers: IVcdmCredentialProvider[]) {
         for (const issuer of issuers) {
           if (issuer.canIssueCredentialType({ proofFormat })) {
-            return await issuer.createVerifiableCredential(args, context)
+            return await issuer.createVerifiableCredential({ ...args, credential, now }, context)
           }
         }
-        throw new Error('invalid_setup: No issuer found for the requested proof format')
+        throw new Error(
+          `invalid_setup: No issuer found for the requested proof format: ${proofFormat}, supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`,
+        )
       }
       const verifiableCredential = await findAndIssueCredential(this.issuers)
       return verifiableCredential
@@ -123,7 +104,11 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
           return issuer.verifyCredential(args, context)
         }
       }
-      return Promise.reject(Error('invalid_setup: No issuer found for the provided credential'))
+      return Promise.reject(
+        Error(
+          `invalid_setup: No verifier found for the provided credential credential type: ${JSON.stringify(args.credential.type)} proof type ${asArray(args.credential.proof)?.[0]?.type} supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`,
+        ),
+      )
     }
     verificationResult = await findAndVerifyCredential(this.issuers)
     verifiedCredential = <VerifiableCredential>credential
@@ -143,53 +128,24 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
 
   /** {@inheritdoc @veramo/core#ICredentialIssuer.createVerifiablePresentation} */
   async createVerifiablePresentation(args: ICreateVerifiablePresentationLDArgs, context: IVcdmIssuerAgentContext): Promise<VerifiablePresentationSP> {
-    let {
-      presentation,
-      proofFormat,
-      /*      domain,
-      challenge,
-      removeOriginalFields,
-      keyRef,*/
-      // save,
-      /*now,*/
-      /*...otherOptions*/
-    } = args
-    const presentationContext: string[] = processEntryToArray(args?.presentation?.['@context'], MANDATORY_CREDENTIAL_CONTEXT)
-    const presentationType = processEntryToArray(args?.presentation?.type, 'VerifiablePresentation')
-    presentation = {
-      ...presentation,
-      '@context': presentationContext,
-      type: presentationType,
-    }
+    const { proofFormat } = args
+    const { presentation } = preProcessPresentation(args)
 
-    if (!isDefined(presentation.holder)) {
-      throw new Error('invalid_argument: presentation.holder must not be empty')
-    }
-
-    if (presentation.verifiableCredential) {
-      presentation.verifiableCredential = presentation.verifiableCredential.map((cred) => {
-        // map JWT credentials to their canonical form
-        if (typeof cred !== 'string' && cred.proof.jwt) {
-          return cred.proof.jwt
-        } else {
-          return cred
-        }
-      })
-    }
-
-    let verifiablePresentation: VerifiablePresentation | undefined
+    let verifiablePresentation: VerifiablePresentationSP
 
     async function findAndCreatePresentation(issuers: IVcdmCredentialProvider[]) {
       for (const issuer of issuers) {
         if (issuer.canIssueCredentialType({ proofFormat })) {
-          return await issuer.createVerifiablePresentation(args, context)
+          return await issuer.createVerifiablePresentation({ ...args, presentation }, context)
         }
       }
-      throw new Error('invalid_setup: No issuer found for the requested proof format')
+      throw new Error(
+        `invalid_setup: No issuer found for the requested proof format: ${proofFormat}, supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`,
+      )
     }
 
     verifiablePresentation = await findAndCreatePresentation(this.issuers)
-    return verifiablePresentation as VerifiablePresentationSP // fixme: this is a hack to get around the fact that the return type is not correct.
+    return verifiablePresentation
   }
 
   /** {@inheritdoc @veramo/core#ICredentialVerifier.verifyPresentation} */

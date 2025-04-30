@@ -1,7 +1,7 @@
 import { Ed25519Signature2020 } from '@digitalcredentials/ed25519-signature-2020'
 import { Ed25519VerificationKey2020 } from '@digitalcredentials/ed25519-verification-key-2020'
-import { base64ToBytes, bytesToBase64, hexToMultibase } from '@sphereon/ssi-sdk.core'
-import type { IKey, TKeyType, VerifiableCredential } from '@veramo/core'
+import { base64ToBytes, bytesToBase64, hexToMultibase, VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
+import type { IKey, TKeyType } from '@veramo/core'
 import suiteContext2020 from 'ed25519-signature-2020-context'
 
 import { SphereonLdSignature } from '../ld-suites'
@@ -14,11 +14,16 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
     suiteContext2020?.constants
   }
 
-  getSupportedVerificationType(): string {
-    return 'Ed25519VerificationKey2020'
+  getSupportedVerificationType(): string[] {
+    return ['Ed25519VerificationKey2020', 'Ed25519VerificationKey2018']
   }
 
-  getSupportedVeramoKeyType(): TKeyType {
+
+  getSupportedProofType(): string {
+    return 'Ed25519Signature2020'
+  }
+
+  getSupportedKeyType(): TKeyType {
     return 'Ed25519'
   }
 
@@ -65,7 +70,7 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
       signer: signer,
     })
   }
-  preVerificationCredModification(credential: VerifiableCredential): void {
+  preVerificationCredModification(credential: VerifiableCredentialSP): void {
     /* const vcJson = JSON.stringify(credential)
     if (vcJson.indexOf('Ed25519Signature2020') > -1) {
       if (vcJson.indexOf(this.getContext()) === -1) {

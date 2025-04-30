@@ -1,4 +1,4 @@
-import { TAgent, IPluginMethodMap, IAgentOptions } from '@veramo/core'
+import { type TAgent, type IPluginMethodMap, type IAgentOptions, Agent } from '@veramo/core'
 import { createObjects } from './objectCreator'
 import yaml from 'yaml'
 
@@ -48,7 +48,6 @@ export async function createAgentFromConfig<T extends IPluginMethodMap>(config: 
 export async function createAgent<T extends IPluginMethodMap, C = Record<string, any>>(
   options: IAgentOptions & { context?: C },
 ): Promise<TAgent<T> & { context?: C }> {
-  //@ts-ignore
   return new Agent(options) as TAgent<T>
 }
 

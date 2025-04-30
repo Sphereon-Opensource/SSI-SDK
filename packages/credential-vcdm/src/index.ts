@@ -10,7 +10,7 @@
  */
 export type * from './types'
 export { W3cMessageHandler, MessageTypes } from './message-handler'
-import { VcdmCredentialPlugin } from './action-handler'
+import { VcdmCredentialPlugin } from './vcdmCredentialPlugin'
 
 /**
  * @deprecated please use {@link VcdmCredentialPlugin} instead

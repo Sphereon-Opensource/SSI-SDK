@@ -35,9 +35,10 @@
   "devDependencies": {
     "@types/debug": "4.1.8",
     "typescript": "5.8.3",
-    "@sphereon/ssi-sdk-ext.did-provider-key": "0.28.1-feature.esm.cjs.18",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.esm.cjs.18",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.esm.cjs.18",
+    "vitest": "^3.1.2",
+    "@sphereon/ssi-sdk-ext.did-provider-key": "0.28.1-feature.jose.vcdm.20",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.jose.vcdm.20",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.jose.vcdm.20",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/key-manager": "4.2.0",
     "@veramo/did-resolver": "4.2.0",

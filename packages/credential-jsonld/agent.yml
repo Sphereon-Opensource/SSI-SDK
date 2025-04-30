@@ -80,8 +80,11 @@ agent:
         #          $args:
         #            - contextMaps: []
         #            suites: []
-        - $require: ./packages/credential-jsonld/dist#CredentialHandlerLDLocal
+        - $require: ./packages/credential-vcdm/dist#VcdmCredentialPlugin
           $args:
-            - contextMaps: []
-              suites: []
-              bindingOverrides: []
+              - issuers:
+                  - $require: ./packages/credential-jsonld/dist#CredentialProviderJsonld
+                    $args:
+                      - contextMaps: []
+                        suites: []
+                        bindingOverrides: []

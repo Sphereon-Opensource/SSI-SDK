@@ -20,9 +20,9 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: './packages/data-store?t=object#DataStoreMachineStateMigrations'
+        $require: './packages/data-store/dist?t=object#DataStoreMachineStateMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStoreMachineStateEntities'
+        $require: './packages/data-store/dist?t=object#DataStoreMachineStateEntities'
 
 server:
   baseUrl:
