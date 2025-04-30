@@ -56,13 +56,14 @@ export class CredentialProviderVcdm2Jose implements IVcdmCredentialProvider {
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.getTypeProofFormat} */
   getTypeProofFormat(): string {
-    return 'vcdm2_jose'
+    return 'vc+jwt'
   }
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.canIssueCredentialType} */
   canIssueCredentialType(args: ICanIssueCredentialTypeArgs): boolean {
+    const format = args.proofFormat.toLowerCase()
     // TODO: Create type
-    return args.proofFormat === 'vcdm2_jose' || args.proofFormat === 'vcdm_jose' || args.proofFormat === 'jose'
+    return format === 'vc+jwt' || format === 'vcdm2_jose' || format === 'vcdm_jose' || format === 'jose'
   }
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.canVerifyDocumentType */

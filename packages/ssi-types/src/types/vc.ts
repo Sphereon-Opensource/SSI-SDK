@@ -20,10 +20,13 @@ export type WrappedVerifiableCredential = WrappedW3CVerifiableCredential | Wrapp
 
 export type WrappedVerifiablePresentation = WrappedW3CVerifiablePresentation | WrappedSdJwtVerifiablePresentation | WrappedMdocPresentation
 
+export type CredentialProofFormat = 'jwt' | 'lds' | 'vc+jwt' /*| 'EthereumEip712Signature2021'*/ | 'cbor'
+
 export type CredentialFormat =
   // W3C
   | 'jwt_vc'
   | 'ldp_vc'
+  | 'vc+jwt'
   // SD-JWT
   | 'vc+sd-jwt'
   // Remaining
@@ -36,8 +39,9 @@ export type PresentationFormat =
   // W3C
   | 'jwt_vp'
   | 'ldp_vp'
+  | 'vp+jwt'
   // SD-JWT
-  | 'vc+sd-jwt'
+  | 'vp+sd-jwt'
   // Remaining
   | 'jwt'
   | 'ldp'

@@ -73,7 +73,7 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
     }
     const verifiableCredential = await agent.createVerifiableCredential({
       credential,
-      proofFormat: 'vcdm2_jose',
+      proofFormat: 'vc+jwt',
     })
 
     expect(verifiableCredential).toBeDefined()

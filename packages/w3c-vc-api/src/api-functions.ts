@@ -23,12 +23,18 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
     try {
       const credential: CredentialPayload = request.body.credential
       const reqOpts = request.body.options ?? {}
-      let reqProofFormat: CredentialProofFormat | undefined
+      const inputFormat = reqOpts.inputFormat.toLocaleLowerCase()
+      let credentialFormat: CredentialProofFormat | undefined
       if (reqOpts.proofFormat) {
-        if (reqOpts?.proofFormat?.includes('ld')) {
-          reqProofFormat = 'lds'
+        if (inputFormat === 'jwt') {
+          credentialFormat = 'jwt'
+        } else if (inputFormat.includes('jose') || inputFormat.includes('vc+jwt')) {
+          credentialFormat = 'vc+jwt'
+        } else if (inputFormat.includes('ld')) {
+          credentialFormat = 'lds'
         } else {
-          reqProofFormat = 'jwt'
+          // TODO: Update to VDCM SD-JWT in the future
+          credentialFormat = 'jwt'
         }
       }
       if (!credential) {
@@ -48,7 +54,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
       const vc = await context.agent.createVerifiableCredential({
         credential,
         save: opts?.persistIssuedCredentials !== false,
-        proofFormat: (reqProofFormat ?? issueOpts?.proofFormat ?? 'lds') as ProofFormat,
+        proofFormat: (credentialFormat ?? issueOpts?.proofFormat ?? 'lds') as ProofFormat,
         fetchRemoteContexts: issueOpts?.fetchRemoteContexts !== false,
       })
       response.statusCode = 201

@@ -9,8 +9,8 @@ import type {
   IKeyManager,
   IResolver,
 } from '@veramo/core'
-import type { ProofFormat } from '@veramo/core'
 import type { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialProofFormat } from '@sphereon/ssi-types'
 
 export type IRequiredPlugins = IDataStoreORM &
   IDIDManager &
@@ -50,7 +50,7 @@ export interface IVCAPIIssueOpts {
   /**
    * The desired format for the VerifiablePresentation to be created.
    */
-  proofFormat: ProofFormat
+  proofFormat: CredentialProofFormat
 
   /**
    * Remove payload members during JWT-JSON transformation. Defaults to `true`.
