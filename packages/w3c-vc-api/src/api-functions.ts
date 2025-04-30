@@ -1,17 +1,20 @@
 import { checkAuth, type ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import type { CredentialPayload, ProofFormat } from '@veramo/core'
-
-import type { W3CVerifiableCredential } from '@veramo/core'
 import { type Request, type Response, Router } from 'express'
 import { v4 } from 'uuid'
 import type { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
 import Debug from 'debug'
-import { DocumentType, type FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
+import { AddCredentialArgs, CredentialCorrelationType, DocumentType, type FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
 import type { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import type { CredentialProofFormat } from '@sphereon/ssi-types'
+import { CredentialMapper, CredentialProofFormat, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import { extractIssuer } from '@sphereon/ssi-sdk.credential-vcdm'
+import { isDidIdentifier, isIIdentifier } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type { VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
+
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
+
 export function issueCredentialEndpoint(router: Router, context: IRequiredContext, opts?: IIssueCredentialEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Issue credential endpoint is disabled`)
@@ -23,18 +26,18 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
     try {
       const credential: CredentialPayload = request.body.credential
       const reqOpts = request.body.options ?? {}
-      const inputFormat = reqOpts.inputFormat.toLocaleLowerCase()
-      let credentialFormat: CredentialProofFormat | undefined
-      if (reqOpts.proofFormat) {
+      const inputFormat = reqOpts.proofFormat?.toLocaleLowerCase() ?? opts?.issueCredentialOpts?.proofFormat?.toLocaleLowerCase()
+      let proofFormat: CredentialProofFormat = 'lds' // TODO: Update to vc+jwt once stable
+      if (inputFormat) {
         if (inputFormat === 'jwt') {
-          credentialFormat = 'jwt'
-        } else if (inputFormat.includes('jose') || inputFormat.includes('vc+jwt')) {
-          credentialFormat = 'vc+jwt'
-        } else if (inputFormat.includes('ld')) {
-          credentialFormat = 'lds'
+          proofFormat = 'jwt'
+        } else if (inputFormat?.includes('jose') || inputFormat?.includes('vc+jwt')) {
+          proofFormat = 'vc+jwt'
+        } else if (inputFormat?.includes('ld')) {
+          proofFormat = 'lds'
         } else {
           // TODO: Update to VDCM SD-JWT in the future
-          credentialFormat = 'jwt'
+          proofFormat = 'jwt'
         }
       }
       if (!credential) {
@@ -53,10 +56,45 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
       const issueOpts: IVCAPIIssueOpts | undefined = opts?.issueCredentialOpts
       const vc = await context.agent.createVerifiableCredential({
         credential,
-        save: opts?.persistIssuedCredentials !== false,
-        proofFormat: (credentialFormat ?? issueOpts?.proofFormat ?? 'lds') as ProofFormat,
+        proofFormat: proofFormat as ProofFormat,
         fetchRemoteContexts: issueOpts?.fetchRemoteContexts !== false,
       })
+      const save = opts?.persistIssuedCredentials !== false
+      if (save) {
+        const issuer = extractIssuer(credential)
+        const identifier = await context.agent.identifierManagedGet({ identifier: issuer, issuer: issuer, vmRelationship: 'assertionMethod' })
+        const rawDocument = CredentialMapper.storedCredentialToOriginalFormat(vc as OriginalVerifiableCredential)
+        let issuerCorrelationId: string | undefined = identifier.issuer
+        if (!issuerCorrelationId && isDidIdentifier(identifier.identifier)) {
+          if (isIIdentifier(identifier.identifier)) {
+            issuerCorrelationId = identifier.identifier.did
+          } else if (typeof identifier.identifier === 'string') {
+            issuerCorrelationId = identifier.identifier
+          }
+        }
+        if (!issuerCorrelationId) {
+          if (typeof vc.issuer === 'string') {
+            issuerCorrelationId = vc.issuer
+          } else if (typeof vc.issuer?.id === 'string') {
+            issuerCorrelationId = vc.issuer.id
+          } else {
+            issuerCorrelationId = 'unknown'
+          }
+        }
+
+        const dc: AddCredentialArgs = {
+          credential: {
+            credentialRole: CredentialRole.HOLDER,
+            // tenantId: 'test-tenant',
+            kmsKeyRef: identifier.kmsKeyRef,
+            identifierMethod: identifier.method,
+            issuerCorrelationId: issuerCorrelationId,
+            issuerCorrelationType: CredentialCorrelationType.DID,
+            rawDocument: typeof rawDocument === 'string' ? rawDocument : JSON.stringify(rawDocument),
+          },
+        }
+        await context.agent.crsAddCredential(dc)
+      }
       response.statusCode = 201
       return response.send({ verifiableCredential: vc })
     } catch (e) {
@@ -138,7 +176,7 @@ export function verifyCredentialEndpoint(router: Router, context: IRequiredConte
   router.post(opts?.path ?? '/credentials/verify', checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       debug(JSON.stringify(request.body, null, 2))
-      const credential: W3CVerifiableCredential = request.body.verifiableCredential
+      const credential: VerifiableCredentialSP = request.body.verifiableCredential
       // const options: IIssueOptionsPayload = request.body.options
       if (!credential) {
         return sendErrorResponse(response, 400, 'No verifiable credential supplied')

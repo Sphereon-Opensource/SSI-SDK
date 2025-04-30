@@ -1,25 +1,12 @@
 import type { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
-import type {
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IDataStoreORM,
-  IDIDManager,
-  IKeyManager,
-  IResolver,
-} from '@veramo/core'
+import type { IAgentContext, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import type { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { CredentialProofFormat } from '@sphereon/ssi-types'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
-export type IRequiredPlugins = IDataStoreORM &
-  IDIDManager &
-  IKeyManager &
-  ICredentialIssuer &
-  ICredentialVerifier &
-  ICredentialStore &
-  ICredentialPlugin &
-  IResolver
+export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & IVcdmCredentialPlugin & IJwtService & IIdentifierResolution & ICredentialStore & IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 // interface IVCAPISecurityOpts {}

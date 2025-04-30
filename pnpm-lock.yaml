@@ -4076,6 +4076,12 @@ importers:
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: 0.28.1-feature.jose.vcdm.25
+        version: 0.28.1-feature.jose.vcdm.25(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: 0.28.1-feature.jose.vcdm.25
+        version: 0.28.1-feature.jose.vcdm.25(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config

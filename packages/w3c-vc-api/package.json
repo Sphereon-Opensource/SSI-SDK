@@ -32,6 +32,8 @@
     "@sphereon/ssi-sdk.presentation-exchange": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list-issuer": "workspace:*",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.jose.vcdm.25",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.jose.vcdm.25",
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
