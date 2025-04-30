@@ -1,14 +1,6 @@
 import { toEthereumAddress } from 'did-jwt'
 import type { VerificationMethod } from 'did-resolver'
-import {
-  base64ToBytes,
-  bytesToHex,
-  type EcdsaSignature,
-  type ECDSASignature,
-  extractPublicKeyBytes,
-  type KNOWN_JWA,
-  stringToBytes,
-} from './util'
+import { base64ToBytes, bytesToHex, type EcdsaSignature, type ECDSASignature, extractPublicKeyBytes, type KNOWN_JWA, stringToBytes } from './util'
 // @ts-ignore
 // import { verifyBlockchainAccountId } from 'did-jwt'
 import { secp256k1 } from '@noble/curves/secp256k1'
@@ -66,11 +58,7 @@ export function verifyES256(data: string, signature: string, authenticators: Ver
   return signer
 }
 
-export function verifyES256K(
-  data: string,
-  signature: string,
-  authenticators: VerificationMethod[]
-): VerificationMethod {
+export function verifyES256K(data: string, signature: string, authenticators: VerificationMethod[]): VerificationMethod {
   const hash = sha256(data)
   const signatureNormalized = secp256k1.Signature.fromCompact(base64ToBytes(signature)).normalizeS()
   const fullPublicKeys = authenticators.filter((a: VerificationMethod) => {
@@ -97,11 +85,7 @@ export function verifyES256K(
   return signer
 }
 
-export function verifyRecoverableES256K(
-  data: string,
-  signature: string,
-  authenticators: VerificationMethod[]
-): VerificationMethod {
+export function verifyRecoverableES256K(data: string, signature: string, authenticators: VerificationMethod[]): VerificationMethod {
   const signatures: ECDSASignature[] = []
   if (signature.length > 86) {
     signatures.push(toSignatureObject2(signature, true))
@@ -141,11 +125,7 @@ export function verifyRecoverableES256K(
   throw new Error('invalid_signature: Signature invalid for JWT')
 }
 
-export function verifyEd25519(
-  data: string,
-  signature: string,
-  authenticators: VerificationMethod[]
-): VerificationMethod {
+export function verifyEd25519(data: string, signature: string, authenticators: VerificationMethod[]): VerificationMethod {
   const clear = stringToBytes(data)
   const signatureBytes = base64ToBytes(signature)
   const signer = authenticators.find((a: VerificationMethod) => {

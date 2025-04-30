@@ -8,7 +8,7 @@ import Debug from 'debug'
 import { AddCredentialArgs, CredentialCorrelationType, DocumentType, type FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
 import type { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
-import { CredentialMapper, CredentialProofFormat, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import { CredentialMapper, CredentialProofFormat, isVcdm2Credential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { extractIssuer } from '@sphereon/ssi-sdk.credential-vcdm'
 import { isDidIdentifier, isIIdentifier } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import type { VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
@@ -26,8 +26,8 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
     try {
       const credential: CredentialPayload = request.body.credential
       const reqOpts = request.body.options ?? {}
-      const inputFormat = reqOpts.proofFormat?.toLocaleLowerCase() ?? opts?.issueCredentialOpts?.proofFormat?.toLocaleLowerCase()
-      let proofFormat: CredentialProofFormat = 'lds' // TODO: Update to vc+jwt once stable
+      const inputFormat = reqOpts.proofFormat?.toLocaleLowerCase()
+      let proofFormat: CredentialProofFormat | undefined = undefined
       if (inputFormat) {
         if (inputFormat === 'jwt') {
           proofFormat = 'jwt'
@@ -35,11 +35,19 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
           proofFormat = 'vc+jwt'
         } else if (inputFormat?.includes('ld')) {
           proofFormat = 'lds'
-        } else {
-          // TODO: Update to VDCM SD-JWT in the future
-          proofFormat = 'jwt'
         }
       }
+      if (proofFormat === undefined && opts?.issueCredentialOpts?.proofFormat) {
+        proofFormat = opts.issueCredentialOpts.proofFormat.toLocaleLowerCase() as CredentialProofFormat
+      }
+      if (proofFormat === undefined) {
+        if (isVcdm2Credential(credential)) {
+          proofFormat = 'vc+jwt'
+        } else {
+          proofFormat = 'lds'
+        }
+      }
+
       if (!credential) {
         return sendErrorResponse(response, 400, 'No credential supplied')
       }
@@ -53,17 +61,19 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
           credential.credentialStatus = credentialStatusVC.credentialStatus
         }
       }
+
       const issueOpts: IVCAPIIssueOpts | undefined = opts?.issueCredentialOpts
       const vc = await context.agent.createVerifiableCredential({
         credential,
         proofFormat: proofFormat as ProofFormat,
         fetchRemoteContexts: issueOpts?.fetchRemoteContexts !== false,
       })
-      const save = opts?.persistIssuedCredentials !== false
+      const rawDocument = CredentialMapper.storedCredentialToOriginalFormat(vc as OriginalVerifiableCredential)
+      const save = opts?.persistIssuedCredentials
       if (save) {
         const issuer = extractIssuer(credential)
         const identifier = await context.agent.identifierManagedGet({ identifier: issuer, issuer: issuer, vmRelationship: 'assertionMethod' })
-        const rawDocument = CredentialMapper.storedCredentialToOriginalFormat(vc as OriginalVerifiableCredential)
+
         let issuerCorrelationId: string | undefined = identifier.issuer
         if (!issuerCorrelationId && isDidIdentifier(identifier.identifier)) {
           if (isIIdentifier(identifier.identifier)) {
@@ -96,7 +106,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
         await context.agent.crsAddCredential(dc)
       }
       response.statusCode = 201
-      return response.send({ verifiableCredential: vc })
+      return response.send({ verifiableCredential: rawDocument, uniformCredential: CredentialMapper.toUniformCredential(vc as OriginalVerifiableCredential) })
     } catch (e) {
       return sendErrorResponse(response, 500, e.message as string, e)
     }

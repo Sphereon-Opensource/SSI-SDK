@@ -1,5 +1,3 @@
-
-
 export interface IParsedDID {
   did: string
   didUrl: string
@@ -12,7 +10,6 @@ export interface IParsedDID {
     [index: string]: string
   }
 }
-
 
 /**
  * Defines an object type that can be extended with other properties.

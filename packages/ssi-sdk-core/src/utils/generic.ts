@@ -44,6 +44,6 @@ export function isIterable<T>(obj: any): obj is Iterable<T> {
  * @public
  */
 export function intersect<T>(a: T[] | any, b: any[] | any): T[] {
-  const setB = new Set<T>(asArray(b));
-  return [...new Set(asArray(a))].filter(x => setB.has(x));
+  const setB = new Set<T>(asArray(b))
+  return [...new Set(asArray(a))].filter((x) => setB.has(x))
 }

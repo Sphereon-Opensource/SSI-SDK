@@ -195,7 +195,6 @@ export interface JwtDecodedVerifiablePresentation {
   [x: string]: any
 }
 
-
 export interface IVerifyStatusResult {
   verified: boolean
   /**
@@ -283,7 +282,4 @@ export enum StatusListType {
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 
-
 export type StatusListIndexingDirection = 'rightToLeft'
-
-

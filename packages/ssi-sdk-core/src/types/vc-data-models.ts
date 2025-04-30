@@ -1,12 +1,13 @@
 import type {
   CompactJWT,
   CredentialStatusReference,
-  CredentialSubject, IssuerType,
+  CredentialSubject,
+  IssuerType,
   ProofType,
   UnsignedCredential,
   UnsignedPresentation,
   VerifiableCredential,
-  VerifiablePresentation
+  VerifiablePresentation,
 } from '@veramo/core'
 
 import type { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'

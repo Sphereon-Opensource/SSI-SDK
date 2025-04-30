@@ -1,4 +1,3 @@
-
 import { HasherSync } from '@sphereon/ssi-types'
 import { FindOptionsOrder } from 'typeorm'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'

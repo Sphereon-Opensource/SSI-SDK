@@ -1,10 +1,4 @@
-import type {
-  IAgentContext,
-  ICredentialVerifier,
-  IResolver,
-  VerifiableCredential,
-  VerifiablePresentation,
-} from '@veramo/core'
+import type { IAgentContext, ICredentialVerifier, IResolver, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
 import { AbstractMessageHandler, Message } from '@veramo/message-handler'
 import { asArray, computeEntryHash, decodeCredentialToObject, extractIssuer } from '@veramo/utils'
 
@@ -12,9 +6,8 @@ import {
   normalizeCredential,
   normalizePresentation,
   validateJwtCredentialPayload,
-  validateJwtPresentationPayload,
-}// @ts-ignore
-from 'did-jwt-vc'
+  validateJwtPresentationPayload, // @ts-ignore
+} from 'did-jwt-vc'
 
 import { v4 as uuidv4 } from 'uuid'
 import Debug from 'debug'

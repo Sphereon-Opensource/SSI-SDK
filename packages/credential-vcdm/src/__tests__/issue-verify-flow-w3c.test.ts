@@ -11,8 +11,9 @@ import { EthrDIDProvider } from '@veramo/did-provider-ethr'
 import {
   CredentialProviderJsonld,
   LdDefaultContexts,
-  SphereonEcdsaSecp256k1RecoverySignature2020, SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020
+  SphereonEcdsaSecp256k1RecoverySignature2020,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020,
 } from '../../../credential-vcdm-jsonld-provider/src'
 import { Resolver } from 'did-resolver'
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver'

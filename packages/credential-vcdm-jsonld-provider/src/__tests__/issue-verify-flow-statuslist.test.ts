@@ -12,7 +12,6 @@ import { CredentialProviderJsonld } from '../agent'
 import { LdDefaultContexts } from '../ld-default-contexts'
 import { SphereonEd25519Signature2018, SphereonEd25519Signature2020 } from '../suites'
 
-
 import { bedrijfsInformatieV1, exampleV1 } from './mocks'
 import { ContextDoc, IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
@@ -56,8 +55,7 @@ describe('credential-LD full flow', () => {
           }),
         }),
         new IdentifierResolution({}),
-        new VcdmCredentialPlugin({issuers: [jsonld]})
-
+        new VcdmCredentialPlugin({ issuers: [jsonld] }),
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })

@@ -117,7 +117,7 @@ dev
         // additionalProperties: true,
         skipTypeCheck: true,
         expose: 'all',
-        type: '*'
+        type: '*',
         // functions: 'hide',
       })
 

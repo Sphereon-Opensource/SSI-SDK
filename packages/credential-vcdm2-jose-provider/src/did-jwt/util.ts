@@ -12,8 +12,6 @@ import { p256 } from '@noble/curves/p256'
 
 // const u8a = { toString, fromString, concat }
 
-
-
 export interface EphemeralPublicKey {
   kty?: string
   //ECC
@@ -148,20 +146,8 @@ export const SUPPORTED_PUBLIC_KEY_TYPES: PublicKeyTypes = {
     'JsonWebKey2020',
     'Multikey',
   ],
-  Ed25519: [
-    'ED25519SignatureVerification',
-    'Ed25519VerificationKey2018',
-    'Ed25519VerificationKey2020',
-    'JsonWebKey2020',
-    'Multikey',
-  ],
-  EdDSA: [
-    'ED25519SignatureVerification',
-    'Ed25519VerificationKey2018',
-    'Ed25519VerificationKey2020',
-    'JsonWebKey2020',
-    'Multikey',
-  ],
+  Ed25519: ['ED25519SignatureVerification', 'Ed25519VerificationKey2018', 'Ed25519VerificationKey2020', 'JsonWebKey2020', 'Multikey'],
+  EdDSA: ['ED25519SignatureVerification', 'Ed25519VerificationKey2018', 'Ed25519VerificationKey2020', 'JsonWebKey2020', 'Multikey'],
 }
 
 export const VM_TO_KEY_TYPE: Record<KNOWN_VERIFICATION_METHOD, KNOWN_KEY_TYPE | undefined> = {
@@ -181,13 +167,7 @@ export const VM_TO_KEY_TYPE: Record<KNOWN_VERIFICATION_METHOD, KNOWN_KEY_TYPE | 
   Multikey: undefined, // key type must be extracted from the multicodec
 }
 
-export type KNOWN_CODECS =
-  | 'ed25519-pub'
-  | 'x25519-pub'
-  | 'secp256k1-pub'
-  | 'bls12_381-g1-pub'
-  | 'bls12_381-g2-pub'
-  | 'p256-pub'
+export type KNOWN_CODECS = 'ed25519-pub' | 'x25519-pub' | 'secp256k1-pub' | 'bls12_381-g1-pub' | 'bls12_381-g2-pub' | 'p256-pub'
 
 // this is from the multicodec table https://github.com/multiformats/multicodec/blob/master/table.csv
 export const supportedCodecs: Record<KNOWN_CODECS, number> = {
@@ -242,12 +222,7 @@ export function extractPublicKeyBytes(pk: VerificationMethod): { keyBytes: Uint8
       }).toRawBytes(false),
       keyType: 'P-256',
     }
-  } else if (
-    pk.publicKeyJwk &&
-    pk.publicKeyJwk.kty === 'OKP' &&
-    ['Ed25519', 'X25519'].includes(pk.publicKeyJwk.crv ?? '') &&
-    pk.publicKeyJwk.x
-  ) {
+  } else if (pk.publicKeyJwk && pk.publicKeyJwk.kty === 'OKP' && ['Ed25519', 'X25519'].includes(pk.publicKeyJwk.crv ?? '') && pk.publicKeyJwk.x) {
     return { keyBytes: base64ToBytes(pk.publicKeyJwk.x), keyType: pk.publicKeyJwk.crv as KNOWN_KEY_TYPE }
   } else if (pk.publicKeyMultibase) {
     const { keyBytes, keyType } = multibaseToBytes(pk.publicKeyMultibase)
@@ -268,11 +243,7 @@ export function extractPublicKeyBytes(pk: VerificationMethod): { keyBytes: Uint8
  *
  * @public
  */
-export function bytesToMultibase(
-  b: Uint8Array,
-  base: BaseName = 'base58btc',
-  codec?: keyof typeof supportedCodecs | number
-): string {
+export function bytesToMultibase(b: Uint8Array, base: BaseName = 'base58btc', codec?: keyof typeof supportedCodecs | number): string {
   if (!codec) {
     return u8a.toString(encode(base, b), 'utf-8')
   } else {
@@ -308,8 +279,7 @@ export function multibaseToBytes(s: string): { keyBytes: Uint8Array; keyType?: K
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [codec, length] = varint.decode(bytes)
-    const possibleCodec: string | undefined =
-      Object.entries(supportedCodecs).filter(([, code]) => code === codec)?.[0][0] ?? ''
+    const possibleCodec: string | undefined = Object.entries(supportedCodecs).filter(([, code]) => code === codec)?.[0][0] ?? ''
     return { keyBytes: bytes.slice(length), keyType: CODEC_TO_KEY_TYPE[possibleCodec as KNOWN_CODECS] }
   } catch (e) {
     // not a multicodec, return the bytes

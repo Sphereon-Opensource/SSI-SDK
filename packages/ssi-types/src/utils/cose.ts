@@ -1,4 +1,3 @@
-
 export enum ICoseKeyType {
   OKP = 1,
   EC2 = 2,

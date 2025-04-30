@@ -6,8 +6,6 @@
 import { ContextDoc } from '@sphereon/ssi-sdk.credential-vcdm'
 import { isIterable, type OrPromise, type RecordLike } from '@veramo/utils'
 
-
-
 export class LdContextLoader {
   private readonly contexts: Record<string, OrPromise<ContextDoc>>
 

@@ -6,7 +6,14 @@ import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
-export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & IVcdmCredentialPlugin & IJwtService & IIdentifierResolution & ICredentialStore & IResolver
+export type IRequiredPlugins = IDataStoreORM &
+  IDIDManager &
+  IKeyManager &
+  IVcdmCredentialPlugin &
+  IJwtService &
+  IIdentifierResolution &
+  ICredentialStore &
+  IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 // interface IVCAPISecurityOpts {}

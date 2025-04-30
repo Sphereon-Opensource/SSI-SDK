@@ -26,7 +26,6 @@ export enum IProofType {
   MdocProof2024 = 'MsoMdocProof2024',
 }
 
-
 export const parseDid = (did: string): IParsedDID => {
   const parsedDid = parse(did)
   if (parsedDid === null) {

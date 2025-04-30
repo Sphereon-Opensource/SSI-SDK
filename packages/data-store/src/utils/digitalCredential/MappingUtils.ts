@@ -10,12 +10,8 @@ import {
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import type {
-  AddCredentialArgs,
-  DigitalCredential,
-  NonPersistedDigitalCredential,
-} from '../../types'
-import {CredentialDocumentFormat, DocumentType, RegulationType } from '../../types'
+import type { AddCredentialArgs, DigitalCredential, NonPersistedDigitalCredential } from '../../types'
+import { CredentialDocumentFormat, DocumentType, RegulationType } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 

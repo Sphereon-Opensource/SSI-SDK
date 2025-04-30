@@ -43,7 +43,16 @@ export class LdDocumentLoader {
     {
       attemptToFetchContexts = false,
       verifiableData,
-    }: { attemptToFetchContexts: boolean; verifiableData: VerifiableCredential | VerifiableCredentialSP | VerifiablePresentation |VerifiablePresentationSP | CredentialPayload | PresentationPayload },
+    }: {
+      attemptToFetchContexts: boolean
+      verifiableData:
+        | VerifiableCredential
+        | VerifiableCredentialSP
+        | VerifiablePresentation
+        | VerifiablePresentationSP
+        | CredentialPayload
+        | PresentationPayload
+    },
   ) {
     return sigpkg.extendContextLoader(async (url: string) => {
       if (!url || url.trim().length === 0) {

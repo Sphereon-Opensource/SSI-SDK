@@ -69,7 +69,7 @@ export class CredentialProviderVcdm2Jose implements IVcdmCredentialProvider {
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.canVerifyDocumentType */
   canVerifyDocumentType(args: ICanVerifyDocumentTypeArgs): boolean {
     const { document } = args
-    const jwt =  typeof document === 'string' ? document : (<VerifiableCredential>document)?.proof?.jwt
+    const jwt = typeof document === 'string' ? document : (<VerifiableCredential>document)?.proof?.jwt
     if (!jwt) {
       return false
     }

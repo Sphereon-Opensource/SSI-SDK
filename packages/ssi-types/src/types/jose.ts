@@ -13,7 +13,6 @@ export interface BaseJWK {
   n?: string
 }
 
-
 export type JoseSignatureAlgorithmString =
   | 'RS256'
   | 'RS384'

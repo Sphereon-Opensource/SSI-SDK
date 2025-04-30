@@ -1,15 +1,20 @@
 import type {
-  DocumentJson, IssuerSignedItemJson,
-  IVerifiableCredential, MdocDecodedPayload, MdocDeviceResponse, MdocDocument, MdocIssuerSigned, MdocOid4vpIssuerSigned, MdocOid4vpMdocVpToken,
+  DocumentJson,
+  IssuerSignedItemJson,
+  IVerifiableCredential,
+  MdocDecodedPayload,
+  MdocDeviceResponse,
+  MdocDocument,
+  MdocIssuerSigned,
+  MdocOid4vpIssuerSigned,
+  MdocOid4vpMdocVpToken,
   WrappedMdocCredential,
   WrappedMdocPresentation,
   WrappedVerifiableCredential,
-  WrappedVerifiablePresentation
+  WrappedVerifiablePresentation,
 } from '../types'
 import * as mdoc from '@sphereon/kmp-mdoc-core'
 import { IProofPurpose, IProofType } from './did'
-
-
 
 export function isWrappedMdocCredential(vc: WrappedVerifiableCredential): vc is WrappedMdocCredential {
   return vc.format === 'mso_mdoc'

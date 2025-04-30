@@ -66,16 +66,12 @@ export class LdCredentialModule {
     const purpose = args.purpose
     debug(`Issue VC method called for ${key.kid}...`)
     // TODO: try multiple matching suites until one works or list is exhausted
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(
-      key.type,
-      key.meta?.verificationMethod?.type ?? '',
-    )[0]
+    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type ?? '')[0]
 
     const documentLoader = this.ldDocumentLoader.getLoader(context, {
       attemptToFetchContexts: true,
       verifiableData: credential,
     })
-
 
     // some suites can modify the incoming credential (e.g. add required contexts)
     suite.preSigningCredModification(credential)
@@ -131,10 +127,7 @@ export class LdCredentialModule {
     context: IVcdmIssuerAgentContext,
   ): Promise<VerifiablePresentationSP> {
     // TODO: try multiple matching suites until one works or list is exhausted
-    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(
-      key.type,
-      key.meta?.verificationMethod?.type ?? '',
-    )[0]
+    const suite = this.ldSuiteLoader.getSignatureSuiteForKeyType(key.type, key.meta?.verificationMethod?.type ?? '')[0]
     const documentLoader = this.ldDocumentLoader.getLoader(context, {
       attemptToFetchContexts: true,
       verifiableData: presentation,

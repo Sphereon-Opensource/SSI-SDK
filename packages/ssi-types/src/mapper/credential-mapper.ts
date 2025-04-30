@@ -923,7 +923,6 @@ export class CredentialMapper {
   }
 }
 
-
 export function isWrappedSdJwtVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedSdJwtVerifiableCredential {
   return vc.format === 'vc+sd-jwt'
 }
@@ -931,9 +930,6 @@ export function isWrappedSdJwtVerifiableCredential(vc: WrappedVerifiableCredenti
 export function isWrappedSdJwtVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedSdJwtVerifiablePresentation {
   return vp.format === 'vc+sd-jwt'
 }
-
-
-
 
 export enum OriginalType {
   // W3C
@@ -950,9 +946,7 @@ export enum OriginalType {
   MSO_MDOC_DECODED = 'mso_mdoc-decoded',
 }
 
-
 export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
-
 
 export const enum DocumentFormat {
   // W3C

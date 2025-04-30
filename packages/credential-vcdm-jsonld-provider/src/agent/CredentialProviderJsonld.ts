@@ -156,7 +156,6 @@ export class CredentialProviderJsonld implements IVcdmCredentialProvider {
     delete presentation.issuanceDate
     delete presentation.validFrom
 
-
     let identifier: IIdentifier
     try {
       identifier = await context.agent.didManagerGet({ did: holder })

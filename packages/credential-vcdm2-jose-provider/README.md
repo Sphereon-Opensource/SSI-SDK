@@ -1,4 +1,4 @@
-# W3C VCDM2 JOSE credential Provider plugin 
+# W3C VCDM2 JOSE credential Provider plugin
 
 Package for working with W3C Verifiable VCDM2 Jose Credentials & Presentations.
 

@@ -1,8 +1,8 @@
 import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 import { deflate, inflate } from 'pako'
-import pkg from '@sphereon/kmp-mdoc-core';
-const { com, kotlin } = pkg;
+import pkg from '@sphereon/kmp-mdoc-core'
+const { com, kotlin } = pkg
 import base64url from 'base64url'
 import type { IRequiredContext, SignedStatusListData } from '../../types'
 import { type DecodedStatusListPayload, resolveIdentifier } from './common'
@@ -90,7 +90,12 @@ export const createSignedCbor = async (
   }
 }
 
-function buildClaimsMap(id: string, issuerString: string, statusListMap: pkg.com.sphereon.cbor.CborMap<CborStringType, CborItem<any>>, expiresAt?: Date) {
+function buildClaimsMap(
+  id: string,
+  issuerString: string,
+  statusListMap: pkg.com.sphereon.cbor.CborMap<CborStringType, CborItem<any>>,
+  expiresAt?: Date,
+) {
   const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
   const claimsEntries: Array<[CborUIntType, CborItem<any>]> = [
     [new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.SUBJECT)), new com.sphereon.cbor.CborString(id)], // "sub"

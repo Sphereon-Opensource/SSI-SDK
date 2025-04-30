@@ -18,14 +18,11 @@ export interface CredentialConstraint {
   issuerAttributes: [IssuerAttributeName]
 }
 
-
-
 export enum StatusListCredentialIdMode {
   ISSUANCE = 'ISSUANCE',
   // PERSISTENCE = 'PERSISTENCE',
   NEVER = 'NEVER',
 }
-
 
 export enum StatusListDriverType {
   AGENT_TYPEORM = 'agent_typeorm',
@@ -33,5 +30,3 @@ export enum StatusListDriverType {
   GITHUB = 'github',
   AGENT_FILESYSTEM = 'agent_filesystem',*/
 }
-
-

@@ -11,4 +11,3 @@ export type * from './mso_mdoc'
 export type * from './metadata-types'
 export type * from './status-list'
 export type * from './dcql'
-

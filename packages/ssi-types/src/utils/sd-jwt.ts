@@ -160,10 +160,10 @@ export const sdJwtDecodedCredentialToUniformCredential = (
 }
 
 const jwtDateToISOString = ({
-                              jwtClaim,
-                              claimName,
-                              isRequired = false,
-                            }: {
+  jwtClaim,
+  claimName,
+  isRequired = false,
+}: {
   jwtClaim?: number
   claimName: string
   isRequired?: boolean

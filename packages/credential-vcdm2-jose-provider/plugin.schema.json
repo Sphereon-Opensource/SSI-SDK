@@ -9,9 +9,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "proofFormat"
-          ],
+          "required": ["proofFormat"],
           "additionalProperties": false,
           "description": "Encapsulates the parameters required to check if a credential type can be issued"
         },
@@ -30,9 +28,7 @@
               "description": "The document to check against the verifier"
             }
           },
-          "required": [
-            "document"
-          ],
+          "required": ["document"],
           "additionalProperties": false,
           "description": "Encapsulates the parameters required to check if a document can be verified"
         },
@@ -147,14 +143,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof",
-            "type"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof", "type"]
         },
         "IProof": {
           "type": "object",
@@ -213,12 +202,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ]
+          "required": ["type", "created", "proofPurpose", "verificationMethod"]
         },
         "IProofType": {
           "type": "string",
@@ -288,9 +272,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ],
+          "required": ["id"],
           "additionalProperties": false
         },
         "IIssuerId": {
@@ -303,9 +285,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "ICredentialStatus": {
           "type": "object",
@@ -317,10 +297,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CompactJWT": {
           "type": "string",
@@ -398,10 +375,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "proof"
-          ]
+          "required": ["@context", "proof"]
         },
         "PresentationSubmission": {
           "type": "object",
@@ -422,11 +396,7 @@
               "description": "List of descriptors of how the claims are being mapped to presentation definition"
             }
           },
-          "required": [
-            "id",
-            "definition_id",
-            "descriptor_map"
-          ],
+          "required": ["id", "definition_id", "descriptor_map"],
           "additionalProperties": false,
           "description": "It expresses how the inputs are presented as proofs to a Verifier."
         },
@@ -449,11 +419,7 @@
               "description": "The Proof or JWT algorith that the proof is in"
             }
           },
-          "required": [
-            "id",
-            "path",
-            "format"
-          ],
+          "required": ["id", "path", "format"],
           "additionalProperties": false,
           "description": "descriptor map laying out the structure of the presentation submission."
         },
@@ -513,10 +479,7 @@
               "$ref": "#/components/schemas/IIssueCredentialStatusOpts"
             }
           },
-          "required": [
-            "credential",
-            "proofFormat"
-          ],
+          "required": ["credential", "proofFormat"],
           "additionalProperties": false,
           "description": "Encapsulates the parameters required to create a  {@link https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
@@ -554,9 +517,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "issuer"
-          ],
+          "required": ["issuer"],
           "description": "Used as input when creating Verifiable Credentials"
         },
         "IssuerType": {
@@ -568,9 +529,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "id"
-              ]
+              "required": ["id"]
             },
             {
               "type": "string"
@@ -609,10 +568,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ],
+          "required": ["id", "type"],
           "description": "Used for the discovery of information about the current status of a verifiable credential, such as whether it is suspended or revoked. The precise contents of the credential status information is determined by the specific `credentialStatus` type definition, and varies depending on factors such as whether it is simple to implement or if it is privacy-enhancing.\n\nSee  {@link https://www.w3.org/TR/vc-data-model/#status | Credential Status }"
         },
         "IAuthenticationProofPurpose": {
@@ -918,10 +874,7 @@
             },
             "type": {
               "type": "string",
-              "enum": [
-                "mysql",
-                "mariadb"
-              ],
+              "enum": ["mysql", "mariadb"],
               "description": "Database type."
             },
             "name": {
@@ -947,11 +900,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -1023,10 +972,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -1043,12 +989,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -1062,9 +1003,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -1179,10 +1118,7 @@
             },
             "connectorPackage": {
               "type": "string",
-              "enum": [
-                "mysql",
-                "mysql2"
-              ],
+              "enum": ["mysql", "mysql2"],
               "description": "TypeORM will automatically use package found in your node_modules, prioritizing mysql over mysql2, but you can specify it manually"
             },
             "replication": {
@@ -1213,11 +1149,7 @@
                 },
                 "selector": {
                   "type": "string",
-                  "enum": [
-                    "RR",
-                    "RANDOM",
-                    "ORDER"
-                  ],
+                  "enum": ["RR", "RANDOM", "ORDER"],
                   "description": "Determines how slaves are selected: RR: Select one alternately (Round-Robin). RANDOM: Select the node by random function. ORDER: Select the first node available unconditionally."
                 },
                 "defaultMode": {
@@ -1226,17 +1158,12 @@
                   "default": "slave"
                 }
               },
-              "required": [
-                "master",
-                "slaves"
-              ],
+              "required": ["master", "slaves"],
               "additionalProperties": false,
               "description": "Replication setup."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "MySQL specific connection options."
         },
@@ -1289,12 +1216,7 @@
               "$ref": "#/components/schemas/Function"
             }
           },
-          "required": [
-            "prototype",
-            "length",
-            "arguments",
-            "caller"
-          ],
+          "required": ["prototype", "length", "arguments", "caller"],
           "additionalProperties": false
         },
         "EntitySchema": {
@@ -1305,10 +1227,7 @@
             },
             "@instanceof": {}
           },
-          "required": [
-            "options",
-            "@instanceof"
-          ],
+          "required": ["options", "@instanceof"],
           "additionalProperties": false,
           "description": "Interface for entity metadata mappings stored inside \"schemas\" instead of models decorated by decorators."
         },
@@ -1415,9 +1334,7 @@
                           "$ref": "#/components/schemas/DataSource"
                         }
                       },
-                      "required": [
-                        "connection"
-                      ],
+                      "required": ["connection"],
                       "additionalProperties": false
                     }
                   }
@@ -1434,23 +1351,13 @@
               "description": "Custom discriminator value for Single Table Inheritance."
             }
           },
-          "required": [
-            "name",
-            "columns"
-          ],
+          "required": ["name", "columns"],
           "additionalProperties": false,
           "description": "Interface for entity metadata mappings stored inside \"schemas\" instead of models decorated by decorators."
         },
         "TableType": {
           "type": "string",
-          "enum": [
-            "regular",
-            "view",
-            "junction",
-            "closure",
-            "closure-junction",
-            "entity-child"
-          ],
+          "enum": ["regular", "view", "junction", "closure", "closure-junction", "entity-child"],
           "description": "Table type. Tables can be closure, junction,, etc."
         },
         "OrderByCondition": {
@@ -1470,22 +1377,14 @@
                 "properties": {
                   "order": {
                     "type": "string",
-                    "enum": [
-                      "ASC",
-                      "DESC"
-                    ]
+                    "enum": ["ASC", "DESC"]
                   },
                   "nulls": {
                     "type": "string",
-                    "enum": [
-                      "NULLS FIRST",
-                      "NULLS LAST"
-                    ]
+                    "enum": ["NULLS FIRST", "NULLS LAST"]
                   }
                 },
-                "required": [
-                  "order"
-                ],
+                "required": ["order"],
                 "additionalProperties": false
               }
             ]
@@ -1599,10 +1498,7 @@
         },
         "DeferrableType": {
           "type": "string",
-          "enum": [
-            "INITIALLY IMMEDIATE",
-            "INITIALLY DEFERRED"
-          ],
+          "enum": ["INITIALLY IMMEDIATE", "INITIALLY DEFERRED"],
           "description": "DEFERRABLE type to be used to specify if foreign key constraints can be deferred."
         },
         "EntitySchemaCheckOptions": {
@@ -1617,9 +1513,7 @@
               "description": "Check expression."
             }
           },
-          "required": [
-            "expression"
-          ],
+          "required": ["expression"],
           "additionalProperties": false
         },
         "EntitySchemaExclusionOptions": {
@@ -1634,9 +1528,7 @@
               "description": "Exclusion expression."
             }
           },
-          "required": [
-            "expression"
-          ],
+          "required": ["expression"],
           "additionalProperties": false
         },
         "EntitySchemaInheritanceOptions": {
@@ -1742,10 +1634,7 @@
               "description": "Column type. Must be one of the value from the ColumnTypes class."
             },
             "length": {
-              "type": [
-                "string",
-                "number"
-              ],
+              "type": ["string", "number"],
               "description": "Column type's length. Used only on some column types. For example type = \"string\" and length = \"100\" means that ORM will create a column with type varchar(100)."
             },
             "width": {
@@ -1766,10 +1655,7 @@
               "description": "Indicates if column is inserted by default. Default value is \"true\"."
             },
             "precision": {
-              "type": [
-                "number",
-                "null"
-              ],
+              "type": ["number", "null"],
               "description": "The precision for a decimal (exact numeric) column (applies only for decimal column), which is the maximum number of digits that are stored for the values."
             },
             "scale": {
@@ -1797,10 +1683,7 @@
                 {
                   "type": "array",
                   "items": {
-                    "type": [
-                      "string",
-                      "number"
-                    ]
+                    "type": ["string", "number"]
                   }
                 },
                 {
@@ -1827,26 +1710,17 @@
             },
             "generatedType": {
               "type": "string",
-              "enum": [
-                "VIRTUAL",
-                "STORED"
-              ],
+              "enum": ["VIRTUAL", "STORED"],
               "description": "Generated column type."
             },
             "generatedIdentity": {
               "type": "string",
-              "enum": [
-                "ALWAYS",
-                "BY DEFAULT"
-              ],
+              "enum": ["ALWAYS", "BY DEFAULT"],
               "description": "Identity column type. Supports only in Postgres 10+."
             },
             "hstoreType": {
               "type": "string",
-              "enum": [
-                "object",
-                "string"
-              ],
+              "enum": ["object", "string"],
               "description": "Return type of HSTORE column. Returns value as string or as object."
             },
             "spatialFeatureType": {
@@ -1951,22 +1825,11 @@
         },
         "WithWidthColumnType": {
           "type": "string",
-          "enum": [
-            "tinyint",
-            "smallint",
-            "mediumint",
-            "int",
-            "bigint"
-          ]
+          "enum": ["tinyint", "smallint", "mediumint", "int", "bigint"]
         },
         "SpatialColumnType": {
           "type": "string",
-          "enum": [
-            "geometry",
-            "geography",
-            "st_geometry",
-            "st_point"
-          ],
+          "enum": ["geometry", "geography", "st_geometry", "st_point"],
           "description": "Column types where spatial properties are used."
         },
         "SimpleColumnType": {
@@ -2085,9 +1948,7 @@
               "$ref": "#/components/schemas/Boolean"
             }
           },
-          "required": [
-            "prototype"
-          ],
+          "required": ["prototype"],
           "additionalProperties": false
         },
         "Boolean": {
@@ -2102,9 +1963,7 @@
               "format": "date-time"
             }
           },
-          "required": [
-            "prototype"
-          ],
+          "required": ["prototype"],
           "additionalProperties": false
         },
         "NumberConstructor": {
@@ -2129,14 +1988,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "prototype",
-            "MAX_VALUE",
-            "MIN_VALUE",
-            "NaN",
-            "NEGATIVE_INFINITY",
-            "POSITIVE_INFINITY"
-          ],
+          "required": ["prototype", "MAX_VALUE", "MIN_VALUE", "NaN", "NEGATIVE_INFINITY", "POSITIVE_INFINITY"],
           "additionalProperties": false
         },
         "Number": {
@@ -2150,9 +2002,7 @@
               "$ref": "#/components/schemas/String"
             }
           },
-          "required": [
-            "prototype"
-          ],
+          "required": ["prototype"],
           "additionalProperties": false
         },
         "String": {
@@ -2162,9 +2012,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "length"
-          ],
+          "required": ["length"],
           "additionalProperties": {
             "type": "string"
           }
@@ -2176,9 +2024,7 @@
               "$ref": "#/components/schemas/Function"
             }
           },
-          "required": [
-            "constructor"
-          ],
+          "required": ["constructor"],
           "additionalProperties": false
         },
         "MixedList<(Function|string)>": {
@@ -2229,10 +2075,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "left",
-                "right"
-              ],
+              "required": ["left", "right"],
               "additionalProperties": false,
               "description": "Column names for nested sets."
             },
@@ -2241,10 +2084,7 @@
               "description": "Column name for materialized paths."
             }
           },
-          "required": [
-            "nestedSetColumnNames",
-            "materializedPathColumnName"
-          ],
+          "required": ["nestedSetColumnNames", "materializedPathColumnName"],
           "additionalProperties": false,
           "description": "Naming strategy defines how auto-generated names for such things like table name, or table column gonna be generated."
         },
@@ -2268,15 +2108,7 @@
         },
         "LogLevel": {
           "type": "string",
-          "enum": [
-            "query",
-            "schema",
-            "error",
-            "warn",
-            "info",
-            "log",
-            "migration"
-          ],
+          "enum": ["query", "schema", "error", "warn", "info", "log", "migration"],
           "description": "Log level."
         },
         "Logger": {
@@ -2324,10 +2156,7 @@
         },
         "ReplicationMode": {
           "type": "string",
-          "enum": [
-            "master",
-            "slave"
-          ]
+          "enum": ["master", "slave"]
         },
         "PostgresConnectionOptions": {
           "type": "object",
@@ -2406,11 +2235,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -2482,10 +2307,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -2502,12 +2324,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -2521,9 +2338,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -2592,10 +2407,7 @@
                   "default": "slave"
                 }
               },
-              "required": [
-                "master",
-                "slaves"
-              ],
+              "required": ["master", "slaves"],
               "additionalProperties": false,
               "description": "Replication setup."
             },
@@ -2605,10 +2417,7 @@
             },
             "uuidExtension": {
               "type": "string",
-              "enum": [
-                "pgcrypto",
-                "uuid-ossp"
-              ],
+              "enum": ["pgcrypto", "uuid-ossp"],
               "description": "The Postgres extension to use to generate UUID columns. Defaults to uuid-ossp. If pgcrypto is selected, TypeORM will use the gen_random_uuid() function from this extension. If uuid-ossp is selected, TypeORM will use the uuid_generate_v4() function from this extension."
             },
             "poolErrorHandler": {
@@ -2620,9 +2429,7 @@
                   "properties": {
                     "err": {}
                   },
-                  "required": [
-                    "err"
-                  ],
+                  "required": ["err"],
                   "additionalProperties": false
                 }
               }
@@ -2640,9 +2447,7 @@
               "description": "Return 64-bit integers (int8) as JavaScript integers.\n\nBecause JavaScript doesn't have support for 64-bit integers node-postgres cannot confidently parse int8 data type results as numbers because if you have a huge number it will overflow and the result you'd get back from node-postgres would not be the result in the database. That would be a very bad thing so node-postgres just returns int8 results as strings and leaves the parsing up to you.\n\nEnabling parseInt8 will cause node-postgres to parse int8 results as numbers. Note: the maximum safe integer in js is: Number.MAX_SAFE_INTEGER (`+2^53`)"
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "Postgres-specific connection options."
         },
@@ -2743,18 +2548,13 @@
                               "$ref": "#/components/schemas/SecureContext"
                             }
                           },
-                          "required": [
-                            "err"
-                          ],
+                          "required": ["err"],
                           "additionalProperties": false
                         }
                       }
                     }
                   },
-                  "required": [
-                    "servername",
-                    "cb"
-                  ],
+                  "required": ["servername", "cb"],
                   "additionalProperties": false
                 }
               },
@@ -2785,16 +2585,11 @@
                           }
                         }
                       },
-                      "required": [
-                        "servername",
-                        "protocols"
-                      ],
+                      "required": ["servername", "protocols"],
                       "additionalProperties": false
                     }
                   },
-                  "required": [
-                    "arg"
-                  ],
+                  "required": ["arg"],
                   "additionalProperties": false
                 }
               },
@@ -3013,9 +2808,7 @@
           "properties": {
             "context": {}
           },
-          "required": [
-            "context"
-          ],
+          "required": ["context"],
           "additionalProperties": false
         },
         "Uint8Array": {
@@ -3037,13 +2830,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "BYTES_PER_ELEMENT",
-            "buffer",
-            "byteLength",
-            "byteOffset",
-            "length"
-          ],
+          "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
           "additionalProperties": {
             "type": "number"
           }
@@ -3058,9 +2845,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "byteLength"
-          ],
+          "required": ["byteLength"],
           "additionalProperties": false
         },
         "Error": {
@@ -3076,10 +2861,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "name",
-            "message"
-          ],
+          "required": ["name", "message"],
           "additionalProperties": false
         },
         "global.Buffer": {
@@ -3104,13 +2886,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "BYTES_PER_ELEMENT",
-            "buffer",
-            "byteLength",
-            "byteOffset",
-            "length"
-          ]
+          "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"]
         },
         "KeyObject": {
           "type": "object",
@@ -3131,19 +2907,12 @@
               "description": "Optional passphrase."
             }
           },
-          "required": [
-            "pem"
-          ],
+          "required": ["pem"],
           "additionalProperties": false
         },
         "SecureVersion": {
           "type": "string",
-          "enum": [
-            "TLSv1.3",
-            "TLSv1.2",
-            "TLSv1.1",
-            "TLSv1"
-          ]
+          "enum": ["TLSv1.3", "TLSv1.2", "TLSv1.1", "TLSv1"]
         },
         "PxfObject": {
           "type": "object",
@@ -3164,9 +2933,7 @@
               "description": "Optional passphrase."
             }
           },
-          "required": [
-            "buf"
-          ],
+          "required": ["buf"],
           "additionalProperties": false
         },
         "PostgresConnectionCredentialsOptions": {
@@ -3288,11 +3055,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -3364,10 +3127,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -3384,12 +3144,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -3403,9 +3158,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -3474,10 +3227,7 @@
                   "default": "slave"
                 }
               },
-              "required": [
-                "master",
-                "slaves"
-              ],
+              "required": ["master", "slaves"],
               "additionalProperties": false,
               "description": "Replication setup."
             },
@@ -3494,9 +3244,7 @@
                   "properties": {
                     "err": {}
                   },
-                  "required": [
-                    "err"
-                  ],
+                  "required": ["err"],
                   "additionalProperties": false
                 }
               },
@@ -3507,10 +3255,7 @@
               "description": "Max number of transaction retries in case of 40001 error."
             }
           },
-          "required": [
-            "timeTravelQueries",
-            "type"
-          ],
+          "required": ["timeTravelQueries", "type"],
           "additionalProperties": false,
           "description": "Cockroachdb-specific connection options."
         },
@@ -3587,11 +3332,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -3663,10 +3404,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -3683,12 +3421,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -3702,9 +3435,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -3767,10 +3498,7 @@
               "description": "Query or change the setting of the busy timeout. Time in milliseconds."
             }
           },
-          "required": [
-            "database",
-            "type"
-          ],
+          "required": ["database", "type"],
           "additionalProperties": false,
           "description": "Sqlite-specific connection options."
         },
@@ -3838,11 +3566,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -3914,10 +3638,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -3934,12 +3655,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -3953,9 +3669,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -4061,9 +3775,7 @@
                       "properties": {
                         "err": {}
                       },
-                      "required": [
-                        "err"
-                      ],
+                      "required": ["err"],
                       "additionalProperties": false
                     }
                   }
@@ -4152,24 +3864,12 @@
                 },
                 "isolation": {
                   "type": "string",
-                  "enum": [
-                    "READ_UNCOMMITTED",
-                    "READ_COMMITTED",
-                    "REPEATABLE_READ",
-                    "SERIALIZABLE",
-                    "SNAPSHOT"
-                  ],
+                  "enum": ["READ_UNCOMMITTED", "READ_COMMITTED", "REPEATABLE_READ", "SERIALIZABLE", "SNAPSHOT"],
                   "description": "The default isolation level that transactions will be run with. The isolation levels are available from require('tedious').ISOLATION_LEVEL. (default: READ_COMMITTED)."
                 },
                 "connectionIsolationLevel": {
                   "type": "string",
-                  "enum": [
-                    "READ_UNCOMMITTED",
-                    "READ_COMMITTED",
-                    "REPEATABLE_READ",
-                    "SERIALIZABLE",
-                    "SNAPSHOT"
-                  ],
+                  "enum": ["READ_UNCOMMITTED", "READ_COMMITTED", "REPEATABLE_READ", "SERIALIZABLE", "SNAPSHOT"],
                   "description": "The default isolation level for new connections. All out-of-transaction queries are executed with this setting. The isolation levels are available from require('tedious').ISOLATION_LEVEL ."
                 },
                 "readOnlyIntent": {
@@ -4231,17 +3931,12 @@
                   "default": "slave"
                 }
               },
-              "required": [
-                "master",
-                "slaves"
-              ],
+              "required": ["master", "slaves"],
               "additionalProperties": false,
               "description": "Replication setup."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "Microsoft Sql Server specific connection options."
         },
@@ -4295,10 +3990,7 @@
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "NtlmAuthentication": {
@@ -4324,18 +4016,11 @@
                   "description": "Once you set domain for ntlm authentication type, driver will connect to SQL Server using domain login.\n\nThis is necessary for forming a connection using ntlm type"
                 }
               },
-              "required": [
-                "userName",
-                "password",
-                "domain"
-              ],
+              "required": ["userName", "password", "domain"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "AzureActiveDirectoryAccessTokenAuthentication": {
@@ -4353,16 +4038,11 @@
                   "description": "A user need to provide `token` which they retrieved else where to forming the connection."
                 }
               },
-              "required": [
-                "token"
-              ],
+              "required": ["token"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "AzureActiveDirectoryDefaultAuthentication": {
@@ -4384,10 +4064,7 @@
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "AzureActiveDirectoryMsiAppServiceAuthentication": {
@@ -4416,10 +4093,7 @@
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "AzureActiveDirectoryMsiVmAuthentication": {
@@ -4444,10 +4118,7 @@
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "AzureActiveDirectoryPasswordAuthentication": {
@@ -4473,18 +4144,11 @@
                   "description": "Optional parameter for specific Azure tenant ID"
                 }
               },
-              "required": [
-                "userName",
-                "password",
-                "domain"
-              ],
+              "required": ["userName", "password", "domain"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "AzureActiveDirectoryServicePrincipalSecret": {
@@ -4510,18 +4174,11 @@
                   "description": "Directory (`tenant`) ID from your registered Azure application"
                 }
               },
-              "required": [
-                "clientId",
-                "clientSecret",
-                "tenantId"
-              ],
+              "required": ["clientId", "clientSecret", "tenantId"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "type",
-            "options"
-          ],
+          "required": ["type", "options"],
           "additionalProperties": false
         },
         "SqlServerConnectionCredentialsOptions": {
@@ -4635,11 +4292,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -4711,10 +4364,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -4731,12 +4381,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -4750,9 +4395,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -4833,9 +4476,7 @@
                       "properties": {
                         "err": {}
                       },
-                      "required": [
-                        "err"
-                      ],
+                      "required": ["err"],
                       "additionalProperties": false
                     }
                   },
@@ -4846,9 +4487,7 @@
               "description": "Pool options."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "SAP Hana specific connection options."
         },
@@ -4919,11 +4558,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -4995,10 +4630,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -5015,12 +4647,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -5034,9 +4661,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -5108,17 +4733,12 @@
                   "description": "List of read-from severs (slaves)."
                 }
               },
-              "required": [
-                "master",
-                "slaves"
-              ],
+              "required": ["master", "slaves"],
               "additionalProperties": false,
               "description": "Replication setup."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "Oracle-specific connection options."
         },
@@ -5217,11 +4837,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -5293,10 +4909,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -5313,12 +4926,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -5332,9 +4940,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -5381,11 +4987,7 @@
               "description": "Storage Location"
             }
           },
-          "required": [
-            "database",
-            "location",
-            "type"
-          ],
+          "required": ["database", "location", "type"],
           "additionalProperties": false,
           "description": "Sqlite-specific connection options."
         },
@@ -5420,11 +5022,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -5496,10 +5094,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -5516,12 +5111,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -5535,9 +5125,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -5604,11 +5192,7 @@
               "description": "Flags to pass to SQLite when opening the database on Android. (see https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html)"
             }
           },
-          "required": [
-            "database",
-            "driver",
-            "type"
-          ],
+          "required": ["database", "driver", "type"],
           "additionalProperties": false,
           "description": "NativeScript-specific connection options."
         },
@@ -5643,11 +5227,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -5719,10 +5299,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -5739,12 +5316,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -5758,9 +5330,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -5807,11 +5377,7 @@
               "description": "Storage Location"
             }
           },
-          "required": [
-            "database",
-            "location",
-            "type"
-          ],
+          "required": ["database", "location", "type"],
           "additionalProperties": false,
           "description": "Sqlite-specific connection options."
         },
@@ -5846,11 +5412,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -5922,10 +5484,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -5942,12 +5501,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -5961,9 +5515,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -6025,9 +5577,7 @@
               "description": "Enables the usage of the localforage library to save & load the database asynchronously from the indexedDB instead of using the synchron local storage methods in a browser environment."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "Sql.js-specific connection options."
         },
@@ -6062,11 +5612,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -6138,10 +5684,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -6158,12 +5701,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -6177,9 +5715,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -6366,10 +5902,7 @@
               "description": "If the database authentication is dependent on another databaseName."
             },
             "w": {
-              "type": [
-                "string",
-                "number"
-              ],
+              "type": ["string", "number"],
               "description": "The write concern."
             },
             "wtimeout": {
@@ -6442,12 +5975,7 @@
             },
             "loggerLevel": {
               "type": "string",
-              "enum": [
-                "error",
-                "warn",
-                "info",
-                "debug"
-              ],
+              "enum": ["error", "warn", "info", "debug"],
               "description": "Specify the log level used by the driver logger (error/warn/info/debug)."
             },
             "checkServerIdentity": {
@@ -6522,9 +6050,7 @@
               "description": "Enables or disables the ability to retry writes upon encountering transient network errors."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "MongoDB specific connection options. Synced with http://mongodb.github.io/node-mongodb-native/3.1/api/MongoClient.html"
         },
@@ -6550,21 +6076,13 @@
               "type": "number"
             }
           },
-          "required": [
-            "mode"
-          ],
+          "required": ["mode"],
           "additionalProperties": false,
           "description": "The **ReadPreference** class is a class that represents a MongoDB ReadPreference and is used to construct connections."
         },
         "ReadPreferenceMode": {
           "type": "string",
-          "enum": [
-            "primary",
-            "primaryPreferred",
-            "secondary",
-            "secondaryPreferred",
-            "nearest"
-          ]
+          "enum": ["primary", "primaryPreferred", "secondary", "secondaryPreferred", "nearest"]
         },
         "TagSet": {
           "type": "object",
@@ -6640,11 +6158,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -6716,10 +6230,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -6736,12 +6247,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -6755,9 +6261,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -6814,22 +6318,14 @@
                   "type": "boolean"
                 }
               },
-              "required": [
-                "castParameters"
-              ]
+              "required": ["castParameters"]
             },
             "legacySpatialSupport": {
               "type": "boolean",
               "description": "Use spatial functions like GeomFromText and AsText which are removed in MySQL 8. (Default: true)"
             }
           },
-          "required": [
-            "database",
-            "region",
-            "resourceArn",
-            "secretArn",
-            "type"
-          ],
+          "required": ["database", "region", "resourceArn", "secretArn", "type"],
           "additionalProperties": false,
           "description": "MySQL specific connection options."
         },
@@ -6864,11 +6360,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -6940,10 +6432,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -6960,12 +6449,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -6979,9 +6463,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -7033,10 +6515,7 @@
             },
             "uuidExtension": {
               "type": "string",
-              "enum": [
-                "pgcrypto",
-                "uuid-ossp"
-              ],
+              "enum": ["pgcrypto", "uuid-ossp"],
               "description": "The Postgres extension to use to generate UUID columns. Defaults to uuid-ossp. If pgcrypto is selected, TypeORM will use the gen_random_uuid() function from this extension. If uuid-ossp is selected, TypeORM will use the uuid_generate_v4() function from this extension."
             },
             "transformParameters": {
@@ -7051,9 +6530,7 @@
                   "properties": {
                     "err": {}
                   },
-                  "required": [
-                    "err"
-                  ],
+                  "required": ["err"],
                   "additionalProperties": false
                 }
               }
@@ -7068,18 +6545,10 @@
                   "type": "boolean"
                 }
               },
-              "required": [
-                "castParameters"
-              ]
+              "required": ["castParameters"]
             }
           },
-          "required": [
-            "database",
-            "region",
-            "resourceArn",
-            "secretArn",
-            "type"
-          ],
+          "required": ["database", "region", "resourceArn", "secretArn", "type"],
           "additionalProperties": false,
           "description": "Postgres-specific connection options."
         },
@@ -7114,11 +6583,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -7190,10 +6655,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -7210,12 +6672,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -7229,9 +6686,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -7274,11 +6729,7 @@
               "description": "Driver module"
             }
           },
-          "required": [
-            "database",
-            "driver",
-            "type"
-          ],
+          "required": ["database", "driver", "type"],
           "additionalProperties": false,
           "description": "Sqlite-specific connection options."
         },
@@ -7313,11 +6764,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -7389,10 +6836,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -7409,12 +6853,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -7428,9 +6867,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -7489,9 +6926,7 @@
                   "properties": {
                     "db": {}
                   },
-                  "required": [
-                    "db"
-                  ],
+                  "required": ["db"],
                   "additionalProperties": false
                 }
               },
@@ -7522,10 +6957,7 @@
               "description": "Enables WAL mode. By default its disabled."
             }
           },
-          "required": [
-            "database",
-            "type"
-          ],
+          "required": ["database", "type"],
           "additionalProperties": false,
           "description": "Sqlite-specific connection options."
         },
@@ -7560,11 +6992,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -7636,10 +7064,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -7656,12 +7081,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -7675,9 +7095,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -7721,12 +7139,7 @@
             },
             "mode": {
               "type": "string",
-              "enum": [
-                "no-encryption",
-                "encryption",
-                "secret",
-                "newsecret"
-              ],
+              "enum": ["no-encryption", "encryption", "secret", "newsecret"],
               "description": "Set the mode for database encryption"
             },
             "version": {
@@ -7735,22 +7148,11 @@
             },
             "journalMode": {
               "type": "string",
-              "enum": [
-                "DELETE",
-                "TRUNCATE",
-                "PERSIST",
-                "MEMORY",
-                "WAL",
-                "OFF"
-              ],
+              "enum": ["DELETE", "TRUNCATE", "PERSIST", "MEMORY", "WAL", "OFF"],
               "description": "The SQLite journal mode (optional)"
             }
           },
-          "required": [
-            "database",
-            "driver",
-            "type"
-          ],
+          "required": ["database", "driver", "type"],
           "additionalProperties": false,
           "description": "Sqlite-specific connection options."
         },
@@ -7797,11 +7199,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -7873,10 +7271,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -7893,12 +7288,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -7912,9 +7302,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -8061,11 +7449,7 @@
                 },
                 "selector": {
                   "type": "string",
-                  "enum": [
-                    "RR",
-                    "RANDOM",
-                    "ORDER"
-                  ],
+                  "enum": ["RR", "RANDOM", "ORDER"],
                   "description": "Determines how slaves are selected: RR: Select one alternately (Round-Robin). RANDOM: Select the node by random function. ORDER: Select the first node available unconditionally."
                 },
                 "defaultMode": {
@@ -8074,17 +7458,12 @@
                   "default": "slave"
                 }
               },
-              "required": [
-                "master",
-                "slaves"
-              ],
+              "required": ["master", "slaves"],
               "additionalProperties": false,
               "description": "Replication setup."
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "Spanner specific connection options."
         },
@@ -8136,11 +7515,7 @@
             },
             "transactionSupport": {
               "type": "string",
-              "enum": [
-                "simple",
-                "nested",
-                "none"
-              ],
+              "enum": ["simple", "nested", "none"],
               "description": "Represent transaction support by this driver"
             },
             "supportedDataTypes": {
@@ -8271,11 +7646,7 @@
             },
             "migrationsTransactionMode": {
               "type": "string",
-              "enum": [
-                "all",
-                "none",
-                "each"
-              ],
+              "enum": ["all", "none", "each"],
               "description": "Transaction mode for migrations to run in"
             },
             "metadataTableName": {
@@ -8347,10 +7718,7 @@
             },
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Specifies how relations must be loaded - using \"joins\" or separate queries. If you are loading too much data with nested joins it's better to load relations using separate queries.\n\nDefault strategy is \"join\", but this default can be changed here. Also, strategy can be set per-query in FindOptions and QueryBuilder."
             },
             "typename": {
@@ -8367,12 +7735,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "database",
-                        "redis",
-                        "ioredis",
-                        "ioredis/cluster"
-                      ],
+                      "enum": ["database", "redis", "ioredis", "ioredis/cluster"],
                       "description": "Type of caching.\n\n- \"database\" means cached values will be stored in the separate table in database. This is default value.\n- \"redis\" means cached values will be stored inside redis. You must provide redis connection options."
                     },
                     "provider": {
@@ -8386,9 +7749,7 @@
                               "$ref": "#/components/schemas/DataSource"
                             }
                           },
-                          "required": [
-                            "connection"
-                          ],
+                          "required": ["connection"],
                           "additionalProperties": false
                         }
                       },
@@ -8424,9 +7785,7 @@
               "description": "Allows automatic isolation of where clauses"
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "BaseDataSourceOptions is set of DataSourceOptions shared by all database types."
         },
@@ -8457,32 +7816,16 @@
         },
         "UpsertType": {
           "type": "string",
-          "enum": [
-            "on-conflict-do-update",
-            "on-duplicate-key-update",
-            "primary-key"
-          ]
+          "enum": ["on-conflict-do-update", "on-duplicate-key-update", "primary-key"]
         },
         "OnDeleteType": {
           "type": "string",
-          "enum": [
-            "RESTRICT",
-            "CASCADE",
-            "SET NULL",
-            "DEFAULT",
-            "NO ACTION"
-          ],
+          "enum": ["RESTRICT", "CASCADE", "SET NULL", "DEFAULT", "NO ACTION"],
           "description": "ON_DELETE type to be used to specify delete strategy when some relation is being deleted from the database."
         },
         "OnUpdateType": {
           "type": "string",
-          "enum": [
-            "RESTRICT",
-            "CASCADE",
-            "SET NULL",
-            "DEFAULT",
-            "NO ACTION"
-          ],
+          "enum": ["RESTRICT", "CASCADE", "SET NULL", "DEFAULT", "NO ACTION"],
           "description": "ON_UPDATE type to be used to specify update strategy when some relation is being updated."
         },
         "DataTypeDefaults": {
@@ -8662,9 +8005,7 @@
               "description": "Is MATERIALIZED clause supported?"
             }
           },
-          "required": [
-            "enabled"
-          ],
+          "required": ["enabled"],
           "additionalProperties": false
         },
         "EntityManager": {
@@ -8680,10 +8021,7 @@
               "description": "Custom query runner to be used for operations in this entity manager. Used only in non-global entity manager."
             }
           },
-          "required": [
-            "@instanceof",
-            "connection"
-          ],
+          "required": ["@instanceof", "connection"],
           "additionalProperties": false,
           "description": "Entity manager supposed to work with any entity, automatically find its repository and call its methods, whatever entity type are you passing."
         },
@@ -8731,16 +8069,7 @@
               "deprecated": "Call `getViews()`"
             }
           },
-          "required": [
-            "connection",
-            "broadcaster",
-            "manager",
-            "isReleased",
-            "isTransactionActive",
-            "data",
-            "loadedTables",
-            "loadedViews"
-          ],
+          "required": ["connection", "broadcaster", "manager", "isReleased", "isTransactionActive", "data", "loadedTables", "loadedViews"],
           "additionalProperties": false,
           "description": "Runs queries on a single database connection."
         },
@@ -8828,17 +8157,7 @@
               "description": "Table comment. Not supported by all database types."
             }
           },
-          "required": [
-            "@instanceof",
-            "name",
-            "columns",
-            "indices",
-            "foreignKeys",
-            "uniques",
-            "checks",
-            "exclusions",
-            "justCreated"
-          ],
+          "required": ["@instanceof", "name", "columns", "indices", "foreignKeys", "uniques", "checks", "exclusions", "justCreated"],
           "additionalProperties": false,
           "description": "Table in the database represented in this class."
         },
@@ -8871,12 +8190,7 @@
             },
             "generationStrategy": {
               "type": "string",
-              "enum": [
-                "uuid",
-                "increment",
-                "rowid",
-                "identity"
-              ],
+              "enum": ["uuid", "increment", "rowid", "identity"],
               "description": "Specifies generation strategy if this column will use auto increment. `rowid` option supported only in CockroachDB."
             },
             "isPrimary": {
@@ -8912,10 +8226,7 @@
               "description": "Defines column collation."
             },
             "precision": {
-              "type": [
-                "number",
-                "null"
-              ],
+              "type": ["number", "null"],
               "description": "The precision for a decimal (exact numeric) column (applies only for decimal column), which is the maximum number of digits that are stored for the values."
             },
             "scale": {
@@ -8951,18 +8262,12 @@
             },
             "generatedType": {
               "type": "string",
-              "enum": [
-                "VIRTUAL",
-                "STORED"
-              ],
+              "enum": ["VIRTUAL", "STORED"],
               "description": "Generated column type."
             },
             "generatedIdentity": {
               "type": "string",
-              "enum": [
-                "ALWAYS",
-                "BY DEFAULT"
-              ],
+              "enum": ["ALWAYS", "BY DEFAULT"],
               "description": "Identity column type. Supports only in Postgres 10+."
             },
             "spatialFeatureType": {
@@ -9034,16 +8339,7 @@
               "description": "Index filter condition."
             }
           },
-          "required": [
-            "@instanceof",
-            "columnNames",
-            "isUnique",
-            "isSpatial",
-            "isConcurrent",
-            "isFulltext",
-            "isNullFiltered",
-            "where"
-          ],
+          "required": ["@instanceof", "columnNames", "isUnique", "isSpatial", "isConcurrent", "isFulltext", "isNullFiltered", "where"],
           "additionalProperties": false,
           "description": "Database's table index stored in this class."
         },
@@ -9094,12 +8390,7 @@
               "description": "Set this foreign key constraint as \"DEFERRABLE\" e.g. check constraints at start or at the end of a transaction"
             }
           },
-          "required": [
-            "@instanceof",
-            "columnNames",
-            "referencedTableName",
-            "referencedColumnNames"
-          ],
+          "required": ["@instanceof", "columnNames", "referencedTableName", "referencedColumnNames"],
           "additionalProperties": false,
           "description": "Foreign key from the database stored in this class."
         },
@@ -9123,10 +8414,7 @@
               "description": "Set this foreign key constraint as \"DEFERRABLE\" e.g. check constraints at start or at the end of a transaction"
             }
           },
-          "required": [
-            "@instanceof",
-            "columnNames"
-          ],
+          "required": ["@instanceof", "columnNames"],
           "additionalProperties": false,
           "description": "Database's table unique constraint stored in this class."
         },
@@ -9150,9 +8438,7 @@
               "description": "Check expression."
             }
           },
-          "required": [
-            "@instanceof"
-          ],
+          "required": ["@instanceof"],
           "additionalProperties": false,
           "description": "Database's table check constraint stored in this class."
         },
@@ -9169,9 +8455,7 @@
               "description": "Exclusion expression."
             }
           },
-          "required": [
-            "@instanceof"
-          ],
+          "required": ["@instanceof"],
           "additionalProperties": false,
           "description": "Database's table exclusion constraint stored in this class."
         },
@@ -9218,9 +8502,7 @@
                           "$ref": "#/components/schemas/DataSource"
                         }
                       },
-                      "required": [
-                        "connection"
-                      ],
+                      "required": ["connection"],
                       "additionalProperties": false
                     }
                   }
@@ -9229,13 +8511,7 @@
               "description": "View definition."
             }
           },
-          "required": [
-            "@instanceof",
-            "name",
-            "materialized",
-            "indices",
-            "expression"
-          ],
+          "required": ["@instanceof", "name", "materialized", "indices", "expression"],
           "additionalProperties": false,
           "description": "View in the database represented in this class."
         },
@@ -9336,9 +8612,7 @@
                           "$ref": "#/components/schemas/DataSource"
                         }
                       },
-                      "required": [
-                        "connection"
-                      ],
+                      "required": ["connection"],
                       "additionalProperties": false
                     }
                   }
@@ -9904,9 +9178,7 @@
                       "properties": {
                         "object": {}
                       },
-                      "required": [
-                        "object"
-                      ],
+                      "required": ["object"],
                       "additionalProperties": false
                     }
                   }
@@ -9946,9 +9218,7 @@
                           "$ref": "#/components/schemas/DataSource"
                         }
                       },
-                      "required": [
-                        "connection"
-                      ],
+                      "required": ["connection"],
                       "additionalProperties": false
                     }
                   }
@@ -9973,10 +9243,7 @@
               "description": "Table comment. Not supported by all database types."
             }
           },
-          "required": [
-            "target",
-            "type"
-          ],
+          "required": ["target", "type"],
           "additionalProperties": false,
           "description": "Arguments for TableMetadata class, helps to construct an TableMetadata object."
         },
@@ -9987,19 +9254,12 @@
               "type": "number"
             }
           },
-          "required": [
-            "size"
-          ],
+          "required": ["size"],
           "additionalProperties": false
         },
         "TreeType": {
           "type": "string",
-          "enum": [
-            "adjacency-list",
-            "closure-table",
-            "nested-set",
-            "materialized-path"
-          ],
+          "enum": ["adjacency-list", "closure-table", "nested-set", "materialized-path"],
           "description": "Tree type. Specifies what table pattern will be used for the tree entity."
         },
         "ClosureTreeOptions": {
@@ -10019,9 +9279,7 @@
                       "$ref": "#/components/schemas/ColumnMetadata"
                     }
                   },
-                  "required": [
-                    "column"
-                  ],
+                  "required": ["column"],
                   "additionalProperties": false
                 }
               }
@@ -10037,9 +9295,7 @@
                       "$ref": "#/components/schemas/ColumnMetadata"
                     }
                   },
-                  "required": [
-                    "column"
-                  ],
+                  "required": ["column"],
                   "additionalProperties": false
                 }
               }
@@ -10124,19 +9380,12 @@
             },
             "generationStrategy": {
               "type": "string",
-              "enum": [
-                "uuid",
-                "increment",
-                "rowid"
-              ],
+              "enum": ["uuid", "increment", "rowid"],
               "description": "Specifies generation strategy if this column will use auto increment."
             },
             "generatedIdentity": {
               "type": "string",
-              "enum": [
-                "ALWAYS",
-                "BY DEFAULT"
-              ],
+              "enum": ["ALWAYS", "BY DEFAULT"],
               "description": "Identity column type. Supports only in Postgres 10+."
             },
             "comment": {
@@ -10160,11 +9409,7 @@
                 {
                   "type": "array",
                   "items": {
-                    "type": [
-                      "number",
-                      "boolean",
-                      "string"
-                    ]
+                    "type": ["number", "boolean", "string"]
                   }
                 },
                 {
@@ -10181,10 +9426,7 @@
               "description": "ON UPDATE trigger. Works only for MySQL."
             },
             "precision": {
-              "type": [
-                "number",
-                "null"
-              ],
+              "type": ["number", "null"],
               "description": "The precision for a decimal (exact numeric) column (applies only for decimal column), which is the maximum number of digits that are stored for the values."
             },
             "scale": {
@@ -10202,10 +9444,7 @@
             "enum": {
               "type": "array",
               "items": {
-                "type": [
-                  "string",
-                  "number"
-                ]
+                "type": ["string", "number"]
               },
               "description": "Array of possible enumerated values.\n\n`postgres` and `mysql` store enum values as strings but we want to keep support for numeric and heterogeneous based typescript enums, so we need (string|number)[]"
             },
@@ -10219,18 +9458,12 @@
             },
             "generatedType": {
               "type": "string",
-              "enum": [
-                "VIRTUAL",
-                "STORED"
-              ],
+              "enum": ["VIRTUAL", "STORED"],
               "description": "Generated column type."
             },
             "hstoreType": {
               "type": "string",
-              "enum": [
-                "object",
-                "string"
-              ],
+              "enum": ["object", "string"],
               "description": "Return type of HSTORE column. Returns value as string or as object."
             },
             "isArray": {
@@ -10280,9 +9513,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "alias"
-                  ],
+                  "required": ["alias"],
                   "additionalProperties": false
                 }
               },
@@ -10344,10 +9575,7 @@
             },
             "closureType": {
               "type": "string",
-              "enum": [
-                "ancestor",
-                "descendant"
-              ],
+              "enum": ["ancestor", "descendant"],
               "description": "Column type in the case if this column is in the closure table. Column can be ancestor or descendant in the closure tables."
             },
             "isNestedSetLeft": {
@@ -10503,10 +9731,7 @@
               "description": "Indicates if this embedded is in array mode.\n\nThis option works only in mongodb."
             },
             "customPrefix": {
-              "type": [
-                "string",
-                "boolean"
-              ],
+              "type": ["string", "boolean"],
               "description": "Prefix of the embedded, used instead of propertyName. If set to empty string or false, then prefix is not set at all."
             },
             "prefix": {
@@ -10682,12 +9907,7 @@
             },
             "orphanedRowAction": {
               "type": "string",
-              "enum": [
-                "nullify",
-                "delete",
-                "soft-delete",
-                "disable"
-              ],
+              "enum": ["nullify", "delete", "soft-delete", "disable"],
               "description": "When a parent is saved (with cascading but) without a child row that still exists in database, this will control what shall happen to them. delete will remove these rows from database. nullify will remove the relation key. skip will keep the relation intact. Removal of related item is only possible through its own repo."
             },
             "isCascadeInsert": {
@@ -10862,12 +10082,7 @@
         },
         "RelationType": {
           "type": "string",
-          "enum": [
-            "one-to-one",
-            "one-to-many",
-            "many-to-one",
-            "many-to-many"
-          ],
+          "enum": ["one-to-one", "one-to-many", "many-to-one", "many-to-many"],
           "description": "All types that relation can be."
         },
         "PropertyTypeFactory<any>": {
@@ -10884,9 +10099,7 @@
                   "properties": {
                     "t": {}
                   },
-                  "required": [
-                    "t"
-                  ],
+                  "required": ["t"],
                   "additionalProperties": false
                 }
               }
@@ -11002,12 +10215,7 @@
               "description": "The type of the listener."
             }
           },
-          "required": [
-            "entityMetadata",
-            "target",
-            "propertyName",
-            "type"
-          ],
+          "required": ["entityMetadata", "target", "propertyName", "type"],
           "additionalProperties": false,
           "description": "This metadata contains all information about entity's listeners."
         },
@@ -11228,12 +10436,7 @@
               "description": "Map of column names with order set. Used only by MongoDB driver."
             }
           },
-          "required": [
-            "entityMetadata",
-            "columns",
-            "name",
-            "columnNamesWithOrderingMap"
-          ],
+          "required": ["entityMetadata", "columns", "name", "columnNamesWithOrderingMap"],
           "additionalProperties": false,
           "description": "Unique metadata contains all information about table's unique constraints."
         },
@@ -11262,9 +10465,7 @@
                       "properties": {
                         "object": {}
                       },
-                      "required": [
-                        "object"
-                      ],
+                      "required": ["object"],
                       "additionalProperties": false
                     }
                   }
@@ -11302,22 +10503,14 @@
                       "$ref": "#/components/schemas/SelectQueryBuilder<any>"
                     }
                   },
-                  "required": [
-                    "qb"
-                  ],
+                  "required": ["qb"],
                   "additionalProperties": false
                 }
               },
               "description": "Extra condition applied to \"ON\" section of join."
             }
           },
-          "required": [
-            "entityMetadata",
-            "relation",
-            "relationNameOrFactory",
-            "target",
-            "propertyName"
-          ],
+          "required": ["entityMetadata", "relation", "relationNameOrFactory", "target", "propertyName"],
           "additionalProperties": false,
           "description": "Contains all information about entity's relation count."
         },
@@ -11334,11 +10527,7 @@
               "description": "Contains all properties of the QueryBuilder that needs to be build a final query."
             }
           },
-          "required": [
-            "@instanceof",
-            "connection",
-            "expressionMap"
-          ],
+          "required": ["@instanceof", "connection", "expressionMap"],
           "additionalProperties": false,
           "description": "Allows to build complex sql queries in a fashion way and execute those queries."
         },
@@ -11347,10 +10536,7 @@
           "properties": {
             "relationLoadStrategy": {
               "type": "string",
-              "enum": [
-                "join",
-                "query"
-              ],
+              "enum": ["join", "query"],
               "description": "Strategy to load relations."
             },
             "queryEntity": {
@@ -11370,15 +10556,7 @@
             },
             "queryType": {
               "type": "string",
-              "enum": [
-                "select",
-                "update",
-                "delete",
-                "insert",
-                "relation",
-                "soft-delete",
-                "restore"
-              ],
+              "enum": ["select", "update", "delete", "insert", "relation", "soft-delete", "restore"],
               "description": "Represents query type. QueryBuilder is able to build SELECT, UPDATE and DELETE queries."
             },
             "selects": {
@@ -11522,20 +10700,13 @@
                 "properties": {
                   "type": {
                     "type": "string",
-                    "enum": [
-                      "simple",
-                      "and",
-                      "or"
-                    ]
+                    "enum": ["simple", "and", "or"]
                   },
                   "condition": {
                     "type": "string"
                   }
                 },
-                "required": [
-                  "type",
-                  "condition"
-                ],
+                "required": ["type", "condition"],
                 "additionalProperties": false
               },
               "description": "HAVING queries."
@@ -11606,10 +10777,7 @@
             },
             "onLocked": {
               "type": "string",
-              "enum": [
-                "nowait",
-                "skip_locked"
-              ],
+              "enum": ["nowait", "skip_locked"],
               "description": "Modify behavior when encountering locked rows. NOWAIT or SKIP LOCKED"
             },
             "withDeleted": {
@@ -11700,10 +10868,7 @@
               "description": "Indicates if query must be wrapped into transaction."
             },
             "timeTravel": {
-              "type": [
-                "boolean",
-                "string"
-              ],
+              "type": ["boolean", "string"],
               "description": "Indicates if query should be time travel query https://www.cockroachlabs.com/docs/stable/as-of-system-time.html"
             },
             "nativeParameters": {
@@ -11744,11 +10909,7 @@
                     "$ref": "#/components/schemas/QueryBuilderCteOptions"
                   }
                 },
-                "required": [
-                  "queryBuilder",
-                  "alias",
-                  "options"
-                ],
+                "required": ["queryBuilder", "alias", "options"],
                 "additionalProperties": false
               }
             }
@@ -11803,12 +10964,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "from",
-                "select",
-                "join",
-                "other"
-              ]
+              "enum": ["from", "select", "join", "other"]
             },
             "name": {
               "type": "string"
@@ -11822,10 +10978,7 @@
               "description": "If this alias is for sub query."
             }
           },
-          "required": [
-            "type",
-            "name"
-          ],
+          "required": ["type", "name"],
           "additionalProperties": false
         },
         "SelectQuery": {
@@ -11841,9 +10994,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "selection"
-          ],
+          "required": ["selection"],
           "additionalProperties": false
         },
         "JoinAttribute": {
@@ -11851,10 +11002,7 @@
           "properties": {
             "direction": {
               "type": "string",
-              "enum": [
-                "LEFT",
-                "INNER"
-              ],
+              "enum": ["LEFT", "INNER"],
               "description": "Join direction."
             },
             "alias": {
@@ -11908,14 +11056,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "direction",
-            "alias",
-            "entityOrProperty",
-            "isSelectedCache",
-            "isSelectedEvaluated",
-            "relationEvaluated"
-          ],
+          "required": ["direction", "alias", "entityOrProperty", "isSelectedCache", "isSelectedEvaluated", "relationEvaluated"],
           "additionalProperties": false,
           "description": "Stores all join attributes which will be used to build a JOIN query."
         },
@@ -11945,9 +11086,7 @@
                       "$ref": "#/components/schemas/SelectQueryBuilder<any>"
                     }
                   },
-                  "required": [
-                    "qb"
-                  ],
+                  "required": ["qb"],
                   "additionalProperties": false
                 }
               },
@@ -11958,11 +11097,7 @@
               "description": "Indicates if relation id should NOT be loaded as id map."
             }
           },
-          "required": [
-            "relationName",
-            "mapToProperty",
-            "disableMixedMap"
-          ],
+          "required": ["relationName", "mapToProperty", "disableMixedMap"],
           "additionalProperties": false,
           "description": "Stores all join relation id attributes which will be used to build a JOIN query."
         },
@@ -11992,19 +11127,14 @@
                       "$ref": "#/components/schemas/SelectQueryBuilder<any>"
                     }
                   },
-                  "required": [
-                    "qb"
-                  ],
+                  "required": ["qb"],
                   "additionalProperties": false
                 }
               },
               "description": "Extra condition applied to \"ON\" section of join."
             }
           },
-          "required": [
-            "relationName",
-            "mapToProperty"
-          ],
+          "required": ["relationName", "mapToProperty"],
           "additionalProperties": false
         },
         "WhereClause": {
@@ -12012,20 +11142,13 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": [
-                "simple",
-                "and",
-                "or"
-              ]
+              "enum": ["simple", "and", "or"]
             },
             "condition": {
               "$ref": "#/components/schemas/WhereClauseCondition"
             }
           },
-          "required": [
-            "type",
-            "condition"
-          ],
+          "required": ["type", "condition"],
           "additionalProperties": false
         },
         "WhereClauseCondition": {
@@ -12060,10 +11183,7 @@
               }
             }
           },
-          "required": [
-            "operator",
-            "parameters"
-          ],
+          "required": ["operator", "parameters"],
           "additionalProperties": false
         },
         "PredicateOperator": {
@@ -12099,25 +11219,16 @@
               "$ref": "#/components/schemas/WhereClauseCondition"
             }
           },
-          "required": [
-            "operator",
-            "condition"
-          ],
+          "required": ["operator", "condition"],
           "additionalProperties": false
         },
         "WrappingOperator": {
           "type": "string",
-          "enum": [
-            "not",
-            "brackets"
-          ]
+          "enum": ["not", "brackets"]
         },
         "SelectQueryBuilderOption": {
           "type": "string",
-          "enum": [
-            "disable-global-order",
-            "create-pojo"
-          ]
+          "enum": ["disable-global-order", "create-pojo"]
         },
         "QueryBuilder<any>": {
           "type": "object",
@@ -12132,11 +11243,7 @@
               "description": "Contains all properties of the QueryBuilder that needs to be build a final query."
             }
           },
-          "required": [
-            "@instanceof",
-            "connection",
-            "expressionMap"
-          ],
+          "required": ["@instanceof", "connection", "expressionMap"],
           "additionalProperties": false,
           "description": "Allows to build complex sql queries in a fashion way and execute those queries."
         },
@@ -12186,9 +11293,7 @@
                       "properties": {
                         "object": {}
                       },
-                      "required": [
-                        "object"
-                      ],
+                      "required": ["object"],
                       "additionalProperties": false
                     }
                   }
@@ -12226,22 +11331,14 @@
                       "$ref": "#/components/schemas/SelectQueryBuilder<any>"
                     }
                   },
-                  "required": [
-                    "qb"
-                  ],
+                  "required": ["qb"],
                   "additionalProperties": false
                 }
               },
               "description": "Extra condition applied to \"ON\" section of join."
             }
           },
-          "required": [
-            "entityMetadata",
-            "relation",
-            "relationNameOrFactory",
-            "target",
-            "propertyName"
-          ],
+          "required": ["entityMetadata", "relation", "relationNameOrFactory", "target", "propertyName"],
           "additionalProperties": false,
           "description": "Contains all information about entity's relation count."
         },
@@ -12282,11 +11379,7 @@
               "description": "Final check constraint name. If check constraint name was given by a user then it stores normalized (by naming strategy) givenName. If check constraint name was not given then its generated."
             }
           },
-          "required": [
-            "entityMetadata",
-            "expression",
-            "name"
-          ],
+          "required": ["entityMetadata", "expression", "name"],
           "additionalProperties": false,
           "description": "Check metadata contains all information about table's check constraints."
         },
@@ -12321,11 +11414,7 @@
               "description": "Final exclusion constraint name. If exclusion constraint name was given by a user then it stores normalized (by naming strategy) givenName. If exclusion constraint name was not given then its generated."
             }
           },
-          "required": [
-            "entityMetadata",
-            "expression",
-            "name"
-          ],
+          "required": ["entityMetadata", "expression", "name"],
           "additionalProperties": false,
           "description": "Exclusion metadata contains all information about table's exclusion constraints."
         },
@@ -12336,9 +11425,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "size"
-          ],
+          "required": ["size"],
           "additionalProperties": false
         },
         "QueryResultCache": {
@@ -12454,13 +11541,7 @@
               ]
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ]
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"]
         },
         "CredentialStatusSP": {
           "type": "object",
@@ -12478,10 +11559,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type"
-          ]
+          "required": ["id", "type"]
         },
         "CredentialProofSP": {
           "type": "object",
@@ -12534,12 +11612,7 @@
               }
             }
           },
-          "required": [
-            "type",
-            "created",
-            "proofPurpose",
-            "verificationMethod"
-          ],
+          "required": ["type", "created", "proofPurpose", "verificationMethod"],
           "additionalProperties": {
             "anyOf": [
               {
@@ -12626,10 +11699,7 @@
               "description": "Optional date to use for the `issuanceDate` or `validFrom` property depending on VCDM version being used. If not specified, the current date will be used."
             }
           },
-          "required": [
-            "presentation",
-            "proofFormat"
-          ],
+          "required": ["presentation", "proofFormat"],
           "additionalProperties": false,
           "description": "Encapsulates the parameters required to create a  {@link https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
@@ -12673,9 +11743,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "holder"
-          ],
+          "required": ["holder"],
           "description": "Used as input when creating Verifiable Presentations"
         },
         "VerifiableCredential": {
@@ -12729,13 +11797,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "credentialSubject",
-            "issuanceDate",
-            "issuer",
-            "proof"
-          ],
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"],
           "description": "Represents a signed Verifiable Credential payload (includes proof), using a JSON representation. See  {@link https://www.w3.org/TR/vc-data-model/#credentials | VC data model }"
         },
         "VerifiablePresentationSP": {
@@ -12811,13 +11873,7 @@
               ]
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof",
-            "type",
-            "verifiableCredential"
-          ]
+          "required": ["@context", "holder", "proof", "type", "verifiableCredential"]
         },
         "W3CVerifiableCredentialSP": {
           "anyOf": [
@@ -12867,26 +11923,13 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "type",
-            "publicKeyHex"
-          ],
+          "required": ["kid", "kms", "type", "publicKeyHex"],
           "additionalProperties": false,
           "description": "Cryptographic key"
         },
         "TKeyType": {
           "type": "string",
-          "enum": [
-            "Ed25519",
-            "Secp256k1",
-            "Secp256r1",
-            "X25519",
-            "Bls12381G1",
-            "Bls12381G2",
-            "RSA"
-          ],
+          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
           "description": "Cryptographic key type."
         },
         "KeyMetadata": {
@@ -12943,9 +11986,7 @@
               "description": "Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored"
             }
           },
-          "required": [
-            "credential"
-          ],
+          "required": ["credential"],
           "additionalProperties": false,
           "description": "Encapsulates the parameters required to verify a  {@link https://www.w3.org/TR/vc-data-model/#credentials | W3C Verifiable Credential }"
         },
@@ -12998,11 +12039,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "mandatoryCredentialStatus",
-            "verifyStatusListCredential",
-            "verifyMatchingIssuers"
-          ],
+          "required": ["mandatoryCredentialStatus", "verifyStatusListCredential", "verifyMatchingIssuers"],
           "additionalProperties": false
         },
         "IVerifyResult": {
@@ -13041,20 +12078,14 @@
                           "type": "boolean"
                         }
                       },
-                      "required": [
-                        "id",
-                        "valid"
-                      ],
+                      "required": ["id", "valid"],
                       "additionalProperties": false
                     },
                     "minItems": 1,
                     "maxItems": 1
                   }
                 },
-                "required": [
-                  "verified",
-                  "log"
-                ],
+                "required": ["verified", "log"],
                 "additionalProperties": false
               },
               "minItems": 1,
@@ -13068,9 +12099,7 @@
               "description": "Optional Error object for the but currently the machine readable errors are not exported from DID-JWT package to be imported here"
             }
           },
-          "required": [
-            "verified"
-          ],
+          "required": ["verified"],
           "additionalProperties": {
             "description": "Other options can be specified for verification. They will be forwarded to the lower level modules. that performt the checks"
           }
@@ -13162,13 +12191,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "type",
-            "issuer",
-            "issuanceDate",
-            "credentialSubject"
-          ]
+          "required": ["@context", "type", "issuer", "issuanceDate", "credentialSubject"]
         },
         "IPresentation": {
           "type": "object",
@@ -13218,9 +12241,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context"
-          ]
+          "required": ["@context"]
         },
         "IError": {
           "type": "object",
@@ -13289,9 +12310,7 @@
               "description": "Optional Error object for the but currently the machine readable errors are not exported from DID-JWT package to be imported here"
             }
           },
-          "required": [
-            "verified"
-          ],
+          "required": ["verified"],
           "additionalProperties": {
             "description": "Other options can be specified for verification. They will be forwarded to the lower level modules. that performt the checks"
           }
@@ -13346,9 +12365,7 @@
               "description": "Allows you to use the default integrated statusList 2021 support. If a checkStatus function is provided, this will be ignored"
             }
           },
-          "required": [
-            "presentation"
-          ],
+          "required": ["presentation"],
           "additionalProperties": false,
           "description": "Encapsulates the parameters required to verify a  {@link https://www.w3.org/TR/vc-data-model/#presentations | W3C Verifiable Presentation }"
         },
@@ -13409,11 +12426,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "@context",
-            "holder",
-            "proof"
-          ],
+          "required": ["@context", "holder", "proof"],
           "description": "Represents a signed Verifiable Presentation (includes proof), using a JSON representation. See  {@link https://www.w3.org/TR/vc-data-model/#presentations | VP data model }"
         }
       },

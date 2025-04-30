@@ -4,7 +4,7 @@ import type {
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
   WrappedW3CVerifiableCredential,
-  WrappedW3CVerifiablePresentation
+  WrappedW3CVerifiablePresentation,
 } from '../types'
 import type { CredentialPayload, VerifiableCredential } from '@veramo/core'
 
@@ -21,8 +21,10 @@ export enum StatusListType {
   OAuthStatusList = 'OAuthStatusList',
 }
 
-
-function isVcdmCredential(credential: CredentialPayload | IVerifiableCredential | ICredential | VerifiableCredential | unknown, vcdmType: string): boolean {
+function isVcdmCredential(
+  credential: CredentialPayload | IVerifiableCredential | ICredential | VerifiableCredential | unknown,
+  vcdmType: string,
+): boolean {
   if (!credential || typeof credential !== 'object') {
     return false
   } else if (!('@context' in credential && Array.isArray(credential['@context']))) {
@@ -34,19 +36,18 @@ export function isVcdm1Credential(credential: CredentialPayload | IVerifiableCre
   return isVcdmCredential(credential, VCDM_CREDENTIAL_CONTEXT_V1)
 }
 
-export function isVcdm2Credential(credential: CredentialPayload | IVerifiableCredential | ICredential | VerifiableCredential | unknown  ): boolean {
+export function isVcdm2Credential(credential: CredentialPayload | IVerifiableCredential | ICredential | VerifiableCredential | unknown): boolean {
   return isVcdmCredential(credential, VCDM_CREDENTIAL_CONTEXT_V2)
 }
 
 export function addVcdmContextIfNeeded(context?: string[], defaultValue: string = VCDM_CREDENTIAL_CONTEXT_V2): string[] {
-  const newContext = [...context ?? []]
+  const newContext = [...(context ?? [])]
   const vcdmContext = context?.find((val) => VCDM_CREDENTIAL_CONTEXT_VERSIONS.includes(val))
   if (!vcdmContext) {
     newContext.unshift(defaultValue)
   }
   return newContext
 }
-
 
 export const VCDM_CREDENTIAL_CONTEXT_V1 = 'https://www.w3.org/2018/credentials/v1'
 export const VCDM_CREDENTIAL_CONTEXT_V2 = 'https://www.w3.org/ns/credentials/v2'

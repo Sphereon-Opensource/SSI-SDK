@@ -18,7 +18,6 @@ export class SphereonEd25519Signature2020 extends SphereonLdSignature {
     return ['Ed25519VerificationKey2020', 'Ed25519VerificationKey2018']
   }
 
-
   getSupportedProofType(): string {
     return 'Ed25519Signature2020'
   }

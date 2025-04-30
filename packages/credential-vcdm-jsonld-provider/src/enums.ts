@@ -5,7 +5,6 @@ export const ControllerProofPurpose = sigpkg.purposes.ControllerProofPurpose
 export const AssertionProofPurpose = sigpkg.purposes.AssertionProofPurpose
 export const AuthenticationProofPurpose = sigpkg.purposes.AuthenticationProofPurpose
 
-
 /**
  * Plugin method map interface
  * @public

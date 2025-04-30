@@ -5,7 +5,6 @@ import { decodeBase64url, type EcdsaSignature, encodeBase64url, type KNOWN_JWA, 
 import VerifierAlgorithm from './VerifierAlgorithm'
 import { JWT_ERROR } from 'did-jwt'
 
-
 export type Signer = (data: string | Uint8Array) => Promise<EcdsaSignature | string>
 export type SignerAlgorithm = (payload: string, signer: Signer) => Promise<string>
 
@@ -221,7 +220,7 @@ export async function createJWS(
   payload: string | Partial<JWTPayload>,
   signer: Signer,
   header: Partial<JWTHeader> = {},
-  options: JWSCreationOptions = {}
+  options: JWSCreationOptions = {},
 ): Promise<string> {
   if (!header.alg) header.alg = defaultAlg
   const encodedPayload = typeof payload === 'string' ? payload : encodeSection(payload, options.canonicalize)
@@ -259,7 +258,7 @@ export async function createJWS(
 export async function createJWT(
   payload: Partial<JWTPayload>,
   { issuer, signer, alg, expiresIn, canonicalize }: JWTOptions,
-  header: Partial<JWTHeader> = {}
+  header: Partial<JWTHeader> = {},
 ): Promise<string> {
   if (!signer) throw new Error('missing_signer: No Signer functionality has been configured')
   if (!issuer) throw new Error('missing_issuer: No issuing DID has been configured')
@@ -305,7 +304,7 @@ export async function createJWT(
 export async function createMultisignatureJWT(
   payload: Partial<JWTPayload>,
   { expiresIn, canonicalize }: Partial<JWTOptions>,
-  issuers: { issuer: string; signer: Signer; alg: string }[]
+  issuers: { issuer: string; signer: Signer; alg: string }[],
 ): Promise<string> {
   if (issuers.length === 0) throw new Error('invalid_argument: must provide one or more issuers')
 
@@ -337,7 +336,7 @@ export async function createMultisignatureJWT(
 
 export function verifyJWTDecoded(
   { header, payload, data, signature }: JWTDecoded,
-  pubKeys: VerificationMethod | VerificationMethod[]
+  pubKeys: VerificationMethod | VerificationMethod[],
 ): VerificationMethod {
   if (!Array.isArray(pubKeys)) pubKeys = [pubKeys]
 
@@ -365,10 +364,7 @@ export function verifyJWTDecoded(
   throw new Error(`${JWT_ERROR.INVALID_SIGNATURE}: no matching public key found`)
 }
 
-export function verifyJWSDecoded(
-  { header, data, signature }: JWSDecoded,
-  pubKeys: VerificationMethod | VerificationMethod[]
-): VerificationMethod {
+export function verifyJWSDecoded({ header, data, signature }: JWSDecoded, pubKeys: VerificationMethod | VerificationMethod[]): VerificationMethod {
   if (!Array.isArray(pubKeys)) pubKeys = [pubKeys]
   const signer: VerificationMethod = VerifierAlgorithm(header.alg)(data, signature, pubKeys)
   return signer
@@ -429,10 +425,10 @@ export async function verifyJWT(
     proofPurpose: undefined,
     policies: {},
     didAuthenticator: undefined,
-  }
+  },
 ): Promise<JWTVerified> {
   if (!options.resolver) throw new Error('missing_resolver: No DID resolver has been configured')
-  const { payload, header/*, signature, data*/ }: JWTDecoded = decodeJWT(jwt, false)
+  const { payload, header /*, signature, data*/ }: JWTDecoded = decodeJWT(jwt, false)
   const proofPurpose: ProofPurposeTypes | undefined = Object.prototype.hasOwnProperty.call(options, 'auth')
     ? options.auth
       ? 'authentication'
@@ -482,12 +478,7 @@ export async function verifyJWT(
   if (options.didAuthenticator) {
     ;({ didResolutionResult, authenticators, issuer } = options.didAuthenticator)
   } else {
-    ;({ didResolutionResult, authenticators, issuer } = await resolveAuthenticator(
-      options.resolver,
-      header.alg,
-      didUrl,
-      proofPurpose
-    ))
+    ;({ didResolutionResult, authenticators, issuer } = await resolveAuthenticator(options.resolver, header.alg, didUrl, proofPurpose))
     // Add to options object for recursive reference
     options.didAuthenticator = { didResolutionResult, authenticators, issuer }
   }
@@ -534,9 +525,7 @@ export async function verifyJWT(
     }
     if (options.policies?.aud !== false && payload.aud) {
       if (!options.audience && !options.callbackUrl) {
-        throw new Error(
-          `${JWT_ERROR.INVALID_AUDIENCE}: JWT audience is required but your app address has not been configured`
-        )
+        throw new Error(`${JWT_ERROR.INVALID_AUDIENCE}: JWT audience is required but your app address has not been configured`)
       }
       const audArray = Array.isArray(payload.aud) ? payload.aud : [payload.aud]
       const matchedAudience = audArray.find((item) => options.audience === item || options.callbackUrl === item)
@@ -549,7 +538,7 @@ export async function verifyJWT(
     return { verified: true, payload, didResolutionResult, issuer, signer, jwt, policies: options.policies }
   }
   throw new Error(
-    `${JWT_ERROR.INVALID_SIGNATURE}: JWT not valid. issuer DID document does not contain a verificationMethod that matches the signature.`
+    `${JWT_ERROR.INVALID_SIGNATURE}: JWT not valid. issuer DID document does not contain a verificationMethod that matches the signature.`,
   )
 }
 
@@ -579,7 +568,7 @@ export async function resolveAuthenticator(
   resolver: Resolvable,
   alg: string,
   issuer: string,
-  proofPurpose?: ProofPurposeTypes
+  proofPurpose?: ProofPurposeTypes,
 ): Promise<DIDAuthenticator> {
   const types: string[] = SUPPORTED_PUBLIC_KEY_TYPES[alg as KNOWN_JWA]
   if (!types || types.length === 0) {
@@ -601,9 +590,7 @@ export async function resolveAuthenticator(
 
   if (didResult.didResolutionMetadata?.error || didResult.didDocument == null) {
     const { error, message } = didResult.didResolutionMetadata
-    throw new Error(
-      `${JWT_ERROR.RESOLVER_ERROR}: Unable to resolve DID document for ${issuer}: ${error}, ${message || ''}`
-    )
+    throw new Error(`${JWT_ERROR.RESOLVER_ERROR}: Unable to resolve DID document for ${issuer}: ${error}, ${message || ''}`)
   }
 
   const getPublicKeyById = (verificationMethods: VerificationMethod[], pubid?: string): VerificationMethod | null => {
@@ -611,16 +598,10 @@ export async function resolveAuthenticator(
     return filtered.length > 0 ? filtered[0] : null
   }
 
-  let publicKeysToCheck: VerificationMethod[] = [
-    ...(didResult?.didDocument?.verificationMethod || []),
-    ...(didResult?.didDocument?.publicKey || []),
-  ]
+  let publicKeysToCheck: VerificationMethod[] = [...(didResult?.didDocument?.verificationMethod || []), ...(didResult?.didDocument?.publicKey || [])]
   if (typeof proofPurpose === 'string') {
     // support legacy DID Documents that do not list assertionMethod
-    if (
-      proofPurpose.startsWith('assertion') &&
-      !Object.getOwnPropertyNames(didResult?.didDocument).includes('assertionMethod')
-    ) {
+    if (proofPurpose.startsWith('assertion') && !Object.getOwnPropertyNames(didResult?.didDocument).includes('assertionMethod')) {
       didResult.didDocument = { ...(<DIDDocument>didResult.didDocument) }
       didResult.didDocument.assertionMethod = [...publicKeysToCheck.map((pk) => pk.id)]
     }
@@ -639,13 +620,11 @@ export async function resolveAuthenticator(
       .filter((key) => key != null) as VerificationMethod[]
   }
 
-  const authenticators: VerificationMethod[] = publicKeysToCheck.filter(({ type }) =>
-    types.find((supported) => supported === type)
-  )
+  const authenticators: VerificationMethod[] = publicKeysToCheck.filter(({ type }) => types.find((supported) => supported === type))
 
   if (typeof proofPurpose === 'string' && (!authenticators || authenticators.length === 0)) {
     throw new Error(
-      `${JWT_ERROR.NO_SUITABLE_KEYS}: DID document for ${issuer} does not have public keys suitable for ${alg} with ${proofPurpose} purpose`
+      `${JWT_ERROR.NO_SUITABLE_KEYS}: DID document for ${issuer} does not have public keys suitable for ${alg} with ${proofPurpose} purpose`,
     )
   }
   if (!authenticators || authenticators.length === 0) {

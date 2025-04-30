@@ -1,4 +1,4 @@
-# Veramo W3C credentials plugin 
+# Veramo W3C credentials plugin
 
 Veramo package for working with W3C Verifiable Credentials & Presentations.
 

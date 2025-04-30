@@ -71,7 +71,7 @@ describe('Status list', () => {
         new VcdmCredentialPlugin({ issuers: [jsonld, jwt] }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate({options: {type: 'Ed25519'}})
+    didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })
     console.log(JSON.stringify(didKeyIdentifier, null, 2))
   })
 

@@ -6,7 +6,7 @@ import {
   LogLevel,
   SubSystem,
   System,
-  SystemCorrelationIdType
+  SystemCorrelationIdType,
 } from '@sphereon/ssi-types'
 import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
