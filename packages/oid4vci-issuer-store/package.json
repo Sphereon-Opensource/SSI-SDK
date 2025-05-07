@@ -27,8 +27,8 @@
   },
   "dependencies": {
     "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.39",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.jose.vcdm.25",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.jose.vcdm.25",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.jose.vcdm.28",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.jose.vcdm.28",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",

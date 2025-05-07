@@ -39,6 +39,7 @@ import { ExternalIdentifierDidOpts, IIdentifierResolution, isDidIdentifier } fro
 import { CredentialMapper, isVcdm2Credential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 
 import { SELF_ISSUED_V0_1, SELF_ISSUED_V2, SELF_ISSUED_V2_VC_INTEROP } from '../did-jwt/JWT'
+import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 // import {validateCredentialPayload} from "did-jwt-vc/src";
 
 const debug = Debug('sphereon:ssi-sdk:credential-jwt')
@@ -94,16 +95,11 @@ export class CredentialProviderVcdm2Jose implements IVcdmCredentialProvider {
     const managedIdentifier = await agent.identifierManagedGetByDid({ identifier: identifier.did, kmsKeyRef: keyRef })
     const key = await pickSigningKey({ identifier, kmsKeyRef: keyRef }, context)
 
-    debug('Signing VC with', identifier.did)
-    let alg = 'ES256'
-    if (key.type === 'Ed25519') {
-      alg = 'EdDSA'
-    } else if (key.type === 'Secp256k1') {
-      alg = 'ES256K'
-    }
-
+    // TODO: Probably wise to give control to caller as well, as some key types allow multiple signature algos
+    const alg = await signatureAlgorithmFromKey({key}) as string
+    debug('Signing VC with', identifier.did, alg)
     const header: JwsHeader = {
-      kid: key.meta.verificationMethod.id ?? key.kid,
+      kid: key.meta?.verificationMethod?.id ?? key.kid,
       alg,
       typ: 'vc+jwt',
       cty: 'vc',
@@ -116,8 +112,8 @@ export class CredentialProviderVcdm2Jose implements IVcdmCredentialProvider {
       protectedHeader: header,
       clientIdScheme: 'did',
     })
-    //FIXME: flagging this as a potential privacy leak.
-    debug(jwt)
+
+    // debug(jwt)
     return normalizeCredential(jwt.jwt)
   }
 

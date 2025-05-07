@@ -35,7 +35,7 @@ export class LdSuiteLoader {
     const suites =
       verificationType && verificationType !== '' && verificationType !== 'JsonWebKey2020'
         ? verificationToSuites[verificationType]
-        : Object.values(verificationToSuites)?.[0]
+        : Object.values(verificationToSuites ?? {})?.[0]
     // const suite = this.signatureMap[keyType]?.[verificationType]
     if (Array.isArray(suites) && suites.length > 0) {
       return suites
