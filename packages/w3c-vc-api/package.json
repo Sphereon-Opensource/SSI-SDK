@@ -23,7 +23,7 @@
     "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.1-feature.esm.cjs.39",
+    "@sphereon/did-auth-siop": "0.17.1-next.39",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",

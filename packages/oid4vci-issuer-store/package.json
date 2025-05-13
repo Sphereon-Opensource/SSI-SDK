@@ -26,7 +26,7 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.17.1-feature.esm.cjs.39",
+    "@sphereon/oid4vci-common": "0.17.1-next.39",
     "@sphereon/ssi-sdk-ext.did-utils": "0.28.1-feature.jose.vcdm.51",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.jose.vcdm.51",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
