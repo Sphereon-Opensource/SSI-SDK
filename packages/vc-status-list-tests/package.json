@@ -5,11 +5,11 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-provider-key": "0.28.1-feature.jose.vcdm.51",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-feature.jose.vcdm.51",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-feature.jose.vcdm.51",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-feature.jose.vcdm.51",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-feature.jose.vcdm.51",
+    "@sphereon/ssi-sdk-ext.did-provider-key": "0.28.1-next.53",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.1-next.53",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.1-next.53",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.28.1-next.53",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.28.1-next.53",
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm-jsonld-provider": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm1-jwt-provider": "workspace:*",
