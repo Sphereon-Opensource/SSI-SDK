@@ -1,16 +1,5 @@
 import { getAgentResolver, mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { asArray, intersect, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { vcLibCheckStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
-import { IVerifyResult } from '@sphereon/ssi-types'
-import type { DIDDocument, IAgentContext, IDIDManager, IIdentifier, IKey, IResolver, VerifiableCredential } from '@veramo/core'
-import { AbstractPrivateKeyStore } from '@veramo/key-manager'
-import { type _ExtendedIKey, type OrPromise, type RecordLike } from '@veramo/utils'
-import Debug from 'debug'
-
-import { LdContextLoader } from '../ld-context-loader'
-import { LdCredentialModule } from '../ld-credential-module'
-import { LdSuiteLoader } from '../ld-suite-loader'
-import { SphereonLdSignature } from '../ld-suites'
 import {
   ContextDoc,
   ICanIssueCredentialTypeArgs,
@@ -20,13 +9,32 @@ import {
   IVcdmCredentialProvider,
   IVcdmIssuerAgentContext,
   IVcdmVerifierAgentContext,
-  IVerifyCredentialLDArgs,
+  IVerifyCredentialVcdmArgs,
   IVerifyPresentationLDArgs,
   preProcessCredentialPayload,
-  preProcessPresentation,
+  preProcessPresentation
 } from '@sphereon/ssi-sdk.credential-vcdm'
-import { SphereonEcdsaSecp256k1RecoverySignature2020, SphereonEd25519Signature2020 } from '../suites'
+import { vcLibCheckStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
+import { IVerifyResult } from '@sphereon/ssi-types'
+import type {
+  DIDDocument,
+  IAgentContext,
+  IDIDManager,
+  IIdentifier,
+  IKey,
+  IResolver,
+  VerifiableCredential
+} from '@veramo/core'
+import { AbstractPrivateKeyStore } from '@veramo/key-manager'
+import { type _ExtendedIKey, type OrPromise, type RecordLike } from '@veramo/utils'
+import Debug from 'debug'
+
+import { LdContextLoader } from '../ld-context-loader'
+import { LdCredentialModule } from '../ld-credential-module'
 import { LdDefaultContexts } from '../ld-default-contexts'
+import { LdSuiteLoader } from '../ld-suite-loader'
+import { SphereonLdSignature } from '../ld-suites'
+import { SphereonEcdsaSecp256k1RecoverySignature2020, SphereonEd25519Signature2020 } from '../suites'
 
 const debug = Debug('sphereon:ssi-sdk:ld-credential-module-local')
 
@@ -76,6 +84,9 @@ export class CredentialProviderJsonld implements IVcdmCredentialProvider {
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.canVerifyDocumentType */
   canVerifyDocumentType(args: ICanVerifyDocumentTypeArgs): boolean {
     const { document } = args
+    if (typeof document === 'string') {
+      return false
+    }
     const proofType = (<VerifiableCredential>document)?.proof?.type ?? '_never_'
     for (const suite of this.ldCredentialModule.ldSuiteLoader.getAllSignatureSuites()) {
       if (suite.getSupportedProofType() === proofType) {
@@ -183,7 +194,7 @@ export class CredentialProviderJsonld implements IVcdmCredentialProvider {
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyCredential} */
-  async verifyCredential(args: IVerifyCredentialLDArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult> {
+  async verifyCredential(args: IVerifyCredentialVcdmArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult> {
     const credential = args.credential
     let checkStatus = args.checkStatus
     if (typeof checkStatus !== 'function' && (!args.statusList || args.statusList.disableCheckStatusList2021 !== true)) {
@@ -192,7 +203,7 @@ export class CredentialProviderJsonld implements IVcdmCredentialProvider {
         verifyStatusListCredential: false /*todo: enable. Needs calling this method first and not rely on @digiticalcredentials*/,
       }) // todo: Probably should be moved to the module to have access to the loaders
     }
-    return this.ldCredentialModule.verifyCredential(credential, context, args.fetchRemoteContexts, args.purpose, checkStatus)
+    return this.ldCredentialModule.verifyCredential(credential as VerifiableCredentialSP, context, args.fetchRemoteContexts, args.purpose, checkStatus)
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentation} */

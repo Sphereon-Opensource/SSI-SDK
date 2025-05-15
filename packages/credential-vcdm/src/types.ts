@@ -6,7 +6,6 @@ import type {
   IKeyManager,
   IPluginMethodMap,
   IResolver,
-  IVerifyResult,
   PresentationPayload,
   VerificationPolicies,
 } from '@veramo/core'
@@ -14,7 +13,13 @@ import type {
 import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 
 import type { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
-import type { W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import type {
+  ICredential,
+  IVerifyResult,
+  OriginalVerifiableCredential,
+  W3CVerifiableCredential,
+  W3CVerifiablePresentation
+} from '@sphereon/ssi-types'
 
 export type IVcdmCredentialPlugin = IVcdmCredentialIssuer & IVcdmCredentialVerifier
 
@@ -168,7 +173,7 @@ export interface ICreateVerifiableCredentialLDArgs {
  *
  * @beta This API is likely to change without a BREAKING CHANGE notice
  */
-export interface IVerifyCredentialLDArgs {
+export interface IVerifyCredentialVcdmArgs {
   /**
    * The json payload of the Credential according to the
    * {@link https://www.w3.org/TR/vc-data-model/#credentials | canonical model}
@@ -177,7 +182,7 @@ export interface IVerifyCredentialLDArgs {
    * of the `credential`
    *
    */
-  credential: VerifiableCredentialSP
+  credential: OriginalVerifiableCredential | ICredential
 
   /**
    * Set this to true if you want the '@context' URLs to be fetched in case they are not pre-loaded.
@@ -418,7 +423,7 @@ export interface IVcdmCredentialProvider {
    *
    * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
    */
-  verifyCredential(args: IVerifyCredentialLDArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult>
+  verifyCredential(args: IVerifyCredentialVcdmArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult>
 
   /**
    *
@@ -502,7 +507,7 @@ export interface IVcdmCredentialVerifier extends IPluginMethodMap {
    *
    * @remarks Please see {@link https://www.w3.org/TR/vc-data-model/#credentials | Verifiable Credential data model}
    */
-  verifyCredential(args: IVerifyCredentialLDArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult>
+  verifyCredential(args: IVerifyCredentialVcdmArgs, context: IVcdmVerifierAgentContext): Promise<IVerifyResult>
 
   /**
    * Verifies a Verifiable Presentation JWT or LDS Format.

@@ -1,6 +1,7 @@
 import { type PresentationSubmission } from './pex'
 import { OriginalType } from '../mapper'
 import { IProofPurpose, IProofType } from '../utils'
+import { OriginalVerifiableCredential } from './vc'
 
 export type AdditionalClaims = Record<string, any>
 
@@ -210,21 +211,26 @@ export interface IVerifyStatusResult {
   [x: string]: any
 }
 
+export interface IVerifySingleResultItem {
+  credential?: OriginalVerifiableCredential
+  presentation?: IPresentation
+  verified: boolean
+  error?: IError
+  log: Array<IVerifySingleResultLog>
+}
+
+export interface IVerifySingleResultLog {
+  id: string
+  valid: boolean
+}
+
 export interface IVerifyResult {
   /**
    * This value is used to transmit the global result of verification.
    */
   verified: boolean
 
-  results?: [
-    {
-      credential?: ICredential
-      presentation?: IPresentation
-      verified: boolean
-      error?: IError
-      log: [{ id: string; valid: boolean }]
-    },
-  ]
+  results?: Array<IVerifySingleResultItem>
 
   statusResult?: IVerifyStatusResult
 
@@ -236,7 +242,7 @@ export interface IVerifyResult {
 
   /**
    * Other options can be specified for verification.
-   * They will be forwarded to the lower level modules. that performt the checks
+   * They will be forwarded to the lower level modules. that perform the checks
    */
   [x: string]: any
 }
