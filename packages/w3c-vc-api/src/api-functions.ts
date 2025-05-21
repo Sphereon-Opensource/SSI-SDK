@@ -204,13 +204,15 @@ export function verifyCredentialEndpoint(router: Router, context: IRequiredConte
     try {
       debug(JSON.stringify(request.body, null, 2))
       const credential: OriginalVerifiableCredential = request.body.verifiableCredential
-      // const options: IIssueOptionsPayload = request.body.options
+      const options = request.body.options
       if (!credential) {
         return sendErrorResponse(response, 400, 'No verifiable credential supplied')
       }
       const verifyResult = await context.agent.verifyCredential({
+        ...options,
         credential,
         policies: {
+          ...options?.policies,
           credentialStatus: false, // Do not use built-in. We have our own statusList implementations
         },
         fetchRemoteContexts: opts?.fetchRemoteContexts !== false,

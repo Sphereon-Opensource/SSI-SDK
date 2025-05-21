@@ -441,8 +441,8 @@ export async function verifierSignature(
         valid: !jwtResult.error
       },
       { id: 'issuer_did_resolves', valid: resolution != undefined },
-      { id: 'validFrom', valid: !validFromError },
-      { id: 'expiration', valid: !expired }
+      { id: 'validFrom', valid: policies.nbf !== false && !validFromError },
+      { id: 'expiration', valid: policies.exp !== false && !expired }
     ]
     return {
       verified: false,
