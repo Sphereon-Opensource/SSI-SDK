@@ -141,9 +141,9 @@ export class CredentialProviderVcdm2Jose implements IVcdmCredentialProvider {
     }
     policies = {
       ...policies,
-      nbf: policies?.nbf ?? policies?.issuanceDate,
-      iat: policies?.iat ?? policies?.issuanceDate,
-      exp: policies?.exp ?? policies?.expirationDate,
+      nbf: policies?.nbf ?? policies?.issuanceDate ?? policies?.validFrom,
+      iat: policies?.iat ?? policies?.issuanceDate ?? policies?.validFrom,
+      exp: policies?.exp ?? policies?.expirationDate ?? policies?.validUntil,
       aud: policies?.aud ?? policies?.audience
     }
     verificationResult = await verifierSignature({ jwt, policies }, context)
@@ -421,8 +421,8 @@ export async function verifierSignature(
   }
   const credential = CredentialMapper.toUniformCredential(jwt)
 
-  const validFromError = policies.issuanceDate !== false && 'validFrom' in credential && !!credential.validFrom && Date.parse(credential.validFrom) > new Date().getTime()
-  const expired = policies.expirationDate !== false && 'validUntil' in credential && !!credential.validUntil && Date.parse(credential.validUntil) < new Date().getTime()
+  const validFromError = (policies.nbf !== false && policies.iat !== false) && 'validFrom' in credential && !!credential.validFrom && Date.parse(credential.validFrom) > new Date().getTime()
+  const expired = policies.exp !== false && 'validUntil' in credential && !!credential.validUntil && Date.parse(credential.validUntil) < new Date().getTime()
 
   const didOpts = { method: 'did', identifier: credIssuer } satisfies ExternalIdentifierDidOpts
   const jwtResult = await agent.jwtVerifyJwsSignature({
