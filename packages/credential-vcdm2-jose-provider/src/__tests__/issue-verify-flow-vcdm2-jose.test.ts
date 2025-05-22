@@ -1,3 +1,4 @@
+import { VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { CredentialPayload, IDIDManager, IIdentifier, IResolver, TAgent } from '@veramo/core'
 import { createAgent } from '@sphereon/ssi-sdk.agent-config'
@@ -15,7 +16,12 @@ import { type ISphereonKeyManager, MemoryKeyStore, MemoryPrivateKeyStore, Sphere
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { VCDM_CREDENTIAL_CONTEXT_V2 } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  JwtDecodedVerifiableCredential,
+  OriginalVerifiableCredential,
+  VCDM_CREDENTIAL_CONTEXT_V2
+} from '@sphereon/ssi-types'
 
 const infuraProjectId = '3586660d179141e3801c3895de1c2eba'
 
@@ -78,8 +84,11 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
 
     expect(verifiableCredential).toBeDefined()
 
+    // @ts-ignore
+    const jwt = CredentialMapper.toCompactJWT(verifiableCredential)
+
     const result = await agent.verifyCredential({
-      credential: verifiableCredential,
+      credential: jwt,
     })
 
     expect(result.verified).toBe(true)

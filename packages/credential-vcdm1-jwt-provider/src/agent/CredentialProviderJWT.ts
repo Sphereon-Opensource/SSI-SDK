@@ -1,4 +1,4 @@
-import type { IAgentContext, IIdentifier, IKey, IKeyManager, IVerifyResult, VerifiableCredential, VerifierAgentContext } from '@veramo/core'
+import { asArray, intersect, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
 import {
   type ICanIssueCredentialTypeArgs,
   type ICanVerifyDocumentTypeArgs,
@@ -6,14 +6,28 @@ import {
   type ICreateVerifiablePresentationLDArgs,
   type IVcdmCredentialProvider,
   type IVcdmIssuerAgentContext,
-  IVerifyCredentialLDArgs,
+  IVerifyCredentialVcdmArgs,
   IVerifyPresentationLDArgs,
   pickSigningKey,
   preProcessCredentialPayload,
-  preProcessPresentation,
+  preProcessPresentation
 } from '@sphereon/ssi-sdk.credential-vcdm'
+import { isVcdm1Credential, IVerifyResult } from '@sphereon/ssi-types'
+import type {
+  IAgentContext,
+  IIdentifier,
+  IKey,
+  IKeyManager,
+  VerifiableCredential,
+  VerifierAgentContext
+} from '@veramo/core'
 
 import canonicalize from 'canonicalize'
+
+import Debug from 'debug'
+
+import { decodeJWT } from 'did-jwt'
+
 
 import {
   createVerifiableCredentialJwt,
@@ -21,17 +35,11 @@ import {
   normalizeCredential,
   normalizePresentation,
   verifyCredential as verifyCredentialJWT,
-  verifyPresentation as verifyPresentationJWT,
+  verifyPresentation as verifyPresentationJWT
   // @ts-ignore
 } from 'did-jwt-vc'
 
 import { type Resolvable } from 'did-resolver'
-
-import { decodeJWT } from 'did-jwt'
-
-import Debug from 'debug'
-import { asArray, intersect, VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
-import { isVcdm1Credential } from '@sphereon/ssi-types'
 
 const debug = Debug('sphereon:ssi-sdk:credential-jwt')
 
@@ -97,8 +105,12 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
     const signer = this.wrapSigner(context, key, alg)
     const jwt = await createVerifiableCredentialJwt(
       credential as any,
-      { did: identifier.did, signer, alg, ...(key.meta.verificationMethod.id && { kid: key.meta.verificationMethod.id }) },
-      { removeOriginalFields, ...otherOptions },
+      {
+        did: identifier.did,
+        signer,
+        alg, ...(key.meta.verificationMethod.id && { kid: key.meta.verificationMethod.id })
+      },
+      { removeOriginalFields, ...otherOptions }
     )
     //FIXME: flagging this as a potential privacy leak.
     debug(jwt)
@@ -106,18 +118,18 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
   }
 
   /** {@inheritdoc ICredentialVerifier.verifyCredential} */
-  async verifyCredential(args: IVerifyCredentialLDArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
+  async verifyCredential(args: IVerifyCredentialVcdmArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
     let { credential, policies, ...otherOptions } = args
     let verifiedCredential: VerifiableCredential
     let verificationResult: IVerifyResult = { verified: false }
-    let jwt: string = typeof credential === 'string' ? credential : asArray(credential.proof)[0].jwt
+    let jwt: string = typeof credential === 'string' ? credential : asArray('proof' in credential ? credential.proof : [])?.[0]?.jwt
     let errorCode, message
     const resolver = {
       resolve: (didUrl: string) =>
         context.agent.resolveDid({
           didUrl,
-          options: otherOptions?.resolutionOptions,
-        }),
+          options: otherOptions?.resolutionOptions
+        })
     } as Resolvable
     try {
       // needs broader credential as well to check equivalence with jwt
@@ -128,13 +140,13 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
           nbf: policies?.nbf ?? policies?.issuanceDate,
           iat: policies?.iat ?? policies?.issuanceDate,
           exp: policies?.exp ?? policies?.expirationDate,
-          aud: policies?.aud ?? policies?.audience,
-        },
+          aud: policies?.aud ?? policies?.audience
+        }
       })
       verifiedCredential = verificationResult.verifiableCredential
 
       // if credential was presented with other fields, make sure those fields match what's in the JWT
-      if (typeof credential !== 'string' && asArray(credential.proof)[0].type === 'JwtProof2020') {
+      if (typeof credential !== 'string' && 'proof' in credential && asArray(credential.proof)[0].type === 'JwtProof2020') {
         const credentialCopy = JSON.parse(JSON.stringify(credential))
         delete credentialCopy.proof.jwt
 
@@ -157,8 +169,8 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
       verified: false,
       error: {
         message,
-        errorCode: errorCode ? errorCode : message?.split(':')[0],
-      },
+        errorCode: errorCode ? errorCode : message?.split(':')[0]
+      }
     }
   }
 
@@ -187,7 +199,7 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
     const jwt = await createVerifiablePresentationJwt(
       presentation as any,
       { did: identifier.did, signer, alg },
-      { removeOriginalFields, challenge, domain, ...otherOptions },
+      { removeOriginalFields, challenge, domain, ...otherOptions }
     )
     //FIXME: flagging this as a potential privacy leak.
     debug(jwt)
@@ -207,8 +219,8 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
       resolve: (didUrl: string) =>
         context.agent.resolveDid({
           didUrl,
-          options: otherOptions?.resolutionOptions,
-        }),
+          options: otherOptions?.resolutionOptions
+        })
     } as Resolvable
 
     let audience = domain
@@ -236,14 +248,14 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
           nbf: policies?.nbf ?? policies?.issuanceDate,
           iat: policies?.iat ?? policies?.issuanceDate,
           exp: policies?.exp ?? policies?.expirationDate,
-          aud: policies?.aud ?? policies?.audience,
+          aud: policies?.aud ?? policies?.audience
         },
-        ...otherOptions,
+        ...otherOptions
       })
       if (result) {
         return {
           verified: true,
-          verifiablePresentation: result,
+          verifiablePresentation: result
         }
       }
     } catch (e: any) {
@@ -254,8 +266,8 @@ export class CredentialProviderJWT implements IVcdmCredentialProvider {
       verified: false,
       error: {
         message,
-        errorCode: errorCode ? errorCode : message?.split(':')[0],
-      },
+        errorCode: errorCode ? errorCode : message?.split(':')[0]
+      }
     }
   }
 
