@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.34.0](https://github.com/decentralized-identity/veramo/compare/v0.33.0...v0.34.0) (2025-05-22)
+
+### Bug Fixes
+
+- Ensure we have a uniform verification result across the different VCDM credential providers ([44037dd](https://github.com/decentralized-identity/veramo/commit/44037ddadc9fb841c47bd711ab98d29a0d57f32d))
+- validity policies ([fdb5575](https://github.com/decentralized-identity/veramo/commit/fdb55759d7e9a05317e57f32b1c310f31dca75f5))
+- validity policies also allow validFrom, validUntil ([9f10696](https://github.com/decentralized-identity/veramo/commit/9f1069691311b2fb7549659fca9d75aabbbea733))
+
 # [6.0.0](https://github.com/decentralized-identity/veramo/compare/v5.6.0...v6.0.0) (2024-04-02)
 
 ### Bug Fixes

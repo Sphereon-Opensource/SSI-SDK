@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-web3.headless-provider",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -31,7 +31,6 @@
     "@sphereon/ssi-express-support": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/key-manager": "4.2.0",
-    "reflect-metadata": "^0.2.2",
     "bn.js": "^5.2.1",
     "casbin": "^5.30.0",
     "cors": "^2.8.5",
@@ -42,6 +41,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "passport": "^0.6.0",
+    "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typed-rpc": "^4.2.2",
     "uint8arrays": "^3.1.1",

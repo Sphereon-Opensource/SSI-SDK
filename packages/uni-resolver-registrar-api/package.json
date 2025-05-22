@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.uni-resolver-registrar-api",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -45,8 +45,8 @@
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.29.0",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.29.0",
-    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm-jsonld-provider": "workspace:*",
+    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

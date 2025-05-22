@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.34.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.33.0...v0.34.0) (2025-05-22)
+
+### Bug Fixes
+
+- Ensure we have a uniform verification result across the different VCDM credential providers ([44037dd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/44037ddadc9fb841c47bd711ab98d29a0d57f32d))
+- experimental holder signing for JWT vc was not using the correct vc object ([6f7f40b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6f7f40b94beb385369fede046c3912bd0c053408))
+- validity policies ([fdb5575](https://github.com/Sphereon-Opensource/SSI-SDK/commit/fdb55759d7e9a05317e57f32b1c310f31dca75f5))
+- validity policies also allow validFrom, validUntil ([9f10696](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9f1069691311b2fb7549659fca9d75aabbbea733))
+- VCDM1 credentials were using VCDM2 presentations. Now it inspects the credentials first and then picks the most appropriate version ([4b691dc](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4b691dc5852f18435f6b9031a62849a2cc6bb7e2))
+- VCDM2 context was not taken into account ([7765edb](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7765edb3fd7f69b4fbd36f02a725821cb38e4e30))
+
+### Features
+
+- Add tsup for esm and cjs ([1ff3959](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1ff3959a9f9cb82ccbb4e64b26ac5231f2aa69de))
+- Move to nx and fix a lot of tsconfig references in the process ([9f634bd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9f634bdb714061141e277508c124b08d626f6036))
+- Move to nx and fix a lot of tsconfig references in the process ([08361fa](https://github.com/Sphereon-Opensource/SSI-SDK/commit/08361fa484ff24bdd1319f76952a8fdb91290708))
+- Move to nx and fix a lot of tsconfig references in the process ([5e22c85](https://github.com/Sphereon-Opensource/SSI-SDK/commit/5e22c85999aeb34e81baa23e568f2b2acd5ed92e))
+- move to vitest ([117285e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/117285ef15b2d0d7870a9c9487686366d6fe5b30))
+- New digital credentials vc lib support ([33881cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/33881cdd9544308b23ef738cf6bf4b0fa3ff3f3d))
+- Packages are now ESM and CJS. Move to tsup and turborepo ([e68c8f7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e68c8f738909485598160d0d032a2cae722cadea))
+- Redesign of VCDM credential plugin. Now we have plugable providers, for JWT and JsonLD and a shiny new VCDM Credential Plugin using these providers. ([67da208](https://github.com/Sphereon-Opensource/SSI-SDK/commit/67da2083bb6408f9896ad06e87688178ab3e2d31))
+- VCDM 2 ([0660005](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0660005d35e3a2119d6410bafbddc8707c6514d9))
+- VCDM 2 - JOSE implementation mostly supported ([8e67307](https://github.com/Sphereon-Opensource/SSI-SDK/commit/8e673073daa8f1ebd1e75249a5a0646d076a91aa))
+
 # [0.33.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.32.0...v0.33.0) (2025-03-14)
 
 ### Bug Fixes

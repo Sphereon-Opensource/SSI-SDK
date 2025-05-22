@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.agent-config",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -21,10 +21,10 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "reflect-metadata": "^0.2.2",
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
     "jsonpointer": "^5.0.1",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "0.3.20",
     "url-parse": "^1.5.10",
     "yaml": "^2.4.5"
