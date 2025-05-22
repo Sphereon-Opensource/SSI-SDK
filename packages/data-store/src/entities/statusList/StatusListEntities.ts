@@ -1,14 +1,15 @@
 import {
-  IIssuer,
-  StatusListCredential,
+  type IIssuer,
+  type StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
-  StatusListIndexingDirection,
+  type StatusListIndexingDirection,
   StatusListType,
-  StatusPurpose2021,
-  ProofFormat,
+  type StatusPurpose2021,
+  type CredentialProofFormat,
 } from '@sphereon/ssi-types'
-import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
+import typeorm from 'typeorm'
+const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
@@ -64,7 +65,7 @@ export abstract class StatusListEntity extends BaseEntity {
   credentialIdMode!: StatusListCredentialIdMode
 
   @Column({ type: 'varchar', name: 'proofFormat', enum: ['lds', 'jwt'], nullable: false, default: 'lds' })
-  proofFormat!: ProofFormat
+  proofFormat!: CredentialProofFormat
 
   @Column({
     name: 'statusListCredential',

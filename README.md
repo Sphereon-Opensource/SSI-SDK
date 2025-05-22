@@ -25,7 +25,7 @@ the REST APIs.
 This is a new [set of specifications](https://openid.net/openid4vc/) by the [OpenID Foundation](https://openid.net/), that enable peer to peer authentication ([SIOPv2](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html)),
 Credential Issuance ([OID4VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)) and Credential Presentation/Verification ([OID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)). The SSI-SDK modules offer
 higher-level and more tight integrations for these specification than our lower level libraries,
-like [OID4VCI](https://github.com/Sphereon-OpenSource/OID4VCI), [SIOPv2 & OID4VP](https://github.com/Sphereon-Opensource/SIOP-OID4VP) and [Well-known DIDs](https://github.com/Sphereon-Opensource/wellknown-did-client).
+like [OID4VCI](https://github.com/Sphereon-OpenSource/OID4VC), [SIOPv2 & OID4VP](https://github.com/Sphereon-Opensource/SIOP-OID4VP) and [Well-known DIDs](https://github.com/Sphereon-Opensource/wellknown-did-client).
 
 These low-level libraries are typically not too opinionated and require an implementor to do some more work like providing
 signature/key callback functions. Contrary this
@@ -118,7 +118,7 @@ functionalities in Veramo.
 | [SSI Types](./packages/ssi-types)                                                         | Generic interfaces for Verifiable Credentials (JWT and JSON-LD) and DIDs. Also supports creating a uniform representation of Credentials, no matter whether they are in JWT or JSON-LD format |
 | [SSI Core](./packages/ssi-sdk-core)                                                       | Adds generic functions used by other plugins, like signing, encoding/decoding                                                                                                                 |
 | [DID Utils & Key Utils](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions) | Generic key and DID utils can be found in our [SSI SDK Crypto Extensions repo](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions)                                              |
-| [JSON LD issuer/verified](./packages/vc-handler-ld-local)                                 | Adds JSON-LD issuance and verification for Verifiable Credentials. Integrates seamlessly with Veramo's W3C VC plugin                                                                          |
+| [JSON LD issuer/verified](./packages/credential-jsonld)                                 | Adds JSON-LD issuance and verification for Verifiable Credentials. Integrates seamlessly with Veramo's W3C VC plugin                                                                          |
 | [QR code generator](./packages/qr-code-generator)                                         | Create generic, SIOPv2/OID4VP, OID4VCI and WACI PEX QR codes. This package specifically targets React and React-Native                                                                        |
 
 # DID resolution

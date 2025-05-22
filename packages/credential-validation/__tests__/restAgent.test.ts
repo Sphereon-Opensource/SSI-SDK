@@ -3,13 +3,14 @@ import 'cross-fetch/polyfill'
 import express, { Router } from 'express'
 import { Server } from 'http'
 import { DataSource } from 'typeorm'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import credentialValidationAgentLogic from './shared/credentialValidationAgentLogic'
-import { ICredentialValidation } from '../src'
-jest.setTimeout(60000)
+import { ICredentialValidation } from '../dist'
+//jest.setTimeout(60000)
+import { describe } from 'vitest'
 
 const port = 4103
 const basePath = '/agent'
@@ -54,8 +55,8 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
-  await (await dbConnection).close()
+  restServer?.close()
+  await (await dbConnection)?.close()
   return true
 }
 

@@ -2,22 +2,34 @@
   "name": "@sphereon/ssi-sdk.contact-manager",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IContactManager": "./src/types/IContactManager.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.21"
+    "typeorm": "0.3.20"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
@@ -25,8 +37,8 @@
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -44,6 +56,5 @@
     "Veramo",
     "OpenID",
     "Contact Manager"
-  ],
-  "nx": {}
+  ]
 }

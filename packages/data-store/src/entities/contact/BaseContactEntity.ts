@@ -1,4 +1,5 @@
-import {
+import typeorm from 'typeorm'
+const {
   BaseEntity,
   BeforeInsert,
   BeforeUpdate,
@@ -10,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
-} from 'typeorm'
+} = typeorm
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { PartyEntity } from './PartyEntity'
 import { ContactMetadataItemEntity } from './ContactMetadataItemEntity'

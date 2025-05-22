@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { LinkHandlers, LogLinkHandler } from '../src'
 
 describe('link handlers', () => {

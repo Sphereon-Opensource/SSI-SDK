@@ -1,9 +1,9 @@
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
-import { IPresentationDefinition } from '@sphereon/pex'
-import { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
-import { blake2bHex } from 'blakejs'
+import type { IPresentationDefinition } from '@sphereon/pex'
+import type { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
+import * as blakepkg from 'blakejs'
 import { replaceNullWithUndefined } from '../FormattingUtils'
-import { DcqlQueryREST } from '@sphereon/ssi-types'
+import type { DcqlQueryREST } from '@sphereon/ssi-types'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
   const result: PresentationDefinitionItem = {
@@ -36,7 +36,7 @@ export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentat
 }
 
 function hashPayload(payload: IPresentationDefinition): string {
-  return blake2bHex(JSON.stringify(payload))
+  return blakepkg.blake2bHex(JSON.stringify(payload))
 }
 
 export function isPresentationDefinitionEqual(base: PartialPresentationDefinitionItem, compare: PartialPresentationDefinitionItem): boolean {

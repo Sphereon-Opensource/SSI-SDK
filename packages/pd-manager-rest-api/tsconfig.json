@@ -1,16 +1,23 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
-    { "path": "../ssi-express-support" },
-    { "path": "../ssi-sdk-core" },
-    { "path": "../data-store" },
-    { "path": "../pd-manager" },
-    { "path": "../ssi-types" }
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../pd-manager"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-express-support"
+    }
   ]
 }

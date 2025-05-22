@@ -3,21 +3,33 @@
   "description": "Sphereon SSI-SDK plugin for Status List management, like StatusList2021.",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@sd-jwt/core": "^0.9.2",
     "@sd-jwt/jwt-status-list": "^0.9.1",
     "@sd-jwt/sd-jwt-vc": "^0.9.2",
-    "@sphereon/kmp-cbor": "0.2.0-SNAPSHOT.25",
-    "@sphereon/oid4vci-common": "0.17.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
+    "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
+    "@sphereon/oid4vci-common": "0.19.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.29.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.29.0",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.29.0",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/vc-status-list": "7.0.0-next.0",
     "@veramo/core": "4.2.0",
@@ -27,7 +39,7 @@
     "debug": "^4.3.5",
     "jwt-decode": "^4.0.0",
     "pako": "^2.1.0",
-    "typeorm": "^0.3.21",
+    "typeorm": "0.3.20",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
@@ -37,11 +49,11 @@
     "@babel/preset-typescript": "^7.24.7",
     "@types/pako": "2.0.3",
     "@veramo/key-manager": "4.2.0",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -56,6 +68,5 @@
     "Sphereon",
     "SSI",
     "StatusList2021"
-  ],
-  "nx": {}
+  ]
 }

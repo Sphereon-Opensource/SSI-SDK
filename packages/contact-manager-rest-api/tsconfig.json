@@ -1,23 +1,26 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
     {
       "path": "../ssi-types"
     },
     {
-      "path": "../ssi-express-support"
+      "path": "../kv-store"
+    },
+    {
+      "path": "../data-store"
     },
     {
       "path": "../ssi-sdk-core"
     },
     {
-      "path": "../kv-store"
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-express-support"
     }
   ]
 }

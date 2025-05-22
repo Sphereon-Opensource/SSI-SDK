@@ -1,12 +1,4 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "emitDecoratorMetadata": true,
-    "declarationDir": "dist"
-  },
   "references": [
     {
       "path": "../ssi-types"
@@ -27,5 +19,5 @@
       "path": "../ssi-express-support"
     }
   ],
-  "extends": "../tsconfig-base.json"
+  "extends": "../../tsconfig.base.json"
 }

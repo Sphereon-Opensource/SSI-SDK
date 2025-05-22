@@ -1,11 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
     {
       "path": "../data-store"

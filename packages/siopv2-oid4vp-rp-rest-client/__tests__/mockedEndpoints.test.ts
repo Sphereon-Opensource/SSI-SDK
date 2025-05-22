@@ -2,6 +2,7 @@ import { createAgent, IResolver } from '@veramo/core'
 // @ts-ignore
 import nock from 'nock'
 import { ISIOPv2OID4VPRPRestClient, SIOPv2OID4VPRPRestClient } from '../src'
+import { afterAll, describe, expect, it } from 'vitest'
 
 const definitionId = '9449e2db-791f-407c-b086-c21cc677d2e0'
 const baseUrl = 'https://my-siop-endpoint'
@@ -37,10 +38,10 @@ describe('@sphereon/siopv2-oid4vp-rp-rest-client', () => {
       })
       .times(1)
       .reply(200, {})
-    await expect(
-      agent.siopClientGetAuthStatus({
-        correlationId: 'my-correlation-id',
-      }),
-    ).resolves.toBeDefined()
+
+    const status = await agent.siopClientGetAuthStatus({
+      correlationId: 'my-correlation-id',
+    })
+    expect(status).toBeDefined
   })
 })

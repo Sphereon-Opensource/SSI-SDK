@@ -19,7 +19,7 @@ import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributes
 import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from './entities/statusList/StatusListEntities'
 import { StatusListEntryEntity } from './entities/statusList/StatusList2021EntryEntity'
 import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
-import { IStatusListEntity, IStatusListEntryEntity } from './types'
+// import { IStatusListEntity, IStatusListEntryEntity } from './types.'
 import { PartyRelationshipEntity } from './entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from './entities/contact/PartyTypeEntity'
 import { OrganizationEntity } from './entities/contact/OrganizationEntity'
@@ -33,6 +33,7 @@ import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataIte
 import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
 
 import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity'
+// import {PartyCorrelationType} from "@sphereon/ssi-sdk.core";
 
 export { ContactStore } from './contact/ContactStore'
 export { AbstractContactStore } from './contact/AbstractContactStore'
@@ -140,10 +141,10 @@ export {
   IssuerLocaleBrandingEntity,
   ElectronicAddressEntity,
   PhysicalAddressEntity,
-  IStatusListEntity,
-  IStatusListEntryEntity,
   StatusListEntity,
   StatusListEntryEntity,
+  OAuthStatusListEntity,
+  StatusList2021Entity,
   AuditEventEntity,
   DigitalCredentialEntity,
   MachineStateInfoEntity,

@@ -1,4 +1,4 @@
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import type { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 export enum DefaultLinkPriorities {
   HIGHEST = 0,

@@ -1,0 +1,39 @@
+{
+  "IOIDFClient": {
+    "components": {
+      "schemas": {
+        "ResolveTrustChainArgs": {
+          "type": "object",
+          "properties": {
+            "entityIdentifier": {
+              "type": "string"
+            },
+            "trustAnchors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["entityIdentifier", "trustAnchors"],
+          "additionalProperties": false
+        },
+        "TrustChainResolveResponse": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "methods": {
+        "resolveTrustChain": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ResolveTrustChainArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/TrustChainResolveResponse"
+          }
+        }
+      }
+    }
+  }
+}

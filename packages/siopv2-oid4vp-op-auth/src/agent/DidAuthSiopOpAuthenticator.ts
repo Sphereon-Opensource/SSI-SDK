@@ -13,32 +13,28 @@ import {
 import { HasherSync, Loggers, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  DidAuthSiopOpAuthenticatorOptions,
-  GetSelectableCredentialsArgs,
-  IOpSessionArgs,
-  Json,
-  LOGGER_NAMESPACE,
-  RequiredContext,
-  schema,
-  SelectableCredentialsMap,
-  Siopv2AuthorizationResponseData,
-  VerifiableCredentialsWithDefinition,
-} from '../index'
-import { Siopv2Machine } from '../machine/Siopv2Machine'
-import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
+
 import { OpSession } from '../session'
 import { PEX, Status } from '@sphereon/pex'
 import { computeEntryHash } from '@veramo/utils'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { EventEmitter } from 'events'
 import {
+  DidAuthSiopOpAuthenticatorOptions,
+  GetSelectableCredentialsArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
+  IOpSessionArgs,
   IRegisterCustomApprovalForSiopArgs,
   IRemoveCustomApprovalForSiopArgs,
   IRemoveSiopSessionArgs,
   IRequiredContext,
+  Json,
+  LOGGER_NAMESPACE,
+  RequiredContext,
+  SelectableCredentialsMap,
+  Siopv2AuthorizationResponseData,
+  VerifiableCredentialsWithDefinition,
 } from '../types'
 
 import {
@@ -56,6 +52,9 @@ import {
   Siopv2MachineInstanceOpts,
 } from '../types'
 import { DcqlCredential, DcqlPresentation, DcqlQuery, DcqlSdJwtVcCredential } from 'dcql'
+import { Siopv2Machine } from '../machine/Siopv2Machine'
+import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
+import { schema } from '..'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 

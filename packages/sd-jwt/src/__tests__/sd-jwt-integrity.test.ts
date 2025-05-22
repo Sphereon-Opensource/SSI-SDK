@@ -1,6 +1,6 @@
+import { describe, it } from 'vitest'
 import { defaultGenerateDigest } from '../defaultCallbacks'
 import { createIntegrity, validateIntegrity } from '../index'
-
 // type AgentType = IDIDManager & IKeyManager & IIdentifierResolution & IJwtService & IResolver & ISDJwtPlugin & ImDLMdoc
 const fs = require('node:fs')
 

@@ -1,3 +1,4 @@
+// @ts-ignore
 import passport from 'passport'
 
 import { ClientMetadata, Strategy, UserinfoResponse } from 'openid-client'

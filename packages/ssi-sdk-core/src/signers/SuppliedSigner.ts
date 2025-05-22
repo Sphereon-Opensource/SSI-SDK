@@ -1,4 +1,4 @@
-import { IKey, IAgentContext, IKeyManager } from '@veramo/core'
+import type { IKey, IAgentContext, IKeyManager } from '@veramo/core'
 
 export function SuppliedSigner(keyRef: Pick<IKey, 'kid'>, context: IAgentContext<IKeyManager>, algorithm: KeyAlgo): Signer {
   return async (data: string | Uint8Array): Promise<string> => {
@@ -7,9 +7,9 @@ export function SuppliedSigner(keyRef: Pick<IKey, 'kid'>, context: IAgentContext
     return await context.agent.keyManagerSign({ keyRef: keyRef.kid, algorithm, data: input })
   }
 }
-export declare type Signer = (data: string | Uint8Array) => Promise<EcdsaSignature | string>
+export type Signer = (data: string | Uint8Array) => Promise<EcdsaSignature | string>
 
-export declare enum KeyAlgo {
+export enum KeyAlgo {
   EDDSA = 'EdDSA',
   RS256 = 'RS256',
   PS256 = 'PS256',

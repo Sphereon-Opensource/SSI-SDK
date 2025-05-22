@@ -1,12 +1,13 @@
 import { digestMethodParams } from '@sphereon/ssi-sdk-ext.key-utils'
-import { HasherSync, JWK, Loggers } from '@sphereon/ssi-types'
+import { HasherSync, JsonWebKey, JWK, Loggers } from '@sphereon/ssi-types'
 import { v4 } from 'uuid'
-import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
 import { IRequiredContext, SdJwtVerifySignature } from './types'
 
 export const defaultGenerateDigest: HasherSync = (data: string | ArrayBuffer, alg: string): Uint8Array => {
   return digestMethodParams(alg.includes('256') ? 'SHA-256' : 'SHA-512').hash(
-    typeof data === 'string' ? u8a.fromString(data, 'utf-8') : new Uint8Array(data),
+    typeof data === 'string' ? fromString(data, 'utf-8') : new Uint8Array(data),
   )
 }
 

@@ -8,10 +8,10 @@ import {
   IRestClientAuthenticationOpts,
 } from '../types/IOID4VCIRestClient'
 import { IssueStatusResponse } from '@sphereon/oid4vci-common'
-import Debug from 'debug'
 import { IAgentPlugin } from '@veramo/core'
+import { Loggers } from '@sphereon/ssi-types'
 
-const debug = Debug('sphereon:ssi-sdk:oid4vci:issuer:rest-client')
+const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:oid4vci:issuer:rest-client')
 
 /**
  * {@inheritDoc IOID4VCIRestClient}
@@ -31,6 +31,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
     }
     this.authOpts = args?.authentication
   }
+
   private async createHeaders(existing?: Record<string, any>): Promise<HeadersInit> {
     const headers: HeadersInit = {
       ...existing,
@@ -59,7 +60,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
       ...(args.credentialDataSupplierInput && { credentialDataSupplierInput: args.credentialDataSupplierInput }),
     }
     const url = OID4VCIRestClient.urlWithBase(`webapp/credential-offers`, baseUrl)
-    debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)
+    logger.debug(`OID4VCIRestClient is going to send request: ${JSON.stringify(request)} to ${url}`)
     try {
       const origResponse = await fetch(url, {
         method: 'POST',
@@ -71,7 +72,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
       }
       return await origResponse.json()
     } catch (e) {
-      debug(`Error on posting to url ${url}: ${e}`)
+      logger.debug(`Error on posting to url ${url}: ${e}`)
       return Promise.reject(Error(`request to ${url} returned ${e}`))
     }
   }
@@ -86,7 +87,7 @@ export class OID4VCIRestClient implements IAgentPlugin {
         id: args.id,
       }),
     })
-    debug(`issue status response: ${statusResponse}`)
+    logger.debug(`issue status response: ${statusResponse}`)
     try {
       return await statusResponse.json()
     } catch (err) {

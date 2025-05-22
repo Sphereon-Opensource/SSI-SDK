@@ -1,26 +1,20 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
-    {
-      "path": "../oid4vci-issuer-store"
-    },
-    {
-      "path": "../agent-config"
-    },
     {
       "path": "../ssi-types"
     },
     {
-      "path": "../ssi-sdk-core"
+      "path": "../vc-status-list-issuer"
+    },
+    {
+      "path": "../vc-status-list"
     },
     {
       "path": "../sd-jwt"
+    },
+    {
+      "path": "../oid4vci-issuer-store"
     },
     {
       "path": "../mdl-mdoc"
@@ -32,7 +26,10 @@
       "path": "../data-store"
     },
     {
-      "path": "../vc-status-list-issuer"
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

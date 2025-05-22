@@ -18,7 +18,7 @@ import { StatusListCredentialIdMode, StatusListDriverType, StatusListType, Statu
 import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
 import { statusListResultToEntity } from './status-list-adapters'
-import { OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store/dist/entities/statusList/StatusListEntities'
+import { OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store'
 
 export interface StatusListManagementOptions {
   id?: string

@@ -1,4 +1,4 @@
-import { CredentialFormat, PresentationFormat } from '../types'
+import type { CredentialFormat, PresentationFormat } from '../types'
 
 export type CredentialEncoding = 'json' /*includes json-ld*/ | 'jwt' | 'cbor'
 
@@ -16,4 +16,17 @@ export interface CredentialConstraint {
   dataModel: DataModel
   typeAttribute?: TypeAttributeName // optional since mdocs use namespace maps without an explicit type attribute
   issuerAttributes: [IssuerAttributeName]
+}
+
+export enum StatusListCredentialIdMode {
+  ISSUANCE = 'ISSUANCE',
+  // PERSISTENCE = 'PERSISTENCE',
+  NEVER = 'NEVER',
+}
+
+export enum StatusListDriverType {
+  AGENT_TYPEORM = 'agent_typeorm',
+  /* AGENT_KV_STORE = 'agent_kv_store',
+  GITHUB = 'github',
+  AGENT_FILESYSTEM = 'agent_filesystem',*/
 }

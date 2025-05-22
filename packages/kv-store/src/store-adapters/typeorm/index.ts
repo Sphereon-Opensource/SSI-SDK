@@ -6,10 +6,8 @@ import { KeyValueTypeORMOptions, Options_ } from './types'
 import { KeyvStore, KeyvStoredData } from '../../keyv/keyv-types'
 import { IKeyValueStoreAdapter } from '../../key-value-types'
 import JSONB from 'json-buffer'
-
-export { KeyValueTypeORMOptions } from './types'
 export { KeyValueStoreEntity } from './entities/keyValueStoreEntity'
-export { kvStoreMigrations } from './migrations'
+export { kvStoreMigrations } from './migrations/index'
 
 /**
  * TypeORM based key value store adapter

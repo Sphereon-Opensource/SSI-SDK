@@ -2,23 +2,35 @@
   "name": "@sphereon/ssi-sdk.issuance-branding",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IIssuanceBranding": "./src/types/IIssuanceBranding.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.21"
+    "typeorm": "0.3.20"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
@@ -26,8 +38,8 @@
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -48,6 +60,5 @@
     "Credential Manifest",
     "OID4VCI",
     "SSI"
-  ],
-  "nx": {}
+  ]
 }

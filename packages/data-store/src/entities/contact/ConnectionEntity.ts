@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm'
+import typeorm from 'typeorm'
+const { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } = typeorm
 import { BaseConfigEntity } from './BaseConfigEntity'
 import { ConnectionType } from '../../types'
 import { IdentityEntity } from './IdentityEntity'

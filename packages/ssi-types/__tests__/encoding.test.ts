@@ -1,21 +1,22 @@
+import { describe, expect, it } from 'vitest'
 import * as fs from 'fs'
 import {
   CredentialMapper,
+  decodeMdocDeviceResponse,
+  decodeMdocIssuerSigned,
   decodeSdJwtVc,
   decodeSdJwtVcAsync,
-  JoseCurve,
-  JwkKeyType,
+  defaultHasher,
   IVerifiableCredential,
   IVerifiablePresentation,
+  JoseCurve,
   JWK,
+  JwkKeyType,
   JwtDecodedVerifiableCredential,
   JwtDecodedVerifiablePresentation,
+  OriginalType,
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
-  OriginalType,
-  decodeMdocIssuerSigned,
-  decodeMdocDeviceResponse,
-  defaultHasher,
 } from '../src'
 
 import { com } from '@sphereon/kmp-mdoc-core'

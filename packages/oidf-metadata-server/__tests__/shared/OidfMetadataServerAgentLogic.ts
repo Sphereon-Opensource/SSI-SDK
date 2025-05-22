@@ -11,7 +11,8 @@ import 'cross-fetch/polyfill'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { HttpTerminator } from 'http-terminator'
 import { IRequiredContext } from '../../src/types/metadata-server'
-import { IMetadataImportArgs } from '@sphereon/ssi-types/dist'
+import { IMetadataImportArgs } from '@sphereon/ssi-types'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IOIDFMetadataStore>
 

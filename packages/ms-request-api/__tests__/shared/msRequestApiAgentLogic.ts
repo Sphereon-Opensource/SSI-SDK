@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { createAgent, FindArgs, TAgent, TCredentialColumns, VerifiableCredential } from '@veramo/core'
 import { DataStore, DataStoreORM, Entities } from '@veramo/data-store'
 import { DataSource } from 'typeorm'
-import { CredentialRole, CredentialCorrelationType, ICredentialStore, DocumentType } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialCorrelationType, CredentialRole, DocumentType, ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { afterAll, beforeAll, describe, expect, it, vitest } from 'vitest'
 
 type ConfiguredAgent = TAgent<IMsRequestApi & ICredentialStore>
 const did1 = 'did:test:111'
@@ -23,17 +24,17 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     let agent: ConfiguredAgent
 
     beforeAll(async () => {
-      jest.mock('../../src/IssuerUtil', () => {
+      vitest.mock('../../src/IssuerUtil', () => {
         return {
-          fetchIssuanceRequestMs: jest.fn().mockResolvedValue(requestIssuanceResponse),
-          generatePin: jest.fn().mockResolvedValue(6363),
+          fetchIssuanceRequestMs: vitest.fn().mockResolvedValue(requestIssuanceResponse),
+          generatePin: vitest.fn().mockResolvedValue(6363),
         }
       })
 
-      jest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
+      vitest.mock('@sphereon/ssi-sdk.ms-authenticator', () => {
         return {
-          ClientCredentialAuthenticator: jest.fn().mockResolvedValue('ey...'),
-          checkMsIdentityHostname: jest.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
+          ClientCredentialAuthenticator: vitest.fn().mockResolvedValue('ey...'),
+          checkMsIdentityHostname: vitest.fn().mockResolvedValue(MsAuthenticator.MS_DID_ENDPOINT_EU),
         }
       })
       await testContext.setup()
@@ -68,13 +69,13 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       // ngrok changes the URI
       clientIssueRequest.clientIssuanceConfig.callback.url = `https://6270-2a02-a458-e71a-1-68b4-31d2-b44f-12b.eu.ngrok.io/api/issuer/issuance-request-callback`
 
-      clientIssueRequest.clientIssuanceConfig.registration.clientName = 'Sphereon Node.js SDK API Issuer'
+      clientIssueRequest.clientIssuanceConfig.registration.clientName = 'Sphereon Node SDK API Issuer'
 
       // modify payload with new state, the state is used to be able to update the UI when callbacks are received from the VC Service
       var id = uuidv4()
       clientIssueRequest.clientIssuanceConfig.callback.state = id
 
-      const fetchIssuanceRequestMsMock = jest.fn().mockResolvedValue(requestIssuanceResponse)
+      const fetchIssuanceRequestMsMock = vitest.fn().mockResolvedValue(requestIssuanceResponse)
       fetchIssuanceRequestMs.prototype = fetchIssuanceRequestMsMock
 
       return await expect(agent.issuanceRequestMsVc(clientIssueRequest)).resolves.not.toBeNull
@@ -154,7 +155,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(credentials[0].digitalCredential.id).toEqual('vc5')
       const count = await localAgent.crsGetCredentialsByClaimsCount({ filter: vc5Filter })
       expect(count).toEqual(1)
-      await (await dbConnection).close()
+      await (await dbConnection)?.close()
     })
   })
 }

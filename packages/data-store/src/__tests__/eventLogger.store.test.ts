@@ -5,7 +5,8 @@ import { DataSource } from 'typeorm'
 import { DataStoreEventLoggerMigrations } from '../migrations'
 import { DataStoreEventLoggerEntities } from '../index'
 import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
-import { GetActivityEventsArgs, GetAuditEventsArgs, NonPersistedAuditLoggingEvent, NonPersistedActivityLoggingEvent } from '../types'
+import { GetActivityEventsArgs, GetAuditEventsArgs, NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../types'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

@@ -9,17 +9,13 @@ import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import {
-  CredentialHandlerLDLocal,
-  ICredentialHandlerLDLocal,
+  CredentialProviderJsonld,
   LdDefaultContexts,
-  MethodNames,
   SphereonEcdsaSecp256k1RecoverySignature2020,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { createAgent, ICredentialPlugin, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
-import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
 import { EthrDIDProvider } from '@veramo/did-provider-ethr'
@@ -38,6 +34,7 @@ import { VcApiServer } from '../src'
 // @ts-ignore
 import config from './config.json'
 import { DB_CONNECTION_NAME_SQLITE, DB_ENCRYPTION_KEY, sqliteConfig } from './database'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 const debug = Debug('sphereon:vc-api')
 
@@ -108,7 +105,7 @@ const dbConnection = DataSources.singleInstance()
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const agent = createAgent<
-  IDIDManager & IKeyManager & IDataStoreORM & IResolver & IPresentationExchange & ICredentialVerifier & ICredentialHandlerLDLocal & ICredentialPlugin
+  IDIDManager & IKeyManager & IDataStoreORM & IResolver & IPresentationExchange & ICredentialVerifier & IVcdmCredentialPlugin & ICredentialPlugin
 >({
   plugins: [
     new DataStore(dbConnection),
@@ -128,20 +125,14 @@ const agent = createAgent<
       resolver,
     }),
     new PresentationExchange(),
-    new CredentialPlugin(),
-    new CredentialHandlerLDLocal({
-      contextMaps: [LdDefaultContexts],
-      suites: [
-        new SphereonEd25519Signature2018(),
-        new SphereonEd25519Signature2020(),
-        new SphereonJsonWebSignature2020(),
-        new SphereonEcdsaSecp256k1RecoverySignature2020(),
+    new VcdmCredentialPlugin({
+      issuers: [
+        new CredentialProviderJsonld({
+          contextMaps: [LdDefaultContexts],
+          suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonEcdsaSecp256k1RecoverySignature2020()],
+          keyStore: privateKeyStore,
+        }),
       ],
-      bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
-      ]),
-      keyStore: privateKeyStore,
     }),
   ],
 })

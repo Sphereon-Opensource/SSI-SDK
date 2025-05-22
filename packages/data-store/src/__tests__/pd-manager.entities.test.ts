@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm'
 import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { DataStorePresentationDefinitionMigrations } from '../migrations'
 import { DataStorePresentationDefinitionEntities } from '../index'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('PresentationDefinitionItemEntity tests', (): void => {
   let dbConnection: DataSource

@@ -1,6 +1,7 @@
-import { IProofPurpose, IProofType } from './did'
-import { PresentationSubmission } from './pex'
-import { OriginalType, WrappedVerifiableCredential, WrappedVerifiablePresentation } from './vc'
+import { type PresentationSubmission } from './pex'
+import { OriginalType } from '../mapper'
+import { IProofPurpose, IProofType } from '../utils'
+import { OriginalVerifiableCredential } from './vc'
 
 export type AdditionalClaims = Record<string, any>
 
@@ -195,8 +196,6 @@ export interface JwtDecodedVerifiablePresentation {
   [x: string]: any
 }
 
-export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
-
 export interface IVerifyStatusResult {
   verified: boolean
   /**
@@ -212,21 +211,26 @@ export interface IVerifyStatusResult {
   [x: string]: any
 }
 
+export interface IVerifySingleResultItem {
+  credential?: OriginalVerifiableCredential
+  presentation?: IPresentation
+  verified: boolean
+  error?: IError
+  log: Array<IVerifySingleResultLog>
+}
+
+export interface IVerifySingleResultLog {
+  id: string
+  valid: boolean
+}
+
 export interface IVerifyResult {
   /**
    * This value is used to transmit the global result of verification.
    */
   verified: boolean
 
-  results?: [
-    {
-      credential?: ICredential
-      presentation?: IPresentation
-      verified: boolean
-      error?: IError
-      log: [{ id: string; valid: boolean }]
-    },
-  ]
+  results?: Array<IVerifySingleResultItem>
 
   statusResult?: IVerifyStatusResult
 
@@ -238,7 +242,7 @@ export interface IVerifyResult {
 
   /**
    * Other options can be specified for verification.
-   * They will be forwarded to the lower level modules. that performt the checks
+   * They will be forwarded to the lower level modules. that perform the checks
    */
   [x: string]: any
 }
@@ -284,25 +288,4 @@ export enum StatusListType {
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 
-export enum StatusListCredentialIdMode {
-  ISSUANCE = 'ISSUANCE',
-  // PERSISTENCE = 'PERSISTENCE',
-  NEVER = 'NEVER',
-}
-
 export type StatusListIndexingDirection = 'rightToLeft'
-
-export enum StatusListDriverType {
-  AGENT_TYPEORM = 'agent_typeorm',
-  /* AGENT_KV_STORE = 'agent_kv_store',
-  GITHUB = 'github',
-  AGENT_FILESYSTEM = 'agent_filesystem',*/
-}
-
-export function isWrappedW3CVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedW3CVerifiableCredential {
-  return vc.format === 'jwt_vc' || vc.format === 'ldp_vc'
-}
-
-export function isWrappedW3CVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedW3CVerifiablePresentation {
-  return vp.format === 'jwt_vp' || vp.format === 'ldp_vp'
-}

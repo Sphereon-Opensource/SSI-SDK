@@ -1,3 +1,5 @@
+import { expect } from 'vitest'
+
 export const GET_PRE_AUTHORIZED_OPENID_CREDENTIAL_OFFER = {
   credentialBranding: {},
   credentialsSupported: [],

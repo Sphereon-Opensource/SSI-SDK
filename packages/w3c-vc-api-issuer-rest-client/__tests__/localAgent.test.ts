@@ -1,8 +1,7 @@
 import { getConfig } from '@veramo/cli/build/setup'
 import { createObjects } from '@veramo/cli/build/lib/objectCreator'
-
-jest.setTimeout(60000)
-
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 import vcApiIssuerAgentLogic from './shared/vcApiIssuerAgentLogic'
 
 let agent: any

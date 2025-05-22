@@ -47,6 +47,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
+  type CredentialProofFormat,
   HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
@@ -65,7 +66,6 @@ import {
   IDIDManager,
   IKeyManager,
   IResolver,
-  ProofFormat,
   VerifiableCredential,
   W3CVerifiableCredential,
 } from '@veramo/core'
@@ -195,7 +195,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
     throw Error('The issuer of the VC cannot be trusted')
   }
 
-  const payload = await response.json()
+  const payload = (await response.json()) as VerifyEBSICredentialIssuerResult
 
   if (!payload.attributes.some((a: Attribute) => issuerType.includes(a.issuerType))) {
     throw Error(`The issuer type is required to be one of: ${issuerType.join(', ')}`)
@@ -930,7 +930,11 @@ export class OID4VCIHolder implements IAgentPlugin {
         if (CredentialMapper.isWrappedSdJwtVerifiableCredential(wrappedIssuerVC)) {
           issuer = trimmed(wrappedIssuerVC.decoded?.sub)
         } else if (CredentialMapper.isWrappedW3CVerifiableCredential(wrappedIssuerVC)) {
-          issuer = trimmed(wrappedIssuerVC.credential?.sub) ?? trimmed(this.idFromW3cCredentialSubject(wrappedIssuerVC))
+          issuer =
+            trimmed(wrappedIssuerVC.credential?.sub) ??
+            // @ts-ignore
+            trimmed(wrappedIssuerVC.credential?.credentialSubject?.id) ??
+            trimmed(this.idFromW3cCredentialSubject(wrappedIssuerVC))
         } else if (CredentialMapper.isWrappedMdocCredential(wrappedIssuerVC)) {
           return Promise.reject(Error('mdoc not yet supported'))
         }
@@ -962,7 +966,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         logger.log(`Issuer for self-issued credential will be: ${issuer}`)
 
         const holderCredentialToSign = wrappedIssuerVC.decoded
-        let proofFormat: ProofFormat = 'lds'
+        let proofFormat: CredentialProofFormat = 'lds'
         if (wrappedIssuerVC.format.includes('jwt') && !wrappedIssuerVC.format.includes('mso_mdoc')) {
           holderCredentialToSign.iss = issuer
           proofFormat = 'jwt'
@@ -990,7 +994,7 @@ export class OID4VCIHolder implements IAgentPlugin {
 
         logger.log(`Subject issuance/signing will sign credential of type ${proofFormat}:`, holderCredentialToSign)
         const issuedVC = await context.agent.createVerifiableCredential({
-          credential: holderCredentialToSign as CredentialPayload,
+          credential: ('vc' in holderCredentialToSign ? holderCredentialToSign.vc : holderCredentialToSign) as CredentialPayload,
           fetchRemoteContexts: true,
           save: false,
           proofFormat,

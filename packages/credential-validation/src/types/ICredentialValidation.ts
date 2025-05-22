@@ -1,7 +1,7 @@
 import { IAgentContext, ICredentialVerifier, IPluginMethodMap } from '@veramo/core'
 import { HasherSync, WrappedVerifiableCredential, WrappedVerifiablePresentation } from '@sphereon/ssi-types'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { OriginalVerifiableCredential } from '@sphereon/ssi-types/dist'
+import { OriginalVerifiableCredential } from '@sphereon/ssi-types'
 
 export interface ICredentialValidation extends IPluginMethodMap {
   cvVerifyCredential(args: VerifyCredentialArgs, context: RequiredContext): Promise<VerificationResult>

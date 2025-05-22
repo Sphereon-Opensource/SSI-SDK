@@ -133,7 +133,7 @@ export class OID4VCIRestAPI {
   private setupSwaggerUi() {
     fetch(this.OID4VCI_SWAGGER_URL)
       .then((res) => res.json())
-      .then((swagger) => {
+      .then((swagger: any) => {
         const apiDocs = `/api-docs`
         console.log(`[OID4VCI] API docs available at ${this._baseUrl.toString()}${this._basePath}${apiDocs}`)
         swagger.servers = [{ url: this._baseUrl.toString(), description: 'This server' }]

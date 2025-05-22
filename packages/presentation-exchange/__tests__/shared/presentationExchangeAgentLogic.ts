@@ -4,6 +4,7 @@ import { IPresentationExchange } from '../../src'
 import { mapIdentifierKeysToDoc } from '@veramo/utils'
 import { mapIdentifierKeysToDocWithJwkSupport } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IPresentationDefinition } from '@sphereon/pex'
+import { afterAll, beforeAll, describe, expect, it, Mock, vitest } from 'vitest'
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -14,14 +15,14 @@ function getFileAsJson(path: string) {
 }
 
 // const nock = require('nock')
-jest.mock('@veramo/utils', () => ({
-  ...jest.requireActual('@veramo/utils'),
-  mapIdentifierKeysToDoc: jest.fn(),
+vitest.mock('@veramo/utils', () => ({
+  ...vitest.importActual('@veramo/utils'),
+  mapIdentifierKeysToDoc: vitest.fn(),
 }))
 
-jest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
-  ...jest.requireActual('@sphereon/ssi-sdk-ext.did-utils'),
-  mapIdentifierKeysToDocWithJwkSupport: jest.fn(),
+vitest.mock('@sphereon/ssi-sdk-ext.did-utils', () => ({
+  ...vitest.importActual('@sphereon/ssi-sdk-ext.did-utils'),
+  mapIdentifierKeysToDocWithJwkSupport: vitest.fn(),
 }))
 
 type ConfiguredAgent = TAgent<IPresentationExchange & IDataStore>
@@ -76,10 +77,10 @@ export default (testContext: {
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as jest.Mock
+      const mockedMapIdentifierKeysToDocMethod = mapIdentifierKeysToDoc as Mock
       mockedMapIdentifierKeysToDocMethod.mockReturnValue(Promise.resolve(authKeys))
 
-      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as jest.Mock
+      const mockedMapIdentifierKeysToDocMethodWithJwkSupport = mapIdentifierKeysToDocWithJwkSupport as Mock
       mockedMapIdentifierKeysToDocMethodWithJwkSupport.mockReturnValue(Promise.resolve(authKeys))
     })
 

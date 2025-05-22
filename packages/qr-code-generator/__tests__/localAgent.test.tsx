@@ -1,12 +1,11 @@
+import { describe } from 'vitest'
 /**
  * @jest-environment jsdom
  */
-
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
-
-jest.setTimeout(60000)
-
 import ssiQrCodeProviderLogic from './shared/ssiQrCodeProviderLogic'
+
+// jest.setTimeout(60000)
 
 let agent: any
 

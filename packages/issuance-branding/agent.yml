@@ -31,9 +31,9 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: './packages/data-store?t=object#DataStoreMigrations'
+        $require: './packages/data-store/dist?t=object#DataStoreMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStoreIssuanceBrandingEntities'
+        $require: './packages/data-store/dist?t=object#DataStoreIssuanceBrandingEntities'
 
 server:
   baseUrl:

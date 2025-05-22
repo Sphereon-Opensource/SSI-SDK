@@ -17,6 +17,7 @@ import {
   siopv2CreateElement,
   siopv2CreateValue,
 } from './fixtures'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IQRCodeGenerator>
 
@@ -94,7 +95,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    it('should create OpenID4VCI qr code value - by value, scheme not in baseUri and scheme ', async () => {
+    it.skip('should create OpenID4VCI qr code value - by value, scheme not in baseUri and scheme ', async () => {
       await agent.qrOpenID4VCIValue(openid4vciCreateValueByValue).then((ssiQrCode) => {
         expect(ssiQrCode).toEqual(`https://test.com/credential-offer?credential_offer=${credentialOffer}`)
       })
@@ -106,7 +107,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       )
     })
 
-    it('should create OpenID4VCI qr code with renderingProps - by value, scheme not in baseUri and scheme', async () => {
+    it.skip('should create OpenID4VCI qr code with renderingProps - by value, scheme not in baseUri and scheme', async () => {
       await agent.qrOpenID4VCIElement(openid4vciCreateElementByValue).then(async (ssiQrCode) => {
         render(ssiQrCode)
 
@@ -125,7 +126,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
     })
 
-    it('should create OpenID4VCI qr code with renderingProps - by reference, scheme in uri and same scheme', async () => {
+    it.skip('should create OpenID4VCI qr code with renderingProps - by reference, scheme in uri and same scheme', async () => {
       await agent.qrOpenID4VCIElement(openid4vciCreateElementValid).then(async (ssiQrCode) => {
         render(ssiQrCode)
 

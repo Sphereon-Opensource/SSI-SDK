@@ -1,19 +1,10 @@
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  ManyToOne,
-  BeforeInsert,
-  BeforeUpdate,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm'
+import typeorm from 'typeorm'
+const { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate, CreateDateColumn, UpdateDateColumn } = typeorm
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import type { ElectronicAddressType, ValidationConstraint } from '../../types/index'
 import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
-import { ElectronicAddressType, ValidationConstraint } from '../../types'
 
 @Entity('ElectronicAddress')
 export class ElectronicAddressEntity extends BaseEntity {

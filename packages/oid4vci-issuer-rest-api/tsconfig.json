@@ -1,29 +1,26 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "esModuleInterop": true
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
     {
       "path": "../ssi-types"
-    },
-    {
-      "path": "../ssi-sdk-core"
-    },
-    {
-      "path": "../ssi-express-support"
-    },
-    {
-      "path": "../kv-store"
     },
     {
       "path": "../oid4vci-issuer-store"
     },
     {
       "path": "../oid4vci-issuer"
+    },
+    {
+      "path": "../kv-store"
+    },
+    {
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../credential-vcdm-jsonld-provider"
+    },
+    {
+      "path": "../data-store"
     }
   ]
 }

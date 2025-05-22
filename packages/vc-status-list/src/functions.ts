@@ -1,16 +1,18 @@
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
   DocumentFormat,
-  ProofFormat,
-  StatusListCredential,
+  type CredentialProofFormat,
+  type StatusListCredential,
   StatusListDriverType,
   StatusListType,
-  StatusPurpose2021,
+  type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 import { checkStatus } from '@sphereon/vc-status-list'
+
+// @ts-ignore
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
   CreateNewStatusListFuncArgs,
@@ -155,7 +157,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
 
 export async function createNewStatusList(
   args: CreateNewStatusListFuncArgs,
-  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+  context: IAgentContext<(ICredentialPlugin | any) /*IvcdMCredentialPlugin is not available*/ & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const { type } = getAssertedValues(args)
   const implementation = getStatusListImplementation(type)
@@ -229,7 +231,7 @@ export async function statusList2021ToVerifiableCredential(
     vmRelationship: 'assertionMethod',
     offlineWhenNoDIDRegistered: true, // FIXME Fix identifier resolution for EBSI
   })
-  const proofFormat: ProofFormat = args?.proofFormat ?? 'lds'
+  const proofFormat: CredentialProofFormat = args?.proofFormat ?? 'lds'
   assertValidProofType(StatusListType.StatusList2021, proofFormat)
   const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 

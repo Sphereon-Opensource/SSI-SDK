@@ -3,18 +3,31 @@
   "description": "Key Value Store plugin",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@veramo/utils": "4.2.0",
+    "reflect-metadata": "^0.2.2",
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "json-buffer": "^3.0.1",
-    "typeorm": "^0.3.21",
+    "typeorm": "0.3.20",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
@@ -25,15 +38,16 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/debug": "^4.1.12",
     "@types/json-buffer": "^3.0.2",
+    "@types/node": "20.17.30",
     "eslint": "^8.57.0",
     "eslint-plugin-promise": "^6.4.0",
     "keyv": "^4.5.4",
     "timekeeper": "^2.3.1",
-    "typescript": "5.5.3"
+    "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -46,6 +60,5 @@
   "keywords": [
     "Key Value Store",
     "keyv"
-  ],
-  "nx": {}
+  ]
 }

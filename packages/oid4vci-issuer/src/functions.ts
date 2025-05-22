@@ -6,14 +6,14 @@ import {
   JWTHeader,
   JWTPayload,
   JwtVerifyResult,
-  OID4VCICredentialFormat,
+  type OID4VCICredentialFormat,
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
 import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
-import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt/dist'
+import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, ProofFormat } from '@veramo/core'

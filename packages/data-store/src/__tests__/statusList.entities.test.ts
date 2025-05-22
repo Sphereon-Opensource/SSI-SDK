@@ -4,6 +4,7 @@ import { DataStoreStatusListEntities, StatusListEntryEntity } from '../index'
 import { DataStoreStatusListMigrations } from '../migrations'
 import { OAuthStatusListEntity, StatusList2021Entity } from '../entities/statusList/StatusListEntities'
 import { IIssuer, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Status list entities tests', () => {
   let dbConnection: DataSource

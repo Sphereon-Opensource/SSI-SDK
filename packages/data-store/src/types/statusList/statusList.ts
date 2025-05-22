@@ -6,7 +6,7 @@ import {
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
-  ProofFormat,
+  type CredentialProofFormat,
   RequireOneOf,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
@@ -19,7 +19,7 @@ export interface IStatusListEntity {
   length: number
   issuer: string | IIssuer
   type: StatusListType
-  proofFormat: ProofFormat
+  proofFormat: CredentialProofFormat
   statusListCredential?: StatusListCredential
 }
 

@@ -1,6 +1,6 @@
-import { IAgentContext, IAgentPlugin } from '@veramo/core'
+import type { IAgentContext, IAgentPlugin } from '@veramo/core'
 import Debug from 'debug'
-import { ILinkHandlerPlugin, LinkHandlerEvent, LinkHandlerEventArgs, LinkHandlerEventType, LinkHandlers } from '../index'
+import { type ILinkHandlerPlugin, type LinkHandlerEvent, type LinkHandlerEventArgs, LinkHandlerEventType, LinkHandlers } from '../index'
 
 const debug = Debug(`sphereon:ssi-sdk:LinkHandler`)
 /**

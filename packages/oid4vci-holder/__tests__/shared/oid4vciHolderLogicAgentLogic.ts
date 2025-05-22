@@ -13,6 +13,7 @@ import {
   WALLET_URL,
 } from './MetadataMocks'
 import { IMachineStatePersistence } from '@sphereon/ssi-sdk.xstate-machine-persistence'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import nock = require('nock')

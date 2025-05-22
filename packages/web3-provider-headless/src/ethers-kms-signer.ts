@@ -5,8 +5,9 @@ import { IKey } from '@veramo/core'
 import { Eip712Payload } from '@veramo/key-manager'
 import { ethers, Signer, TypedDataDomain, TypedDataField } from 'ethers'
 // import {arrayify, defineReadOnly, serializeTransaction} from 'ethers/lib/utils'
-import { arrayify, defineReadOnly /*, joinSignature*/ } from 'ethers/lib/utils'
-import * as u8a from 'uint8arrays'
+import { arrayify, defineReadOnly } from 'ethers/lib/utils'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
 // import {ECDSASignature} from "web3-eth-accounts";
 import { getAddressFromAgent } from './functions'
 import { IRequiredContext, TypedDataSigner } from './types'
@@ -114,7 +115,7 @@ export class EthersKMSSigner extends Signer implements TypedDataSigner {
       algorithm: 'eth_signTypedData',
       keyRef: this.keyRef.kid,
       // @ts-ignore // KMS accepts uint8arrays but interface does not expose it
-      data: u8a.fromString(JSON.stringify(jsonData)),
+      data: fromString(JSON.stringify(jsonData)),
     })
   }
 

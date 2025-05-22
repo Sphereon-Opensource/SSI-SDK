@@ -2,26 +2,38 @@
   "name": "@sphereon/ssi-sdk.oid4vci-holder",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IOID4VCIHolder": "./src/types/IOID4VCIHolder.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.0",
+    "@sphereon/did-auth-siop": "0.19.0",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/oid4vci-client": "0.17.0",
-    "@sphereon/oid4vci-common": "0.17.0",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
-    "@sphereon/ssi-sdk-ext.key-utils": "0.28.0",
+    "@sphereon/oid4vci-client": "0.19.0",
+    "@sphereon/oid4vci-common": "0.19.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.29.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.29.0",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.29.0",
+    "@sphereon/ssi-sdk-ext.key-utils": "0.29.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
@@ -46,8 +58,8 @@
     "xstate": "^4.38.3"
   },
   "devDependencies": {
-    "@sphereon/oid4vc-common": "0.17.0",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.0",
+    "@sphereon/oid4vc-common": "0.19.0",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.29.0",
     "@sphereon/ssi-sdk.siopv2-oid4vp-common": "workspace:*",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
@@ -55,12 +67,12 @@
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "nock": "^13.5.4",
-    "typeorm": "^0.3.21",
-    "typescript": "5.5.3"
+    "typeorm": "0.3.20",
+    "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -76,6 +88,5 @@
     "Sphereon",
     "OID4VCI",
     "State Machine"
-  ],
-  "nx": {}
+  ]
 }

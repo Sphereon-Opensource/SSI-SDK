@@ -2,7 +2,7 @@ import 'cross-fetch/polyfill'
 // @ts-ignore
 import express from 'express'
 import { Server } from 'http'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
@@ -10,8 +10,8 @@ import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IWellKnownDidVerifier } from '../src'
 import { ServiceTypesEnum } from '@sphereon/wellknown-dids-client'
 import wellKnownDidVerifierAgentLogic from './shared/wellKnownDidVerifierAgentLogic'
-
-jest.setTimeout(60000)
+import { describe, vitest } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 3012
 const basePath = '/agent'
@@ -75,7 +75,7 @@ const setup = async (): Promise<boolean> => {
     ],
   }
 
-  agent.resolveDid = jest.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
+  agent.resolveDid = vitest.fn().mockReturnValue(Promise.resolve({ didDocument: DOCUMENT }))
 
   serverAgent = agent
 
@@ -97,7 +97,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 

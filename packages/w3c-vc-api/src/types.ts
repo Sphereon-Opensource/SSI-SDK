@@ -1,24 +1,18 @@
-import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
-import {
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IDataStoreORM,
-  IDIDManager,
-  IKeyManager,
-  IResolver,
-} from '@veramo/core'
-import { ProofFormat } from '@veramo/core'
-import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import type { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import type { IAgentContext, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
+import type { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { CredentialProofFormat } from '@sphereon/ssi-types'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 
 export type IRequiredPlugins = IDataStoreORM &
   IDIDManager &
   IKeyManager &
-  ICredentialIssuer &
-  ICredentialVerifier &
+  IVcdmCredentialPlugin &
+  IJwtService &
+  IIdentifierResolution &
   ICredentialStore &
-  ICredentialPlugin &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
@@ -50,7 +44,7 @@ export interface IVCAPIIssueOpts {
   /**
    * The desired format for the VerifiablePresentation to be created.
    */
-  proofFormat: ProofFormat
+  proofFormat?: CredentialProofFormat
 
   /**
    * Remove payload members during JWT-JSON transformation. Defaults to `true`.

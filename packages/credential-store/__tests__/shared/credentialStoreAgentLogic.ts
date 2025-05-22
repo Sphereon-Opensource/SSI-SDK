@@ -10,6 +10,7 @@ import {
   ICredentialStore,
   UniqueDigitalCredential,
 } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<ICredentialStore>
 

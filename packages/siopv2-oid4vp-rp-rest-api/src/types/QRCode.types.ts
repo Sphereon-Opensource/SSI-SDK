@@ -151,7 +151,7 @@ export interface QRCodeOpts {
   /**
    * Background image to be used in the QR code.
    *
-   * Accepts a `data:` string in web browsers or a Buffer in Node.js.
+   * Accepts a `data:` string in web browsers or a Buffer in Node.
    *
    * @defaultValue undefined
    */
@@ -185,7 +185,7 @@ export interface QRCodeOpts {
   /**
    * Logo image to be displayed at the center of the QR code.
    *
-   * Accepts a `data:` string in web browsers or a Buffer in Node.js.
+   * Accepts a `data:` string in web browsers or a Buffer in Node.
    *
    * When set to `undefined` or `null`, the logo is disabled.
    *

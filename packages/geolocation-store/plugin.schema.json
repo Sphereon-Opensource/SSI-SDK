@@ -1,0 +1,167 @@
+{
+  "IGeolocationStore": {
+    "components": {
+      "schemas": {
+        "GeolocationStoreClearAllLocationsArgs": {
+          "$ref": "#/components/schemas/Pick<GeolocationStoreArgs,\"storeId\">"
+        },
+        "Pick<GeolocationStoreArgs,\"storeId\">": {
+          "type": "object",
+          "properties": {
+            "storeId": {
+              "type": "string"
+            }
+          },
+          "required": ["storeId"],
+          "additionalProperties": false
+        },
+        "GeolocationStoreLocationResult": {
+          "$ref": "#/components/schemas/IKeyValueStore<GeolocationStoreLocation>"
+        },
+        "IKeyValueStore<GeolocationStoreLocation>": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "A Key Value store is responsible for managing Values identified by keys."
+        },
+        "GeolocationStoreArgs": {
+          "type": "object",
+          "properties": {
+            "ipOrHostname": {
+              "type": "string"
+            },
+            "storeId": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "required": ["ipOrHostname", "storeId", "namespace"],
+          "additionalProperties": false
+        },
+        "GeolocationStoreLocationResultOrUndefined": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/GeolocationStoreLocation"
+            },
+            {
+              "not": {}
+            }
+          ]
+        },
+        "GeolocationStoreLocation": {
+          "type": "object",
+          "properties": {
+            "continent": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "GeolocationStoreLocationPersistArgs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "locationArgs": {
+              "$ref": "#/components/schemas/GeolocationStoreLocation"
+            },
+            "ipOrHostname": {
+              "type": "string"
+            },
+            "overwriteExisting": {
+              "type": "boolean"
+            },
+            "validation": {
+              "type": "boolean"
+            },
+            "ttl": {
+              "type": "number"
+            },
+            "storeId": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "required": ["ipOrHostname", "locationArgs"]
+        },
+        "GeolocationStoreLocationResultIValueData": {
+          "$ref": "#/components/schemas/IValueData<GeolocationStoreLocation>"
+        },
+        "IValueData<GeolocationStoreLocation>": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/components/schemas/GeolocationStoreLocation"
+            },
+            "expires": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false,
+          "description": "This is how the store will actually store the value. It contains an optional `expires` property, which indicates when the value would expire"
+        }
+      },
+      "methods": {
+        "geolocationStoreClearAllLocations": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GeolocationStoreClearAllLocationsArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "geolocationStoreDefaultLocationStore": {
+          "description": "",
+          "arguments": {
+            "type": "object"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GeolocationStoreLocationResult"
+          }
+        },
+        "geolocationStoreGetLocation": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GeolocationStoreArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GeolocationStoreLocationResultOrUndefined"
+          }
+        },
+        "geolocationStoreHasLocation": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GeolocationStoreArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "geolocationStorePersistLocation": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GeolocationStoreLocationPersistArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/GeolocationStoreLocationResultIValueData"
+          }
+        },
+        "geolocationStoreRemoveLocation": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/GeolocationStoreArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

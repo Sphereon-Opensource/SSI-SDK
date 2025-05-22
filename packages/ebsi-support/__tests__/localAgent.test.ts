@@ -1,8 +1,7 @@
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
-
-jest.setTimeout(60000)
-
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 import authClientAgentLogic from './shared/ebsiAuthorizationClientAgentLogic'
 
 let dbConnection: Promise<DataSource>
@@ -18,7 +17,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
+  await (await dbConnection)?.close()
   return true
 }
 

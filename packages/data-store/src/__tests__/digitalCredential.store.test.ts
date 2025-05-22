@@ -9,12 +9,13 @@ import {
   CredentialCorrelationType,
   CredentialDocumentFormat,
   CredentialStateType,
-  DocumentType,
   DigitalCredential,
+  DocumentType,
   GetCredentialsArgs,
   GetCredentialsResponse,
 } from '../types'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

@@ -1,18 +1,26 @@
-import { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { CredentialMapper, DocumentFormat, IIssuer, ProofFormat, StatusListCredential, StatusListType } from '@sphereon/ssi-types'
+import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import {
+  CredentialMapper,
+  DocumentFormat,
+  type IIssuer,
+  type CredentialProofFormat,
+  type StatusListCredential,
+  StatusListType,
+} from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
-import { IStatusList } from './IStatusList'
-import {
+import type { IStatusList } from './IStatusList'
+import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
-  Status2021,
   StatusListResult,
   ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
+
+import { Status2021 } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 
 export const DEFAULT_LIST_LENGTH = 250000
@@ -24,7 +32,7 @@ export class StatusList2021Implementation implements IStatusList {
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     const length = args?.length ?? DEFAULT_LIST_LENGTH
-    const proofFormat: ProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
+    const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     assertValidProofType(StatusListType.StatusList2021, proofFormat)
     const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
@@ -111,7 +119,7 @@ export class StatusList2021Implementation implements IStatusList {
     if (!args.statusList2021) {
       throw new Error('statusList2021 options required for type StatusList2021')
     }
-    const proofFormat: ProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
+    const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     assertValidProofType(StatusListType.StatusList2021, proofFormat)
     const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
@@ -164,7 +172,7 @@ export class StatusList2021Implementation implements IStatusList {
     const { issuer, credentialSubject } = uniform
     const id = getAssertedValue('id', uniform.id)
     const encodedList = getAssertedProperty('encodedList', credentialSubject)
-    const proofFormat: ProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
+    const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
 
     const statusPurpose = getAssertedProperty('statusPurpose', credentialSubject)
     const list = await StatusList.decode({ encodedList })

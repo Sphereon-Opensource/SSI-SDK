@@ -2,11 +2,23 @@
   "name": "@sphereon/ssi-sdk.data-store",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/.pnpm/typeorm@0.3.12_sqlite3@5.1.6_ts-node@10.9.1/node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
     "typeorm-sqlite:migration:generate": "pnpm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
     "typeorm-sqlite:migration:run": "pnpm run typeorm -- migration:run -c migration-sqlite",
@@ -16,8 +28,8 @@
   "dependencies": {
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/pex": "5.0.0-unstable.28",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.29.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.29.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
@@ -27,7 +39,7 @@
     "class-validator": "^0.14.1",
     "dcql": "0.2.19",
     "debug": "^4.3.5",
-    "typeorm": "^0.3.21"
+    "typeorm": "0.3.20"
   },
   "devDependencies": {
     "@types/sha.js": "^2.4.4",
@@ -35,8 +47,8 @@
     "sqlite3": "^5.1.7"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -52,6 +64,5 @@
     "SQLite",
     "PostgreSQL",
     "Contact Store"
-  ],
-  "nx": {}
+  ]
 }

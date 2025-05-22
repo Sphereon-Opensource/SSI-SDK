@@ -4,7 +4,7 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - lookupLocation
+    - anomalyDetectionLookupLocation
 
 dbConnection:
   $require: typeorm?t=function#createConnection
@@ -14,9 +14,9 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: './packages/data-store?t=object#DataStoreMigrations'
+        $require: './packages/data-store/dist?t=object#DataStoreMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStoreContactEntities'
+        $require: './packages/data-store/dist?t=object#DataStoreContactEntities'
 
 server:
   baseUrl:

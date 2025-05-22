@@ -1,14 +1,13 @@
-import { FederationClient, ICryptoService, IFetchService, TrustChainResolveResponse } from '@sphereon/openid-federation-client'
-import { JWK } from '@sphereon/ssi-types'
+import { JoseCurveString, JoseSignatureAlgorithmString, JwkKeyTypeString } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { Request } from 'cross-fetch'
 import { schema } from '../'
-import { IOIDFClient, OIDFClientArgs, IRequiredContext, ResolveTrustChainArgs } from '../types/IOIDFClient'
+import { IOIDFClient, IRequiredContext, OIDFClientArgs, ResolveTrustChainArgs } from '../types/IOIDFClient'
+import { FederationClient, ICryptoService, Jwk, TrustChainResolveResponse } from '@sphereon/openid-federation-client'
 
 export const oidfClientMethods: Array<string> = ['resolveTrustChain']
 
 export class OIDFClient implements IAgentPlugin {
-  private readonly fetchServiceCallback?: IFetchService
+  // private readonly fetchServiceCallback?: IFetchService
   private readonly cryptoServiceCallback?: ICryptoService
   readonly methods: IOIDFClient = {
     resolveTrustChain: this.resolveTrustChain.bind(this),
@@ -16,21 +15,34 @@ export class OIDFClient implements IAgentPlugin {
   readonly schema = schema.IOIDFClient
 
   constructor(args?: OIDFClientArgs) {
-    const { fetchServiceCallback, cryptoServiceCallback } = { ...args }
+    const { /*fetchServiceCallback,*/ cryptoServiceCallback } = { ...args }
 
-    this.fetchServiceCallback = fetchServiceCallback
+    // this.fetchServiceCallback = fetchServiceCallback
     this.cryptoServiceCallback = cryptoServiceCallback
   }
 
   private defaultCryptoJSImpl(context: IRequiredContext): ICryptoService {
     return {
-      verify: async (jwt: string, key: JWK): Promise<boolean> => {
-        const verification = await context.agent.jwtVerifyJwsSignature({ jws: jwt, jwk: key })
+      verify: async (jwt: string, key: Jwk): Promise<boolean> => {
+        const verification = await context.agent.jwtVerifyJwsSignature({
+          jws: jwt,
+          jwk: {
+            alg: key.alg as JoseSignatureAlgorithmString | undefined,
+            crv: key.crv as JoseCurveString | undefined,
+            kty: key.kty as JwkKeyTypeString,
+            x: key.x ?? (undefined as string | undefined),
+            y: key.y ?? (undefined as string | undefined),
+            n: key.n ?? (undefined as string | undefined),
+            e: key.e ?? (undefined as string | undefined),
+            use: key.use ?? (undefined as string | undefined),
+            kid: key.kid,
+          },
+        })
         return !verification.error
       },
     }
   }
-
+  /*
   private defaultFetchJSImpl(context: IRequiredContext): IFetchService {
     return {
       async fetchStatement(endpoint: string): Promise<string> {
@@ -50,12 +62,12 @@ export class OIDFClient implements IAgentPlugin {
         return await response.text()
       },
     }
-  }
+  }*/
 
   private getOIDFClient(context: IRequiredContext): FederationClient {
     return new FederationClient(
-      this.fetchServiceCallback || this.defaultFetchJSImpl(context),
       this.cryptoServiceCallback || this.defaultCryptoJSImpl(context),
+      // this.fetchServiceCallback || this.defaultFetchJSImpl(context),
     )
   }
 

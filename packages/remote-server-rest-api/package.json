@@ -2,14 +2,27 @@
   "name": "@sphereon/ssi-sdk.remote-server-rest-api",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "start:prod": "node build/index.js"
   },
   "dependencies": {
+    "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-express-support": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/remote-server": "4.2.0",
@@ -20,8 +33,8 @@
     "@types/express-http-proxy": "^1.6.6"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -38,6 +51,5 @@
     "Remote server",
     "REST",
     "API"
-  ],
-  "nx": {}
+  ]
 }

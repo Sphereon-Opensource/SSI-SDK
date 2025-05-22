@@ -1,4 +1,13 @@
-import { ActionSubType, ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
+import {
+  type ActionSubType,
+  ActionType,
+  InitiatorType,
+  LoggingEventType,
+  LogLevel,
+  SubSystem,
+  System,
+  SystemCorrelationIdType,
+} from '@sphereon/ssi-types'
 import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'

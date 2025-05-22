@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import * as fs from 'fs'
 import { CredentialMapper, IVerifiableCredential } from '../src'
 import { VerifiableCredential } from '@veramo/core'

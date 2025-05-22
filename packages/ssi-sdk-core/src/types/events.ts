@@ -1,10 +1,10 @@
 import {
-  ActionSubType,
+  type ActionSubType,
   ActionType,
   InitiatorType,
   LoggingEventType,
   LogLevel,
-  SimpleLogEvent,
+  type SimpleLogEvent,
   SubSystem,
   System,
   SystemCorrelationIdType,

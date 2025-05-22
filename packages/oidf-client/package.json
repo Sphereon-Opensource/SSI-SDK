@@ -2,34 +2,47 @@
   "name": "@sphereon/ssi-sdk.oidf-client",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IOIDFClient": "./src/types/IOIDFClient.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/openid-federation-client": "0.1.1-unstable.0647eb6",
-    "@sphereon/openid-federation-common": "0.1.1-unstable.0647eb6",
-    "@sphereon/openid-federation-open-api": "0.1.1-unstable.0647eb6",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
+    "@sphereon/openid-federation-client": "0.20.9-unstable.48ddfa1",
+    "@sphereon/openid-federation-common": "0.20.9-unstable.48ddfa1",
+    "@sphereon/openid-federation-open-api": "0.20.9-unstable.48ddfa1",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.29.0",
     "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
     "@sphereon/ssi-types": "workspace:*"
   },
   "devDependencies": {
+    "jose": "^5.10.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"

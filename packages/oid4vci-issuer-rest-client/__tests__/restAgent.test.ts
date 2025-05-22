@@ -2,14 +2,14 @@ import 'cross-fetch/polyfill'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { IOID4VCIRestClient } from '../src'
 import issuanceRestClientAgentLogic from './shared/issuanceRestClientAgentLogic'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 3004
 const basePath = '/agent'
@@ -52,7 +52,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 
@@ -63,6 +63,6 @@ const testContext = {
 }
 
 // todo: for now we're skipping this test, uncomment if we want the integration tests
-xdescribe('REST integration tests', () => {
+describe.skip('REST integration tests', () => {
   issuanceRestClientAgentLogic(testContext)
 })

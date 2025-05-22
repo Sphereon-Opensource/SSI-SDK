@@ -1,0 +1,459 @@
+{
+  "IMachineStatePersistence": {
+    "components": {
+      "schemas": {
+        "MachineStateDeleteArgs": {
+          "$ref": "#/components/schemas/Pick<StoreMachineStateInfo,(\"instanceId\"|\"tenantId\")>"
+        },
+        "Pick<StoreMachineStateInfo,(\"instanceId\"|\"tenantId\")>": {
+          "type": "object",
+          "properties": {
+            "instanceId": {
+              "type": "string",
+              "description": "Unique instance ID of the machine"
+            },
+            "tenantId": {
+              "type": "string"
+            }
+          },
+          "required": ["instanceId"],
+          "additionalProperties": false
+        },
+        "MachineStateGetArgs": {
+          "$ref": "#/components/schemas/Pick<StoreMachineStateInfo,(\"instanceId\"|\"tenantId\")>"
+        },
+        "MachineStateInfo": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "$ref": "#/components/schemas/SerializableState"
+            },
+            "instanceId": {
+              "type": "string",
+              "description": "Unique instance ID of the machine"
+            },
+            "sessionId": {
+              "type": "string",
+              "description": "Session Id of the machine. Not necessarily unique"
+            },
+            "machineName": {
+              "type": "string",
+              "description": "Machine name"
+            },
+            "latestStateName": {
+              "type": "string",
+              "description": "The latest state name. Can be empty for a newly initialize machine"
+            },
+            "latestEventType": {
+              "type": "string",
+              "description": "event types like SET_TOC, SET_FIRSTNAME, .... Will be xstate.init on a newly initialized machine"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "Represents the creation date"
+            },
+            "expiresAt": {
+              "type": "string",
+              "description": "Represents the expiration date"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "Represents the update date"
+            },
+            "updatedCount": {
+              "type": "number",
+              "description": "Represents a counter for tracking updates."
+            },
+            "completedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "tenantId": {
+              "type": "string"
+            }
+          },
+          "required": ["createdAt", "instanceId", "latestEventType", "machineName", "state", "updatedAt", "updatedCount"]
+        },
+        "SerializableState": {
+          "$ref": "#/components/schemas/XStateConfig<any,AnyEventObject>"
+        },
+        "XStateConfig<any,AnyEventObject>": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/components/schemas/StateValue"
+            },
+            "context": {},
+            "_event": {
+              "$ref": "#/components/schemas/SCXML.Event<AnyEventObject>"
+            },
+            "_sessionid": {
+              "type": ["string", "null"]
+            },
+            "historyValue": {
+              "$ref": "#/components/schemas/HistoryValue"
+            },
+            "history": {},
+            "actions": {
+              "type": "array",
+              "items": {}
+            },
+            "activities": {},
+            "meta": {},
+            "events": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AnyEventObject"
+              }
+            },
+            "configuration": {
+              "type": "array",
+              "items": {}
+            },
+            "transitions": {
+              "type": "array",
+              "items": {}
+            },
+            "children": {
+              "$ref": "#/components/schemas/Record<string,any>"
+            },
+            "done": {
+              "type": "boolean"
+            },
+            "tags": {
+              "$ref": "#/components/schemas/Set<string>"
+            },
+            "machine": {}
+          },
+          "required": ["value", "context", "_event", "_sessionid", "configuration", "transitions", "children"],
+          "additionalProperties": false,
+          "description": "The configuration for the XState machine state. Simplified StateConfig object from XState so we have a minimal typed structure"
+        },
+        "StateValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/components/schemas/StateValueMap"
+            }
+          ],
+          "description": "The string or object representing the state value relative to the parent state node.\n\n- For a child atomic state node, this is a string, e.g., `\"pending\"`.\n- For complex state nodes, this is an object, e.g., `{ success: \"someChildState\" }`."
+        },
+        "StateValueMap": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/StateValue"
+          }
+        },
+        "SCXML.Event<AnyEventObject>": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "This is a character string giving the name of the event. The SCXML Processor must set the name field to the name of this event. It is what is matched against the 'event' attribute of <transition>. Note that transitions can do additional tests by using the value of this field inside boolean expressions in the 'cond' attribute."
+            },
+            "type": {
+              "type": "string",
+              "enum": ["platform", "internal", "external"],
+              "description": "This field describes the event type. The SCXML Processor must set it to: \"platform\" (for events raised by the platform itself, such as error events), \"internal\" (for events raised by <raise> and <send> with target '_internal') or \"external\" (for all other events)."
+            },
+            "sendid": {
+              "type": "string",
+              "description": "If the sending entity has specified a value for this, the Processor must set this field to that value (see C Event I/O Processors for details). Otherwise, in the case of error events triggered by a failed attempt to send an event, the Processor must set this field to the send id of the triggering <send> element. Otherwise it must leave it blank."
+            },
+            "origin": {
+              "type": "string",
+              "description": "This is a URI, equivalent to the 'target' attribute on the <send> element. For external events, the SCXML Processor should set this field to a value which, when used as the value of 'target', will allow the receiver of the event to <send> a response back to the originating entity via the Event I/O Processor specified in 'origintype'. For internal and platform events, the Processor must leave this field blank."
+            },
+            "origintype": {
+              "type": "string",
+              "description": "This is equivalent to the 'type' field on the <send> element. For external events, the SCXML Processor should set this field to a value which, when used as the value of 'type', will allow the receiver of the event to <send> a response back to the originating entity at the URI specified by 'origin'. For internal and platform events, the Processor must leave this field blank."
+            },
+            "invokeid": {
+              "type": "string",
+              "description": "If this event is generated from an invoked child process, the SCXML Processor must set this field to the invoke id of the invocation that triggered the child process. Otherwise it must leave it blank."
+            },
+            "data": {
+              "$ref": "#/components/schemas/AnyEventObject",
+              "description": "This field contains whatever data the sending entity chose to include in this event. The receiving SCXML Processor should reformat this data to match its data model, but must not otherwise modify it.\n\nIf the conversion is not possible, the Processor must leave the field blank and must place an error 'error.execution' in the internal event queue."
+            },
+            "$$type": {
+              "type": "string",
+              "const": "scxml"
+            }
+          },
+          "required": ["name", "type", "data", "$$type"],
+          "additionalProperties": false
+        },
+        "AnyEventObject": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "The type of event that is sent."
+            }
+          },
+          "required": ["type"]
+        },
+        "HistoryValue": {
+          "type": "object",
+          "properties": {
+            "states": {
+              "$ref": "#/components/schemas/Record<string,(interface-434048446-6094-6223-434048446-0-57488|undefined)>"
+            },
+            "current": {
+              "$ref": "#/components/schemas/StateValue"
+            }
+          },
+          "required": ["states"],
+          "additionalProperties": false
+        },
+        "Record<string,(interface-434048446-6094-6223-434048446-0-57488|undefined)>": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HistoryValue"
+              },
+              {
+                "not": {}
+              }
+            ]
+          }
+        },
+        "Record<string,any>": {
+          "type": "object"
+        },
+        "Set<string>": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number"
+            }
+          },
+          "required": ["size"],
+          "additionalProperties": false
+        },
+        "InitMachineStateArgs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cleanupAllOtherInstances": {
+              "type": "boolean"
+            },
+            "customInstanceId": {
+              "type": "string"
+            },
+            "existingInstanceId": {
+              "type": "string"
+            },
+            "machineName": {
+              "type": "string",
+              "description": "Machine name"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "Represents the creation date"
+            },
+            "expiresAt": {
+              "type": "string",
+              "description": "Represents the expiration date"
+            },
+            "stateType": {
+              "$ref": "#/components/schemas/MachineStateInitType"
+            },
+            "machineState": {
+              "$ref": "#/components/schemas/MachineStateInfo"
+            }
+          },
+          "required": ["machineName"]
+        },
+        "MachineStateInitType": {
+          "type": "string",
+          "enum": ["new", "existing"]
+        },
+        "MachineStateInit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "stateType": {
+              "$ref": "#/components/schemas/MachineStateInitType"
+            },
+            "machineState": {
+              "$ref": "#/components/schemas/MachineStateInfo"
+            },
+            "instanceId": {
+              "type": "string",
+              "description": "Unique instance ID of the machine"
+            },
+            "machineName": {
+              "type": "string",
+              "description": "Machine name"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "Represents the creation date"
+            },
+            "expiresAt": {
+              "type": "string",
+              "description": "Represents the expiration date"
+            }
+          },
+          "required": ["createdAt", "instanceId", "machineName", "stateType"]
+        },
+        "MachineStatePersistArgs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cleanupOnFinalState": {
+              "type": "boolean"
+            },
+            "updatedCount": {
+              "type": "number",
+              "description": "Represents a counter for tracking updates."
+            },
+            "state": {
+              "$ref": "#/components/schemas/SerializableState"
+            },
+            "instanceId": {
+              "type": "string",
+              "description": "Unique instance ID of the machine"
+            },
+            "machineName": {
+              "type": "string",
+              "description": "Machine name"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "expiresAt": {
+              "type": "string",
+              "description": "Represents the expiration date"
+            },
+            "stateType": {
+              "$ref": "#/components/schemas/MachineStateInitType"
+            },
+            "machineState": {
+              "$ref": "#/components/schemas/MachineStateInfo"
+            }
+          },
+          "required": ["instanceId", "machineName", "state", "stateType"],
+          "description": "Represents the arguments required to persist the machine state."
+        },
+        "DeleteExpiredStatesArgs": {
+          "$ref": "#/components/schemas/Pick<StoreMachineStateDeleteExpiredArgs,(\"deleteDoneStates\"|\"machineName\"|\"tenantId\")>",
+          "description": "Represents the arguments for deleting expired states from a machine."
+        },
+        "Pick<StoreMachineStateDeleteExpiredArgs,(\"deleteDoneStates\"|\"machineName\"|\"tenantId\")>": {
+          "type": "object",
+          "properties": {
+            "deleteDoneStates": {
+              "type": "boolean"
+            },
+            "machineName": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "DeleteStateResult": {
+          "type": "number"
+        },
+        "FindActiveStatesArgs": {
+          "$ref": "#/components/schemas/StoreMachineStatesFindActiveArgs",
+          "description": "Represents the arguments for finding active states of a store machine."
+        },
+        "StoreMachineStatesFindActiveArgs": {
+          "$ref": "#/components/schemas/Partial<Pick<StoreMachineStateInfo,(\"machineName\"|\"tenantId\"|\"instanceId\")>>"
+        },
+        "Partial<Pick<StoreMachineStateInfo,(\"machineName\"|\"tenantId\"|\"instanceId\")>>": {
+          "type": "object",
+          "properties": {
+            "machineName": {
+              "type": "string",
+              "description": "Machine name"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "instanceId": {
+              "type": "string",
+              "description": "Unique instance ID of the machine"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "methods": {
+        "machineStateDelete": {
+          "description": "Delete a particular machine state by instance id and tenant id",
+          "arguments": {
+            "$ref": "#/components/schemas/MachineStateDeleteArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "machineStateGet": {
+          "description": "Get a particular machine state by instance id and tenant id",
+          "arguments": {
+            "$ref": "#/components/schemas/MachineStateGetArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/MachineStateInfo"
+          }
+        },
+        "machineStateInit": {
+          "description": "Initializes a state object for a new machine. Does not persist anything",
+          "arguments": {
+            "$ref": "#/components/schemas/InitMachineStateArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/MachineStateInit"
+          }
+        },
+        "machineStatePersist": {
+          "description": "Persists the state",
+          "arguments": {
+            "$ref": "#/components/schemas/MachineStatePersistArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/MachineStateInfo"
+          }
+        },
+        "machineStatesDeleteExpired": {
+          "description": "Deletes the state of an xstate machine in the database.",
+          "arguments": {
+            "$ref": "#/components/schemas/DeleteExpiredStatesArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/DeleteStateResult"
+          }
+        },
+        "machineStatesFindActive": {
+          "description": "Loads the states of active xstate machines from the database.",
+          "arguments": {
+            "$ref": "#/components/schemas/FindActiveStatesArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MachineStateInfo"
+            }
+          }
+        }
+      }
+    }
+  }
+}

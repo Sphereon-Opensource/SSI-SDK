@@ -7,6 +7,7 @@ import { computeEntryHash } from '@veramo/utils'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
 import { AddCredentialArgs, CredentialCorrelationType, CredentialDocumentFormat, DocumentType, NonPersistedDigitalCredential } from '../types'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

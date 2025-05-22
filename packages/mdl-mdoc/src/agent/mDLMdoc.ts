@@ -3,34 +3,31 @@ import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
 import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { MdocOid4vpPresentArgs, MdocOid4VPPresentationAuth, MdocOid4vpRPVerifyArgs, MdocOid4vpRPVerifyResult, schema } from '..'
+import { MdocOid4vpPresentArgs, MdocOid4VPPresentationAuth, MdocOid4vpRPVerifyArgs, MdocOid4vpRPVerifyResult, MdocOid4vpService, schema } from '..'
 import { CoseCryptoService, X509CallbackService } from '../functions'
 import {
+  CborByteString,
+  CoseCryptoServiceJS,
+  CoseJoseKeyMappingService,
+  CoseKeyCbor,
+  DateTimeUtils,
+  decodeFrom,
+  DocumentCbor,
+  DocumentDescriptorMatchResult,
+  encodeTo,
+  Encoding,
   GetX509CertificateInfoArgs,
   ImDLMdoc,
+  IOid4VPPresentationDefinition,
   IRequiredContext,
+  IVerifySignatureResult,
+  KeyInfo,
   KeyType,
+  Oid4VPPresentationSubmission,
+  MdocValidations,
   MdocVerifyIssuerSignedArgs,
   VerifyCertificateChainArgs,
 } from '../types/ImDLMdoc'
-import CborByteString = com.sphereon.cbor.CborByteString
-import CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
-import CoseSign1Json = com.sphereon.crypto.cose.CoseSign1Json
-import CoseCryptoServiceJS = com.sphereon.crypto.CoseCryptoServiceJS
-import CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
-import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
-import KeyInfo = com.sphereon.crypto.KeyInfo
-import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import encodeTo = com.sphereon.kmp.encodeTo
-import Encoding = com.sphereon.kmp.Encoding
-import DeviceResponseCbor = com.sphereon.mdoc.data.device.DeviceResponseCbor
-import DocumentCbor = com.sphereon.mdoc.data.device.DocumentCbor
-import MdocValidations = com.sphereon.mdoc.data.MdocValidations
-import DocumentDescriptorMatchResult = com.sphereon.mdoc.oid4vp.DocumentDescriptorMatchResult
-import IOid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
-import MdocOid4vpService = com.sphereon.mdoc.oid4vp.MdocOid4vpServiceJs
-import Oid4VPPresentationSubmission = com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
 
 export const mdocSupportMethods: Array<string> = [
   'x509VerifyCertificateChain',
@@ -197,7 +194,7 @@ export class MDLMdoc implements IAgentPlugin {
    */
   private async mdocOid4vpRPVerify(args: MdocOid4vpRPVerifyArgs, _context: IRequiredContext): Promise<MdocOid4vpRPVerifyResult> {
     const { vp_token, presentation_submission, trustAnchors } = args
-    const deviceResponse = DeviceResponseCbor.Static.cborDecode(decodeFrom(vp_token, Encoding.BASE64URL))
+    const deviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor.Static.cborDecode(decodeFrom(vp_token, Encoding.BASE64URL))
     if (!deviceResponse.documents) {
       return Promise.reject(Error(`No documents found in vp_token`))
     }
@@ -255,7 +252,7 @@ export class MDLMdoc implements IAgentPlugin {
     const { input, keyInfo, requireX5Chain } = args
     const coseKeyInfo = keyInfo && CoseJoseKeyMappingService.toCoseKeyInfo(keyInfo)
     const verification = await new CoseCryptoServiceJS(new CoseCryptoService(context)).verify1(
-      CoseSign1Json.Static.fromDTO(input).toCbor(),
+      com.sphereon.crypto.cose.CoseSign1Json.Static.fromDTO(input).toCbor(),
       coseKeyInfo,
       requireX5Chain,
     )

@@ -2,11 +2,24 @@
   "name": "@sphereon/ssi-sdk.core",
   "description": "SSI SDK Core & Interfaces",
   "version": "0.33.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "source": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
     "@noble/hashes": "^1.6.1",
@@ -14,15 +27,15 @@
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8",
     "debug": "^4.3.5",
-    "image-size": "2.0.0-beta.2",
-    "uint8arrays": "3.1.1"
+    "image-size": "2.0.1",
+    "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
     "did-resolver": "^4.1.0"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "plugin.schema.json",
     "README.md",
     "LICENSE"
@@ -34,6 +47,5 @@
   "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
   "author": "Sphereon <dev@sphereon.com>",
   "license": "Apache-2.0",
-  "keywords": [],
-  "nx": {}
+  "keywords": []
 }

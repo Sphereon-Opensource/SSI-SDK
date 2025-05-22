@@ -1,19 +1,19 @@
-import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
-  ICredential,
-  ICredentialStatus,
-  IIssuer,
-  IVerifiableCredential,
-  OrPromise,
-  ProofFormat,
-  StatusListCredential,
+  type ICredential,
+  type ICredentialStatus,
+  type IIssuer,
+  type IVerifiableCredential,
+  type OrPromise,
+  type CredentialProofFormat,
+  type StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
-  StatusListIndexingDirection,
+  type StatusListIndexingDirection,
   StatusListType,
-  StatusPurpose2021,
+  type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import {
+import type {
   CredentialPayload,
   IAgentContext,
   ICredentialIssuer,
@@ -23,9 +23,9 @@ import {
   IPluginMethodMap,
 } from '@veramo/core'
 import { DataSource } from 'typeorm'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
-import { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { StatusListOpts } from '@sphereon/oid4vci-common'
+import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
+import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import type { StatusListOpts } from '@sphereon/oid4vci-common'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -55,7 +55,7 @@ export type BaseCreateNewStatusListArgs = {
   issuer: string | IIssuer
   correlationId?: string
   length?: number
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
@@ -75,7 +75,7 @@ export interface UpdateStatusListFromEncodedListArgs {
   type?: StatusListType
   statusListIndex: number | string
   value: boolean
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   correlationId?: string
   encodedList: string
@@ -97,7 +97,7 @@ export interface StatusListResult {
   statusListCredential: StatusListCredential
   length: number
   type: StatusListType
-  proofFormat: ProofFormat
+  proofFormat: CredentialProofFormat
   id: string
   statuslistContentType: string
   issuer: string | IIssuer
@@ -139,7 +139,7 @@ export interface StatusList2021ToVerifiableCredentialArgs {
   issuer: string | IIssuer
   id: string
   type?: StatusListType
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   encodedList: string
   statusPurpose: StatusPurpose2021
@@ -148,7 +148,7 @@ export interface StatusList2021ToVerifiableCredentialArgs {
 export interface CreateStatusListArgs {
   issuer: string | IIssuer
   id: string
-  proofFormat?: ProofFormat
+  proofFormat?: CredentialProofFormat
   keyRef?: string
   correlationId?: string
   length?: number

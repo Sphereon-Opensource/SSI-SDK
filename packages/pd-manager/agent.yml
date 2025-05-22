@@ -23,9 +23,9 @@ dbConnection:
       synchronize: false
       migrationsRun: true
       migrations:
-        $require: './packages/data-store?t=object#DataStorePresentationDefinitionMigrations'
+        $require: './packages/data-store/dist?t=object#DataStorePresentationDefinitionMigrations'
       entities:
-        $require: './packages/data-store?t=object#DataStorePresentationDefinitionEntities'
+        $require: './packages/data-store/dist?t=object#DataStorePresentationDefinitionEntities'
 
 server:
   baseUrl:

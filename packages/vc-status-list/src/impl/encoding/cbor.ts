@@ -1,13 +1,24 @@
+import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 import { deflate, inflate } from 'pako'
-import { com, kotlin } from '@sphereon/kmp-cbor'
+import pkg from '@sphereon/kmp-mdoc-core'
+const { com, kotlin } = pkg
 import base64url from 'base64url'
-import { IRequiredContext, SignedStatusListData } from '../../types'
-import { DecodedStatusListPayload, resolveIdentifier } from './common'
-import { BitsPerStatus } from '@sd-jwt/jwt-status-list/dist'
+import type { IRequiredContext, SignedStatusListData } from '../../types'
+import { type DecodedStatusListPayload, resolveIdentifier } from './common'
 
-const cbor = com.sphereon.cbor
-const kmp = com.sphereon.kmp
+export type IKey = pkg.com.sphereon.crypto.IKey
+export type CborItem<T> = pkg.com.sphereon.cbor.CborItem<T>
+export const CborByteString = com.sphereon.cbor.CborByteString
+export type CborByteStringType = pkg.com.sphereon.cbor.CborByteString
+export const CborUInt = com.sphereon.cbor.CborUInt
+export type CborUIntType = pkg.com.sphereon.cbor.CborUInt
+export const CborString = com.sphereon.cbor.CborString
+export type CborStringType = pkg.com.sphereon.cbor.CborString
+
+// const cbor = cborpkg.com.sphereon.cbor
+// const kmp = cborpkg.com.sphereon.kmp
+// const kotlin = cborpkg.kotlin
 const decompressRawStatusList = (StatusList as any).decodeStatusList.bind(StatusList)
 
 const CWT_CLAIMS = {
@@ -33,23 +44,26 @@ export const createSignedCbor = async (
   const compressedList = deflate(encodeStatusList, { level: 9 })
   const compressedBytes = new Int8Array(compressedList)
 
-  const statusListMap = new cbor.CborMap(
+  const statusListMap = new com.sphereon.cbor.CborMap(
     kotlin.collections.KtMutableMap.fromJsMap(
-      new Map<com.sphereon.cbor.CborString, com.sphereon.cbor.CborItem<any>>([
-        [new cbor.CborString('bits'), new cbor.CborUInt(kmp.LongKMP.fromNumber(statusList.getBitsPerStatus()))],
-        [new cbor.CborString('lst'), new cbor.CborByteString(compressedBytes)],
+      new Map<CborStringType, CborItem<any>>([
+        [
+          new com.sphereon.cbor.CborString('bits'),
+          new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(statusList.getBitsPerStatus())),
+        ],
+        [new com.sphereon.cbor.CborString('lst'), new com.sphereon.cbor.CborByteString(compressedBytes)],
       ]),
     ),
   )
 
-  const protectedHeader = new cbor.CborMap(
+  const protectedHeader = new com.sphereon.cbor.CborMap(
     kotlin.collections.KtMutableMap.fromJsMap(
-      new Map([[new cbor.CborUInt(kmp.LongKMP.fromNumber(16)), new cbor.CborString('statuslist+cwt')]]), // "type"
+      new Map([[new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(16)), new com.sphereon.cbor.CborString('statuslist+cwt')]]), // "type"
     ),
   )
-  const protectedHeaderEncoded = cbor.Cbor.encode(protectedHeader)
+  const protectedHeaderEncoded = com.sphereon.cbor.Cbor.encode(protectedHeader)
   const claimsMap = buildClaimsMap(id, issuerString, statusListMap, expiresAt)
-  const claimsEncoded: Int8Array = cbor.Cbor.encode(claimsMap)
+  const claimsEncoded: Int8Array = com.sphereon.cbor.Cbor.encode(claimsMap)
 
   const signedCWT: string = await context.agent.keyManagerSign({
     keyRef: identifier.kmsKeyRef,
@@ -62,13 +76,13 @@ export const createSignedCbor = async (
   const signatureBytes = base64url.decode(signedCWT)
   const signatureInt8 = new Int8Array(Buffer.from(signatureBytes))
 
-  const cwtArrayElements: Array<com.sphereon.cbor.CborItem<any>> = [
-    new cbor.CborByteString(protectedHeaderEncodedInt8),
-    new cbor.CborByteString(claimsEncodedInt8),
-    new cbor.CborByteString(signatureInt8),
+  const cwtArrayElements: Array<CborItem<any>> = [
+    new CborByteString(protectedHeaderEncodedInt8),
+    new CborByteString(claimsEncodedInt8),
+    new CborByteString(signatureInt8),
   ]
-  const cwtArray = new cbor.CborArray(kotlin.collections.KtMutableList.fromJsArray(cwtArrayElements))
-  const cwtEncoded = cbor.Cbor.encode(cwtArray)
+  const cwtArray = new com.sphereon.cbor.CborArray(kotlin.collections.KtMutableList.fromJsArray(cwtArrayElements))
+  const cwtEncoded = com.sphereon.cbor.Cbor.encode(cwtArray)
   const cwtBuffer = Buffer.from(cwtEncoded)
   return {
     statusListCredential: base64url.encode(cwtBuffer),
@@ -79,40 +93,40 @@ export const createSignedCbor = async (
 function buildClaimsMap(
   id: string,
   issuerString: string,
-  statusListMap: com.sphereon.cbor.CborMap<com.sphereon.cbor.CborString, com.sphereon.cbor.CborItem<any>>,
+  statusListMap: pkg.com.sphereon.cbor.CborMap<CborStringType, CborItem<any>>,
   expiresAt?: Date,
 ) {
   const ttl = 65535 // FIXME figure out what value should be / come from and what the difference is with exp
-  const claimsEntries: Array<[com.sphereon.cbor.CborUInt, com.sphereon.cbor.CborItem<any>]> = [
-    [new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.SUBJECT)), new cbor.CborString(id)], // "sub"
-    [new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.ISSUER)), new cbor.CborString(issuerString)], // "iss"
+  const claimsEntries: Array<[CborUIntType, CborItem<any>]> = [
+    [new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.SUBJECT)), new com.sphereon.cbor.CborString(id)], // "sub"
+    [new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.ISSUER)), new com.sphereon.cbor.CborString(issuerString)], // "iss"
     [
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.ISSUED_AT)),
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(Math.floor(Date.now() / 1000))), // "iat"
+      new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.ISSUED_AT)),
+      new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(Math.floor(Date.now() / 1000))), // "iat"
     ],
   ]
 
   if (expiresAt) {
     claimsEntries.push([
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.EXPIRATION)),
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(Math.floor(expiresAt.getTime() / 1000))), // "exp"
+      new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.EXPIRATION)),
+      new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(Math.floor(expiresAt.getTime() / 1000))), // "exp"
     ])
   }
 
   if (ttl) {
     claimsEntries.push([
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.TIME_TO_LIVE)),
-      new cbor.CborUInt(kmp.LongKMP.fromNumber(ttl)), // "time to live"
+      new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.TIME_TO_LIVE)),
+      new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(ttl)), // "time to live"
     ])
   }
 
-  claimsEntries.push([new cbor.CborUInt(kmp.LongKMP.fromNumber(CWT_CLAIMS.STATUS_LIST)), statusListMap])
+  claimsEntries.push([new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_CLAIMS.STATUS_LIST)), statusListMap])
 
-  const claimsMap = new cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(claimsEntries)))
+  const claimsMap = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(claimsEntries)))
   return claimsMap
 }
 
-const getCborValueFromMap = <T>(map: Map<com.sphereon.cbor.CborItem<any>, com.sphereon.cbor.CborItem<any>>, key: number): T => {
+const getCborValueFromMap = <T>(map: Map<CborItem<any>, CborItem<any>>, key: number): T => {
   const value = getCborOptionalValueFromMap<T>(map, key)
   if (value === undefined) {
     throw new Error(`Required claim ${key} not found`)
@@ -120,11 +134,8 @@ const getCborValueFromMap = <T>(map: Map<com.sphereon.cbor.CborItem<any>, com.sp
   return value
 }
 
-const getCborOptionalValueFromMap = <T>(
-  map: Map<com.sphereon.cbor.CborItem<any>, com.sphereon.cbor.CborItem<any>>,
-  key: number,
-): T | undefined | never => {
-  const value = map.get(new com.sphereon.cbor.CborUInt(kmp.LongKMP.fromNumber(key)))
+const getCborOptionalValueFromMap = <T>(map: Map<CborItem<any>, CborItem<any>>, key: number): T | undefined | never => {
+  const value = map.get(new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(key)))
   if (!value) {
     return undefined
   }
@@ -152,10 +163,10 @@ export const decodeStatusListCWT = (cwt: string): DecodedStatusListPayload => {
 
   const claimsMap = claims.value.asJsMapView()
 
-  const statusListMap = claimsMap.get(new com.sphereon.cbor.CborUInt(kmp.LongKMP.fromNumber(65533))).value.asJsMapView()
+  const statusListMap = claimsMap.get(new CborUInt(com.sphereon.kmp.LongKMP.fromNumber(65533))).value.asJsMapView()
 
-  const bits = Number(statusListMap.get(new com.sphereon.cbor.CborString('bits')).value) as BitsPerStatus
-  const decoded = new Uint8Array(statusListMap.get(new com.sphereon.cbor.CborString('lst')).value)
+  const bits = Number(statusListMap.get(new CborString('bits')).value) as BitsPerStatus
+  const decoded = new Uint8Array(statusListMap.get(new CborString('lst')).value)
   const uint8Array = inflate(decoded)
   const rawStatusList = decompressRawStatusList(uint8Array, bits)
   const statusList = new StatusList(rawStatusList, bits)

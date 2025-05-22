@@ -1,4 +1,4 @@
-import { IRequiredContext } from '../../types'
+import type { IRequiredContext } from '../../types'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 
 export interface DecodedStatusListPayload {

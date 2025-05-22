@@ -1,0 +1,1467 @@
+{
+  "ICredentialValidation": {
+    "components": {
+      "schemas": {
+        "VerifyCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "credential": {
+              "$ref": "#/components/schemas/OriginalVerifiableCredential"
+            },
+            "hasher": {
+              "$ref": "#/components/schemas/HasherSync"
+            },
+            "fetchRemoteContexts": {
+              "type": "boolean"
+            },
+            "policies": {
+              "$ref": "#/components/schemas/VerificationPolicies"
+            }
+          },
+          "required": ["credential", "fetchRemoteContexts"],
+          "additionalProperties": false
+        },
+        "OriginalVerifiableCredential": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/W3CVerifiableCredential"
+            },
+            {
+              "$ref": "#/components/schemas/JwtDecodedVerifiableCredential"
+            },
+            {
+              "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredential"
+            },
+            {
+              "$ref": "#/components/schemas/MdocOid4vpIssuerSigned"
+            },
+            {
+              "$ref": "#/components/schemas/MdocDocument"
+            }
+          ]
+        },
+        "W3CVerifiableCredential": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/IVerifiableCredential"
+            },
+            {
+              "$ref": "#/components/schemas/CompactJWT"
+            }
+          ],
+          "description": "Represents a signed Verifiable Credential (includes proof), in either JSON, compact JWT or compact SD-JWT VC format. See  {@link https://www.w3.org/TR/vc-data-model/#credentials | VC data model }  See  {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats }"
+        },
+        "IVerifiableCredential": {
+          "type": "object",
+          "properties": {
+            "proof": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProof"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IProof"
+                  }
+                }
+              ]
+            },
+            "@context": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialContextType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialContextType"
+                  }
+                }
+              ]
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "credentialSchema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialSchemaType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialSchemaType"
+                  }
+                }
+              ]
+            },
+            "issuer": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IIssuerId"
+                },
+                {
+                  "$ref": "#/components/schemas/IIssuer"
+                }
+              ]
+            },
+            "issuanceDate": {
+              "type": "string"
+            },
+            "credentialSubject": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "expirationDate": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "credentialStatus": {
+              "$ref": "#/components/schemas/ICredentialStatus"
+            },
+            "description": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof", "type"]
+        },
+        "IProof": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProofType"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "created": {
+              "type": "string"
+            },
+            "proofPurpose": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProofPurpose"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "verificationMethod": {
+              "type": "string"
+            },
+            "challenge": {
+              "type": "string"
+            },
+            "domain": {
+              "type": "string"
+            },
+            "proofValue": {
+              "type": "string"
+            },
+            "jws": {
+              "type": "string"
+            },
+            "jwt": {
+              "type": "string"
+            },
+            "mso_mdoc": {
+              "type": "string"
+            },
+            "nonce": {
+              "type": "string"
+            },
+            "requiredRevealStatements": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["type", "created", "proofPurpose", "verificationMethod"]
+        },
+        "IProofType": {
+          "type": "string",
+          "enum": [
+            "Ed25519Signature2018",
+            "Ed25519Signature2020",
+            "EcdsaSecp256k1Signature2019",
+            "EcdsaSecp256k1RecoverySignature2020",
+            "JsonWebSignature2020",
+            "RsaSignature2018",
+            "GpgSignature2020",
+            "JcsEd25519Signature2020",
+            "BbsBlsSignatureProof2020",
+            "BbsBlsBoundSignatureProof2020",
+            "JwtProof2020",
+            "SdJwtProof2024",
+            "MsoMdocProof2024"
+          ]
+        },
+        "IProofPurpose": {
+          "type": "string",
+          "enum": [
+            "verificationMethod",
+            "assertionMethod",
+            "authentication",
+            "keyAgreement",
+            "contactAgreement",
+            "capabilityInvocation",
+            "capabilityDelegation"
+          ]
+        },
+        "ICredentialContextType": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "did": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ICredentialSchemaType": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/ICredentialSchema"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ICredentialSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": ["id"],
+          "additionalProperties": false
+        },
+        "IIssuerId": {
+          "type": "string"
+        },
+        "IIssuer": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": ["id"]
+        },
+        "ICredentialStatus": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": ["id", "type"]
+        },
+        "CompactJWT": {
+          "type": "string",
+          "description": "Represents a Json Web Token in compact form."
+        },
+        "JwtDecodedVerifiableCredential": {
+          "type": "object",
+          "properties": {
+            "vc": {
+              "$ref": "#/components/schemas/IVerifiableCredential"
+            },
+            "exp": {
+              "type": "string"
+            },
+            "iss": {
+              "type": "string"
+            },
+            "nbf": {
+              "type": "string"
+            },
+            "sub": {
+              "type": "string"
+            },
+            "jti": {
+              "type": "string"
+            }
+          },
+          "required": ["vc", "exp", "iss", "nbf", "sub", "jti"]
+        },
+        "SdJwtDecodedVerifiableCredential": {
+          "type": "object",
+          "properties": {
+            "compactSdJwtVc": {
+              "type": "string",
+              "description": "The compact sd jwt is the sd-jwt encoded as string. It is a normal JWT, with the disclosures and kb-jwt appended separated by ~"
+            },
+            "disclosures": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SdJwtDisclosure"
+              },
+              "description": "The disclosures included within the SD-JWT in both encoded and decoded format. The digests are also included, and allows the disclosures to be linked against the digests in the signed payload."
+            },
+            "signedPayload": {
+              "$ref": "#/components/schemas/SdJwtSignedVerifiableCredentialPayload",
+              "description": "The signed payload is the payload of the sd-jwt that is actually signed, and that includes the `_sd` and `...` digests."
+            },
+            "decodedPayload": {
+              "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredentialPayload",
+              "description": "The decoded payload is the payload when all `_sd` and `...` digests have been replaced by the actual values from the disclosures. This format could also be seen as the 'pretty` version of the SD JWT payload.\n\nThis is useful for displaying the contents of the SD JWT VC to the user, or for example for querying the contents of the SD JWT VC using a PEX presentation definition path."
+            },
+            "kbJwt": {
+              "type": "object",
+              "properties": {
+                "header": {
+                  "$ref": "#/components/schemas/SdJwtVcKbJwtHeader"
+                },
+                "payload": {
+                  "$ref": "#/components/schemas/SdJwtVcKbJwtPayload"
+                },
+                "compact": {
+                  "$ref": "#/components/schemas/CompactJWT"
+                }
+              },
+              "required": ["header", "payload"],
+              "additionalProperties": false,
+              "description": "Key binding JWT"
+            }
+          },
+          "required": ["compactSdJwtVc", "disclosures", "signedPayload", "decodedPayload"],
+          "additionalProperties": false,
+          "description": "The decoded SD JWT Verifiable Credential. This representation includes multiple representations of the same SD-JWT, and allows to fully process an SD-JWT, as well as create a presentation SD-JWT  (minus the KB-JWT) by removing certain disclosures from the compact SD-JWT.\n\nThis representation is useful as it doesn't require a hasher implementation to match the different digests in the signed SD-JWT payload, with the different disclosures."
+        },
+        "SdJwtDisclosure": {
+          "type": "object",
+          "properties": {
+            "encoded": {
+              "type": "string"
+            },
+            "decoded": {
+              "$ref": "#/components/schemas/SdJwtDecodedDisclosure"
+            },
+            "digest": {
+              "type": "string"
+            }
+          },
+          "required": ["encoded", "decoded", "digest"],
+          "additionalProperties": false
+        },
+        "SdJwtDecodedDisclosure": {
+          "anyOf": [
+            {
+              "type": "array",
+              "minItems": 3,
+              "items": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/JsonValue"
+                }
+              ],
+              "maxItems": 3
+            },
+            {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/JsonValue"
+                }
+              ],
+              "maxItems": 2
+            }
+          ]
+        },
+        "JsonValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/JsonValue"
+                  },
+                  {
+                    "not": {}
+                  }
+                ]
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/JsonValue"
+              }
+            }
+          ]
+        },
+        "SdJwtSignedVerifiableCredentialPayload": {
+          "type": "object",
+          "properties": {
+            "vct": {
+              "type": "string"
+            },
+            "iss": {
+              "type": "string"
+            },
+            "iat": {
+              "type": "number"
+            },
+            "nbf": {
+              "type": "number"
+            },
+            "exp": {
+              "type": "number"
+            },
+            "cnf": {
+              "type": "object",
+              "properties": {
+                "jwk": {},
+                "kid": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "status": {
+              "type": "object",
+              "properties": {
+                "idx": {
+                  "type": "number"
+                },
+                "uri": {
+                  "type": "string"
+                }
+              },
+              "required": ["idx", "uri"],
+              "additionalProperties": false
+            },
+            "sub": {
+              "type": "string"
+            },
+            "_sd": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "_sd_alg": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SdJwtJsonValue"
+              },
+              {
+                "not": {}
+              },
+              {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              {
+                "not": {}
+              }
+            ]
+          },
+          "required": ["iat", "iss", "vct"],
+          "description": "The signed payload of an SD-JWT. Includes fields such as `_sd`, `...` and `_sd_alg`"
+        },
+        "SdJwtJsonValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "_sd": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SdJwtJsonValue"
+                  },
+                  {
+                    "not": {}
+                  }
+                ]
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SdJwtJsonValue"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "...": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["..."],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "SdJwtDecodedVerifiableCredentialPayload": {
+          "type": "object",
+          "properties": {
+            "vct": {
+              "type": "string"
+            },
+            "iss": {
+              "type": "string"
+            },
+            "iat": {
+              "type": "number"
+            },
+            "nbf": {
+              "type": "number"
+            },
+            "exp": {
+              "type": "number"
+            },
+            "cnf": {
+              "type": "object",
+              "properties": {
+                "jwk": {},
+                "kid": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "status": {
+              "type": "object",
+              "properties": {
+                "idx": {
+                  "type": "number"
+                },
+                "uri": {
+                  "type": "string"
+                }
+              },
+              "required": ["idx", "uri"],
+              "additionalProperties": false
+            },
+            "sub": {
+              "type": "string"
+            }
+          },
+          "required": ["vct", "iss", "iat"],
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              {
+                "not": {}
+              }
+            ]
+          },
+          "description": "Decoded 'pretty' SD JWT Verifiable Credential. This representation has all the `_sd` properties removed, and includes the disclosures directly within the payload."
+        },
+        "SdJwtVcKbJwtHeader": {
+          "type": "object",
+          "properties": {
+            "typ": {
+              "type": "string",
+              "const": "kb+jwt"
+            },
+            "alg": {
+              "type": "string"
+            }
+          },
+          "required": ["typ", "alg"]
+        },
+        "SdJwtVcKbJwtPayload": {
+          "type": "object",
+          "properties": {
+            "iat": {
+              "type": "number"
+            },
+            "aud": {
+              "type": "string"
+            },
+            "nonce": {
+              "type": "string"
+            },
+            "sd_hash": {
+              "type": "string"
+            }
+          },
+          "required": ["iat", "aud", "nonce", "sd_hash"],
+          "additionalProperties": {}
+        },
+        "MdocOid4vpIssuerSigned": {
+          "type": "string",
+          "description": "Represents a selective disclosure JWT vc in compact form."
+        },
+        "MdocDocument": {
+          "$ref": "#/components/schemas/com.sphereon.mdoc.data.device.DocumentCbor"
+        },
+        "com.sphereon.mdoc.data.device.DocumentCbor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "HasherSync": {
+          "$comment": "(data: string | ArrayBuffer, alg: string) => Uint8Array",
+          "type": "object",
+          "properties": {
+            "namedArgs": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ArrayBuffer"
+                    }
+                  ]
+                },
+                "alg": {
+                  "type": "string"
+                }
+              },
+              "required": ["data", "alg"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "ArrayBuffer": {
+          "type": "object",
+          "properties": {
+            "byteLength": {
+              "type": "number"
+            }
+          },
+          "required": ["byteLength"],
+          "additionalProperties": false
+        },
+        "VerificationPolicies": {
+          "type": "object",
+          "properties": {
+            "schemaValidation": {
+              "$ref": "#/components/schemas/SchemaValidation"
+            },
+            "credentialStatus": {
+              "type": "boolean"
+            },
+            "expirationDate": {
+              "type": "boolean"
+            },
+            "issuanceDate": {
+              "type": "boolean"
+            }
+          },
+          "required": ["expirationDate", "issuanceDate"],
+          "additionalProperties": false
+        },
+        "SchemaValidation": {
+          "type": "string",
+          "enum": ["ALWAYS", "NEVER", "WHEN_PRESENT"]
+        },
+        "VerificationResult": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "boolean"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/WrappedVerifiableCredential"
+                },
+                {
+                  "$ref": "#/components/schemas/WrappedVerifiablePresentation"
+                }
+              ]
+            },
+            "subResults": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/VerificationSubResult"
+              }
+            },
+            "error": {
+              "type": "string"
+            },
+            "errorDetails": {
+              "type": "string"
+            }
+          },
+          "required": ["result", "source", "subResults"],
+          "additionalProperties": false
+        },
+        "WrappedVerifiableCredential": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/WrappedW3CVerifiableCredential"
+            },
+            {
+              "$ref": "#/components/schemas/WrappedSdJwtVerifiableCredential"
+            },
+            {
+              "$ref": "#/components/schemas/WrappedMdocCredential"
+            }
+          ]
+        },
+        "WrappedW3CVerifiableCredential": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/W3CVerifiableCredential"
+                },
+                {
+                  "$ref": "#/components/schemas/JwtDecodedVerifiableCredential"
+                }
+              ],
+              "description": "Original VC that we've received"
+            },
+            "decoded": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/JwtDecodedVerifiableCredential"
+                },
+                {
+                  "$ref": "#/components/schemas/IVerifiableCredential"
+                }
+              ],
+              "description": "In case of JWT credential it will be the decoded version. In other cases it will be the same as original one"
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OriginalType.JSONLD"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.JWT_ENCODED"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.JWT_DECODED"
+                }
+              ],
+              "description": "Type of this credential. Supported types are json-ld, jwt (decoded/encoded)"
+            },
+            "format": {
+              "type": "string",
+              "enum": ["jwt_vc", "ldp_vc", "ldp", "jwt"],
+              "description": "The claim format, typically used during exchange transport protocols"
+            },
+            "credential": {
+              "$ref": "#/components/schemas/IVerifiableCredential",
+              "description": "Internal stable representation of a Credential"
+            }
+          },
+          "required": ["original", "decoded", "type", "format", "credential"],
+          "additionalProperties": false
+        },
+        "OriginalType.JSONLD": {
+          "type": "string",
+          "const": "json-ld"
+        },
+        "OriginalType.JWT_ENCODED": {
+          "type": "string",
+          "const": "jwt-encoded"
+        },
+        "OriginalType.JWT_DECODED": {
+          "type": "string",
+          "const": "jwt-decoded"
+        },
+        "WrappedSdJwtVerifiableCredential": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredential"
+                },
+                {
+                  "$ref": "#/components/schemas/CompactSdJwtVc"
+                }
+              ],
+              "description": "Original VC that we've received. Can be either the encoded or decoded variant."
+            },
+            "decoded": {
+              "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredentialPayload",
+              "description": "Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT as the `decoded` property is used in e.g. PEX to check for path filters from fields. The full decoded credential can be found in the `credential` field."
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OriginalType.SD_JWT_VC_DECODED"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.SD_JWT_VC_ENCODED"
+                }
+              ],
+              "description": "Type of this credential."
+            },
+            "format": {
+              "type": "string",
+              "const": "vc+sd-jwt",
+              "description": "The claim format, typically used during exchange transport protocols"
+            },
+            "credential": {
+              "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredential",
+              "description": "Internal stable representation of a Credential"
+            }
+          },
+          "required": ["original", "decoded", "type", "format", "credential"],
+          "additionalProperties": false
+        },
+        "CompactSdJwtVc": {
+          "type": "string",
+          "description": "Represents a selective disclosure JWT vc in compact form."
+        },
+        "OriginalType.SD_JWT_VC_DECODED": {
+          "type": "string",
+          "const": "sd-jwt-vc-decoded"
+        },
+        "OriginalType.SD_JWT_VC_ENCODED": {
+          "type": "string",
+          "const": "sd-jwt-vc-encoded"
+        },
+        "WrappedMdocCredential": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MdocDocument"
+                },
+                {
+                  "$ref": "#/components/schemas/MdocOid4vpIssuerSigned"
+                }
+              ],
+              "description": "Original IssuerSigned to Mdoc that we've received. Can be either the encoded or decoded variant."
+            },
+            "decoded": {
+              "$ref": "#/components/schemas/MdocDecodedPayload",
+              "description": "Record where keys are the namespaces and the values are objects again with the namespace values"
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OriginalType.MSO_MDOC_DECODED"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.MSO_MDOC_ENCODED"
+                }
+              ],
+              "description": "Type of this credential."
+            },
+            "format": {
+              "type": "string",
+              "const": "mso_mdoc",
+              "description": "The claim format, typically used during exchange transport protocols"
+            },
+            "credential": {
+              "$ref": "#/components/schemas/MdocDocument",
+              "description": "Internal stable representation of a Credential"
+            }
+          },
+          "required": ["original", "decoded", "type", "format", "credential"],
+          "additionalProperties": false
+        },
+        "MdocDecodedPayload": {
+          "$ref": "#/components/schemas/Record<string,Record<string,(string|number|boolean)>>",
+          "description": "Record where keys are the namespaces and the values are objects again with the namespace values"
+        },
+        "Record<string,Record<string,(string|number|boolean)>>": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/Record<string,(string|number|boolean)>"
+          }
+        },
+        "Record<string,(string|number|boolean)>": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean"]
+          }
+        },
+        "OriginalType.MSO_MDOC_DECODED": {
+          "type": "string",
+          "const": "mso_mdoc-decoded"
+        },
+        "OriginalType.MSO_MDOC_ENCODED": {
+          "type": "string",
+          "const": "mso_mdoc-encoded"
+        },
+        "WrappedVerifiablePresentation": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/WrappedW3CVerifiablePresentation"
+            },
+            {
+              "$ref": "#/components/schemas/WrappedSdJwtVerifiablePresentation"
+            },
+            {
+              "$ref": "#/components/schemas/WrappedMdocPresentation"
+            }
+          ]
+        },
+        "WrappedW3CVerifiablePresentation": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/W3CVerifiablePresentation"
+                },
+                {
+                  "$ref": "#/components/schemas/JwtDecodedVerifiablePresentation"
+                }
+              ],
+              "description": "Original VP that we've received"
+            },
+            "decoded": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/JwtDecodedVerifiablePresentation"
+                },
+                {
+                  "$ref": "#/components/schemas/IVerifiablePresentation"
+                }
+              ],
+              "description": "In case of JWT VP it will be the decoded version. In other cases it will be the same as original one"
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OriginalType.JSONLD"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.JWT_ENCODED"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.JWT_DECODED"
+                }
+              ],
+              "description": "Type of this Presentation. Supported types are json-ld and jwt (decoded/encoded) and sd-jwt-vc (decoded/encoded)"
+            },
+            "format": {
+              "type": "string",
+              "enum": ["jwt_vp", "ldp_vp"],
+              "description": "The claim format, typically used during exchange transport protocols"
+            },
+            "presentation": {
+              "$ref": "#/components/schemas/UniformVerifiablePresentation",
+              "description": "Internal stable representation of a Presentation without proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding"
+            },
+            "vcs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WrappedW3CVerifiableCredential"
+              },
+              "description": "Wrapped Verifiable Credentials belonging to the Presentation"
+            }
+          },
+          "required": ["original", "decoded", "type", "format", "presentation", "vcs"],
+          "additionalProperties": false
+        },
+        "W3CVerifiablePresentation": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/IVerifiablePresentation"
+            },
+            {
+              "$ref": "#/components/schemas/CompactJWT"
+            }
+          ],
+          "description": "Represents a signed Verifiable Presentation (includes proof), in either JSON or compact JWT format. See  {@link https://www.w3.org/TR/vc-data-model/#presentations | VC data model }  See  {@link https://www.w3.org/TR/vc-data-model/#proof-formats | proof formats }"
+        },
+        "IVerifiablePresentation": {
+          "type": "object",
+          "properties": {
+            "proof": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IProof"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IProof"
+                  }
+                }
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "@context": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialContextType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialContextType"
+                  }
+                }
+              ]
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "verifiableCredential": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/W3CVerifiableCredential"
+              }
+            },
+            "presentation_submission": {
+              "$ref": "#/components/schemas/PresentationSubmission"
+            },
+            "holder": {
+              "type": "string"
+            },
+            "verifier": {
+              "type": "string"
+            }
+          },
+          "required": ["@context", "proof"]
+        },
+        "PresentationSubmission": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "A UUID or some other unique ID to identify this Presentation Submission"
+            },
+            "definition_id": {
+              "type": "string",
+              "description": "A UUID or some other unique ID to identify this Presentation Definition"
+            },
+            "descriptor_map": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Descriptor"
+              },
+              "description": "List of descriptors of how the claims are being mapped to presentation definition"
+            }
+          },
+          "required": ["id", "definition_id", "descriptor_map"],
+          "additionalProperties": false,
+          "description": "It expresses how the inputs are presented as proofs to a Verifier."
+        },
+        "Descriptor": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "ID to identify the descriptor from Presentation Definition Input Descriptor it coresponds to."
+            },
+            "path": {
+              "type": "string",
+              "description": "The path where the verifiable credential is located in the presentation submission json"
+            },
+            "path_nested": {
+              "$ref": "#/components/schemas/Descriptor"
+            },
+            "format": {
+              "type": "string",
+              "description": "The Proof or JWT algorith that the proof is in"
+            }
+          },
+          "required": ["id", "path", "format"],
+          "additionalProperties": false,
+          "description": "descriptor map laying out the structure of the presentation submission."
+        },
+        "JwtDecodedVerifiablePresentation": {
+          "type": "object",
+          "properties": {
+            "vp": {
+              "$ref": "#/components/schemas/IVerifiablePresentation"
+            },
+            "exp": {
+              "type": "string"
+            },
+            "iss": {
+              "type": "string"
+            },
+            "nbf": {
+              "type": "string"
+            },
+            "sub": {
+              "type": "string"
+            },
+            "jti": {
+              "type": "string"
+            },
+            "aud": {
+              "type": "string"
+            },
+            "iat": {
+              "type": "string"
+            }
+          },
+          "required": ["vp", "exp", "iss", "nbf", "sub", "jti", "aud", "iat"]
+        },
+        "UniformVerifiablePresentation": {
+          "type": "object",
+          "properties": {
+            "@context": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICredentialContextType"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ICredentialContextType"
+                  }
+                }
+              ]
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "verifiableCredential": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WrappedW3CVerifiableCredential"
+              }
+            },
+            "presentation_submission": {
+              "$ref": "#/components/schemas/PresentationSubmission"
+            },
+            "holder": {
+              "type": "string"
+            }
+          },
+          "required": ["@context", "type", "verifiableCredential"],
+          "additionalProperties": false
+        },
+        "WrappedSdJwtVerifiablePresentation": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredential"
+                },
+                {
+                  "$ref": "#/components/schemas/CompactSdJwtVc"
+                }
+              ],
+              "description": "Original VP that we've received. Can be either the encoded or decoded variant."
+            },
+            "decoded": {
+              "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredentialPayload",
+              "description": "Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT."
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OriginalType.SD_JWT_VC_DECODED"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.SD_JWT_VC_ENCODED"
+                }
+              ],
+              "description": "Type of this Presentation."
+            },
+            "format": {
+              "type": "string",
+              "const": "vc+sd-jwt",
+              "description": "The claim format, typically used during exchange transport protocols"
+            },
+            "presentation": {
+              "$ref": "#/components/schemas/SdJwtDecodedVerifiableCredential",
+              "description": "Internal stable representation of a Presentation"
+            },
+            "vcs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WrappedSdJwtVerifiableCredential"
+              },
+              "minItems": 1,
+              "maxItems": 1,
+              "description": "Wrapped Verifiable Credentials belonging to the Presentation. Will always be an array with a single SdJwtVerifiableCredential entry."
+            }
+          },
+          "required": ["original", "decoded", "type", "format", "presentation", "vcs"],
+          "additionalProperties": false
+        },
+        "WrappedMdocPresentation": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MdocDeviceResponse"
+                },
+                {
+                  "$ref": "#/components/schemas/MdocOid4vpMdocVpToken"
+                }
+              ],
+              "description": "Original VP that we've received. Can be either the encoded or decoded variant."
+            },
+            "decoded": {
+              "$ref": "#/components/schemas/MdocDeviceResponse",
+              "description": "Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT."
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OriginalType.MSO_MDOC_ENCODED"
+                },
+                {
+                  "$ref": "#/components/schemas/OriginalType.MSO_MDOC_DECODED"
+                }
+              ],
+              "description": "Type of this Presentation."
+            },
+            "format": {
+              "type": "string",
+              "const": "mso_mdoc",
+              "description": "The claim format, typically used during exchange transport protocols"
+            },
+            "presentation": {
+              "$ref": "#/components/schemas/MdocDeviceResponse",
+              "description": "Internal stable representation of a Presentation"
+            },
+            "vcs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WrappedMdocCredential"
+              },
+              "description": "Wrapped Mdocs belonging to the Presentation. There can be multiple documents in a single device response"
+            }
+          },
+          "required": ["original", "decoded", "type", "format", "presentation", "vcs"],
+          "additionalProperties": false
+        },
+        "MdocDeviceResponse": {
+          "$ref": "#/components/schemas/com.sphereon.mdoc.data.device.DeviceResponseCbor"
+        },
+        "com.sphereon.mdoc.data.device.DeviceResponseCbor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "MdocOid4vpMdocVpToken": {
+          "type": "string"
+        },
+        "VerificationSubResult": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "boolean"
+            },
+            "error": {
+              "type": "string"
+            },
+            "errorDetails": {
+              "type": "string"
+            }
+          },
+          "required": ["result"],
+          "additionalProperties": false
+        },
+        "VerifyMdocCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "credential": {
+              "type": "string"
+            }
+          },
+          "required": ["credential"],
+          "additionalProperties": false
+        },
+        "ValidateSchemaArgs": {
+          "type": "object",
+          "properties": {
+            "credential": {
+              "$ref": "#/components/schemas/OriginalVerifiableCredential"
+            },
+            "validationPolicy": {
+              "$ref": "#/components/schemas/SchemaValidation"
+            },
+            "hasher": {
+              "$ref": "#/components/schemas/HasherSync"
+            }
+          },
+          "required": ["credential"],
+          "additionalProperties": false
+        },
+        "VerifySDJWTCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "credential": {
+              "type": "string"
+            },
+            "hasher": {
+              "$ref": "#/components/schemas/HasherSync"
+            }
+          },
+          "required": ["credential"],
+          "additionalProperties": false
+        },
+        "VerifyW3CCredentialArgs": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "methods": {
+        "cvVerifyCredential": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/VerifyCredentialArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerificationResult"
+          }
+        },
+        "cvVerifyMdoc": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/VerifyMdocCredentialArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerificationResult"
+          }
+        },
+        "cvVerifySchema": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ValidateSchemaArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerificationResult"
+          }
+        },
+        "cvVerifySDJWTCredential": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/VerifySDJWTCredentialArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerificationResult"
+          }
+        },
+        "cvVerifyW3CCredential": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/VerifyW3CCredentialArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/VerificationResult"
+          }
+        }
+      }
+    }
+  }
+}

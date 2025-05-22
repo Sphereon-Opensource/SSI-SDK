@@ -6,6 +6,8 @@ import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { EbsiDidProvider } from '../../src'
 import { EbsiPublicKeyPurpose } from '../../src/did'
 
+import { describe, expect, it, vitest } from 'vitest'
+
 const DID_METHOD = 'did:ebsi'
 const PRIVATE_KEY_HEX = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
 
@@ -13,9 +15,9 @@ const ebsiDidProvider = new EbsiDidProvider({
   defaultKms: 'mem',
 })
 
-jest.mock('../../src/did/services/EbsiRPCService', () => ({
-  ...jest.requireActual('../../src/did/services/EbsiRPCService'),
-  callRpcMethod: jest.fn().mockResolvedValue({ result: { r: '', s: '', v: '' } }),
+vitest.mock('../../src/did/services/EbsiRPCService', () => ({
+  ...vitest.importActual('../../src/did/services/EbsiRPCService'),
+  callRpcMethod: vitest.fn().mockResolvedValue({ result: { r: '', s: '', v: '' } }),
 }))
 
 const agent = createAgent<IKeyManager & IDIDManager>({

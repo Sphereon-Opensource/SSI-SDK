@@ -1,6 +1,7 @@
 import { TAgent } from '@veramo/core'
 
 import { IGeolocationStore } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IGeolocationStore>
 

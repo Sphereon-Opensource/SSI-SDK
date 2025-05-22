@@ -3,7 +3,7 @@ import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { DisclosureFrame, Hasher, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { HasherSync, JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import { HasherSync, JsonWebKey, JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
@@ -352,7 +352,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const url = new URL(vct)
 
     const response = await fetchUrlWithErrorHandling(url.toString())
-    const metadata: SdJwtTypeMetadata = await response.json()
+    const metadata: SdJwtTypeMetadata = (await response.json()) as SdJwtTypeMetadata
     assertValidTypeMetadata(metadata, vct)
 
     const validate = async (vct: string, input: unknown, integrityValue?: string, hasher?: Hasher | HasherSync) => {

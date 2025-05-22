@@ -1,8 +1,8 @@
-import { OrPromise } from '@sphereon/ssi-types'
+import { type OrPromise } from '@sphereon/ssi-types'
 import { DataSource, In, Repository } from 'typeorm'
 import { AbstractPDStore } from './AbstractPDStore'
 import Debug from 'debug'
-import {
+import type {
   DeleteDefinitionArgs,
   DeleteDefinitionsArgs,
   GetDefinitionArgs,

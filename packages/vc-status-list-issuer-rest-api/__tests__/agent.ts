@@ -4,7 +4,7 @@ import { getDidJwkResolver } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
-  CredentialHandlerLDLocal,
+  CredentialProviderJsonld,
   ICredentialHandlerLDLocal,
   LdDefaultContexts,
   MethodNames,
@@ -12,7 +12,7 @@ import {
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
   SphereonJsonWebSignature2020,
-} from '@sphereon/ssi-sdk.vc-handler-ld-local'
+} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { createAgent, ICredentialPlugin, IDataStoreORM, IDIDManager, IKeyManager, IResolver, TAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
@@ -89,7 +89,7 @@ const agent: TAgent<IRequiredPlugins> = createAgent<
     new IdentifierResolution({ crypto: global.crypto }),
     new JwtService(),
     new CredentialPlugin(),
-    new CredentialHandlerLDLocal({
+    new CredentialProviderJsonld({
       contextMaps: [LdDefaultContexts],
       suites: [
         new SphereonEd25519Signature2018(),
@@ -98,8 +98,8 @@ const agent: TAgent<IRequiredPlugins> = createAgent<
         new SphereonEcdsaSecp256k1RecoverySignature2020(),
       ],
       bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredentialLDLocal],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentationLDLocal],
+        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
+        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
       ]),
       keyStore: privateKeyStore,
     }),

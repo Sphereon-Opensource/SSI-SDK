@@ -7,11 +7,10 @@ import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
-import { jwksURIFromIdentifier } from '@sphereon/ssi-sdk.public-key-hosting'
+import { jwksURIFromIdentifier, PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IDIDManager, IIdentifier, IKeyManager, IResolver, MinimalImportableKey, TAgent } from '@veramo/core'
-
+import { afterAll, beforeAll, describe, it } from 'vitest'
 // @ts-ignore
 import cors from 'cors'
 
@@ -59,7 +58,7 @@ const secp256r1PrivateKey: MinimalImportableKey = {
 // const secp256r1Jwk = toJwk(secp256r1PrivateKey.privateKeyHex, 'Secp256r1', { isPrivateKey: true })
 // let authReqResult: AttestationAuthRequestUrlResult
 const MOCK_BASE_URL = 'https://ebsi-sphereon.ngrok.dev' // `http://localhost:${port}`
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
 
 const setup = async (): Promise<boolean> => {
   const config = await getConfig('packages/ebsi-support/agent.yml')

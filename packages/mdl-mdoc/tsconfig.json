@@ -1,18 +1,6 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist",
-    "experimentalDecorators": true,
-    "strictPropertyInitialization": false
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
-    {
-      "path": "../agent-config"
-    },
     {
       "path": "../ssi-types"
     },
@@ -20,7 +8,16 @@
       "path": "../ssi-sdk-core"
     },
     {
+      "path": "../public-key-hosting"
+    },
+    {
       "path": "../data-store"
+    },
+    {
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

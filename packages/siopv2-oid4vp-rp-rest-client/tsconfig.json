@@ -1,10 +1,5 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "rootDir": "src",
-    "outDir": "dist"
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
     {
       "path": "../ssi-types"

@@ -1,45 +1,44 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist"
-  },
-  "include": ["src/**/*.json", "src/**/*.ts"],
+  "extends": "../../tsconfig.base.json",
   "references": [
-    {
-      "path": "../sd-jwt"
-    },
     {
       "path": "../ssi-types"
     },
     {
-      "path": "../ssi-sdk-core"
+      "path": "../xstate-persistence"
     },
     {
-      "path": "../agent-config"
+      "path": "../siopv2-oid4vp-common"
     },
     {
-      "path": "../pd-manager"
-    },
-    {
-      "path": "../contact-manager"
-    },
-    {
-      "path": "../credential-store"
-    },
-    {
-      "path": "../data-store"
+      "path": "../sd-jwt"
     },
     {
       "path": "../presentation-exchange"
     },
     {
+      "path": "../pd-manager"
+    },
+    {
       "path": "../issuance-branding"
     },
     {
-      "path": "../xstate-persistence"
+      "path": "../data-store"
+    },
+    {
+      "path": "../credential-validation"
+    },
+    {
+      "path": "../credential-store"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

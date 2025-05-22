@@ -1,0 +1,216 @@
+{
+  "IOIDFMetadataStore": {
+    "components": {
+      "schemas": {
+        "IFederationMetadataClearArgs": {
+          "type": "object",
+          "properties": {
+            "storeId": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "IFederationMetadataGetArgs": {
+          "type": "object",
+          "properties": {
+            "storeId": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            },
+            "correlationId": {
+              "type": "string"
+            }
+          },
+          "required": ["correlationId"],
+          "additionalProperties": false
+        },
+        "OptionalOpenidFederationMetadata": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/OpenidFederationMetadata"
+            },
+            {
+              "not": {}
+            }
+          ]
+        },
+        "OpenidFederationMetadata": {
+          "type": "object",
+          "properties": {
+            "baseUrl": {
+              "type": "string"
+            },
+            "jwt": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": ["baseUrl", "jwt"],
+          "additionalProperties": false
+        },
+        "FederationMetadataExistsArgs": {
+          "$ref": "#/components/schemas/IFederationMetadataGetArgs"
+        },
+        "IMetadataImportArgs": {
+          "type": "object",
+          "properties": {
+            "metadataType": {
+              "$ref": "#/components/schemas/MetadataType"
+            }
+          },
+          "required": ["metadataType"],
+          "additionalProperties": false
+        },
+        "MetadataType": {
+          "type": "string",
+          "enum": ["issuer", "authorizationServer", "openidFederation"]
+        },
+        "IFederationMetadataListArgs": {
+          "type": "object",
+          "properties": {
+            "storeId": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "IFederationMetadataPersistArgs": {
+          "type": "object",
+          "properties": {
+            "metadataType": {
+              "$ref": "#/components/schemas/MetadataType"
+            },
+            "correlationId": {
+              "type": "string"
+            },
+            "metadata": {
+              "$ref": "#/components/schemas/OpenidFederationMetadata"
+            },
+            "overwriteExisting": {
+              "type": "boolean"
+            },
+            "validation": {
+              "type": "boolean"
+            },
+            "ttl": {
+              "type": "number"
+            },
+            "storeId": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "required": ["correlationId", "metadata", "metadataType"],
+          "additionalProperties": false
+        },
+        "OptionalOpenidFederationValueData": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/IValueData<OpenidFederationMetadata>"
+            },
+            {
+              "not": {}
+            }
+          ]
+        },
+        "IValueData<OpenidFederationMetadata>": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/components/schemas/OpenidFederationMetadata"
+            },
+            "expires": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false,
+          "description": "This is how the store will actually store the value. It contains an optional `expires` property, which indicates when the value would expire"
+        },
+        "FederationMetadataRemoveArgs": {
+          "$ref": "#/components/schemas/IFederationMetadataGetArgs"
+        }
+      },
+      "methods": {
+        "oidfStoreClearAllMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IFederationMetadataClearArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "oidfStoreGetMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IFederationMetadataGetArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/OptionalOpenidFederationMetadata"
+          }
+        },
+        "oidfStoreHasMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/FederationMetadataExistsArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "oidfStoreImportMetadatas": {
+          "description": "",
+          "arguments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IMetadataImportArgs"
+            }
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "oidfStoreListMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IFederationMetadataListArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpenidFederationMetadata"
+            }
+          }
+        },
+        "oidfStorePersistMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IFederationMetadataPersistArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/OptionalOpenidFederationValueData"
+          }
+        },
+        "oidfStoreRemoveMetadata": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/FederationMetadataRemoveArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

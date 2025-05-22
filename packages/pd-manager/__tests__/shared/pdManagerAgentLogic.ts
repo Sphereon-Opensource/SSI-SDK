@@ -3,6 +3,7 @@ import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPrese
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
 import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IPDManager>
 

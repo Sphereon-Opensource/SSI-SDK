@@ -1,4 +1,4 @@
-import { IStatusList } from './IStatusList'
+import type { IStatusList } from './IStatusList'
 import { StatusList2021Implementation } from './StatusList2021'
 import { OAuthStatusListImplementation } from './OAuthStatusList'
 import { StatusListType } from '@sphereon/ssi-types'

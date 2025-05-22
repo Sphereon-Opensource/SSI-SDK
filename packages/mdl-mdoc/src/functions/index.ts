@@ -12,30 +12,28 @@ import {
 import { JWK } from '@sphereon/ssi-types'
 import * as crypto from 'crypto'
 import { Certificate, CryptoEngine, setEngine } from 'pkijs'
-import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { fromString } from 'uint8arrays/from-string'
 import { IRequiredContext, VerifyCertificateChainArgs } from '../types/ImDLMdoc'
-import CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
-import CoseSign1Cbor = com.sphereon.crypto.cose.CoseSign1Cbor
-import ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
-import ToBeSignedCbor = com.sphereon.crypto.cose.ToBeSignedCbor
-import CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
-import DefaultCallbacks = com.sphereon.crypto.DefaultCallbacks
-import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
-import SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
-import ICoseCryptoCallbackJS = com.sphereon.crypto.ICoseCryptoCallbackJS
-import IKey = com.sphereon.crypto.IKey
-import IKeyInfo = com.sphereon.crypto.IKeyInfo
-import IX509ServiceJS = com.sphereon.crypto.IX509ServiceJS
-import IX509VerificationResult = com.sphereon.crypto.IX509VerificationResult
-import Jwk = com.sphereon.crypto.jose.Jwk
-import KeyInfo = com.sphereon.crypto.KeyInfo
-import ResolvedKeyInfo = com.sphereon.crypto.ResolvedKeyInfo
-import X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
-import DateTimeUtils = com.sphereon.kmp.DateTimeUtils
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import encodeTo = com.sphereon.kmp.encodeTo
-import Encoding = com.sphereon.kmp.Encoding
-import LocalDateTimeKMP = com.sphereon.kmp.LocalDateTimeKMP
+
+type CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
+type ICoseKeyCbor = com.sphereon.crypto.cose.ICoseKeyCbor
+type ToBeSignedCbor = com.sphereon.crypto.cose.ToBeSignedCbor
+const CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
+type SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
+type ICoseCryptoCallbackJS = com.sphereon.crypto.ICoseCryptoCallbackJS
+type IKey = com.sphereon.crypto.IKey
+type IX509ServiceJS = com.sphereon.crypto.IX509ServiceJS
+type Jwk = com.sphereon.crypto.jose.Jwk
+const KeyInfo = com.sphereon.crypto.KeyInfo
+type X509VerificationProfile = com.sphereon.crypto.X509VerificationProfile
+const DateTimeUtils = com.sphereon.kmp.DateTimeUtils
+const decodeFrom = com.sphereon.kmp.decodeFrom
+const encodeTo = com.sphereon.kmp.encodeTo
+const Encoding = com.sphereon.kmp.Encoding
+type LocalDateTimeKMP = com.sphereon.kmp.LocalDateTimeKMP
+const SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
+const DefaultCallbacks = com.sphereon.crypto.DefaultCallbacks
 
 export class CoseCryptoService implements ICoseCryptoCallbackJS {
   constructor(private context?: IRequiredContext) {}
@@ -55,8 +53,8 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       if (key == null) {
         return Promise.reject(Error('No key present in keyInfo. This implementation cannot sign without a key!'))
       }
-      const resolvedKeyInfo = ResolvedKeyInfo.Static.fromKeyInfo(keyInfo, key)
-      const jwkKeyInfo: ResolvedKeyInfo<Jwk> = CoseJoseKeyMappingService.toResolvedJwkKeyInfo(resolvedKeyInfo)
+      const resolvedKeyInfo = com.sphereon.crypto.ResolvedKeyInfo.Static.fromKeyInfo(keyInfo, key)
+      const jwkKeyInfo: com.sphereon.crypto.ResolvedKeyInfo<Jwk> = CoseJoseKeyMappingService.toResolvedJwkKeyInfo(resolvedKeyInfo)
 
       const kid = jwkKeyInfo.kid ?? calculateJwkThumbprint({ jwk: jwkKeyInfo.key.toJsonDTO() }) ?? jwkKeyInfo.key.getKidAsString(true)
       if (!kid) {
@@ -74,10 +72,10 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
   }
 
   async verify1Async<CborType>(
-    input: CoseSign1Cbor<CborType>,
-    keyInfo: IKeyInfo<ICoseKeyCbor>,
+    input: com.sphereon.crypto.cose.CoseSign1Cbor<CborType>,
+    keyInfo: com.sphereon.crypto.IKeyInfo<ICoseKeyCbor>,
     requireX5Chain: Nullable<boolean>,
-  ): Promise<IVerifySignatureResult<ICoseKeyCbor>> {
+  ): Promise<com.sphereon.crypto.generic.IVerifySignatureResult<ICoseKeyCbor>> {
     const getCertAndKey = async (
       x5c: Nullable<Array<string>>,
     ): Promise<{
@@ -128,7 +126,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       if (kid === null) {
         kid = coseKeyInfo.key.getKidAsString(false)
       }
-      issuerCoseKey = CoseKeyCbor.Static.fromDTO(coseKeyInfo.key)
+      issuerCoseKey = com.sphereon.crypto.cose.CoseKeyCbor.Static.fromDTO(coseKeyInfo.key)
     }
 
     const issuerCoseKeyInfo = new KeyInfo<CoseKeyCbor>(
@@ -145,8 +143,8 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
     const recalculatedToBeSigned = input.toBeSignedJson(issuerCoseKeyInfo, SignatureAlgorithm.Static.fromCose(coseAlg))
     const key = CoseJoseKeyMappingService.toJoseJwk(issuerCoseKeyInfo.key!).toJsonDTO<JWK>()
     const valid = await verifyRawSignature({
-      data: u8a.fromString(recalculatedToBeSigned.base64UrlValue, 'base64url'),
-      signature: u8a.fromString(sign1Json.signature, 'base64url'),
+      data: fromString(recalculatedToBeSigned.base64UrlValue, 'base64url'),
+      signature: fromString(sign1Json.signature, 'base64url'),
       key,
     })
 
@@ -156,7 +154,7 @@ export class CoseCryptoService implements ICoseCryptoCallbackJS {
       error: !valid,
       message: `Signature of '${issuerCert ? getSubjectDN(issuerCert).DN : kid}' was ${valid ? '' : 'in'}valid`,
       keyInfo: issuerCoseKeyInfo,
-    } satisfies IVerifySignatureResult<ICoseKeyCbor>
+    } satisfies com.sphereon.crypto.generic.IVerifySignatureResult<ICoseKeyCbor>
   }
 
   resolvePublicKeyAsync<KT extends com.sphereon.crypto.IKey>(
@@ -212,7 +210,7 @@ export class X509CallbackService implements IX509ServiceJS {
     trustedCerts: Nullable<string[]>,
     verificationProfile?: X509VerificationProfile | undefined,
     verificationTime?: Nullable<LocalDateTimeKMP>,
-  ): Promise<IX509VerificationResult<KeyType>> {
+  ): Promise<com.sphereon.crypto.IX509VerificationResult<KeyType>> {
     const verificationAt = verificationTime ?? DateTimeUtils.Static.DEFAULT.dateTimeLocal()
     let chain: Array<string | Uint8Array> = []
     if (chainDER && chainDER.length > 0) {
@@ -238,7 +236,7 @@ export class X509CallbackService implements IX509ServiceJS {
       message: result.message,
       error: result.error,
       verificationTime: verificationAt,
-    } satisfies IX509VerificationResult<KeyType>
+    } satisfies com.sphereon.crypto.IX509VerificationResult<KeyType>
   }
 
   setTrustedCerts = (trustedCertsInPEM?: Array<string>) => {
@@ -255,9 +253,12 @@ export class X509CallbackService implements IX509ServiceJS {
 }
 
 const defaultCryptoEngine = () => {
+  // @ts-ignore
   if (typeof self !== 'undefined') {
+    // @ts-ignore
     if ('crypto' in self) {
       let engineName = 'webcrypto'
+      // @ts-ignore
       if ('webkitSubtle' in self.crypto) {
         engineName = 'safari'
       }

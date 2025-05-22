@@ -1,13 +1,17 @@
 {
-  "extends": "../tsconfig-base.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist"
-  },
+  "extends": "../../tsconfig.base.json",
   "references": [
     {
-      "path": "../data-store"
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../mdl-mdoc"
+    },
+    {
+      "path": "../ssi-sdk-core"
     },
     {
       "path": "../agent-config"

@@ -1,5 +1,6 @@
 {
   "preset": "ts-jest",
+  "rootDir": ".",
   "moduleFileExtensions": [
     "ts",
     "tsx",
@@ -30,15 +31,11 @@
     "\\.tsx?$": [
       "ts-jest",
       {
-        "tsconfig": "./packages/tsconfig-base.json"
+        "tsconfig": "./tsconfig.test.json"
       }
     ]
   },
-  "modulePathIgnorePatterns": [
-    "<rootDir>/packages/presentation-exchange/.yalc/",
-    "<rootDir>/packages/siopv2-oid4vp-rp-auth/.yalc/",
-    "<rootDir>/packages/siopv2-oid4vp-rp-rest-api/.yalc/"
-  ],
+  "testPathIgnorePatterns": ["/node_modules/", "/dist/", "/dist-esm/"],
   "transformIgnorePatterns": [
     "<rootDir>/node_modules/.pnpm/(?!(nist-weierstrauss|multiformatsgggggg|@digitalcredentials\\+vc-status-list|valibot)@)"
   ],
@@ -47,9 +44,14 @@
     "!**/.yalc/**",
     "!dist/*"
   ],
+  "moduleNameMapper": {
+    "^@sphereon/ssi-types$": "<rootDir>/packages/ssi-types/src",
+    "^@sphereon/ssi-sdk.core$": "<rootDir>/packages/ssi-sdk-core/src",
+    "^@sphereon/ssi-sdk\\.(.+-.+)$": "<rootDir>/packages/$1/src"
+  },
   "globals": {
     "ts-jest": {
-      "tsconfig": "./packages/tsconfig-base.json"
+      "tsconfig": "./tsconfig.test.json"
     }
   },
   "testEnvironment": "node",

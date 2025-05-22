@@ -3,20 +3,32 @@
   "description": "contains the client side to call REST endpoints of a Verifiable Credential Issuer",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IOID4VCIRestClient": "./src/types/IOID4VCIRestClient.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.17.0",
+    "@sphereon/oid4vci-common": "0.19.0",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^3.1.8"
@@ -28,11 +40,11 @@
     "@veramo/remote-server": "4.2.0",
     "nock": "^13.5.4",
     "ts-node": "^10.9.2",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "plugin.schema.json",
     "README.md",
     "LICENSE"
@@ -50,6 +62,5 @@
     "REST",
     "Verifiable Credentials",
     "SSI"
-  ],
-  "nx": {}
+  ]
 }

@@ -2,28 +2,41 @@
   "name": "@sphereon/ssi-sdk.agent-config",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
+    "reflect-metadata": "^0.2.2",
     "@veramo/core": "4.2.0",
     "debug": "^4.3.5",
     "jsonpointer": "^5.0.1",
-    "typeorm": "^0.3.21",
+    "typeorm": "0.3.20",
     "url-parse": "^1.5.10",
     "yaml": "^2.4.5"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
     "@types/url-parse": "^1.4.11",
-    "typescript": "5.4.2"
+    "typescript": "5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
@@ -37,6 +50,5 @@
     "Sphereon",
     "SSI",
     "Agent"
-  ],
-  "nx": {}
+  ]
 }

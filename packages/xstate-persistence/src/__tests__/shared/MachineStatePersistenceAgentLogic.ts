@@ -12,6 +12,7 @@ import {
   TypegenDisabled,
 } from 'xstate'
 import { IMachineStatePersistence, interpreterStartOrResume, MachineStatePersistArgs, machineStatePersistRegistration } from '../../index'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IMachineStatePersistence>
 

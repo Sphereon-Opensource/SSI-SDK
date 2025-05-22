@@ -6,11 +6,11 @@ import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
 import oidfClientAgentLogic from './shared/oidfClientAgentLogic'
-import { getConfig, createObjects } from '@sphereon/ssi-sdk.agent-config'
+import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IOIDFClient } from '../src'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-
-jest.setTimeout(60000)
+import { describe } from 'vitest'
+//jest.setTimeout(60000)
 
 const port = 4102
 const basePath = '/agent'
@@ -53,7 +53,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 

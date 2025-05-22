@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm'
+import typeorm from 'typeorm'
+const { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } = typeorm
 import { CorrelationIdentifierType, ValidationConstraint } from '../../types'
 import { IdentityEntity } from './IdentityEntity'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'

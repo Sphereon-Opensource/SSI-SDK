@@ -9,7 +9,9 @@ import {
 } from '@sphereon/wellknown-dids-client'
 import { IAgentPlugin, IIdentifier, VerifiableCredential } from '@veramo/core'
 import { OrPromise } from '@veramo/utils'
+// @ts-ignore
 import { normalizeCredential } from 'did-jwt-vc'
+// @ts-ignore
 import { Service } from 'did-resolver/lib/resolver'
 import { Connection } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'

@@ -2,26 +2,38 @@
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-op-auth",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "veramo": {
     "pluginInterfaces": {
       "IDidAuthSiopOpAuthenticator": "./src/types/IDidAuthSiopOpAuthenticator.ts"
     }
   },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.0",
-    "@sphereon/did-auth-siop-adapter": "0.17.0",
-    "@sphereon/oid4vc-common": "0.17.0",
+    "@sphereon/did-auth-siop": "0.19.0",
+    "@sphereon/did-auth-siop-adapter": "0.19.0",
+    "@sphereon/oid4vc-common": "0.19.0",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
-    "@sphereon/ssi-sdk-ext.did-utils": "0.28.0",
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.28.0",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.28.0",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.29.0",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.29.0",
+    "@sphereon/ssi-sdk-ext.jwt-service": "0.29.0",
     "@sphereon/ssi-sdk.contact-manager": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
@@ -47,7 +59,7 @@
   },
   "devDependencies": {
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.28.0",
+    "@sphereon/ssi-sdk-ext.did-resolver-jwk": "0.29.0",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/i18n-js": "^3.8.9",
     "@types/lodash.memoize": "^4.1.9",
@@ -61,11 +73,11 @@
     "@veramo/utils": "4.2.0",
     "did-resolver": "^4.1.0",
     "nock": "^13.5.4",
-    "typeorm": "^0.3.21"
+    "typeorm": "0.3.20"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "src/localization/translations/*",
     "README.md",
     "plugin.schema.json",
@@ -89,6 +101,5 @@
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"
-  ],
-  "nx": {}
+  ]
 }

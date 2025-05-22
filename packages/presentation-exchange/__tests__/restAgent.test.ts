@@ -1,3 +1,4 @@
+import { describe } from 'vitest'
 import 'cross-fetch/polyfill'
 // @ts-ignore
 import express from 'express'
@@ -11,8 +12,7 @@ import { Resolver } from 'did-resolver'
 import { getDidKeyResolver } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import presentationExchangeAgentLogic from './shared/presentationExchangeAgentLogic'
-
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
 
 const port = 3007
 const basePath = '/agent'
@@ -59,7 +59,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 

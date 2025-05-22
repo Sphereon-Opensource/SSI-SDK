@@ -22,11 +22,11 @@ dbConnection:
       migrationsRun: true
       migrations:
         - $require: '@veramo/data-store?t=object#migrations'
-        - $require: './packages/data-store?t=object#DataStoreDigitalCredentialMigrations'
+        - $require: './packages/data-store/dist?t=object#DataStoreDigitalCredentialMigrations'
       logging: false
       entities:
         - $require: '@veramo/data-store?t=object#Entities'
-        - $require: './packages/data-store?t=object#DataStoreDigitalCredentialEntities'
+        - $require: './packages/data-store/dist?t=object#DataStoreDigitalCredentialEntities'
 
 server:
   baseUrl:

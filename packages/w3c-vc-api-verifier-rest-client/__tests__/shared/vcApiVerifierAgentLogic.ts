@@ -1,5 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { IVcApiVerifierClient } from '../../src'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IVcApiVerifierClient>
 
@@ -17,7 +18,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       await testContext.tearDown()
     })
 
-    xit('should verify', async () => {
+    it.skip('should verify', async () => {
       const credential = {
         '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2018/credentials/examples/v1'],
         credentialSubject: {

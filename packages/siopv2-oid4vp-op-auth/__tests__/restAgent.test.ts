@@ -1,8 +1,9 @@
+import { describe } from 'vitest'
 import * as fs from 'fs'
 import 'cross-fetch/polyfill'
 // @ts-ignore
 import express from 'express'
-import { IAgent, createAgent, IAgentOptions } from '@veramo/core'
+import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { Server } from 'http'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
@@ -15,7 +16,7 @@ import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 import { PresentationSignCallback } from '@sphereon/did-auth-siop'
 
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')
@@ -85,7 +86,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  restServer.close()
+  restServer?.close()
   return true
 }
 

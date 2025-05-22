@@ -1,15 +1,16 @@
-import {
-  VerifiablePresentation,
+import type {
   CompactJWT,
-  UnsignedCredential,
-  CredentialSubject,
-  VerifiableCredential,
-  UnsignedPresentation,
-  ProofType,
   CredentialStatusReference,
+  CredentialSubject,
+  IssuerType,
+  ProofType,
+  UnsignedCredential,
+  UnsignedPresentation,
+  VerifiableCredential,
+  VerifiablePresentation,
 } from '@veramo/core'
 
-import { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'
+import type { IProofPurpose, IProofType, PresentationSubmission } from '@sphereon/ssi-types'
 
 export type W3CVerifiablePresentationSP = VerifiablePresentation | VerifiablePresentationSP | CompactJWT
 export type W3CVerifiableCredentialSP = VerifiableCredential | VerifiableCredentialSP | CompactJWT
@@ -48,7 +49,12 @@ export interface CredentialProofSP extends ProofType {
   [x: string]: string | string[] | undefined
 }
 
-export interface UnsignedCredentialSP extends UnsignedCredential {
+export interface UnsignedCredentialSP extends Omit<UnsignedCredential, '@context'> {
+  '@context': (string | object)[] | string | object
+  type: string[] | string
+  issuer: IssuerType
+  issuanceDate?: string
+  id?: string
   credentialSubject: CredentialSubject[] | CredentialSubject
   credentialStatus?: CredentialStatusSP
   validFrom?: string
@@ -59,7 +65,7 @@ export interface VerifiableCredentialSP extends UnsignedCredentialSP {
   proof: CredentialProofSP | CredentialProofSP[] | ProofType
 }
 
-export interface UnsignedPresentationSP extends UnsignedPresentation {
+export interface UnsignedPresentationSP extends Omit<UnsignedPresentation, 'verifiableCredential'> {
   type: string[] | string
   verifiableCredential: W3CVerifiableCredentialSP[]
   presentation_submission?: PresentationSubmission

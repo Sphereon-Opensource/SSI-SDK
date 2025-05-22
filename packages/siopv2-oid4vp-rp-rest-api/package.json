@@ -2,16 +2,28 @@
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-rp-rest-api",
   "version": "0.33.0",
   "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsc --build",
-    "build:clean": "tsc --build --clean && tsc --build",
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "start:prod": "node build/index.js",
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.17.0",
+    "@sphereon/did-auth-siop": "0.19.0",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",
@@ -36,13 +48,14 @@
   },
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
-    "@sphereon/did-auth-siop-adapter": "0.17.0",
+    "@sphereon/did-auth-siop-adapter": "0.19.0",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
-    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.28.0",
+    "@sphereon/ssi-sdk-ext.did-provider-jwk": "0.29.0",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-sdk.vc-handler-ld-local": "workspace:*",
+    "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
+    "@sphereon/ssi-sdk.credential-vcdm-jsonld-provider": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
@@ -73,12 +86,11 @@
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.21"
+    "typeorm": "0.3.20"
   },
   "files": [
-    ".yalc/**/*",
-    "dist/**/*",
-    "src/**/*",
+    "dist",
+    "src",
     "README.md",
     "plugin.schema.json",
     "LICENSE"
@@ -101,6 +113,5 @@
     "Presentation Exchange",
     "OpenID Connect",
     "Authenticator"
-  ],
-  "nx": {}
+  ]
 }

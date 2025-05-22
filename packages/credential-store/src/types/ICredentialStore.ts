@@ -1,12 +1,12 @@
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import {
   CredentialRole,
-  DigitalCredential,
-  FindDigitalCredentialArgs,
-  NonPersistedDigitalCredential,
-  UpdateCredentialStateArgs,
+  type DigitalCredential,
+  type FindDigitalCredentialArgs,
+  type NonPersistedDigitalCredential,
+  type UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store'
-import {
+import type {
   HasherSync,
   ICredential,
   IPresentation,
@@ -15,8 +15,8 @@ import {
   OriginalVerifiableCredential,
   OriginalVerifiablePresentation,
 } from '@sphereon/ssi-types'
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindClaimsArgs } from './claims'
+import type { IAgentContext, IPluginMethodMap } from '@veramo/core'
+import type { FindClaimsArgs } from './claims'
 
 export type { UpdateCredentialStateArgs } // TODO create a local copy?
 

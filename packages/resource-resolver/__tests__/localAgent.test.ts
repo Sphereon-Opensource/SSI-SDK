@@ -1,8 +1,8 @@
+import { describe } from 'vitest'
 import { createObjects, getConfig } from '../../agent-config/dist'
 import { DataSource } from 'typeorm'
 import resourceResolverAgentLogic from './shared/resourceResolverAgentLogic'
-
-jest.setTimeout(60000)
+//jest.setTimeout(60000)
 
 let dbConnection: Promise<DataSource>
 let agent: any
@@ -17,7 +17,7 @@ const setup = async (): Promise<boolean> => {
 }
 
 const tearDown = async (): Promise<boolean> => {
-  await (await dbConnection).close()
+  await (await dbConnection)?.close()
   return true
 }
 
