@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.34.0](https://github.com/decentralized-identity/veramo/compare/v0.33.0...v0.34.0) (2025-05-22)
+
+### Bug Fixes
+
+- Ensure we have a uniform verification result across the different VCDM credential providers ([44037dd](https://github.com/decentralized-identity/veramo/commit/44037ddadc9fb841c47bd711ab98d29a0d57f32d))
+
+### Features
+
+- Redesign of VCDM credential plugin. Now we have plugable providers, for JWT and JsonLD and a shiny new VCDM Credential Plugin using these providers. ([67da208](https://github.com/decentralized-identity/veramo/commit/67da2083bb6408f9896ad06e87688178ab3e2d31))
+- VCDM 2 - JOSE implementation mostly supported ([8e67307](https://github.com/decentralized-identity/veramo/commit/8e673073daa8f1ebd1e75249a5a0646d076a91aa))
+
 # [6.0.0](https://github.com/decentralized-identity/veramo/compare/v5.6.0...v6.0.0) (2024-04-02)
 
 ### Bug Fixes

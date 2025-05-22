@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.presentation-exchange",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
