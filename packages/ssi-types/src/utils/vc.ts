@@ -19,11 +19,12 @@ export function isWrappedW3CVerifiablePresentation(vp: WrappedVerifiablePresenta
 export enum StatusListType {
   StatusList2021 = 'StatusList2021',
   OAuthStatusList = 'OAuthStatusList',
+  BitstringStatusList = 'BitstringStatusList',
 }
 
 function isVcdmCredential(
   credential: CredentialPayload | IVerifiableCredential | ICredential | VerifiableCredential | unknown,
-  vcdmType: string,
+  vcdmType: string
 ): boolean {
   if (!credential || typeof credential !== 'object') {
     return false

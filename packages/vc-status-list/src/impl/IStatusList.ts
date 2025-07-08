@@ -1,6 +1,7 @@
 import type { IAgentContext, ICredentialPlugin } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import type {
+import {
+  BitstringStatusResult,
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   Status2021,
@@ -33,7 +34,7 @@ export interface IStatusList {
   /**
    * Checks the status at a given index in the status list
    */
-  checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021 | StatusOAuth>
+  checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021 | StatusOAuth | BitstringStatusResult>
 
   /**
    * Collects the status list details

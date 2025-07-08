@@ -1,5 +1,6 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
+  BitstringStatusListEntity,
   IAddStatusListEntryArgs,
   IGetStatusListEntryByCredentialIdArgs,
   IGetStatusListEntryByIndexArgs,
@@ -9,6 +10,7 @@ import {
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {
+  BitstringStatusListEntryCredentialStatus,
   StatusList2021EntryCredentialStatus,
   statusListCredentialToDetails,
   StatusListOAuthEntryCredentialStatus,
@@ -196,8 +198,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return statusList instanceof OAuthStatusListEntity
   }
 
+  private isBitstringStatusListEntity(statusList: StatusListEntity): statusList is BitstringStatusListEntity {
+    return statusList instanceof BitstringStatusListEntity
+  }
+
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
-    credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus
+    credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus | BitstringStatusListEntryCredentialStatus
     statusListEntry: IStatusListEntryEntity
   }> {
     const statusList: StatusListEntity = args.statusList ? args.statusList : statusListResultToEntity(await this.getStatusList())
@@ -224,6 +230,17 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
           statusListCredential: statusList.id,
           expiresAt: statusList.expiresAt,
         },
+        statusListEntry,
+      }
+    } else if (this.isBitstringStatusListEntity(statusList)) {
+      return {
+        credentialStatus: {
+          id: `${statusList.id}#${statusListEntry.statusListIndex}`,
+          type: 'BitstringStatusListEntry',
+          statusPurpose: statusList.statusPurpose,
+          statusListIndex: '' + statusListEntry.statusListIndex,
+          statusListCredential: statusList.id,
+        } satisfies BitstringStatusListEntryCredentialStatus,
         statusListEntry,
       }
     }

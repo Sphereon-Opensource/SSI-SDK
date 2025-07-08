@@ -1,5 +1,10 @@
-import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity } from '../../types'
-import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../../entities/statusList/StatusListEntities'
+import { IBitstringStatusListEntity, IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity } from '../../types'
+import {
+  BitstringStatusListEntity,
+  OAuthStatusListEntity,
+  StatusList2021Entity,
+  StatusListEntity,
+} from '../../entities/statusList/StatusListEntities'
 import { StatusListType } from '@sphereon/ssi-types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
@@ -32,6 +37,23 @@ export const statusListEntityFrom = (args: IStatusListEntity): StatusListEntity 
     return entity
   }
 
+  if (args.type === StatusListType.BitstringStatusList) {
+    const entity = new BitstringStatusListEntity()
+    const bitstringsl = args as IBitstringStatusListEntity
+    entity.statusPurpose = bitstringsl.statusPurpose
+    entity.statusSize = bitstringsl.statusSize
+    entity.validFrom = bitstringsl.validFrom
+    entity.validUntil = bitstringsl.validUntil
+    entity.ttl = bitstringsl.ttl
+    setBaseFields(entity, args)
+    Object.defineProperty(entity, 'type', {
+      value: StatusListType.BitstringStatusList,
+      enumerable: true,
+      configurable: true,
+    })
+    return entity
+  }
+
   throw new Error(`Invalid status list type ${args.type}`)
 }
 
@@ -56,6 +78,18 @@ export const statusListFrom = (entity: StatusListEntity): IStatusListEntity => {
     return replaceNullWithUndefined(result)
   }
 
+  if (entity instanceof BitstringStatusListEntity) {
+    const result: IBitstringStatusListEntity = {
+      ...getBaseFields(entity),
+      type: StatusListType.BitstringStatusList,
+      statusPurpose: entity.statusPurpose,
+      statusSize: entity.statusSize,
+      validFrom: entity.validFrom,
+      validUntil: entity.validUntil,
+      ttl: entity.ttl,
+    }
+    return replaceNullWithUndefined(result)
+  }
   throw new Error(`Invalid status list type ${typeof entity}`)
 }
 

@@ -1,7 +1,7 @@
 import { type OrPromise, StatusListType } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, In, type Repository } from 'typeorm'
-import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
+import { BitstringStatusListEntity, OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
 import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import type {
   IAddStatusListArgs,
@@ -268,6 +268,8 @@ export class StatusListStore implements IStatusListStore {
         return dataSource.getRepository(StatusList2021Entity)
       case StatusListType.OAuthStatusList:
         return dataSource.getRepository(OAuthStatusListEntity)
+      case StatusListType.BitstringStatusList:
+        return dataSource.getRepository(BitstringStatusListEntity)
       default:
         return dataSource.getRepository(StatusListEntity)
     }

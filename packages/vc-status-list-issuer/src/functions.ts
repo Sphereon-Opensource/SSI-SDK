@@ -211,11 +211,10 @@ export const handleCredentialStatus = async (
         )
       },
     })
+
     if (!credential.credentialStatus || Array.isArray(credential.credentialStatus)) {
       credential.credentialStatus = {
         id: `${statusListId}`,
-        type: 'StatusList2021Entry',
-        statusPurpose: 'revocation',
         statusListCredential: statusListId,
         ...updateResult.credentialStatus,
       }

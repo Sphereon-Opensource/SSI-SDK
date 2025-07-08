@@ -1,15 +1,22 @@
 import {
+  BitstringStatusPurpose,
+  type CredentialProofFormat,
   IIssuer,
+  RequireOneOf,
   StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
-  type CredentialProofFormat,
-  RequireOneOf,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
+
+export type BitstringStatus = {
+  status: string
+  message?: string
+  [x: string]: any
+}
 
 export interface IStatusListEntity {
   id: string
@@ -31,6 +38,14 @@ export interface IStatusList2021Entity extends IStatusListEntity {
 export interface IOAuthStatusListEntity extends IStatusListEntity {
   bitsPerStatus: number
   expiresAt?: Date
+}
+
+export interface IBitstringStatusListEntity extends IStatusListEntity {
+  statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+  statusSize?: number
+  validFrom?: Date
+  validUntil?: Date
+  ttl?: number
 }
 
 export type IStatusListEntryEntity = RequireOneOf<

@@ -1,8 +1,8 @@
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
-  DocumentFormat,
   type CredentialProofFormat,
+  DocumentFormat,
   type StatusListCredential,
   StatusListDriverType,
   StatusListType,
@@ -15,6 +15,7 @@ import { checkStatus } from '@sphereon/vc-status-list'
 // @ts-ignore
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
+  BitstringStatus,
   CreateNewStatusListFuncArgs,
   Status2021,
   StatusList2021ToVerifiableCredentialArgs,
@@ -117,7 +118,7 @@ export async function checkStatusForCredential(args: {
     return { verified: true }
   }
   if ('credentialStatus' in uniform && uniform.credentialStatus) {
-    if (uniform.credentialStatus.type === 'StatusList2021Entry') {
+    if (uniform.credentialStatus.type === 'StatusList2021Entry' || uniform.credentialStatus.type === 'BitstringStatusListEntry') {
       return checkStatus({ ...args, verifyStatusListCredential, verifyMatchingIssuers })
     } else if (args?.errorUnknownListType) {
       const error = `Credential status type ${uniform.credentialStatus.type} is not supported, and check status has been configured to not allow for that`
@@ -136,7 +137,7 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
   type?: StatusListType | 'StatusList2021Entry'
   id?: string
   statusListIndex: string
-}): Promise<number | Status2021 | StatusOAuth> {
+}): Promise<number | Status2021 | StatusOAuth | BitstringStatus> {
   return checkStatusIndexFromStatusListCredential({
     ...args,
     statusListCredential: await fetchStatusListCredential(args),
@@ -146,10 +147,10 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
 export async function checkStatusIndexFromStatusListCredential(args: {
   statusListCredential: StatusListCredential
   statusPurpose?: StatusPurpose2021
-  type?: StatusListType | 'StatusList2021Entry'
+  type?: StatusListType | 'StatusList2021Entry' | 'BitstringStatusListEntry'
   id?: string
   statusListIndex: string | number
-}): Promise<number | Status2021 | StatusOAuth> {
+}): Promise<number | Status2021 | StatusOAuth | BitstringStatus> {
   const statusListType: StatusListType = determineStatusListType(args.statusListCredential)
   const implementation = getStatusListImplementation(statusListType)
   return implementation.checkStatusIndex(args)
@@ -197,7 +198,7 @@ export async function statusListCredentialToDetails(args: {
   }
   if (!statusListType) {
     const uniform = CredentialMapper.toUniformCredential(credential)
-    const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList'))
+    const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList') || t.includes('BitstringStatusList'))
     if (!type) {
       throw new Error('Invalid status list credential type')
     }

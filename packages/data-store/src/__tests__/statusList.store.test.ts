@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { DataStoreStatusListEntities } from '../index'
+import { DataStoreStatusListEntities, IBitstringStatusListEntity } from '../index'
 import { DataStoreStatusListMigrations } from '../migrations'
 import { StatusListStore } from '../statusList/StatusListStore'
 import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntryEntity } from '../types'
@@ -229,5 +229,67 @@ describe('Status list store tests', () => {
     expect(result).toEqual(true)
 
     await expect(statusListStore.getStatusList({ id: statusList.id })).rejects.toThrow(`No status list found for id ${statusList.id}`)
+  })
+
+  it('should store bitstring status list', async () => {
+    const statusList: IBitstringStatusListEntity = {
+      id: 'bitstring-list-1',
+      correlationId: 'correlation-bitstring-1',
+      driverType: StatusListDriverType.AGENT_TYPEORM,
+      length: 131072,
+      credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
+      type: StatusListType.BitstringStatusList,
+      proofFormat: 'lds',
+      statusPurpose: 'revocation',
+      statusSize: 1,
+      ttl: 3600000,
+      validFrom: new Date('2024-01-01T00:00:00Z'),
+      validUntil: new Date('2025-01-01T00:00:00Z'),
+      issuer: 'did:example:789',
+    }
+
+    const result = await statusListStore.addStatusList(statusList)
+    expect(result).toBeDefined()
+    expect(result.id).toEqual(statusList.id)
+    expect((result as IBitstringStatusListEntity).statusPurpose).toEqual(statusList.statusPurpose)
+    expect((result as IBitstringStatusListEntity).ttl).toEqual(statusList.ttl)
+  })
+
+  it('should store and retrieve all three types of status lists', async () => {
+    const statusList2021: IStatusList2021Entity = {
+      id: 'test-list-1',
+      correlationId: 'correlation-1',
+      driverType: StatusListDriverType.AGENT_TYPEORM,
+      length: 100000,
+      credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
+      type: StatusListType.StatusList2021,
+      proofFormat: 'jwt',
+      statusPurpose: 'revocation',
+      indexingDirection: 'rightToLeft',
+      issuer: 'did:example:123',
+    }
+
+    const bitstringStatusList: IBitstringStatusListEntity = {
+      id: 'bitstring-list-1',
+      correlationId: 'correlation-bitstring-1',
+      driverType: StatusListDriverType.AGENT_TYPEORM,
+      length: 131072,
+      credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
+      type: StatusListType.BitstringStatusList,
+      proofFormat: 'lds',
+      statusPurpose: 'suspension',
+      ttl: 3600000,
+      issuer: 'did:example:789',
+    }
+
+    await statusListStore.addStatusList(statusList2021)
+    await statusListStore.addStatusList(bitstringStatusList)
+
+    const found2021 = await statusListStore.getStatusList({ id: statusList2021.id })
+    const foundBitstring = await statusListStore.getStatusList({ id: bitstringStatusList.id })
+
+    expect(found2021.type).toEqual(StatusListType.StatusList2021)
+    expect(foundBitstring.type).toEqual(StatusListType.BitstringStatusList)
+    expect((foundBitstring as IBitstringStatusListEntity).statusPurpose).toEqual('suspension')
   })
 })

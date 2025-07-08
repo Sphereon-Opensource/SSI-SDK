@@ -1,4 +1,6 @@
 import {
+  BitstringStatusPurpose,
+  type CredentialProofFormat,
   type IIssuer,
   type StatusListCredential,
   StatusListCredentialIdMode,
@@ -6,12 +8,14 @@ import {
   type StatusListIndexingDirection,
   StatusListType,
   type StatusPurpose2021,
-  type CredentialProofFormat,
 } from '@sphereon/ssi-types'
+
 import typeorm from 'typeorm'
-const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { BitstringStatusListEntryEntity } from './BitstringStatusListEntryEntity'
+
+const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
 
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])
@@ -88,9 +92,6 @@ export abstract class StatusListEntity extends BaseEntity {
     },
   })
   statusListCredential?: StatusListCredential
-
-  @OneToMany((type) => StatusListEntryEntity, (entry) => entry.statusList)
-  statusListEntries!: StatusListEntryEntity[]
 }
 
 @ChildEntity(StatusListType.StatusList2021)
@@ -106,6 +107,9 @@ export class StatusList2021Entity extends StatusListEntity {
 
   @Column({ type: 'varchar', name: 'statusPurpose', nullable: false, default: 'revocation' })
   statusPurpose!: StatusPurpose2021
+
+  @OneToMany((type) => StatusListEntryEntity, (entry) => entry.statusList)
+  statusListEntries!: StatusListEntryEntity[]
 }
 
 @ChildEntity(StatusListType.OAuthStatusList)
@@ -114,4 +118,43 @@ export class OAuthStatusListEntity extends StatusListEntity {
   bitsPerStatus!: number
   @Column({ name: 'expiresAt', nullable: true, type: typeOrmDateTime() })
   expiresAt?: Date
+}
+
+@ChildEntity(StatusListType.BitstringStatusList)
+export class BitstringStatusListEntity extends StatusListEntity {
+  @Column({
+    type: 'varchar',
+    name: 'statusPurpose',
+    nullable: false,
+    transformer: {
+      from(value: string): BitstringStatusPurpose | BitstringStatusPurpose[] {
+        if (value?.includes(',')) {
+          return value.split(',').map((v) => v.trim() as BitstringStatusPurpose)
+        }
+        return value as BitstringStatusPurpose
+      },
+      to(value: BitstringStatusPurpose | BitstringStatusPurpose[]): string {
+        if (Array.isArray(value)) {
+          return value.join(',')
+        }
+        return value
+      },
+    },
+  })
+  statusPurpose!: BitstringStatusPurpose | BitstringStatusPurpose[]
+
+  @Column({ type: 'integer', name: 'statusSize', nullable: true, default: 1 })
+  statusSize?: number
+
+  @Column({ name: 'validFrom', nullable: true, type: typeOrmDateTime() })
+  validFrom?: Date
+
+  @Column({ name: 'validUntil', nullable: true, type: typeOrmDateTime() })
+  validUntil?: Date
+
+  @Column({ type: 'integer', name: 'ttl', nullable: true })
+  ttl?: number
+
+  @OneToMany((type) => BitstringStatusListEntryEntity, (entry) => entry.statusList)
+  statusListEntries!: BitstringStatusListEntryEntity[]
 }

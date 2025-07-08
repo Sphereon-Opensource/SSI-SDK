@@ -97,6 +97,14 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
   })
 }
 
+function lookupType(details: StatusListResult) {
+  return details.type === StatusListType.StatusList2021
+    ? 'StatusList2021Entry'
+    : details.type === StatusListType.BitstringStatusList
+      ? 'BitstringStatusListEntry'
+      : details.type
+}
+
 export function getStatusListCredentialIndexStatusEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Get statusList credential index status endpoint is disabled`)
@@ -149,11 +157,12 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         errorOnNotFound: false,
       })
 
-      const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
+      const type = lookupType(details)
       const resultStatusIndex = entry?.statusListIndex ?? statusListIndex ?? 0
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
         ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
+        ...(details.type === StatusListType.BitstringStatusList ? { statusPurpose: details.bitstringStatusList?.statusPurpose } : {}),
         type,
         id: details.id,
         statusListIndex: resultStatusIndex,

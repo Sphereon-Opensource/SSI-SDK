@@ -1,17 +1,19 @@
 import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
+  type BitstringStatusPurpose,
   CredentialMapper,
+  type CredentialProofFormat,
   DocumentFormat,
   type IIssuer,
-  type CredentialProofFormat,
   type StatusListCredential,
   StatusListType,
 } from '@sphereon/ssi-types'
 
-import { StatusList } from '@sphereon/vc-status-list'
 import type { IStatusList } from './IStatusList'
-import type {
+import {
+  BitstringStatus,
+  BitstringStatusResult,
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   StatusListResult,
@@ -20,34 +22,44 @@ import type {
   UpdateStatusListIndexArgs,
 } from '../types'
 
-import { Status2021 } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
+import { createList, decodeList } from '@digitalbazaar/vc-bitstring-status-list'
+import { IBitstringStatusList } from '../types/BitstringStatusList'
 
-export const DEFAULT_LIST_LENGTH = 250000
+export const DEFAULT_LIST_LENGTH = 131072 // W3C spec minimum
 export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
+export const DEFAULT_STATUS_SIZE = 1
+export const DEFAULT_STATUS_PURPOSE: BitstringStatusPurpose = 'revocation'
 
-export class StatusList2021Implementation implements IStatusList {
+export class BitstringStatusListImplementation implements IStatusList {
   async createNewStatusList(
     args: CreateStatusListArgs,
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
+    if (!args.bitstringStatusList) {
+      throw new Error('BitstringStatusList options are required for type BitstringStatusList')
+    }
+
     const length = args?.length ?? DEFAULT_LIST_LENGTH
     const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
-    assertValidProofType(StatusListType.StatusList2021, proofFormat)
+    assertValidProofType(StatusListType.BitstringStatusList, proofFormat)
     const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
     const { issuer, id } = args
     const correlationId = getAssertedValue('correlationId', args.correlationId)
-
-    const list = new StatusList({ length })
+    const { statusPurpose, statusSize, statusMessage, ttl } = args.bitstringStatusList
+    const list = (await createList({ length })) as IBitstringStatusList
     const encodedList = await list.encode()
-    const statusPurpose = 'revocation'
 
     const statusListCredential = await this.createVerifiableCredential(
       {
         ...args,
         encodedList,
         proofFormat: veramoProofFormat,
+        statusPurpose: statusPurpose ?? DEFAULT_STATUS_PURPOSE,
+        statusSize: statusSize ?? DEFAULT_STATUS_SIZE,
+        statusMessage: statusMessage,
+        ttl,
       },
       context,
     )
@@ -55,12 +67,12 @@ export class StatusList2021Implementation implements IStatusList {
     return {
       encodedList,
       statusListCredential: statusListCredential,
-      statusList2021: {
-        statusPurpose,
-        indexingDirection: 'rightToLeft',
+      bitstringStatusList: {
+        statusPurpose: statusPurpose ?? DEFAULT_STATUS_PURPOSE,
+        ttl,
       },
       length,
-      type: StatusListType.StatusList2021,
+      type: StatusListType.BitstringStatusList,
       proofFormat,
       id,
       correlationId,
@@ -80,11 +92,20 @@ export class StatusList2021Implementation implements IStatusList {
     const origEncodedList = getAssertedProperty('encodedList', credentialSubject)
 
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
-    const statusList = await StatusList.decode({ encodedList: origEncodedList })
+    const statusList = (await decodeList({ encodedList: origEncodedList })) as IBitstringStatusList
     statusList.setStatus(index, args.value != 0)
     const encodedList = await statusList.encode()
 
     const proofFormat = CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'jwt' : 'lds'
+
+    const credSubject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
+
+    const statusPurpose = getAssertedProperty('statusPurpose', credSubject)
+
+    const validFrom = uniform.validFrom ? new Date(uniform.validFrom) : undefined
+    const validUntil = uniform.validUntil ? new Date(uniform.validUntil) : undefined
+    const ttl = credSubject.ttl
+
     const updatedCredential = await this.createVerifiableCredential(
       {
         ...args,
@@ -92,6 +113,10 @@ export class StatusList2021Implementation implements IStatusList {
         issuer,
         encodedList,
         proofFormat: proofFormat,
+        statusPurpose,
+        ttl,
+        validFrom,
+        validUntil,
       },
       context,
     )
@@ -99,12 +124,14 @@ export class StatusList2021Implementation implements IStatusList {
     return {
       statusListCredential: updatedCredential,
       encodedList,
-      statusList2021: {
-        ...('statusPurpose' in credentialSubject ? { statusPurpose: credentialSubject.statusPurpose } : {}),
-        indexingDirection: 'rightToLeft',
+      bitstringStatusList: {
+        statusPurpose,
+        validFrom,
+        validUntil,
+        ttl,
       },
       length: statusList.length - 1,
-      type: StatusListType.StatusList2021,
+      type: StatusListType.BitstringStatusList,
       proofFormat: proofFormat,
       id,
       issuer,
@@ -116,19 +143,21 @@ export class StatusList2021Implementation implements IStatusList {
     args: UpdateStatusListFromEncodedListArgs,
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
-    if (!args.statusList2021) {
-      throw new Error('statusList2021 options required for type StatusList2021')
+    if (!args.bitstringStatusList) {
+      throw new Error('bitstringStatusList options required for type BitstringStatusList')
     }
     const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
-    assertValidProofType(StatusListType.StatusList2021, proofFormat)
+    assertValidProofType(StatusListType.BitstringStatusList, proofFormat)
     const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
     const { issuer, id } = getAssertedValues(args)
-    const statusList = await StatusList.decode({ encodedList: args.encodedList })
+    const statusList = (await decodeList({ encodedList: args.encodedList })) as IBitstringStatusList
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     statusList.setStatus(index, args.value)
 
     const newEncodedList = await statusList.encode()
+    const { statusPurpose, statusSize, statusMessage, ttl, validFrom, validUntil } = args.bitstringStatusList
+
     const credential = await this.createVerifiableCredential(
       {
         id,
@@ -136,17 +165,25 @@ export class StatusList2021Implementation implements IStatusList {
         encodedList: newEncodedList,
         proofFormat: veramoProofFormat,
         keyRef: args.keyRef,
+        statusPurpose,
+        statusSize,
+        statusMessage,
+        validFrom,
+        validUntil,
+        ttl,
       },
       context,
     )
 
     return {
-      type: StatusListType.StatusList2021,
+      type: StatusListType.BitstringStatusList,
       statusListCredential: credential,
       encodedList: newEncodedList,
-      statusList2021: {
-        statusPurpose: args.statusList2021.statusPurpose,
-        indexingDirection: 'rightToLeft',
+      bitstringStatusList: {
+        statusPurpose,
+        validFrom,
+        validUntil,
+        ttl,
       },
       length: statusList.length,
       proofFormat: args.proofFormat ?? 'lds',
@@ -156,14 +193,29 @@ export class StatusList2021Implementation implements IStatusList {
     }
   }
 
-  async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021> {
+  async checkStatusIndex(args: CheckStatusIndexArgs): Promise<BitstringStatusResult> {
     const uniform = CredentialMapper.toUniformCredential(args.statusListCredential)
     const { credentialSubject } = uniform
     const encodedList = getAssertedProperty('encodedList', credentialSubject)
 
-    const statusList = await StatusList.decode({ encodedList })
-    const status = statusList.getStatus(typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex))
-    return status ? Status2021.Invalid : Status2021.Valid
+    const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
+    const messageList = (subject as any).statusMessage as Array<Partial<BitstringStatus>>
+
+    const numIndex = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
+    const hexIndex = `0x${numIndex.toString(16)}`
+    const statusMessage = messageList.find((statMsg) => statMsg.status === hexIndex)
+
+    const statusList = (await decodeList({ encodedList })) as IBitstringStatusList
+    if (statusList.length <= numIndex) {
+      throw new Error(`Status list index out of bounds, has ${messageList.length} messages, requested ${numIndex}`)
+    }
+    const value = statusList.getStatus(numIndex)
+    return {
+      index: numIndex,
+      status: hexIndex,
+      message: statusMessage?.message,
+      set: value,
+    } satisfies BitstringStatusResult
   }
 
   async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
@@ -173,22 +225,27 @@ export class StatusList2021Implementation implements IStatusList {
     const id = getAssertedValue('id', uniform.id)
     const encodedList = getAssertedProperty('encodedList', credentialSubject)
     const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
-
-    const statusPurpose = getAssertedProperty('statusPurpose', credentialSubject)
-    const list = await StatusList.decode({ encodedList })
+    const credSubject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
+    const statusPurpose = getAssertedProperty('statusPurpose', credSubject)
+    const validFrom = uniform.validFrom ? new Date(uniform.validFrom) : undefined
+    const validUntil = uniform.validUntil ? new Date(uniform.validUntil) : undefined
+    const ttl = credSubject.ttl
+    const list = (await decodeList({ encodedList })) as IBitstringStatusList
 
     return {
       id,
       encodedList,
       issuer,
-      type: StatusListType.StatusList2021,
+      type: StatusListType.BitstringStatusList,
       proofFormat,
       length: list.length,
       statusListCredential: statusListPayload,
       statuslistContentType: this.buildContentType(proofFormat),
-      statusList2021: {
-        indexingDirection: 'rightToLeft',
+      bitstringStatusList: {
         statusPurpose,
+        validFrom,
+        validUntil,
+        ttl,
       },
       ...(args.correlationId && { correlationId: args.correlationId }),
       ...(args.driverType && { driverType: args.driverType }),
@@ -201,6 +258,12 @@ export class StatusList2021Implementation implements IStatusList {
       issuer: string | IIssuer
       encodedList: string
       proofFormat: VeramoProofFormat
+      statusPurpose: BitstringStatusPurpose
+      statusSize?: number
+      statusMessage?: Array<BitstringStatus>
+      validFrom?: Date
+      validUntil?: Date
+      ttl?: number
       keyRef?: string
     },
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
@@ -211,17 +274,39 @@ export class StatusList2021Implementation implements IStatusList {
       offlineWhenNoDIDRegistered: true,
     })
 
+    const credentialSubject: any = {
+      id: args.id,
+      type: 'BitstringStatusList',
+      statusPurpose: args.statusPurpose,
+      encodedList: args.encodedList,
+    }
+
+    if (args.statusSize && args.statusSize > 1) {
+      credentialSubject.statusSize = args.statusSize
+    }
+
+    if (args.statusMessage) {
+      credentialSubject.statusMessage = args.statusMessage
+    }
+
+    if (args.validFrom) {
+      credentialSubject.validFrom = args.validFrom
+    }
+
+    if (args.validUntil) {
+      credentialSubject.validUntil = args.validUntil
+    }
+
+    if (args.ttl) {
+      credentialSubject.ttl = args.ttl
+    }
+
     const credential = {
-      '@context': ['https://www.w3.org/2018/credentials/v1', 'https://w3id.org/vc/status-list/2021/v1'],
+      '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/ns/credentials/status/v1'],
       id: args.id,
       issuer: args.issuer,
-      type: ['VerifiableCredential', 'StatusList2021Credential'],
-      credentialSubject: {
-        id: args.id,
-        type: 'StatusList2021',
-        statusPurpose: 'revocation',
-        encodedList: args.encodedList,
-      },
+      type: ['VerifiableCredential', 'BitstringStatusListCredential'],
+      credentialSubject,
     }
 
     const verifiableCredential = await context.agent.createVerifiableCredential({

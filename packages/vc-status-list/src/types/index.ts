@@ -1,11 +1,12 @@
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
+  BitstringStatusPurpose,
+  type CredentialProofFormat,
   type ICredential,
   type ICredentialStatus,
   type IIssuer,
   type IVerifiableCredential,
   type OrPromise,
-  type CredentialProofFormat,
   type StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
@@ -38,6 +39,20 @@ export enum Status2021 {
   Invalid = 1,
 }
 
+export type BitstringStatus = {
+  status: string
+  message?: string
+  [x: string]: any
+}
+
+export type BitstringStatusResult = BitstringStatus & {
+  index: number
+  status: string
+  set: boolean
+  message?: string
+  [x: string]: any
+}
+
 export type StatusList2021Args = {
   indexingDirection: StatusListIndexingDirection
   statusPurpose?: StatusPurpose2021
@@ -47,6 +62,15 @@ export type StatusList2021Args = {
 export type OAuthStatusListArgs = {
   bitsPerStatus?: BitsPerStatus
   expiresAt?: Date
+}
+
+export type BitstringStatusListArgs = {
+  statusPurpose: BitstringStatusPurpose
+  statusSize?: number
+  statusMessage?: Array<BitstringStatus>
+  ttl?: number
+  validFrom?: Date
+  validUntil?: Date
 }
 
 export type BaseCreateNewStatusListArgs = {
@@ -71,6 +95,15 @@ export type UpdateOAuthStatusListArgs = {
   expiresAt?: Date
 }
 
+export type UpdateBitstringStatusListArgs = {
+  statusPurpose: BitstringStatusPurpose
+  statusSize?: number
+  statusMessage?: Array<BitstringStatus>
+  validFrom?: Date
+  validUntil?: Date
+  ttl?: number
+}
+
 export interface UpdateStatusListFromEncodedListArgs {
   type?: StatusListType
   statusListIndex: number | string
@@ -83,13 +116,14 @@ export interface UpdateStatusListFromEncodedListArgs {
   id: string
   statusList2021?: UpdateStatusList2021Args
   oauthStatusList?: UpdateOAuthStatusListArgs
+  bitstringStatusList?: UpdateBitstringStatusListArgs
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   keyRef?: string
   statusListIndex: number | string
-  value: number | Status2021 | StatusOAuth
+  value: number | Status2021 | StatusOAuth | BitstringStatus
 }
 
 export interface StatusListResult {
@@ -103,6 +137,7 @@ export interface StatusListResult {
   issuer: string | IIssuer
   statusList2021?: StatusList2021Details
   oauthStatusList?: OAuthStatusDetails
+  bitstringStatusList?: BitstringStatusDetails
 
   // These cannot be deduced from the VC, so they are present when callers pass in these values as params
   correlationId?: string
@@ -120,6 +155,13 @@ interface OAuthStatusDetails {
   expiresAt?: Date
 }
 
+interface BitstringStatusDetails {
+  statusPurpose: BitstringStatusPurpose
+  validFrom?: Date
+  validUntil?: Date
+  ttl?: number
+}
+
 export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
   type: 'StatusList2021Entry'
   statusPurpose: StatusPurpose2021
@@ -133,6 +175,16 @@ export interface StatusListOAuthEntryCredentialStatus extends ICredentialStatus 
   statusListIndex: string
   statusListCredential: string
   expiresAt?: Date
+}
+
+export interface BitstringStatusListEntryCredentialStatus extends ICredentialStatus {
+  type: 'BitstringStatusListEntry'
+  statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+  statusListIndex: string
+  statusListCredential: string
+  statusSize?: number
+  statusMessage?: Array<BitstringStatus>
+  statusReference?: string | string[]
 }
 
 export interface StatusList2021ToVerifiableCredentialArgs {
@@ -154,12 +206,13 @@ export interface CreateStatusListArgs {
   length?: number
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
+  bitstringStatusList?: BitstringStatusListArgs
 }
 
 export interface UpdateStatusListIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: number | string
-  value: number | Status2021 | StatusOAuth
+  value: number | Status2021 | StatusOAuth | BitstringStatus
   keyRef?: string
   expiresAt?: Date
 }

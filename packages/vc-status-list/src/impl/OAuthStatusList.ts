@@ -20,7 +20,7 @@ import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
 
 type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
 
-export const DEFAULT_BITS_PER_STATUS = 1 // 1 bit is sufficient for 0x00 - "VALID"  0x01 - "INVALID" saving space in the process
+export const DEFAULT_BITS_PER_STATUS = 1 // 1 bit is sufficient for 0x00 - "VALID" 0x01 - "INVALID" saving space in the process
 export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'jwt' as CredentialProofFormat
 
@@ -68,6 +68,10 @@ export class OAuthStatusListImplementation implements IStatusList {
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     if (index < 0 || index >= statusList.statusList.length) {
       throw new Error('Status list index out of bounds')
+    }
+
+    if (typeof value !== 'number') {
+      throw new Error('Status list values should be of type number')
     }
 
     statusList.setStatus(index, value)
@@ -138,7 +142,7 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
   }
 
-  private buildContentType(proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor' | undefined) {
+  private buildContentType(proofFormat: CredentialProofFormat | undefined) {
     return `application/statuslist+${proofFormat === 'cbor' ? 'cwt' : 'jwt'}`
   }
 
@@ -153,7 +157,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
     if (index < 0 || index >= statusList.statusList.length) {
-      throw new Error('Status list index out of bounds')
+      throw new Error(`Status list index out of bounds, has ${statusList.statusList.length} items, requested ${index}`)
     }
 
     return statusList.getStatus(index)
@@ -184,7 +188,7 @@ export class OAuthStatusListImplementation implements IStatusList {
   }
 
   private async createSignedStatusList(
-    proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor',
+    proofFormat: CredentialProofFormat,
     context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>,
     statusList: StatusList,
     issuerString: string,

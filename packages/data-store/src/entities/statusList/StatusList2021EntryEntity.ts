@@ -1,7 +1,7 @@
 import { Validate } from 'class-validator'
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
-import { StatusListEntity } from './StatusListEntities'
+import { StatusList2021Entity, StatusListEntity } from './StatusListEntities'
 
 @Entity('StatusListEntry')
 // @Unique('uq_credential_statuslist', ['statusList', 'credentialId']) // disabled because one prop can be null
@@ -15,7 +15,7 @@ export class StatusListEntryEntity extends BaseEntity {
   @Validate(IsNonEmptyStringConstraint, { message: 'Status list index is required' })
   statusListIndex!: number
 
-  @ManyToOne(() => StatusListEntity, (statusList) => statusList.statusListEntries)
+  @ManyToOne(() => StatusList2021Entity, (statusList) => statusList.statusListEntries)
   @JoinColumn({ name: 'statusListId' })
   statusList!: StatusListEntity
 

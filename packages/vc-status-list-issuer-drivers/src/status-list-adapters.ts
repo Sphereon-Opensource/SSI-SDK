@@ -2,7 +2,9 @@ import { StatusListType } from '@sphereon/ssi-types'
 import { OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store'
 import { StatusListResult } from '@sphereon/ssi-sdk.vc-status-list'
 
-export function statusListResultToEntity(result: StatusListResult): StatusList2021Entity | OAuthStatusListEntity {
+import { BitstringStatusListEntity } from '@sphereon/ssi-sdk.data-store'
+
+export function statusListResultToEntity(result: StatusListResult): StatusList2021Entity | OAuthStatusListEntity | BitstringStatusListEntity {
   const baseFields = {
     id: result.id,
     correlationId: result.correlationId,
@@ -32,6 +34,17 @@ export function statusListResultToEntity(result: StatusListResult): StatusList20
       ...baseFields,
       bitsPerStatus: result.oauthStatusList.bitsPerStatus,
       expiresAt: result.oauthStatusList.expiresAt,
+    })
+  } else if (result.type === StatusListType.BitstringStatusList) {
+    if (!result.bitstringStatusList) {
+      throw new Error('Missing bitstringStatusList details')
+    }
+    return Object.assign(new BitstringStatusListEntity(), {
+      ...baseFields,
+      statusPurpose: result.bitstringStatusList.statusPurpose,
+      ttl: result.bitstringStatusList.ttl,
+      validFrom: result.bitstringStatusList.validFrom,
+      validUntil: result.bitstringStatusList.validUntil,
     })
   }
   throw new Error(`Unsupported status list type: ${result.type}`)

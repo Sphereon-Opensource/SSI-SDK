@@ -7,6 +7,7 @@ import {
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {
+  BitstringStatusListEntryCredentialStatus,
   IStatusListPlugin,
   StatusList2021EntryCredentialStatus,
   StatusListOAuthEntryCredentialStatus,
@@ -52,7 +53,7 @@ export interface IStatusListDriver {
   getStatusLists(): Promise<Array<StatusListResult>>
 
   updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
-    credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus
+    credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus | BitstringStatusListEntryCredentialStatus
     statusListEntry: IStatusListEntryEntity
   }>
 
