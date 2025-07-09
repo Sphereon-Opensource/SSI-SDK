@@ -243,7 +243,7 @@ describe('Status list', () => {
         {
           type: StatusListType.StatusList2021,
           statusListIndex: 1,
-          value: true,
+          value: 1,
           proofFormat: 'jwt',
           issuer: didKeyIdentifier.did,
           id: 'http://localhost:9543/encoded1',
@@ -281,7 +281,7 @@ describe('Status list', () => {
         {
           type: StatusListType.OAuthStatusList,
           statusListIndex: 1,
-          value: true,
+          value: 1,
           proofFormat: 'jwt',
           issuer: didKeyIdentifier.did,
           id: 'http://localhost:9543/encoded2',

@@ -1,8 +1,6 @@
 import { StatusListType } from '@sphereon/ssi-types'
-import { OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store'
+import { BitstringStatusListEntity, OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store'
 import { StatusListResult } from '@sphereon/ssi-sdk.vc-status-list'
-
-import { BitstringStatusListEntity } from '@sphereon/ssi-sdk.data-store'
 
 export function statusListResultToEntity(result: StatusListResult): StatusList2021Entity | OAuthStatusListEntity | BitstringStatusListEntity {
   const baseFields = {

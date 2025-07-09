@@ -6,6 +6,8 @@ import {
   IGetStatusListEntryByIndexArgs,
   IStatusListEntity,
   IStatusListEntryEntity,
+  OAuthStatusListEntity,
+  StatusList2021Entity,
   StatusListEntity,
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
@@ -16,11 +18,10 @@ import {
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListCredentialIdMode, StatusListDriverType, StatusListType, StatusListCredential } from '@sphereon/ssi-types'
+import { StatusListCredential, StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
 import { statusListResultToEntity } from './status-list-adapters'
-import { OAuthStatusListEntity, StatusList2021Entity } from '@sphereon/ssi-sdk.data-store'
 
 export interface StatusListManagementOptions {
   id?: string

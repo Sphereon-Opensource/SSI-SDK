@@ -1,5 +1,4 @@
 import {
-  BitstringStatusPurpose,
   type CredentialProofFormat,
   type IIssuer,
   type StatusListCredential,
@@ -16,6 +15,8 @@ import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BitstringStatusListEntryEntity } from './BitstringStatusListEntryEntity'
 
 const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
+
+type BitstringStatusPurpose = 'revocation' | 'suspension' | 'refresh' | 'message' | string // From vc-bitstring-status-lists without pulling in the whole dep for just this one type
 
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])
