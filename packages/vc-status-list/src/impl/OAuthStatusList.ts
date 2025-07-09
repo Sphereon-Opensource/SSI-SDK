@@ -113,8 +113,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus ?? DEFAULT_BITS_PER_STATUS)
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
-    // FIXME: See above.
-    listToUpdate.setStatus(index, args.value ? 1 : 0)
+    listToUpdate.setStatus(index, args.value)
 
     const { statusListCredential, encodedList } = await this.createSignedStatusList(
       proofFormat ?? DEFAULT_PROOF_FORMAT,

@@ -1,6 +1,5 @@
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
-  BitstringStatusPurpose,
   type CredentialProofFormat,
   type ICredential,
   type ICredentialStatus,
@@ -27,6 +26,7 @@ import { DataSource } from 'typeorm'
 import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import type { StatusListOpts } from '@sphereon/oid4vci-common'
+import { BitstringStatusPurpose } from '@4sure-tech/vc-bitstring-status-lists'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -39,19 +39,7 @@ export enum Status2021 {
   Invalid = 1,
 }
 
-export type BitstringStatus = {
-  status: string
-  message?: string
-  [x: string]: any
-}
-
-export type BitstringStatusResult = BitstringStatus & {
-  index: number
-  status: string
-  set: boolean
-  message?: string
-  [x: string]: any
-}
+export type BitstringStatus = number
 
 export type StatusList2021Args = {
   indexingDirection: StatusListIndexingDirection
@@ -67,7 +55,6 @@ export type OAuthStatusListArgs = {
 export type BitstringStatusListArgs = {
   statusPurpose: BitstringStatusPurpose
   statusSize?: number
-  statusMessage?: Array<BitstringStatus>
   ttl?: number
   validFrom?: Date
   validUntil?: Date
@@ -83,6 +70,7 @@ export type BaseCreateNewStatusListArgs = {
   keyRef?: string
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
+  bitstringStatusList?: BitstringStatusListArgs
   driverType?: StatusListDriverType
 }
 
@@ -107,7 +95,7 @@ export type UpdateBitstringStatusListArgs = {
 export interface UpdateStatusListFromEncodedListArgs {
   type?: StatusListType
   statusListIndex: number | string
-  value: boolean
+  value: number
   proofFormat?: CredentialProofFormat
   keyRef?: string
   correlationId?: string
@@ -213,6 +201,7 @@ export interface UpdateStatusListIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth | BitstringStatus
+  bitsPerStatus?: number
   keyRef?: string
   expiresAt?: Date
 }
@@ -220,12 +209,14 @@ export interface UpdateStatusListIndexArgs {
 export interface CheckStatusIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: string | number
+  bitsPerStatus?: number
 }
 
 export interface ToStatusListDetailsArgs {
   statusListPayload: StatusListCredential
   correlationId?: string
   driverType?: StatusListDriverType
+  bitsPerStatus?: number
 }
 
 /**

@@ -183,6 +183,50 @@ describe('Status List VC handling', () => {
       expect(result.proofFormat).toBe('jwt')
       expect(result.statusListCredential).toMatch(/^ey/)
     })
+
+    it('should successfully create BitstringStatusList using lds format', async () => {
+      const result = await agent.slCreateStatusList({
+        type: StatusListType.BitstringStatusList,
+        issuer: identifier.did,
+        id: 'http://localhost/test/bitstring',
+        correlationId: 'test-bitstring',
+        proofFormat: 'lds',
+        bitstringStatusList: {
+          statusPurpose: 'revocation',
+          statusSize: 1,
+          ttl: 3600000,
+        },
+      })
+
+      expect(result.type).toBe(StatusListType.BitstringStatusList)
+      expect(result.proofFormat).toBe('lds')
+      expect(result.bitstringStatusList?.statusPurpose).toBe('revocation')
+      expect(result.bitstringStatusList?.ttl).toBe(3600000)
+      expect(result.length).toBe(131072)
+    })
+
+    it('should create BitstringStatusList with status messages', async () => {
+      const result = await agent.slCreateStatusList({
+        type: StatusListType.BitstringStatusList,
+        issuer: identifier.did,
+        id: 'http://localhost/test/bitstring-messages',
+        correlationId: 'test-bitstring-messages',
+        proofFormat: 'lds',
+        bitstringStatusList: {
+          statusPurpose: 'message',
+          statusSize: 2,
+          statusMessage: [
+            { status: '0x0', message: 'pending' },
+            { status: '0x1', message: 'approved' },
+            { status: '0x2', message: 'rejected' },
+            { status: '0x3', message: 'expired' },
+          ],
+        },
+      })
+
+      expect(result.bitstringStatusList?.statusPurpose).toBe('message')
+      expect(result.bitstringStatusList?.statusSize).toBe(2)
+    })
   })
 
   describe('slAddStatusToCredential', () => {
@@ -320,6 +364,26 @@ describe('Status List VC handling', () => {
       const credStatus = Array.isArray(result.credentialStatus) ? result.credentialStatus[0] : result.credentialStatus
       expect(credStatus?.statusListIndex).toBe('5')
     })
+
+    it('should inject BitstringStatusList status to credential', async () => {
+      const mockCredential: IVerifiableCredential = {
+        ...baseCredential,
+      }
+      const result = await agent.slAddStatusToCredential({
+        credential: mockCredential,
+        statusLists: [
+          {
+            statusListId: 'http://localhost/test/bitstring',
+            statusListIndex: 42,
+          },
+        ],
+      })
+
+      const credentialStatus = Array.isArray(result.credentialStatus) ? result.credentialStatus[0] : result.credentialStatus
+      expect(credentialStatus?.type).toBe('BitstringStatusListEntry')
+      expect(credentialStatus?.statusListIndex).toBe('42')
+      expect(credentialStatus?.statusListCredential).toBe('http://localhost/test/bitstring')
+    })
   })
 
   describe('slAddStatusToSdJwtCredential', () => {
@@ -381,5 +445,14 @@ describe('Status List VC handling', () => {
     it('should throw when status list not found', async () => {
       await expect(agent.slGetStatusList({ id: 'nonexistent' })).rejects.toThrow('No status list found for id nonexistent')
     })
+  })
+
+  it('should retrieve BitstringStatusList', async () => {
+    const result = await agent.slGetStatusList({ id: 'http://localhost/test/bitstring' })
+
+    expect(result.id).toBe('http://localhost/test/bitstring')
+    expect(result.type).toBe(StatusListType.BitstringStatusList)
+    expect(result.bitstringStatusList?.statusPurpose).toBe('revocation')
+    expect(result.length).toBe(131072)
   })
 })

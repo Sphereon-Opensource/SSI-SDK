@@ -126,7 +126,7 @@ export class StatusList2021Implementation implements IStatusList {
     const { issuer, id } = getAssertedValues(args)
     const statusList = await StatusList.decode({ encodedList: args.encodedList })
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
-    statusList.setStatus(index, args.value)
+    statusList.setStatus(index, args.value !== 0)
 
     const newEncodedList = await statusList.encode()
     const credential = await this.createVerifiableCredential(

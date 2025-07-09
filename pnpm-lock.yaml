@@ -3576,12 +3576,9 @@ importers:
 
   packages/vc-status-list:
     dependencies:
-      '@digitalbazaar/bitstring':
-        specifier: ^3.1.0
-        version: 3.1.0
-      '@digitalbazaar/vc-bitstring-status-list':
-        specifier: ^2.0.1
-        version: 2.0.1
+      '@4sure-tech/vc-bitstring-status-lists':
+        specifier: file:../../../vc-bitstring-status-lists
+        version: file:../vc-bitstring-status-lists
       '@sd-jwt/core':
         specifier: ^0.9.2
         version: 0.9.2
@@ -4611,6 +4608,9 @@ packages:
       graphql:
         optional: true
 
+  '@4sure-tech/vc-bitstring-status-lists@file:../vc-bitstring-status-lists':
+    resolution: {directory: ../vc-bitstring-status-lists, type: directory}
+
   '@adobe/css-tools@4.4.2':
     resolution: {integrity: sha512-baYZExFpsdkBNuvGKTKWCwKH57HRZLVtycZS05WTQNVOiXVSeAki3nU35zlRbToeMW8aHlJfyS+1C4BOv27q0A==}
 
@@ -5386,13 +5386,6 @@ packages:
     resolution: {integrity: sha512-p2jKRxSU+eJJqd+ewCklYp/XZ6ysISk8VU2/kANCoB/WwUy/kVgw2rUNScRDXw2utr9Qj36P8EZTYi4aj7vRCQ==}
     engines: {node: '>=10'}
 
-  '@digitalbazaar/bitstring@3.1.0':
-    resolution: {integrity: sha512-Cii+Sl++qaexOvv3vchhgZFfSmtHPNIPzGegaq4ffPnflVXFu+V2qrJ17aL2+gfLxrlC/zazZFuAltyKTPq7eg==}
-    engines: {node: '>=16'}
-
-  '@digitalbazaar/credentials-context@3.2.0':
-    resolution: {integrity: sha512-WruXZAF182pCYq/z2JPJ4N4mVDu6pd/hr7widdCqbKekA53BXHoX7XhL9tmRmQ8kfmkaStBfla67QHhkchWYBQ==}
-
   '@digitalbazaar/ed25519-signature-2018@4.1.0':
     resolution: {integrity: sha512-YGcZ10x/EPdrQDTtNe8gHqv1vBU6GvldzmgdwUzufg6ku4Jbpea3m7ADptiQObgsvcsEZazogUgsMZCGbIgvvg==}
     engines: {node: '>=14'}
@@ -5412,20 +5405,8 @@ packages:
   '@digitalbazaar/security-context@1.0.1':
     resolution: {integrity: sha512-0WZa6tPiTZZF8leBtQgYAfXQePFQp2z5ivpCEN/iZguYYZ0TB9qRmWtan5XH6mNFuusHtMcyIzAcReyE6rZPhA==}
 
-  '@digitalbazaar/vc-bitstring-status-list-context@1.1.0':
-    resolution: {integrity: sha512-IULBb2BJ/FQwTwdmvtltBb9JspWXY4tS2ZimRtFfWBJW6T35r6x8TzRK6eDVHpLLEzeJs1jCvqqTXWH0RJgQRA==}
-    engines: {node: '>=18'}
-
-  '@digitalbazaar/vc-bitstring-status-list@2.0.1':
-    resolution: {integrity: sha512-q4DJN9Pc+sid8Ju3perwiWcD1YOvBYhwYVUEYMROLN4i4m6n24HlckKmsrLIYaB4ko9MduZ8eeRTxxADNLjkvA==}
-    engines: {node: '>=18'}
-
   '@digitalbazaar/vc-status-list-context@3.1.1':
     resolution: {integrity: sha512-cMVtd+EV+4KN2kUG4/vsV74JVsGE6dcpod6zRoFB/AJA2W/sZbJqR44KL3G6P262+GcAECNhtnSsKsTnQ6y8+w==}
-
-  '@digitalbazaar/vc@7.2.0':
-    resolution: {integrity: sha512-Fpa7MG+/pxwV0vJbstKJc1DLrVzFYz7mlqZfRMkFOodR0YvVp3GGdiybCKtj7oxv/cuskzuqB/MFmDhq8tEd9g==}
-    engines: {node: '>=18'}
 
   '@digitalcredentials/base58-universal@1.0.1':
     resolution: {integrity: sha512-1xKdJnfITMvrF/sCgwBx2C4p7qcNAARyIvrAOZGqIHmBaT/hAenpC8bf44qVY+UIMuCYP23kqpIfJQebQDThDQ==}
@@ -11642,6 +11623,9 @@ packages:
     resolution: {integrity: sha512-eajQ/ZH7qXZQR2AgtfpmSMizQzmyYVmCql7pdhldPuYQi4atACekbJaQplk6dWyIi10jCaFnd6pqvcEFXjbaJw==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
 
+  multiformats@13.3.7:
+    resolution: {integrity: sha512-meL9DERHj+fFVWoOX9fXqfcYcSpUfSYJPcFvDPKrxitICbwAoWR+Ut4j5NO9zAT917HUHLQmqzQbAsGNHlDcxQ==}
+
   multiformats@9.7.1:
     resolution: {integrity: sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==}
 
@@ -13951,6 +13935,9 @@ packages:
   uint8arrays@3.1.1:
     resolution: {integrity: sha512-+QJa8QRnbdXVpHYjLoTpJIdCTiw9Ir62nocClWuXIq2JIh4Uta0cQsTSpFL678p2CN8B+XSApwcU+pQEqVpKWg==}
 
+  uint8arrays@5.1.0:
+    resolution: {integrity: sha512-vA6nFepEmlSKkMBnLBaUMVvAC4G3CTmO58C12y4sq6WPDOR7mOFYOi7GlrQ4djeSbP6JG9Pv9tJDM97PedRSww==}
+
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
@@ -14624,6 +14611,12 @@ snapshots:
 
   '@0no-co/graphql.web@1.1.2':
     optional: true
+
+  '@4sure-tech/vc-bitstring-status-lists@file:../vc-bitstring-status-lists':
+    dependencies:
+      base64url-universal: 2.0.0
+      pako: 2.1.0
+      uint8arrays: 5.1.0
 
   '@adobe/css-tools@4.4.2': {}
 
@@ -15614,13 +15607,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@digitalbazaar/bitstring@3.1.0':
-    dependencies:
-      base64url-universal: 2.0.0
-      pako: 2.1.0
-
-  '@digitalbazaar/credentials-context@3.2.0': {}
-
   '@digitalbazaar/ed25519-signature-2018@4.1.0':
     dependencies:
       '@digitalbazaar/ed25519-verification-key-2018': 4.0.0
@@ -15651,23 +15637,7 @@ snapshots:
 
   '@digitalbazaar/security-context@1.0.1': {}
 
-  '@digitalbazaar/vc-bitstring-status-list-context@1.1.0': {}
-
-  '@digitalbazaar/vc-bitstring-status-list@2.0.1':
-    dependencies:
-      '@digitalbazaar/bitstring': 3.1.0
-      '@digitalbazaar/credentials-context': 3.2.0
-      '@digitalbazaar/vc': 7.2.0
-      '@digitalbazaar/vc-bitstring-status-list-context': 1.1.0
-
   '@digitalbazaar/vc-status-list-context@3.1.1': {}
-
-  '@digitalbazaar/vc@7.2.0':
-    dependencies:
-      '@digitalbazaar/credentials-context': 3.2.0
-      ed25519-signature-2018-context: 1.1.0
-      jsonld: '@digitalcredentials/jsonld@9.0.0'
-      jsonld-signatures: 11.5.0
 
   '@digitalcredentials/base58-universal@1.0.1': {}
 
@@ -24908,6 +24878,8 @@ snapshots:
 
   multiformats@12.1.3: {}
 
+  multiformats@13.3.7: {}
+
   multiformats@9.7.1: {}
 
   multiformats@9.9.0: {}
@@ -27416,6 +27388,10 @@ snapshots:
   uint8arrays@3.1.1:
     dependencies:
       multiformats: 9.9.0
+
+  uint8arrays@5.1.0:
+    dependencies:
+      multiformats: 13.3.7
 
   unbox-primitive@1.1.0:
     dependencies:

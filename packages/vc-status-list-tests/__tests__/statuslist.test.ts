@@ -442,5 +442,145 @@ describe('Status list', () => {
       expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
       expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
     })
+
+    it('should handle BitstringStatusList credential', async () => {
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring-details',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-details',
+          bitstringStatusList: {
+            statusSize: 2,
+            statusPurpose: 'suspension',
+            ttl: 7200000,
+          },
+        },
+        { agent },
+      )
+
+      const details = await statusListCredentialToDetails({
+        statusListCredential: initialList.statusListCredential,
+        correlationId: 'test-bitstring-details',
+      })
+
+      expect(details.type).toBe(StatusListType.BitstringStatusList)
+      expect(details.proofFormat).toBe('lds')
+      expect(details.correlationId).toBe('test-bitstring-details')
+      expect(details.statuslistContentType).toBe('application/statuslist+ld+json')
+      expect(details.bitstringStatusList?.statusPurpose).toBe('suspension')
+      expect(details.bitstringStatusList?.ttl).toBe(7200000)
+    })
+  })
+
+  describe('BitstringStatusList', () => {
+    it('should create and update using LD-Signatures', async () => {
+      const validFrom = new Date()
+      const validUntil = new Date(Date.now() + 3600)
+
+      const statusList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring1',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-1-' + Date.now(),
+          bitstringStatusList: {
+            statusPurpose: 'revocation',
+            statusSize: 1,
+            validFrom: validFrom,
+            validUntil: validUntil,
+            ttl: 3600000,
+          },
+        },
+        { agent },
+      )
+
+      expect(statusList.type).toBe(StatusListType.BitstringStatusList)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+ld+json')
+      expect(statusList.proofFormat).toBe('lds')
+      expect(statusList.bitstringStatusList?.statusPurpose).toBe('revocation')
+      expect(statusList.bitstringStatusList?.validFrom).toStrictEqual(validFrom)
+      expect(statusList.bitstringStatusList?.validUntil).toStrictEqual(validUntil)
+      expect(statusList.bitstringStatusList?.ttl).toBe(3600000)
+      expect(statusList.length).toBe(131072)
+
+      const updated = await updateStatusIndexFromStatusListCredential(
+        { statusListCredential: statusList.statusListCredential, statusListIndex: 42, value: 1 },
+        { agent },
+      )
+      const status = await checkStatusIndexFromStatusListCredential({
+        statusListCredential: updated.statusListCredential,
+        statusListIndex: '42',
+      })
+      expect(status).toBe(1)
+    })
+
+    it('should create with status messages', async () => {
+      const statusList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring2',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-2-' + Date.now(),
+          bitstringStatusList: {
+            statusPurpose: 'message',
+          },
+        },
+        { agent },
+      )
+
+      expect(statusList.bitstringStatusList?.statusPurpose).toBe('message')
+    })
+
+    it('should update using encoded list', async () => {
+      const validFrom = new Date()
+      const validUntil = new Date(Date.now() + 3600)
+
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring3',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-3-' + Date.now(),
+          bitstringStatusList: {
+            statusPurpose: 'revocation',
+            validFrom: validUntil,
+          },
+        },
+        { agent },
+      )
+
+      const result = await updateStatusListIndexFromEncodedList(
+        {
+          type: StatusListType.BitstringStatusList,
+          statusListIndex: 100,
+          value: 1,
+          proofFormat: 'lds',
+          issuer: didKeyIdentifier.did,
+          id: 'http://localhost:9543/bitstring3',
+          encodedList: initialList.encodedList,
+          bitstringStatusList: {
+            statusPurpose: 'revocation',
+            validFrom: validFrom,
+            validUntil: validUntil,
+          },
+        },
+        { agent },
+      )
+
+      expect(result.type).toBe(StatusListType.BitstringStatusList)
+      expect(result.statuslistContentType).toBe('application/statuslist+ld+json')
+      expect(result.bitstringStatusList?.statusPurpose).toBe('revocation')
+      expect(result.bitstringStatusList?.validFrom).toStrictEqual(validFrom)
+      expect(result.bitstringStatusList?.validUntil).toStrictEqual(validUntil)
+    })
   })
 })

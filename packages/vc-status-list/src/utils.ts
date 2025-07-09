@@ -11,7 +11,7 @@ import { jwtDecode } from 'jwt-decode'
 
 export function getAssertedStatusListType(type?: StatusListType) {
   const assertedType = type ?? StatusListType.StatusList2021
-  if (![StatusListType.StatusList2021, StatusListType.OAuthStatusList].includes(assertedType)) {
+  if (![StatusListType.StatusList2021, StatusListType.OAuthStatusList, StatusListType.BitstringStatusList].includes(assertedType)) {
     throw Error(`StatusList type ${assertedType} is not supported (yet)`)
   }
   return assertedType
@@ -40,6 +40,7 @@ export function getAssertedProperty<T extends object>(propertyName: string, obj:
 
 const ValidProofTypeMap = new Map<StatusListType, CredentialProofFormat[]>([
   [StatusListType.StatusList2021, ['jwt', 'lds']],
+  [StatusListType.BitstringStatusList, ['jwt', 'lds']],
   [StatusListType.OAuthStatusList, ['jwt', 'cbor']],
 ])
 

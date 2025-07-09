@@ -288,6 +288,4 @@ export enum StatusListType {
 
 export type StatusPurpose2021 = 'revocation' | 'suspension' | string
 
-export type BitstringStatusPurpose = 'revocation' | 'suspension' | 'refresh' | 'message' | string
-
 export type StatusListIndexingDirection = 'rightToLeft'
