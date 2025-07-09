@@ -33,9 +33,9 @@
     "did-resolver": "^4.1.0"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.did-provider-key": "0.29.0",
-    "@sphereon/ssi-sdk-ext.key-manager": "0.29.0",
-    "@sphereon/ssi-sdk-ext.kms-local": "0.29.0",
+    "@sphereon/ssi-sdk-ext.did-provider-key": "0.29.1-next.3",
+    "@sphereon/ssi-sdk-ext.key-manager": "0.29.1-next.3",
+    "@sphereon/ssi-sdk-ext.kms-local": "0.29.1-next.3",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@types/debug": "4.1.8",
     "@veramo/did-manager": "4.2.0",
