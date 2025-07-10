@@ -26,7 +26,6 @@ import { BitstreamStatusList, BitstringStatusPurpose, createStatusListCredential
 
 export const DEFAULT_LIST_LENGTH = 131072 // W3C spec minimum
 export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
-export const DEFAULT_STATUS_SIZE = 1
 export const DEFAULT_STATUS_PURPOSE: BitstringStatusPurpose = 'revocation'
 
 export class BitstringStatusListImplementation implements IStatusList {
@@ -45,7 +44,7 @@ export class BitstringStatusListImplementation implements IStatusList {
 
     const { issuer, id } = args
     const correlationId = getAssertedValue('correlationId', args.correlationId)
-    const { statusPurpose, validFrom, validUntil, ttl } = args.bitstringStatusList
+    const { statusPurpose, bitsPerStatus, validFrom, validUntil, ttl } = args.bitstringStatusList
     const statusListCredential = await this.createVerifiableCredential(
       {
         ...args,
@@ -66,6 +65,7 @@ export class BitstringStatusListImplementation implements IStatusList {
         ...(statusListCredential.validFrom && { validFrom: new Date(statusListCredential.validFrom) }),
         ...(statusListCredential.validUntil && { validUntil: new Date(statusListCredential.validUntil) }),
         ttl,
+        bitsPerStatus,
       },
       length,
       type: StatusListType.BitstringStatusList,
@@ -81,6 +81,10 @@ export class BitstringStatusListImplementation implements IStatusList {
     args: UpdateStatusListIndexArgs,
     context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
+    if (!args.bitsPerStatus || args.bitsPerStatus < 1) {
+      return Promise.reject('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (updateStatusListIndex)')
+    }
+
     const credential = args.statusListCredential
     const uniform = CredentialMapper.toUniformCredential(credential)
     const { issuer, credentialSubject } = uniform
@@ -123,6 +127,7 @@ export class BitstringStatusListImplementation implements IStatusList {
         statusPurpose,
         ...(updatedCredential.validFrom && { validFrom: new Date(updatedCredential.validFrom) }),
         ...(updatedCredential.validUntil && { validUntil: new Date(updatedCredential.validUntil) }),
+        bitsPerStatus: args.bitsPerStatus,
         ttl,
       },
       length: statusList.getLength(),
@@ -141,14 +146,19 @@ export class BitstringStatusListImplementation implements IStatusList {
     if (!args.bitstringStatusList) {
       throw new Error('bitstringStatusList options required for type BitstringStatusList')
     }
-    const { statusPurpose, statusSize, ttl, validFrom, validUntil } = args.bitstringStatusList
+
+    if (args.bitstringStatusList.bitsPerStatus < 1) {
+      return Promise.reject('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (updateStatusListFromEncodedList)')
+    }
+
+    const { statusPurpose, bitsPerStatus, ttl, validFrom, validUntil } = args.bitstringStatusList
 
     const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     assertValidProofType(StatusListType.BitstringStatusList, proofFormat)
     const veramoProofFormat: VeramoProofFormat = proofFormat as VeramoProofFormat
 
     const { issuer, id } = getAssertedValues(args)
-    const statusList: BitstreamStatusList = await BitstreamStatusList.decode({ encodedList: args.encodedList, statusSize })
+    const statusList: BitstreamStatusList = await BitstreamStatusList.decode({ encodedList: args.encodedList, statusSize: bitsPerStatus })
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     statusList.setStatus(index, args.value)
 
@@ -173,6 +183,7 @@ export class BitstringStatusListImplementation implements IStatusList {
       encodedList: credential.credentialSubject.encodedList,
       bitstringStatusList: {
         statusPurpose,
+        bitsPerStatus,
         ...(credential.validFrom && { validFrom: new Date(credential.validFrom) }),
         ...(credential.validUntil && { validUntil: new Date(credential.validUntil) }),
         ttl,
@@ -186,6 +197,10 @@ export class BitstringStatusListImplementation implements IStatusList {
   }
 
   async checkStatusIndex(args: CheckStatusIndexArgs): Promise<BitstringStatus> {
+    if (!args.bitsPerStatus || args.bitsPerStatus < 1) {
+      return Promise.reject('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (checkStatusIndex)')
+    }
+
     const uniform = CredentialMapper.toUniformCredential(args.statusListCredential)
     const { credentialSubject } = uniform
     const encodedList = getAssertedProperty('encodedList', credentialSubject)
@@ -201,7 +216,11 @@ export class BitstringStatusListImplementation implements IStatusList {
   }
 
   async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
-    const { statusListPayload } = args
+    const { statusListPayload, bitsPerStatus } = args
+    if (!bitsPerStatus || bitsPerStatus < 1) {
+      return Promise.reject('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (toStatusListDetails)')
+    }
+
     const uniform = CredentialMapper.toUniformCredential(statusListPayload)
     const { issuer, credentialSubject } = uniform
     const id = getAssertedValue('id', uniform.id)
@@ -212,12 +231,7 @@ export class BitstringStatusListImplementation implements IStatusList {
     const validFrom = uniform.validFrom ? new Date(uniform.validFrom) : undefined
     const validUntil = uniform.validUntil ? new Date(uniform.validUntil) : undefined
     const ttl = credSubject.ttl
-
-    let statuslistLength: number = NaN
-    if (args.bitsPerStatus) {
-      // If we do not get the statusSize we cannot know the length. We are not allowed to store this in the statusList itself, only in the consumer VC
-      statuslistLength = BitstreamStatusList.getStatusListLength(encodedList, args.bitsPerStatus)
-    }
+    const statuslistLength: number = BitstreamStatusList.getStatusListLength(encodedList, bitsPerStatus)
 
     return {
       id,
@@ -229,7 +243,8 @@ export class BitstringStatusListImplementation implements IStatusList {
       statusListCredential: statusListPayload,
       statuslistContentType: this.buildContentType(proofFormat),
       bitstringStatusList: {
-        statusPurpose: statusPurpose,
+        statusPurpose,
+        bitsPerStatus,
         validFrom,
         validUntil,
         ttl,

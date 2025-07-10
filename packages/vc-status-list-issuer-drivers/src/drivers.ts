@@ -135,13 +135,14 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     statusListCredential: StatusListCredential
     correlationId?: string
     credentialIdMode?: StatusListCredentialIdMode
+    bitsPerStatus?: number
   }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
     if (!correlationId) {
       throw Error('Either a correlationId needs to be set as an option, or it needs to be provided when creating a status list. None found')
     }
     const credentialIdMode = args.credentialIdMode ?? StatusListCredentialIdMode.ISSUANCE
-    const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
+    const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType(), bitsPerStatus: args.bitsPerStatus })
 
     // (StatusListStore does the duplicate entity check)
     await this.statusListStore.addStatusList({

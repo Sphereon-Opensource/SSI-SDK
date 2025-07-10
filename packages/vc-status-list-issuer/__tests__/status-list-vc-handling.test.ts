@@ -193,7 +193,7 @@ describe('Status List VC handling', () => {
         proofFormat: 'lds',
         bitstringStatusList: {
           statusPurpose: 'revocation',
-          statusSize: 1,
+          bitsPerStatus: 1,
           ttl: 3600000,
         },
       })
@@ -214,18 +214,11 @@ describe('Status List VC handling', () => {
         proofFormat: 'lds',
         bitstringStatusList: {
           statusPurpose: 'message',
-          statusSize: 2,
-          statusMessage: [
-            { status: '0x0', message: 'pending' },
-            { status: '0x1', message: 'approved' },
-            { status: '0x2', message: 'rejected' },
-            { status: '0x3', message: 'expired' },
-          ],
+          bitsPerStatus: 2,
         },
       })
 
       expect(result.bitstringStatusList?.statusPurpose).toBe('message')
-      expect(result.bitstringStatusList?.statusSize).toBe(2)
     })
   })
 

@@ -453,7 +453,7 @@ describe('Status list', () => {
           length: 131072,
           correlationId: 'test-bitstring-details',
           bitstringStatusList: {
-            statusSize: 2,
+            bitsPerStatus: 2,
             statusPurpose: 'suspension',
             ttl: 7200000,
           },
@@ -464,6 +464,7 @@ describe('Status list', () => {
       const details = await statusListCredentialToDetails({
         statusListCredential: initialList.statusListCredential,
         correlationId: 'test-bitstring-details',
+        bitsPerStatus: 2,
       })
 
       expect(details.type).toBe(StatusListType.BitstringStatusList)
@@ -490,7 +491,7 @@ describe('Status list', () => {
           correlationId: 'test-bitstring-1-' + Date.now(),
           bitstringStatusList: {
             statusPurpose: 'revocation',
-            statusSize: 1,
+            bitsPerStatus: 1,
             validFrom: validFrom,
             validUntil: validUntil,
             ttl: 3600000,
@@ -509,12 +510,13 @@ describe('Status list', () => {
       expect(statusList.length).toBe(131072)
 
       const updated = await updateStatusIndexFromStatusListCredential(
-        { statusListCredential: statusList.statusListCredential, statusListIndex: 42, value: 1 },
+        { statusListCredential: statusList.statusListCredential, statusListIndex: 42, bitsPerStatus: 1, value: 1 },
         { agent },
       )
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: updated.statusListCredential,
         statusListIndex: '42',
+        bitsPerStatus: 1,
       })
       expect(status).toBe(1)
     })

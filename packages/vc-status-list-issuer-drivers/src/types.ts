@@ -46,7 +46,7 @@ export interface IStatusListDriver {
 
   getStatusListLength(args?: { correlationId?: string }): Promise<number>
 
-  createStatusList(args: { statusListCredential: StatusListCredential; correlationId?: string }): Promise<StatusListResult>
+  createStatusList(args: { statusListCredential: StatusListCredential; correlationId?: string; bitsPerStatus?: number }): Promise<StatusListResult>
 
   getStatusList(args?: { correlationId?: string }): Promise<StatusListResult>
 

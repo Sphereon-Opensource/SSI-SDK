@@ -54,7 +54,7 @@ export type OAuthStatusListArgs = {
 
 export type BitstringStatusListArgs = {
   statusPurpose: BitstringStatusPurpose
-  statusSize?: number
+  bitsPerStatus: number
   ttl?: number
   validFrom?: Date
   validUntil?: Date
@@ -85,8 +85,7 @@ export type UpdateOAuthStatusListArgs = {
 
 export type UpdateBitstringStatusListArgs = {
   statusPurpose: BitstringStatusPurpose
-  statusSize?: number
-  statusMessage?: Array<BitstringStatus>
+  bitsPerStatus: number
   validFrom?: Date
   validUntil?: Date
   ttl?: number
@@ -145,6 +144,7 @@ interface OAuthStatusDetails {
 
 interface BitstringStatusDetails {
   statusPurpose: BitstringStatusPurpose
+  bitsPerStatus: number
   validFrom?: Date
   validUntil?: Date
   ttl?: number

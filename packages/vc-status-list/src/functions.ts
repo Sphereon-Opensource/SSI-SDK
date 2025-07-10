@@ -150,6 +150,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
   type?: StatusListType | 'StatusList2021Entry' | 'BitstringStatusListEntry'
   id?: string
   statusListIndex: string | number
+  bitsPerStatus?: number
 }): Promise<number | Status2021 | StatusOAuth | BitstringStatus> {
   const statusListType: StatusListType = determineStatusListType(args.statusListCredential)
   const implementation = getStatusListImplementation(statusListType)
@@ -176,12 +177,18 @@ export async function updateStatusIndexFromStatusListCredential(
 }
 
 // Keeping helper function for backward compatibility
-export async function statusListCredentialToDetails(args: {
+export async function statusListCredentialToDetails({
+  correlationId,
+  driverType,
+  statusListCredential,
+  bitsPerStatus,
+}: {
   statusListCredential: StatusListCredential
   correlationId?: string
   driverType?: StatusListDriverType
+  bitsPerStatus?: number
 }): Promise<StatusListResult> {
-  const credential = getAssertedValue('statusListCredential', args.statusListCredential)
+  const credential = getAssertedValue('statusListCredential', statusListCredential)
 
   let statusListType: StatusListType | undefined
   const documentFormat = CredentialMapper.detectDocumentType(credential)
@@ -208,8 +215,9 @@ export async function statusListCredentialToDetails(args: {
   const implementation = getStatusListImplementation(statusListType)
   return await implementation.toStatusListDetails({
     statusListPayload: credential,
-    correlationId: args.correlationId,
-    driverType: args.driverType,
+    correlationId: correlationId,
+    driverType: driverType,
+    bitsPerStatus: bitsPerStatus,
   })
 }
 
