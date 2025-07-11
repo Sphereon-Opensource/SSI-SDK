@@ -2,8 +2,7 @@ import { Validate } from 'class-validator'
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
 import { BitstringStatusListEntity } from './StatusListEntities'
-import { BitstringStatusPurpose } from '@sphereon/ssi-types'
-import { BitstringStatus } from '../../types'
+import { BitstringStatus } from '../../types/statusList/bitstringTypes'
 
 @Entity('BitstringStatusListEntry')
 export class BitstringStatusListEntryEntity extends BaseEntity {
@@ -28,10 +27,10 @@ export class BitstringStatusListEntryEntity extends BaseEntity {
   entryCorrelationId?: string
 
   @Column({ type: 'varchar', name: 'statusPurpose', nullable: false })
-  statusPurpose!: BitstringStatusPurpose
+  statusPurpose!: string
 
-  @Column({ type: 'integer', name: 'statusSize', nullable: true, default: 1 })
-  statusSize?: number
+  @Column({ type: 'integer', name: 'bitsPerStatus', nullable: true, default: 1 })
+  bitsPerStatus?: number
 
   @Column({
     type: 'text',

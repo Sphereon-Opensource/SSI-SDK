@@ -298,9 +298,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   async getStatusList(args?: { correlationId?: string }): Promise<StatusListResult> {
     const id = this.options.id
     const correlationId = args?.correlationId ?? this.options.correlationId
-    return await this.statusListStore
-      .getStatusList({ id, correlationId })
-      .then((statusListEntity: IStatusListEntity) => statusListCredentialToDetails({ statusListCredential: statusListEntity.statusListCredential! }))
+    return await this.statusListStore.getStatusList({ id, correlationId }).then((statusListEntity: IStatusListEntity) =>
+      statusListCredentialToDetails({
+        statusListCredential: statusListEntity.statusListCredential!,
+        bitsPerStatus: statusListEntity.bitsPerStatus,
+      }),
+    )
   }
 
   async getStatusLists(): Promise<Array<StatusListResult>> {

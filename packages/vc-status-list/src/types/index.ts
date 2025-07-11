@@ -170,7 +170,7 @@ export interface BitstringStatusListEntryCredentialStatus extends ICredentialSta
   statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
   statusListIndex: string
   statusListCredential: string
-  statusSize?: number
+  bitsPerStatus?: number
   statusMessage?: Array<BitstringStatus>
   statusReference?: string | string[]
 }

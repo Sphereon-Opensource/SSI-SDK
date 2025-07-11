@@ -1,5 +1,4 @@
 import {
-  BitstringStatusPurpose,
   type CredentialProofFormat,
   IIssuer,
   RequireOneOf,
@@ -11,12 +10,7 @@ import {
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
-
-export type BitstringStatus = {
-  status: string
-  message?: string
-  [x: string]: any
-}
+import { BitstringStatusPurpose } from './bitstringTypes'
 
 export interface IStatusListEntity {
   id: string
@@ -28,6 +22,7 @@ export interface IStatusListEntity {
   type: StatusListType
   proofFormat: CredentialProofFormat
   statusListCredential?: StatusListCredential
+  bitsPerStatus?: number
 }
 
 export interface IStatusList2021Entity extends IStatusListEntity {
@@ -42,7 +37,7 @@ export interface IOAuthStatusListEntity extends IStatusListEntity {
 
 export interface IBitstringStatusListEntity extends IStatusListEntity {
   statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
-  statusSize?: number
+  bitsPerStatus?: number
   validFrom?: Date
   validUntil?: Date
   ttl?: number

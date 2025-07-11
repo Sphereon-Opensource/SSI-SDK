@@ -16,8 +16,6 @@ import { BitstringStatusListEntryEntity } from './BitstringStatusListEntryEntity
 
 const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
 
-type BitstringStatusPurpose = 'revocation' | 'suspension' | 'refresh' | 'message' | string // From vc-bitstring-status-lists without pulling in the whole dep for just this one type
-
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])
 @TableInheritance({ column: { type: 'simple-enum', name: 'type', enum: StatusListType } })
@@ -128,13 +126,13 @@ export class BitstringStatusListEntity extends StatusListEntity {
     name: 'statusPurpose',
     nullable: false,
     transformer: {
-      from(value: string): BitstringStatusPurpose | BitstringStatusPurpose[] {
+      from(value: string): string | string[] {
         if (value?.includes(',')) {
-          return value.split(',').map((v) => v.trim() as BitstringStatusPurpose)
+          return value.split(',').map((v) => v.trim() as string)
         }
-        return value as BitstringStatusPurpose
+        return value as string
       },
-      to(value: BitstringStatusPurpose | BitstringStatusPurpose[]): string {
+      to(value: string | string[]): string {
         if (Array.isArray(value)) {
           return value.join(',')
         }
@@ -142,10 +140,10 @@ export class BitstringStatusListEntity extends StatusListEntity {
       },
     },
   })
-  statusPurpose!: BitstringStatusPurpose | BitstringStatusPurpose[]
+  statusPurpose!: string | string[]
 
-  @Column({ type: 'integer', name: 'statusSize', nullable: true, default: 1 })
-  statusSize?: number
+  @Column({ type: 'integer', name: 'bitsPerStatus', nullable: false })
+  bitsPerStatus?: number
 
   @Column({ name: 'validFrom', nullable: true, type: typeOrmDateTime() })
   validFrom?: Date

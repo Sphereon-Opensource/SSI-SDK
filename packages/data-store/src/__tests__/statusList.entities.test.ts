@@ -226,7 +226,7 @@ describe('Status list entities tests', () => {
     statusList.credentialIdMode = StatusListCredentialIdMode.ISSUANCE
     statusList.proofFormat = 'lds'
     statusList.statusPurpose = 'revocation'
-    statusList.statusSize = 1
+    statusList.bitsPerStatus = 1
     statusList.ttl = 3600000
     statusList.validFrom = new Date('2024-01-01T00:00:00Z')
     statusList.validUntil = new Date('2025-01-01T00:00:00Z')
@@ -236,7 +236,7 @@ describe('Status list entities tests', () => {
     expect(fromDb).toBeDefined()
     expect(fromDb.id).toEqual(statusList.id)
     expect(fromDb.statusPurpose).toEqual(statusList.statusPurpose)
-    expect(fromDb.statusSize).toEqual(statusList.statusSize)
+    expect(fromDb.bitsPerStatus).toEqual(statusList.bitsPerStatus)
     expect(fromDb.ttl).toEqual(statusList.ttl)
     expect(fromDb.validFrom).toEqual(statusList.validFrom)
     expect(fromDb.validUntil).toEqual(statusList.validUntil)
@@ -261,14 +261,14 @@ describe('Status list entities tests', () => {
     entry.credentialId = 'bitstring-credential-1'
     entry.credentialHash = 'bitstring-hash-1'
     entry.statusPurpose = 'revocation'
-    entry.statusSize = 1
+    entry.bitsPerStatus = 1
     entry.statusReference = 'https://example.org/status-ref'
 
     const fromDb = await dbConnection.getRepository(BitstringStatusListEntryEntity).save(entry)
     expect(fromDb).toBeDefined()
     expect(fromDb.statusListIndex).toEqual(entry.statusListIndex)
     expect(fromDb.statusPurpose).toEqual(entry.statusPurpose)
-    expect(fromDb.statusSize).toEqual(entry.statusSize)
+    expect(fromDb.bitsPerStatus).toEqual(entry.bitsPerStatus)
     expect(fromDb.statusReference).toEqual(entry.statusReference)
   })
 })

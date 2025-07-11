@@ -5,7 +5,7 @@ export class CreateBitstringStatusListPG1741895823000 implements MigrationInterf
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Add BitstringStatusList columns to StatusList table
-    await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "statusSize" integer DEFAULT 1`)
+    await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "bitsPerStatus" integer DEFAULT 1`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "ttl" integer`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "validFrom" TIMESTAMP`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "validUntil" TIMESTAMP`)
@@ -25,7 +25,7 @@ export class CreateBitstringStatusListPG1741895823000 implements MigrationInterf
         "credentialHash" character varying(128),
         "correlationId" character varying(255),
         "statusPurpose" character varying NOT NULL,
-        "statusSize" integer DEFAULT 1,
+        "bitsPerStatus" integer DEFAULT 1,
         "statusMessage" text,
         "statusReference" text,
         CONSTRAINT "PK_BitstringStatusListEntry" PRIMARY KEY ("statusListId", "statusListIndex")
@@ -49,6 +49,6 @@ export class CreateBitstringStatusListPG1741895823000 implements MigrationInterf
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "validUntil"`)
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "validFrom"`)
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "ttl"`)
-    await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "statusSize"`)
+    await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "bitsPerStatus"`)
   }
 }

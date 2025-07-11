@@ -41,7 +41,7 @@ export const statusListEntityFrom = (args: IStatusListEntity): StatusListEntity 
     const entity = new BitstringStatusListEntity()
     const bitstringsl = args as IBitstringStatusListEntity
     entity.statusPurpose = bitstringsl.statusPurpose
-    entity.statusSize = bitstringsl.statusSize
+    entity.bitsPerStatus = bitstringsl.bitsPerStatus
     entity.validFrom = bitstringsl.validFrom
     entity.validUntil = bitstringsl.validUntil
     entity.ttl = bitstringsl.ttl
@@ -83,7 +83,7 @@ export const statusListFrom = (entity: StatusListEntity): IStatusListEntity => {
       ...getBaseFields(entity),
       type: StatusListType.BitstringStatusList,
       statusPurpose: entity.statusPurpose,
-      statusSize: entity.statusSize,
+      bitsPerStatus: entity.bitsPerStatus,
       validFrom: entity.validFrom,
       validUntil: entity.validUntil,
       ttl: entity.ttl,

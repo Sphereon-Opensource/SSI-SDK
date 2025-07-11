@@ -241,7 +241,7 @@ describe('Status list store tests', () => {
       type: StatusListType.BitstringStatusList,
       proofFormat: 'lds',
       statusPurpose: 'revocation',
-      statusSize: 1,
+      bitsPerStatus: 1,
       ttl: 3600000,
       validFrom: new Date('2024-01-01T00:00:00Z'),
       validUntil: new Date('2025-01-01T00:00:00Z'),
