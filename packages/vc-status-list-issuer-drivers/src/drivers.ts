@@ -149,6 +149,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       ...details,
       credentialIdMode,
       correlationId,
+      ...(args.bitsPerStatus && { bitsPerStatus: args.bitsPerStatus }),
       driverType: this.getType(),
     })
     this._statusListLength = details.length

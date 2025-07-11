@@ -45,7 +45,7 @@ export class StatusListStore implements IStatusListStore {
     const results = (
       await repo.find({
         where: {
-          statusList,
+          statusListId: statusList.id,
           statusListIndex: In(statusListIndex),
         },
       })

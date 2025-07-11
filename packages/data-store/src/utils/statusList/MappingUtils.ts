@@ -40,6 +40,10 @@ export const statusListEntityFrom = (args: IStatusListEntity): StatusListEntity 
   if (args.type === StatusListType.BitstringStatusList) {
     const entity = new BitstringStatusListEntity()
     const bitstringsl = args as IBitstringStatusListEntity
+    if (!bitstringsl.bitsPerStatus) {
+      throw Error('bitsPerStatus must be set for BitstringStatusList')
+    }
+
     entity.statusPurpose = bitstringsl.statusPurpose
     entity.bitsPerStatus = bitstringsl.bitsPerStatus
     entity.validFrom = bitstringsl.validFrom

@@ -3577,8 +3577,8 @@ importers:
   packages/vc-status-list:
     dependencies:
       '@4sure-tech/vc-bitstring-status-lists':
-        specifier: file:../../../vc-bitstring-status-lists
-        version: file:../vc-bitstring-status-lists
+        specifier: 0.1.0-unstable.1
+        version: 0.1.0-unstable.1
       '@sd-jwt/core':
         specifier: ^0.9.2
         version: 0.9.2
@@ -4608,8 +4608,8 @@ packages:
       graphql:
         optional: true
 
-  '@4sure-tech/vc-bitstring-status-lists@file:../vc-bitstring-status-lists':
-    resolution: {directory: ../vc-bitstring-status-lists, type: directory}
+  '@4sure-tech/vc-bitstring-status-lists@0.1.0-unstable.1':
+    resolution: {integrity: sha512-IulCugjbxjr5V9A6fNM+PGucr7NYRXXoxzgGo84x8ZTZVW5o10GzfAdhO1mC99KW4IPesozLs1bxVcUnkoy77Q==}
 
   '@adobe/css-tools@4.4.2':
     resolution: {integrity: sha512-baYZExFpsdkBNuvGKTKWCwKH57HRZLVtycZS05WTQNVOiXVSeAki3nU35zlRbToeMW8aHlJfyS+1C4BOv27q0A==}
@@ -14612,7 +14612,7 @@ snapshots:
   '@0no-co/graphql.web@1.1.2':
     optional: true
 
-  '@4sure-tech/vc-bitstring-status-lists@file:../vc-bitstring-status-lists':
+  '@4sure-tech/vc-bitstring-status-lists@0.1.0-unstable.1':
     dependencies:
       base64url-universal: 2.0.0
       pako: 2.1.0
