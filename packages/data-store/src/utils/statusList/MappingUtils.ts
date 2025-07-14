@@ -61,7 +61,7 @@ export const statusListEntityFrom = (args: IStatusListEntity): StatusListEntity 
   throw new Error(`Invalid status list type ${args.type}`)
 }
 
-export const statusListFrom = (entity: StatusListEntity): IStatusListEntity => {
+export const statusListFrom = (entity: StatusListEntity): IStatusListEntity | IBitstringStatusListEntity => {
   if (entity instanceof StatusList2021Entity) {
     const result: IStatusList2021Entity = {
       ...getBaseFields(entity),

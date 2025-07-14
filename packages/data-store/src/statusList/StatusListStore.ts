@@ -4,9 +4,11 @@ import { DataSource, In, type Repository } from 'typeorm'
 import { BitstringStatusListEntity, OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
 import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import { BitstringStatusListEntryEntity } from '../entities/statusList/BitstringStatusListEntryEntity'
-import type {
+import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
+  IBitstringStatusListEntity,
+  IBitstringStatusListEntryEntity,
   IGetStatusListArgs,
   IGetStatusListEntriesArgs,
   IGetStatusListEntryByCredentialIdArgs,
@@ -54,20 +56,28 @@ export class StatusListStore implements IStatusListStore {
     return statusListIndex.filter((index) => !results.includes(index))
   }
 
-  async addStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
+  async addStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity> {
+    if (!args.statusListId) {
+      throw new Error('statusListId is required')
+    }
+
     const statusList = await this.getStatusList({ id: args.statusListId })
-    return (await this.getStatusListEntryRepo(statusList.type)).save(args)
+    const result = await (await this.getStatusListEntryRepo(statusList.type)).save(args)
+    return result as IStatusListEntryEntity | IBitstringStatusListEntryEntity
   }
 
-  async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
-    const statusListId = args.statusListId ?? args.statusList?.id
+  async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity> {
+    const statusListId = args.statusListId
+    if (!statusListId) {
+      throw new Error('statusListId is required')
+    }
+
     const statusList = await this.getStatusList({ id: statusListId })
     const result = await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: false })
     const updatedEntry: Partial<IStatusListEntryEntity> = {
-      value: args.value,
-      correlationId: args.correlationId,
-      credentialHash: args.credentialHash,
-      credentialId: args.credentialId,
+      ...result,
+      ...args,
+      statusListId,
     }
 
     const updStatusListId = result?.statusListId ?? statusListId
@@ -82,7 +92,7 @@ export class StatusListStore implements IStatusListStore {
       ...args,
       statusListId: updStatusListId,
       errorOnNotFound: true,
-    })) as IStatusListEntryEntity
+    }))!
   }
 
   async getStatusListEntryByIndex({
@@ -197,13 +207,14 @@ export class StatusListStore implements IStatusListStore {
     return !error
   }
 
-  async getStatusListEntries(args: IGetStatusListEntriesArgs): Promise<StatusListEntryEntity[]> {
+  async getStatusListEntries(args: IGetStatusListEntriesArgs): Promise<Array<IStatusListEntryEntity | IBitstringStatusListEntryEntity>> {
     const statusList = await this.getStatusList({ id: args.statusListId })
-    return (await this.getStatusListEntryRepo(statusList.type)).find({ where: { ...args?.filter, statusList: args.statusListId } })
-  }
-
-  async getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity> {
-    return statusListFrom(await this.getStatusListEntity(args))
+    const results = await (
+      await this.getStatusListEntryRepo(statusList.type)
+    ).find({
+      where: { ...args?.filter, statusList: args.statusListId },
+    })
+    return results as Array<IStatusListEntryEntity | IBitstringStatusListEntryEntity>
   }
 
   private async getStatusListEntity(args: IGetStatusListArgs): Promise<StatusListEntity> {
@@ -223,7 +234,12 @@ export class StatusListStore implements IStatusListStore {
     return result
   }
 
-  async getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity>> {
+  async getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity | IBitstringStatusListEntity> {
+    const entity = await this.getStatusListEntity(args)
+    return statusListFrom(entity) as IStatusListEntity | IBitstringStatusListEntity
+  }
+
+  async getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity | IBitstringStatusListEntity>> {
     const result = await (
       await this.getStatusListRepo()
     ).find({
@@ -234,7 +250,7 @@ export class StatusListStore implements IStatusListStore {
       return []
     }
 
-    return result.map((entity) => statusListFrom(entity))
+    return result.map((entity) => statusListFrom(entity) as IStatusListEntity | IBitstringStatusListEntity)
   }
 
   async addStatusList(args: IAddStatusListArgs): Promise<IStatusListEntity> {
@@ -255,7 +271,7 @@ export class StatusListStore implements IStatusListStore {
     return statusListFrom(createdResult)
   }
 
-  async updateStatusList(args: IUpdateStatusListIndexArgs): Promise<IStatusListEntity> {
+  async updateStatusList(args: IUpdateStatusListIndexArgs): Promise<IStatusListEntity | IBitstringStatusListEntity> {
     const result = await this.getStatusList(args)
     debug('Updating status list', result)
     const entity = statusListEntityFrom(args)

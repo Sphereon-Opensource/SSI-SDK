@@ -1,18 +1,18 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
-  BitstringStatusListEntity,
+  IAddStatusListArgs,
   IAddStatusListEntryArgs,
+  IBitstringStatusListEntryEntity,
   IGetStatusListEntryByCredentialIdArgs,
   IGetStatusListEntryByIndexArgs,
   IStatusListEntity,
   IStatusListEntryEntity,
-  OAuthStatusListEntity,
-  StatusList2021Entity,
   StatusListEntity,
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {
   BitstringStatusListEntryCredentialStatus,
+  createCredentialStatusFromStatusList,
   StatusList2021EntryCredentialStatus,
   statusListCredentialToDetails,
   StatusListOAuthEntryCredentialStatus,
@@ -142,20 +142,27 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
       throw Error('Either a correlationId needs to be set as an option, or it needs to be provided when creating a status list. None found')
     }
     const credentialIdMode = args.credentialIdMode ?? StatusListCredentialIdMode.ISSUANCE
-    const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType(), bitsPerStatus: args.bitsPerStatus })
 
-    // (StatusListStore does the duplicate entity check)
-    await this.statusListStore.addStatusList({
-      ...details,
+    // Get implementation details
+    const implementationResult = await statusListCredentialToDetails({
+      ...args,
+      correlationId,
+      driverType: this.getType(),
+      bitsPerStatus: args.bitsPerStatus,
+    })
+
+    // Add driver-specific fields to create complete entity
+    const statusListArgs = {
+      ...implementationResult,
       credentialIdMode,
       correlationId,
-      ...(args.bitsPerStatus && { bitsPerStatus: args.bitsPerStatus }),
       driverType: this.getType(),
-    })
-    this._statusListLength = details.length
-    return details
-  }
+    } as IAddStatusListArgs
 
+    await this.statusListStore.addStatusList(statusListArgs)
+    this._statusListLength = implementationResult.length
+    return implementationResult
+  }
   async updateStatusList(args: {
     statusListCredential: StatusListCredential
     correlationId: string
@@ -178,12 +185,16 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     if (!entity) {
       throw Error(`Status list ${details.id}, correlationId ${args.correlationId} could not be found`)
     }
-    await this.statusListStore.updateStatusList({
+
+    // Merge details with existing entity and driver properties
+    const updateArgs = {
       ...entity,
       ...details,
       correlationId,
       driverType: this.getType(),
-    })
+    } as IAddStatusListArgs
+
+    await this.statusListStore.updateStatusList(updateArgs)
     this._statusListLength = details.length
     return { ...entity, ...details }
   }
@@ -193,70 +204,38 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return Promise.resolve(true)
   }
 
-  private isStatusList2021Entity(statusList: StatusListEntity): statusList is StatusList2021Entity {
-    return statusList instanceof StatusList2021Entity
-  }
-
-  private isOAuthStatusListEntity(statusList: StatusListEntity): statusList is OAuthStatusListEntity {
-    return statusList instanceof OAuthStatusListEntity
-  }
-
-  private isBitstringStatusListEntity(statusList: StatusListEntity): statusList is BitstringStatusListEntity {
-    return statusList instanceof BitstringStatusListEntity
-  }
-
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
     credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus | BitstringStatusListEntryCredentialStatus
-    statusListEntry: IStatusListEntryEntity
+    statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
   }> {
-    const statusList: StatusListEntity = args.statusList ? args.statusList : statusListResultToEntity(await this.getStatusList())
-    const statusListEntry = await this.statusListStore.updateStatusListEntry({ ...args, statusListId: statusList.id })
+    // Get status list entity
+    const statusListEntity: StatusListEntity = statusListResultToEntity(await this.getStatusList())
 
-    if (this.isStatusList2021Entity(statusList)) {
-      return {
-        credentialStatus: {
-          id: `${statusList.id}#${statusListEntry.statusListIndex}`,
-          type: 'StatusList2021Entry',
-          statusPurpose: statusList.statusPurpose ?? 'revocation',
-          statusListIndex: '' + statusListEntry.statusListIndex,
-          statusListCredential: statusList.id,
-        },
-        statusListEntry,
-      }
-    } else if (this.isOAuthStatusListEntity(statusList)) {
-      return {
-        credentialStatus: {
-          id: `${statusList.id}#${statusListEntry.statusListIndex}`,
-          type: 'OAuthStatusListEntry',
-          bitsPerStatus: statusList.bitsPerStatus,
-          statusListIndex: '' + statusListEntry.statusListIndex,
-          statusListCredential: statusList.id,
-          expiresAt: statusList.expiresAt,
-        },
-        statusListEntry,
-      }
-    } else if (this.isBitstringStatusListEntity(statusList)) {
-      return {
-        credentialStatus: {
-          id: `${statusList.id}#${statusListEntry.statusListIndex}`,
-          type: 'BitstringStatusListEntry',
-          statusPurpose: statusList.statusPurpose,
-          statusListIndex: '' + statusListEntry.statusListIndex,
-          statusListCredential: statusList.id,
-          bitsPerStatus: statusList.bitsPerStatus,
-        } satisfies BitstringStatusListEntryCredentialStatus,
-        statusListEntry,
-      }
+    // Update the entry in the store
+    const statusListEntry = await this.statusListStore.updateStatusListEntry({ ...args, statusListId: statusListEntity.id })
+
+    // Use implementation to create the credential status - this moves type-specific logic to implementations
+    const credentialStatus = await createCredentialStatusFromStatusList({
+      statusList: statusListEntity,
+      statusListEntry,
+      statusListIndex: statusListEntry.statusListIndex,
+    })
+
+    return {
+      credentialStatus,
+      statusListEntry,
     }
-
-    throw new Error(`Unsupported status list type: ${typeof statusList}`)
   }
 
-  async getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<IStatusListEntryEntity | undefined> {
+  async getStatusListEntryByCredentialId(
+    args: IGetStatusListEntryByCredentialIdArgs,
+  ): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity | undefined> {
     return await this.statusListStore.getStatusListEntryByCredentialId(args)
   }
 
-  async getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<IStatusListEntryEntity | undefined> {
+  async getStatusListEntryByIndex(
+    args: IGetStatusListEntryByIndexArgs,
+  ): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity | undefined> {
     return await this.statusListStore.getStatusListEntryByIndex(args)
   }
 

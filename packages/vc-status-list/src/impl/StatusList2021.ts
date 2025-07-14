@@ -2,15 +2,15 @@ import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
+  type CredentialProofFormat,
   DocumentFormat,
   type IIssuer,
-  type CredentialProofFormat,
   type StatusListCredential,
   StatusListType,
 } from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
-import type { IStatusList } from './IStatusList'
+import type { IStatusList, IStatusList2021ImplementationResult } from './IStatusList'
 import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
@@ -19,9 +19,9 @@ import type {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-
-import { Status2021 } from '../types'
+import { Status2021, StatusList2021EntryCredentialStatus } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
+import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusList2021Entity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
 
 export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
@@ -96,11 +96,15 @@ export class StatusList2021Implementation implements IStatusList {
       context,
     )
 
+    if (!('statusPurpose' in credentialSubject)) {
+      return Promise.reject(Error('statusPurpose is required in credentialSubject for StatusList2021'))
+    }
+
     return {
       statusListCredential: updatedCredential,
       encodedList,
       statusList2021: {
-        ...('statusPurpose' in credentialSubject ? { statusPurpose: credentialSubject.statusPurpose } : {}),
+        statusPurpose: credentialSubject.statusPurpose,
         indexingDirection: 'rightToLeft',
       },
       length: statusList.length - 1,
@@ -166,7 +170,7 @@ export class StatusList2021Implementation implements IStatusList {
     return status ? Status2021.Invalid : Status2021.Valid
   }
 
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
+  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult & IStatusList2021ImplementationResult> {
     const { statusListPayload } = args
     const uniform = CredentialMapper.toUniformCredential(statusListPayload)
     const { issuer, credentialSubject } = uniform
@@ -175,9 +179,11 @@ export class StatusList2021Implementation implements IStatusList {
     const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
 
     const statusPurpose = getAssertedProperty('statusPurpose', credentialSubject)
+    const indexingDirection = 'rightToLeft'
     const list = await StatusList.decode({ encodedList })
 
     return {
+      // Base implementation fields
       id,
       encodedList,
       issuer,
@@ -186,12 +192,41 @@ export class StatusList2021Implementation implements IStatusList {
       length: list.length,
       statusListCredential: statusListPayload,
       statuslistContentType: this.buildContentType(proofFormat),
+      correlationId: args.correlationId, // FIXME these do not need to be inside the impl
+      driverType: args.driverType, // FIXME these do not need to be inside the impl
+
+      // Flattened StatusList2021-specific fields
+      indexingDirection,
+      statusPurpose,
+
+      // Legacy nested structure for backward compatibility
       statusList2021: {
-        indexingDirection: 'rightToLeft',
+        indexingDirection,
         statusPurpose,
+
+        // Optional fields from args
+        ...(args.correlationId && { correlationId: args.correlationId }),
+        ...(args.driverType && { driverType: args.driverType }),
       },
-      ...(args.correlationId && { correlationId: args.correlationId }),
-      ...(args.driverType && { driverType: args.driverType }),
+    }
+  }
+
+  async createCredentialStatus(args: {
+    statusList: StatusListEntity
+    statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
+    statusListIndex: number
+  }): Promise<StatusList2021EntryCredentialStatus> {
+    const { statusList, statusListIndex } = args
+
+    // Cast to StatusList2021Entity to access specific properties
+    const statusList2021 = statusList as StatusList2021Entity
+
+    return {
+      id: `${statusList.id}#${statusListIndex}`,
+      type: 'StatusList2021Entry',
+      statusPurpose: statusList2021.statusPurpose ?? 'revocation',
+      statusListIndex: '' + statusListIndex,
+      statusListCredential: statusList.id,
     }
   }
 

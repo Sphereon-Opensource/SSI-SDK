@@ -1,5 +1,16 @@
 import { FindOptionsWhere } from 'typeorm'
-import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity, IStatusListEntryEntity } from './statusList'
+import { IBitstringStatusListEntryEntity, IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntryEntity } from './statusList'
+import {
+  CredentialProofFormat,
+  IIssuer,
+  StatusListCredential,
+  StatusListCredentialIdMode,
+  StatusListDriverType,
+  StatusListIndexingDirection,
+  StatusListType,
+  StatusPurpose2021,
+} from '@sphereon/ssi-types'
+import { BitstringStatusPurpose } from './bitstringTypes'
 
 export type FindStatusListArgs = FindOptionsWhere<IStatusList2021Entity | IOAuthStatusListEntity>[]
 export type FindStatusListEntryArgs = FindOptionsWhere<IStatusListEntryEntity>[] | FindOptionsWhere<IStatusListEntryEntity>
@@ -30,7 +41,7 @@ export interface IGetStatusListEntriesArgs {
   filter?: FindStatusListEntryArgs
 }
 
-export type IAddStatusListEntryArgs = IStatusListEntryEntity
+export type IAddStatusListEntryArgs = IStatusListEntryEntity | IBitstringStatusListEntryEntity
 
 export interface IGetStatusListArgs {
   id?: string
@@ -43,6 +54,30 @@ export interface IGetStatusListsArgs {
   filter?: FindStatusListArgs
 }
 
-export type IAddStatusListArgs = IStatusListEntity
+interface IBaseStatusListArgs {
+  id: string
+  correlationId: string
+  driverType: StatusListDriverType
+  credentialIdMode: StatusListCredentialIdMode
+  length: number
+  issuer: string | IIssuer
+  type: StatusListType
+  proofFormat: CredentialProofFormat
+  statusListCredential?: StatusListCredential
+  bitsPerStatus?: number
+}
 
-export type IUpdateStatusListIndexArgs = IStatusListEntity
+// Then extend for specific types when needed
+export type IAddStatusListArgs =
+  | (IBaseStatusListArgs & { type: StatusListType.StatusList2021; indexingDirection: StatusListIndexingDirection; statusPurpose: StatusPurpose2021 })
+  | (IBaseStatusListArgs & { type: StatusListType.OAuthStatusList; bitsPerStatus: number; expiresAt?: Date })
+  | (IBaseStatusListArgs & {
+      type: StatusListType.BitstringStatusList
+      statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+      bitsPerStatus?: number
+      validFrom?: Date
+      validUntil?: Date
+      ttl?: number
+    })
+
+export type IUpdateStatusListIndexArgs = IAddStatusListArgs

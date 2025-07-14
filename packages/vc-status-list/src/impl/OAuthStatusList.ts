@@ -4,6 +4,7 @@ import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   SignedStatusListData,
+  StatusListOAuthEntryCredentialStatus,
   StatusListResult,
   StatusOAuth,
   ToStatusListDetailsArgs,
@@ -11,12 +12,13 @@ import type {
   UpdateStatusListIndexArgs,
 } from '../types'
 import { determineProofFormat, ensureDate, getAssertedValue, getAssertedValues } from '../utils'
-import type { IStatusList } from './IStatusList'
+import type { IOAuthStatusListImplementationResult, IStatusList } from './IStatusList'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 import type { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createSignedJwt, decodeStatusListJWT } from './encoding/jwt'
 import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
+import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, OAuthStatusListEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
 
 type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
 
@@ -144,10 +146,6 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
   }
 
-  private buildContentType(proofFormat: CredentialProofFormat | undefined) {
-    return `application/statuslist+${proofFormat === 'cbor' ? 'cwt' : 'jwt'}`
-  }
-
   async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | StatusOAuth> {
     const { statusListCredential, statusListIndex } = args
     if (typeof statusListCredential !== 'string') {
@@ -165,13 +163,17 @@ export class OAuthStatusListImplementation implements IStatusList {
     return statusList.getStatus(index)
   }
 
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
+  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult & IOAuthStatusListImplementationResult> {
     const { statusListPayload } = args as { statusListPayload: CompactJWT | CWT }
     const proofFormat = determineProofFormat(statusListPayload)
     const decoded = proofFormat === 'jwt' ? decodeStatusListJWT(statusListPayload) : decodeStatusListCWT(statusListPayload)
     const { statusList, issuer, id, exp } = decoded
 
+    const bitsPerStatus = statusList.getBitsPerStatus()
+    const expiresAt = exp ? new Date(exp * 1000) : undefined
+
     return {
+      // Base implementation fields
       id,
       encodedList: statusList.compressStatusList(),
       issuer,
@@ -180,13 +182,47 @@ export class OAuthStatusListImplementation implements IStatusList {
       length: statusList.statusList.length,
       statusListCredential: statusListPayload,
       statuslistContentType: this.buildContentType(proofFormat),
+      correlationId: args.correlationId, // FIXME these do not need to be inside the impl
+      driverType: args.driverType, // FIXME these do not need to be inside the impl
+
+      // Flattened OAuth-specific fields
+      bitsPerStatus,
+      ...(expiresAt && { expiresAt }),
+
+      // Legacy nested structure for backward compatibility
       oauthStatusList: {
-        bitsPerStatus: statusList.getBitsPerStatus(),
-        ...(exp && { expiresAt: new Date(exp * 1000) }),
+        bitsPerStatus,
+        ...(expiresAt && { expiresAt }),
       },
+
+      // Optional fields from args
       ...(args.correlationId && { correlationId: args.correlationId }),
       ...(args.driverType && { driverType: args.driverType }),
     }
+  }
+
+  async createCredentialStatus(args: {
+    statusList: StatusListEntity
+    statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
+    statusListIndex: number
+  }): Promise<StatusListOAuthEntryCredentialStatus> {
+    const { statusList, statusListIndex } = args
+
+    // Cast to OAuthStatusListEntity to access specific properties
+    const oauthStatusList = statusList as OAuthStatusListEntity
+
+    return {
+      id: `${statusList.id}#${statusListIndex}`,
+      type: 'OAuthStatusListEntry',
+      bitsPerStatus: oauthStatusList.bitsPerStatus,
+      statusListIndex: '' + statusListIndex,
+      statusListCredential: statusList.id,
+      expiresAt: oauthStatusList.expiresAt,
+    }
+  }
+
+  private buildContentType(proofFormat: CredentialProofFormat | undefined) {
+    return `application/statuslist+${proofFormat === 'cbor' ? 'cwt' : 'jwt'}`
   }
 
   private async createSignedStatusList(

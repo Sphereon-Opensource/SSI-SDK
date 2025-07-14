@@ -7,7 +7,6 @@ import {
   type IVerifiableCredential,
   type OrPromise,
   type StatusListCredential,
-  StatusListCredentialIdMode,
   StatusListDriverType,
   type StatusListIndexingDirection,
   StatusListType,
@@ -48,7 +47,7 @@ export type StatusList2021Args = {
 }
 
 export type OAuthStatusListArgs = {
-  bitsPerStatus?: BitsPerStatus
+  bitsPerStatus: BitsPerStatus
   expiresAt?: Date
 }
 
@@ -114,40 +113,46 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
 }
 
 export interface StatusListResult {
+  id: string
   encodedList: string
-  statusListCredential: StatusListCredential
-  length: number
+  issuer: string | IIssuer
   type: StatusListType
   proofFormat: CredentialProofFormat
-  id: string
+  length: number
+  statusListCredential: StatusListCredential
   statuslistContentType: string
-  issuer: string | IIssuer
-  statusList2021?: StatusList2021Details
-  oauthStatusList?: OAuthStatusDetails
-  bitstringStatusList?: BitstringStatusDetails
-
-  // These cannot be deduced from the VC, so they are present when callers pass in these values as params
   correlationId?: string
   driverType?: StatusListDriverType
-  credentialIdMode?: StatusListCredentialIdMode
-}
 
-interface StatusList2021Details {
-  indexingDirection: StatusListIndexingDirection
-  statusPurpose?: StatusPurpose2021
-}
+  // Flattened StatusList2021 fields
+  indexingDirection?: StatusListIndexingDirection
+  statusPurpose?: StatusPurpose2021 | BitstringStatusPurpose | BitstringStatusPurpose[]
 
-interface OAuthStatusDetails {
-  bitsPerStatus?: BitsPerStatus
+  // Flattened OAuth fields
+  bitsPerStatus?: number
   expiresAt?: Date
-}
 
-interface BitstringStatusDetails {
-  statusPurpose: BitstringStatusPurpose
-  bitsPerStatus: number
+  // Flattened Bitstring fields
   validFrom?: Date
   validUntil?: Date
   ttl?: number
+
+  // Legacy nested structures for backward compatibility
+  statusList2021?: {
+    indexingDirection: StatusListIndexingDirection
+    statusPurpose: StatusPurpose2021
+  }
+  oauthStatusList?: {
+    bitsPerStatus: number
+    expiresAt?: Date
+  }
+  bitstringStatusList?: {
+    statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+    bitsPerStatus?: number
+    validFrom?: Date
+    validUntil?: Date
+    ttl?: number
+  }
 }
 
 export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {

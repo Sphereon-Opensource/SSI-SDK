@@ -41,6 +41,7 @@ export function statusListResultToEntity(result: StatusListResult): StatusList20
       ...baseFields,
       statusPurpose: result.bitstringStatusList.statusPurpose,
       ttl: result.bitstringStatusList.ttl,
+      bitsPerStatus: result.bitstringStatusList.bitsPerStatus,
       validFrom: result.bitstringStatusList.validFrom,
       validUntil: result.bitstringStatusList.validUntil,
     })

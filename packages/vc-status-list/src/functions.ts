@@ -10,15 +10,20 @@ import {
 } from '@sphereon/ssi-types'
 import type { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
+import { IAddStatusListArgs, IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+
 import { checkStatus } from '@sphereon/vc-status-list'
 
 // @ts-ignore
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
   BitstringStatus,
+  BitstringStatusListEntryCredentialStatus,
   CreateNewStatusListFuncArgs,
   Status2021,
+  StatusList2021EntryCredentialStatus,
   StatusList2021ToVerifiableCredentialArgs,
+  StatusListOAuthEntryCredentialStatus,
   StatusListResult,
   StatusOAuth,
   UpdateStatusListFromEncodedListArgs,
@@ -146,7 +151,7 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
 
 export async function checkStatusIndexFromStatusListCredential(args: {
   statusListCredential: StatusListCredential
-  statusPurpose?: StatusPurpose2021
+  statusPurpose?: StatusPurpose2021 | string | string[]
   type?: StatusListType | 'StatusList2021Entry' | 'BitstringStatusListEntry'
   id?: string
   statusListIndex: string | number
@@ -176,7 +181,6 @@ export async function updateStatusIndexFromStatusListCredential(
   return implementation.updateStatusListIndex(args, context)
 }
 
-// Keeping helper function for backward compatibility
 export async function statusListCredentialToDetails({
   correlationId,
   driverType,
@@ -187,7 +191,7 @@ export async function statusListCredentialToDetails({
   correlationId?: string
   driverType?: StatusListDriverType
   bitsPerStatus?: number
-}): Promise<StatusListResult> {
+}): Promise<StatusListResult & Partial<IAddStatusListArgs>> {
   const credential = getAssertedValue('statusListCredential', statusListCredential)
 
   let statusListType: StatusListType | undefined
@@ -213,11 +217,34 @@ export async function statusListCredentialToDetails({
   }
 
   const implementation = getStatusListImplementation(statusListType)
-  return await implementation.toStatusListDetails({
+
+  // The implementation should now return all the type-specific fields needed for the entity
+  const result = await implementation.toStatusListDetails({
     statusListPayload: credential,
     correlationId: correlationId,
     driverType: driverType,
     bitsPerStatus: bitsPerStatus,
+  })
+
+  return result
+}
+
+export async function createCredentialStatusFromStatusList(args: {
+  statusList: StatusListEntity
+  statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
+  statusListIndex: number
+}): Promise<StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus | BitstringStatusListEntryCredentialStatus> {
+  const { statusList, statusListEntry, statusListIndex } = args
+
+  // Determine the status list type and delegate to appropriate implementation
+  const statusListType = determineStatusListType(statusList.statusListCredential!)
+  const implementation = getStatusListImplementation(statusListType)
+
+  // Each implementation should have a method to create credential status
+  return implementation.createCredentialStatus({
+    statusList,
+    statusListEntry,
+    statusListIndex,
   })
 }
 

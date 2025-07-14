@@ -3603,6 +3603,9 @@ importers:
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.29.0
         version: 0.29.0(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

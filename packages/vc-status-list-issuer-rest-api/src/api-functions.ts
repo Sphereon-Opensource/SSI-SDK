@@ -18,7 +18,7 @@ import {
   UpdateW3cCredentialStatusRequest,
 } from './types'
 import { StatusListCredential, StatusListType } from '@sphereon/ssi-types'
-import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
+import { IBitstringStatusListEntryEntity, IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -162,7 +162,12 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
         ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
-        ...(details.type === StatusListType.BitstringStatusList ? { statusPurpose: details.bitstringStatusList?.statusPurpose } : {}),
+        ...(details.type === StatusListType.BitstringStatusList
+          ? {
+              statusPurpose: details.bitstringStatusList?.statusPurpose,
+              bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
+            }
+          : {}),
         type,
         id: details.id,
         statusListIndex: resultStatusIndex,
@@ -224,6 +229,12 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
         ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
+        ...(details.type === StatusListType.BitstringStatusList
+          ? {
+              statusPurpose: details.bitstringStatusList?.statusPurpose,
+              bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
+            }
+          : {}),
         type,
         id: details.id,
         statusListIndex,
@@ -270,7 +281,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
       let statusListResult: StatusListResult = await driver.getStatusList()
 
       // Get status list entry based on request type
-      let statusListEntry: IStatusListEntryEntity | undefined
+      let statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity | undefined
       if ('credentialId' in updateRequest) {
         if (!updateRequest.credentialId) {
           return sendErrorResponse(response, 400, 'No credentialId supplied')
@@ -316,7 +327,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           value = `${parseInt(updateItem.status)}`
         }
 
-        const updStatusListId = statusListId ?? statusListEntry.statusList?.id ?? statusListEntry?.statusListId // When input was statusListCorrelationId the statusList id should come from statusListEntry
+        const updStatusListId = statusListId ?? ('statusList' in statusListEntry && statusListEntry.statusList?.id) ?? statusListEntry?.statusListId // When input was statusListCorrelationId the statusList id should come from statusListEntry
         if (!updStatusListId) {
           return sendErrorResponse(response, 400, 'statuslist id could not be determined')
         }
@@ -327,13 +338,16 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           {
             statusListCredential: statusListCredential,
             statusListIndex: statusListEntry.statusListIndex,
-            bitsPerStatus: statusListEntry.bitsPerStatus,
+            ...('bitsPerStatus' in statusListEntry &&
+              typeof statusListEntry.bitsPerStatus === 'number' && { bitsPerStatus: statusListEntry.bitsPerStatus }),
             value: parseInt(value),
             keyRef: opts.keyRef,
           },
           context,
         )
-        statusListResult = await driver.updateStatusList({ statusListCredential: statusListResult.statusListCredential })
+        statusListResult = await driver.updateStatusList({
+          statusListCredential: statusListResult.statusListCredential,
+        })
       }
 
       return sendStatuslistResponse(statusListResult, statusListResult.statusListCredential, response)

@@ -10,7 +10,7 @@ import {
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
-import { BitstringStatusPurpose } from './bitstringTypes'
+import { BitstringStatus, BitstringStatusPurpose } from './bitstringTypes'
 
 export interface IStatusListEntity {
   id: string
@@ -43,6 +43,18 @@ export interface IBitstringStatusListEntity extends IStatusListEntity {
   ttl?: number
 }
 
+export interface IBitstringStatusListEntryEntity {
+  statusListId: string
+  statusListIndex: number
+  credentialId?: string
+  credentialHash?: string
+  entryCorrelationId?: string
+  statusPurpose: string
+  bitsPerStatus?: number
+  statusMessage?: Array<BitstringStatus>
+  statusReference?: string | string[]
+}
+
 export type IStatusListEntryEntity = RequireOneOf<
   {
     statusList: StatusListEntity
@@ -52,7 +64,6 @@ export type IStatusListEntryEntity = RequireOneOf<
     credentialHash?: string
     credentialId?: string
     correlationId?: string
-    bitsPerStatus?: number
   },
   'statusList' | 'statusListId'
 >

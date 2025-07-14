@@ -23,7 +23,7 @@ const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 async function getDriverAndStatusList(
   statusListId: string,
   opts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
-): Promise<{ slDriver: IStatusListDriver; statusList: Pick<StatusListResult, 'id' | 'correlationId'> }> {
+): Promise<{ slDriver: IStatusListDriver; statusList: Pick<StatusListResult, 'id' | 'correlationId' | 'type' | 'bitsPerStatus'> }> {
   const slDriver = opts?.driver ?? (await getDriver({ id: statusListId, dataSource: opts?.dataSource }))
   const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
   return { slDriver, statusList }
@@ -79,7 +79,7 @@ function getSdJwtStatusListOpts(credential: SdJwtVcPayload, opts?: IIssueCredent
  */
 async function processStatusListEntry(params: {
   statusListId: string
-  statusList: Pick<StatusListResult, 'id' | 'correlationId'>
+  statusList: Pick<StatusListResult, 'id' | 'correlationId' | 'type' | 'bitsPerStatus'>
   credentialId?: string
   currentIndex: number
   opts?: IIssueCredentialStatusOpts
@@ -132,6 +132,7 @@ async function processStatusListEntry(params: {
     statusListIndex,
     correlationId: params.statusEntryCorrelationId,
     value: params.opts?.value ?? '0',
+    ...(params.statusList.type === 'BitstringStatusList' && { bitsPerStatus: params.statusList.bitsPerStatus ?? 1 }),
   }
   if (params.credentialId) {
     updateArgs.credentialId = params.credentialId

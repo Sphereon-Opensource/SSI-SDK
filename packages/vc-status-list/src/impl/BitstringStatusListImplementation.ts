@@ -1,5 +1,6 @@
 import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+
 import {
   CredentialMapper,
   type CredentialProofFormat,
@@ -9,9 +10,10 @@ import {
   StatusListType,
 } from '@sphereon/ssi-types'
 
-import type { IStatusList } from './IStatusList'
+import type { IBitstringStatusListImplementationResult, IStatusList } from './IStatusList'
 import {
   BitstringStatus,
+  BitstringStatusListEntryCredentialStatus,
   CheckStatusIndexArgs,
   CreateStatusListArgs,
   StatusListResult,
@@ -23,6 +25,7 @@ import {
 import { assertValidProofType, ensureDate, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 import { BitstringStatusListCredential } from '../types/BitstringStatusList'
 import { BitstreamStatusList, BitstringStatusPurpose, createStatusListCredential } from '@4sure-tech/vc-bitstring-status-lists'
+import { BitstringStatusListEntity, IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
 
 export const DEFAULT_LIST_LENGTH = 131072 // W3C spec minimum
 export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
@@ -215,7 +218,7 @@ export class BitstringStatusListImplementation implements IStatusList {
     return statusList.getStatus(numIndex)
   }
 
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
+  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult & IBitstringStatusListImplementationResult> {
     const { statusListPayload, bitsPerStatus } = args
     if (!bitsPerStatus || bitsPerStatus < 1) {
       return Promise.reject('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (toStatusListDetails)')
@@ -234,6 +237,7 @@ export class BitstringStatusListImplementation implements IStatusList {
     const statuslistLength: number = BitstreamStatusList.getStatusListLength(encodedList, bitsPerStatus)
 
     return {
+      // Base implementation fields
       id,
       encodedList,
       issuer,
@@ -242,16 +246,58 @@ export class BitstringStatusListImplementation implements IStatusList {
       length: statuslistLength,
       statusListCredential: statusListPayload,
       statuslistContentType: this.buildContentType(proofFormat),
+      correlationId: args.correlationId, // FIXME these do not need to be inside the impl
+      driverType: args.driverType, // FIXME these do not need to be inside the impl
+
+      // Flattened Bitstring-specific fields
+      statusPurpose,
+      bitsPerStatus,
+      ...(validFrom && { validFrom }),
+      ...(validUntil && { validUntil }),
+      ...(ttl && { ttl }),
+
+      // Legacy nested structure for backward compatibility
       bitstringStatusList: {
         statusPurpose,
         bitsPerStatus,
-        validFrom,
-        validUntil,
-        ttl,
+        ...(validFrom && { validFrom }),
+        ...(validUntil && { validUntil }),
+        ...(ttl && { ttl }),
       },
+
+      // Optional fields from args
       ...(args.correlationId && { correlationId: args.correlationId }),
       ...(args.driverType && { driverType: args.driverType }),
     }
+  }
+
+  async createCredentialStatus(args: {
+    statusList: StatusListEntity
+    statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
+    statusListIndex: number
+  }): Promise<BitstringStatusListEntryCredentialStatus> {
+    const { statusList, statusListEntry, statusListIndex } = args
+
+    // Type guard to ensure we have a bitstring entry
+    const isBitstringEntry = (entry: IStatusListEntryEntity | IBitstringStatusListEntryEntity): entry is IBitstringStatusListEntryEntity => {
+      return 'statusPurpose' in entry
+    }
+
+    if (!isBitstringEntry(statusListEntry)) {
+      throw new Error('Expected bitstring status list entry for bitstring status list')
+    }
+
+    // Cast to BitstringStatusListEntity to access specific properties
+    const bitstringStatusList = statusList as BitstringStatusListEntity
+
+    return {
+      id: `${statusList.id}#${statusListIndex}`,
+      type: 'BitstringStatusListEntry',
+      statusPurpose: statusListEntry.statusPurpose,
+      statusListIndex: '' + statusListIndex,
+      statusListCredential: statusList.id,
+      bitsPerStatus: bitstringStatusList.bitsPerStatus,
+    } satisfies BitstringStatusListEntryCredentialStatus
   }
 
   private async createVerifiableCredential(
