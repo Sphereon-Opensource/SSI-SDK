@@ -1,31 +1,9 @@
-import { Validate } from 'class-validator'
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
-import { IsNonEmptyStringConstraint } from '../validators'
-import { BitstringStatusListEntity } from './StatusListEntities'
+import { ChildEntity, Column } from 'typeorm'
+import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 import { BitstringStatus } from '../../types/statusList/bitstringTypes'
 
-@Entity('BitstringStatusListEntry')
-export class BitstringStatusListEntryEntity extends BaseEntity {
-  @PrimaryColumn({ name: 'statusListId', type: 'varchar', nullable: false, unique: false })
-  @Validate(IsNonEmptyStringConstraint, { message: 'Status list id is required' })
-  statusListId!: string
-
-  @PrimaryColumn({ name: 'statusListIndex', type: 'integer', nullable: false, unique: false })
-  statusListIndex!: number
-
-  @ManyToOne(() => BitstringStatusListEntity, (statusList) => statusList.statusListEntries)
-  @JoinColumn({ name: 'statusListId' })
-  statusList!: BitstringStatusListEntity
-
-  @Column({ name: 'credentialId', type: 'text', nullable: true })
-  credentialId?: string
-
-  @Column({ name: 'credentialHash', length: 128, type: 'varchar', nullable: true, unique: false })
-  credentialHash?: string
-
-  @Column({ name: 'correlationId', length: 255, type: 'varchar', nullable: true, unique: false })
-  entryCorrelationId?: string
-
+@ChildEntity('bitstring')
+export class BitstringStatusListEntryEntity extends StatusListEntryEntity {
   @Column({ type: 'varchar', name: 'statusPurpose', nullable: false })
   statusPurpose!: string
 

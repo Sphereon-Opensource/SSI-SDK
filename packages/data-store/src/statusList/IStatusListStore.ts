@@ -12,6 +12,7 @@ import type {
   IUpdateStatusListIndexArgs,
 } from '../types'
 import { IStatusListEntity, IStatusListEntryEntity } from '../types'
+import { BitstringStatusListEntryEntity } from '../entities/statusList/BitstringStatusListEntryEntity'
 
 export interface IStatusListStore {
   getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity>
@@ -30,9 +31,11 @@ export interface IStatusListStore {
 
   updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity>
 
-  getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined>
+  getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | BitstringStatusListEntryEntity | undefined>
 
-  getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<StatusListEntryEntity | undefined>
+  getStatusListEntryByCredentialId(
+    args: IGetStatusListEntryByCredentialIdArgs,
+  ): Promise<StatusListEntryEntity | BitstringStatusListEntryEntity | undefined>
 
   removeStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<boolean>
 

@@ -277,6 +277,7 @@ describe('Status list store tests', () => {
       credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
       type: StatusListType.BitstringStatusList,
       proofFormat: 'lds',
+      bitsPerStatus: 1,
       statusPurpose: 'suspension',
       ttl: 3600000,
       issuer: 'did:example:789',

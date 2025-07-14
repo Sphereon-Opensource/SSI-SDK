@@ -243,6 +243,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
           statusPurpose: statusList.statusPurpose,
           statusListIndex: '' + statusListEntry.statusListIndex,
           statusListCredential: statusList.id,
+          bitsPerStatus: statusList.bitsPerStatus,
         } satisfies BitstringStatusListEntryCredentialStatus,
         statusListEntry,
       }

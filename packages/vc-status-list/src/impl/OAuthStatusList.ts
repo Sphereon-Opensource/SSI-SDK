@@ -58,7 +58,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
     const { statusListCredential, value, keyRef } = args
-    const expiresAt = ensureDate(oauthStatusList.expiresAt)
+    const expiresAt = ensureDate(args.expiresAt)
     if (typeof statusListCredential !== 'string') {
       return Promise.reject('statusListCredential in neither JWT nor CWT')
     }

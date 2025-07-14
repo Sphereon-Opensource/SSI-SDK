@@ -29,6 +29,13 @@ export abstract class StatusListEntity extends BaseEntity {
   @Column({ name: 'length', type: 'integer', nullable: false, unique: false })
   length!: number
 
+  @Column('simple-enum', {
+    name: 'type',
+    enum: StatusListType,
+    nullable: false,
+  })
+  type!: StatusListType
+
   @Column({
     name: 'issuer',
     type: 'text',

@@ -16,36 +16,35 @@ export class CreateBitstringStatusListPG1741895823000 implements MigrationInterf
       `ALTER TABLE "StatusList" ADD CONSTRAINT "CHK_StatusList_type" CHECK ("type" IN ('StatusList2021', 'OAuthStatusList', 'BitstringStatusList'))`,
     )
 
-    // Create BitstringStatusListEntry table
-    await queryRunner.query(`
-      CREATE TABLE "BitstringStatusListEntry" (
-        "statusListId" character varying NOT NULL,
-        "statusListIndex" integer NOT NULL,
-        "credentialId" text,
-        "credentialHash" character varying(128),
-        "correlationId" character varying(255),
-        "statusPurpose" character varying NOT NULL,
-        "bitsPerStatus" integer DEFAULT 1,
-        "statusMessage" text,
-        "statusReference" text,
-        CONSTRAINT "PK_BitstringStatusListEntry" PRIMARY KEY ("statusListId", "statusListIndex")
-      )
-    `)
+    // Add inheritance discriminator column to StatusListEntry table
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "type" character varying NOT NULL DEFAULT 'StatusListEntryEntity'`)
 
-    await queryRunner.query(`
-      ALTER TABLE "BitstringStatusListEntry" 
-      ADD CONSTRAINT "FK_BitstringStatusListEntry_statusListId" 
-      FOREIGN KEY ("statusListId") REFERENCES "StatusList"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-    `)
+    // Add BitstringStatusListEntry specific columns to StatusListEntry table
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusPurpose" character varying`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "bitsPerStatus" integer DEFAULT 1`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusMessage" text`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusReference" text`)
+
+    // Add constraint for entry type
+    await queryRunner.query(
+      `ALTER TABLE "StatusListEntry" ADD CONSTRAINT "CHK_StatusListEntry_type" CHECK ("type" IN ('StatusListEntryEntity', 'bitstring'))`,
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "BitstringStatusListEntry" DROP CONSTRAINT "FK_BitstringStatusListEntry_statusListId"`)
-    await queryRunner.query(`DROP TABLE "BitstringStatusListEntry"`)
+    // Remove entry type constraint and columns
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP CONSTRAINT "CHK_StatusListEntry_type"`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP COLUMN "statusReference"`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP COLUMN "statusMessage"`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP COLUMN "bitsPerStatus"`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP COLUMN "statusPurpose"`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" DROP COLUMN "type"`)
 
+    // Revert StatusList type constraint
     await queryRunner.query(`ALTER TABLE "StatusList" DROP CONSTRAINT "CHK_StatusList_type"`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD CONSTRAINT "CHK_StatusList_type" CHECK ("type" IN ('StatusList2021', 'OAuthStatusList'))`)
 
+    // Remove BitstringStatusList columns from StatusList table
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "validUntil"`)
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "validFrom"`)
     await queryRunner.query(`ALTER TABLE "StatusList" DROP COLUMN "ttl"`)

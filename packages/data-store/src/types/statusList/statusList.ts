@@ -52,6 +52,7 @@ export type IStatusListEntryEntity = RequireOneOf<
     credentialHash?: string
     credentialId?: string
     correlationId?: string
+    bitsPerStatus?: number
   },
   'statusList' | 'statusListId'
 >

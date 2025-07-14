@@ -316,7 +316,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           value = `${parseInt(updateItem.status)}`
         }
 
-        const updStatusListId = statusListId ?? statusListEntry.statusList?.id // When input was statusListCorrelationId the statusList id should come from statusListEntry
+        const updStatusListId = statusListId ?? statusListEntry.statusList?.id ?? statusListEntry?.statusListId // When input was statusListCorrelationId the statusList id should come from statusListEntry
         if (!updStatusListId) {
           return sendErrorResponse(response, 400, 'statuslist id could not be determined')
         }
@@ -327,6 +327,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           {
             statusListCredential: statusListCredential,
             statusListIndex: statusListEntry.statusListIndex,
+            bitsPerStatus: statusListEntry.bitsPerStatus,
             value: parseInt(value),
             keyRef: opts.keyRef,
           },

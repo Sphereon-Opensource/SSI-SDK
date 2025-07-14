@@ -43,26 +43,69 @@ export class CreateBitstringStatusListSqlite1741895823001 implements MigrationIn
     await queryRunner.query(`DROP TABLE "StatusList"`)
     await queryRunner.query(`ALTER TABLE "temporary_StatusList" RENAME TO "StatusList"`)
 
-    // Create BitstringStatusListEntry table
+    // Update StatusListEntry table with inheritance and bitstring columns
     await queryRunner.query(`
-      CREATE TABLE "BitstringStatusListEntry" (
+      CREATE TABLE "temporary_StatusListEntry" (
         "statusListId" varchar NOT NULL,
         "statusListIndex" integer NOT NULL,
         "credentialId" text,
         "credentialHash" varchar(128),
         "correlationId" varchar(255),
-        "statusPurpose" varchar NOT NULL,
+        "value" varchar(50),
+        "type" varchar CHECK( "type" IN ('StatusListEntryEntity', 'bitstring') ) NOT NULL DEFAULT ('StatusListEntryEntity'),
+        "statusPurpose" varchar,
         "bitsPerStatus" integer DEFAULT (1),
         "statusMessage" text,
         "statusReference" text,
         PRIMARY KEY ("statusListId", "statusListIndex")
       )
     `)
+
+    await queryRunner.query(`
+      INSERT INTO "temporary_StatusListEntry"(
+        "statusListId", "statusListIndex", "credentialId", "credentialHash", 
+        "correlationId", "value", "type"
+      )
+      SELECT 
+        "statusListId", "statusListIndex", "credentialId", "credentialHash",
+        "correlationId", "value", 'StatusListEntryEntity'
+      FROM "StatusListEntry"
+    `)
+
+    await queryRunner.query(`DROP TABLE "StatusListEntry"`)
+    await queryRunner.query(`ALTER TABLE "temporary_StatusListEntry" RENAME TO "StatusListEntry"`)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "BitstringStatusListEntry"`)
+    // Revert StatusListEntry table changes
+    await queryRunner.query(`
+      CREATE TABLE "temporary_StatusListEntry" (
+        "statusListId" varchar NOT NULL,
+        "statusListIndex" integer NOT NULL,
+        "credentialId" text,
+        "credentialHash" varchar(128),
+        "correlationId" varchar(255),
+        "value" varchar(50),
+        PRIMARY KEY ("statusListId", "statusListIndex")
+      )
+    `)
 
+    await queryRunner.query(`
+      INSERT INTO "temporary_StatusListEntry"(
+        "statusListId", "statusListIndex", "credentialId", "credentialHash",
+        "correlationId", "value"
+      )
+      SELECT 
+        "statusListId", "statusListIndex", "credentialId", "credentialHash",
+        "correlationId", "value"
+      FROM "StatusListEntry"
+      WHERE "type" = 'StatusListEntryEntity'
+    `)
+
+    await queryRunner.query(`DROP TABLE "StatusListEntry"`)
+    await queryRunner.query(`ALTER TABLE "temporary_StatusListEntry" RENAME TO "StatusListEntry"`)
+
+    // Revert StatusList table changes
     await queryRunner.query(`
       CREATE TABLE "temporary_StatusList" (
         "id" varchar PRIMARY KEY NOT NULL,
