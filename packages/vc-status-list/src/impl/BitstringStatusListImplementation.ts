@@ -20,7 +20,7 @@ import {
   UpdateStatusListIndexArgs,
 } from '../types'
 
-import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
+import { assertValidProofType, ensureDate, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 import { BitstringStatusListCredential } from '../types/BitstringStatusList'
 import { BitstreamStatusList, BitstringStatusPurpose, createStatusListCredential } from '@4sure-tech/vc-bitstring-status-lists'
 
@@ -50,8 +50,8 @@ export class BitstringStatusListImplementation implements IStatusList {
         ...args,
         proofFormat: veramoProofFormat,
         statusPurpose: statusPurpose ?? DEFAULT_STATUS_PURPOSE,
-        validFrom,
-        validUntil,
+        validFrom: ensureDate(validFrom),
+        validUntil: ensureDate(validUntil),
         ttl,
       },
       context,
@@ -170,8 +170,8 @@ export class BitstringStatusListImplementation implements IStatusList {
         proofFormat: veramoProofFormat,
         keyRef: args.keyRef,
         statusPurpose,
-        validFrom,
-        validUntil,
+        validFrom: ensureDate(validFrom),
+        validUntil: ensureDate(validUntil),
         ttl,
       },
       context,

@@ -1,5 +1,5 @@
 import type { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
-import { type CompactJWT, type CWT, type CredentialProofFormat, StatusListType } from '@sphereon/ssi-types'
+import { type CompactJWT, type CredentialProofFormat, type CWT, StatusListType } from '@sphereon/ssi-types'
 import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
@@ -10,7 +10,7 @@ import type {
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-import { determineProofFormat, getAssertedValue, getAssertedValues } from '../utils'
+import { determineProofFormat, ensureDate, getAssertedValue, getAssertedValues } from '../utils'
 import type { IStatusList } from './IStatusList'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 import type { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -32,7 +32,8 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     const { issuer, id, oauthStatusList, keyRef } = args
-    const { bitsPerStatus, expiresAt } = oauthStatusList
+    const { bitsPerStatus } = oauthStatusList
+    const expiresAt = ensureDate(oauthStatusList.expiresAt)
     const length = args.length ?? DEFAULT_LIST_LENGTH
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
@@ -56,7 +57,8 @@ export class OAuthStatusListImplementation implements IStatusList {
   }
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
-    const { statusListCredential, value, expiresAt, keyRef } = args
+    const { statusListCredential, value, keyRef } = args
+    const expiresAt = ensureDate(oauthStatusList.expiresAt)
     if (typeof statusListCredential !== 'string') {
       return Promise.reject('statusListCredential in neither JWT nor CWT')
     }
@@ -106,7 +108,8 @@ export class OAuthStatusListImplementation implements IStatusList {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
     }
     const { proofFormat, oauthStatusList, keyRef } = args
-    const { bitsPerStatus, expiresAt } = oauthStatusList
+    const { bitsPerStatus } = oauthStatusList
+    const expiresAt = ensureDate(oauthStatusList.expiresAt)
 
     const { issuer, id } = getAssertedValues(args)
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id

@@ -94,3 +94,35 @@ export function determineProofFormat(credential: StatusListCredential): Credenti
       throw Error('Cannot determine credential payload type')
   }
 }
+
+/**
+ * Ensures a value is converted to a Date object if it's a valid date string,
+ * otherwise returns the original value or undefined
+ *
+ * @param value - The value to convert to Date (can be Date, string, or undefined)
+ * @returns Date object, undefined, or the original value if conversion fails
+ */
+export function ensureDate(value: Date | string | undefined): Date | undefined {
+  if (value === undefined || value === null) {
+    return undefined
+  }
+
+  if (value instanceof Date) {
+    return value
+  }
+
+  if (typeof value === 'string') {
+    if (value.trim() === '') {
+      return undefined
+    }
+
+    const date = new Date(value)
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return undefined
+    }
+    return date
+  }
+
+  return undefined
+}
