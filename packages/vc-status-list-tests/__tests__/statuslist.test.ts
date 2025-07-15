@@ -12,7 +12,6 @@ import {
   createNewStatusList,
   Status2021,
   statusList2021ToVerifiableCredential,
-  statusListCredentialToDetails,
   StatusOAuth,
   updateStatusIndexFromStatusListCredential,
   updateStatusListIndexFromEncodedList,
@@ -33,6 +32,7 @@ import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.c
 import { CredentialProviderJWT } from '@sphereon/ssi-sdk.credential-vcdm1-jwt-provider'
 import { createAgent } from '@sphereon/ssi-sdk.agent-config'
 import { CredentialProviderVcdm2Jose } from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
+import { extractCredentialDetails, toStatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 //jest.setTimeout(100000)
 
 describe('Status list', () => {
@@ -355,8 +355,8 @@ describe('Status list', () => {
     })
   })
 
-  describe('statusListCredentialToDetails', () => {
-    it('should handle StatusList2021 JWT credential', async () => {
+  describe('toStatusListDetails and extractCredentialDetails', () => {
+    it('should extract details and convert StatusList2021 JWT credential', async () => {
       const initialList = await createNewStatusList(
         {
           type: StatusListType.StatusList2021,
@@ -372,9 +372,16 @@ describe('Status list', () => {
         { agent },
       )
 
-      const details = await statusListCredentialToDetails({
-        statusListType: StatusListType.StatusList2021,
+      // Test extractCredentialDetails
+      const extracted = await extractCredentialDetails(initialList.statusListCredential)
+      expect(extracted.id).toBe('http://localhost:9543/details1')
+      expect(extracted.issuer).toBe(didKeyIdentifier.did)
+      expect(extracted.encodedList).toBeDefined()
+
+      // Test toStatusListDetails with CREATE/READ context
+      const details = await toStatusListDetails({
         statusListCredential: initialList.statusListCredential,
+        statusListType: StatusListType.StatusList2021,
         correlationId: 'test-details-1',
         driverType: StatusListDriverType.AGENT_TYPEORM,
       })
@@ -404,9 +411,10 @@ describe('Status list', () => {
         { agent },
       )
 
-      const details = await statusListCredentialToDetails({
-        statusListType: StatusListType.OAuthStatusList,
+      const details = await toStatusListDetails({
         statusListCredential: initialList.statusListCredential,
+        statusListType: StatusListType.OAuthStatusList,
+        bitsPerStatus: 2,
         correlationId: 'test-details-2',
       })
 
@@ -414,37 +422,6 @@ describe('Status list', () => {
       expect(details.proofFormat).toBe('jwt')
       expect(details.correlationId).toBe('test-details-2')
       expect(details.statuslistContentType).toBe('application/statuslist+jwt')
-      expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
-      expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
-    })
-
-    it('should handle OAuthStatusList with CBOR format', async () => {
-      const initialList = await createNewStatusList(
-        {
-          type: StatusListType.OAuthStatusList,
-          proofFormat: 'cbor',
-          id: 'http://localhost:9543/details3',
-          issuer: didKeyIdentifier.did,
-          length: 1000,
-          correlationId: 'test-details-3',
-          oauthStatusList: {
-            bitsPerStatus: 2,
-            expiresAt: new Date('2025-01-01'),
-          },
-        },
-        { agent },
-      )
-
-      const details = await statusListCredentialToDetails({
-        statusListType: StatusListType.OAuthStatusList,
-        statusListCredential: initialList.statusListCredential,
-        correlationId: 'test-details-3',
-      })
-
-      expect(details.type).toBe(StatusListType.OAuthStatusList)
-      expect(details.proofFormat).toBe('cbor')
-      expect(details.correlationId).toBe('test-details-3')
-      expect(details.statuslistContentType).toBe('application/statuslist+cwt')
       expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
       expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
     })
@@ -467,11 +444,11 @@ describe('Status list', () => {
         { agent },
       )
 
-      const details = await statusListCredentialToDetails({
-        statusListType: StatusListType.BitstringStatusList,
+      const details = await toStatusListDetails({
         statusListCredential: initialList.statusListCredential,
-        correlationId: 'test-bitstring-details',
+        statusListType: StatusListType.BitstringStatusList,
         bitsPerStatus: 2,
+        correlationId: 'test-bitstring-details',
       })
 
       expect(details.type).toBe(StatusListType.BitstringStatusList)

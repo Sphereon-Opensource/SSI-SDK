@@ -10,12 +10,13 @@ import {
 } from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
-import type { IStatusList, IStatusList2021ImplementationResult } from './IStatusList'
+import type { IExtractedCredentialDetails, IStatusList, IStatusList2021ImplementationResult } from './IStatusList'
 import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
+  IMergeDetailsWithEntityArgs,
+  IToDetailsFromCredentialArgs,
   StatusListResult,
-  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
@@ -171,44 +172,82 @@ export class StatusList2021Implementation implements IStatusList {
     return status ? Status2021.Invalid : Status2021.Valid
   }
 
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult & IStatusList2021ImplementationResult> {
-    const { statusListPayload } = args
-    const uniform = CredentialMapper.toUniformCredential(statusListPayload)
+  async extractCredentialDetails(credential: StatusListCredential): Promise<IExtractedCredentialDetails> {
+    const uniform = CredentialMapper.toUniformCredential(credential)
     const { issuer, credentialSubject } = uniform
-    const id = getAssertedValue('id', uniform.id)
-    const encodedList = getAssertedProperty('encodedList', credentialSubject)
-    const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
-
-    const statusPurpose = getAssertedProperty('statusPurpose', credentialSubject)
-    const indexingDirection = 'rightToLeft'
-    const list = await StatusList.decode({ encodedList })
+    const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
 
     return {
-      // Base implementation fields
-      id,
-      encodedList,
+      id: getAssertedValue('id', uniform.id),
       issuer,
-      type: StatusListType.StatusList2021,
-      proofFormat,
-      length: list.length,
-      statusListCredential: statusListPayload,
-      statuslistContentType: this.buildContentType(proofFormat),
-      correlationId: args.correlationId, // FIXME these do not need to be inside the impl
-      driverType: args.driverType, // FIXME these do not need to be inside the impl
+      encodedList: getAssertedProperty('encodedList', subject),
+    }
+  }
 
-      // Flattened StatusList2021-specific fields
-      indexingDirection,
-      statusPurpose,
+  async toStatusListDetails(args: IToDetailsFromCredentialArgs): Promise<StatusListResult & IStatusList2021ImplementationResult>
+  // For UPDATE contexts
+  async toStatusListDetails(args: IMergeDetailsWithEntityArgs): Promise<StatusListResult & IStatusList2021ImplementationResult>
+  async toStatusListDetails(
+    args: IToDetailsFromCredentialArgs | IMergeDetailsWithEntityArgs,
+  ): Promise<StatusListResult & IStatusList2021ImplementationResult> {
+    if ('statusListCredential' in args) {
+      // CREATE/READ context
+      const { statusListCredential, correlationId, driverType } = args
+      const uniform = CredentialMapper.toUniformCredential(statusListCredential)
+      const { issuer, credentialSubject } = uniform
+      const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
 
-      // Legacy nested structure for backward compatibility
-      statusList2021: {
-        indexingDirection,
+      const id = getAssertedValue('id', uniform.id)
+      const encodedList = getAssertedProperty('encodedList', subject)
+      const statusPurpose = getAssertedProperty('statusPurpose', subject)
+      const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListCredential) === DocumentFormat.JWT ? 'jwt' : 'lds'
+      const list = await StatusList.decode({ encodedList })
+
+      return {
+        id,
+        encodedList,
+        issuer,
+        type: StatusListType.StatusList2021,
+        proofFormat,
+        length: list.length,
+        statusListCredential,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId,
+        driverType,
+        indexingDirection: 'rightToLeft',
         statusPurpose,
+        statusList2021: {
+          indexingDirection: 'rightToLeft',
+          statusPurpose,
+        },
+      }
+    } else {
+      // UPDATE context
+      const { extractedDetails, statusListEntity } = args
+      const statusList2021Entity = statusListEntity as StatusList2021Entity
 
-        // Optional fields from args
-        ...(args.correlationId && { correlationId: args.correlationId }),
-        ...(args.driverType && { driverType: args.driverType }),
-      },
+      const proofFormat: CredentialProofFormat =
+        CredentialMapper.detectDocumentType(statusListEntity.statusListCredential!) === DocumentFormat.JWT ? 'jwt' : 'lds'
+      const list = await StatusList.decode({ encodedList: extractedDetails.encodedList })
+
+      return {
+        id: extractedDetails.id,
+        encodedList: extractedDetails.encodedList,
+        issuer: extractedDetails.issuer,
+        type: StatusListType.StatusList2021,
+        proofFormat,
+        length: list.length,
+        statusListCredential: statusListEntity.statusListCredential!,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId: statusListEntity.correlationId,
+        driverType: statusListEntity.driverType,
+        indexingDirection: statusList2021Entity.indexingDirection,
+        statusPurpose: statusList2021Entity.statusPurpose,
+        statusList2021: {
+          indexingDirection: statusList2021Entity.indexingDirection,
+          statusPurpose: statusList2021Entity.statusPurpose,
+        },
+      }
     }
   }
 

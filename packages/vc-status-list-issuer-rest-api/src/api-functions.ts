@@ -182,7 +182,9 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       }
 
       response.statusCode = 200
-      return response.json({ ...entry, status })
+      const result = { ...entry, status }
+      delete result.statusList // we asked for the status, not the entire list
+      return response.json(result)
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }
@@ -248,7 +250,9 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
         }
       }
       response.statusCode = 200
-      return response.json({ ...entry, status })
+      const result = { ...entry, status }
+      delete result.statusList // we asked for the status, not the entire list
+      return response.json(result)
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }
@@ -332,20 +336,22 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           return sendErrorResponse(response, 400, 'statuslist id could not be determined')
         }
         await driver.updateStatusListEntry({ ...statusListEntry, statusListId: updStatusListId, value })
+        const bitsPerStatus =
+          'bitsPerStatus' in statusListEntry && typeof statusListEntry.bitsPerStatus === 'number' ? statusListEntry.bitsPerStatus : undefined
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
         statusListResult = await updateStatusIndexFromStatusListCredential(
           {
             statusListCredential: statusListCredential,
             statusListIndex: statusListEntry.statusListIndex,
-            ...('bitsPerStatus' in statusListEntry &&
-              typeof statusListEntry.bitsPerStatus === 'number' && { bitsPerStatus: statusListEntry.bitsPerStatus }),
+            ...(bitsPerStatus && { bitsPerStatus }),
             value: parseInt(value),
             keyRef: opts.keyRef,
           },
           context,
         )
         statusListResult = await driver.updateStatusList({
+          correlationId: statusListResult.correlationId!, // FIXME?
           statusListCredential: statusListResult.statusListCredential,
         })
       }

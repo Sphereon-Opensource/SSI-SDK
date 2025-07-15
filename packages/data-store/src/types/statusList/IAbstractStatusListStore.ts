@@ -1,5 +1,11 @@
 import { FindOptionsWhere } from 'typeorm'
-import { IBitstringStatusListEntryEntity, IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntryEntity } from './statusList'
+import {
+  BitstringStatusPurpose,
+  IBitstringStatusListEntryEntity,
+  IOAuthStatusListEntity,
+  IStatusList2021Entity,
+  IStatusListEntryEntity,
+} from './statusList'
 import {
   CredentialProofFormat,
   IIssuer,
@@ -10,7 +16,6 @@ import {
   StatusListType,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { BitstringStatusPurpose } from './bitstringTypes'
 
 export type FindStatusListArgs = FindOptionsWhere<IStatusList2021Entity | IOAuthStatusListEntity>[]
 export type FindStatusListEntryArgs = FindOptionsWhere<IStatusListEntryEntity>[] | FindOptionsWhere<IStatusListEntryEntity>

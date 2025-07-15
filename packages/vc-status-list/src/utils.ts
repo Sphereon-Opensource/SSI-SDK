@@ -53,31 +53,60 @@ export function assertValidProofType(type: StatusListType, proofFormat: Credenti
 
 export function determineStatusListType(credential: StatusListCredential): StatusListType {
   const proofFormat = determineProofFormat(credential)
+
   switch (proofFormat) {
     case 'jwt':
-      const payload: StatusListCredential = jwtDecode(credential as string)
-      const keys = Object.keys(payload)
-      if (keys.includes('status_list')) {
-        return StatusListType.OAuthStatusList
-      } else if (keys.includes('vc')) {
-        return StatusListType.StatusList2021
-      }
-      break
+      return determineJwtStatusListType(credential as string)
     case 'lds':
-      const uniform = CredentialMapper.toUniformCredential(credential)
-      const type = uniform.type.find((t) => {
-        return Object.values(StatusListType).some((statusType) => t.includes(statusType))
-      })
-      if (!type) {
-        throw new Error('Invalid status list credential type')
-      }
-      return type.replace('Credential', '') as StatusListType
-
+      return determineLdsStatusListType(credential)
     case 'cbor':
       return StatusListType.OAuthStatusList
+    default:
+      throw new Error('Cannot determine status list type from credential payload')
+  }
+}
+
+function determineJwtStatusListType(credential: string): StatusListType {
+  const payload: any = jwtDecode(credential)
+
+  // OAuth status list format
+  if ('status_list' in payload) {
+    return StatusListType.OAuthStatusList
   }
 
-  throw new Error('Cannot determine status list type from credential payload')
+  // Direct credential subject
+  if ('credentialSubject' in payload) {
+    return getStatusListTypeFromSubject(payload.credentialSubject)
+  }
+
+  // Wrapped VC format
+  if ('vc' in payload && 'credentialSubject' in payload.vc) {
+    return getStatusListTypeFromSubject(payload.vc.credentialSubject)
+  }
+
+  throw new Error('Invalid status list credential: credentialSubject not found')
+}
+
+function determineLdsStatusListType(credential: StatusListCredential): StatusListType {
+  const uniform = CredentialMapper.toUniformCredential(credential)
+  const statusListType = uniform.type.find((type) => Object.values(StatusListType).some((statusType) => type.includes(statusType)))
+
+  if (!statusListType) {
+    throw new Error('Invalid status list credential type')
+  }
+
+  return statusListType.replace('Credential', '') as StatusListType
+}
+
+function getStatusListTypeFromSubject(credentialSubject: any): StatusListType {
+  switch (credentialSubject.type) {
+    case 'StatusList2021':
+      return StatusListType.StatusList2021
+    case 'BitstringStatusList':
+      return StatusListType.BitstringStatusList
+    default:
+      throw new Error(`Unknown credential subject type: ${credentialSubject.type}`)
+  }
 }
 
 export function determineProofFormat(credential: StatusListCredential): CredentialProofFormat {

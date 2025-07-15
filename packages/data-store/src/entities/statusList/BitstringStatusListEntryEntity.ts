@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from 'typeorm'
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
-import { BitstringStatus } from '../../types/statusList/bitstringTypes'
+import { BitstringStatusMessage } from '../../types'
 
 @ChildEntity('bitstring')
 export class BitstringStatusListEntryEntity extends StatusListEntryEntity {
@@ -15,13 +15,13 @@ export class BitstringStatusListEntryEntity extends StatusListEntryEntity {
     name: 'statusMessage',
     nullable: true,
     transformer: {
-      from(value: string): Array<BitstringStatus> | undefined {
+      from(value: string): Array<BitstringStatusMessage> | undefined {
         if (!value) {
           return undefined
         }
         return JSON.parse(value)
       },
-      to(value: Array<BitstringStatus> | undefined): string | undefined {
+      to(value: Array<BitstringStatusMessage> | undefined): string | undefined {
         if (!value) {
           return undefined
         }
@@ -29,7 +29,7 @@ export class BitstringStatusListEntryEntity extends StatusListEntryEntity {
       },
     },
   })
-  statusMessage?: Array<BitstringStatus>
+  statusMessage?: Array<BitstringStatusMessage>
 
   @Column({
     type: 'text',

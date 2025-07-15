@@ -1,5 +1,6 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
+  BitstringStatusListEntryCredentialStatus,
   IAddStatusListEntryArgs,
   IGetStatusListEntryByCredentialIdArgs,
   IGetStatusListEntryByIndexArgs,
@@ -7,13 +8,12 @@ import {
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {
-  BitstringStatusListEntryCredentialStatus,
   IStatusListPlugin,
   StatusList2021EntryCredentialStatus,
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListCredential, StatusListDriverType } from '@sphereon/ssi-types'
+import { StatusListCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { DriverOptions } from './drivers'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
@@ -38,7 +38,12 @@ export interface IStatusListDriver {
 
   getStatusListLength(args?: { correlationId?: string }): Promise<number>
 
-  createStatusList(args: { statusListCredential: StatusListCredential; correlationId?: string; bitsPerStatus?: number }): Promise<StatusListResult>
+  createStatusList(args: {
+    statusListType: StatusListType
+    statusListCredential: StatusListCredential
+    correlationId?: string
+    bitsPerStatus?: number
+  }): Promise<StatusListResult>
 
   getStatusList(args?: { correlationId?: string }): Promise<StatusListResult>
 
@@ -53,7 +58,7 @@ export interface IStatusListDriver {
 
   getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<IStatusListEntryEntity | undefined>
 
-  updateStatusList(args: { statusListCredential: StatusListCredential }): Promise<StatusListResult>
+  updateStatusList(args: { statusListCredential: StatusListCredential; correlationId: string }): Promise<StatusListResult>
 
   deleteStatusList(): Promise<boolean>
 

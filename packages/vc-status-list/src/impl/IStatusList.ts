@@ -1,16 +1,15 @@
 import type { IAgentContext } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
-  BitstringStatus,
-  BitstringStatusListEntryCredentialStatus,
   CheckStatusIndexArgs,
   CreateStatusListArgs,
+  IMergeDetailsWithEntityArgs,
+  IToDetailsFromCredentialArgs,
   Status2021,
   StatusList2021EntryCredentialStatus,
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
   StatusOAuth,
-  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
@@ -24,8 +23,21 @@ import {
   StatusListType,
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import {
+  BitstringStatusListEntryCredentialStatus,
+  IBitstringStatusListEntryEntity,
+  IStatusListEntryEntity,
+  StatusListEntity,
+} from '@sphereon/ssi-sdk.data-store'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { DecodedStatusListPayload } from './encoding/common'
+
+export interface IExtractedCredentialDetails {
+  id: string
+  issuer: string | IIssuer
+  encodedList: string
+  decodedPayload?: DecodedStatusListPayload
+}
 
 export interface IStatusList {
   /**
@@ -52,13 +64,29 @@ export interface IStatusList {
   /**
    * Checks the status at a given index in the status list
    */
-  checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021 | StatusOAuth | BitstringStatus>
+  checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | Status2021 | StatusOAuth>
 
   /**
-   * Collects the status list details - returns flattened entity data ready for storage
+   * Performs the initial parsing of a StatusListCredential.
+   * This method handles expensive operations like JWT/CWT decoding once.
+   * It extracts all details available from the credential payload itself.
+   */
+  extractCredentialDetails(credential: StatusListCredential): Promise<IExtractedCredentialDetails>
+
+  /**
+   * Converts a credential and its known metadata into a full StatusListResult.
    */
   toStatusListDetails(
-    args: ToStatusListDetailsArgs,
+    args: IToDetailsFromCredentialArgs,
+  ): Promise<
+    StatusListResult & (IStatusList2021ImplementationResult | IOAuthStatusListImplementationResult | IBitstringStatusListImplementationResult)
+  >
+
+  /**
+   * Merges pre-parsed details from a new credential with an existing database entity.
+   */
+  toStatusListDetails(
+    args: IMergeDetailsWithEntityArgs,
   ): Promise<
     StatusListResult & (IStatusList2021ImplementationResult | IOAuthStatusListImplementationResult | IBitstringStatusListImplementationResult)
   >

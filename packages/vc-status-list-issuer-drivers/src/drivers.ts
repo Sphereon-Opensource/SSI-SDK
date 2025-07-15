@@ -1,22 +1,41 @@
+/**
+ * StatusList Driver Implementation for TypeORM/Agent Data Sources
+ *
+ * This module provides the database-backed implementation of the IStatusListDriver interface,
+ * handling persistence and retrieval of status list credentials and entries using TypeORM.
+ * It delegates status list format-specific operations to the functions layer while managing
+ * database interactions, driver configuration, and entity lifecycle.
+ *
+ * Key responsibilities:
+ * - Database connection and store management
+ * - Status list CRUD operations
+ * - Status list entry management
+ * - Random index generation for new entries
+ * - Integration with multiple data sources
+ *
+ * @author Sphereon International B.V.
+ * @since 2024
+ */
+
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import {
+  BitstringStatusListEntryCredentialStatus,
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
   IBitstringStatusListEntryEntity,
   IGetStatusListEntryByCredentialIdArgs,
   IGetStatusListEntryByIndexArgs,
-  IStatusListEntity,
   IStatusListEntryEntity,
   StatusListEntity,
   StatusListStore,
 } from '@sphereon/ssi-sdk.data-store'
 import {
-  BitstringStatusListEntryCredentialStatus,
   createCredentialStatusFromStatusList,
+  extractCredentialDetails,
   StatusList2021EntryCredentialStatus,
-  statusListCredentialToDetails,
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
+  toStatusListDetails,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListCredential, StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
@@ -70,6 +89,12 @@ export async function getDriver(args: {
   )
 }
 
+/**
+ * TypeORM-based implementation of the IStatusListDriver interface
+ *
+ * Manages status list credentials and entries using a TypeORM data source.
+ * Handles database operations while delegating format-specific logic to the functions layer.
+ */
 export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   private _statusListLength: number | undefined
 
@@ -144,12 +169,13 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     }
     const credentialIdMode = args.credentialIdMode ?? StatusListCredentialIdMode.ISSUANCE
 
-    // Get implementation details
-    const implementationResult = await statusListCredentialToDetails({
-      ...args,
+    // Convert credential to implementation details using CREATE/READ context
+    const implementationResult = await toStatusListDetails({
+      statusListCredential: args.statusListCredential,
+      statusListType: args.statusListType,
+      bitsPerStatus: args.bitsPerStatus,
       correlationId,
       driverType: this.getType(),
-      bitsPerStatus: args.bitsPerStatus,
     })
 
     // Add driver-specific fields to create complete entity
@@ -164,28 +190,25 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     this._statusListLength = implementationResult.length
     return implementationResult
   }
-  async updateStatusList(args: {
-    statusListCredential: StatusListCredential
-    correlationId: string
-    statusListType: StatusListType
-  }): Promise<StatusListResult> {
+
+  async updateStatusList(args: { statusListCredential: StatusListCredential; correlationId: string }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
-    const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
-    const entity = await (
-      await this.statusListStore.getStatusListRepo(args.statusListType)
-    ).findOne({
-      where: [
-        {
-          id: details.id,
-        },
-        {
-          correlationId,
-        },
-      ],
+
+    const extractedDetails = await extractCredentialDetails(args.statusListCredential)
+    const entity = await this.statusListStore.getStatusList({
+      id: extractedDetails.id,
+      correlationId,
     })
     if (!entity) {
-      throw Error(`Status list ${details.id}, correlationId ${args.correlationId} could not be found`)
+      throw Error(`Status list ${extractedDetails.id}, correlationId ${correlationId} could not be found`)
     }
+
+    entity.statusListCredential = args.statusListCredential
+
+    const details = await toStatusListDetails({
+      extractedDetails,
+      statusListEntity: entity,
+    })
 
     // Merge details with existing entity and driver properties
     const updateArgs = {
@@ -280,22 +303,29 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   async getStatusList(args?: { correlationId?: string }): Promise<StatusListResult> {
     const id = this.options.id
     const correlationId = args?.correlationId ?? this.options.correlationId
-    return await this.statusListStore.getStatusList({ id, correlationId }).then((statusListEntity: IStatusListEntity) =>
-      statusListCredentialToDetails({
-        statusListType: statusListEntity.type,
-        statusListCredential: statusListEntity.statusListCredential!,
-        bitsPerStatus: statusListEntity.bitsPerStatus,
-      }),
-    )
+
+    const statusListEntity = await this.statusListStore.getStatusList({ id, correlationId })
+
+    // Convert entity to result using CREATE/READ context
+    return await toStatusListDetails({
+      statusListCredential: statusListEntity.statusListCredential!,
+      statusListType: statusListEntity.type,
+      bitsPerStatus: statusListEntity.bitsPerStatus,
+      correlationId: statusListEntity.correlationId,
+      driverType: statusListEntity.driverType,
+    })
   }
 
   async getStatusLists(): Promise<Array<StatusListResult>> {
     const statusLists = await this.statusListStore.getStatusLists({})
     return Promise.all(
       statusLists.map(async (statusListEntity) => {
-        return statusListCredentialToDetails({
-          statusListType: statusListEntity.type,
+        return toStatusListDetails({
           statusListCredential: statusListEntity.statusListCredential!,
+          statusListType: statusListEntity.type,
+          bitsPerStatus: statusListEntity.bitsPerStatus,
+          correlationId: statusListEntity.correlationId,
+          driverType: statusListEntity.driverType,
         })
       }),
     )

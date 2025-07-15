@@ -168,6 +168,7 @@ export class StatusListPlugin implements IAgentPlugin {
       return Promise.reject(Error(`Status list with id  ${args.id} or correlation id ${args.correlationId} already exists`))
     } else {
       statusListDetails = await driver.createStatusList({
+        statusListType: sl.type,
         statusListCredential: sl.statusListCredential,
         correlationId: sl.correlationId,
         bitsPerStatus: this.selectBitsPerStatus(sl),

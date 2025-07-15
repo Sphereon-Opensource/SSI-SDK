@@ -1,5 +1,6 @@
 import {
   type CredentialProofFormat,
+  type ICredentialStatus,
   IIssuer,
   RequireOneOf,
   StatusListCredential,
@@ -10,7 +11,6 @@ import {
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
-import { BitstringStatus, BitstringStatusPurpose } from './bitstringTypes'
 
 export interface IStatusListEntity {
   id: string
@@ -43,18 +43,6 @@ export interface IBitstringStatusListEntity extends IStatusListEntity {
   ttl?: number
 }
 
-export interface IBitstringStatusListEntryEntity {
-  statusListId: string
-  statusListIndex: number
-  credentialId?: string
-  credentialHash?: string
-  entryCorrelationId?: string
-  statusPurpose: string
-  bitsPerStatus?: number
-  statusMessage?: Array<BitstringStatus>
-  statusReference?: string | string[]
-}
-
 export type IStatusListEntryEntity = RequireOneOf<
   {
     statusList: StatusListEntity
@@ -67,3 +55,41 @@ export type IStatusListEntryEntity = RequireOneOf<
   },
   'statusList' | 'statusListId'
 >
+
+export type BitstringStatusPurpose = 'revocation' | 'suspension' | 'refresh' | 'message' | string // From vc-bitstring-status-lists without pulling in the whole dep for just this one type
+
+export type BitstringStatusMessage = {
+  status: string
+  message?: string
+  [x: string]: any
+}
+
+export interface BitstringStatusListEntryCredentialStatus extends ICredentialStatus {
+  type: 'BitstringStatusListEntry'
+  statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+  statusListIndex: string
+  statusListCredential: string
+  bitsPerStatus?: number
+  statusMessage?: Array<BitstringStatusMessage>
+  statusReference?: string | string[]
+}
+
+export type BitstringStatusListArgs = {
+  statusPurpose: BitstringStatusPurpose
+  bitsPerStatus: number
+  ttl?: number
+  validFrom?: Date
+  validUntil?: Date
+}
+
+export interface IBitstringStatusListEntryEntity {
+  statusListId: string
+  statusListIndex: number
+  credentialId?: string
+  credentialHash?: string
+  entryCorrelationId?: string
+  statusPurpose: string
+  bitsPerStatus?: number
+  statusMessage?: Array<BitstringStatusMessage>
+  statusReference?: string | string[]
+}

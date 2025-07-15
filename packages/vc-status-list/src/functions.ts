@@ -1,24 +1,22 @@
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import {
-  CredentialMapper,
-  type CredentialProofFormat,
-  type StatusListCredential,
-  StatusListDriverType,
-  StatusListType,
-  type StatusPurpose2021,
-} from '@sphereon/ssi-types'
+import { CredentialMapper, type CredentialProofFormat, type StatusListCredential, StatusListType, type StatusPurpose2021 } from '@sphereon/ssi-types'
 import type { CredentialStatus, DIDDocument, IAgentContext, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
-import { IAddStatusListArgs, IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import {
+  BitstringStatusListEntryCredentialStatus,
+  IBitstringStatusListEntryEntity,
+  IStatusListEntryEntity,
+  StatusListEntity,
+} from '@sphereon/ssi-sdk.data-store'
 
 import { checkStatus } from '@sphereon/vc-status-list'
 
 // @ts-ignore
 import { CredentialJwtOrJSON, StatusMethod } from 'credential-status'
 import {
-  BitstringStatus,
-  BitstringStatusListEntryCredentialStatus,
   CreateNewStatusListFuncArgs,
+  IMergeDetailsWithEntityArgs,
+  IToDetailsFromCredentialArgs,
   Status2021,
   StatusList2021EntryCredentialStatus,
   StatusList2021ToVerifiableCredentialArgs,
@@ -31,6 +29,12 @@ import {
 import { assertValidProofType, determineStatusListType, getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import {
+  IBitstringStatusListImplementationResult,
+  IExtractedCredentialDetails,
+  IOAuthStatusListImplementationResult,
+  IStatusList2021ImplementationResult,
+} from './impl/IStatusList'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
@@ -142,7 +146,7 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
   type?: StatusListType | 'StatusList2021Entry'
   id?: string
   statusListIndex: string
-}): Promise<number | Status2021 | StatusOAuth | BitstringStatus> {
+}): Promise<number | Status2021 | StatusOAuth> {
   return checkStatusIndexFromStatusListCredential({
     ...args,
     statusListCredential: await fetchStatusListCredential(args),
@@ -156,7 +160,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
   id?: string
   statusListIndex: string | number
   bitsPerStatus?: number
-}): Promise<number | Status2021 | StatusOAuth | BitstringStatus> {
+}): Promise<number | Status2021 | StatusOAuth> {
   const statusListType: StatusListType = determineStatusListType(args.statusListCredential)
   const implementation = getStatusListImplementation(statusListType)
   return implementation.checkStatusIndex(args)
@@ -181,31 +185,36 @@ export async function updateStatusIndexFromStatusListCredential(
   return implementation.updateStatusListIndex(args, context)
 }
 
-export async function statusListCredentialToDetails({
-  statusListType,
-  correlationId,
-  driverType,
-  statusListCredential,
-  bitsPerStatus,
-}: {
-  statusListType: StatusListType
-  statusListCredential: StatusListCredential
-  correlationId?: string
-  driverType?: StatusListDriverType
-  bitsPerStatus?: number
-}): Promise<StatusListResult & Partial<IAddStatusListArgs>> {
-  const credential = getAssertedValue('statusListCredential', statusListCredential)
+export async function extractCredentialDetails(statusListCredential: StatusListCredential): Promise<IExtractedCredentialDetails> {
+  const statusListType = determineStatusListType(statusListCredential)
   const implementation = getStatusListImplementation(statusListType)
+  return implementation.extractCredentialDetails(statusListCredential)
+}
 
-  // The implementation should now return all the type-specific fields needed for the entity
-  const result = await implementation.toStatusListDetails({
-    statusListPayload: credential,
-    correlationId: correlationId,
-    driverType: driverType,
-    bitsPerStatus: bitsPerStatus,
-  })
+export async function toStatusListDetails(
+  args: IToDetailsFromCredentialArgs,
+): Promise<StatusListResult & (IStatusList2021ImplementationResult | IOAuthStatusListImplementationResult | IBitstringStatusListImplementationResult)>
 
-  return result
+export async function toStatusListDetails(
+  args: IMergeDetailsWithEntityArgs,
+): Promise<StatusListResult & (IStatusList2021ImplementationResult | IOAuthStatusListImplementationResult | IBitstringStatusListImplementationResult)>
+
+export async function toStatusListDetails(
+  args: IToDetailsFromCredentialArgs | IMergeDetailsWithEntityArgs,
+): Promise<
+  StatusListResult & (IStatusList2021ImplementationResult | IOAuthStatusListImplementationResult | IBitstringStatusListImplementationResult)
+> {
+  if ('statusListCredential' in args) {
+    // CREATE/READ context
+    const statusListType = args.statusListType
+    const implementation = getStatusListImplementation(statusListType)
+    return implementation.toStatusListDetails(args)
+  } else {
+    // UPDATE context
+    const statusListType = args.statusListEntity.type
+    const implementation = getStatusListImplementation(statusListType)
+    return implementation.toStatusListDetails(args)
+  }
 }
 
 export async function createCredentialStatusFromStatusList(args: {

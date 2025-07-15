@@ -28,14 +28,13 @@ import {
   StatusListType,
 } from '@sphereon/ssi-types'
 
-import type { IBitstringStatusListImplementationResult, IStatusList } from './IStatusList'
+import type { IBitstringStatusListImplementationResult, IExtractedCredentialDetails, IStatusList } from './IStatusList'
 import {
-  BitstringStatus,
-  BitstringStatusListEntryCredentialStatus,
   CheckStatusIndexArgs,
   CreateStatusListArgs,
+  IMergeDetailsWithEntityArgs,
+  IToDetailsFromCredentialArgs,
   StatusListResult,
-  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
@@ -48,11 +47,17 @@ import {
   BitstringStatusPurpose,
   createStatusListCredential,
 } from '@4sure-tech/vc-bitstring-status-lists'
-import { BitstringStatusListEntity, IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import {
+  BitstringStatusListEntity,
+  BitstringStatusListEntryCredentialStatus,
+  IBitstringStatusListEntryEntity,
+  IStatusListEntryEntity,
+  StatusListEntity,
+} from '@sphereon/ssi-sdk.data-store'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export const DEFAULT_LIST_LENGTH = 131072 // W3C spec minimum
-export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
+export const DEFAULT_PROOF_FORMAT = 'vc+jwt' as CredentialProofFormat
 export const DEFAULT_STATUS_PURPOSE: BitstringStatusPurpose = 'revocation'
 
 /**
@@ -148,9 +153,10 @@ export class BitstringStatusListImplementation implements IStatusList {
 
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     const statusList: BitstreamStatusList = await BitstreamStatusList.decode({ encodedList: origEncodedList, statusSize: args.bitsPerStatus })
-    statusList.setStatus(index, args.value)
+    const bitstringStatusId = args.value as number
+    statusList.setStatus(index, bitstringStatusId)
 
-    const proofFormat = CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'jwt' : 'lds'
+    const proofFormat = CredentialMapper.detectDocumentType(credential) === DocumentFormat.JWT ? 'vc+jwt' : 'lds'
 
     const credSubject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
 
@@ -275,7 +281,7 @@ export class BitstringStatusListImplementation implements IStatusList {
    * @param args - Check parameters including the status list credential and index
    * @returns Promise resolving to the status value at the specified index
    */
-  async checkStatusIndex(args: CheckStatusIndexArgs): Promise<BitstringStatus> {
+  async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number> {
     if (!args.bitsPerStatus || args.bitsPerStatus < 1) {
       return Promise.reject(Error('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (checkStatusIndex)'))
     }
@@ -292,62 +298,111 @@ export class BitstringStatusListImplementation implements IStatusList {
     return statusList.getStatus(numIndex)
   }
 
+  async extractCredentialDetails(credential: StatusListCredential): Promise<IExtractedCredentialDetails> {
+    const uniform = CredentialMapper.toUniformCredential(credential)
+    const { issuer, credentialSubject } = uniform
+    const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
+
+    return {
+      id: getAssertedValue('id', uniform.id),
+      issuer,
+      encodedList: getAssertedProperty('encodedList', subject),
+    }
+  }
+
   /**
    * Converts a status list credential payload to detailed status list information
    *
    * @param args - Conversion parameters including the status list payload
    * @returns Promise resolving to detailed status list information
    */
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult & IBitstringStatusListImplementationResult> {
-    const { statusListPayload, bitsPerStatus } = args
-    if (!bitsPerStatus || bitsPerStatus < 1) {
-      return Promise.reject(Error('bitsPerStatus must be set for bitstring status lists and must be 1 or higher. (toStatusListDetails)'))
-    }
+  // For CREATE and READ contexts
+  async toStatusListDetails(args: IToDetailsFromCredentialArgs): Promise<StatusListResult & IBitstringStatusListImplementationResult>
+  // For UPDATE contexts
+  async toStatusListDetails(args: IMergeDetailsWithEntityArgs): Promise<StatusListResult & IBitstringStatusListImplementationResult>
+  async toStatusListDetails(
+    args: IToDetailsFromCredentialArgs | IMergeDetailsWithEntityArgs,
+  ): Promise<StatusListResult & IBitstringStatusListImplementationResult> {
+    if ('statusListCredential' in args) {
+      // CREATE/READ context
+      const { statusListCredential, bitsPerStatus, correlationId, driverType } = args
+      if (!bitsPerStatus || bitsPerStatus < 1) {
+        return Promise.reject(Error('bitsPerStatus must be set for bitstring status lists and must be 1 or higher'))
+      }
 
-    const uniform = CredentialMapper.toUniformCredential(statusListPayload)
-    const { issuer, credentialSubject } = uniform
-    const id = getAssertedValue('id', uniform.id)
-    const encodedList = getAssertedProperty('encodedList', credentialSubject)
-    const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'vc+jwt' : 'lds'
-    const credSubject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
-    const statusPurpose = getAssertedProperty('statusPurpose', credSubject)
-    const validFrom = uniform.validFrom ? new Date(uniform.validFrom) : undefined
-    const validUntil = uniform.validUntil ? new Date(uniform.validUntil) : undefined
-    const ttl = credSubject.ttl
-    const statuslistLength: number = BitstreamStatusList.getStatusListLength(encodedList, bitsPerStatus)
+      const uniform = CredentialMapper.toUniformCredential(statusListCredential)
+      const { issuer, credentialSubject } = uniform
+      const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
 
-    return {
-      // Base implementation fields
-      id,
-      encodedList,
-      issuer,
-      type: StatusListType.BitstringStatusList,
-      proofFormat,
-      length: statuslistLength,
-      statusListCredential: statusListPayload,
-      statuslistContentType: this.buildContentType(proofFormat),
-      correlationId: args.correlationId, // FIXME these do not need to be inside the impl
-      driverType: args.driverType, // FIXME these do not need to be inside the impl
+      const id = getAssertedValue('id', uniform.id)
+      const encodedList = getAssertedProperty('encodedList', subject)
+      const statusPurpose = getAssertedProperty('statusPurpose', subject)
+      const validFrom = uniform.validFrom ? new Date(uniform.validFrom) : undefined
+      const validUntil = uniform.validUntil ? new Date(uniform.validUntil) : undefined
+      const ttl = subject.ttl
+      const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListCredential) === DocumentFormat.JWT ? 'vc+jwt' : 'lds'
+      const statuslistLength = BitstreamStatusList.getStatusListLength(encodedList, bitsPerStatus)
 
-      // Flattened Bitstring-specific fields
-      statusPurpose,
-      bitsPerStatus,
-      ...(validFrom && { validFrom }),
-      ...(validUntil && { validUntil }),
-      ...(ttl && { ttl }),
-
-      // Legacy nested structure for backward compatibility
-      bitstringStatusList: {
+      return {
+        id,
+        encodedList,
+        issuer,
+        type: StatusListType.BitstringStatusList,
+        proofFormat,
+        length: statuslistLength,
+        statusListCredential,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId,
+        driverType,
         statusPurpose,
         bitsPerStatus,
         ...(validFrom && { validFrom }),
         ...(validUntil && { validUntil }),
         ...(ttl && { ttl }),
-      },
+        bitstringStatusList: {
+          statusPurpose,
+          bitsPerStatus,
+          ...(validFrom && { validFrom }),
+          ...(validUntil && { validUntil }),
+          ...(ttl && { ttl }),
+        },
+      }
+    } else {
+      // UPDATE context
+      const { extractedDetails, statusListEntity } = args
+      const bitstringEntity = statusListEntity as BitstringStatusListEntity
+      if (!bitstringEntity.bitsPerStatus) {
+        return Promise.reject(Error('bitsPerStatus must be present for a bitstring status list'))
+      }
 
-      // Optional fields from args
-      ...(args.correlationId && { correlationId: args.correlationId }),
-      ...(args.driverType && { driverType: args.driverType }),
+      const proofFormat: CredentialProofFormat =
+        CredentialMapper.detectDocumentType(statusListEntity.statusListCredential!) === DocumentFormat.JWT ? 'vc+jwt' : 'lds'
+      const statuslistLength = BitstreamStatusList.getStatusListLength(extractedDetails.encodedList, bitstringEntity.bitsPerStatus)
+
+      return {
+        id: extractedDetails.id,
+        encodedList: extractedDetails.encodedList,
+        issuer: extractedDetails.issuer,
+        type: StatusListType.BitstringStatusList,
+        proofFormat,
+        length: statuslistLength,
+        statusListCredential: statusListEntity.statusListCredential!,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId: statusListEntity.correlationId,
+        driverType: statusListEntity.driverType,
+        statusPurpose: bitstringEntity.statusPurpose,
+        bitsPerStatus: bitstringEntity.bitsPerStatus,
+        ...(bitstringEntity.validFrom && { validFrom: bitstringEntity.validFrom }),
+        ...(bitstringEntity.validUntil && { validUntil: bitstringEntity.validUntil }),
+        ...(bitstringEntity.ttl && { ttl: bitstringEntity.ttl }),
+        bitstringStatusList: {
+          statusPurpose: bitstringEntity.statusPurpose,
+          bitsPerStatus: bitstringEntity.bitsPerStatus,
+          ...(bitstringEntity.validFrom && { validFrom: bitstringEntity.validFrom }),
+          ...(bitstringEntity.validUntil && { validUntil: bitstringEntity.validUntil }),
+          ...(bitstringEntity.ttl && { ttl: bitstringEntity.ttl }),
+        },
+      }
     }
   }
 
@@ -364,25 +419,17 @@ export class BitstringStatusListImplementation implements IStatusList {
   }): Promise<BitstringStatusListEntryCredentialStatus> {
     const { statusList, statusListEntry, statusListIndex } = args
 
-    // Type guard to ensure we have a bitstring entry
-    const isBitstringEntry = (entry: IStatusListEntryEntity | IBitstringStatusListEntryEntity): entry is IBitstringStatusListEntryEntity => {
-      return 'statusPurpose' in entry
-    }
-
-    if (!isBitstringEntry(statusListEntry)) {
-      throw new Error('Expected bitstring status list entry for bitstring status list')
-    }
-
-    // Cast to BitstringStatusListEntity to access specific properties
     const bitstringStatusList = statusList as BitstringStatusListEntity
-
+    const bitstringStatusListEntry = statusListEntry as IBitstringStatusListEntryEntity
     return {
       id: `${statusList.id}#${statusListIndex}`,
       type: 'BitstringStatusListEntry',
-      statusPurpose: statusListEntry.statusPurpose,
+      statusPurpose: bitstringStatusListEntry.statusPurpose,
       statusListIndex: '' + statusListIndex,
       statusListCredential: statusList.id,
       bitsPerStatus: bitstringStatusList.bitsPerStatus,
+      statusMessage: bitstringStatusListEntry.statusMessage,
+      statusReference: bitstringStatusListEntry.statusReference,
     } satisfies BitstringStatusListEntryCredentialStatus
   }
 
