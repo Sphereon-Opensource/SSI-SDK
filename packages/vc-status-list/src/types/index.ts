@@ -109,20 +109,6 @@ export interface StatusListResult {
   correlationId?: string
   driverType?: StatusListDriverType
 
-  // Flattened StatusList2021 fields
-  indexingDirection?: StatusListIndexingDirection
-  statusPurpose?: StatusPurpose2021 | BitstringStatusPurpose | BitstringStatusPurpose[]
-
-  // Flattened OAuth fields
-  bitsPerStatus?: number
-  expiresAt?: Date
-
-  // Flattened Bitstring fields
-  validFrom?: Date
-  validUntil?: Date
-  ttl?: number
-
-  // Legacy nested structures for backward compatibility
   statusList2021?: {
     indexingDirection: StatusListIndexingDirection
     statusPurpose: StatusPurpose2021
