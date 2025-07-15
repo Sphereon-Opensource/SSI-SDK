@@ -12,20 +12,13 @@ import {
   StatusListType,
   type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import type {
-  CredentialPayload,
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IKeyManager,
-  IPluginMethodMap,
-} from '@veramo/core'
+import type { CredentialPayload, IAgentContext, ICredentialIssuer, ICredentialVerifier, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { DataSource } from 'typeorm'
 import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import type { StatusListOpts } from '@sphereon/oid4vci-common'
 import { BitstringStatusPurpose } from '@4sure-tech/vc-bitstring-status-lists'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -309,5 +302,5 @@ export type SignedStatusListData = {
   encodedList: string
 }
 
-export type IRequiredPlugins = ICredentialPlugin & IIdentifierResolution
-export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager & ICredentialPlugin>
+export type IRequiredPlugins = IVcdmCredentialPlugin & IIdentifierResolution
+export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager & IVcdmCredentialPlugin>

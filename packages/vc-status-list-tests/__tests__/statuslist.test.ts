@@ -32,6 +32,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { CredentialProviderJWT } from '@sphereon/ssi-sdk.credential-vcdm1-jwt-provider'
 import { createAgent } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialProviderVcdm2Jose } from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
 //jest.setTimeout(100000)
 
 describe('Status list', () => {
@@ -44,6 +45,8 @@ describe('Status list', () => {
   })
 
   const jwt = new CredentialProviderJWT()
+  const jose = new CredentialProviderVcdm2Jose()
+
   // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = await createAgent({
@@ -68,7 +71,7 @@ describe('Status list', () => {
             ...getDidKeyResolver(),
           }),
         }),
-        new VcdmCredentialPlugin({ issuers: [jsonld, jwt] }),
+        new VcdmCredentialPlugin({ issuers: [jsonld, jwt, jose] }),
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })
@@ -370,6 +373,7 @@ describe('Status list', () => {
       )
 
       const details = await statusListCredentialToDetails({
+        statusListType: StatusListType.StatusList2021,
         statusListCredential: initialList.statusListCredential,
         correlationId: 'test-details-1',
         driverType: StatusListDriverType.AGENT_TYPEORM,
@@ -401,6 +405,7 @@ describe('Status list', () => {
       )
 
       const details = await statusListCredentialToDetails({
+        statusListType: StatusListType.OAuthStatusList,
         statusListCredential: initialList.statusListCredential,
         correlationId: 'test-details-2',
       })
@@ -431,6 +436,7 @@ describe('Status list', () => {
       )
 
       const details = await statusListCredentialToDetails({
+        statusListType: StatusListType.OAuthStatusList,
         statusListCredential: initialList.statusListCredential,
         correlationId: 'test-details-3',
       })
@@ -447,7 +453,7 @@ describe('Status list', () => {
       const initialList = await createNewStatusList(
         {
           type: StatusListType.BitstringStatusList,
-          proofFormat: 'lds',
+          proofFormat: 'vc+jwt',
           id: 'http://localhost:9543/bitstring-details',
           issuer: didKeyIdentifier.did,
           length: 131072,
@@ -462,15 +468,16 @@ describe('Status list', () => {
       )
 
       const details = await statusListCredentialToDetails({
+        statusListType: StatusListType.BitstringStatusList,
         statusListCredential: initialList.statusListCredential,
         correlationId: 'test-bitstring-details',
         bitsPerStatus: 2,
       })
 
       expect(details.type).toBe(StatusListType.BitstringStatusList)
-      expect(details.proofFormat).toBe('lds')
+      expect(details.proofFormat).toBe('vc+jwt')
       expect(details.correlationId).toBe('test-bitstring-details')
-      expect(details.statuslistContentType).toBe('application/statuslist+ld+json')
+      expect(details.statuslistContentType).toBe('application/statuslist+vc+jwt')
       expect(details.bitstringStatusList?.statusPurpose).toBe('suspension')
       expect(details.bitstringStatusList?.ttl).toBe(7200000)
     })
@@ -532,6 +539,7 @@ describe('Status list', () => {
           correlationId: 'test-bitstring-2-' + Date.now(),
           bitstringStatusList: {
             statusPurpose: 'message',
+            bitsPerStatus: 1,
           },
         },
         { agent },
@@ -554,6 +562,7 @@ describe('Status list', () => {
           correlationId: 'test-bitstring-3-' + Date.now(),
           bitstringStatusList: {
             statusPurpose: 'revocation',
+            bitsPerStatus: 1,
             validFrom: validUntil,
           },
         },
@@ -571,6 +580,7 @@ describe('Status list', () => {
           encodedList: initialList.encodedList,
           bitstringStatusList: {
             statusPurpose: 'revocation',
+            bitsPerStatus: 1,
             validFrom: validFrom,
             validUntil: validUntil,
           },

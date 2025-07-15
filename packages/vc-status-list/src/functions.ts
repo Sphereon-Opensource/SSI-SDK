@@ -2,13 +2,12 @@ import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-res
 import {
   CredentialMapper,
   type CredentialProofFormat,
-  DocumentFormat,
   type StatusListCredential,
   StatusListDriverType,
   StatusListType,
   type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import type { CredentialStatus, DIDDocument, IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { CredentialStatus, DIDDocument, IAgentContext, ProofFormat as VeramoProofFormat } from '@veramo/core'
 
 import { IAddStatusListArgs, IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
 
@@ -31,6 +30,7 @@ import {
 } from './types'
 import { assertValidProofType, determineStatusListType, getAssertedValue, getAssertedValues } from './utils'
 import { getStatusListImplementation } from './impl/StatusListFactory'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
@@ -164,7 +164,7 @@ export async function checkStatusIndexFromStatusListCredential(args: {
 
 export async function createNewStatusList(
   args: CreateNewStatusListFuncArgs,
-  context: IAgentContext<(ICredentialPlugin | any) /*IvcdMCredentialPlugin is not available*/ & IIdentifierResolution>,
+  context: IAgentContext<(IVcdmCredentialPlugin | any) /*IvcdMCredentialPlugin is not available*/ & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const { type } = getAssertedValues(args)
   const implementation = getStatusListImplementation(type)
@@ -173,7 +173,7 @@ export async function createNewStatusList(
 
 export async function updateStatusIndexFromStatusListCredential(
   args: UpdateStatusListIndexArgs,
-  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+  context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const credential = getAssertedValue('statusListCredential', args.statusListCredential)
   const statusListType: StatusListType = determineStatusListType(credential)
@@ -182,40 +182,19 @@ export async function updateStatusIndexFromStatusListCredential(
 }
 
 export async function statusListCredentialToDetails({
+  statusListType,
   correlationId,
   driverType,
   statusListCredential,
   bitsPerStatus,
 }: {
+  statusListType: StatusListType
   statusListCredential: StatusListCredential
   correlationId?: string
   driverType?: StatusListDriverType
   bitsPerStatus?: number
 }): Promise<StatusListResult & Partial<IAddStatusListArgs>> {
   const credential = getAssertedValue('statusListCredential', statusListCredential)
-
-  let statusListType: StatusListType | undefined
-  const documentFormat = CredentialMapper.detectDocumentType(credential)
-  if (documentFormat === DocumentFormat.JWT) {
-    const [header] = credential.split('.')
-    const decodedHeader = JSON.parse(Buffer.from(header, 'base64').toString())
-
-    if (decodedHeader.typ === 'statuslist+jwt') {
-      statusListType = StatusListType.OAuthStatusList
-    }
-  } else if (documentFormat === DocumentFormat.MSO_MDOC) {
-    statusListType = StatusListType.OAuthStatusList
-    // TODO check CBOR content?
-  }
-  if (!statusListType) {
-    const uniform = CredentialMapper.toUniformCredential(credential)
-    const type = uniform.type.find((t) => t.includes('StatusList2021') || t.includes('OAuth2StatusList') || t.includes('BitstringStatusList'))
-    if (!type) {
-      throw new Error('Invalid status list credential type')
-    }
-    statusListType = type.replace('Credential', '') as StatusListType
-  }
-
   const implementation = getStatusListImplementation(statusListType)
 
   // The implementation should now return all the type-specific fields needed for the entity
@@ -250,7 +229,7 @@ export async function createCredentialStatusFromStatusList(args: {
 
 export async function updateStatusListIndexFromEncodedList(
   args: UpdateStatusListFromEncodedListArgs,
-  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+  context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListResult> {
   const { type } = getAssertedValue('type', args)
   const implementation = getStatusListImplementation(type!)
@@ -259,7 +238,7 @@ export async function updateStatusListIndexFromEncodedList(
 
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
-  context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+  context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
 ): Promise<StatusListCredential> {
   const { issuer, id, type } = getAssertedValues(args)
   const identifier = await context.agent.identifierManagedGet({

@@ -1,4 +1,4 @@
-import type { IAgentContext, ICredentialPlugin } from '@veramo/core'
+import type { IAgentContext } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   BitstringStatus,
@@ -25,24 +25,28 @@ import {
   StatusPurpose2021,
 } from '@sphereon/ssi-types'
 import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export interface IStatusList {
   /**
    * Creates a new status list of the specific type
    */
-  createNewStatusList(args: CreateStatusListArgs, context: IAgentContext<ICredentialPlugin & IIdentifierResolution>): Promise<StatusListResult>
+  createNewStatusList(args: CreateStatusListArgs, context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>): Promise<StatusListResult>
 
   /**
    * Updates a status at the given index in the status list
    */
-  updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IAgentContext<ICredentialPlugin & IIdentifierResolution>): Promise<StatusListResult>
+  updateStatusListIndex(
+    args: UpdateStatusListIndexArgs,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
+  ): Promise<StatusListResult>
 
   /**
    * Updates a status list using a base64 encoded list of statuses
    */
   updateStatusListFromEncodedList(
     args: UpdateStatusListFromEncodedListArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult>
 
   /**

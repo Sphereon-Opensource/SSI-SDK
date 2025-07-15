@@ -2,7 +2,10 @@
   "references": [
     {
       "path": "../ssi-types"
-    }
+    },
+    {
+      "path": "../credential-vcdm"
+    },
   ],
   "extends": "../../tsconfig.base.json"
 }

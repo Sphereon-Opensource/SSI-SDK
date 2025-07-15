@@ -23,7 +23,7 @@
     },
     {
       "path": "../agent-config"
-    }
+    },
   ],
   "extends": "../../tsconfig.base.json"
 }

@@ -1,4 +1,4 @@
-import type { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
+import type { IAgentContext, IKeyManager } from '@veramo/core'
 import { type CompactJWT, type CredentialProofFormat, type CWT, StatusListType } from '@sphereon/ssi-types'
 import type {
   CheckStatusIndexArgs,
@@ -19,8 +19,9 @@ import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-res
 import { createSignedJwt, decodeStatusListJWT } from './encoding/jwt'
 import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
 import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, OAuthStatusListEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
-type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
+type IRequiredContext = IAgentContext<IVcdmCredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
 
 export const DEFAULT_BITS_PER_STATUS = 1 // 1 bit is sufficient for 0x00 - "VALID" 0x01 - "INVALID" saving space in the process
 export const DEFAULT_LIST_LENGTH = 250000
@@ -227,7 +228,7 @@ export class OAuthStatusListImplementation implements IStatusList {
 
   private async createSignedStatusList(
     proofFormat: CredentialProofFormat,
-    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>,
+    context: IAgentContext<IVcdmCredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>,
     statusList: StatusList,
     issuerString: string,
     id: string,

@@ -14,17 +14,9 @@ import {
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
 import { StatusListCredential, StatusListDriverType } from '@sphereon/ssi-types'
-import {
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IDataStoreORM,
-  IDIDManager,
-  IKeyManager,
-  IResolver,
-} from '@veramo/core'
+import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { DriverOptions } from './drivers'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export type IRequiredPlugins = IDataStoreORM &
   IDIDManager &
@@ -32,7 +24,7 @@ export type IRequiredPlugins = IDataStoreORM &
   IIdentifierResolution &
   ICredentialIssuer &
   ICredentialVerifier &
-  ICredentialPlugin &
+  IVcdmCredentialPlugin &
   IStatusListPlugin &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>

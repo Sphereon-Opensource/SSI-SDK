@@ -41,7 +41,7 @@ export function getAssertedProperty<T extends object>(propertyName: string, obj:
 const ValidProofTypeMap = new Map<StatusListType, CredentialProofFormat[]>([
   [StatusListType.StatusList2021, ['jwt', 'lds']],
   [StatusListType.OAuthStatusList, ['jwt', 'cbor']],
-  [StatusListType.BitstringStatusList, ['lds']],
+  [StatusListType.BitstringStatusList, ['lds', 'vc+jwt']],
 ])
 
 export function assertValidProofType(type: StatusListType, proofFormat: CredentialProofFormat) {

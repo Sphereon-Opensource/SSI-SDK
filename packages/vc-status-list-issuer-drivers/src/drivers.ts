@@ -132,6 +132,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   }
 
   async createStatusList(args: {
+    statusListType: StatusListType
     statusListCredential: StatusListCredential
     correlationId?: string
     credentialIdMode?: StatusListCredentialIdMode
@@ -166,12 +167,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   async updateStatusList(args: {
     statusListCredential: StatusListCredential
     correlationId: string
-    type: StatusListType
+    statusListType: StatusListType
   }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
     const details = await statusListCredentialToDetails({ ...args, correlationId, driverType: this.getType() })
     const entity = await (
-      await this.statusListStore.getStatusListRepo(args.type)
+      await this.statusListStore.getStatusListRepo(args.statusListType)
     ).findOne({
       where: [
         {
@@ -281,6 +282,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     const correlationId = args?.correlationId ?? this.options.correlationId
     return await this.statusListStore.getStatusList({ id, correlationId }).then((statusListEntity: IStatusListEntity) =>
       statusListCredentialToDetails({
+        statusListType: statusListEntity.type,
         statusListCredential: statusListEntity.statusListCredential!,
         bitsPerStatus: statusListEntity.bitsPerStatus,
       }),
@@ -292,6 +294,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return Promise.all(
       statusLists.map(async (statusListEntity) => {
         return statusListCredentialToDetails({
+          statusListType: statusListEntity.type,
           statusListCredential: statusListEntity.statusListCredential!,
         })
       }),

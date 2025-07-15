@@ -17,6 +17,8 @@
     },
     {
       "path": "../ssi-express-support"
+    },    {
+      "path": "../credential-vcdm"
     }
   ],
   "extends": "../../tsconfig.base.json"

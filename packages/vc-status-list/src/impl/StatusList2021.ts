@@ -1,4 +1,4 @@
-import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { IAgentContext, ProofFormat as VeramoProofFormat } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
@@ -22,6 +22,7 @@ import type {
 import { Status2021, StatusList2021EntryCredentialStatus } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
 import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusList2021Entity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
@@ -29,7 +30,7 @@ export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
 export class StatusList2021Implementation implements IStatusList {
   async createNewStatusList(
     args: CreateStatusListArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     const length = args?.length ?? DEFAULT_LIST_LENGTH
     const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
@@ -71,7 +72,7 @@ export class StatusList2021Implementation implements IStatusList {
 
   async updateStatusListIndex(
     args: UpdateStatusListIndexArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     const credential = args.statusListCredential
     const uniform = CredentialMapper.toUniformCredential(credential)
@@ -118,7 +119,7 @@ export class StatusList2021Implementation implements IStatusList {
 
   async updateStatusListFromEncodedList(
     args: UpdateStatusListFromEncodedListArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     if (!args.statusList2021) {
       throw new Error('statusList2021 options required for type StatusList2021')
@@ -238,7 +239,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat: VeramoProofFormat
       keyRef?: string
     },
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListCredential> {
     const identifier = await context.agent.identifierManagedGet({
       identifier: typeof args.issuer === 'string' ? args.issuer : args.issuer.id,

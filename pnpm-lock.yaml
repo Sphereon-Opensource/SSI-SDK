@@ -592,9 +592,6 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
-      '@sphereon/ssi-sdk.vc-status-list':
-        specifier: workspace:*
-        version: link:../vc-status-list
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -626,6 +623,9 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
     devDependencies:
+      '@sphereon/oid4vci-common':
+        specifier: 0.19.0
+        version: 0.19.0(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-key':
         specifier: 0.29.0
         version: 0.29.0(encoding@0.1.13)
@@ -656,6 +656,9 @@ importers:
       ethr-did-resolver:
         specifier: ^11.0.3
         version: 11.0.3
+      typeorm:
+        specifier: 0.3.20
+        version: 0.3.20(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -3603,6 +3606,9 @@ importers:
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: 0.29.0
         version: 0.29.0(encoding@0.1.13)(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3830,6 +3836,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -3882,6 +3891,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
@@ -4037,6 +4049,9 @@ importers:
       '@sphereon/ssi-sdk.credential-vcdm1-jwt-provider':
         specifier: workspace:*
         version: link:../credential-vcdm1-jwt-provider
+      '@sphereon/ssi-sdk.credential-vcdm2-jose-provider':
+        specifier: workspace:*
+        version: link:../credential-vcdm2-jose-provider
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -23544,7 +23559,7 @@ snapshots:
   jake@10.9.2:
     dependencies:
       async: 3.2.6
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.4
       minimatch: 3.1.2
 
@@ -23552,7 +23567,7 @@ snapshots:
 
   jest-diff@29.7.0:
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       diff-sequences: 29.6.3
       jest-get-type: 29.6.3
       pretty-format: 29.7.0
@@ -24899,7 +24914,7 @@ snapshots:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
 
   mute-stream@0.0.8: {}
 
@@ -25184,7 +25199,7 @@ snapshots:
       '@yarnpkg/parsers': 3.0.2
       '@zkochan/js-yaml': 0.0.7
       axios: 1.8.4
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
@@ -25369,7 +25384,7 @@ snapshots:
   ora@5.3.0:
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
