@@ -36,6 +36,11 @@ import {
   IStatusList2021ImplementationResult,
 } from './impl/IStatusList'
 
+/**
+ * Fetches a status list credential from a URL
+ * @param args - Object containing the status list credential URL
+ * @returns Promise resolving to the fetched StatusListCredential
+ */
 export async function fetchStatusListCredential(args: { statusListCredential: string }): Promise<StatusListCredential> {
   const url = getAssertedValue('statusListCredential', args.statusListCredential)
   try {
@@ -54,6 +59,11 @@ export async function fetchStatusListCredential(args: { statusListCredential: st
   }
 }
 
+/**
+ * Creates a status checking function for credential-status plugin
+ * @param args - Configuration options for status verification
+ * @returns StatusMethod function for checking credential status
+ */
 export function statusPluginStatusFunction(args: {
   documentLoader: any
   suite: any
@@ -79,7 +89,8 @@ export function statusPluginStatusFunction(args: {
 
 /**
  * Function that can be used together with @digitalbazar/vc and @digitialcredentials/vc
- * @param args
+ * @param args - Configuration options for status verification
+ * @returns Function for checking credential status
  */
 export function vcLibCheckStatusFunction(args: {
   mandatoryCredentialStatus?: boolean
@@ -106,6 +117,11 @@ export function vcLibCheckStatusFunction(args: {
   }
 }
 
+/**
+ * Checks the status of a credential using its credential status information
+ * @param args - Parameters for credential status verification
+ * @returns Promise resolving to verification result with error details if any
+ */
 export async function checkStatusForCredential(args: {
   credential: StatusListCredential
   documentLoader: any
@@ -153,6 +169,11 @@ export async function simpleCheckStatusFromStatusListUrl(args: {
   })
 }
 
+/**
+ * Checks the status at a specific index in a status list credential
+ * @param args - Parameters including credential and index to check
+ * @returns Promise resolving to status value at the specified index
+ */
 export async function checkStatusIndexFromStatusListCredential(args: {
   statusListCredential: StatusListCredential
   statusPurpose?: StatusPurpose2021 | string | string[]
@@ -175,6 +196,12 @@ export async function createNewStatusList(
   return implementation.createNewStatusList(args, context)
 }
 
+/**
+ * Updates a status index in a status list credential
+ * @param args - Parameters for status update including credential and new value
+ * @param context - Agent context with required plugins
+ * @returns Promise resolving to updated status list details
+ */
 export async function updateStatusIndexFromStatusListCredential(
   args: UpdateStatusListIndexArgs,
   context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
@@ -185,6 +212,11 @@ export async function updateStatusIndexFromStatusListCredential(
   return implementation.updateStatusListIndex(args, context)
 }
 
+/**
+ * Extracts credential details from a status list credential
+ * @param statusListCredential - The status list credential to extract from
+ * @returns Promise resolving to extracted credential details
+ */
 export async function extractCredentialDetails(statusListCredential: StatusListCredential): Promise<IExtractedCredentialDetails> {
   const statusListType = determineStatusListType(statusListCredential)
   const implementation = getStatusListImplementation(statusListType)
@@ -199,6 +231,12 @@ export async function toStatusListDetails(
   args: IMergeDetailsWithEntityArgs,
 ): Promise<StatusListResult & (IStatusList2021ImplementationResult | IOAuthStatusListImplementationResult | IBitstringStatusListImplementationResult)>
 
+/**
+ * Converts credential and metadata into detailed status list information
+ * Handles both CREATE/READ and UPDATE contexts based on input arguments
+ * @param args - Either credential-based args or entity-based args for merging
+ * @returns Promise resolving to complete status list details
+ */
 export async function toStatusListDetails(
   args: IToDetailsFromCredentialArgs | IMergeDetailsWithEntityArgs,
 ): Promise<
@@ -217,6 +255,11 @@ export async function toStatusListDetails(
   }
 }
 
+/**
+ * Creates a credential status object from status list and entry information
+ * @param args - Parameters including status list, entry, and index
+ * @returns Promise resolving to appropriate credential status type
+ */
 export async function createCredentialStatusFromStatusList(args: {
   statusList: StatusListEntity
   statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
@@ -236,6 +279,12 @@ export async function createCredentialStatusFromStatusList(args: {
   })
 }
 
+/**
+ * Updates a status list using a base64 encoded list of statuses
+ * @param args - Parameters including encoded list and update details
+ * @param context - Agent context with required plugins
+ * @returns Promise resolving to updated status list details
+ */
 export async function updateStatusListIndexFromEncodedList(
   args: UpdateStatusListFromEncodedListArgs,
   context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
@@ -245,6 +294,12 @@ export async function updateStatusListIndexFromEncodedList(
   return implementation.updateStatusListFromEncodedList(args, context)
 }
 
+/**
+ * Converts a StatusList2021 to a verifiable credential
+ * @param args - Parameters for credential creation including issuer and encoded list
+ * @param context - Agent context with required plugins
+ * @returns Promise resolving to signed status list credential
+ */
 export async function statusList2021ToVerifiableCredential(
   args: StatusList2021ToVerifiableCredentialArgs,
   context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,

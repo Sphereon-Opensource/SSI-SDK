@@ -165,6 +165,11 @@ export class OAuthStatusListImplementation implements IStatusList {
     return statusList.getStatus(index)
   }
 
+  /**
+   * Performs the initial parsing of a StatusListCredential.
+   * This method handles expensive operations like JWT/CWT decoding once.
+   * It extracts all details available from the credential payload itself.
+   */
   async extractCredentialDetails(credential: CompactJWT | CWT): Promise<IExtractedCredentialDetails> {
     if (typeof credential !== 'string') {
       return Promise.reject('statusListCredential must be a JWT or CWT string')

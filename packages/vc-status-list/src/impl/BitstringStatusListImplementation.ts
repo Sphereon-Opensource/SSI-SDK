@@ -298,6 +298,11 @@ export class BitstringStatusListImplementation implements IStatusList {
     return statusList.getStatus(numIndex)
   }
 
+  /**
+   * Performs the initial parsing of a StatusListCredential.
+   * This method handles expensive operations like JWT/CWT decoding once.
+   * It extracts all details available from the credential payload itself.
+   */
   async extractCredentialDetails(credential: StatusListCredential): Promise<IExtractedCredentialDetails> {
     const uniform = CredentialMapper.toUniformCredential(credential)
     const { issuer, credentialSubject } = uniform

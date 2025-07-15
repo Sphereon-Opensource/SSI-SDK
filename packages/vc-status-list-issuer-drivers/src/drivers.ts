@@ -42,6 +42,9 @@ import { DataSource } from 'typeorm'
 import { IStatusListDriver } from './types'
 import { statusListResultToEntity } from './status-list-adapters'
 
+/**
+ * Configuration options for status list management
+ */
 export interface StatusListManagementOptions {
   id?: string
   correlationId?: string
@@ -51,14 +54,25 @@ export interface StatusListManagementOptions {
 
 export type DriverOptions = TypeORMOptions
 
+/**
+ * TypeORM-specific configuration options
+ */
 export interface TypeORMOptions {
   dbName?: string
 }
 
+/**
+ * Filesystem-specific configuration options
+ */
 export interface FilesystemOptions {
   path: string // The base path where statusList Credentials will be persisted. Should be a folder and thus not include the VC/StatusList itself
 }
 
+/**
+ * Creates status list management options for TypeORM driver
+ * @param args - Configuration parameters including id, correlationId, and database name
+ * @returns StatusListManagementOptions configured for TypeORM
+ */
 export function getOptions(args: { id?: string; correlationId?: string; dbName: string }): StatusListManagementOptions {
   return {
     id: args.id,
@@ -68,6 +82,11 @@ export function getOptions(args: { id?: string; correlationId?: string; dbName: 
   }
 }
 
+/**
+ * Creates and initializes a status list driver instance
+ * @param args - Configuration parameters including database connection details
+ * @returns Promise resolving to initialized IStatusListDriver instance
+ */
 export async function getDriver(args: {
   id?: string
   correlationId?: string
@@ -98,12 +117,24 @@ export async function getDriver(args: {
 export class AgentDataSourceStatusListDriver implements IStatusListDriver {
   private _statusListLength: number | undefined
 
+  /**
+   * Creates a new AgentDataSourceStatusListDriver instance
+   * @param _dataSource - TypeORM DataSource for database operations
+   * @param _statusListStore - StatusListStore for data persistence
+   * @param options - Driver configuration options
+   */
   constructor(
     private _dataSource: DataSource,
     private _statusListStore: StatusListStore,
     private options: StatusListManagementOptions,
   ) {}
 
+  /**
+   * Initializes and creates a new AgentDataSourceStatusListDriver instance
+   * @param options - Status list management configuration
+   * @param dbArgs - Database connection arguments
+   * @returns Promise resolving to initialized driver instance
+   */
   public static async init(
     options: StatusListManagementOptions,
     dbArgs?: {
@@ -134,6 +165,10 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return new AgentDataSourceStatusListDriver(dataSource, statusListStore, options)
   }
 
+  /**
+   * Gets the TypeORM DataSource instance
+   * @returns DataSource instance for database operations
+   */
   get dataSource(): DataSource {
     if (!this._dataSource) {
       throw Error(`Datasource not available yet for ${this.options.driverOptions?.dbName}`)
@@ -141,6 +176,10 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return this._dataSource
   }
 
+  /**
+   * Gets the StatusListStore instance
+   * @returns StatusListStore for data persistence operations
+   */
   get statusListStore(): StatusListStore {
     if (!this._statusListStore) {
       this._statusListStore = new StatusListStore(this.dataSource)
@@ -148,14 +187,27 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return this._statusListStore
   }
 
+  /**
+   * Gets the driver configuration options
+   * @returns DriverOptions configuration
+   */
   getOptions(): DriverOptions {
     return this.options.driverOptions ?? {}
   }
 
+  /**
+   * Gets the driver type
+   * @returns StatusListDriverType enum value
+   */
   getType(): StatusListDriverType {
     return this.options.driverType
   }
 
+  /**
+   * Creates a new status list credential and stores it in the database
+   * @param args - Status list creation parameters
+   * @returns Promise resolving to StatusListResult
+   */
   async createStatusList(args: {
     statusListType: StatusListType
     statusListCredential: StatusListCredential
@@ -191,6 +243,11 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return implementationResult
   }
 
+  /**
+   * Updates an existing status list credential in the database
+   * @param args - Status list update parameters
+   * @returns Promise resolving to StatusListResult
+   */
   async updateStatusList(args: { statusListCredential: StatusListCredential; correlationId: string }): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
 
@@ -223,11 +280,20 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return { ...entity, ...details }
   }
 
+  /**
+   * Deletes the status list from the database
+   * @returns Promise resolving to boolean indicating success
+   */
   async deleteStatusList(): Promise<boolean> {
     await this.statusListStore.removeStatusList({ id: this.options.id, correlationId: this.options.correlationId })
     return Promise.resolve(true)
   }
 
+  /**
+   * Updates a status list entry and returns the credential status
+   * @param args - Status list entry update parameters
+   * @returns Promise resolving to credential status and entry
+   */
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<{
     credentialStatus: StatusList2021EntryCredentialStatus | StatusListOAuthEntryCredentialStatus | BitstringStatusListEntryCredentialStatus
     statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
@@ -251,18 +317,33 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     }
   }
 
+  /**
+   * Retrieves a status list entry by credential ID
+   * @param args - Query parameters including credential ID
+   * @returns Promise resolving to status list entry or undefined
+   */
   async getStatusListEntryByCredentialId(
     args: IGetStatusListEntryByCredentialIdArgs,
   ): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity | undefined> {
     return await this.statusListStore.getStatusListEntryByCredentialId(args)
   }
 
+  /**
+   * Retrieves a status list entry by index
+   * @param args - Query parameters including status list index
+   * @returns Promise resolving to status list entry or undefined
+   */
   async getStatusListEntryByIndex(
     args: IGetStatusListEntryByIndexArgs,
   ): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity | undefined> {
     return await this.statusListStore.getStatusListEntryByIndex(args)
   }
 
+  /**
+   * Generates a random available index for new status list entries
+   * @param args - Optional correlation ID parameter
+   * @returns Promise resolving to available index number
+   */
   async getRandomNewStatusListIndex(args?: { correlationId?: string }): Promise<number> {
     let result = -1
     let tries = 0
@@ -273,6 +354,12 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return result
   }
 
+  /**
+   * Implementation for generating random status list indices with retry logic
+   * @param tries - Number of attempts made
+   * @param args - Optional correlation ID parameter
+   * @returns Promise resolving to available index or -1 if none found
+   */
   private async getRandomNewStatusListIndexImpl(tries: number, args?: { correlationId?: string }): Promise<number> {
     const statusListId = this.options.id
     const correlationId = args?.correlationId ?? this.options.correlationId
@@ -293,6 +380,11 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return -1
   }
 
+  /**
+   * Gets the length of the status list
+   * @param args - Optional correlation ID parameter
+   * @returns Promise resolving to status list length
+   */
   async getStatusListLength(args?: { correlationId?: string }): Promise<number> {
     if (!this._statusListLength) {
       this._statusListLength = await this.getStatusList(args).then((details) => details.length)
@@ -300,6 +392,11 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     return this._statusListLength!
   }
 
+  /**
+   * Retrieves the status list details
+   * @param args - Optional correlation ID parameter
+   * @returns Promise resolving to StatusListResult
+   */
   async getStatusList(args?: { correlationId?: string }): Promise<StatusListResult> {
     const id = this.options.id
     const correlationId = args?.correlationId ?? this.options.correlationId
@@ -316,6 +413,10 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     })
   }
 
+  /**
+   * Retrieves all status lists
+   * @returns Promise resolving to array of StatusListResult
+   */
   async getStatusLists(): Promise<Array<StatusListResult>> {
     const statusLists = await this.statusListStore.getStatusLists({})
     return Promise.all(
@@ -331,6 +432,10 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
     )
   }
 
+  /**
+   * Checks if a status list index is currently in use
+   * @returns Promise resolving to boolean indicating usage status
+   */
   isStatusListIndexInUse(): Promise<boolean> {
     return Promise.resolve(false)
   }
