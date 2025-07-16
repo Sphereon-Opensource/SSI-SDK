@@ -56,9 +56,10 @@ export class LinkHandlers implements LinkHandler, LinkHandlerRegistry {
     }
     try {
       if (singleHandlerOnly === true) {
-        return await handlers[0].handle(url, otherOpts)
+        await handlers[0].handle(url, otherOpts)
+      } else {
+        await Promise.all(handlers.map((handler) => handler.handle(url, otherOpts)))
       }
-      handlers.map(async (handler) => await handler.handle(url, otherOpts))
     } catch (e) {
       console.log(`Linkhandler error: ${e.message}`, e)
       return Promise.reject(e)
