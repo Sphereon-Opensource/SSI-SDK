@@ -656,10 +656,10 @@ importers:
         version: 4.2.0
       ethr-did-resolver:
         specifier: ^11.0.3
-        version: 11.0.3
+        version: 11.0.4
       typeorm:
         specifier: 0.3.20
-        version: 0.3.20(pg@8.14.1)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.11.21(@swc/helpers@0.5.17))(@types/node@20.17.30)(typescript@5.8.3))
+        version: 0.3.20(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.12.11(@swc/helpers@0.5.17))(@types/node@20.19.6)(typescript@5.8.3))
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -6883,12 +6883,20 @@ packages:
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
 
+  '@sphereon/oid4vc-common@0.19.0':
+    resolution: {integrity: sha512-g5DYI9ctBGZX+TXOMDq5U/hlcE81WGlMlIYVAFpSfYTpXlsmlOgaak20kFKQU2Fen7RzqFvZyADmZ9l/zoj8bA==}
+    engines: {node: '>=20'}
+
   '@sphereon/oid4vc-common@0.19.1-next.2':
     resolution: {integrity: sha512-lPlEeMWyW7iBqxsaikcRXhSj8lRD+jzz5XgTdOxQvVXbny+cycroHisxfcAOIWy/IeRbaq8nFJW92jOn/FYo2w==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vci-client@0.19.1-next.2':
     resolution: {integrity: sha512-/D/MG1kULpByQ0GdJAioMEW5px2TbeboGnElfuET/DFmhn6jDZYkyVoCdj9njG5Ygm3eRKajPQbo5M71fF8FiA==}
+    engines: {node: '>=20'}
+
+  '@sphereon/oid4vci-common@0.19.0':
+    resolution: {integrity: sha512-2oIR5WMZuYGX2eN1jhLqosUVZka+4ocx7cIb12U5tH0zBPqvhSk1DQV0XmYVKpEGMS7Q/VHOIkQBBKmcyS4VlA==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vci-common@0.19.1-next.2':
@@ -9969,6 +9977,7 @@ packages:
 
   glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
@@ -9976,6 +9985,7 @@ packages:
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
@@ -17782,6 +17792,13 @@ snapshots:
       - encoding
       - typescript
 
+  '@sphereon/oid4vc-common@0.19.0':
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
+
   '@sphereon/oid4vc-common@0.19.1-next.2':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -17796,6 +17813,19 @@ snapshots:
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
       debug: 4.4.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@sphereon/oid4vci-common@0.19.0(encoding@0.1.13)':
+    dependencies:
+      '@sphereon/oid4vc-common': 0.19.0
+      '@sphereon/ssi-types': link:packages/ssi-types
+      cross-fetch: 4.1.0(encoding@0.1.13)
+      debug: 4.4.1
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -21167,7 +21197,7 @@ snapshots:
 
   dotenv-expand@11.0.7:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv-flow@3.3.0:
     dependencies:
