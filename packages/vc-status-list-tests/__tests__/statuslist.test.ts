@@ -12,7 +12,6 @@ import {
   createNewStatusList,
   Status2021,
   statusList2021ToVerifiableCredential,
-  statusListCredentialToDetails,
   StatusOAuth,
   updateStatusIndexFromStatusListCredential,
   updateStatusListIndexFromEncodedList,
@@ -32,6 +31,8 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { CredentialProviderJWT } from '@sphereon/ssi-sdk.credential-vcdm1-jwt-provider'
 import { createAgent } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialProviderVcdm2Jose } from '@sphereon/ssi-sdk.credential-vcdm2-jose-provider'
+import { extractCredentialDetails, toStatusListDetails } from '@sphereon/ssi-sdk.vc-status-list'
 //jest.setTimeout(100000)
 
 describe('Status list', () => {
@@ -44,6 +45,8 @@ describe('Status list', () => {
   })
 
   const jwt = new CredentialProviderJWT()
+  const jose = new CredentialProviderVcdm2Jose()
+
   // //jest.setTimeout(1000000)
   beforeAll(async () => {
     agent = await createAgent({
@@ -68,7 +71,7 @@ describe('Status list', () => {
             ...getDidKeyResolver(),
           }),
         }),
-        new VcdmCredentialPlugin({ issuers: [jsonld, jwt] }),
+        new VcdmCredentialPlugin({ issuers: [jsonld, jwt, jose] }),
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate({ options: { type: 'Ed25519' } })
@@ -243,7 +246,7 @@ describe('Status list', () => {
         {
           type: StatusListType.StatusList2021,
           statusListIndex: 1,
-          value: true,
+          value: 1,
           proofFormat: 'jwt',
           issuer: didKeyIdentifier.did,
           id: 'http://localhost:9543/encoded1',
@@ -281,7 +284,7 @@ describe('Status list', () => {
         {
           type: StatusListType.OAuthStatusList,
           statusListIndex: 1,
-          value: true,
+          value: 1,
           proofFormat: 'jwt',
           issuer: didKeyIdentifier.did,
           id: 'http://localhost:9543/encoded2',
@@ -352,8 +355,8 @@ describe('Status list', () => {
     })
   })
 
-  describe('statusListCredentialToDetails', () => {
-    it('should handle StatusList2021 JWT credential', async () => {
+  describe('toStatusListDetails and extractCredentialDetails', () => {
+    it('should extract details and convert StatusList2021 JWT credential', async () => {
       const initialList = await createNewStatusList(
         {
           type: StatusListType.StatusList2021,
@@ -369,8 +372,16 @@ describe('Status list', () => {
         { agent },
       )
 
-      const details = await statusListCredentialToDetails({
+      // Test extractCredentialDetails
+      const extracted = await extractCredentialDetails(initialList.statusListCredential)
+      expect(extracted.id).toBe('http://localhost:9543/details1')
+      expect(extracted.issuer).toBe(didKeyIdentifier.did)
+      expect(extracted.encodedList).toBeDefined()
+
+      // Test toStatusListDetails with CREATE/READ context
+      const details = await toStatusListDetails({
         statusListCredential: initialList.statusListCredential,
+        statusListType: StatusListType.StatusList2021,
         correlationId: 'test-details-1',
         driverType: StatusListDriverType.AGENT_TYPEORM,
       })
@@ -400,8 +411,10 @@ describe('Status list', () => {
         { agent },
       )
 
-      const details = await statusListCredentialToDetails({
+      const details = await toStatusListDetails({
         statusListCredential: initialList.statusListCredential,
+        statusListType: StatusListType.OAuthStatusList,
+        bitsPerStatus: 2,
         correlationId: 'test-details-2',
       })
 
@@ -413,34 +426,150 @@ describe('Status list', () => {
       expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
     })
 
-    it('should handle OAuthStatusList with CBOR format', async () => {
+    it('should handle BitstringStatusList credential', async () => {
       const initialList = await createNewStatusList(
         {
-          type: StatusListType.OAuthStatusList,
-          proofFormat: 'cbor',
-          id: 'http://localhost:9543/details3',
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'vc+jwt',
+          id: 'http://localhost:9543/bitstring-details',
           issuer: didKeyIdentifier.did,
-          length: 1000,
-          correlationId: 'test-details-3',
-          oauthStatusList: {
+          length: 131072,
+          correlationId: 'test-bitstring-details',
+          bitstringStatusList: {
             bitsPerStatus: 2,
-            expiresAt: new Date('2025-01-01'),
+            statusPurpose: 'suspension',
+            ttl: 7200000,
           },
         },
         { agent },
       )
 
-      const details = await statusListCredentialToDetails({
+      const details = await toStatusListDetails({
         statusListCredential: initialList.statusListCredential,
-        correlationId: 'test-details-3',
+        statusListType: StatusListType.BitstringStatusList,
+        bitsPerStatus: 2,
+        correlationId: 'test-bitstring-details',
       })
 
-      expect(details.type).toBe(StatusListType.OAuthStatusList)
-      expect(details.proofFormat).toBe('cbor')
-      expect(details.correlationId).toBe('test-details-3')
-      expect(details.statuslistContentType).toBe('application/statuslist+cwt')
-      expect(details.oauthStatusList?.bitsPerStatus).toBe(2)
-      expect(details.oauthStatusList?.expiresAt).toEqual(new Date('2025-01-01'))
+      expect(details.type).toBe(StatusListType.BitstringStatusList)
+      expect(details.proofFormat).toBe('vc+jwt')
+      expect(details.correlationId).toBe('test-bitstring-details')
+      expect(details.statuslistContentType).toBe('application/statuslist+vc+jwt')
+      expect(details.bitstringStatusList?.statusPurpose).toBe('suspension')
+      expect(details.bitstringStatusList?.ttl).toBe(7200000)
+    })
+  })
+
+  describe('BitstringStatusList', () => {
+    it('should create and update using LD-Signatures', async () => {
+      const validFrom = new Date()
+      const validUntil = new Date(Date.now() + 3600)
+
+      const statusList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring1',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-1-' + Date.now(),
+          bitstringStatusList: {
+            statusPurpose: 'revocation',
+            bitsPerStatus: 1,
+            validFrom: validFrom,
+            validUntil: validUntil,
+            ttl: 3600000,
+          },
+        },
+        { agent },
+      )
+
+      expect(statusList.type).toBe(StatusListType.BitstringStatusList)
+      expect(statusList.statuslistContentType).toBe('application/statuslist+ld+json')
+      expect(statusList.proofFormat).toBe('lds')
+      expect(statusList.bitstringStatusList?.statusPurpose).toBe('revocation')
+      expect(statusList.bitstringStatusList?.validFrom).toStrictEqual(validFrom)
+      expect(statusList.bitstringStatusList?.validUntil).toStrictEqual(validUntil)
+      expect(statusList.bitstringStatusList?.ttl).toBe(3600000)
+      expect(statusList.length).toBe(131072)
+
+      const updated = await updateStatusIndexFromStatusListCredential(
+        { statusListCredential: statusList.statusListCredential, statusListIndex: 42, bitsPerStatus: 1, value: 1 },
+        { agent },
+      )
+      const status = await checkStatusIndexFromStatusListCredential({
+        statusListCredential: updated.statusListCredential,
+        statusListIndex: '42',
+        bitsPerStatus: 1,
+      })
+      expect(status).toBe(1)
+    })
+
+    it('should create with status messages', async () => {
+      const statusList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring2',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-2-' + Date.now(),
+          bitstringStatusList: {
+            statusPurpose: 'message',
+            bitsPerStatus: 1,
+          },
+        },
+        { agent },
+      )
+
+      expect(statusList.bitstringStatusList?.statusPurpose).toBe('message')
+    })
+
+    it('should update using encoded list', async () => {
+      const validFrom = new Date()
+      const validUntil = new Date(Date.now() + 3600)
+
+      const initialList = await createNewStatusList(
+        {
+          type: StatusListType.BitstringStatusList,
+          proofFormat: 'lds',
+          id: 'http://localhost:9543/bitstring3',
+          issuer: didKeyIdentifier.did,
+          length: 131072,
+          correlationId: 'test-bitstring-3-' + Date.now(),
+          bitstringStatusList: {
+            statusPurpose: 'revocation',
+            bitsPerStatus: 1,
+            validFrom: validUntil,
+          },
+        },
+        { agent },
+      )
+
+      const result = await updateStatusListIndexFromEncodedList(
+        {
+          type: StatusListType.BitstringStatusList,
+          statusListIndex: 100,
+          value: 1,
+          proofFormat: 'lds',
+          issuer: didKeyIdentifier.did,
+          id: 'http://localhost:9543/bitstring3',
+          encodedList: initialList.encodedList,
+          bitstringStatusList: {
+            statusPurpose: 'revocation',
+            bitsPerStatus: 1,
+            validFrom: validFrom,
+            validUntil: validUntil,
+          },
+        },
+        { agent },
+      )
+
+      expect(result.type).toBe(StatusListType.BitstringStatusList)
+      expect(result.statuslistContentType).toBe('application/statuslist+ld+json')
+      expect(result.bitstringStatusList?.statusPurpose).toBe('revocation')
+      expect(result.bitstringStatusList?.validFrom).toStrictEqual(validFrom)
+      expect(result.bitstringStatusList?.validUntil).toStrictEqual(validUntil)
     })
   })
 })

@@ -1,11 +1,14 @@
 import { type OrPromise, StatusListType } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, In, type Repository } from 'typeorm'
-import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
+import { BitstringStatusListEntity, OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
 import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
-import type {
+import { BitstringStatusListEntryEntity } from '../entities/statusList/BitstringStatusListEntryEntity'
+import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
+  IBitstringStatusListEntity,
+  IBitstringStatusListEntryEntity,
   IGetStatusListArgs,
   IGetStatusListEntriesArgs,
   IGetStatusListEntryByCredentialIdArgs,
@@ -41,11 +44,11 @@ export class StatusListStore implements IStatusListStore {
   async availableStatusListEntries(args: IStatusListEntryAvailableArgs): Promise<number[]> {
     const statusListIndex = Array.isArray(args.statusListIndex) ? args.statusListIndex : [args.statusListIndex]
     const statusList = await this.getStatusList({ ...args, id: args.statusListId })
-    const repo = await this.getStatusListEntryRepo()
+    const repo = await this.getStatusListEntryRepo(statusList.type)
     const results = (
       await repo.find({
         where: {
-          statusList,
+          statusListId: statusList.id,
           statusListIndex: In(statusListIndex),
         },
       })
@@ -53,33 +56,42 @@ export class StatusListStore implements IStatusListStore {
     return statusListIndex.filter((index) => !results.includes(index))
   }
 
-  async addStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
-    return (await this.getStatusListEntryRepo()).save(args)
+  async addStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity> {
+    if (!args.statusListId) {
+      throw new Error('statusListId is required')
+    }
+
+    const statusList = await this.getStatusList({ id: args.statusListId })
+    return await (await this.getStatusListEntryRepo(statusList.type)).save(args)
   }
 
-  async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity> {
-    const statusListId = args.statusListId ?? args.statusList?.id
+  async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity> {
+    const statusListId = args.statusListId
+    if (!statusListId) {
+      throw new Error('statusListId is required')
+    }
+
+    const statusList = await this.getStatusList({ id: statusListId })
     const result = await this.getStatusListEntryByIndex({ ...args, statusListId, errorOnNotFound: false })
     const updatedEntry: Partial<IStatusListEntryEntity> = {
-      value: args.value,
-      correlationId: args.correlationId,
-      credentialHash: args.credentialHash,
-      credentialId: args.credentialId,
+      ...result,
+      ...args,
+      statusListId,
     }
 
     const updStatusListId = result?.statusListId ?? statusListId
     const updateResult = await (
-      await this.getStatusListEntryRepo()
+      await this.getStatusListEntryRepo(statusList.type)
     ).upsert(
       { ...(result ?? { statusListId: updStatusListId, statusListIndex: args.statusListIndex }), ...updatedEntry },
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
-    console.log(updateResult)
+    debug(updateResult)
     return (await this.getStatusListEntryByIndex({
       ...args,
       statusListId: updStatusListId,
       errorOnNotFound: true,
-    })) as IStatusListEntryEntity
+    }))!
   }
 
   async getStatusListEntryByIndex({
@@ -88,7 +100,7 @@ export class StatusListStore implements IStatusListStore {
     statusListIndex,
     entryCorrelationId,
     errorOnNotFound,
-  }: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | undefined> {
+  }: IGetStatusListEntryByIndexArgs): Promise<StatusListEntryEntity | BitstringStatusListEntryEntity | undefined> {
     if (!statusListId && !statusListCorrelationId) {
       throw Error(`Cannot get statusList entry without either a statusList id or statusListCorrelationId`)
     }
@@ -97,8 +109,12 @@ export class StatusListStore implements IStatusListStore {
       throw Error(`Cannot get statusList entry without either a statusListIndex or entryCorrelationId`)
     }
 
+    const statusList = statusListId
+      ? await this.getStatusList({ id: statusListId })
+      : await this.getStatusList({ correlationId: statusListCorrelationId })
+
     const result = await (
-      await this.getStatusListEntryRepo()
+      await this.getStatusListEntryRepo(statusList.type)
     ).findOne({
       where: {
         ...(statusListId && { statusListId }),
@@ -118,7 +134,9 @@ export class StatusListStore implements IStatusListStore {
     return result ?? undefined
   }
 
-  async getStatusListEntryByCredentialId(args: IGetStatusListEntryByCredentialIdArgs): Promise<StatusListEntryEntity | undefined> {
+  async getStatusListEntryByCredentialId(
+    args: IGetStatusListEntryByCredentialIdArgs,
+  ): Promise<StatusListEntryEntity | BitstringStatusListEntryEntity | undefined> {
     const credentialId = args.credentialId
     if (!credentialId) {
       throw Error('Can only get a credential by credentialId when a credentialId is supplied')
@@ -132,8 +150,8 @@ export class StatusListStore implements IStatusListStore {
       ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
       credentialId,
     }
-    console.log(`Entries: ${JSON.stringify(await (await this.getStatusListEntryRepo()).find(), null, 2)}`)
-    const result = await (await this.getStatusListEntryRepo()).findOne({ where })
+    debug(`Entries: ${JSON.stringify(await (await this.getStatusListEntryRepo(statusList.type)).find(), null, 2)}`)
+    const result = await (await this.getStatusListEntryRepo(statusList.type)).findOne({ where })
 
     if (!result && args.errorOnNotFound) {
       throw Error(`Could not find status list credential id ${credentialId} for status list id ${statusList.id}`)
@@ -149,8 +167,12 @@ export class StatusListStore implements IStatusListStore {
       error = true
     }
     if (!error) {
+      const statusList = await this.getStatusList({
+        id: args.statusListId,
+        correlationId: args.statusListCorrelationId,
+      })
       const result = await (
-        await this.getStatusListEntryRepo()
+        await this.getStatusListEntryRepo(statusList.type)
       ).delete({
         ...(args.statusListId && { statusList: args.statusListId }),
         ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
@@ -169,10 +191,11 @@ export class StatusListStore implements IStatusListStore {
       error = true
     }
     if (error) {
-      console.log(`Could not delete statusList ${args.statusListId} entry by index ${args.statusListIndex}`)
+      console.error(`Could not delete statusList ${args.statusListId} entry by index ${args.statusListIndex}`)
     } else {
+      const statusList = await this.getStatusList({ id: args.statusListId })
       const result = await (
-        await this.getStatusListEntryRepo()
+        await this.getStatusListEntryRepo(statusList.type)
       ).delete({
         ...(args.statusListId && { statusList: args.statusListId }),
         ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
@@ -183,12 +206,14 @@ export class StatusListStore implements IStatusListStore {
     return !error
   }
 
-  async getStatusListEntries(args: IGetStatusListEntriesArgs): Promise<StatusListEntryEntity[]> {
-    return (await this.getStatusListEntryRepo()).find({ where: { ...args?.filter, statusList: args.statusListId } })
-  }
-
-  async getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity> {
-    return statusListFrom(await this.getStatusListEntity(args))
+  async getStatusListEntries(args: IGetStatusListEntriesArgs): Promise<Array<IStatusListEntryEntity | IBitstringStatusListEntryEntity>> {
+    const statusList = await this.getStatusList({ id: args.statusListId })
+    const results = await (
+      await this.getStatusListEntryRepo(statusList.type)
+    ).find({
+      where: { ...args?.filter, statusList: args.statusListId },
+    })
+    return results as Array<IStatusListEntryEntity | IBitstringStatusListEntryEntity>
   }
 
   private async getStatusListEntity(args: IGetStatusListArgs): Promise<StatusListEntity> {
@@ -208,7 +233,12 @@ export class StatusListStore implements IStatusListStore {
     return result
   }
 
-  async getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity>> {
+  async getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity | IBitstringStatusListEntity> {
+    const entity = await this.getStatusListEntity(args)
+    return statusListFrom(entity) as IStatusListEntity | IBitstringStatusListEntity
+  }
+
+  async getStatusLists(args: IGetStatusListsArgs): Promise<Array<IStatusListEntity | IBitstringStatusListEntity>> {
     const result = await (
       await this.getStatusListRepo()
     ).find({
@@ -219,7 +249,7 @@ export class StatusListStore implements IStatusListStore {
       return []
     }
 
-    return result.map((entity) => statusListFrom(entity))
+    return result.map((entity) => statusListFrom(entity) as IStatusListEntity | IBitstringStatusListEntity)
   }
 
   async addStatusList(args: IAddStatusListArgs): Promise<IStatusListEntity> {
@@ -240,7 +270,7 @@ export class StatusListStore implements IStatusListStore {
     return statusListFrom(createdResult)
   }
 
-  async updateStatusList(args: IUpdateStatusListIndexArgs): Promise<IStatusListEntity> {
+  async updateStatusList(args: IUpdateStatusListIndexArgs): Promise<IStatusListEntity | IBitstringStatusListEntity> {
     const result = await this.getStatusList(args)
     debug('Updating status list', result)
     const entity = statusListEntityFrom(args)
@@ -251,7 +281,7 @@ export class StatusListStore implements IStatusListStore {
   async removeStatusList(args: IRemoveStatusListArgs): Promise<boolean> {
     const result = await this.getStatusListEntity(args)
 
-    await (await this.getStatusListEntryRepo()).delete({ statusListId: result.id })
+    await (await this.getStatusListEntryRepo(result.type)).delete({ statusListId: result.id })
     const deletedEntity = await (await this.getStatusListRepo()).remove(result)
 
     return Boolean(deletedEntity)
@@ -268,12 +298,20 @@ export class StatusListStore implements IStatusListStore {
         return dataSource.getRepository(StatusList2021Entity)
       case StatusListType.OAuthStatusList:
         return dataSource.getRepository(OAuthStatusListEntity)
+      case StatusListType.BitstringStatusList:
+        return dataSource.getRepository(BitstringStatusListEntity)
       default:
         return dataSource.getRepository(StatusListEntity)
     }
   }
 
-  async getStatusListEntryRepo(): Promise<Repository<StatusListEntryEntity>> {
-    return (await this.getDS()).getRepository(StatusListEntryEntity)
+  async getStatusListEntryRepo(type?: StatusListType): Promise<Repository<StatusListEntryEntity | BitstringStatusListEntryEntity>> {
+    const dataSource = await this.getDS()
+    switch (type) {
+      case StatusListType.BitstringStatusList:
+        return dataSource.getRepository(BitstringStatusListEntryEntity)
+      default:
+        return dataSource.getRepository(StatusListEntryEntity)
+    }
   }
 }

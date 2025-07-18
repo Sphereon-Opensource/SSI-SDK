@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { DataStoreStatusListEntities, StatusListEntryEntity } from '../index'
+import { BitstringStatusListEntity, BitstringStatusListEntryEntity, DataStoreStatusListEntities, StatusListEntryEntity } from '../index'
 import { DataStoreStatusListMigrations } from '../migrations'
 import { OAuthStatusListEntity, StatusList2021Entity } from '../entities/statusList/StatusListEntities'
 import { IIssuer, StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
@@ -18,6 +18,8 @@ describe('Status list entities tests', () => {
       migrations: DataStoreStatusListMigrations,
       synchronize: false,
       entities: [...DataStoreStatusListEntities],
+      logger: 'advanced-console',
+      logging: ['query', 'error', 'schema', 'warn', 'info', 'log', 'migration'],
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
@@ -213,5 +215,60 @@ describe('Status list entities tests', () => {
       },
     })
     expect(foundEntry).toBeNull()
+  })
+
+  it('should save bitstring status list to database', async () => {
+    const statusList = new BitstringStatusListEntity()
+    statusList.id = 'bitstring-list-1'
+    statusList.correlationId = 'correlation-bitstring-1'
+    statusList.driverType = StatusListDriverType.AGENT_TYPEORM
+    statusList.length = 131072
+    statusList.credentialIdMode = StatusListCredentialIdMode.ISSUANCE
+    statusList.proofFormat = 'lds'
+    statusList.statusPurpose = 'revocation'
+    statusList.bitsPerStatus = 1
+    statusList.ttl = 3600000
+    statusList.validFrom = new Date('2024-01-01T00:00:00Z')
+    statusList.validUntil = new Date('2025-01-01T00:00:00Z')
+    statusList.issuer = 'did:example:789'
+
+    const fromDb = await dbConnection.getRepository(BitstringStatusListEntity).save(statusList)
+    expect(fromDb).toBeDefined()
+    expect(fromDb.id).toEqual(statusList.id)
+    expect(fromDb.statusPurpose).toEqual(statusList.statusPurpose)
+    expect(fromDb.bitsPerStatus).toEqual(statusList.bitsPerStatus)
+    expect(fromDb.ttl).toEqual(statusList.ttl)
+    expect(fromDb.validFrom).toEqual(statusList.validFrom)
+    expect(fromDb.validUntil).toEqual(statusList.validUntil)
+  })
+
+  it('should save bitstring status list entry to database', async () => {
+    const statusList = new BitstringStatusListEntity()
+    statusList.id = 'bitstring-list-1'
+    statusList.correlationId = 'correlation-bitstring-1'
+    statusList.driverType = StatusListDriverType.AGENT_TYPEORM
+    statusList.length = 131072
+    statusList.credentialIdMode = StatusListCredentialIdMode.ISSUANCE
+    statusList.proofFormat = 'lds'
+    statusList.statusPurpose = 'revocation'
+    statusList.issuer = 'did:example:789'
+
+    await dbConnection.getRepository(BitstringStatusListEntity).save(statusList)
+
+    const entry = new BitstringStatusListEntryEntity()
+    entry.statusList = statusList
+    entry.statusListIndex = 42
+    entry.credentialId = 'bitstring-credential-1'
+    entry.credentialHash = 'bitstring-hash-1'
+    entry.statusPurpose = 'revocation'
+    entry.bitsPerStatus = 1
+    entry.statusReference = 'https://example.org/status-ref'
+
+    const fromDb = await dbConnection.getRepository(BitstringStatusListEntryEntity).save(entry)
+    expect(fromDb).toBeDefined()
+    expect(fromDb.statusListIndex).toEqual(entry.statusListIndex)
+    expect(fromDb.statusPurpose).toEqual(entry.statusPurpose)
+    expect(fromDb.bitsPerStatus).toEqual(entry.bitsPerStatus)
+    expect(fromDb.statusReference).toEqual(entry.statusReference)
   })
 })

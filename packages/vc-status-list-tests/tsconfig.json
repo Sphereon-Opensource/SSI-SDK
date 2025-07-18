@@ -8,6 +8,12 @@
     },
     {
       "path": "../credential-vcdm-jsonld-provider"
+    },
+    {
+      "path": "../credential-vcdm1-jwt-provider"
+    },
+    {
+      "path": "../credential-vcdm2-jose-provider"
     }
   ],
   "extends": "../../tsconfig.base.json"

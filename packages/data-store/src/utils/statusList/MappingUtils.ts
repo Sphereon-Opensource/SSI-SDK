@@ -1,41 +1,70 @@
-import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity } from '../../types'
-import { OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../../entities/statusList/StatusListEntities'
+import { IBitstringStatusListEntity, IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity } from '../../types'
+import {
+  BitstringStatusListEntity,
+  OAuthStatusListEntity,
+  StatusList2021Entity,
+  StatusListEntity,
+} from '../../entities/statusList/StatusListEntities'
 import { StatusListType } from '@sphereon/ssi-types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const statusListEntityFrom = (args: IStatusListEntity): StatusListEntity => {
-  if (args.type === StatusListType.StatusList2021) {
-    const entity = new StatusList2021Entity()
-    const sl2021 = args as IStatusList2021Entity
-    entity.indexingDirection = sl2021.indexingDirection
-    entity.statusPurpose = sl2021.statusPurpose
-    setBaseFields(entity, args)
-    Object.defineProperty(entity, 'type', {
-      value: StatusListType.StatusList2021,
-      enumerable: true,
-      configurable: true,
-    })
-    return entity
-  }
+  switch (args.type) {
+    case StatusListType.StatusList2021: {
+      const entity = new StatusList2021Entity()
+      const sl2021 = args as IStatusList2021Entity
+      entity.indexingDirection = sl2021.indexingDirection
+      entity.statusPurpose = sl2021.statusPurpose
+      setBaseFields(entity, args)
+      Object.defineProperty(entity, 'type', {
+        value: StatusListType.StatusList2021,
+        enumerable: true,
+        configurable: true,
+      })
+      return entity
+    }
 
-  if (args.type === StatusListType.OAuthStatusList) {
-    const entity = new OAuthStatusListEntity()
-    const oauthSl = args as IOAuthStatusListEntity
-    entity.bitsPerStatus = oauthSl.bitsPerStatus
-    entity.expiresAt = oauthSl.expiresAt
-    setBaseFields(entity, args)
-    Object.defineProperty(entity, 'type', {
-      value: StatusListType.OAuthStatusList,
-      enumerable: true,
-      configurable: true,
-    })
-    return entity
-  }
+    case StatusListType.OAuthStatusList: {
+      const entity = new OAuthStatusListEntity()
+      const oauthSl = args as IOAuthStatusListEntity
+      entity.bitsPerStatus = oauthSl.bitsPerStatus
+      entity.expiresAt = oauthSl.expiresAt
+      setBaseFields(entity, args)
+      Object.defineProperty(entity, 'type', {
+        value: StatusListType.OAuthStatusList,
+        enumerable: true,
+        configurable: true,
+      })
+      return entity
+    }
 
-  throw new Error(`Invalid status list type ${args.type}`)
+    case StatusListType.BitstringStatusList: {
+      const entity = new BitstringStatusListEntity()
+      const bitstringsl = args as IBitstringStatusListEntity
+      if (!bitstringsl.bitsPerStatus) {
+        throw Error('bitsPerStatus must be set for BitstringStatusList')
+      }
+
+      entity.statusPurpose = bitstringsl.statusPurpose
+      entity.bitsPerStatus = bitstringsl.bitsPerStatus
+      entity.validFrom = bitstringsl.validFrom
+      entity.validUntil = bitstringsl.validUntil
+      entity.ttl = bitstringsl.ttl
+      setBaseFields(entity, args)
+      Object.defineProperty(entity, 'type', {
+        value: StatusListType.BitstringStatusList,
+        enumerable: true,
+        configurable: true,
+      })
+      return entity
+    }
+
+    default:
+      throw new Error(`Invalid status list type ${args.type}`)
+  }
 }
 
-export const statusListFrom = (entity: StatusListEntity): IStatusListEntity => {
+export const statusListFrom = (entity: StatusListEntity): IStatusListEntity | IBitstringStatusListEntity => {
   if (entity instanceof StatusList2021Entity) {
     const result: IStatusList2021Entity = {
       ...getBaseFields(entity),
@@ -56,6 +85,18 @@ export const statusListFrom = (entity: StatusListEntity): IStatusListEntity => {
     return replaceNullWithUndefined(result)
   }
 
+  if (entity instanceof BitstringStatusListEntity) {
+    const result: IBitstringStatusListEntity = {
+      ...getBaseFields(entity),
+      type: StatusListType.BitstringStatusList,
+      statusPurpose: entity.statusPurpose,
+      bitsPerStatus: entity.bitsPerStatus,
+      validFrom: entity.validFrom,
+      validUntil: entity.validUntil,
+      ttl: entity.ttl,
+    }
+    return replaceNullWithUndefined(result)
+  }
   throw new Error(`Invalid status list type ${typeof entity}`)
 }
 

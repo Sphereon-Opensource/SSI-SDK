@@ -11,7 +11,7 @@ import { jwtDecode } from 'jwt-decode'
 
 export function getAssertedStatusListType(type?: StatusListType) {
   const assertedType = type ?? StatusListType.StatusList2021
-  if (![StatusListType.StatusList2021, StatusListType.OAuthStatusList].includes(assertedType)) {
+  if (![StatusListType.StatusList2021, StatusListType.OAuthStatusList, StatusListType.BitstringStatusList].includes(assertedType)) {
     throw Error(`StatusList type ${assertedType} is not supported (yet)`)
   }
   return assertedType
@@ -39,8 +39,9 @@ export function getAssertedProperty<T extends object>(propertyName: string, obj:
 }
 
 const ValidProofTypeMap = new Map<StatusListType, CredentialProofFormat[]>([
-  [StatusListType.StatusList2021, ['jwt', 'lds', 'EthereumEip712Signature2021']],
+  [StatusListType.StatusList2021, ['jwt', 'lds']],
   [StatusListType.OAuthStatusList, ['jwt', 'cbor']],
+  [StatusListType.BitstringStatusList, ['lds', 'vc+jwt']],
 ])
 
 export function assertValidProofType(type: StatusListType, proofFormat: CredentialProofFormat) {
@@ -52,31 +53,60 @@ export function assertValidProofType(type: StatusListType, proofFormat: Credenti
 
 export function determineStatusListType(credential: StatusListCredential): StatusListType {
   const proofFormat = determineProofFormat(credential)
+
   switch (proofFormat) {
     case 'jwt':
-      const payload: StatusListCredential = jwtDecode(credential as string)
-      const keys = Object.keys(payload)
-      if (keys.includes('status_list')) {
-        return StatusListType.OAuthStatusList
-      } else if (keys.includes('vc')) {
-        return StatusListType.StatusList2021
-      }
-      break
+      return determineJwtStatusListType(credential as string)
     case 'lds':
-      const uniform = CredentialMapper.toUniformCredential(credential)
-      const type = uniform.type.find((t) => {
-        return Object.values(StatusListType).some((statusType) => t.includes(statusType))
-      })
-      if (!type) {
-        throw new Error('Invalid status list credential type')
-      }
-      return type.replace('Credential', '') as StatusListType
-
+      return determineLdsStatusListType(credential)
     case 'cbor':
       return StatusListType.OAuthStatusList
+    default:
+      throw new Error('Cannot determine status list type from credential payload')
+  }
+}
+
+function determineJwtStatusListType(credential: string): StatusListType {
+  const payload: any = jwtDecode(credential)
+
+  // OAuth status list format
+  if ('status_list' in payload) {
+    return StatusListType.OAuthStatusList
   }
 
-  throw new Error('Cannot determine status list type from credential payload')
+  // Direct credential subject
+  if ('credentialSubject' in payload) {
+    return getStatusListTypeFromSubject(payload.credentialSubject)
+  }
+
+  // Wrapped VC format
+  if ('vc' in payload && 'credentialSubject' in payload.vc) {
+    return getStatusListTypeFromSubject(payload.vc.credentialSubject)
+  }
+
+  throw new Error('Invalid status list credential: credentialSubject not found')
+}
+
+function determineLdsStatusListType(credential: StatusListCredential): StatusListType {
+  const uniform = CredentialMapper.toUniformCredential(credential)
+  const statusListType = uniform.type.find((type) => Object.values(StatusListType).some((statusType) => type.includes(statusType)))
+
+  if (!statusListType) {
+    throw new Error('Invalid status list credential type')
+  }
+
+  return statusListType.replace('Credential', '') as StatusListType
+}
+
+function getStatusListTypeFromSubject(credentialSubject: any): StatusListType {
+  switch (credentialSubject.type) {
+    case 'StatusList2021':
+      return StatusListType.StatusList2021
+    case 'BitstringStatusList':
+      return StatusListType.BitstringStatusList
+    default:
+      throw new Error(`Unknown credential subject type: ${credentialSubject.type}`)
+  }
 }
 
 export function determineProofFormat(credential: StatusListCredential): CredentialProofFormat {
@@ -92,4 +122,36 @@ export function determineProofFormat(credential: StatusListCredential): Credenti
     default:
       throw Error('Cannot determine credential payload type')
   }
+}
+
+/**
+ * Ensures a value is converted to a Date object if it's a valid date string,
+ * otherwise returns the original value or undefined
+ *
+ * @param value - The value to convert to Date (can be Date, string, or undefined)
+ * @returns Date object, undefined, or the original value if conversion fails
+ */
+export function ensureDate(value: Date | string | undefined): Date | undefined {
+  if (value === undefined || value === null) {
+    return undefined
+  }
+
+  if (value instanceof Date) {
+    return value
+  }
+
+  if (typeof value === 'string') {
+    if (value.trim() === '') {
+      return undefined
+    }
+
+    const date = new Date(value)
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return undefined
+    }
+    return date
+  }
+
+  return undefined
 }

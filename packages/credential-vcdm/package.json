@@ -32,7 +32,6 @@
     "@sphereon/ssi-sdk-ext.key-utils": "workspace:*",
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
-    "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/message-handler": "4.2.0",
@@ -45,6 +44,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@sphereon/oid4vci-common": "0.19.0",
     "@sphereon/ssi-sdk-ext.did-provider-key": "0.29.1-next.3",
     "@sphereon/ssi-sdk-ext.key-manager": "0.29.1-next.3",
     "@sphereon/ssi-sdk-ext.kms-local": "0.29.1-next.3",
@@ -54,6 +54,7 @@
     "@veramo/did-provider-ethr": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/key-manager": "4.2.0",
+    "typeorm": "0.3.20",
     "ethr-did-resolver": "^11.0.3",
     "typescript": "5.8.3"
   },

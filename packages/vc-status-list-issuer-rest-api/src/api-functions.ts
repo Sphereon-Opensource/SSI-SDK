@@ -18,7 +18,7 @@ import {
   UpdateW3cCredentialStatusRequest,
 } from './types'
 import { StatusListCredential, StatusListType } from '@sphereon/ssi-types'
-import { IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
+import { IBitstringStatusListEntryEntity, IStatusListEntryEntity } from '@sphereon/ssi-sdk.data-store'
 
 const debug = Debug('sphereon:ssi-sdk:status-list')
 
@@ -97,6 +97,17 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
   })
 }
 
+function lookupType(details: StatusListResult) {
+  switch (details.type) {
+    case StatusListType.StatusList2021:
+      return 'StatusList2021Entry'
+    case StatusListType.BitstringStatusList:
+      return 'BitstringStatusListEntry'
+    default:
+      return details.type
+  }
+}
+
 export function getStatusListCredentialIndexStatusEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`Get statusList credential index status endpoint is disabled`)
@@ -149,16 +160,19 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
         errorOnNotFound: false,
       })
 
-      const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
+      const type = lookupType(details)
       const resultStatusIndex = entry?.statusListIndex ?? statusListIndex ?? 0
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
-        ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
         type,
         id: details.id,
         statusListIndex: resultStatusIndex,
+        ...(details.type === StatusListType.StatusList2021 && { statusPurpose: details.statusList2021?.statusPurpose }),
+        ...(details.type === StatusListType.BitstringStatusList && {
+          statusPurpose: details.bitstringStatusList?.statusPurpose,
+          bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
+        }),
       })
-
       if (!entry) {
         entry = {
           statusListId: details.id,
@@ -168,7 +182,9 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       }
 
       response.statusCode = 200
-      return response.json({ ...entry, status })
+      const result = { ...entry, status }
+      delete result.statusList // the API caller requested the index status, not the entire status list which may be big. Filter it out
+      return response.json(result)
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }
@@ -214,7 +230,11 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
       const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
-        ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
+        ...(details.type === StatusListType.StatusList2021 && { statusPurpose: details.statusList2021?.statusPurpose }),
+        ...(details.type === StatusListType.BitstringStatusList && {
+          statusPurpose: details.bitstringStatusList?.statusPurpose,
+          bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
+        }),
         type,
         id: details.id,
         statusListIndex,
@@ -228,7 +248,9 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
         }
       }
       response.statusCode = 200
-      return response.json({ ...entry, status })
+      const result = { ...entry, status }
+      delete result.statusList // we asked for the status, not the entire list
+      return response.json(result)
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
     }
@@ -261,7 +283,7 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
       let statusListResult: StatusListResult = await driver.getStatusList()
 
       // Get status list entry based on request type
-      let statusListEntry: IStatusListEntryEntity | undefined
+      let statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity | undefined
       if ('credentialId' in updateRequest) {
         if (!updateRequest.credentialId) {
           return sendErrorResponse(response, 400, 'No credentialId supplied')
@@ -307,23 +329,33 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           value = `${parseInt(updateItem.status)}`
         }
 
-        const updStatusListId = statusListId ?? statusListEntry.statusList?.id // When input was statusListCorrelationId the statusList id should come from statusListEntry
+        const updStatusListId = statusListId ?? ('statusList' in statusListEntry && statusListEntry.statusList?.id) ?? statusListEntry?.statusListId // When input was statusListCorrelationId the statusList id should come from statusListEntry
         if (!updStatusListId) {
           return sendErrorResponse(response, 400, 'statuslist id could not be determined')
         }
         await driver.updateStatusListEntry({ ...statusListEntry, statusListId: updStatusListId, value })
+        const bitsPerStatus =
+          'bitsPerStatus' in statusListEntry && typeof statusListEntry.bitsPerStatus === 'number' ? statusListEntry.bitsPerStatus : undefined
 
         // todo: optimize. We are now creating a new VC for every item passed in. Probably wise to look at DB as well
         statusListResult = await updateStatusIndexFromStatusListCredential(
           {
             statusListCredential: statusListCredential,
             statusListIndex: statusListEntry.statusListIndex,
+            ...(bitsPerStatus && { bitsPerStatus }),
             value: parseInt(value),
             keyRef: opts.keyRef,
           },
           context,
         )
-        statusListResult = await driver.updateStatusList({ statusListCredential: statusListResult.statusListCredential })
+
+        if (!statusListResult.correlationId) {
+          return Promise.reject(Error('Cannot update the statuslist, correlationId is missing from the status list result'))
+        }
+        statusListResult = await driver.updateStatusList({
+          correlationId: statusListResult.correlationId,
+          statusListCredential: statusListResult.statusListCredential,
+        })
       }
 
       return sendStatuslistResponse(statusListResult, statusListResult.statusListCredential, response)

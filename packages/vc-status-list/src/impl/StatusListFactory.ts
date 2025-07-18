@@ -2,6 +2,7 @@ import type { IStatusList } from './IStatusList'
 import { StatusList2021Implementation } from './StatusList2021'
 import { OAuthStatusListImplementation } from './OAuthStatusList'
 import { StatusListType } from '@sphereon/ssi-types'
+import { BitstringStatusListImplementation } from './BitstringStatusListImplementation'
 
 export class StatusListFactory {
   private static instance: StatusListFactory
@@ -11,6 +12,7 @@ export class StatusListFactory {
     this.implementations = new Map()
     this.implementations.set(StatusListType.StatusList2021, new StatusList2021Implementation())
     this.implementations.set(StatusListType.OAuthStatusList, new OAuthStatusListImplementation())
+    this.implementations.set(StatusListType.BitstringStatusList, new BitstringStatusListImplementation())
   }
 
   public static getInstance(): StatusListFactory {

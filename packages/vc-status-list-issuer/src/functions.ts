@@ -14,6 +14,7 @@ import { Loggers, OrPromise } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
 import { StatusListOpts } from '@sphereon/oid4vci-common'
 import { DataSource } from 'typeorm'
+import { IDriverAndStatusListResult, StatusListRef } from './types'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 
@@ -23,7 +24,7 @@ const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 async function getDriverAndStatusList(
   statusListId: string,
   opts?: IIssueCredentialStatusOpts & { driver?: IStatusListDriver },
-): Promise<{ slDriver: IStatusListDriver; statusList: Pick<StatusListResult, 'id' | 'correlationId'> }> {
+): Promise<IDriverAndStatusListResult> {
   const slDriver = opts?.driver ?? (await getDriver({ id: statusListId, dataSource: opts?.dataSource }))
   const statusList = await slDriver.statusListStore.getStatusList({ id: statusListId })
   return { slDriver, statusList }
@@ -79,7 +80,7 @@ function getSdJwtStatusListOpts(credential: SdJwtVcPayload, opts?: IIssueCredent
  */
 async function processStatusListEntry(params: {
   statusListId: string
-  statusList: Pick<StatusListResult, 'id' | 'correlationId'>
+  statusList: StatusListRef
   credentialId?: string
   currentIndex: number
   opts?: IIssueCredentialStatusOpts
@@ -132,6 +133,7 @@ async function processStatusListEntry(params: {
     statusListIndex,
     correlationId: params.statusEntryCorrelationId,
     value: params.opts?.value ?? '0',
+    ...(params.statusList.type === 'BitstringStatusList' && { bitsPerStatus: params.statusList.bitstringStatusList?.bitsPerStatus ?? 1 }),
   }
   if (params.credentialId) {
     updateArgs.credentialId = params.credentialId
@@ -211,11 +213,10 @@ export const handleCredentialStatus = async (
         )
       },
     })
+
     if (!credential.credentialStatus || Array.isArray(credential.credentialStatus)) {
       credential.credentialStatus = {
         id: `${statusListId}`,
-        type: 'StatusList2021Entry',
-        statusPurpose: 'revocation',
         statusListCredential: statusListId,
         ...updateResult.credentialStatus,
       }

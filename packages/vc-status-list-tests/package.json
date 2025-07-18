@@ -14,6 +14,7 @@
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm-jsonld-provider": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm1-jwt-provider": "workspace:*",
+    "@sphereon/ssi-sdk.credential-vcdm2-jose-provider": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@types/node": "^20.17.1",

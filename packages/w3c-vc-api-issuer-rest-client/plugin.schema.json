@@ -9,7 +9,9 @@
               "$ref": "#/components/schemas/CredentialPayload"
             }
           },
-          "required": ["credential"],
+          "required": [
+            "credential"
+          ],
           "additionalProperties": false
         },
         "CredentialPayload": {
@@ -46,7 +48,9 @@
               "type": "string"
             }
           },
-          "required": ["issuer"],
+          "required": [
+            "issuer"
+          ],
           "description": "Used as input when creating Verifiable Credentials"
         },
         "IssuerType": {
@@ -58,7 +62,9 @@
                   "type": "string"
                 }
               },
-              "required": ["id"]
+              "required": [
+                "id"
+              ]
             },
             {
               "type": "string"
@@ -97,7 +103,10 @@
               "type": "string"
             }
           },
-          "required": ["id", "type"],
+          "required": [
+            "id",
+            "type"
+          ],
           "description": "Used for the discovery of information about the current status of a verifiable credential, such as whether it is suspended or revoked. The precise contents of the credential status information is determined by the specific `credentialStatus` type definition, and varies depending on factors such as whether it is simple to implement or if it is privacy-enhancing.\n\nSee  {@link https://www.w3.org/TR/vc-data-model/#status | Credential Status }"
         },
         "VerifiableCredentialSP": {
@@ -132,19 +141,6 @@
                 }
               ]
             },
-            "@context": {
-              "anyOf": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                {
-                  "type": "string"
-                }
-              ]
-            },
             "issuanceDate": {
               "type": "string"
             },
@@ -156,6 +152,29 @@
             },
             "id": {
               "type": "string"
+            },
+            "@context": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
             },
             "validFrom": {
               "type": "string"
@@ -180,7 +199,14 @@
               ]
             }
           },
-          "required": ["@context", "credentialSubject", "issuanceDate", "issuer", "proof"]
+          "required": [
+            "@context",
+            "credentialSubject",
+            "issuanceDate",
+            "issuer",
+            "proof",
+            "type"
+          ]
         },
         "CredentialStatusSP": {
           "type": "object",
@@ -198,7 +224,10 @@
               "type": "string"
             }
           },
-          "required": ["id", "type"]
+          "required": [
+            "id",
+            "type"
+          ]
         },
         "CredentialProofSP": {
           "type": "object",
@@ -251,7 +280,12 @@
               }
             }
           },
-          "required": ["type", "created", "proofPurpose", "verificationMethod"],
+          "required": [
+            "type",
+            "created",
+            "proofPurpose",
+            "verificationMethod"
+          ],
           "additionalProperties": {
             "anyOf": [
               {

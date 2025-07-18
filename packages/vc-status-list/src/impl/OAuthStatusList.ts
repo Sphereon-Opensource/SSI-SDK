@@ -1,26 +1,30 @@
-import type { IAgentContext, ICredentialPlugin, IKeyManager } from '@veramo/core'
-import { type CompactJWT, type CWT, type CredentialProofFormat, StatusListType } from '@sphereon/ssi-types'
+import type { IAgentContext, IKeyManager } from '@veramo/core'
+import { type CompactJWT, type CredentialProofFormat, type CWT, StatusListType } from '@sphereon/ssi-types'
 import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
+  IMergeDetailsWithEntityArgs,
+  IToDetailsFromCredentialArgs,
   SignedStatusListData,
+  StatusListOAuthEntryCredentialStatus,
   StatusListResult,
   StatusOAuth,
-  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-import { determineProofFormat, getAssertedValue, getAssertedValues } from '../utils'
-import type { IStatusList } from './IStatusList'
+import { determineProofFormat, ensureDate, getAssertedValue, getAssertedValues } from '../utils'
+import type { IExtractedCredentialDetails, IOAuthStatusListImplementationResult, IStatusList } from './IStatusList'
 import { StatusList } from '@sd-jwt/jwt-status-list'
 import type { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { createSignedJwt, decodeStatusListJWT } from './encoding/jwt'
 import { createSignedCbor, decodeStatusListCWT } from './encoding/cbor'
+import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, OAuthStatusListEntity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
-type IRequiredContext = IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
+type IRequiredContext = IAgentContext<IVcdmCredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>
 
-export const DEFAULT_BITS_PER_STATUS = 1 // 1 bit is sufficient for 0x00 - "VALID"  0x01 - "INVALID" saving space in the process
+export const DEFAULT_BITS_PER_STATUS = 1 // 1 bit is sufficient for 0x00 - "VALID" 0x01 - "INVALID" saving space in the process
 export const DEFAULT_LIST_LENGTH = 250000
 export const DEFAULT_PROOF_FORMAT = 'jwt' as CredentialProofFormat
 
@@ -32,7 +36,8 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const proofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
     const { issuer, id, oauthStatusList, keyRef } = args
-    const { bitsPerStatus, expiresAt } = oauthStatusList
+    const { bitsPerStatus } = oauthStatusList
+    const expiresAt = ensureDate(oauthStatusList.expiresAt)
     const length = args.length ?? DEFAULT_LIST_LENGTH
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
     const correlationId = getAssertedValue('correlationId', args.correlationId)
@@ -56,7 +61,8 @@ export class OAuthStatusListImplementation implements IStatusList {
   }
 
   async updateStatusListIndex(args: UpdateStatusListIndexArgs, context: IRequiredContext): Promise<StatusListResult> {
-    const { statusListCredential, value, expiresAt, keyRef } = args
+    const { statusListCredential, value, keyRef } = args
+    const expiresAt = ensureDate(args.expiresAt)
     if (typeof statusListCredential !== 'string') {
       return Promise.reject('statusListCredential in neither JWT nor CWT')
     }
@@ -68,6 +74,10 @@ export class OAuthStatusListImplementation implements IStatusList {
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
     if (index < 0 || index >= statusList.statusList.length) {
       throw new Error('Status list index out of bounds')
+    }
+
+    if (typeof value !== 'number') {
+      throw new Error('Status list values should be of type number')
     }
 
     statusList.setStatus(index, value)
@@ -102,15 +112,15 @@ export class OAuthStatusListImplementation implements IStatusList {
       throw new Error('OAuthStatusList options are required for type OAuthStatusList')
     }
     const { proofFormat, oauthStatusList, keyRef } = args
-    const { bitsPerStatus, expiresAt } = oauthStatusList
+    const { bitsPerStatus } = oauthStatusList
+    const expiresAt = ensureDate(oauthStatusList.expiresAt)
 
     const { issuer, id } = getAssertedValues(args)
     const issuerString = typeof issuer === 'string' ? issuer : issuer.id
 
     const listToUpdate = StatusList.decompressStatusList(args.encodedList, bitsPerStatus ?? DEFAULT_BITS_PER_STATUS)
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
-    // FIXME: See above.
-    listToUpdate.setStatus(index, args.value ? 1 : 0)
+    listToUpdate.setStatus(index, args.value)
 
     const { statusListCredential, encodedList } = await this.createSignedStatusList(
       proofFormat ?? DEFAULT_PROOF_FORMAT,
@@ -138,10 +148,6 @@ export class OAuthStatusListImplementation implements IStatusList {
     }
   }
 
-  private buildContentType(proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor' | undefined) {
-    return `application/statuslist+${proofFormat === 'cbor' ? 'cwt' : 'jwt'}`
-  }
-
   async checkStatusIndex(args: CheckStatusIndexArgs): Promise<number | StatusOAuth> {
     const { statusListCredential, statusListIndex } = args
     if (typeof statusListCredential !== 'string') {
@@ -153,39 +159,128 @@ export class OAuthStatusListImplementation implements IStatusList {
 
     const index = typeof statusListIndex === 'number' ? statusListIndex : parseInt(statusListIndex)
     if (index < 0 || index >= statusList.statusList.length) {
-      throw new Error('Status list index out of bounds')
+      throw new Error(`Status list index out of bounds, has ${statusList.statusList.length} items, requested ${index}`)
     }
 
     return statusList.getStatus(index)
   }
 
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
-    const { statusListPayload } = args as { statusListPayload: CompactJWT | CWT }
-    const proofFormat = determineProofFormat(statusListPayload)
-    const decoded = proofFormat === 'jwt' ? decodeStatusListJWT(statusListPayload) : decodeStatusListCWT(statusListPayload)
-    const { statusList, issuer, id, exp } = decoded
+  /**
+   * Performs the initial parsing of a StatusListCredential.
+   * This method handles expensive operations like JWT/CWT decoding once.
+   * It extracts all details available from the credential payload itself.
+   */
+  async extractCredentialDetails(credential: CompactJWT | CWT): Promise<IExtractedCredentialDetails> {
+    if (typeof credential !== 'string') {
+      return Promise.reject('statusListCredential must be a JWT or CWT string')
+    }
+
+    const proofFormat = determineProofFormat(credential)
+    const decoded = proofFormat === 'jwt' ? decodeStatusListJWT(credential) : decodeStatusListCWT(credential)
 
     return {
-      id,
-      encodedList: statusList.compressStatusList(),
-      issuer,
-      type: StatusListType.OAuthStatusList,
-      proofFormat,
-      length: statusList.statusList.length,
-      statusListCredential: statusListPayload,
-      statuslistContentType: this.buildContentType(proofFormat),
-      oauthStatusList: {
-        bitsPerStatus: statusList.getBitsPerStatus(),
-        ...(exp && { expiresAt: new Date(exp * 1000) }),
-      },
-      ...(args.correlationId && { correlationId: args.correlationId }),
-      ...(args.driverType && { driverType: args.driverType }),
+      id: decoded.id,
+      issuer: decoded.issuer,
+      encodedList: decoded.statusList.compressStatusList(),
+      decodedPayload: decoded,
     }
   }
 
+  // For CREATE and READ contexts
+  async toStatusListDetails(args: IToDetailsFromCredentialArgs): Promise<StatusListResult & IOAuthStatusListImplementationResult>
+  // For UPDATE contexts
+  async toStatusListDetails(args: IMergeDetailsWithEntityArgs): Promise<StatusListResult & IOAuthStatusListImplementationResult>
+  async toStatusListDetails(
+    args: IToDetailsFromCredentialArgs | IMergeDetailsWithEntityArgs,
+  ): Promise<StatusListResult & IOAuthStatusListImplementationResult> {
+    if ('statusListCredential' in args) {
+      // CREATE/READ context
+      const { statusListCredential, bitsPerStatus, correlationId, driverType } = args
+      if (!bitsPerStatus || bitsPerStatus < 1) {
+        return Promise.reject(Error('bitsPerStatus must be set for OAuth status lists and must be 1 or higher'))
+      }
+
+      const proofFormat = determineProofFormat(statusListCredential as string)
+      const decoded =
+        proofFormat === 'jwt' ? decodeStatusListJWT(statusListCredential as string) : decodeStatusListCWT(statusListCredential as string)
+      const { statusList, issuer, id, exp } = decoded
+      const expiresAt = exp ? new Date(exp * 1000) : undefined
+
+      return {
+        id,
+        encodedList: statusList.compressStatusList(),
+        issuer,
+        type: StatusListType.OAuthStatusList,
+        proofFormat,
+        length: statusList.statusList.length,
+        statusListCredential: statusListCredential as CompactJWT | CWT,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId,
+        driverType,
+        bitsPerStatus,
+        ...(expiresAt && { expiresAt }),
+        oauthStatusList: {
+          bitsPerStatus,
+          ...(expiresAt && { expiresAt }),
+        },
+      }
+    } else {
+      // UPDATE context
+      const { extractedDetails, statusListEntity } = args
+      const oauthEntity = statusListEntity as OAuthStatusListEntity
+      const decoded = extractedDetails.decodedPayload as { statusList: StatusList; exp?: number }
+
+      const proofFormat = determineProofFormat(statusListEntity.statusListCredential as string)
+      const expiresAt = decoded.exp ? new Date(decoded.exp * 1000) : undefined
+
+      return {
+        id: extractedDetails.id,
+        encodedList: extractedDetails.encodedList,
+        issuer: extractedDetails.issuer,
+        type: StatusListType.OAuthStatusList,
+        proofFormat,
+        length: decoded.statusList.statusList.length,
+        statusListCredential: statusListEntity.statusListCredential!,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId: statusListEntity.correlationId,
+        driverType: statusListEntity.driverType,
+        bitsPerStatus: oauthEntity.bitsPerStatus,
+        ...(expiresAt && { expiresAt }),
+        oauthStatusList: {
+          bitsPerStatus: oauthEntity.bitsPerStatus,
+          ...(expiresAt && { expiresAt }),
+        },
+      }
+    }
+  }
+
+  async createCredentialStatus(args: {
+    statusList: StatusListEntity
+    statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
+    statusListIndex: number
+  }): Promise<StatusListOAuthEntryCredentialStatus> {
+    const { statusList, statusListIndex } = args
+
+    // Cast to OAuthStatusListEntity to access specific properties
+    const oauthStatusList = statusList as OAuthStatusListEntity
+
+    return {
+      id: `${statusList.id}#${statusListIndex}`,
+      type: 'OAuthStatusListEntry',
+      bitsPerStatus: oauthStatusList.bitsPerStatus,
+      statusListIndex: '' + statusListIndex,
+      statusListCredential: statusList.id,
+      expiresAt: oauthStatusList.expiresAt,
+    }
+  }
+
+  private buildContentType(proofFormat: CredentialProofFormat | undefined) {
+    return `application/statuslist+${proofFormat === 'cbor' ? 'cwt' : 'jwt'}`
+  }
+
   private async createSignedStatusList(
-    proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor',
-    context: IAgentContext<ICredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>,
+    proofFormat: CredentialProofFormat,
+    context: IAgentContext<IVcdmCredentialPlugin & IJwtService & IIdentifierResolution & IKeyManager>,
     statusList: StatusList,
     issuerString: string,
     id: string,
