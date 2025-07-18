@@ -14,7 +14,7 @@ import { Loggers, OrPromise } from '@sphereon/ssi-types'
 import { IAgentContext } from '@veramo/core'
 import { StatusListOpts } from '@sphereon/oid4vci-common'
 import { DataSource } from 'typeorm'
-import { IDriverAndStatusListResult } from './types'
+import { IDriverAndStatusListResult, StatusListRef } from './types'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:vc-status-list-issuer')
 
@@ -80,7 +80,7 @@ function getSdJwtStatusListOpts(credential: SdJwtVcPayload, opts?: IIssueCredent
  */
 async function processStatusListEntry(params: {
   statusListId: string
-  statusList: Pick<StatusListResult, 'id' | 'correlationId' | 'type'>
+  statusList: StatusListRef
   credentialId?: string
   currentIndex: number
   opts?: IIssueCredentialStatusOpts
@@ -133,7 +133,7 @@ async function processStatusListEntry(params: {
     statusListIndex,
     correlationId: params.statusEntryCorrelationId,
     value: params.opts?.value ?? '0',
-    ...(params.statusList.type === 'BitstringStatusList' && { bitsPerStatus: params.statusList.bitsPerStatus ?? 1 }),
+    ...(params.statusList.type === 'BitstringStatusList' && { bitsPerStatus: params.statusList.bitstringStatusList?.bitsPerStatus ?? 1 }),
   }
   if (params.credentialId) {
     updateArgs.credentialId = params.credentialId

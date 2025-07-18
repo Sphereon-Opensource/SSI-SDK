@@ -7,5 +7,7 @@ export type StatusListInstance = StatusListManagementOptions & { dataSource?: Or
 
 export interface IDriverAndStatusListResult {
   slDriver: IStatusListDriver
-  statusList: Pick<StatusListResult, 'id' | 'correlationId' | 'type'>
+  statusList: StatusListRef
 }
+
+export type StatusListRef = Pick<StatusListResult, 'id' | 'correlationId' | 'type' | 'oauthStatusList' | 'bitstringStatusList'>
