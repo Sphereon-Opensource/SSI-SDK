@@ -87,7 +87,8 @@ describe('Issuer Auth', (): void => {
     console.log(JSON.stringify(issuerSigned.toJson(), null, 2))
   })
 
-  it('should show a full flow from issuer to holder to RP', async () => {
+  it.skip('should show a full flow from issuer to holder to RP', async () => {
+    // mdoc valid Until 2024-08-26
     // Issuer signed according to 18013-7 in base64url
     const issuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(
       decodeFrom(funkePidIssuerSignedTestVector_20240812, Encoding.BASE64URL),
