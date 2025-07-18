@@ -36,7 +36,7 @@ export interface IOAuthStatusListEntity extends IStatusListEntity {
 }
 
 export interface IBitstringStatusListEntity extends IStatusListEntity {
-  statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+  statusPurpose: BitstringStatusPurpose | Array<BitstringStatusPurpose>
   bitsPerStatus?: number
   validFrom?: Date
   validUntil?: Date
@@ -66,12 +66,12 @@ export type BitstringStatusMessage = {
 
 export interface BitstringStatusListEntryCredentialStatus extends ICredentialStatus {
   type: 'BitstringStatusListEntry'
-  statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+  statusPurpose: BitstringStatusPurpose | Array<BitstringStatusPurpose>
   statusListIndex: string
   statusListCredential: string
   bitsPerStatus?: number
   statusMessage?: Array<BitstringStatusMessage>
-  statusReference?: string | string[]
+  statusReference?: string | Array<string>
 }
 
 export type BitstringStatusListArgs = {
@@ -91,5 +91,5 @@ export interface IBitstringStatusListEntryEntity {
   statusPurpose: string
   bitsPerStatus?: number
   statusMessage?: Array<BitstringStatusMessage>
-  statusReference?: string | string[]
+  statusReference?: string | Array<string>
 }

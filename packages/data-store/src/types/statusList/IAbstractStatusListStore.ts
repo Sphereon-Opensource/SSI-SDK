@@ -72,17 +72,27 @@ interface IBaseStatusListArgs {
   bitsPerStatus?: number
 }
 
-// Then extend for specific types when needed
-export type IAddStatusListArgs =
-  | (IBaseStatusListArgs & { type: StatusListType.StatusList2021; indexingDirection: StatusListIndexingDirection; statusPurpose: StatusPurpose2021 })
-  | (IBaseStatusListArgs & { type: StatusListType.OAuthStatusList; bitsPerStatus: number; expiresAt?: Date })
-  | (IBaseStatusListArgs & {
-      type: StatusListType.BitstringStatusList
-      statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
-      bitsPerStatus?: number
-      validFrom?: Date
-      validUntil?: Date
-      ttl?: number
-    })
+export type IStatusList2021Args = IBaseStatusListArgs & {
+  type: StatusListType.StatusList2021
+  indexingDirection: StatusListIndexingDirection
+  statusPurpose: StatusPurpose2021
+}
+
+export type IOAuthStatusListArgs = IBaseStatusListArgs & {
+  type: StatusListType.OAuthStatusList
+  bitsPerStatus: number
+  expiresAt?: Date
+}
+
+export type IBitstringStatusListArgs = IBaseStatusListArgs & {
+  type: StatusListType.BitstringStatusList
+  statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+  bitsPerStatus?: number
+  validFrom?: Date
+  validUntil?: Date
+  ttl?: number
+}
+
+export type IAddStatusListArgs = IStatusList2021Args | IOAuthStatusListArgs | IBitstringStatusListArgs
 
 export type IUpdateStatusListIndexArgs = IAddStatusListArgs

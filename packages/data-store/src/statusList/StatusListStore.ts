@@ -62,8 +62,7 @@ export class StatusListStore implements IStatusListStore {
     }
 
     const statusList = await this.getStatusList({ id: args.statusListId })
-    const result = await (await this.getStatusListEntryRepo(statusList.type)).save(args)
-    return result as IStatusListEntryEntity | IBitstringStatusListEntryEntity
+    return await (await this.getStatusListEntryRepo(statusList.type)).save(args)
   }
 
   async updateStatusListEntry(args: IAddStatusListEntryArgs): Promise<IStatusListEntryEntity | IBitstringStatusListEntryEntity> {
@@ -87,7 +86,7 @@ export class StatusListStore implements IStatusListStore {
       { ...(result ?? { statusListId: updStatusListId, statusListIndex: args.statusListIndex }), ...updatedEntry },
       { conflictPaths: ['statusList', 'statusListIndex'] },
     )
-    console.log(updateResult)
+    debug(updateResult)
     return (await this.getStatusListEntryByIndex({
       ...args,
       statusListId: updStatusListId,
@@ -151,7 +150,7 @@ export class StatusListStore implements IStatusListStore {
       ...(args.entryCorrelationId && { correlationId: args.entryCorrelationId }),
       credentialId,
     }
-    console.log(`Entries: ${JSON.stringify(await (await this.getStatusListEntryRepo(statusList.type)).find(), null, 2)}`)
+    debug(`Entries: ${JSON.stringify(await (await this.getStatusListEntryRepo(statusList.type)).find(), null, 2)}`)
     const result = await (await this.getStatusListEntryRepo(statusList.type)).findOne({ where })
 
     if (!result && args.errorOnNotFound) {
@@ -192,7 +191,7 @@ export class StatusListStore implements IStatusListStore {
       error = true
     }
     if (error) {
-      console.log(`Could not delete statusList ${args.statusListId} entry by index ${args.statusListIndex}`)
+      console.error(`Could not delete statusList ${args.statusListId} entry by index ${args.statusListIndex}`)
     } else {
       const statusList = await this.getStatusList({ id: args.statusListId })
       const result = await (

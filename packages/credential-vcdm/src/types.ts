@@ -114,7 +114,6 @@ export interface ICreateVerifiablePresentationLDArgs {
  * Statuslist credential options, cloned from packages/vc-status-list/src/types/index.ts to break cyclic dependency loop
  */
 export interface IIssueCredentialStatusOpts {
-  // TODO move elsewhere like ssi-types?
   dataSource?: DataSource
   statusLists?: Array<StatusListOpts>
   credentialId?: string // An id to use for the credential. Normally should be set as the crdential.id value

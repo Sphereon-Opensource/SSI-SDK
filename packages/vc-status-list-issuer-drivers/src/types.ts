@@ -13,7 +13,7 @@ import {
   StatusListOAuthEntryCredentialStatus,
   StatusListResult,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListCredential, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
+import { StatusListCredential, StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { DriverOptions } from './drivers'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
@@ -29,6 +29,31 @@ export type IRequiredPlugins = IDataStoreORM &
   IResolver
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
+export interface ICreateStatusListArgs {
+  statusListType: StatusListType
+  statusListCredential: StatusListCredential
+  credentialIdMode?: StatusListCredentialIdMode
+  correlationId?: string
+  bitsPerStatus?: number
+}
+
+export interface IGetStatusListArgs {
+  correlationId?: string
+}
+
+export interface IGetStatusListLengthArgs {
+  correlationId?: string
+}
+
+export interface IUpdateStatusListArgs {
+  statusListCredential: StatusListCredential
+  correlationId: string
+}
+
+export interface IGetRandomNewStatusListIndexArgs {
+  correlationId?: string
+}
+
 export interface IStatusListDriver {
   statusListStore: StatusListStore
 
@@ -36,16 +61,11 @@ export interface IStatusListDriver {
 
   getOptions(): DriverOptions
 
-  getStatusListLength(args?: { correlationId?: string }): Promise<number>
+  getStatusListLength(args?: IGetStatusListLengthArgs): Promise<number>
 
-  createStatusList(args: {
-    statusListType: StatusListType
-    statusListCredential: StatusListCredential
-    correlationId?: string
-    bitsPerStatus?: number
-  }): Promise<StatusListResult>
+  createStatusList(args: ICreateStatusListArgs): Promise<StatusListResult>
 
-  getStatusList(args?: { correlationId?: string }): Promise<StatusListResult>
+  getStatusList(args?: IGetStatusListArgs): Promise<StatusListResult>
 
   getStatusLists(): Promise<Array<StatusListResult>>
 
@@ -58,11 +78,11 @@ export interface IStatusListDriver {
 
   getStatusListEntryByIndex(args: IGetStatusListEntryByIndexArgs): Promise<IStatusListEntryEntity | undefined>
 
-  updateStatusList(args: { statusListCredential: StatusListCredential; correlationId: string }): Promise<StatusListResult>
+  updateStatusList(args: IUpdateStatusListArgs): Promise<StatusListResult>
 
   deleteStatusList(): Promise<boolean>
 
-  getRandomNewStatusListIndex(args?: { correlationId?: string }): Promise<number>
+  getRandomNewStatusListIndex(args?: IGetRandomNewStatusListIndexArgs): Promise<number>
 
   isStatusListIndexInUse(): Promise<boolean>
 }

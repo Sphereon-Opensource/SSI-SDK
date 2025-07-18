@@ -37,9 +37,16 @@ import {
   StatusListResult,
   toStatusListDetails,
 } from '@sphereon/ssi-sdk.vc-status-list'
-import { StatusListCredential, StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
+import { StatusListCredentialIdMode, StatusListDriverType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { IStatusListDriver } from './types'
+import {
+  ICreateStatusListArgs,
+  IGetRandomNewStatusListIndexArgs,
+  IGetStatusListArgs,
+  IGetStatusListLengthArgs,
+  IStatusListDriver,
+  IUpdateStatusListArgs,
+} from './types'
 import { statusListResultToEntity } from './status-list-adapters'
 
 /**
@@ -208,13 +215,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
    * @param args - Status list creation parameters
    * @returns Promise resolving to StatusListResult
    */
-  async createStatusList(args: {
-    statusListType: StatusListType
-    statusListCredential: StatusListCredential
-    correlationId?: string
-    credentialIdMode?: StatusListCredentialIdMode
-    bitsPerStatus?: number
-  }): Promise<StatusListResult> {
+  async createStatusList(args: ICreateStatusListArgs): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
     if (!correlationId) {
       throw Error('Either a correlationId needs to be set as an option, or it needs to be provided when creating a status list. None found')
@@ -248,7 +249,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
    * @param args - Status list update parameters
    * @returns Promise resolving to StatusListResult
    */
-  async updateStatusList(args: { statusListCredential: StatusListCredential; correlationId: string }): Promise<StatusListResult> {
+  async updateStatusList(args: IUpdateStatusListArgs): Promise<StatusListResult> {
     const correlationId = args.correlationId ?? this.options.correlationId
 
     const extractedDetails = await extractCredentialDetails(args.statusListCredential)
@@ -344,7 +345,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
    * @param args - Optional correlation ID parameter
    * @returns Promise resolving to available index number
    */
-  async getRandomNewStatusListIndex(args?: { correlationId?: string }): Promise<number> {
+  async getRandomNewStatusListIndex(args?: IGetRandomNewStatusListIndexArgs): Promise<number> {
     let result = -1
     let tries = 0
     while (result < 0) {
@@ -385,7 +386,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
    * @param args - Optional correlation ID parameter
    * @returns Promise resolving to status list length
    */
-  async getStatusListLength(args?: { correlationId?: string }): Promise<number> {
+  async getStatusListLength(args?: IGetStatusListLengthArgs): Promise<number> {
     if (!this._statusListLength) {
       this._statusListLength = await this.getStatusList(args).then((details) => details.length)
     }
@@ -397,7 +398,7 @@ export class AgentDataSourceStatusListDriver implements IStatusListDriver {
    * @param args - Optional correlation ID parameter
    * @returns Promise resolving to StatusListResult
    */
-  async getStatusList(args?: { correlationId?: string }): Promise<StatusListResult> {
+  async getStatusList(args?: IGetStatusListArgs): Promise<StatusListResult> {
     const id = this.options.id
     const correlationId = args?.correlationId ?? this.options.correlationId
 

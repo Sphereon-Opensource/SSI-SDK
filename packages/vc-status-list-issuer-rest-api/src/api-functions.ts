@@ -98,11 +98,14 @@ export function getStatusListCredentialEndpoint(router: Router, context: IRequir
 }
 
 function lookupType(details: StatusListResult) {
-  return details.type === StatusListType.StatusList2021
-    ? 'StatusList2021Entry'
-    : details.type === StatusListType.BitstringStatusList
-      ? 'BitstringStatusListEntry'
-      : details.type
+  switch (details.type) {
+    case StatusListType.StatusList2021:
+      return 'StatusList2021Entry'
+    case StatusListType.BitstringStatusList:
+      return 'BitstringStatusListEntry'
+    default:
+      return details.type
+  }
 }
 
 export function getStatusListCredentialIndexStatusEndpoint(router: Router, context: IRequiredContext, opts: ICredentialStatusListEndpointOpts) {
@@ -161,18 +164,15 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
       const resultStatusIndex = entry?.statusListIndex ?? statusListIndex ?? 0
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
-        ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
-        ...(details.type === StatusListType.BitstringStatusList
-          ? {
-              statusPurpose: details.bitstringStatusList?.statusPurpose,
-              bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
-            }
-          : {}),
         type,
         id: details.id,
         statusListIndex: resultStatusIndex,
+        ...(details.type === StatusListType.StatusList2021 && { statusPurpose: details.statusList2021?.statusPurpose }),
+        ...(details.type === StatusListType.BitstringStatusList && {
+          statusPurpose: details.bitstringStatusList?.statusPurpose,
+          bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
+        }),
       })
-
       if (!entry) {
         entry = {
           statusListId: details.id,
@@ -183,7 +183,7 @@ export function getStatusListCredentialIndexStatusEndpoint(router: Router, conte
 
       response.statusCode = 200
       const result = { ...entry, status }
-      delete result.statusList // we asked for the status, not the entire list
+      delete result.statusList // the API caller requested the index status, not the entire status list which may be big. Filter it out
       return response.json(result)
     } catch (e) {
       return sendErrorResponse(response, 500, (e as Error).message, e)
@@ -230,13 +230,11 @@ export function getStatusListCredentialIndexStatusEndpointLegacy(router: Router,
       const type = details.type === StatusListType.StatusList2021 ? 'StatusList2021Entry' : details.type
       const status = await checkStatusIndexFromStatusListCredential({
         statusListCredential: details.statusListCredential,
-        ...(details.type === StatusListType.StatusList2021 ? { statusPurpose: details.statusList2021?.statusPurpose } : {}),
-        ...(details.type === StatusListType.BitstringStatusList
-          ? {
-              statusPurpose: details.bitstringStatusList?.statusPurpose,
-              bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
-            }
-          : {}),
+        ...(details.type === StatusListType.StatusList2021 && { statusPurpose: details.statusList2021?.statusPurpose }),
+        ...(details.type === StatusListType.BitstringStatusList && {
+          statusPurpose: details.bitstringStatusList?.statusPurpose,
+          bitsPerStatus: details.bitstringStatusList?.bitsPerStatus,
+        }),
         type,
         id: details.id,
         statusListIndex,
@@ -350,8 +348,12 @@ export function updateStatusEndpoint(router: Router, context: IRequiredContext, 
           },
           context,
         )
+
+        if (!statusListResult.correlationId) {
+          return Promise.reject(Error('Cannot update the statuslist, correlationId is missing from the status list result'))
+        }
         statusListResult = await driver.updateStatusList({
-          correlationId: statusListResult.correlationId!, // FIXME?
+          correlationId: statusListResult.correlationId,
           statusListCredential: statusListResult.statusListCredential,
         })
       }
