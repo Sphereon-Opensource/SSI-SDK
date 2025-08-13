@@ -2,7 +2,7 @@ import { LOG } from '@sphereon/oid4vci-client'
 import {
   CredentialConfigurationSupported,
   CredentialSupportedSdJwtVc,
-  CredentialConfigurationSupportedSdJwtVcV1_0_13,
+  CredentialConfigurationSupportedSdJwtVcV1_0_15,
   CredentialOfferFormatV1_0_11,
   CredentialResponse,
   getSupportedCredentials,
@@ -73,7 +73,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]): Promise<void> => {
       let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
       if (credentialsConfigSupported.format === 'vc+sd-jwt') {
-        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_13>credentialsConfigSupported).vct
+        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_15>credentialsConfigSupported).vct
         if (vct.startsWith('http')) {
           try {
             sdJwtTypeMetadata = await context.agent.fetchSdJwtTypeMetadataFromVctUrl({ vct })

@@ -26,9 +26,9 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.0",
-    "@sphereon/did-auth-siop-adapter": "0.19.0",
-    "@sphereon/oid4vc-common": "0.19.0",
+    "@sphereon/did-auth-siop": "0.19.1-feature.SSISDK.13.19",
+    "@sphereon/did-auth-siop-adapter": "0.19.1-feature.SSISDK.13.19",
+    "@sphereon/oid4vc-common": "0.19.1-feature.SSISDK.13.19",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/ssi-sdk-ext.did-utils": "0.29.0",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "0.29.0",

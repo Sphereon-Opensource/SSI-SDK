@@ -4,8 +4,8 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
-  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13,
-  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13,
+  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15,
+  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
@@ -1150,9 +1150,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     return undefined
   }
 
-  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13 | undefined {
+  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15 | undefined {
     if (issuanceOpt.format == 'ldp_vc' || issuanceOpt.format == 'jwt_vc_json-ld') {
-      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13).credential_definition
+      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15).credential_definition
     }
     return undefined
   }
