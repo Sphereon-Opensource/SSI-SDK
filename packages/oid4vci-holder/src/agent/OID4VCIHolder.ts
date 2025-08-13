@@ -849,11 +849,30 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     let counter = 0
     for (const credentialId of selectedCredentials) {
-      const localeBranding: Array<IBasicCredentialLocaleBranding> | undefined = credentialBranding?.[credentialId]
+      // The selectedCredential from context is the configurationId, whilst we store the branding by type. We need to map
+      const configId = credentialId
+      const types =
+        credentialsToAccept
+          .find((ac) => ac.correlationId === configId || ac.credentialToAccept.id === configId || ac.types.includes(configId))
+          ?.types?.filter((type) => type != 'VerifiableCredential') ?? []
+
+      const localeBranding: Array<IBasicCredentialLocaleBranding> = credentialBranding?.[configId] ?? []
+      if (localeBranding.length === 0) {
+        for (const type of types) {
+          const branding = credentialBranding?.[type] ?? []
+          if (branding.length > 0) {
+            localeBranding.push(...branding)
+          }
+        }
+      }
+
       if (localeBranding && localeBranding.length > 0) {
         const credential = credentialsToAccept.find(
           (credAccept) =>
-            credAccept.credentialToAccept.id === credentialId || JSON.stringify(credAccept.types) === credentialId || credentialsToAccept[counter],
+            credAccept.credentialToAccept.id === credentialId ||
+            JSON.stringify(credAccept.types) === credentialId ||
+            JSON.stringify(credAccept.types.filter((cred) => cred !== 'VerifiableCredential')) === JSON.stringify(types) ||
+            credentialsToAccept[counter],
         )!
         counter++
         await context.agent.ibAddCredentialBranding({

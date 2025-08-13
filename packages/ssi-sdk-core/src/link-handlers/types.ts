@@ -36,8 +36,8 @@ export type LinkHandlerEventData = {
   options?: Record<string, any>
 }
 
-export const emitLinkHandlerURLEvent = (event: LinkHandlerEventData, context: IAgentContext<any>): Promise<void> => {
-  return context.agent.emit(LinkHandlerEventType.LINK_HANDLER_URL, event)
+export const emitLinkHandlerURLEvent = async (event: LinkHandlerEventData, context: IAgentContext<any>): Promise<void> => {
+  return await context.agent.emit(LinkHandlerEventType.LINK_HANDLER_URL, event)
 }
 
 export enum LinkHandlerEventType {

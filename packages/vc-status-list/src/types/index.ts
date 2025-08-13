@@ -1,31 +1,26 @@
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
+  type CredentialProofFormat,
   type ICredential,
   type ICredentialStatus,
   type IIssuer,
   type IVerifiableCredential,
   type OrPromise,
-  type CredentialProofFormat,
   type StatusListCredential,
-  StatusListCredentialIdMode,
   StatusListDriverType,
   type StatusListIndexingDirection,
   StatusListType,
   type StatusPurpose2021,
 } from '@sphereon/ssi-types'
-import type {
-  CredentialPayload,
-  IAgentContext,
-  ICredentialIssuer,
-  ICredentialPlugin,
-  ICredentialVerifier,
-  IKeyManager,
-  IPluginMethodMap,
-} from '@veramo/core'
+import type { CredentialPayload, IAgentContext, ICredentialIssuer, ICredentialVerifier, IKeyManager, IPluginMethodMap } from '@veramo/core'
 import { DataSource } from 'typeorm'
 import type { BitsPerStatus } from '@sd-jwt/jwt-status-list'
 import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import type { StatusListOpts } from '@sphereon/oid4vci-common'
+import { BitstringStatusPurpose } from '@4sure-tech/vc-bitstring-status-lists'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { IExtractedCredentialDetails } from '../impl/IStatusList'
+import { BitstringStatusListArgs, IStatusListEntity } from '@sphereon/ssi-sdk.data-store'
 
 export enum StatusOAuth {
   Valid = 0,
@@ -45,7 +40,7 @@ export type StatusList2021Args = {
 }
 
 export type OAuthStatusListArgs = {
-  bitsPerStatus?: BitsPerStatus
+  bitsPerStatus: BitsPerStatus
   expiresAt?: Date
 }
 
@@ -59,6 +54,7 @@ export type BaseCreateNewStatusListArgs = {
   keyRef?: string
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
+  bitstringStatusList?: BitstringStatusListArgs
   driverType?: StatusListDriverType
 }
 
@@ -71,10 +67,18 @@ export type UpdateOAuthStatusListArgs = {
   expiresAt?: Date
 }
 
+export type UpdateBitstringStatusListArgs = {
+  statusPurpose: BitstringStatusPurpose
+  bitsPerStatus: number
+  validFrom?: Date
+  validUntil?: Date
+  ttl?: number
+}
+
 export interface UpdateStatusListFromEncodedListArgs {
   type?: StatusListType
   statusListIndex: number | string
-  value: boolean
+  value: number
   proofFormat?: CredentialProofFormat
   keyRef?: string
   correlationId?: string
@@ -83,6 +87,7 @@ export interface UpdateStatusListFromEncodedListArgs {
   id: string
   statusList2021?: UpdateStatusList2021Args
   oauthStatusList?: UpdateOAuthStatusListArgs
+  bitstringStatusList?: UpdateBitstringStatusListArgs
 }
 
 export interface UpdateStatusListFromStatusListCredentialArgs {
@@ -93,31 +98,32 @@ export interface UpdateStatusListFromStatusListCredentialArgs {
 }
 
 export interface StatusListResult {
+  id: string
   encodedList: string
-  statusListCredential: StatusListCredential
-  length: number
+  issuer: string | IIssuer
   type: StatusListType
   proofFormat: CredentialProofFormat
-  id: string
+  length: number
+  statusListCredential: StatusListCredential
   statuslistContentType: string
-  issuer: string | IIssuer
-  statusList2021?: StatusList2021Details
-  oauthStatusList?: OAuthStatusDetails
-
-  // These cannot be deduced from the VC, so they are present when callers pass in these values as params
   correlationId?: string
   driverType?: StatusListDriverType
-  credentialIdMode?: StatusListCredentialIdMode
-}
 
-interface StatusList2021Details {
-  indexingDirection: StatusListIndexingDirection
-  statusPurpose?: StatusPurpose2021
-}
-
-interface OAuthStatusDetails {
-  bitsPerStatus?: BitsPerStatus
-  expiresAt?: Date
+  statusList2021?: {
+    indexingDirection: StatusListIndexingDirection
+    statusPurpose: StatusPurpose2021
+  }
+  oauthStatusList?: {
+    bitsPerStatus: number
+    expiresAt?: Date
+  }
+  bitstringStatusList?: {
+    statusPurpose: BitstringStatusPurpose | BitstringStatusPurpose[]
+    bitsPerStatus?: number
+    validFrom?: Date
+    validUntil?: Date
+    ttl?: number
+  }
 }
 
 export interface StatusList2021EntryCredentialStatus extends ICredentialStatus {
@@ -154,12 +160,14 @@ export interface CreateStatusListArgs {
   length?: number
   statusList2021?: StatusList2021Args
   oauthStatusList?: OAuthStatusListArgs
+  bitstringStatusList?: BitstringStatusListArgs
 }
 
 export interface UpdateStatusListIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: number | string
   value: number | Status2021 | StatusOAuth
+  bitsPerStatus?: number
   keyRef?: string
   expiresAt?: Date
 }
@@ -167,12 +175,25 @@ export interface UpdateStatusListIndexArgs {
 export interface CheckStatusIndexArgs {
   statusListCredential: StatusListCredential // | CompactJWT
   statusListIndex: string | number
+  bitsPerStatus?: number
 }
 
-export interface ToStatusListDetailsArgs {
-  statusListPayload: StatusListCredential
+// For the CREATE and READ contexts
+export interface IToDetailsFromCredentialArgs {
+  // The source credential we are converting
+  statusListCredential: StatusListCredential
+
+  // The required metadata that is NOT in the credential itself
+  statusListType: StatusListType
+  bitsPerStatus?: number
   correlationId?: string
   driverType?: StatusListDriverType
+}
+
+// For the UPDATE context
+export interface IMergeDetailsWithEntityArgs {
+  extractedDetails: IExtractedCredentialDetails
+  statusListEntity: IStatusListEntity
 }
 
 /**
@@ -260,5 +281,5 @@ export type SignedStatusListData = {
   encodedList: string
 }
 
-export type IRequiredPlugins = ICredentialPlugin & IIdentifierResolution
-export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager & ICredentialPlugin>
+export type IRequiredPlugins = IVcdmCredentialPlugin & IIdentifierResolution
+export type IRequiredContext = IAgentContext<ICredentialIssuer & ICredentialVerifier & IIdentifierResolution & IKeyManager & IVcdmCredentialPlugin>

@@ -1,35 +1,37 @@
-import type { IAgentContext, ICredentialPlugin, ProofFormat as VeramoProofFormat } from '@veramo/core'
+import type { IAgentContext, ProofFormat as VeramoProofFormat } from '@veramo/core'
 import type { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import {
   CredentialMapper,
+  type CredentialProofFormat,
   DocumentFormat,
   type IIssuer,
-  type CredentialProofFormat,
   type StatusListCredential,
   StatusListType,
 } from '@sphereon/ssi-types'
 
 import { StatusList } from '@sphereon/vc-status-list'
-import type { IStatusList } from './IStatusList'
+import type { IExtractedCredentialDetails, IStatusList, IStatusList2021ImplementationResult } from './IStatusList'
 import type {
   CheckStatusIndexArgs,
   CreateStatusListArgs,
+  IMergeDetailsWithEntityArgs,
+  IToDetailsFromCredentialArgs,
   StatusListResult,
-  ToStatusListDetailsArgs,
   UpdateStatusListFromEncodedListArgs,
   UpdateStatusListIndexArgs,
 } from '../types'
-
-import { Status2021 } from '../types'
+import { Status2021, StatusList2021EntryCredentialStatus } from '../types'
 import { assertValidProofType, getAssertedProperty, getAssertedValue, getAssertedValues } from '../utils'
+import { IBitstringStatusListEntryEntity, IStatusListEntryEntity, StatusList2021Entity, StatusListEntity } from '@sphereon/ssi-sdk.data-store'
+import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 export const DEFAULT_LIST_LENGTH = 250000
-export const DEFAULT_PROOF_FORMAT = 'lds' as VeramoProofFormat
+export const DEFAULT_PROOF_FORMAT = 'lds' as CredentialProofFormat
 
 export class StatusList2021Implementation implements IStatusList {
   async createNewStatusList(
     args: CreateStatusListArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     const length = args?.length ?? DEFAULT_LIST_LENGTH
     const proofFormat: CredentialProofFormat = args?.proofFormat ?? DEFAULT_PROOF_FORMAT
@@ -71,7 +73,7 @@ export class StatusList2021Implementation implements IStatusList {
 
   async updateStatusListIndex(
     args: UpdateStatusListIndexArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     const credential = args.statusListCredential
     const uniform = CredentialMapper.toUniformCredential(credential)
@@ -96,11 +98,15 @@ export class StatusList2021Implementation implements IStatusList {
       context,
     )
 
+    if (!('statusPurpose' in credentialSubject)) {
+      return Promise.reject(Error('statusPurpose is required in credentialSubject for StatusList2021'))
+    }
+
     return {
       statusListCredential: updatedCredential,
       encodedList,
       statusList2021: {
-        ...('statusPurpose' in credentialSubject ? { statusPurpose: credentialSubject.statusPurpose } : {}),
+        statusPurpose: credentialSubject.statusPurpose,
         indexingDirection: 'rightToLeft',
       },
       length: statusList.length - 1,
@@ -114,7 +120,7 @@ export class StatusList2021Implementation implements IStatusList {
 
   async updateStatusListFromEncodedList(
     args: UpdateStatusListFromEncodedListArgs,
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListResult> {
     if (!args.statusList2021) {
       throw new Error('statusList2021 options required for type StatusList2021')
@@ -126,7 +132,7 @@ export class StatusList2021Implementation implements IStatusList {
     const { issuer, id } = getAssertedValues(args)
     const statusList = await StatusList.decode({ encodedList: args.encodedList })
     const index = typeof args.statusListIndex === 'number' ? args.statusListIndex : parseInt(args.statusListIndex)
-    statusList.setStatus(index, args.value)
+    statusList.setStatus(index, args.value !== 0)
 
     const newEncodedList = await statusList.encode()
     const credential = await this.createVerifiableCredential(
@@ -166,32 +172,106 @@ export class StatusList2021Implementation implements IStatusList {
     return status ? Status2021.Invalid : Status2021.Valid
   }
 
-  async toStatusListDetails(args: ToStatusListDetailsArgs): Promise<StatusListResult> {
-    const { statusListPayload } = args
-    const uniform = CredentialMapper.toUniformCredential(statusListPayload)
+  /**
+   * Performs the initial parsing of a StatusListCredential.
+   * This method handles expensive operations like JWT/CWT decoding once.
+   * It extracts all details available from the credential payload itself.
+   */
+  async extractCredentialDetails(credential: StatusListCredential): Promise<IExtractedCredentialDetails> {
+    const uniform = CredentialMapper.toUniformCredential(credential)
     const { issuer, credentialSubject } = uniform
-    const id = getAssertedValue('id', uniform.id)
-    const encodedList = getAssertedProperty('encodedList', credentialSubject)
-    const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListPayload) === DocumentFormat.JWT ? 'jwt' : 'lds'
-
-    const statusPurpose = getAssertedProperty('statusPurpose', credentialSubject)
-    const list = await StatusList.decode({ encodedList })
+    const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
 
     return {
-      id,
-      encodedList,
+      id: getAssertedValue('id', uniform.id),
       issuer,
-      type: StatusListType.StatusList2021,
-      proofFormat,
-      length: list.length,
-      statusListCredential: statusListPayload,
-      statuslistContentType: this.buildContentType(proofFormat),
-      statusList2021: {
+      encodedList: getAssertedProperty('encodedList', subject),
+    }
+  }
+
+  async toStatusListDetails(args: IToDetailsFromCredentialArgs): Promise<StatusListResult & IStatusList2021ImplementationResult>
+  // For UPDATE contexts
+  async toStatusListDetails(args: IMergeDetailsWithEntityArgs): Promise<StatusListResult & IStatusList2021ImplementationResult>
+  async toStatusListDetails(
+    args: IToDetailsFromCredentialArgs | IMergeDetailsWithEntityArgs,
+  ): Promise<StatusListResult & IStatusList2021ImplementationResult> {
+    if ('statusListCredential' in args) {
+      // CREATE/READ context
+      const { statusListCredential, correlationId, driverType } = args
+      const uniform = CredentialMapper.toUniformCredential(statusListCredential)
+      const { issuer, credentialSubject } = uniform
+      const subject = Array.isArray(credentialSubject) ? credentialSubject[0] : credentialSubject
+
+      const id = getAssertedValue('id', uniform.id)
+      const encodedList = getAssertedProperty('encodedList', subject)
+      const statusPurpose = getAssertedProperty('statusPurpose', subject)
+      const proofFormat: CredentialProofFormat = CredentialMapper.detectDocumentType(statusListCredential) === DocumentFormat.JWT ? 'jwt' : 'lds'
+      const list = await StatusList.decode({ encodedList })
+
+      return {
+        id,
+        encodedList,
+        issuer,
+        type: StatusListType.StatusList2021,
+        proofFormat,
+        length: list.length,
+        statusListCredential,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId,
+        driverType,
         indexingDirection: 'rightToLeft',
         statusPurpose,
-      },
-      ...(args.correlationId && { correlationId: args.correlationId }),
-      ...(args.driverType && { driverType: args.driverType }),
+        statusList2021: {
+          indexingDirection: 'rightToLeft',
+          statusPurpose,
+        },
+      }
+    } else {
+      // UPDATE context
+      const { extractedDetails, statusListEntity } = args
+      const statusList2021Entity = statusListEntity as StatusList2021Entity
+
+      const proofFormat: CredentialProofFormat =
+        CredentialMapper.detectDocumentType(statusListEntity.statusListCredential!) === DocumentFormat.JWT ? 'jwt' : 'lds'
+      const list = await StatusList.decode({ encodedList: extractedDetails.encodedList })
+
+      return {
+        id: extractedDetails.id,
+        encodedList: extractedDetails.encodedList,
+        issuer: extractedDetails.issuer,
+        type: StatusListType.StatusList2021,
+        proofFormat,
+        length: list.length,
+        statusListCredential: statusListEntity.statusListCredential!,
+        statuslistContentType: this.buildContentType(proofFormat),
+        correlationId: statusListEntity.correlationId,
+        driverType: statusListEntity.driverType,
+        indexingDirection: statusList2021Entity.indexingDirection,
+        statusPurpose: statusList2021Entity.statusPurpose,
+        statusList2021: {
+          indexingDirection: statusList2021Entity.indexingDirection,
+          statusPurpose: statusList2021Entity.statusPurpose,
+        },
+      }
+    }
+  }
+
+  async createCredentialStatus(args: {
+    statusList: StatusListEntity
+    statusListEntry: IStatusListEntryEntity | IBitstringStatusListEntryEntity
+    statusListIndex: number
+  }): Promise<StatusList2021EntryCredentialStatus> {
+    const { statusList, statusListIndex } = args
+
+    // Cast to StatusList2021Entity to access specific properties
+    const statusList2021 = statusList as StatusList2021Entity
+
+    return {
+      id: `${statusList.id}#${statusListIndex}`,
+      type: 'StatusList2021Entry',
+      statusPurpose: statusList2021.statusPurpose ?? 'revocation',
+      statusListIndex: '' + statusListIndex,
+      statusListCredential: statusList.id,
     }
   }
 
@@ -203,7 +283,7 @@ export class StatusList2021Implementation implements IStatusList {
       proofFormat: VeramoProofFormat
       keyRef?: string
     },
-    context: IAgentContext<ICredentialPlugin & IIdentifierResolution>,
+    context: IAgentContext<IVcdmCredentialPlugin & IIdentifierResolution>,
   ): Promise<StatusListCredential> {
     const identifier = await context.agent.identifierManagedGet({
       identifier: typeof args.issuer === 'string' ? args.issuer : args.issuer.id,
@@ -234,7 +314,7 @@ export class StatusList2021Implementation implements IStatusList {
     return CredentialMapper.toWrappedVerifiableCredential(verifiableCredential as StatusListCredential).original as StatusListCredential
   }
 
-  private buildContentType(proofFormat: 'jwt' | 'lds' | 'EthereumEip712Signature2021' | 'cbor' | undefined) {
+  private buildContentType(proofFormat: CredentialProofFormat | undefined) {
     switch (proofFormat) {
       case 'jwt':
         return `application/statuslist+jwt`

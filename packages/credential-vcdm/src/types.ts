@@ -11,15 +11,17 @@ import type {
 } from '@veramo/core'
 
 import type { VerifiableCredentialSP, VerifiablePresentationSP } from '@sphereon/ssi-sdk.core'
+import type { StatusListOpts } from '@sphereon/oid4vci-common'
 
-import type { IIssueCredentialStatusOpts } from '@sphereon/ssi-sdk.vc-status-list'
 import type {
   ICredential,
   IVerifyResult,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
-  W3CVerifiablePresentation
+  W3CVerifiablePresentation,
 } from '@sphereon/ssi-types'
+
+import type { DataSource } from 'typeorm'
 
 export type IVcdmCredentialPlugin = IVcdmCredentialIssuer & IVcdmCredentialVerifier
 
@@ -106,6 +108,16 @@ export interface ICreateVerifiablePresentationLDArgs {
    *
    */
   now?: Date | number
+}
+
+/**
+ * Statuslist credential options, cloned from packages/vc-status-list/src/types/index.ts to break cyclic dependency loop
+ */
+export interface IIssueCredentialStatusOpts {
+  dataSource?: DataSource
+  statusLists?: Array<StatusListOpts>
+  credentialId?: string // An id to use for the credential. Normally should be set as the crdential.id value
+  value?: string
 }
 
 /**

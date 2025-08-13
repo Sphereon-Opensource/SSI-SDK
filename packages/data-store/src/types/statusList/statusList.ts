@@ -1,13 +1,14 @@
 import {
+  type CredentialProofFormat,
+  type ICredentialStatus,
   IIssuer,
+  RequireOneOf,
   StatusListCredential,
   StatusListCredentialIdMode,
   StatusListDriverType,
   StatusListIndexingDirection,
   StatusListType,
   StatusPurpose2021,
-  type CredentialProofFormat,
-  RequireOneOf,
 } from '@sphereon/ssi-types'
 import { StatusListEntity } from '../../entities/statusList/StatusListEntities'
 
@@ -21,6 +22,7 @@ export interface IStatusListEntity {
   type: StatusListType
   proofFormat: CredentialProofFormat
   statusListCredential?: StatusListCredential
+  bitsPerStatus?: number
 }
 
 export interface IStatusList2021Entity extends IStatusListEntity {
@@ -31,6 +33,14 @@ export interface IStatusList2021Entity extends IStatusListEntity {
 export interface IOAuthStatusListEntity extends IStatusListEntity {
   bitsPerStatus: number
   expiresAt?: Date
+}
+
+export interface IBitstringStatusListEntity extends IStatusListEntity {
+  statusPurpose: BitstringStatusPurpose | Array<BitstringStatusPurpose>
+  bitsPerStatus?: number
+  validFrom?: Date
+  validUntil?: Date
+  ttl?: number
 }
 
 export type IStatusListEntryEntity = RequireOneOf<
@@ -45,3 +55,41 @@ export type IStatusListEntryEntity = RequireOneOf<
   },
   'statusList' | 'statusListId'
 >
+
+export type BitstringStatusPurpose = 'revocation' | 'suspension' | 'refresh' | 'message' | string // From vc-bitstring-status-lists without pulling in the whole dep for just this one type
+
+export type BitstringStatusMessage = {
+  status: string
+  message?: string
+  [x: string]: any
+}
+
+export interface BitstringStatusListEntryCredentialStatus extends ICredentialStatus {
+  type: 'BitstringStatusListEntry'
+  statusPurpose: BitstringStatusPurpose | Array<BitstringStatusPurpose>
+  statusListIndex: string
+  statusListCredential: string
+  bitsPerStatus?: number
+  statusMessage?: Array<BitstringStatusMessage>
+  statusReference?: string | Array<string>
+}
+
+export type BitstringStatusListArgs = {
+  statusPurpose: BitstringStatusPurpose
+  bitsPerStatus: number
+  ttl?: number
+  validFrom?: Date
+  validUntil?: Date
+}
+
+export interface IBitstringStatusListEntryEntity {
+  statusListId: string
+  statusListIndex: number
+  credentialId?: string
+  credentialHash?: string
+  entryCorrelationId?: string
+  statusPurpose: string
+  bitsPerStatus?: number
+  statusMessage?: Array<BitstringStatusMessage>
+  statusReference?: string | Array<string>
+}
