@@ -1,0 +1,55 @@
+{
+  "name": "@sphereon/ssi-sdk-ext.kms-azure",
+  "description": "Sphereon SSI-SDK plugin for Azure KeyVault Key Management System.",
+  "version": "0.35.0",
+  "source": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
+  },
+  "dependencies": {
+    "@sphereon/kmp-crypto-kms-azure": "0.2.0-SNAPSHOT.12",
+    "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
+    "@sphereon/ssi-sdk-ext.key-utils": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@veramo/core": "4.2.0",
+    "@veramo/key-manager": "4.2.0"
+  },
+  "devDependencies": {
+    "@types/text-encoding": "0.0.39"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/SSI-SDK-crypto-extensions.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "azure",
+    "keyvault",
+    "key-management",
+    "react-native",
+    "Veramo"
+  ]
+}

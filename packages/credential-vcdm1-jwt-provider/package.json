@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.credential-vcdm1-jwt-provider",
   "description": "Plugin for working with JWT Verifiable Credentials & Presentations.",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",

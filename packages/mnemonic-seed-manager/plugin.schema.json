@@ -1,0 +1,359 @@
+{
+  "IMnemonicSeedManager": {
+    "components": {
+      "schemas": {
+        "IMnemonicInfoStoreArgs": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            },
+            "mnemonic": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "masterKey": {
+              "type": "string"
+            },
+            "chainCode": {
+              "type": "string"
+            },
+            "kms": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "withZeroBytes": {
+              "type": "boolean"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "Ed25519",
+                "Secp256k1"
+              ]
+            },
+            "persist": {
+              "type": "boolean"
+            }
+          }
+        },
+        "DeleteResult": {
+          "type": "object",
+          "properties": {
+            "raw": {},
+            "affected": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "raw"
+          ]
+        },
+        "ManagedKeyInfo": {
+          "type": "object",
+          "properties": {
+            "kid": {
+              "type": "string",
+              "description": "Key ID"
+            },
+            "kms": {
+              "type": "string",
+              "description": "Key Management System"
+            },
+            "type": {
+              "$ref": "#/components/schemas/TKeyType",
+              "description": "Key type"
+            },
+            "publicKeyHex": {
+              "type": "string",
+              "description": "Public key"
+            },
+            "meta": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/KeyMetadata"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
+            }
+          },
+          "required": [
+            "kid",
+            "kms",
+            "type",
+            "publicKeyHex"
+          ],
+          "description": "Represents information about a managed key. Private or secret key material is NOT present."
+        },
+        "TKeyType": {
+          "type": "string",
+          "enum": [
+            "Ed25519",
+            "Secp256k1",
+            "Secp256r1",
+            "X25519",
+            "Bls12381G1",
+            "Bls12381G2",
+            "RSA"
+          ],
+          "description": "Cryptographic key type."
+        },
+        "KeyMetadata": {
+          "type": "object",
+          "properties": {
+            "algorithms": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "This encapsulates data about a key.\n\nImplementations of  {@link  @veramo/key-manager#AbstractKeyManagementSystem | AbstractKeyManagementSystem }  should populate this object, for each key, with the algorithms that can be performed using it.\n\nThis can also be used to add various tags to the keys under management."
+        },
+        "IMnemonicInfoKeyResult": {
+          "type": "object",
+          "properties": {
+            "masterKey": {
+              "type": "string"
+            },
+            "chainCode": {
+              "type": "string"
+            }
+          }
+        },
+        "IMnemonicGeneratorArgs": {
+          "type": "object",
+          "properties": {
+            "bits": {
+              "type": "number",
+              "enum": [
+                128,
+                160,
+                192,
+                224,
+                256
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "persist": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "bits"
+          ]
+        },
+        "IMnemonicInfoResult": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            },
+            "mnemonic": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "masterKey": {
+              "type": "string"
+            },
+            "chainCode": {
+              "type": "string"
+            },
+            "kms": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "withZeroBytes": {
+              "type": "boolean"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "Ed25519",
+                "Secp256k1"
+              ]
+            },
+            "persist": {
+              "type": "boolean"
+            },
+            "succeeded": {
+              "type": "boolean"
+            },
+            "seed": {
+              "type": "string"
+            }
+          }
+        },
+        "ISeedGeneratorArgs": {
+          "type": "object",
+          "properties": {
+            "mnemonic": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "mnemonic"
+          ]
+        },
+        "IMnemonicVerificationArgs": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            },
+            "wordList": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "wordList"
+          ]
+        },
+        "IPartialMnemonicVerificationArgs": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            },
+            "indexedWordList": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "maxItems": 2
+              }
+            }
+          },
+          "required": [
+            "indexedWordList"
+          ]
+        }
+      },
+      "methods": {
+        "deleteMnemonicInfo": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicInfoStoreArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/DeleteResult"
+          }
+        },
+        "generateKeysFromMnemonic": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicInfoStoreArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/ManagedKeyInfo"
+          }
+        },
+        "generateMasterKey": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicInfoStoreArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoKeyResult"
+          }
+        },
+        "generateMnemonic": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicGeneratorArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoResult"
+          }
+        },
+        "generateSeed": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ISeedGeneratorArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoResult"
+          }
+        },
+        "getMnemonicInfo": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicInfoStoreArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoResult"
+          }
+        },
+        "saveMnemonicInfo": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicInfoStoreArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoResult"
+          }
+        },
+        "verifyMnemonic": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IMnemonicVerificationArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoResult"
+          }
+        },
+        "verifyPartialMnemonic": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/IPartialMnemonicVerificationArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/IMnemonicInfoResult"
+          }
+        }
+      }
+    }
+  }
+}

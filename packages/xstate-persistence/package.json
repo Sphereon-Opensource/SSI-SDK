@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.xstate-machine-persistence",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
