@@ -953,7 +953,9 @@ export async function verifyRawSignature({
         const hashAlg =
           signatureAlgorithm === (JoseSignatureAlgorithm.RS512 || JoseSignatureAlgorithm.PS512)
             ? sha512
-            : signatureAlgorithm === (JoseSignatureAlgorithm.RS384 || JoseSignatureAlgorithm.PS384)
+          signatureAlgorithm === JoseSignatureAlgorithm.RS512 || signatureAlgorithm === JoseSignatureAlgorithm.PS512
+            ? sha512
+            : signatureAlgorithm === JoseSignatureAlgorithm.RS384 || signatureAlgorithm === JoseSignatureAlgorithm.PS384
             ? sha384
             : sha256
         switch (signatureAlgorithm) {
