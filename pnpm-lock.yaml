@@ -2939,9 +2939,6 @@ importers:
         specifier: workspace:*
         version: link:../ssi-types
     devDependencies:
-      '@sphereon/ssi-sdk-ext.jwt-service':
-        specifier: workspace:*
-        version: link:../jwt-service
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config

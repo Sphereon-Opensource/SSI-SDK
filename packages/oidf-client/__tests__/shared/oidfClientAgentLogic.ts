@@ -2,9 +2,10 @@ import { ResourceResolver } from '@sphereon/ssi-sdk.resource-resolver'
 import { createAgent, type TAgent } from '@veramo/core'
 import type { ICryptoService } from '@sphereon/openid-federation-client'
 import { type IOIDFClient, OIDFClient } from '../../src'
+import { type IJwtService, JwtService } from '../../../jwt-service/src'
 
 import { mockResponses } from './TrustChainMockResponses'
-import { type IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+// import { type IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IOIDFClient & IJwtService>
