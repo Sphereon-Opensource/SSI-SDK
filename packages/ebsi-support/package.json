@@ -51,7 +51,7 @@
     "ethers": "^6.13.1",
     "multiformats": "9.9.0",
     "qs": "^6.12.3",
-    "uint8arrays": "^3.1.1",
+    "uint8arrays": "3.1.1",
     "uuid": "^9.0.1",
     "xstate": "^4.38.3"
   },

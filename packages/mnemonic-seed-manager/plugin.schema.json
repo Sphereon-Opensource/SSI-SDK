@@ -42,7 +42,8 @@
             "persist": {
               "type": "boolean"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "DeleteResult": {
           "type": "object",
@@ -57,9 +58,17 @@
           },
           "required": [
             "raw"
-          ]
+          ],
+          "additionalProperties": false
         },
         "ManagedKeyInfo": {
+          "$ref": "#/components/schemas/Omit<IKey,\"privateKeyHex\">",
+          "description": "Represents information about a managed key. Private or secret key material is NOT present."
+        },
+        "Omit<IKey,\"privateKeyHex\">": {
+          "$ref": "#/components/schemas/Pick<IKey,Exclude<(\"kid\"|\"kms\"|\"type\"|\"publicKeyHex\"|\"privateKeyHex\"|\"meta\"),\"privateKeyHex\">>"
+        },
+        "Pick<IKey,Exclude<(\"kid\"|\"kms\"|\"type\"|\"publicKeyHex\"|\"privateKeyHex\"|\"meta\"),\"privateKeyHex\">>": {
           "type": "object",
           "properties": {
             "kid": {
@@ -96,7 +105,7 @@
             "type",
             "publicKeyHex"
           ],
-          "description": "Represents information about a managed key. Private or secret key material is NOT present."
+          "additionalProperties": false
         },
         "TKeyType": {
           "type": "string",
@@ -132,7 +141,8 @@
             "chainCode": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IMnemonicGeneratorArgs": {
           "type": "object",
@@ -156,7 +166,8 @@
           },
           "required": [
             "bits"
-          ]
+          ],
+          "additionalProperties": false
         },
         "IMnemonicInfoResult": {
           "type": "object",
@@ -204,7 +215,8 @@
             "seed": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "ISeedGeneratorArgs": {
           "type": "object",
@@ -218,7 +230,8 @@
           },
           "required": [
             "mnemonic"
-          ]
+          ],
+          "additionalProperties": false
         },
         "IMnemonicVerificationArgs": {
           "type": "object",
@@ -238,7 +251,8 @@
           },
           "required": [
             "wordList"
-          ]
+          ],
+          "additionalProperties": false
         },
         "IPartialMnemonicVerificationArgs": {
           "type": "object",
@@ -268,7 +282,8 @@
           },
           "required": [
             "indexedWordList"
-          ]
+          ],
+          "additionalProperties": false
         }
       },
       "methods": {

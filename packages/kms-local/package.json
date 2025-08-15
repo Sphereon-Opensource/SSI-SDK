@@ -19,8 +19,8 @@
     }
   },
   "scripts": {
-    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json && sphereon dev generate-plugin-schema",
-    "generate-plugin-schema": "sphereon dev generate-plugin-schema"
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json && tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema",
+    "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",

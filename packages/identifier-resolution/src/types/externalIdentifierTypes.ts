@@ -1,5 +1,5 @@
 import type { DidDocumentJwks } from '@sphereon/ssi-sdk-ext.did-utils'
-import type { ICoseKeyJson, JWK } from '@sphereon/ssi-types'
+import type { ICoseKeyJson, IValidationResult, JWK } from '@sphereon/ssi-types'
 import type { X509CertificateChainValidationOpts, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import type { IParsedDID } from '@sphereon/ssi-types'
 import type { DIDDocument, DIDDocumentSection, DIDResolutionResult } from '@veramo/core'
@@ -14,7 +14,7 @@ import {
   isX5cIdentifier,
   type JwkInfo,
 } from './common'
-import type { JwsPayload } from './IJwtService'
+// import type { JwsPayload } from './IJwtService'
 
 /**
  * Use whenever we need to resolve an external identifier. We can pass in kids, DIDs, and x5chains
@@ -173,7 +173,7 @@ export interface ExternalIdentifierOIDFEntityIdResult extends IExternalIdentifie
   method: 'entity_id'
   trustedAnchors: Array<TrustedAnchor>
   errorList?: Record<TrustedAnchor, ErrorMessage>
-  jwtPayload?: JwsPayload
+  jwtPayload?: JwtPayload
   trustEstablished: boolean
 }
 
@@ -189,4 +189,20 @@ export interface ExternalIdentifierDidResult extends IExternalIdentifierResultBa
   didJwks?: DidDocumentJwks
   didResolutionResult: Omit<DIDResolutionResult, 'didDocument'> // we already provide that directly
   didParsed: IParsedDID
+}
+
+export interface JwtPayload {
+  iss?: string
+  sub?: string
+  aud?: string[] | string
+  exp?: number
+  nbf?: number
+  iat?: number
+  jti?: string
+  [key: string]: unknown
+}
+
+
+export type IJwsValidationResult = IValidationResult & {
+   jws: any
 }

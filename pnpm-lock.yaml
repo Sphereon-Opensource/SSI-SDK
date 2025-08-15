@@ -1540,7 +1540,7 @@ importers:
         specifier: ^6.12.3
         version: 6.14.0
       uint8arrays:
-        specifier: ^3.1.1
+        specifier: 3.1.1
         version: 3.1.1
       uuid:
         specifier: ^9.0.1
@@ -2352,6 +2352,9 @@ importers:
       express:
         specifier: ^4.21.2
         version: 4.21.2
+      tsx:
+        specifier: ^4.20.4
+        version: 4.20.4
 
   packages/ms-authenticator:
     dependencies:
@@ -2936,6 +2939,9 @@ importers:
         specifier: workspace:*
         version: link:../ssi-types
     devDependencies:
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: workspace:*
+        version: link:../jwt-service
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
@@ -2948,6 +2954,9 @@ importers:
       jose:
         specifier: ^5.10.0
         version: 5.10.0
+      uint8arrays:
+        specifier: 3.1.1
+        version: 3.1.1
 
   packages/oidf-metadata-server:
     dependencies:
@@ -3496,7 +3505,7 @@ importers:
         specifier: 0.3.20
         version: 0.3.20(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.13.3(@swc/helpers@0.5.17))(@types/node@20.19.11)(typescript@5.8.3))
       uint8arrays:
-        specifier: ^3.1.1
+        specifier: 3.1.1
         version: 3.1.1
     devDependencies:
       '@sphereon/ssi-sdk.agent-config':
@@ -7858,9 +7867,11 @@ packages:
 
   '@sphereon/kmp-crypto-kms-azure@0.2.0-SNAPSHOT.12':
     resolution: {integrity: sha512-XDsLNHmFkHcPkwqmYLhxn1vVs2H6rAglrfjtpulOCmvPaqwROMnjS89lMD7F3fUpF5e5sYpk8IL6WlPZGvAP/A==}
+    bundledDependencies: []
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
+    bundledDependencies: []
 
   '@sphereon/lto-did-ts@0.1.8-unstable.0':
     resolution: {integrity: sha512-3jzwwuYX/VYuze+T9/yg4PcsJ5iNNwAfTp4WfS4aSfPFBErDAfKXqn6kOb0wFYGkhejr3Jz+rljPC2iKZiHiGA==}
