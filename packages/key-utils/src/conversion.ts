@@ -179,7 +179,29 @@ export function joseToCoseKeyOperation(keyOp: JoseKeyOperation | JoseKeyOperatio
       return ICoseKeyOperation.UNWRAP_KEY
     case (JoseKeyOperation.DERIVE_KEY, 'deriveKey'):
       return ICoseKeyOperation.DERIVE_KEY
-    case (JoseKeyOperation.DERIVE_BITS, 'deriveBits'):
+    case JoseKeyOperation.SIGN:
+    case 'sign':
+      return ICoseKeyOperation.SIGN
+    case JoseKeyOperation.VERIFY:
+    case 'verify':
+      return ICoseKeyOperation.VERIFY
+    case JoseKeyOperation.ENCRYPT:
+    case 'encrypt':
+      return ICoseKeyOperation.ENCRYPT
+    case JoseKeyOperation.DECRYPT:
+    case 'decrypt':
+      return ICoseKeyOperation.DECRYPT
+    case JoseKeyOperation.WRAP_KEY:
+    case 'wrapKey':
+      return ICoseKeyOperation.WRAP_KEY
+    case JoseKeyOperation.UNWRAP_KEY:
+    case 'unwrapKey':
+      return ICoseKeyOperation.UNWRAP_KEY
+    case JoseKeyOperation.DERIVE_KEY:
+    case 'deriveKey':
+      return ICoseKeyOperation.DERIVE_KEY
+    case JoseKeyOperation.DERIVE_BITS:
+    case 'deriveBits':
       return ICoseKeyOperation.DERIVE_BITS
     default:
       throw Error(`Key operation ${keyOp} not supported in Cose`)
