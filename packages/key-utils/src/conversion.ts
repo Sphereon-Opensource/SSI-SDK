@@ -125,7 +125,38 @@ export function joseToCoseSignatureAlg(joseAlg: JoseSignatureAlgorithm | JoseSig
       return ICoseSignatureAlgorithm.HS384
     case (JoseSignatureAlgorithm.HS512, 'HS512'):
       return ICoseSignatureAlgorithm.HS512
-    case (JoseSignatureAlgorithm.EdDSA, 'EdDSA'):
+    case JoseSignatureAlgorithm.ES256K:
+    case 'ES256K':
+      return ICoseSignatureAlgorithm.ES256K
+    case JoseSignatureAlgorithm.ES256:
+    case 'ES256':
+      return ICoseSignatureAlgorithm.ES256
+    case JoseSignatureAlgorithm.ES384:
+    case 'ES384':
+      return ICoseSignatureAlgorithm.ES384
+    case JoseSignatureAlgorithm.ES512:
+    case 'ES512':
+      return ICoseSignatureAlgorithm.ES512
+    case JoseSignatureAlgorithm.PS256:
+    case 'PS256':
+      return ICoseSignatureAlgorithm.PS256
+    case JoseSignatureAlgorithm.PS384:
+    case 'PS384':
+      return ICoseSignatureAlgorithm.PS384
+    case JoseSignatureAlgorithm.PS512:
+    case 'PS512':
+      return ICoseSignatureAlgorithm.PS512
+    case JoseSignatureAlgorithm.HS256:
+    case 'HS256':
+      return ICoseSignatureAlgorithm.HS256
+    case JoseSignatureAlgorithm.HS384:
+    case 'HS384':
+      return ICoseSignatureAlgorithm.HS384
+    case JoseSignatureAlgorithm.HS512:
+    case 'HS512':
+      return ICoseSignatureAlgorithm.HS512
+    case JoseSignatureAlgorithm.EdDSA:
+    case 'EdDSA':
       return ICoseSignatureAlgorithm.EdDSA
     default:
       throw Error(`Signature algorithm ${joseAlg} not supported in Cose`)
