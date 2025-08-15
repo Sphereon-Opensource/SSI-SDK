@@ -32,6 +32,12 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../jwt-service"
+    },
+    {
+      "path": "../identifier-resolution"
     }
   ],
   "extends": "../../tsconfig.base.json"

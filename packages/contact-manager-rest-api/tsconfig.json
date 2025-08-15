@@ -21,6 +21,12 @@
     },
     {
       "path": "../ssi-express-support"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../key-manager"
     }
   ]
 }

@@ -11,6 +11,18 @@
     },
     {
       "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../key-manager"
+    },
+    {
+      "path": "../kms-local"
     }
   ],
   "extends": "../../tsconfig.base.json"

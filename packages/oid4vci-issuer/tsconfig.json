@@ -30,6 +30,15 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../identifier-resolution"
     }
   ]
 }

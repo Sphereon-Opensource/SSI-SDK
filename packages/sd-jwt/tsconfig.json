@@ -9,6 +9,21 @@
     },
     {
       "path": "../ssi-types"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../jwt-service"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../x509-utils"
     }
   ]
 }
