@@ -105,26 +105,6 @@ export function coseToJoseSignatureAlg(coseAlg: ICoseSignatureAlgorithm): JoseSi
 
 export function joseToCoseSignatureAlg(joseAlg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString): ICoseSignatureAlgorithm {
   switch (joseAlg) {
-    case (JoseSignatureAlgorithm.ES256K, 'ES256K'):
-      return ICoseSignatureAlgorithm.ES256K
-    case (JoseSignatureAlgorithm.ES256, 'ES256'):
-      return ICoseSignatureAlgorithm.ES256
-    case (JoseSignatureAlgorithm.ES384, 'ES384'):
-      return ICoseSignatureAlgorithm.ES384
-    case (JoseSignatureAlgorithm.ES512, 'ES512'):
-      return ICoseSignatureAlgorithm.ES512
-    case (JoseSignatureAlgorithm.PS256, 'PS256'):
-      return ICoseSignatureAlgorithm.PS256
-    case (JoseSignatureAlgorithm.PS384, 'PS384'):
-      return ICoseSignatureAlgorithm.PS384
-    case (JoseSignatureAlgorithm.PS512, 'PS512'):
-      return ICoseSignatureAlgorithm.PS512
-    case (JoseSignatureAlgorithm.HS256, 'HS256'):
-      return ICoseSignatureAlgorithm.HS256
-    case (JoseSignatureAlgorithm.HS384, 'HS384'):
-      return ICoseSignatureAlgorithm.HS384
-    case (JoseSignatureAlgorithm.HS512, 'HS512'):
-      return ICoseSignatureAlgorithm.HS512
     case JoseSignatureAlgorithm.ES256K:
     case 'ES256K':
       return ICoseSignatureAlgorithm.ES256K
@@ -165,20 +145,6 @@ export function joseToCoseSignatureAlg(joseAlg: JoseSignatureAlgorithm | JoseSig
 
 export function joseToCoseKeyOperation(keyOp: JoseKeyOperation | JoseKeyOperationString): ICoseKeyOperation {
   switch (keyOp) {
-    case (JoseKeyOperation.SIGN, 'sign'):
-      return ICoseKeyOperation.SIGN
-    case (JoseKeyOperation.VERIFY, 'verify'):
-      return ICoseKeyOperation.VERIFY
-    case (JoseKeyOperation.ENCRYPT, 'encrypt'):
-      return ICoseKeyOperation.ENCRYPT
-    case (JoseKeyOperation.DECRYPT, 'decrypt'):
-      return ICoseKeyOperation.DECRYPT
-    case (JoseKeyOperation.WRAP_KEY, 'wrapKey'):
-      return ICoseKeyOperation.WRAP_KEY
-    case (JoseKeyOperation.UNWRAP_KEY, 'unwrapKey'):
-      return ICoseKeyOperation.UNWRAP_KEY
-    case (JoseKeyOperation.DERIVE_KEY, 'deriveKey'):
-      return ICoseKeyOperation.DERIVE_KEY
     case JoseKeyOperation.SIGN:
     case 'sign':
       return ICoseKeyOperation.SIGN
