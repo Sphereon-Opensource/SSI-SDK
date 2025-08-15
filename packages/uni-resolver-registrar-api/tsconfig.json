@@ -14,6 +14,15 @@
     },
     {
       "path": "../data-store"
+    },
+    {
+      "path": "../key-manager"
+    },
+    {
+      "path": "../did-utils",
+    },
+    {
+      "path": "../key-utils",
     }
   ],
   "extends": "../../tsconfig.base.json"

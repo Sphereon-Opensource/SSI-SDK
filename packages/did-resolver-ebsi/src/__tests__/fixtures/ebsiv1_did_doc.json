@@ -1,0 +1,20 @@
+{
+  "@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/suites/jws-2020/v1"],
+  "id": "did:ebsi:z25gUx2D5Ujb6eZcmQEnertx",
+  "controller": ["did:ebsi:z25gUx2D5Ujb6eZcmQEnertx"],
+  "verificationMethod": [
+    {
+      "id": "did:ebsi:z25gUx2D5Ujb6eZcmQEnertx#5jOg2ai976NEo_UKDCDHqDzO1vBx2RQJ_9ZuyZLqSCs",
+      "type": "JsonWebKey2020",
+      "controller": "did:ebsi:z25gUx2D5Ujb6eZcmQEnertx",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "secp256k1",
+        "x": "JrxLZH7tnmMNKP58VhKF0__HK3RLKRHU1n7TtE-htJo",
+        "y": "4yr_DPo70fZiWRp7McFr_n_on8FtDO5d-pe7-_v6_iA"
+      }
+    }
+  ],
+  "authentication": ["did:ebsi:z25gUx2D5Ujb6eZcmQEnertx#5jOg2ai976NEo_UKDCDHqDzO1vBx2RQJ_9ZuyZLqSCs"],
+  "capabilityInvocation": ["did:ebsi:z25gUx2D5Ujb6eZcmQEnertx#5jOg2ai976NEo_UKDCDHqDzO1vBx2RQJ_9ZuyZLqSCs"]
+}

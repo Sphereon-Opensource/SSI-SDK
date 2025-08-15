@@ -18,6 +18,60 @@
       "path": "./packages/ssi-sdk-core"
     },
     {
+      "path": "./packages/did-provider-jwk"
+    },
+    {
+      "path": "./packages/did-provider-key"
+    },
+    {
+      "path": "./packages/did-provider-oyd"
+    },
+    {
+      "path": "./packages/did-provider-web"
+    },
+    {
+      "path": "./packages/did-resolver-ebsi"
+    },
+    {
+      "path": "./packages/did-resolver-jwk"
+    },
+    {
+      "path": "./packages/did-resolver-key"
+    },
+    {
+      "path": "./packages/did-utils"
+    },
+    {
+      "path": "./packages/identifier-resolution"
+    },
+    {
+      "path": "./packages/jwt-service"
+    },
+    {
+      "path": "./packages/key-manager"
+    },
+    {
+      "path": "./packages/key-utils"
+    },
+    {
+      "path": "./packages/kms-azure"
+    },
+    {
+      "path": "./packages/kms-azure-rest-client"
+    },
+    {
+      "path": "./packages/kms-local"
+    },
+    {
+      "path": "./packages/kms-musap-rn"
+    },
+    {
+      "path": "./packages/mnemonic-seed-manager"
+    },
+    {
+      "path": "./packages/x509-utils"
+    },
+    {
       "path": "./packages/mdl-mdoc"
     },
     {

@@ -12,6 +12,12 @@
     },
     {
       "path": "../vc-status-list"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
     }
   ]
 }

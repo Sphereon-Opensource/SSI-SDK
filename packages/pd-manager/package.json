@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.pd-manager",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
-    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+    "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/pex": "5.0.0-unstable.28",

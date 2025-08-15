@@ -42,6 +42,18 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../jwt-service"
+    },
+    {
+      "path": "../identifier-resolution"
     }
   ]
 }

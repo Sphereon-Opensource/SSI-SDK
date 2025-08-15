@@ -1,0 +1,66 @@
+{
+  "name": "@sphereon/ssi-sdk-ext.key-utils",
+  "description": "Sphereon SSI-SDK plugin for key creation.",
+  "version": "0.35.0",
+  "source": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
+  },
+  "dependencies": {
+    "@ethersproject/random": "^5.7.0",
+    "@noble/curves": "1.7.0",
+    "@noble/hashes": "1.6.1",
+    "@sphereon/ssi-sdk-ext.x509-utils": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@stablelib/ed25519": "^1.0.3",
+    "@trust/keyto": "^1.0.1",
+    "@veramo/core": "4.2.0",
+    "base64url": "^3.0.1",
+    "debug": "^4.3.4",
+    "did-resolver": "^4.1.0",
+    "elliptic": "^6.5.4",
+    "lodash.isplainobject": "^4.0.6",
+    "micro-rsa-dsa-dh": "^0.1.0",
+    "multiformats": "^9.9.0",
+    "uint8arrays": "3.1.1",
+    "varint": "^6.0.0",
+    "web-encoding": "^1.1.5"
+  },
+  "devDependencies": {
+    "@types/lodash.isplainobject": "^4.0.7",
+    "@types/node": "20.17.1"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/SSI-SDK-crypto-extensions.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "JWK",
+    "DID",
+    "Veramo"
+  ]
+}

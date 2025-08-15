@@ -1,0 +1,58 @@
+{
+  "name": "@sphereon/ssi-sdk-ext.x509-utils",
+  "description": "Sphereon SSI-SDK plugin functions for X.509 Certificate handling.",
+  "version": "0.35.0",
+  "source": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
+  },
+  "dependencies": {
+    "@peculiar/asn1-schema": "^2.3.13",
+    "@peculiar/asn1-x509": "^2.3.13",
+    "@peculiar/x509": "^1.12.3",
+    "@sphereon/ssi-types": "workspace:*",
+    "@trust/keyto": "^1.0.1",
+    "debug": "^4.3.4",
+    "js-x509-utils": "^1.0.7",
+    "pkijs": "^3.2.4",
+    "tsyringe": "^4.8.0",
+    "uint8arrays": "3.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.1",
+    "typescript": "5.8.3"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "JWK",
+    "DID",
+    "Veramo"
+  ]
+}

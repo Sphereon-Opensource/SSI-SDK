@@ -30,6 +30,21 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../did-resolver-ebsi"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../jwt-service"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
     }
   ]
 }

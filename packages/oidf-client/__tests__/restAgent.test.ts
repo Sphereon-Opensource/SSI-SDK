@@ -63,6 +63,7 @@ const testContext = {
   tearDown,
 }
 
+// FIXME Needs fixing after move to ESM, loading from config does not work anymore
 describe.skip('REST integration tests', (): void => {
   oidfClientAgentLogic(testContext)
 })

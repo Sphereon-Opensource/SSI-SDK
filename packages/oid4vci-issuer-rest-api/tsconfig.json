@@ -21,6 +21,12 @@
     },
     {
       "path": "../data-store"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../jwt-service"
     }
   ]
 }

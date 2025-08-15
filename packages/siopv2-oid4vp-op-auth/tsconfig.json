@@ -39,6 +39,15 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../jwt-service"
     }
   ]
 }

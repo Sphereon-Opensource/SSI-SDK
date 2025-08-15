@@ -1,0 +1,59 @@
+{
+  "name": "@sphereon/ssi-sdk-ext.did-resolver-ebsi",
+  "description": "Sphereon did:ebsi resolver for Legal Entities.",
+  "version": "0.35.0",
+  "source": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
+  },
+  "dependencies": {
+    "cross-fetch": "^3.1.8",
+    "did-resolver": "^4.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/lodash.isplainobject": "^4.0.7",
+    "@types/varint": "^6.0.1"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK-crypto-extensions.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "contributors": [],
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "did:key resolver",
+    "DID",
+    "KEY",
+    "EBSI",
+    "BLS",
+    "BBS+",
+    "ed25519",
+    "secp256r1",
+    "secp256r1",
+    "RSA"
+  ]
+}

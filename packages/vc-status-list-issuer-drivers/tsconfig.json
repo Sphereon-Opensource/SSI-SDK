@@ -23,6 +23,12 @@
     },
     {
       "path": "../credential-vcdm2-jose-provider"
+    },
+    {
+      "path": "../did-utils",
+    },
+    {
+      "path": "../identifier-resolution"
     }
   ],
   "extends": "../../tsconfig.base.json"

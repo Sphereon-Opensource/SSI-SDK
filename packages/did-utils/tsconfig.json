@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../x509-utils"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    }
+  ]
+}

@@ -20,6 +20,12 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../did-utils",
+    },
+    {
+      "path": "../identifier-resolution"
     }
   ],
   "extends": "../../tsconfig.base.json"
