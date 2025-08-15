@@ -32,7 +32,7 @@
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
-    "cross-fetch": "^3.1.8",
+    "cross-fetch": "^4.1.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
