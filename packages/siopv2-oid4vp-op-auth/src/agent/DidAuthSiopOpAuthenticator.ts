@@ -398,7 +398,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
               const result: DcqlSdJwtVcCredential = {
                 claims: payload as { [x: string]: Json },
                 vct: payload.vct,
-                credential_format: 'vc+sd-jwt',
+                credential_format: 'dc+sd-jwt',
               }
               dcqlCredentialsWithCredentials.set(result, vc)
               //FIXME MDoc namespaces are incompatible: array of strings vs complex object - https://sphereon.atlassian.net/browse/SPRIND-143
