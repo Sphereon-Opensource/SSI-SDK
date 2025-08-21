@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.24.7",
     "@sphereon/did-uni-client": "^0.6.3",
-    "@sphereon/oid4vci-common": "0.19.1-feature.SSISDK.26.23",
+    "@sphereon/oid4vci-common": "0.19.1-feature.SSISDK.26.27",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "workspace:*",
     "@sphereon/ssi-sdk-ext.did-resolver-jwk": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",

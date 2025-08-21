@@ -153,7 +153,18 @@ export const selectCredentialLocaleBranding = async (
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
   const { mappedCredential, hasher, onVerifyEBSICredentialIssuer, schemaValidation, context } = args
 
-  const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
+  const credentialResponse = mappedCredential.credentialToAccept.credentialResponse
+  let credential
+  if ('credential' in credentialResponse) {
+    credential = credentialResponse.credential as OriginalVerifiableCredential
+  } else if (
+    'credentials' in credentialResponse &&
+    credentialResponse.credentials &&
+    Array.isArray(credentialResponse.credentials) &&
+    credentialResponse.credentials.length > 0
+  ) {
+    credential = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13 (no multi-credential support yet)
+  }
   if (!credential) {
     return Promise.reject(Error('No credential found in credential response'))
   }
@@ -206,7 +217,17 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
   const { credentialToAccept, hasher } = args
 
   const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
-  const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential
+  let verifiableCredential: W3CVerifiableCredential | undefined
+  if ('credential' in credentialResponse) {
+    verifiableCredential = credentialResponse.credential
+  } else if (
+    'credentials' in credentialResponse &&
+    credentialResponse.credentials &&
+    Array.isArray(credentialResponse.credentials) &&
+    credentialResponse.credentials.length > 0
+  ) {
+    verifiableCredential = credentialResponse.credentials[0].credential // FIXME SSISDK-13 (no multi-credential support yet)
+  }
   if (!verifiableCredential) {
     return Promise.reject(Error('No credential found in credential response'))
   }

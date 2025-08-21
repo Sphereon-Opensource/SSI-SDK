@@ -159,11 +159,7 @@ export abstract class LinkHandlerAdapter implements LinkHandler {
   }
 
   protected static toURL(url: string | URL) {
-    const parsed = URL.parse(url) // Do not use new URL(), observed strange polyfill on RN which does not support custom protocols
-    if (parsed === null) {
-      throw Error(`URL ${url} could not be parsed`)
-    }
-    return parsed
+    return new URL(url)
   }
 }
 
