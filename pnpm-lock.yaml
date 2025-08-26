@@ -54,7 +54,7 @@ overrides:
   '@digitalbazaar/ed25519-verification-key-2018': ^4.0.0
   '@noble/hashes': 1.6.1
   debug: ^4.3.5
-  dcql: 0.2.19
+  dcql: 1.0.1
   did-jwt: 6.11.6
   did-jwt-vc: 3.1.3
   ethr-did: 2.3.9
@@ -1054,8 +1054,8 @@ importers:
         specifier: 0.14.1
         version: 0.14.1
       dcql:
-        specifier: 0.2.19
-        version: 0.2.19(typescript@5.8.3)
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
       debug:
         specifier: ^4.3.5
         version: 4.4.1
@@ -2519,6 +2519,9 @@ importers:
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.17.1)
+      dcql:
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
       i18n-js:
         specifier: ^3.9.2
         version: 3.9.2
@@ -3640,17 +3643,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-next.2
-        version: 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-fix.37
+        version: 0.19.1-fix.37(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
         specifier: 0.19.1-next.2
         version: 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/oid4vc-common':
         specifier: 0.19.1-next.2
         version: 0.19.1-next.2
-      '@sphereon/pex':
-        specifier: 5.0.0-unstable.28
-        version: 5.0.0-unstable.28
       '@sphereon/pex-models':
         specifier: ^2.3.2
         version: 2.3.2
@@ -3712,8 +3712,8 @@ importers:
         specifier: ^3.1.8
         version: 3.2.0(encoding@0.1.13)
       dcql:
-        specifier: 0.2.19
-        version: 0.2.19(typescript@5.8.3)
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
       did-jwt-vc:
         specifier: 3.1.3
         version: 3.1.3
@@ -3842,8 +3842,8 @@ importers:
         specifier: ^3.1.8
         version: 3.2.0(encoding@0.1.13)
       dcql:
-        specifier: 0.2.19
-        version: 0.2.19(typescript@5.8.3)
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -7834,6 +7834,10 @@ packages:
     resolution: {integrity: sha512-/ZQfNzPbi3gkr/zMR/w9RmAZE4MgQwR6kMP2YMh9tFHQnJskVi4p7jhzwMS9zttowxhvQDFSNsVOoHUKxVgoTA==}
     engines: {node: '>=20'}
 
+  '@sphereon/did-auth-siop@0.19.1-fix.37':
+    resolution: {integrity: sha512-L7RF84m0C5jCzf690M3zcNLTMg6AQS8qQWXSRrgeWU7jywG2bpWzTiaJLGbwS2hgcgZc1hF987fQwtWjvP+qgQ==}
+    engines: {node: '>=20.6'}
+
   '@sphereon/did-auth-siop@0.19.1-next.2':
     resolution: {integrity: sha512-rs88vWoCKOc4qdhrjlTC7Ravn9TkeuOglWYwnvRr+f9oVVoBFrnwXNnQDY3ne+tHb6s/78/GAXXXzox5jeFxvw==}
     engines: {node: '>=20.6'}
@@ -10001,8 +10005,8 @@ packages:
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
-  dcql@0.2.19:
-    resolution: {integrity: sha512-/EvT8tArlg8zFsTQbRn6PijfeQ3nUwuEeCRDpptWcYqE8Wyt8J9Sb44gMPFzVCoIEb3R0M7Hl+XWkUMobC8jXQ==}
+  dcql@1.0.1:
+    resolution: {integrity: sha512-XZ9VJfvHZwPbeg6O+GvyNi7P5n4L+J0ATCFBUvgn2LXzQPoatHnOt9b7uHHtFWZzxyD5ngLpBCEOteEzKgtIAA==}
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -18596,7 +18600,9 @@ snapshots:
       metro-runtime: 0.83.1
     transitivePeerDependencies:
       - '@babel/core'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.79.5':
     optional: true
@@ -18962,6 +18968,28 @@ snapshots:
       - supports-color
       - typescript
 
+  '@sphereon/did-auth-siop@0.19.1-fix.37(encoding@0.1.13)(typescript@5.8.3)':
+    dependencies:
+      '@astronautlabs/jsonpath': 1.1.2
+      '@sphereon/jarm': 0.19.1-next.2(typescript@5.8.3)
+      '@sphereon/oid4vc-common': 0.19.1-next.2
+      '@sphereon/pex': 5.0.0-unstable.28
+      '@sphereon/pex-models': 2.3.2
+      '@sphereon/ssi-types': link:packages/ssi-types
+      cross-fetch: 4.1.0(encoding@0.1.13)
+      dcql: 1.0.1(typescript@5.8.3)
+      debug: 4.4.1
+      events: 3.3.0
+      jwt-decode: 4.0.0
+      language-tags: 1.0.9
+      multiformats: 12.1.3
+      qs: 6.14.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
+
   '@sphereon/did-auth-siop@0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
@@ -18971,7 +18999,7 @@ snapshots:
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
-      dcql: 0.2.19(typescript@5.8.3)
+      dcql: 1.0.1(typescript@5.8.3)
       debug: 4.4.1
       events: 3.3.0
       jwt-decode: 4.0.0
@@ -22048,7 +22076,7 @@ snapshots:
 
   dayjs@1.11.13: {}
 
-  dcql@0.2.19(typescript@5.8.3):
+  dcql@1.0.1(typescript@5.8.3):
     dependencies:
       valibot: 1.0.0-beta.8(typescript@5.8.3)
     transitivePeerDependencies:
