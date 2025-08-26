@@ -1,4 +1,5 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import * as KmpMdocCore from '@sphereon/kmp-mdoc-core'
+
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
@@ -25,9 +26,9 @@ import {
   VerifyMdocCredentialArgs,
   VerifySDJWTCredentialArgs,
 } from '../index'
-import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import IVerifySignatureResult = KmpMdocCore.com.sphereon.crypto.generic.IVerifySignatureResult
+import decodeFrom = KmpMdocCore.com.sphereon.kmp.decodeFrom
+import IssuerSignedCbor = KmpMdocCore.com.sphereon.mdoc.data.device.IssuerSignedCbor
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 // Exposing the methods here for any REST implementation
@@ -176,7 +177,7 @@ export class CredentialValidation implements IAgentPlugin {
   private async cvVerifyMdoc(args: VerifyMdocCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
     const { credential } = args
 
-    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, com.sphereon.kmp.Encoding.BASE64URL))
+    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, KmpMdocCore.com.sphereon.kmp.Encoding.BASE64URL))
 
     const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
       console.error(error)

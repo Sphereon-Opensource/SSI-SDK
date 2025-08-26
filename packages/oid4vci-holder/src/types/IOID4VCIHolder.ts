@@ -7,6 +7,7 @@ import {
   CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
   CredentialResponse,
+  CredentialResponseV1_0_15,
   CredentialsSupportedDisplay,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
@@ -377,6 +378,7 @@ export enum OID4VCIMachineGuards {
   requirePinGuard = 'oid4vciRequirePinGuard',
   requireAuthorizationGuard = 'oid4vciRequireAuthorizationGuard',
   noAuthorizationGuard = 'oid4vciNoAuthorizationGuard',
+  hasNonceEndpointGuard = 'oid4vciHasNonceEndpointGuard ',
   hasAuthorizationResponse = 'oid4vciHasAuthorizationResponse',
   hasNoContactIdentityGuard = 'oid4vciHasNoContactIdentityGuard',
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
@@ -501,7 +503,7 @@ export type CredentialToAccept = {
   id?: string
   types: string[]
   issuanceOpt: IssuanceOpts
-  credentialResponse: CredentialResponse
+  credentialResponse: CredentialResponseV1_0_15 | CredentialResponse // FIXME SSISDK-13
 }
 
 export type GetCredentialConfigsSupportedArgs = {

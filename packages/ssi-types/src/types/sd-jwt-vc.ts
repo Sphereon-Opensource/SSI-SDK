@@ -159,7 +159,7 @@ export interface WrappedSdJwtVerifiableCredential {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'vc+sd-jwt'
+  format: 'dc+sd-jwt'
   /**
    * Internal stable representation of a Credential
    */
@@ -185,7 +185,7 @@ export interface WrappedSdJwtVerifiablePresentation {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'vc+sd-jwt'
+  format: 'dc+sd-jwt'
   /**
    * Internal stable representation of a Presentation
    */

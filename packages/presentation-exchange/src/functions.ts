@@ -42,7 +42,7 @@ export async function createPEXPresentationSignCallback(
     // All format arguments are optional. So if no format has been given we go for the most supported 'jwt'
     if (!formatOptions) {
       if (CredentialMapper.isSdJwtDecodedCredentialPayload(presentation.decodedPayload)) {
-        return 'vc+sd-jwt'
+        return 'dc+sd-jwt'
       } else if (CredentialMapper.isMsoMdocDecodedPresentation(presentation.decodedPayload as OriginalVerifiablePresentation)) {
         return 'mso_mdoc'
       } else if (CredentialMapper.isW3cPresentation(presentation.decodedPayload)) {
@@ -57,9 +57,9 @@ export async function createPEXPresentationSignCallback(
       return formatOptions
     }
 
-    // here we transform all format options to either lds or jwt. but we also want to support sd-jwt, so we need to specifically check for this one. which is ['vc+sd-jwt']
+    // here we transform all format options to either lds or jwt. but we also want to support sd-jwt, so we need to specifically check for this one. which is ['dc+sd-jwt']
     const formats = new Set(
-      Object.keys(formatOptions).map((form) => (form.includes('ldp') ? 'lds' : form.includes('vc+sd-jwt') ? 'vc+sd-jwt' : 'jwt')),
+      Object.keys(formatOptions).map((form) => (form.includes('ldp') ? 'lds' : form.includes('dc+sd-jwt') ? 'dc+sd-jwt' : 'jwt')),
     )
 
     // if we only have 1 format type we can return that
@@ -68,8 +68,8 @@ export async function createPEXPresentationSignCallback(
     }
     formats.keys().next()
     // if we can go for sd-jwt, we go for sd-jwt
-    if (formats.has('vc+sd-jwt')) {
-      return 'vc+sd-jwt'
+    if (formats.has('dc+sd-jwt')) {
+      return 'dc+sd-jwt'
     }
     // if it is not sd-jwt we would like to go for jwt
     else if (formats.has('jwt')) {
@@ -101,7 +101,7 @@ export async function createPEXPresentationSignCallback(
     }
 
     if ('compactSdJwtVc' in presentation) {
-      if (proofFormat !== 'vc+sd-jwt') {
+      if (proofFormat !== 'dc+sd-jwt') {
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }
 
@@ -122,7 +122,7 @@ export async function createPEXPresentationSignCallback(
     } else {
       const resolution = await context.agent.identifierManagedGet(idOpts)
 
-      if (proofFormat === 'vc+sd-jwt') {
+      if (proofFormat === 'dc+sd-jwt') {
         return Promise.reject(Error(`presentation payload does not match proof format ${proofFormat}`))
       }
       let header
