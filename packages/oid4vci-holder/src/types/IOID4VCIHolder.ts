@@ -503,7 +503,7 @@ export type CredentialToAccept = {
   id?: string
   types: string[]
   issuanceOpt: IssuanceOpts
-  credentialResponse: CredentialResponseV1_0_15 | CredentialResponse // FIXME SSISDK-13
+  credentialResponse: CredentialResponseV1_0_15 | CredentialResponse
 }
 
 export type GetCredentialConfigsSupportedArgs = {

@@ -949,7 +949,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           Array.isArray(credentialResponse.credentials) &&
           credentialResponse.credentials.length > 0
         ) {
-          issuerVC = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13
+          issuerVC = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13 (no multi-credential support yet)
         }
         if (!issuerVC) {
           return Promise.reject(Error('No credential found in credential response'))
