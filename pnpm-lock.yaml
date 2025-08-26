@@ -3643,14 +3643,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feat.SSISDK.34.68
-        version: 0.19.1-feat.SSISDK.34.68(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feat.SSISDK.34.70
+        version: 0.19.1-feat.SSISDK.34.70(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feat.SSISDK.34.68
-        version: 0.19.1-feat.SSISDK.34.68(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feat.SSISDK.34.70
+        version: 0.19.1-feat.SSISDK.34.70(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feat.SSISDK.34.68
-        version: 0.19.1-feat.SSISDK.34.68
+        specifier: 0.19.1-feat.SSISDK.34.70
+        version: 0.19.1-feat.SSISDK.34.70
       '@sphereon/pex-models':
         specifier: ^2.3.2
         version: 2.3.2
@@ -7830,16 +7830,16 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.19.1-feat.SSISDK.34.68':
-    resolution: {integrity: sha512-NaAaz6KHhUWfO4nu9CjsTARaQ2p/3n1GtWNrcz66SyOj+Fh6I1HMhpi2GshgsOjcFj1CJWPiqPOh3VGG9L/sZQ==}
+  '@sphereon/did-auth-siop-adapter@0.19.1-feat.SSISDK.34.70':
+    resolution: {integrity: sha512-oQ2rHDpPVYy3Yet070Hb/ARvnPZAHyzqWGqdbcMgSvobYO08COZXRTBVCk4d9x5RiygO5zwgSQxZa3IRSHdHZA==}
     engines: {node: '>=20'}
 
   '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.13.32':
     resolution: {integrity: sha512-0pHmfyrWjupm7SrAX8w1qa//EClvbIUaIiM9q2N8e0kTyTvNQw1K4H4dnZvKZOzPvQsAMGzFN40RI9nklhnZIw==}
     engines: {node: '>=20'}
 
-  '@sphereon/did-auth-siop@0.19.1-feat.SSISDK.34.68':
-    resolution: {integrity: sha512-rJjlPZ9P78aNHKq8DwNzV57JV8H4y+6+e81TfnN6l/FFKrzf8IBheoNlCYfxj/Dg00lZUfjgAP7t01etZbq8fA==}
+  '@sphereon/did-auth-siop@0.19.1-feat.SSISDK.34.70':
+    resolution: {integrity: sha512-ZGyBIcSmsG1iR7ygIX6ckI5p9eeeSoDZcIEmO6nfq3WnIwqVe4T7ucEd0WuStYYCAk8gwxi1xbQAhNCbZPjqyA==}
     engines: {node: '>=20.6'}
 
   '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.13.32':
@@ -7894,8 +7894,8 @@ packages:
     resolution: {integrity: sha512-g5DYI9ctBGZX+TXOMDq5U/hlcE81WGlMlIYVAFpSfYTpXlsmlOgaak20kFKQU2Fen7RzqFvZyADmZ9l/zoj8bA==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vc-common@0.19.1-feat.SSISDK.34.68':
-    resolution: {integrity: sha512-2Kt7G+Rqcdj3cg2PuX/dzF/6fDZCasCDyaH301KLtJVeTOCdJAnne3wIZS/eVmZ6uzrxu60E00Qajqnp/Dbrhw==}
+  '@sphereon/oid4vc-common@0.19.1-feat.SSISDK.34.70':
+    resolution: {integrity: sha512-3u304VI5Xw87RSeXWhbCU6vk6AKctSOLIv5xto0+4Hl5Q66NkBCyKevMNEp+VDGgh/qvJHkGNmdJSd1q+5aOWw==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.13.32':
@@ -18549,9 +18549,7 @@ snapshots:
       metro-runtime: 0.83.1
     transitivePeerDependencies:
       - '@babel/core'
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@react-native/normalize-colors@0.79.5':
     optional: true
@@ -18904,7 +18902,7 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.19.1-feat.SSISDK.34.68(encoding@0.1.13)(typescript@5.8.3)':
+  '@sphereon/did-auth-siop-adapter@0.19.1-feat.SSISDK.34.70(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
       '@sphereon/did-auth-siop': 0.19.1-feature.SSISDK.13.32(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
@@ -18930,7 +18928,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.19.1-feat.SSISDK.34.68(encoding@0.1.13)(typescript@5.8.3)':
+  '@sphereon/did-auth-siop@0.19.1-feat.SSISDK.34.70(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/jarm': 0.19.1-next.2(typescript@5.8.3)
@@ -19061,7 +19059,7 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vc-common@0.19.1-feat.SSISDK.34.68':
+  '@sphereon/oid4vc-common@0.19.1-feat.SSISDK.34.70':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
