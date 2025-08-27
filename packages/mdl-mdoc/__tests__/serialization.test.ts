@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { com } from '@sphereon/kmp-mdoc-core'
-import CoseAlgorithm = com.sphereon.crypto.cose.CoseAlgorithm
-import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
-import CoseKeyType = com.sphereon.crypto.cose.CoseKeyType
-import ICoseKeyJson = com.sphereon.crypto.cose.ICoseKeyJson
-import IOid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
-import Oid4VPPresentationDefinition = com.sphereon.mdoc.oid4vp.Oid4VPPresentationDefinition
+import * as mdoc from '@sphereon/kmp-mdoc-core'
+import CoseAlgorithm = mdoc.com.sphereon.crypto.cose.CoseAlgorithm
+import CoseKeyJson = mdoc.com.sphereon.crypto.cose.CoseKeyJson
+import CoseKeyType = mdoc.com.sphereon.crypto.cose.CoseKeyType
+import ICoseKeyJson = mdoc.com.sphereon.crypto.cose.ICoseKeyJson
+import IOid4VPPresentationDefinition = mdoc.com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
+import Oid4VPPresentationDefinition = mdoc.com.sphereon.mdoc.oid4vp.Oid4VPPresentationDefinition
 
 describe('Serialization', (): void => {
   beforeAll(async (): Promise<void> => {})
