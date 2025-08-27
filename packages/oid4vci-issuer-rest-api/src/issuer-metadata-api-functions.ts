@@ -4,9 +4,9 @@ import { LOG, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { determinePath } from '@sphereon/oid4vci-issuer-server'
 import { IGetIssueStatusEndpointOpts } from '@sphereon/oid4vci-issuer-server'
 import { IRequiredContext } from './types'
-import { CredentialConfigurationSupportedV1_0_13 } from '@sphereon/oid4vci-common'
+import { CredentialConfigurationSupportedV1_0_15 } from '@sphereon/oid4vci-common'
 import { IssuerInstance } from '@sphereon/ssi-sdk.oid4vci-issuer'
-import { IssuerMetadataV1_0_13 } from '@sphereon/oid4vci-common'
+import { IssuerMetadataV1_0_15 } from '@sphereon/oid4vci-common'
 
 export function getCredentialConfigurationsEndpoint(
   router: Router,
@@ -24,7 +24,7 @@ export function getCredentialConfigurationsEndpoint(
 
   router.get(`${path}`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const metadata = instance.issuerMetadata as IssuerMetadataV1_0_13
+      const metadata = instance.issuerMetadata as IssuerMetadataV1_0_15
       response.statusCode = 200
 
       return response.json({ credential_configurations_supported: metadata?.credential_configurations_supported ?? [] })
@@ -58,7 +58,7 @@ export function getCredentialConfigurationByIdEndpoint(
       }
 
       LOG.log(`[OID4VCI] getCredentialConfigurations endpoint called with configurationId: ${configurationId}`)
-      const metadata = instance.issuerMetadata as IssuerMetadataV1_0_13
+      const metadata = instance.issuerMetadata as IssuerMetadataV1_0_15
       if (!metadata?.credential_configurations_supported || !metadata?.credential_configurations_supported?.[configurationId]) {
         return sendErrorResponse(response, 404, `Credential configuration ${configurationId} not found`)
       }
@@ -100,11 +100,11 @@ export function deleteCredentialConfigurationByIdEndpoint(
         storeId: instance.metadataOptions.storeId,
         namespace: instance.metadataOptions.storeNamespace,
         correlationId: instance.metadataOptions.credentialIssuer,
-      })) as IssuerMetadataV1_0_13
+      })) as IssuerMetadataV1_0_15
       if (!storeMetadata?.credential_configurations_supported || !storeMetadata?.credential_configurations_supported?.[configurationId]) {
         return sendErrorResponse(response, 404, `Credential configuration ${configurationId} not found`)
       }
-      const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_13
+      const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_15
       delete updateMetadata.credential_configurations_supported[configurationId]
       await context.agent.oid4vciStorePersistMetadata({
         metadata: updateMetadata,
@@ -146,7 +146,7 @@ export function updateCredentialConfigurationByIdEndpoint(
         return sendErrorResponse(response, 400, 'Missing configurationId')
       }
       LOG.log(`[OID4VCI] updateCredentialConfigurationById endpoint called with configurationId: ${configurationId}`)
-      const updatedCredentialConfiguration = request.body as CredentialConfigurationSupportedV1_0_13
+      const updatedCredentialConfiguration = request.body as CredentialConfigurationSupportedV1_0_15
       if (!updatedCredentialConfiguration || !updatedCredentialConfiguration.format) {
         return sendErrorResponse(response, 400, 'Missing credential configuration in the body, or required format missing')
       }
@@ -156,11 +156,11 @@ export function updateCredentialConfigurationByIdEndpoint(
         storeId: instance.metadataOptions.storeId,
         namespace: instance.metadataOptions.storeNamespace,
         correlationId: instance.metadataOptions.credentialIssuer,
-      })) as IssuerMetadataV1_0_13
+      })) as IssuerMetadataV1_0_15
       if (!storeMetadata?.credential_configurations_supported || !storeMetadata?.credential_configurations_supported?.[configurationId]) {
         return sendErrorResponse(response, 404, `Credential configuration ${configurationId} not found`)
       }
-      const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_13
+      const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_15
       updateMetadata.credential_configurations_supported[configurationId] = updatedCredentialConfiguration
       await context.agent.oid4vciStorePersistMetadata({
         metadata: updateMetadata,
@@ -202,7 +202,7 @@ export function newCredentialConfigurationEndpoint(
         return sendErrorResponse(response, 400, 'Missing configurationId')
       }
       LOG.log(`[OID4VCI] newCredentialConfigurationById endpoint called with configurationId: ${configurationId}`)
-      const newCredentialConfiguration = request.body as CredentialConfigurationSupportedV1_0_13
+      const newCredentialConfiguration = request.body as CredentialConfigurationSupportedV1_0_15
       if (!newCredentialConfiguration || !newCredentialConfiguration.format) {
         return sendErrorResponse(response, 400, 'Missing credential configuration in the body, or required format missing')
       }
@@ -212,7 +212,7 @@ export function newCredentialConfigurationEndpoint(
         storeId: instance.metadataOptions.storeId,
         namespace: instance.metadataOptions.storeNamespace,
         correlationId: instance.metadataOptions.credentialIssuer,
-      })) as IssuerMetadataV1_0_13
+      })) as IssuerMetadataV1_0_15
       if (storeMetadata?.credential_configurations_supported?.[configurationId]) {
         return sendErrorResponse(
           response,
@@ -220,7 +220,7 @@ export function newCredentialConfigurationEndpoint(
           `Credential configuration ${configurationId} already exists, cannot create new one. Please update instead.`,
         )
       }
-      const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_13
+      const updateMetadata = JSON.parse(JSON.stringify(storeMetadata)) as IssuerMetadataV1_0_15
       updateMetadata.credential_configurations_supported[configurationId] = newCredentialConfiguration
       await context.agent.oid4vciStorePersistMetadata({
         metadata: updateMetadata,

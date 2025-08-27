@@ -1,17 +1,17 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import * as mdoc from '@sphereon/kmp-mdoc-core'
 import { TAgent } from '@veramo/core'
 //@ts-ignore
 import express, { Application, NextFunction, Request, Response } from 'express'
 import { ImDLMdoc } from '../../src'
 import { funkeTestCA, funkeTestIssuer, sphereonCA, sphereonTest } from './testvectors'
-import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
-import CoseSign1Cbor = com.sphereon.crypto.cose.CoseSign1Cbor
-import Jwk = com.sphereon.crypto.jose.Jwk
-import KeyInfo = com.sphereon.crypto.KeyInfo
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import Encoding = com.sphereon.kmp.Encoding
-import DocumentJson = com.sphereon.mdoc.data.device.DocumentJson
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import CoseKeyJson = mdoc.com.sphereon.crypto.cose.CoseKeyJson
+import CoseSign1Cbor = mdoc.com.sphereon.crypto.cose.CoseSign1Cbor
+import Jwk = mdoc.com.sphereon.crypto.jose.Jwk
+import KeyInfo = mdoc.com.sphereon.crypto.KeyInfo
+import decodeFrom = mdoc.com.sphereon.kmp.decodeFrom
+import Encoding = mdoc.com.sphereon.kmp.Encoding
+import DocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
+import IssuerSignedCbor = mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<ImDLMdoc>
@@ -44,7 +44,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
                 y: 'IBOL-C3BttVivg-lSreASjpkttcsz-1rb7btKLv8EX4',
                 // "d":"V8kgd2ZBRuh2dgyVINBUqpPDr7BOMGcF22CQMIUHtNM" // No private key, as we check for them explicitly
               }).jwkToCoseKeyJson(),
-              toPublicKeyInfo(): com.sphereon.crypto.IKeyInfo<CoseKeyJson> {
+              toPublicKeyInfo(): mdoc.com.sphereon.crypto.IKeyInfo<CoseKeyJson> {
                 throw Error('toPublicKeyInfo Not implemented. Should also not be in the DTO to begin with! FIXME')
               },
             }),
