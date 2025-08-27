@@ -2,9 +2,9 @@ import { type CompactJWT } from './w3c-vc'
 import { type OrPromise } from './generic'
 import { OriginalType } from '../mapper'
 
-type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
+export type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
-type SdJwtJsonValue =
+export type SdJwtJsonValue =
   | string
   | number
   | boolean
@@ -159,7 +159,7 @@ export interface WrappedSdJwtVerifiableCredential {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'vc+sd-jwt'
+  format: 'dc+sd-jwt'
   /**
    * Internal stable representation of a Credential
    */
@@ -185,7 +185,7 @@ export interface WrappedSdJwtVerifiablePresentation {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'vc+sd-jwt'
+  format: 'dc+sd-jwt'
   /**
    * Internal stable representation of a Presentation
    */

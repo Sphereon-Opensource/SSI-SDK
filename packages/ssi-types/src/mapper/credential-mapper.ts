@@ -193,7 +193,7 @@ export class CredentialMapper {
       }
       return {
         type: CredentialMapper.isSdJwtDecodedCredential(originalPresentation) ? OriginalType.SD_JWT_VC_DECODED : OriginalType.SD_JWT_VC_ENCODED,
-        format: 'vc+sd-jwt',
+        format: 'dc+sd-jwt',
         original: originalPresentation,
         presentation: decodedPresentation,
         decoded: decodedPresentation.decodedPayload,
@@ -311,7 +311,7 @@ export class CredentialMapper {
 
       return {
         type: CredentialMapper.isSdJwtDecodedCredential(verifiableCredential) ? OriginalType.SD_JWT_VC_DECODED : OriginalType.SD_JWT_VC_ENCODED,
-        format: 'vc+sd-jwt',
+        format: 'dc+sd-jwt',
         original: verifiableCredential,
         credential: decodedCredential,
         decoded: decodedCredential.decodedPayload,
@@ -924,11 +924,11 @@ export class CredentialMapper {
 }
 
 export function isWrappedSdJwtVerifiableCredential(vc: WrappedVerifiableCredential): vc is WrappedSdJwtVerifiableCredential {
-  return vc.format === 'vc+sd-jwt'
+  return vc.format === 'dc+sd-jwt'
 }
 
 export function isWrappedSdJwtVerifiablePresentation(vp: WrappedVerifiablePresentation): vp is WrappedSdJwtVerifiablePresentation {
-  return vp.format === 'vc+sd-jwt'
+  return vp.format === 'dc+sd-jwt'
 }
 
 export enum OriginalType {
@@ -937,7 +937,6 @@ export enum OriginalType {
   JWT_ENCODED = 'jwt-encoded',
   JWT_DECODED = 'jwt-decoded',
 
-  // SD-JWT
   SD_JWT_VC_ENCODED = 'sd-jwt-vc-encoded',
   SD_JWT_VC_DECODED = 'sd-jwt-vc-decoded',
 

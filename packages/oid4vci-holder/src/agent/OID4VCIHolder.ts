@@ -229,7 +229,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreIssuerBranding: this.oid4vciHolderStoreIssuerBranding.bind(this),
   }
 
-  private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
+  private readonly vcFormatPreferences: Array<string> = ['dc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
   private readonly jsonldCryptographicSuitePreferences: Array<string> = [
     'Ed25519Signature2018',
     'EcdsaSecp256k1Signature2019',

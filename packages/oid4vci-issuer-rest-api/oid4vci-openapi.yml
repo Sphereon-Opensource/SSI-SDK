@@ -51,7 +51,7 @@ components:
             - jwt_vc
             - ldp_vc
             - jwt_vc_json-ld
-            - vc+sd-jwt
+            - dc+sd-jwt
             - mso_mdoc
           description: Format of the issued credential
           example: jwt_vc_json
@@ -254,7 +254,7 @@ components:
             - jwt_vc
             - ldp_vc
             - jwt_vc_json-ld
-            - vc+sd-jwt
+            - dc+sd-jwt
             - mso_mdoc
           example: 'jwt_vc_json'
         credential_identifier:

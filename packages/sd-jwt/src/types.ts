@@ -1,12 +1,13 @@
-import { SdJwtVcPayload as SdJwtPayload } from '@sd-jwt/sd-jwt-vc'
 import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator, Signer } from '@sd-jwt/types'
 import { IIdentifierResolution, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { HasherSync, JoseSignatureAlgorithm, JsonWebKey, SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import { HasherSync, JoseSignatureAlgorithm, JsonWebKey, SdJwtTypeMetadata, SdJwtVcdm2Payload } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { SdJwtVcPayload as OrigSdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { SdJwtPayload } from '@sd-jwt/core'
 
 export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
 
@@ -85,12 +86,21 @@ export function contextHasSDJwtPlugin(context: IAgentContext<IPluginMethodMap>):
  * @beta
  */
 
-export interface SdJwtVcPayload extends SdJwtPayload {
+export interface SdJwtVcPayload extends OrigSdJwtVcPayload {
   x5c?: string[]
 }
 
+export type SdJwtVcType = 'dc+sd-jwt' | 'vc+sd-jwt'
+export type SdJwtVpType = 'dc+sd-jwt' | 'vp+sd-jwt'
+export type SdJwtType = SdJwtVcType | SdJwtVpType
+
+export function isVcdm2SdJwt(type: SdJwtType | string): Boolean {
+  return type === 'vc+sd-jwt' || type === 'vp+sd-jwt'
+}
+
 export interface ICreateSdJwtVcArgs {
-  credentialPayload: SdJwtVcPayload
+  type?: SdJwtVcType
+  credentialPayload: SdJwtPayload
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   disclosureFrame?: IDisclosureFrame
@@ -114,6 +124,8 @@ export interface IDisclosureFrame {
  * @beta
  */
 export interface ICreateSdJwtVcResult {
+  type: SdJwtVcType
+
   /**
    * the encoded sd-jwt credential
    */
@@ -146,6 +158,8 @@ export interface ICreateSdJwtPresentationArgs {
    * Information to include to add key binding.
    */
   kb?: KBOptions
+
+  type?: SdJwtVpType
 }
 
 /**
@@ -164,6 +178,8 @@ export interface ICreateSdJwtPresentationResult {
    * Encoded presentation.
    */
   presentation: string
+
+  type: SdJwtVpType
 }
 
 /**
@@ -180,7 +196,8 @@ export interface IVerifySdJwtVcArgs {
  * @beta
  */
 export type IVerifySdJwtVcResult = {
-  payload: SdJwtPayload
+  type: SdJwtVcType
+  payload: SdJwtVcPayload | SdJwtVcdm2Payload
   header: Record<string, unknown>
   kb?: { header: kbHeader; payload: kbPayload }
 }
@@ -193,7 +210,10 @@ export interface IVerifySdJwtPresentationArgs {
 
   requiredClaimKeys?: string[]
 
-  kb?: boolean
+  /**
+   * nonce used to verify the key binding jwt to prevent replay attacks.
+   */
+  keyBindingNonce?: string;
 }
 
 /**

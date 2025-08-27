@@ -28,7 +28,7 @@ export type CredentialFormat =
   | 'ldp_vc'
   | 'vc+jwt'
   // SD-JWT
-  | 'vc+sd-jwt'
+  | 'dc+sd-jwt'
   // Remaining
   | 'jwt'
   | 'ldp'

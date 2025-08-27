@@ -72,7 +72,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   await Promise.all(
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]): Promise<void> => {
       let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
-      if (credentialsConfigSupported.format === 'vc+sd-jwt') {
+      if (credentialsConfigSupported.format === 'dc+sd-jwt') {
         const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_13>credentialsConfigSupported).vct
         if (vct.startsWith('http')) {
           try {
@@ -580,7 +580,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
-    case 'vc+sd-jwt':
+    case 'dc+sd-jwt':
     case 'mso_mdoc': {
       const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(
         (suite: JoseSignatureAlgorithm | JoseSignatureAlgorithmString) => signing_algs_supported.includes(suite),

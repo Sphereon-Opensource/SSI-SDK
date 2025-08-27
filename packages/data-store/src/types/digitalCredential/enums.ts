@@ -38,7 +38,7 @@ export namespace CredentialDocumentFormat {
   export function toSpecValue(documentFormat: CredentialDocumentFormat, documentType: DocumentType) {
     switch (documentFormat) {
       case CredentialDocumentFormat.SD_JWT:
-        return 'vc+sd-jwt'
+        return 'dc+sd-jwt'
       case CredentialDocumentFormat.MSO_MDOC:
         return 'mso_mdoc'
       case CredentialDocumentFormat.JSON_LD:

@@ -1,7 +1,9 @@
-import { SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import type { SdJwtTypeMetadata, SdJwtVcdm2Payload } from '@sphereon/ssi-types'
 // @ts-ignore
 import { toString } from 'uint8arrays/to-string'
 import { Hasher, HasherSync } from '@sd-jwt/types'
+import type { SdJwtPayload } from '@sd-jwt/core'
+import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 
 // Helper function to fetch API with error handling
 export async function fetchUrlWithErrorHandling(url: string): Promise<Response> {
@@ -63,4 +65,29 @@ export function assertValidTypeMetadata(metadata: SdJwtTypeMetadata, vct: string
   if (metadata.vct !== vct) {
     throw new Error('VCT mismatch in metadata and credential')
   }
+}
+
+export function isVcdm2SdJwtPayload(payload: SdJwtPayload): payload is SdJwtVcdm2Payload {
+  return (
+    'type' in payload &&
+    Array.isArray(payload.type) &&
+    payload.type.includes('VerifiableCredential') &&
+    '@context' in payload &&
+    payload.type.length > 0 &&
+    payload.type.includes('https://www.w3.org/ns/credentials/v2')
+  )
+}
+
+export function isSdjwtVcPayload(payload: SdJwtPayload): payload is SdJwtVcPayload {
+  return !isVcdm2SdJwtPayload(payload) && 'vct' in payload && typeof payload.vct === 'string' && payload.vct.length > 0
+}
+
+export function getIssuerFromSdJwt(payload: SdJwtPayload): string {
+  if (isVcdm2SdJwtPayload(payload)) {
+    return typeof payload.issuer === 'string' ? payload.issuer : payload.issuer.id
+  }
+  if (isSdjwtVcPayload(payload)) {
+    return payload.iss as string
+  }
+  throw new Error('Invalid payload')
 }
