@@ -214,6 +214,11 @@ export interface IVerifySdJwtPresentationArgs {
    * nonce used to verify the key binding jwt to prevent replay attacks.
    */
   keyBindingNonce?: string;
+
+  /**
+   * Audience used to verify the key binding jwt
+   */
+  keyBindingAud?: string;
 }
 
 /**

@@ -73,13 +73,13 @@ export function isVcdm2SdJwtPayload(payload: SdJwtPayload): payload is SdJwtVcdm
     Array.isArray(payload.type) &&
     payload.type.includes('VerifiableCredential') &&
     '@context' in payload &&
-    payload.type.length > 0 &&
-    payload.type.includes('https://www.w3.org/ns/credentials/v2')
+    ((typeof payload['@context'] === 'string' && payload['@context'].length > 0) ||
+      (Array.isArray(payload['@context']) && payload['@context'].length > 0 && payload['@context'].includes('https://www.w3.org/ns/credentials/v2')))
   )
 }
 
 export function isSdjwtVcPayload(payload: SdJwtPayload): payload is SdJwtVcPayload {
-  return !isVcdm2SdJwtPayload(payload) && 'vct' in payload && typeof payload.vct === 'string' && payload.vct.length > 0
+  return !isVcdm2SdJwtPayload(payload) && 'vct' in payload && typeof payload.vct === 'string'
 }
 
 export function getIssuerFromSdJwt(payload: SdJwtPayload): string {
@@ -89,5 +89,5 @@ export function getIssuerFromSdJwt(payload: SdJwtPayload): string {
   if (isSdjwtVcPayload(payload)) {
     return payload.iss as string
   }
-  throw new Error('Invalid payload')
+  throw new Error('Invalid payload. Not SD-JWT VC nor VCDM2 SD-JWT')
 }

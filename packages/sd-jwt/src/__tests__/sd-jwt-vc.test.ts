@@ -105,7 +105,7 @@ describe('Agent plugin', () => {
       ...claims,
       iss: issuer,
       iat: Math.floor(new Date().getTime() / 1000),
-      vct: '',
+      vct: 'example',
     }
     const credential = await agent.createSdJwtVc({
       credentialPayload,
@@ -277,7 +277,8 @@ describe('Agent plugin', () => {
       presentation: presentation.presentation,
       requiredClaimKeys: ['given_name'],
       // we are not able to verify the kb yet since we have no reference to the public key of the holder.
-      kb: true,
+      keyBindingAud: '1',
+      keyBindingNonce: '342',
     })
     expect(result).toBeDefined()
     expect((result.payload as typeof claims).given_name).toBe('John')
@@ -314,7 +315,8 @@ describe('Agent plugin', () => {
       presentation: presentation.presentation,
       requiredClaimKeys: ['given_name'],
       // we are not able to verify the kb yet since we have no reference to the public key of the holder.
-      kb: true,
+      keyBindingAud: '1',
+      keyBindingNonce: '342',
     })
     expect(result).toBeDefined()
     expect((result.payload as typeof claims).given_name).toBe('John')

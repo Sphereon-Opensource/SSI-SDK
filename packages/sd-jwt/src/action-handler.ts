@@ -105,17 +105,18 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns A signed SD-JWT credential.
    */
   async createSdJwtVc(args: ICreateSdJwtVcArgs, context: IRequiredContext): Promise<ICreateSdJwtVcResult> {
-    const type = args.type ?? 'dc+sd-jwt'
     const payload = args.credentialPayload
     const isVcdm2 = isVcdm2SdJwtPayload(payload)
     const isSdJwtVc = isSdjwtVcPayload(payload)
-    const issuer = args.credentialPayload.iss as string ?? args.credentialPayload.issuer as string
+    const type = args.type ?? (isVcdm2 ? 'vc+sd-jwt' : 'dc+sd-jwt')
+
+    const issuer = getIssuerFromSdJwt(args.credentialPayload)
     if (!issuer) {
       throw new Error('credential.issuer must not be empty')
     }
     const { alg, signer, signingKey } = await this.getSignerForIdentifier({ identifier: issuer, resolution: args.resolution }, context)
     const signAlg = alg ?? signingKey?.alg ?? 'ES256'
-    const hashAlg: HashAlgorithm = signAlg.search(/.*([0-9]{3})$/) >= 0 ? (`sha-${signAlg.substring(-3)}` as HashAlgorithm) : 'sha-256'
+    const hashAlg: HashAlgorithm = /(\d{3})$/.test(signAlg) ? (`sha-${signAlg.slice(-3)}` as HashAlgorithm) : 'sha-256'
     const sdjwt = SDJwtVcdmInstanceFactory.create(type, {
       omitTyp: true,
       signer,
@@ -141,7 +142,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     } else if (isSdJwtVc) {
       credential = await (sdjwt as SDJwtVcInstance).issue(payload, args.disclosureFrame as DisclosureFrame<typeof payload>, { header })
     } else {
-      return Promise.reject(new Error('invalid_argument: credential type is not supported'))
+      return Promise.reject(new Error(`invalid_argument: credential '${type}' type is not supported`))
     }
 
     return { type, credential }
