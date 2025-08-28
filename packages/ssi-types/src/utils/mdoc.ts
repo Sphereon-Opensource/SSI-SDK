@@ -13,7 +13,8 @@ import type {
   WrappedVerifiableCredential,
   WrappedVerifiablePresentation,
 } from '../types'
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { IProofPurpose, IProofType } from './did'
 
 export function isWrappedMdocCredential(vc: WrappedVerifiableCredential): vc is WrappedMdocCredential {
@@ -54,8 +55,8 @@ export function getMdocDecodedPayload(mdoc: MdocDocument): MdocDecodedPayload {
  */
 export function decodeMdocIssuerSigned(oid4vpIssuerSigned: MdocOid4vpIssuerSigned): MdocDocument {
   // Issuer signed according to 18013-7 in base64url
-  const issuerSigned: MdocIssuerSigned = mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(
-    mdoc.com.sphereon.kmp.decodeFrom(oid4vpIssuerSigned, mdoc.com.sphereon.kmp.Encoding.BASE64URL)
+  const issuerSigned: MdocIssuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(
+    com.sphereon.kmp.decodeFrom(oid4vpIssuerSigned, com.sphereon.kmp.Encoding.BASE64URL)
   )
   // Create an mdoc from it. // Validations need to be performed by the caller after this!
   const holderMdoc: MdocDocument = issuerSigned.toDocument()
@@ -63,7 +64,7 @@ export function decodeMdocIssuerSigned(oid4vpIssuerSigned: MdocOid4vpIssuerSigne
 }
 
 export function encodeMdocIssuerSigned(issuerSigned: MdocIssuerSigned, encoding: 'base64url' = 'base64url') {
-  return mdoc.com.sphereon.kmp.encodeTo(issuerSigned.cborEncode(), mdoc.com.sphereon.kmp.Encoding.BASE64URL)
+  return com.sphereon.kmp.encodeTo(issuerSigned.cborEncode(), com.sphereon.kmp.Encoding.BASE64URL)
 }
 
 /**
@@ -72,8 +73,8 @@ export function encodeMdocIssuerSigned(issuerSigned: MdocIssuerSigned, encoding:
  *
  */
 export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDeviceResponse {
-  const deviceResponse = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor.Static.cborDecode(
-    mdoc.com.sphereon.kmp.decodeFrom(vpToken, mdoc.com.sphereon.kmp.Encoding.BASE64URL)
+  const deviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor.Static.cborDecode(
+    com.sphereon.kmp.decodeFrom(vpToken, com.sphereon.kmp.Encoding.BASE64URL)
   )
   return deviceResponse
 }
@@ -136,7 +137,7 @@ export const mdocDecodedCredentialToUniformCredential = (
       created: issuanceDate,
       proofPurpose: IProofPurpose.authentication,
       verificationMethod: json.issuerSigned.issuerAuth.payload,
-      mso_mdoc: mdoc.com.sphereon.kmp.encodeTo(decoded.cborEncode(), mdoc.com.sphereon.kmp.Encoding.BASE64URL),
+      mso_mdoc: com.sphereon.kmp.encodeTo(decoded.cborEncode(), com.sphereon.kmp.Encoding.BASE64URL),
     },
   }
 
