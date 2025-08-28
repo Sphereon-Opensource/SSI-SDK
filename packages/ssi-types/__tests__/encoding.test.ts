@@ -19,7 +19,8 @@ import {
   OriginalVerifiablePresentation,
 } from '../src'
 
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

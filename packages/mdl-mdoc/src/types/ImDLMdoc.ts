@@ -1,33 +1,34 @@
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { PresentationDefinitionV2, PresentationSubmission } from '@sphereon/pex-models'
 import { ISphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { CertificateInfo, SubjectAlternativeGeneralName, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { IAgentContext, IDIDManager, IPluginMethodMap, IResolver } from '@veramo/core'
-export type IKey = mdoc.com.sphereon.crypto.IKey
-export type CoseSign1Json = mdoc.com.sphereon.crypto.cose.CoseSign1Json
-export type CoseSign1Cbor<Any> = mdoc.com.sphereon.crypto.cose.CoseSign1Cbor<Any>
-export type ICoseKeyCbor = mdoc.com.sphereon.crypto.cose.ICoseKeyCbor
-export type ICoseKeyJson = mdoc.com.sphereon.crypto.cose.ICoseKeyJson
-export type IKeyInfo<KT extends IKey = IKey> = mdoc.com.sphereon.crypto.IKeyInfo<KT>
-export type IVerifyResults<KT extends IKey> = mdoc.com.sphereon.crypto.generic.IVerifyResults<KT>
-export type IVerifySignatureResult<KT extends IKey> = mdoc.com.sphereon.crypto.generic.IVerifySignatureResult<KT>
-export type DocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
-export type DocumentCbor = mdoc.com.sphereon.mdoc.data.device.DocumentCbor
-export const CborByteString = mdoc.com.sphereon.cbor.CborByteString
-export const CoseKeyCbor = mdoc.com.sphereon.crypto.cose.CoseKeyCbor
-export const CoseCryptoServiceJS = mdoc.com.sphereon.crypto.CoseCryptoServiceJS
-export const CoseJoseKeyMappingService = mdoc.com.sphereon.crypto.CoseJoseKeyMappingService
-export const KeyInfo = mdoc.com.sphereon.crypto.KeyInfo
-export const DateTimeUtils = mdoc.com.sphereon.kmp.DateTimeUtils
-export const decodeFrom = mdoc.com.sphereon.kmp.decodeFrom
-export const encodeTo = mdoc.com.sphereon.kmp.encodeTo
-export const Encoding = mdoc.com.sphereon.kmp.Encoding
-export const MdocValidations = mdoc.com.sphereon.mdoc.data.MdocValidations
-export const MdocOid4vpService = mdoc.com.sphereon.mdoc.oid4vp.MdocOid4vpServiceJs
-export const Jwk = mdoc.com.sphereon.crypto.jose.Jwk
-export type DocumentDescriptorMatchResult = mdoc.com.sphereon.mdoc.oid4vp.DocumentDescriptorMatchResult
-export type IOid4VPPresentationDefinition = mdoc.com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
-export const Oid4VPPresentationSubmission = mdoc.com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
+export type IKey = mdocPkg.com.sphereon.crypto.IKey
+export type CoseSign1Json = mdocPkg.com.sphereon.crypto.cose.CoseSign1Json
+export type CoseSign1Cbor<Any> = mdocPkg.com.sphereon.crypto.cose.CoseSign1Cbor<Any>
+export type ICoseKeyCbor = mdocPkg.com.sphereon.crypto.cose.ICoseKeyCbor
+export type ICoseKeyJson = mdocPkg.com.sphereon.crypto.cose.ICoseKeyJson
+export type IKeyInfo<KT extends IKey = IKey> = mdocPkg.com.sphereon.crypto.IKeyInfo<KT>
+export type IVerifyResults<KT extends IKey> = mdocPkg.com.sphereon.crypto.generic.IVerifyResults<KT>
+export type IVerifySignatureResult<KT extends IKey> = mdocPkg.com.sphereon.crypto.generic.IVerifySignatureResult<KT>
+export type DocumentJson = mdocPkg.com.sphereon.mdoc.data.device.DocumentJson
+export type DocumentCbor = mdocPkg.com.sphereon.mdoc.data.device.DocumentCbor
+export const CborByteString = com.sphereon.cbor.CborByteString
+export const CoseKeyCbor = com.sphereon.crypto.cose.CoseKeyCbor
+export const CoseCryptoServiceJS = com.sphereon.crypto.CoseCryptoServiceJS
+export const CoseJoseKeyMappingService = com.sphereon.crypto.CoseJoseKeyMappingService
+export const KeyInfo = com.sphereon.crypto.KeyInfo
+export const DateTimeUtils = com.sphereon.kmp.DateTimeUtils
+export const decodeFrom = com.sphereon.kmp.decodeFrom
+export const encodeTo = com.sphereon.kmp.encodeTo
+export const Encoding = com.sphereon.kmp.Encoding
+export const MdocValidations = com.sphereon.mdoc.data.MdocValidations
+export const MdocOid4vpService = com.sphereon.mdoc.oid4vp.MdocOid4vpServiceJs
+export const Jwk = com.sphereon.crypto.jose.Jwk
+export type DocumentDescriptorMatchResult = mdocPkg.com.sphereon.mdoc.oid4vp.DocumentDescriptorMatchResult
+export type IOid4VPPresentationDefinition = mdocPkg.com.sphereon.mdoc.oid4vp.IOid4VPPresentationDefinition
+export const Oid4VPPresentationSubmission = com.sphereon.mdoc.oid4vp.Oid4VPPresentationSubmission
 
 export interface ImDLMdoc extends IPluginMethodMap {
   // TODO: Extract cert methods to its own plugin

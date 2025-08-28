@@ -1052,9 +1052,9 @@
           "type": "object"
         },
         "DidDocumentJwks": {
-          "$ref": "#/components/schemas/Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-.ts-47904-48629-.ts-0-63234[]>"
+          "$ref": "#/components/schemas/Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-.ts-47560-48285-.ts-0-61119[]>"
         },
-        "Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-.ts-47904-48629-.ts-0-63234[]>": {
+        "Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-.ts-47560-48285-.ts-0-61119[]>": {
           "type": "object",
           "properties": {
             "verificationMethod": {

@@ -1,4 +1,5 @@
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
 import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
@@ -121,7 +122,7 @@ export class MDLMdoc implements IAgentPlugin {
       presentationDefinition as IOid4VPPresentationDefinition,
     )
     const docsAndDescriptors: DocumentDescriptorMatchResult[] = []
-    let lastError: mdoc.com.sphereon.crypto.generic.IVerifyResults<mdoc.com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
+    let lastError: mdocPkg.com.sphereon.crypto.generic.IVerifyResults<mdocPkg.com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
     for (let match of allMatches) {
       if (match.document) {
         const result = await validate(match.document)
@@ -194,7 +195,7 @@ export class MDLMdoc implements IAgentPlugin {
    */
   private async mdocOid4vpRPVerify(args: MdocOid4vpRPVerifyArgs, _context: IRequiredContext): Promise<MdocOid4vpRPVerifyResult> {
     const { vp_token, presentation_submission, trustAnchors } = args
-    const deviceResponse = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor.Static.cborDecode(decodeFrom(vp_token, Encoding.BASE64URL))
+    const deviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor.Static.cborDecode(decodeFrom(vp_token, Encoding.BASE64URL))
     if (!deviceResponse.documents) {
       return Promise.reject(Error(`No documents found in vp_token`))
     }
@@ -252,7 +253,7 @@ export class MDLMdoc implements IAgentPlugin {
     const { input, keyInfo, requireX5Chain } = args
     const coseKeyInfo = keyInfo && CoseJoseKeyMappingService.toCoseKeyInfo(keyInfo)
     const verification = await new CoseCryptoServiceJS(new CoseCryptoService(context)).verify1(
-      mdoc.com.sphereon.crypto.cose.CoseSign1Json.Static.fromDTO(input).toCbor(),
+      com.sphereon.crypto.cose.CoseSign1Json.Static.fromDTO(input).toCbor(),
       coseKeyInfo,
       requireX5Chain,
     )

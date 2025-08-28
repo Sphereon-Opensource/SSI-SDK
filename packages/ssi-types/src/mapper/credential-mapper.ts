@@ -43,10 +43,10 @@ import {
   ObjectUtils,
   sdJwtDecodedCredentialToUniformCredential,
 } from '../utils'
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
 import { jwtDecode } from 'jwt-decode'
 
-type DeviceResponseCbor = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
+type DeviceResponseCbor = mdocPkg.com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export const sha256 = (data: string | ArrayBuffer): Uint8Array => {
   return defaultHasher(data, 'sha256')
