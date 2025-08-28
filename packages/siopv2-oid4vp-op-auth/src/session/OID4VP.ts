@@ -27,6 +27,8 @@ import {
 //import { createOID4VPPresentationSignCallback } from './functions'
 import { OpSession } from './OpSession'
 
+// FIXME SSISDK-44 add support for DCQL presentations
+
 export class OID4VP {
   //private readonly session: OpSession
   // private readonly allIdentifiers: string[]

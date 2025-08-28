@@ -1,5 +1,10 @@
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { CredentialMapper, HasherSync, OriginalVerifiableCredential } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  HasherSync,
+  OriginalVerifiableCredential, WrappedMdocCredential,
+  type WrappedSdJwtVerifiableCredential, type WrappedW3CVerifiableCredential
+} from '@sphereon/ssi-types'
 import { Dcql } from '@sphereon/did-auth-siop'
 import { DcqlCredential } from 'dcql'
 import { isUniqueDigitalCredential } from './CredentialUtils'
@@ -20,13 +25,13 @@ export function convertToDcqlCredentials(credential: UniqueDigitalCredential | O
   }
 
   if (CredentialMapper.isJwtDecodedCredential(originalVerifiableCredential)) {
-    return Dcql.toDcqlJwtCredential(originalVerifiableCredential)
+    return Dcql.toDcqlJwtCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedW3CVerifiableCredential)
   } else if (CredentialMapper.isSdJwtDecodedCredential(originalVerifiableCredential)) {
-    return Dcql.toDcqlSdJwtCredential(originalVerifiableCredential)
+    return Dcql.toDcqlSdJwtCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedSdJwtVerifiableCredential)
   } else if (CredentialMapper.isMsoMdocDecodedCredential(originalVerifiableCredential)) {
-    return Dcql.toDcqlMdocCredential(originalVerifiableCredential)
+    return Dcql.toDcqlMdocCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedMdocCredential)
   } else if (CredentialMapper.isW3cCredential(originalVerifiableCredential)) {
-    return Dcql.toDcqlJsonLdCredential(originalVerifiableCredential)
+    return Dcql.toDcqlJsonLdCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedW3CVerifiableCredential)
   }
 
   throw Error(`Unable to map credential to DCQL credential. Credential: ${JSON.stringify(originalVerifiableCredential)}`)
