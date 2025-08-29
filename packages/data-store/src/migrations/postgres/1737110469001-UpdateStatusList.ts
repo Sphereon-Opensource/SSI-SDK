@@ -10,7 +10,7 @@ export class UpdateStatusList1737110469001 implements MigrationInterface {
     // Make columns nullable and add new columns
     await queryRunner.query(`ALTER TABLE "StatusList" ALTER COLUMN "indexingDirection" DROP NOT NULL`)
     await queryRunner.query(`ALTER TABLE "StatusList" ALTER COLUMN "statusPurpose" DROP NOT NULL`)
-    await queryRunner.query(`ALTER TABLE "StatusList" ADD "bitsPerStatus" integer`)
+    await queryRunner.query(`ALTER TABLE "StatusList" ADD "bitsPerStatus" integer DEFAULT 1`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD "expiresAt" timestamp with time zone`)
   }
 
