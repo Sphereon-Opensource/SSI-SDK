@@ -256,7 +256,9 @@ export class SDJwtPlugin implements IAgentPlugin {
 
 
     const sdjwt = SDJwtVcdmInstanceFactory.create(type, {verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
-    const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
+    // FIXME: Findynet. Issuer returns expired status lists, and low level lib throws errors on these. We need to fix this in our implementation by wrapping the verification function
+    // For now a workaround is to ad 5 days of skew seconds, yuck
+    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, {skewSeconds: 60*60*24*5})
 
 
     return { type, header, payload, kb }
