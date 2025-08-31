@@ -4,7 +4,16 @@ import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { HasherSync, JoseSignatureAlgorithm, JsonWebKey, SdJwtTypeMetadata, SdJwtVcdm2Payload } from '@sphereon/ssi-types'
+import {
+  HasherSync,
+  JoseSignatureAlgorithm,
+  JsonWebKey,
+  SdJwtType,
+  SdJwtTypeMetadata,
+  SdJwtVcdm2Payload,
+  SdJwtVcType,
+  SdJwtVpType,
+} from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { SdJwtVcPayload as OrigSdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { SdJwtPayload } from '@sd-jwt/core'
@@ -90,9 +99,7 @@ export interface SdJwtVcPayload extends OrigSdJwtVcPayload {
   x5c?: string[]
 }
 
-export type SdJwtVcType = 'dc+sd-jwt' | 'vc+sd-jwt'
-export type SdJwtVpType = 'dc+sd-jwt' | 'vp+sd-jwt'
-export type SdJwtType = SdJwtVcType | SdJwtVpType
+export type Vcdm2Enveloped = 'EnvelopedVerifiableCredential' | 'EnvelopedVerifiablePresentation'
 
 export function isVcdm2SdJwt(type: SdJwtType | string): Boolean {
   return type === 'vc+sd-jwt' || type === 'vp+sd-jwt'
@@ -160,6 +167,8 @@ export interface ICreateSdJwtPresentationArgs {
   kb?: KBOptions
 
   type?: SdJwtVpType
+
+  vcdm2Enveloped?: Vcdm2Enveloped
 }
 
 /**
@@ -213,12 +222,12 @@ export interface IVerifySdJwtPresentationArgs {
   /**
    * nonce used to verify the key binding jwt to prevent replay attacks.
    */
-  keyBindingNonce?: string;
+  keyBindingNonce?: string
 
   /**
    * Audience used to verify the key binding jwt
    */
-  keyBindingAud?: string;
+  keyBindingAud?: string
 }
 
 /**

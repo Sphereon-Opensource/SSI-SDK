@@ -1,6 +1,7 @@
 import { type CompactJWT } from './w3c-vc'
 import { type OrPromise } from './generic'
 import { OriginalType } from '../mapper'
+import { SdJwtVcdm2Payload } from './vcdm2-sdjwt'
 
 export type JsonValue = string | number | boolean | { [x: string]: JsonValue | undefined } | Array<JsonValue>
 
@@ -90,6 +91,8 @@ export interface SdJwtDisclosure {
  * payload, with the different disclosures.
  */
 export interface SdJwtDecodedVerifiableCredential {
+  type: SdJwtType
+
   /**
    * The compact sd jwt is the sd-jwt encoded as string. It is a normal JWT,
    * with the disclosures and kb-jwt appended separated by ~ */
@@ -106,7 +109,7 @@ export interface SdJwtDecodedVerifiableCredential {
    * The signed payload is the payload of the sd-jwt that is actually signed, and that includes
    * the `_sd` and `...` digests.
    */
-  signedPayload: SdJwtSignedVerifiableCredentialPayload
+  signedPayload: SdJwtSignedVerifiableCredentialPayload | SdJwtVcdm2Payload
 
   /**
    * The decoded payload is the payload when all `_sd` and `...` digests have been replaced
@@ -116,7 +119,7 @@ export interface SdJwtDecodedVerifiableCredential {
    * This is useful for displaying the contents of the SD JWT VC to the user, or for example
    * for querying the contents of the SD JWT VC using a PEX presentation definition path.
    */
-  decodedPayload: SdJwtDecodedVerifiableCredentialPayload
+  decodedPayload: SdJwtDecodedVerifiableCredentialPayload | SdJwtVcdm2Payload
 
   /**
    * Key binding JWT
@@ -146,12 +149,12 @@ export interface WrappedSdJwtVerifiableCredential {
   /**
    * Original VC that we've received. Can be either the encoded or decoded variant.
    */
-  original: SdJwtDecodedVerifiableCredential | CompactSdJwtVc
+  original: SdJwtDecodedVerifiableCredential | SdJwtVcdm2Payload | CompactSdJwtVc
   /**
    * Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT as the `decoded` property
    * is used in e.g. PEX to check for path filters from fields. The full decoded credential can be found in the `credential` field.
    */
-  decoded: SdJwtDecodedVerifiableCredentialPayload
+  decoded: SdJwtDecodedVerifiableCredentialPayload | SdJwtVcdm2Payload
   /**
    * Type of this credential.
    */
@@ -159,7 +162,7 @@ export interface WrappedSdJwtVerifiableCredential {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'dc+sd-jwt'
+  format: SdJwtType
   /**
    * Internal stable representation of a Credential
    */
@@ -173,11 +176,11 @@ export interface WrappedSdJwtVerifiablePresentation {
   /**
    * Original VP that we've received. Can be either the encoded or decoded variant.
    */
-  original: SdJwtDecodedVerifiableCredential | CompactSdJwtVc
+  original: SdJwtDecodedVerifiableCredential | SdJwtVcdm2Payload | CompactSdJwtVc
   /**
    * Decoded version of the SD-JWT payload. This is the decoded payload, rather than the whole SD-JWT.
    */
-  decoded: SdJwtDecodedVerifiableCredentialPayload
+  decoded: SdJwtDecodedVerifiableCredentialPayload | SdJwtVcdm2Payload
   /**
    * Type of this Presentation.
    */
@@ -196,3 +199,9 @@ export interface WrappedSdJwtVerifiablePresentation {
    */
   vcs: [WrappedSdJwtVerifiableCredential]
 }
+
+
+
+export type SdJwtVcType = 'dc+sd-jwt' | 'vc+sd-jwt'
+export type SdJwtVpType = 'dc+sd-jwt' | 'vp+sd-jwt'
+export type SdJwtType = SdJwtVcType | SdJwtVpType

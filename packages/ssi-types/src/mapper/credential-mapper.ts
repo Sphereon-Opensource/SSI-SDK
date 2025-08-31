@@ -489,6 +489,16 @@ export class CredentialMapper {
     )
   }
 
+  public static isSdJwtVcdm2DecodedCredential(
+    original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
+  ): original is SdJwtDecodedVerifiableCredential {
+    if (typeof original !== 'object') {
+      return false
+    }
+    const decoded = <SdJwtDecodedVerifiableCredential>original
+    return decoded.compactSdJwtVc !== undefined && !decoded.decodedPayload.vct && !decoded.decodedPayload['@context']
+  }
+
   public static isMsoMdocDecodedCredential(
     original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
   ): original is MdocDocument {

@@ -1,9 +1,9 @@
 import { SDJwtInstance, type VerifierOptions } from '@sd-jwt/core'
-import type { DisclosureFrame, Hasher } from '@sd-jwt/types'
+import type { DisclosureFrame, Hasher, SDJWTCompact } from '@sd-jwt/types'
 import { SDJWTException } from '@sd-jwt/utils'
-import { type SDJWTVCDM2Config, type SdJwtVcdm2Payload } from '@sphereon/ssi-types'
+import { type SdJwtType, type SDJWTVCDM2Config, type SdJwtVcdm2Payload } from '@sphereon/ssi-types'
 import { type SDJWTVCConfig, SDJwtVcInstance, type VerificationResult } from '@sd-jwt/sd-jwt-vc'
-import { isVcdm2SdJwt, type SdJwtType } from './types'
+import { isVcdm2SdJwt } from './types'
 
 interface SdJwtVcdm2VerificationResult extends Omit<VerificationResult, 'payload'> {
   payload: SdJwtVcdm2Payload
@@ -96,6 +96,7 @@ export class SDJwtVcdm2Instance extends SDJwtInstance<SdJwtVcdm2Payload> {
   /**
    * Fetches the content from the url with a timeout of 10 seconds.
    * @param url
+   * @param integrity
    * @returns
    */
   protected async fetch<T>(url: string, integrity?: string): Promise<T> {
@@ -105,7 +106,7 @@ export class SDJwtVcdm2Instance extends SDJwtInstance<SdJwtVcdm2Payload> {
       })
       if (!response.ok) {
         const errorText = await response.text()
-        throw new Error(`Error fetching ${url}: ${response.status} ${response.statusText} - ${errorText}`)
+        return Promise.reject(new Error(`Error fetching ${url}: ${response.status} ${response.statusText} - ${errorText}`))
       }
       await this.validateIntegrity(response.clone(), url, integrity)
       return response.json() as Promise<T>
@@ -116,4 +117,39 @@ export class SDJwtVcdm2Instance extends SDJwtInstance<SdJwtVcdm2Payload> {
       throw error
     }
   }
+
+  public async issue<Payload extends SdJwtVcdm2Payload>(
+    payload: Payload,
+    disclosureFrame?: DisclosureFrame<Payload>,
+    options?: {
+      header?: object; // This is for customizing the header of the jwt
+    },
+  ): Promise<SDJWTCompact> {
+    if (payload.iss && !payload.issuer) {
+      payload.issuer = {id: payload.iss}
+      delete payload.iss
+    }
+    if (payload.nbf && !payload.validFrom) {
+      payload.validFrom = toVcdm2Date(payload.nbf)
+      delete payload.nbf
+    }
+    if (payload.exp && !payload.validUntil) {
+      payload.validUntil = toVcdm2Date(payload.exp)
+      delete payload.exp
+    }
+    if (payload.sub && !Array.isArray(payload.credentialSubject) && !payload.credentialSubject.id) {
+      payload.credentialSubject.id = payload.sub
+      delete payload.sub
+    }
+    return super.issue(payload, disclosureFrame, options)
+  }
+}
+
+function toVcdm2Date(value: number | string): string {
+  const num = typeof value === 'string' ? Number(value) : value
+  if (!Number.isFinite(num)) {
+    throw new SDJWTException(`Invalid numeric date: ${value}`)
+  }
+  // Convert JWT NumericDate (seconds since epoch) to W3C VCDM 2 date-time string (RFC 3339 / ISO 8601)
+  return new Date(num * 1000).toISOString()
 }

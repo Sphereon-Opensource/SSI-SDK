@@ -125,7 +125,7 @@ describe('Agent plugin', () => {
         credentialPayload: credentialPayload as unknown as SdJwtVcPayload,
         disclosureFrame,
       }),
-    ).rejects.toThrow('credential.issuer must not be empty')
+    ).rejects.toThrow('No issuer (iss or VCDM 2 issuer) found in SD-JWT or no VCDM2 SD-JWT or SD-JWT VC')
   })
 
   it('verify a sd-jwt', async () => {

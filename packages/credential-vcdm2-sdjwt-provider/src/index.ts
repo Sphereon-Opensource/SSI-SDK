@@ -1,1 +1,1 @@
-export { CredentialProviderVcdm2SdJwt } from './agent/CredentialProviderVcdm2Jose'
+export { CredentialProviderVcdm2SdJwt } from './agent/CredentialProviderVcdm2SdJwt'

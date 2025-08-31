@@ -11,7 +11,7 @@ import { Resolver } from 'did-resolver'
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver'
 
 import 'cross-fetch/polyfill'
-import { CredentialProviderVcdm2Jose } from '../agent/CredentialProviderVcdm2Jose'
+import { CredentialProviderVcdm2SdJwt } from '../agent/CredentialProviderVcdm2SdJwt'
 import { type ISphereonKeyManager, MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
@@ -22,6 +22,7 @@ import {
   OriginalVerifiableCredential,
   VCDM_CREDENTIAL_CONTEXT_V2
 } from '@sphereon/ssi-types'
+import { SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 const infuraProjectId = '3586660d179141e3801c3895de1c2eba'
 
@@ -29,7 +30,7 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
   let didKeyIdentifier: IIdentifier
   let didEthrIdentifier: IIdentifier
   let agent: TAgent<IResolver & ISphereonKeyManager & IDIDManager & IVcdmCredentialPlugin>
-  const jose = new CredentialProviderVcdm2Jose()
+  const vcdm2SdJwt = new CredentialProviderVcdm2SdJwt()
 
   beforeAll(async () => {
     agent = await createAgent<IResolver & ISphereonKeyManager & IDIDManager & IIdentifierResolution & IJwtService & IVcdmCredentialPlugin>({
@@ -59,19 +60,20 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
             ...ethrDidResolver({ infuraProjectId }),
           }),
         }),
-        new VcdmCredentialPlugin({ issuers: [jose] }),
+        new SDJwtPlugin(),
+        new VcdmCredentialPlugin({ issuers: [vcdm2SdJwt] }),
       ],
     })
     didKeyIdentifier = await agent.didManagerCreate()
     didEthrIdentifier = await agent.didManagerCreate({ provider: 'did:ethr' })
   })
 
-  it('issues and verifies JOSE credential', async () => {
+  it('issues and verifies VCDM2 SD-JWT credential', async () => {
     const credential: CredentialPayload = {
       issuer: { id: didEthrIdentifier.did },
       '@context': [VCDM_CREDENTIAL_CONTEXT_V2, 'https://example.com/1/2/3'],
       type: ['VerifiableCredential', 'Custom'],
-      issuanceDate: new Date().toISOString(),
+      validFrom: new Date().toISOString(),
       credentialSubject: {
         id: 'did:web:example.com',
         you: 'Rock',
@@ -79,7 +81,7 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
     }
     const verifiableCredential = await agent.createVerifiableCredential({
       credential,
-      proofFormat: 'vc+jwt',
+      proofFormat: 'vc+sd-jwt',
     })
 
     expect(verifiableCredential).toBeDefined()
@@ -107,7 +109,7 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
     }
     const verifiableCredential1 = await agent.createVerifiableCredential({
       credential,
-      proofFormat: 'jwt',
+      proofFormat: 'vc+sd-jwt',
     })
 
     const verifiablePresentation = await agent.createVerifiablePresentation({
@@ -117,7 +119,7 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
         holder: didEthrIdentifier.did,
       },
       challenge: 'SUCCESS',
-      proofFormat: 'jwt',
+      proofFormat: 'vp+sd-jwt',
     })
 
     expect(verifiablePresentation).toBeDefined()

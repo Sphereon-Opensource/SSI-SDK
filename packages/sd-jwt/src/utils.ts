@@ -83,11 +83,15 @@ export function isSdjwtVcPayload(payload: SdJwtPayload): payload is SdJwtVcPaylo
 }
 
 export function getIssuerFromSdJwt(payload: SdJwtPayload): string {
+    let issuer: string | undefined
   if (isVcdm2SdJwtPayload(payload)) {
-    return typeof payload.issuer === 'string' ? payload.issuer : payload.issuer.id
+    issuer = typeof payload.issuer === 'string' ? payload.issuer : payload.issuer?.id
   }
   if (isSdjwtVcPayload(payload)) {
-    return payload.iss as string
+    issuer = payload.iss as string
   }
-  throw new Error('Invalid payload. Not SD-JWT VC nor VCDM2 SD-JWT')
+  if (!issuer) {
+      throw new Error('No issuer (iss or VCDM 2 issuer) found in SD-JWT or no VCDM2 SD-JWT or SD-JWT VC')
+  }
+  return issuer
 }

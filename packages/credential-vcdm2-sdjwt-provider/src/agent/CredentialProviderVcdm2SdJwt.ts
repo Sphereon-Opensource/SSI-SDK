@@ -2,7 +2,7 @@ import {
   type ExternalIdentifierDidOpts,
   ExternalIdentifierResult,
   type IIdentifierResolution,
-  isDidIdentifier
+  isDidIdentifier,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import type { IJwtService, JwsHeader, JwsPayload } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
@@ -20,14 +20,9 @@ import {
   IVerifyPresentationLDArgs,
   pickSigningKey,
   preProcessCredentialPayload,
-  preProcessPresentation
+  preProcessPresentation,
 } from '@sphereon/ssi-sdk.credential-vcdm'
-import {
-  CredentialMapper,
-  isVcdm2Credential,
-  type IVerifyResult,
-  type OriginalVerifiableCredential
-} from '@sphereon/ssi-types'
+import { CredentialMapper, isVcdm2Credential, type IVerifyResult, type OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import type {
   IAgentContext,
   IDIDManager,
@@ -35,8 +30,9 @@ import type {
   IKey,
   IKeyManager,
   IResolver,
-  VerifiableCredential, VerificationPolicies,
-  VerifierAgentContext
+  VerifiableCredential,
+  VerificationPolicies,
+  VerifierAgentContext,
 } from '@veramo/core'
 
 import Debug from 'debug'
@@ -49,6 +45,7 @@ import { normalizeCredential, normalizePresentation, verifyPresentation as verif
 import { type Resolvable } from 'did-resolver'
 
 import { SELF_ISSUED_V0_1, SELF_ISSUED_V2, SELF_ISSUED_V2_VC_INTEROP } from '../did-jwt/JWT'
+import { getIssuerFromSdJwt, ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 // import {validateCredentialPayload} from "did-jwt-vc/src";
 
 const debug = Debug('sphereon:ssi-sdk:credential-vcdm2-sdjwt')
@@ -73,7 +70,7 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
   canIssueCredentialType(args: ICanIssueCredentialTypeArgs): boolean {
     const format = args.proofFormat.toLowerCase()
     // TODO: Create type
-    return format === 'vc+sd-jwt' || format === 'vcdm2_jose'
+    return format === 'vc+sd-jwt' || format === 'vcdm2_sdjwt'
   }
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.canVerifyDocumentType */
@@ -83,7 +80,7 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
     if (!jwt) {
       return false
     }
-    const { payload } = decodeJWT(jwt)
+    const { payload } = decodeJWT(jwt.split('~')[0])
     return isVcdm2Credential(payload)
   }
 
@@ -94,12 +91,16 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
     const { credential, issuer } = preProcessCredentialPayload(args)
     if (!isVcdm2Credential(credential)) {
       return Promise.reject(new Error('invalid_argument: credential must be a VCDM2 credential. Context: ' + credential['@context']))
+    } else if (!contextHasPlugin<ISDJwtPlugin>(context, 'createSdJwtVc')) {
+      return Promise.reject(
+        new Error('invalid_argument: SD-JWT plugin not available. Please install @sphereon/ssi-sdk.sd-jwt and configure agent for VCDM2 SD-JWT'),
+      )
     }
     let identifier: IIdentifier
     try {
       identifier = await agent.didManagerGet({ did: issuer })
     } catch (e) {
-      throw new Error(`invalid_argument: ${credential.issuer} must be a DID managed by this agent. ${e}`)
+      return Promise.reject(new Error(`invalid_argument: ${credential.issuer} must be a DID managed by this agent. ${e}`))
     }
     const managedIdentifier = await agent.identifierManagedGetByDid({ identifier: identifier.did, kmsKeyRef: keyRef })
     const key = await pickSigningKey({ identifier, kmsKeyRef: keyRef }, context)
@@ -107,106 +108,77 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
     // TODO: Probably wise to give control to caller as well, as some key types allow multiple signature algos
     const alg = (await signatureAlgorithmFromKey({ key })) as string
     debug('Signing VC with', identifier.did, alg)
-    const header: JwsHeader = {
-      kid: key.meta?.verificationMethod?.id ?? key.kid,
-      alg,
-      typ: 'vc+jwt',
-      cty: 'vc'
-    }
+    credential.issuer = { id: identifier.did }
 
-    const jwt = await context.agent.jwtCreateJwsCompactSignature({
-      mode: 'did',
-      issuer: managedIdentifier,
-      payload: credential,
-      protectedHeader: header,
-      clientIdScheme: 'did'
+    const result = await context.agent.createSdJwtVc({
+      type: 'vc+sd-jwt',
+      credentialPayload: credential,
+      resolution: managedIdentifier,
+      disclosureFrame: args.opts?.disclosureFrame,
     })
 
+    const jwt = result.credential.split('~')[0]
+
     // debug(jwt)
-    return normalizeCredential(jwt.jwt)
+    const normalized = normalizeCredential(jwt)
+    normalized.proof.jwt = result.credential
+    return normalized
   }
 
   /** {@inheritdoc ICredentialVerifier.verifyCredential} */
   async verifyCredential(args: IVerifyCredentialVcdmArgs, context: VerifierAgentContext): Promise<IVerifyResult> {
-    let { credential, policies, /*...otherOptions*/ } = args
+    let { credential, policies /*...otherOptions*/ } = args
     const uniform = CredentialMapper.toUniformCredential(credential as OriginalVerifiableCredential)
     // let verifiedCredential: VerifiableCredential
     if (!isVcdm2Credential(uniform)) {
       return Promise.reject(new Error('invalid_argument: credential must be a VCDM2 credential. Context: ' + uniform['@context']))
+    } else if (!contextHasPlugin<ISDJwtPlugin>(context, 'createSdJwtVc')) {
+      return Promise.reject(
+        new Error('invalid_argument: SD-JWT plugin not available. Please install @sphereon/ssi-sdk.sd-jwt and configure agent for VCDM2 SD-JWT'),
+      )
     }
     let verificationResult: IVerifyResult = { verified: false }
     let jwt: string | undefined = typeof credential === 'string' ? credential : asArray(uniform.proof)?.[0]?.jwt
     if (!jwt) {
       return Promise.reject(new Error('invalid_argument: credential must be a VCDM2 credential in JOSE format (string)'))
     }
+
+    try {
+      const result = await context.agent.verifySdJwtVc({ credential: jwt })
+      if (result.payload) {
+        verificationResult = {
+          verified: true,
+          results: [
+            {
+              credential: credential as OriginalVerifiableCredential,
+              verified: true,
+              log: [
+                {
+                  id: 'valid_signature',
+                  valid: true,
+                },
+                {
+                  id: 'issuer_did_resolves',
+                  valid: true,
+                },
+              ],
+            },
+          ],
+        }
+      }
+    } catch (e) {
+      verificationResult = { verified: false, error: { message: e.message, errorCode: e.name } }
+    }
+
     policies = {
       ...policies,
       nbf: policies?.nbf ?? policies?.issuanceDate ?? policies?.validFrom,
       iat: policies?.iat ?? policies?.issuanceDate ?? policies?.validFrom,
       exp: policies?.exp ?? policies?.expirationDate ?? policies?.validUntil,
-      aud: policies?.aud ?? policies?.audience
+      aud: policies?.aud ?? policies?.audience,
     }
-    verificationResult = await verifierSignature({ jwt, policies }, context)
+    verificationResult = await verifierSignature({ jwt: jwt.split('~')[0], policies }, context)
     return verificationResult
-    /*    let errorCode, message
-        const resolver = {
-          resolve: (didUrl: string) =>
-            context.agent.resolveDid({
-              didUrl,
-              options: otherOptions?.resolutionOptions,
-            }),
-        } as Resolvable
-        try {
-          // needs broader credential as well to check equivalence with jwt
-          verificationResult = await verifyCredentialJWT(jwt, resolver, {
-            ...otherOptions,
-            policies: {
-              ...policies,
-              nbf: policies?.nbf ?? policies?.issuanceDate,
-              iat: policies?.iat ?? policies?.issuanceDate,
-              exp: policies?.exp ?? policies?.expirationDate,
-              aud: policies?.aud ?? policies?.audience,
-            },
-          })
-          verifiedCredential = verificationResult.verifiableCredential
-
-          const nbf = policies?.issuanceDate === false ? false : undefined
-          const exp = policies?.expirationDate === false ? false : undefined
-          const options = { ...otherOptions, policies: { ...policies, nbf, exp, iat: nbf, format: policies?.format ?? true } }
-
-          const verified: Partial<VerifiedCredential> = await verifyDIDJWT(asArray(uniform.proof)[0].jwt, { resolver, ...options }, context)
-          verified.verifiableCredential = normalizeCredential(verified.jwt as string, true)
-          if (options?.policies?.format !== false) {
-            validateCredentialPayload(verified.verifiableCredential)
-          }
-
-          // if credential was presented with other fields, make sure those fields match what's in the JWT
-          if (typeof credential !== 'string' && asArray(credential.proof)[0].type === 'JwtProof2020') {
-            const credentialCopy = JSON.parse(JSON.stringify(credential))
-            delete credentialCopy.proof.jwt
-
-            const verifiedCopy = JSON.parse(JSON.stringify(verifiedCredential))
-            delete verifiedCopy.proof.jwt
-
-            if (canonicalize(credentialCopy) !== canonicalize(verifiedCopy)) {
-              verificationResult.verified = false
-              verificationResult.error = new Error('invalid_credential: Credential JSON does not match JWT payload')
-            }
-          }
-        } catch (e: any) {
-          errorCode = e.errorCode
-          message = e.message
-        }
-        if (verificationResult.verified) {
-          return verificationResult
-        }
-        return {
-          verified: false,
-          error: {
-            message,
-            errorCode: errorCode ? errorCode : message?.split(':')[0],
-          },
-        }*/
   }
 
   /** {@inheritdoc @veramo/credential-w3c#AbstractCredentialProvider.createVerifiablePresentation} */
@@ -221,9 +193,9 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
     const key = await pickSigningKey(
       {
         identifier: managedIdentifier.identifier,
-        kmsKeyRef: managedIdentifier.kmsKeyRef
+        kmsKeyRef: managedIdentifier.kmsKeyRef,
       },
-      context
+      context,
     )
 
     debug('Signing VC with', identifier.did)
@@ -238,12 +210,12 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
       kid: key.meta.verificationMethod.id ?? key.kid,
       alg,
       typ: 'vp+jwt',
-      cty: 'vp'
+      cty: 'vp',
     }
     const payload: JwsPayload = {
       ...presentation,
       ...(domain && { aud: domain }),
-      ...(challenge && { nonce: challenge })
+      ...(challenge && { nonce: challenge }),
     }
 
     const jwt = await agent.jwtCreateJwsCompactSignature({
@@ -251,7 +223,7 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
       issuer: managedIdentifier,
       payload,
       protectedHeader: header,
-      clientIdScheme: 'did'
+      clientIdScheme: 'did',
     })
 
     debug(jwt)
@@ -271,8 +243,8 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
       resolve: (didUrl: string) =>
         context.agent.resolveDid({
           didUrl,
-          options: otherOptions?.resolutionOptions
-        })
+          options: otherOptions?.resolutionOptions,
+        }),
     } as Resolvable
 
     let audience = domain
@@ -300,9 +272,9 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
           nbf: policies?.nbf ?? policies?.issuanceDate,
           iat: policies?.iat ?? policies?.issuanceDate,
           exp: policies?.exp ?? policies?.expirationDate,
-          aud: policies?.aud ?? policies?.audience
+          aud: policies?.aud ?? policies?.audience,
         },
-        ...otherOptions
+        ...otherOptions,
       })
       if (result) {
         /**
@@ -321,11 +293,11 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
               log: [
                 {
                   id: 'valid_signature',
-                  valid: true
-                }
-              ]
-            }
-          ]
+                  valid: true,
+                },
+              ],
+            },
+          ],
         } satisfies IVerifyResult
       }
     } catch (e: any) {
@@ -336,8 +308,8 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
       verified: false,
       error: {
         message,
-        errorCode: errorCode ? errorCode : message?.split(':')[0]
-      }
+        errorCode: errorCode ? errorCode : message?.split(':')[0],
+      },
     }
   }
 
@@ -369,46 +341,50 @@ export class CredentialProviderVcdm2SdJwt implements IVcdmCredentialProvider {
 }
 
 export async function verifierSignature(
-  { jwt, policies }: { jwt: string, policies: VerificationPolicies /*resolver: Resolvable*/ },
-  verifierContext: VerifierAgentContext
+  { jwt, policies }: { jwt: string; policies: VerificationPolicies /*resolver: Resolvable*/ },
+  verifierContext: VerifierAgentContext,
 ): Promise<IVerifyResult> {
   let credIssuer: string | undefined = undefined
   const context = assertContext(verifierContext)
   const agent = context.agent
   const { payload, header /*signature, data*/ } = decodeJWT(jwt)
 
-  if (!payload.iss && !payload.client_id) {
+
+
+  if (!payload.issuer) {
     throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT iss or client_id are required`)
   }
-
-  if (payload.iss === SELF_ISSUED_V2 || payload.iss === SELF_ISSUED_V2_VC_INTEROP) {
-    if (!payload.sub) {
-      throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT sub is required`)
+  const issuer = getIssuerFromSdJwt(payload)
+  if (issuer === SELF_ISSUED_V2 || issuer === SELF_ISSUED_V2_VC_INTEROP) {
+    if (!payload.credentialSubject.id) {
+      throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT credentialSubject.id is required`)
     }
     if (typeof payload.sub_jwk === 'undefined') {
       credIssuer = payload.sub
     } else {
       credIssuer = (header.kid || '').split('#')[0]
     }
-  } else if (payload.iss === SELF_ISSUED_V0_1) {
+  } else if (issuer === SELF_ISSUED_V0_1) {
     if (!payload.did) {
       throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT did is required`)
     }
     credIssuer = payload.did
-  } else if (!payload.iss && payload.scope === 'openid' && payload.redirect_uri) {
+  } else if (!issuer && payload.scope === 'openid' && payload.redirect_uri) {
     // SIOP Request payload
     // https://identity.foundation/jwt-vc-presentation-profile/#self-issued-op-request-object
     if (!payload.client_id) {
       throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT client_id is required`)
     }
     credIssuer = payload.client_id
-  } else if (payload.iss?.indexOf('did:') === 0) {
-    credIssuer = payload.iss
+  } else if (issuer?.indexOf('did:') === 0) {
+    credIssuer = issuer
   } else if (header.kid?.indexOf('did:') === 0) {
     // OID4VCI expects iss to be the client and kid, to be the DID VM
     credIssuer = (header.kid || '').split('#')[0]
-  } else if (payload.iss) {
-    credIssuer = payload.iss
+  } else if (typeof payload.issuer === 'string') {
+    credIssuer = payload.issuer
+  } else if (payload.issuer?.id) {
+    credIssuer = payload.issuer.id
   }
 
   if (!credIssuer) {
@@ -417,32 +393,43 @@ export async function verifierSignature(
   let resolution: ExternalIdentifierResult | undefined = undefined
   try {
     resolution = await agent.identifierExternalResolve({ identifier: credIssuer })
-  } catch (e: any) {
-  }
+  } catch (e: any) {}
   const credential = CredentialMapper.toUniformCredential(jwt)
 
-  const validFromError = (policies.nbf !== false && policies.iat !== false) && 'validFrom' in credential && !!credential.validFrom && Date.parse(credential.validFrom) > new Date().getTime()
-  const expired = policies.exp !== false && 'validUntil' in credential && !!credential.validUntil && Date.parse(credential.validUntil) < new Date().getTime()
+  const validFromError =
+    policies.nbf !== false &&
+    policies.iat !== false &&
+    'validFrom' in credential &&
+    !!credential.validFrom &&
+    Date.parse(credential.validFrom) > new Date().getTime()
+  const expired =
+    policies.exp !== false && 'validUntil' in credential && !!credential.validUntil && Date.parse(credential.validUntil) < new Date().getTime()
 
   const didOpts = { method: 'did', identifier: credIssuer } satisfies ExternalIdentifierDidOpts
   const jwtResult = await agent.jwtVerifyJwsSignature({
     jws: jwt,
     // @ts-ignore
     jwk: resolution?.jwks[0].jwk,
-    opts: { ...(isDidIdentifier(credIssuer) && { did: didOpts }) }
+    opts: { ...(isDidIdentifier(credIssuer) && { did: didOpts }) },
   })
   const error = jwtResult.error || expired || !resolution
-  const errorMessage = expired ? 'Credential is expired' : validFromError ? 'Credential is not valid yet' : !resolution ? `Issuer ${credIssuer} could not be resolved` : jwtResult.message
+  const errorMessage = expired
+    ? 'Credential is expired'
+    : validFromError
+      ? 'Credential is not valid yet'
+      : !resolution
+        ? `Issuer ${credIssuer} could not be resolved`
+        : jwtResult.message
 
   if (error) {
     const log = [
       {
         id: 'valid_signature',
-        valid: !jwtResult.error
+        valid: !jwtResult.error,
       },
       { id: 'issuer_did_resolves', valid: resolution != undefined },
       { id: 'validFrom', valid: policies.nbf !== false && !validFromError },
-      { id: 'expiration', valid: policies.exp !== false && !expired }
+      { id: 'expiration', valid: policies.exp !== false && !expired },
     ]
     return {
       verified: false,
@@ -453,32 +440,32 @@ export async function verifierSignature(
           verified: false,
           credential: jwt,
           log,
-          error: { message: errorMessage, errorCode: jwtResult.name }
-        }
+          error: { message: errorMessage, errorCode: jwtResult.name },
+        },
       ],
       payload,
       didResolutionResult: resolution,
-      jwt
+      jwt,
     } satisfies IVerifyResult
   }
 
   const log = [
     {
       id: 'valid_signature',
-      valid: true
+      valid: true,
     },
     {
       id: 'issuer_did_resolves',
-      valid: true
+      valid: true,
     },
     {
       id: 'validFrom',
-      valid: true
+      valid: true,
     },
     {
       id: 'expiration',
-      valid: true
-    }
+      valid: true,
+    },
   ]
   return {
     verified: true,
@@ -487,12 +474,12 @@ export async function verifierSignature(
       {
         verified: true,
         credential,
-        log
-      }
+        log,
+      },
     ],
     payload,
     didResolutionResult: resolution,
-    jwt
+    jwt,
   } satisfies IVerifyResult
 }
 
@@ -635,17 +622,17 @@ export function validateContext(value: string | string[]): void {
 }
 */
 function assertContext(
-  context: IVcdmIssuerAgentContext | IVcdmVerifierAgentContext
+  context: IVcdmIssuerAgentContext | IVcdmVerifierAgentContext,
 ): IAgentContext<
   IResolver & IDIDManager & Pick<IKeyManager, 'keyManagerGet' | 'keyManagerSign' | 'keyManagerVerify'> & IJwtService & IIdentifierResolution
 > {
   if (!contextHasPlugin<IJwtService>(context, 'jwtPrepareJws')) {
     throw Error(
-      'JwtService plugin not found, which is required for JWT signing in the VCDM2 SD-JWT credential provider. Please add the JwtService plugin to your agent configuration.'
+      'JwtService plugin not found, which is required for JWT signing in the VCDM2 SD-JWT credential provider. Please add the JwtService plugin to your agent configuration.',
     )
   } else if (!contextHasPlugin<IIdentifierResolution>(context, 'identifierManagedGet')) {
     throw Error(
-      'Identifier resolution plugin not found, which is required for JWT signing in the VCDM2 SD-JWT credential provider. Please add the JwtService plugin to your agent configuration.'
+      'Identifier resolution plugin not found, which is required for JWT signing in the VCDM2 SD-JWT credential provider. Please add the JwtService plugin to your agent configuration.',
     )
   }
   return context as IAgentContext<

@@ -1065,6 +1065,9 @@ importers:
       '@sphereon/ssi-sdk.credential-vcdm':
         specifier: workspace:*
         version: link:../credential-vcdm
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

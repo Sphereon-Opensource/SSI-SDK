@@ -14,6 +14,9 @@
       "path": "../agent-config"
     },
     {
+      "path": "../sd-jwt"
+    },
+    {
       "path": "../vc-status-list"
     },
     {
