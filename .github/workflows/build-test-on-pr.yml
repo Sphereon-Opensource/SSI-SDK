@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.8.1
+          version: 10.15.0
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
