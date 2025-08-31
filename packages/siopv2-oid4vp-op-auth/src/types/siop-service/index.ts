@@ -1,5 +1,4 @@
 import {
-  PresentationDefinitionWithLocation,
   PresentationSignCallback,
   RPRegistrationMetadataPayload,
   VerifiedAuthorizationRequest,
@@ -69,8 +68,7 @@ export type Siopv2AuthorizationRequestData = {
   name?: string
   uri?: URL
   clientId?: string
-  presentationDefinitions?: PresentationDefinitionWithLocation[]
-  dcqlQuery?: DcqlQuery
+  dcqlQuery: DcqlQuery
 }
 
 export type SelectableCredentialsMap = Map<string, Array<SelectableCredential>>

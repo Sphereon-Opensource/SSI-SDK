@@ -25,5 +25,4 @@ export type {
   AuthorizationRequestPayload,
   PresentationVerificationResult,
   PresentationVerificationCallback,
-  PresentationDefinitionWithLocation,
 } from '@sphereon/did-auth-siop'

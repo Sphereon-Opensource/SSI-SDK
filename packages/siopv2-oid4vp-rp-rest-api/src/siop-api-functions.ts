@@ -1,4 +1,4 @@
-import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
+import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -41,11 +41,7 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
   )
 }
 
-export function verifyAuthResponseSIOPv2Endpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation },
-) {
+export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
@@ -53,7 +49,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
   const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const { correlationId, definitionId, tenantId, version } = request.params
+      const { correlationId, definitionId, tenantId, version, credentialQueryId } = request.params // TODO Can credentialQueryId be a request param
       if (!correlationId || !definitionId) {
         console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
@@ -76,16 +72,10 @@ export function verifyAuthResponseSIOPv2Endpoint(
         authorizationResponse,
         correlationId,
         definitionId,
-        presentationDefinitions: [
-          {
-            location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
-            definition: definitionItem.definitionPayload,
-          },
-        ],
         dcqlQuery: definitionItem.dcqlPayload,
       })
 
-      const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]
+      const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentation[credentialQueryId]
       if (wrappedPresentation) {
         // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
         // console.log(JSON.stringify(credentialSubject, null, 2))
