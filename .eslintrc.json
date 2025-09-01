@@ -6,7 +6,7 @@
       "packages/*/tsconfig.eslint.json",
       "packages/*/tsconfig.json"
     ],
-    "tsconfigRootDir": "__dirname"
+    "tsconfigRootDir": "."
   },
   "env": { "es6": true },
   "ignorePatterns": ["node_modules", "dist", "coverage", "jest.js"],
