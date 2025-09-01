@@ -1,16 +1,17 @@
 import { LOG } from '@sphereon/oid4vci-client'
 import {
+  AuthorizationChallengeCodeResponse,
   CredentialConfigurationSupported,
-  CredentialSupportedSdJwtVc,
   CredentialConfigurationSupportedSdJwtVcV1_0_15,
   CredentialOfferFormatV1_0_11,
   CredentialResponse,
+  CredentialResponseV1_0_15,
+  CredentialSupportedSdJwtVc,
   getSupportedCredentials,
   getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
   OpenId4VCIVersion,
-  AuthorizationChallengeCodeResponse,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -23,6 +24,7 @@ import {
   managedIdentifierToJwk,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -40,8 +42,12 @@ import {
 } from '@sphereon/ssi-types'
 import { asArray } from '@veramo/utils'
 import { translate } from '../localization/Localization'
+import { FirstPartyMachine } from '../machines/firstPartyMachine'
+import { issuerLocaleBrandingFrom, oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom } from '../mappers/OIDC4VCIBrandingMapper'
+import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
 import {
   DidAgents,
+  GetBasicIssuerLocaleBrandingArgs,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
   GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
@@ -49,22 +55,17 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
-  GetBasicIssuerLocaleBrandingArgs,
   GetPreferredCredentialFormatsArgs,
   IssuanceOpts,
   MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
+  RequiredContext,
   SelectAppLocaleBrandingArgs,
+  StartFirstPartApplicationMachine,
   VerificationResult,
   VerifyCredentialToAcceptArgs,
-  StartFirstPartApplicationMachine,
-  RequiredContext,
 } from '../types/IOID4VCIHolder'
-import { oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom, issuerLocaleBrandingFrom } from '../mappers/OIDC4VCIBrandingMapper'
-import { FirstPartyMachine } from '../machines/firstPartyMachine'
-import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -153,21 +154,7 @@ export const selectCredentialLocaleBranding = async (
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
   const { mappedCredential, hasher, onVerifyEBSICredentialIssuer, schemaValidation, context } = args
 
-  const credentialResponse = mappedCredential.credentialToAccept.credentialResponse
-  let credential
-  if ('credential' in credentialResponse) {
-    credential = credentialResponse.credential as OriginalVerifiableCredential
-  } else if (
-    'credentials' in credentialResponse &&
-    credentialResponse.credentials &&
-    Array.isArray(credentialResponse.credentials) &&
-    credentialResponse.credentials.length > 0
-  ) {
-    credential = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13 (no multi-credential support yet)
-  }
-  if (!credential) {
-    return Promise.reject(Error('No credential found in credential response'))
-  }
+  const credential = extractCredentialFromResponse(mappedCredential.credentialToAccept.credentialResponse)
 
   const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher: hasher ?? defaultHasher })
   if (
@@ -216,21 +203,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
   const { credentialToAccept, hasher } = args
 
-  const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
-  let verifiableCredential: W3CVerifiableCredential | undefined
-  if ('credential' in credentialResponse) {
-    verifiableCredential = credentialResponse.credential
-  } else if (
-    'credentials' in credentialResponse &&
-    credentialResponse.credentials &&
-    Array.isArray(credentialResponse.credentials) &&
-    credentialResponse.credentials.length > 0
-  ) {
-    verifiableCredential = credentialResponse.credentials[0].credential // FIXME SSISDK-13 (no multi-credential support yet)
-  }
-  if (!verifiableCredential) {
-    return Promise.reject(Error('No credential found in credential response'))
-  }
+  const verifiableCredential = extractCredentialFromResponse(credentialToAccept.credentialResponse) as W3CVerifiableCredential
 
   const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
     verifiableCredential as OriginalVerifiableCredential,
@@ -261,6 +234,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
         ? uniformVerifiableCredential.decodedPayload.iss
         : uniformVerifiableCredential.issuer.id
 
+  const credentialResponse = credentialToAccept.credentialResponse as CredentialResponseV1_0_15
   return {
     correlationId,
     credentialToAccept,
@@ -269,6 +243,27 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }
+}
+
+export const extractCredentialFromResponse = (credentialResponse: CredentialResponse): OriginalVerifiableCredential => {
+  let credential: OriginalVerifiableCredential | undefined
+
+  if ('credential' in credentialResponse) {
+    credential = credentialResponse.credential as OriginalVerifiableCredential
+  } else if (
+    'credentials' in credentialResponse &&
+    credentialResponse.credentials &&
+    Array.isArray(credentialResponse.credentials) &&
+    credentialResponse.credentials.length > 0
+  ) {
+    credential = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13 (no multi-credential support yet)
+  }
+
+  if (!credential) {
+    throw new Error('No credential found in credential response')
+  }
+
+  return credential
 }
 
 export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<ManagedIdentifierResult> => {

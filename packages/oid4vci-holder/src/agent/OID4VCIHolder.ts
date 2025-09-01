@@ -55,7 +55,6 @@ import {
   JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
-  OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
@@ -75,6 +74,7 @@ import { decodeJWT } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machines/oid4vciMachine'
 import {
+  extractCredentialFromResponse,
   getBasicIssuerLocaleBranding,
   getCredentialBranding,
   getCredentialConfigsSupportedMerged,
@@ -939,21 +939,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
-        const credentialResponse = mappedCredentialToAccept.credentialToAccept.credentialResponse
-        let issuerVC
-        if ('credential' in credentialResponse) {
-          issuerVC = credentialResponse.credential as OriginalVerifiableCredential
-        } else if (
-          'credentials' in credentialResponse &&
-          credentialResponse.credentials &&
-          Array.isArray(credentialResponse.credentials) &&
-          credentialResponse.credentials.length > 0
-        ) {
-          issuerVC = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13 (no multi-credential support yet)
-        }
-        if (!issuerVC) {
-          return Promise.reject(Error('No credential found in credential response'))
-        }
+
+        const issuerVC = extractCredentialFromResponse(mappedCredentialToAccept.credentialToAccept.credentialResponse)
         const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, { hasher: this.hasher ?? defaultHasher })
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
