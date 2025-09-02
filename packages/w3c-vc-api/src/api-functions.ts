@@ -1,31 +1,16 @@
 import { checkAuth, type ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { isDidIdentifier, isIIdentifier } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
-import {
-  AddCredentialArgs,
-  CredentialCorrelationType,
-  DocumentType,
-  type FindDigitalCredentialArgs
-} from '@sphereon/ssi-sdk.credential-store'
+import { AddCredentialArgs, CredentialCorrelationType, DocumentType, type FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.credential-store'
 import { extractIssuer } from '@sphereon/ssi-sdk.credential-vcdm'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 import type { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
-import {
-  CredentialMapper,
-  CredentialProofFormat,
-  isVcdm2Credential,
-  OriginalVerifiableCredential
-} from '@sphereon/ssi-types'
+import { CredentialMapper, CredentialProofFormat, isVcdm2Credential, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import type { CredentialPayload, ProofFormat } from '@veramo/core'
 import Debug from 'debug'
 import { type Request, type Response, Router } from 'express'
 import { v4 } from 'uuid'
-import type {
-  IIssueCredentialEndpointOpts,
-  IRequiredContext,
-  IVCAPIIssueOpts,
-  IVerifyCredentialEndpointOpts
-} from './types'
+import type { IIssueCredentialEndpointOpts, IRequiredContext, IVCAPIIssueOpts, IVerifyCredentialEndpointOpts } from './types'
 
 const debug = Debug('sphereon:ssi-sdk:w3c-vc-api')
 

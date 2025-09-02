@@ -1,6 +1,7 @@
 import { FindArgs, TAgent, TCredentialColumns } from '@veramo/core'
 import { IVerifiableCredential } from '@sphereon/ssi-types'
-import { CredentialCorrelationType, CredentialRole, CredentialStateType, DigitalCredential } from '@sphereon/ssi-sdk.data-store'
+import { CredentialCorrelationType, CredentialStateType, DigitalCredential } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 import * as fs from 'fs'
 import {
   AddDigitalCredential,

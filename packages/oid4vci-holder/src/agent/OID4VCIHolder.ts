@@ -35,7 +35,6 @@ import {
   ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
-  CredentialRole,
   ensureRawDocument,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
@@ -58,6 +57,7 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
+  CredentialRole,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
