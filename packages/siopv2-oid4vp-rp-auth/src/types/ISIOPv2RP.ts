@@ -111,7 +111,7 @@ export interface IVerifyAuthResponseStateArgs {
 }
 
 export interface IDefinitionPair {
-  definitionPayload: IPresentationDefinition
+  definitionPayload?: IPresentationDefinition
   dcqlPayload?: DcqlQueryREST
 }
 

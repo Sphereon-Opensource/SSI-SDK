@@ -1,5 +1,5 @@
 import { CreateElementArgs, CreateValueArgs, events, IRequiredContext, QRType, ValueResult } from '../../types/IQRCodeGenerator'
-import QRCode from 'react-qr-code'
+import { QRCode } from 'react-qr-code' // import QRCode from "react-qr-code" does not work with ESM
 import React from 'react'
 
 export async function generateQRCodeValue<T extends QRType>(
