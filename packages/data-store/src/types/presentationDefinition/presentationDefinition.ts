@@ -1,5 +1,5 @@
 import { IPresentationDefinition } from '@sphereon/pex'
-import { DcqlQueryREST } from '@sphereon/ssi-types'
+import { DcqlQueryPayload } from '@sphereon/ssi-types'
 
 export type PresentationDefinitionItem = {
   id: string
@@ -8,8 +8,8 @@ export type PresentationDefinitionItem = {
   version: string
   name?: string
   purpose?: string
-  definitionPayload: IPresentationDefinition
-  dcqlPayload?: DcqlQueryREST
+  definitionPayload?: IPresentationDefinition
+  dcqlPayload?: DcqlQueryPayload
   createdAt: Date
   lastUpdatedAt: Date
 }

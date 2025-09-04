@@ -72,7 +72,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         authorizationResponse,
         correlationId,
         definitionId,
-        dcqlQuery: definitionItem.dcqlPayload,
+        dcqlQueryPayload: definitionItem.dcqlPayload,
       })
 
       const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentation[credentialQueryId]

@@ -4,6 +4,7 @@ import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
 import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { DcqlQueryPayload } from '@sphereon/ssi-types'
 
 type ConfiguredAgent = TAgent<IPDManager>
 
@@ -18,19 +19,23 @@ function getFileAsJson(path: string) {
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('PD Manager Agent Plugin', (): void => {
     const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
-    const sampleDcql = {
-      credentials: [
-        {
-          id: 'credential1',
-          format: 'jwt_vc',
-          claims: [
-            {
-              namespace: 'test',
-              claim_name: 'testClaim',
-            },
-          ],
-        },
-      ],
+    const sampleDcql: DcqlQueryPayload = {
+      definitionId: 'credential1',
+      dcqlQuery: {
+        credentials: [
+          {
+            id: 'credential1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', `testClaim`],
+              },
+            ],
+          },
+        ],
+      },
     }
 
     let agent: ConfiguredAgent
@@ -169,18 +174,22 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       for (let i = 2; i <= 12; i++) {
         currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
         currentItem.dcqlPayload = {
-          credentials: [
-            {
-              id: `credential-v${i}`,
-              format: 'jwt_vc',
-              claims: [
-                {
-                  namespace: 'test',
-                  claim_name: `claim-v${i}`,
-                },
-              ],
-            },
-          ],
+          definitionId: `credential-v${i}`,
+          dcqlQuery: {
+            credentials: [
+              {
+                id: `credential-v${i}`,
+                format: 'dc+sd-jwt',
+                require_cryptographic_holder_binding: true,
+                multiple: false,
+                claims: [
+                  {
+                    path: ['test', `claim-v${i}`],
+                  },
+                ],
+              },
+            ],
+          },
         }
         currentItem.version = undefined
         const result = await agent.pdmPersistDefinition({
@@ -191,7 +200,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         expect(result.version).toEqual(`${i}.0.0`)
         expect(result.definitionPayload.input_descriptors[0].id).toEqual(`Version ${i}.0.0`)
         expect(result.dcqlPayload).toBeTruthy()
-        expect(result.dcqlPayload?.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.dcqlPayload?.dcqlQuery.credentials[0].id).toEqual(`credential-v${i}`)
 
         currentItem = result
       }
@@ -315,27 +324,26 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should update dcqlPayload in definition item', async (): Promise<void> => {
       const updatedDcql = {
-        credentials: [
-          {
-            id: 'credential2',
-            format: 'jwt_vc',
-            claims: [
-              {
-                namespace: 'test',
-                claim_name: 'updatedClaim',
-              },
-            ],
-          },
-        ],
-      }
-
-      const updatedDefinitionItem = {
-        ...defaultDefinitionItem,
-        dcqlPayload: updatedDcql,
-      }
+        dcqlQuery: {
+          credentials: [
+            {
+              id: 'credential2',
+              format: 'jwt_vc',
+              claims: [
+                {
+                  namespace: 'test',
+                  claim_name: 'updatedClaim',
+                },
+              ],
+            },
+          ],
+        },
+      } as unknown as DcqlQueryPayload // FIXME I do not have another solution for this atm, I can do Partial<DcqlQuery> but that does not work for its child entities
 
       const result = await agent.pdmPersistDefinition({
-        definitionItem: updatedDefinitionItem,
+        definitionItem: {
+          dcqlPayload: updatedDcql,
+        } as PersistPresentationDefinitionItem,
         opts: { versionControlMode: 'Overwrite' },
       })
 

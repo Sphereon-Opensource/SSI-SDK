@@ -3175,6 +3175,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0(encoding@0.1.13)
@@ -4351,6 +4354,9 @@ importers:
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
+      dcql:
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
       debug:
         specifier: ^4.3.5
         version: 4.4.0

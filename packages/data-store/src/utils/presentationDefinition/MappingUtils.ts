@@ -1,9 +1,9 @@
+import { DcqlQuery } from 'dcql'
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import type { IPresentationDefinition } from '@sphereon/pex'
 import type { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import * as blakepkg from 'blakejs'
 import { replaceNullWithUndefined } from '../FormattingUtils'
-import type { DcqlQueryREST } from '@sphereon/ssi-types'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
   const result: PresentationDefinitionItem = {
@@ -14,7 +14,12 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     name: entity.name,
     purpose: entity.purpose,
     definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
-    dcqlPayload: JSON.parse(entity.dcqlPayload) as DcqlQueryREST,
+    ...(entity.dcqlPayload && {
+      dcqlPayload: {
+        definitionId: entity.definitionId,
+        dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
+      },
+    }),
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }
@@ -30,8 +35,12 @@ export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentat
   entity.version = item.version
   entity.name = item.name
   entity.purpose = item.purpose
-  entity.definitionPayload = JSON.stringify(item.definitionPayload!)
-  entity.dcqlPayload = JSON.stringify(item.dcqlPayload!)
+  if (item.definitionPayload) {
+    entity.definitionPayload = JSON.stringify(item.definitionPayload)
+  }
+  if (item.dcqlPayload) {
+    entity.dcqlPayload = JSON.stringify(item.dcqlPayload.dcqlQuery)
+  }
   return entity
 }
 

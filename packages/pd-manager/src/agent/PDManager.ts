@@ -113,7 +113,7 @@ export class PDManager implements IAgentPlugin {
     const { definitionItem, opts } = args
     const { versionControlMode, versionIncrementReleaseType } = opts ?? { versionControlMode: 'AutoIncrement' }
     const { version, tenantId } = definitionItem
-    const definitionId = definitionItem.definitionId ?? definitionItem.definitionPayload.id
+    const definitionId = definitionItem.definitionId
 
     let { id } = definitionItem
     if (id !== undefined && versionControlMode !== 'Overwrite') {
@@ -122,7 +122,6 @@ export class PDManager implements IAgentPlugin {
 
     const nonPersistedDefinitionItem: NonPersistedPresentationDefinitionItem = {
       ...definitionItem,
-      definitionId: definitionId,
       version: version ?? '1',
     }
 
@@ -168,8 +167,8 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
-      existingItem.name = definitionItem.definitionPayload.name ?? definitionItem.name
-      existingItem.purpose = definitionItem.definitionPayload.purpose ?? definitionItem.purpose
+      existingItem.name = definitionItem.definitionPayload?.name ?? definitionItem.name
+      existingItem.purpose = definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
       existingItem.definitionPayload = definitionItem.definitionPayload
 
       return await this.store.updateDefinition(existingItem)
