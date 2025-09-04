@@ -128,7 +128,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
       }
 
       let responseState
-      if (requestState.status === 'authorization_request_created') { // TODO this one?
+      if (requestState.status === 'authorization_request_created') {
         responseState = (await context.agent.siopGetAuthResponseState({ correlationId, errorOnNotFound: false }))
       }
       const overallState = responseState ?? requestState
