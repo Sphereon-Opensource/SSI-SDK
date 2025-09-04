@@ -45,7 +45,7 @@ export class RPInstance {
   }
 
   get definitionId(): string | undefined {
-    return this.pexOptions?.definitionId
+    return this.pexOptions?.queryId
   }
 
   public async getPresentationDefinition(context: IRequiredContext): Promise<IPresentationDefinition | undefined> {
@@ -57,7 +57,7 @@ export class RPInstance {
       : undefined
   }
 
-  public async createAuthorizationRequestURI(createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>, context: IRequiredContext): Promise<URI> {
+  public async createAuthorizationRequestURI(createArgs: Omit<ICreateAuthRequestArgs, 'queryId'>, context: IRequiredContext): Promise<URI> {
     const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
@@ -96,7 +96,7 @@ export class RPInstance {
   }
 
   public async createAuthorizationRequest(
-    createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>,
+    createArgs: Omit<ICreateAuthRequestArgs, 'queryId'>,
     context: IRequiredContext,
   ): Promise<AuthorizationRequest> {
     const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs

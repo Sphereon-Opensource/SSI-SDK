@@ -3782,14 +3782,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-next.2
-        version: 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.SSISDK.46.5
+        version: 0.19.1-feature.SSISDK.46.5(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-next.2
-        version: 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.SSISDK.46.5
+        version: 0.19.1-feature.SSISDK.46.5(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-next.2
-        version: 0.19.1-next.2
+        specifier: 0.19.1-feature.SSISDK.46.5
+        version: 0.19.1-feature.SSISDK.46.5
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -3873,8 +3873,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-next.2
-        version: 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.SSISDK.46.5
+        version: 0.19.1-feature.SSISDK.46.5(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -3938,13 +3938,16 @@ importers:
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      zod:
+        specifier: ^4.1.5
+        version: 4.1.5
     devDependencies:
       '@decentralized-identity/ion-sdk':
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-next.2
-        version: 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.SSISDK.46.5
+        version: 0.19.1-feature.SSISDK.46.5(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -3957,6 +3960,12 @@ importers:
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: workspace:*
         version: link:../did-provider-jwk
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: workspace:*
+        version: link:../identifier-resolution
+      '@sphereon/ssi-sdk-ext.jwt-service':
+        specifier: workspace:*
+        version: link:../jwt-service
       '@sphereon/ssi-sdk.credential-vcdm':
         specifier: workspace:*
         version: link:../credential-vcdm
@@ -7830,9 +7839,17 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
+  '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.46.5':
+    resolution: {integrity: sha512-UuLTQD2ZQkyaiPL+8u2OUQrJoPNrfxeIYrcvXuIsIof+sXDBPrO7EmGAH8BNrKzwecndN880RPpcJ3dglke5Xg==}
+    engines: {node: '>=20'}
+
   '@sphereon/did-auth-siop-adapter@0.19.1-next.2':
     resolution: {integrity: sha512-/ZQfNzPbi3gkr/zMR/w9RmAZE4MgQwR6kMP2YMh9tFHQnJskVi4p7jhzwMS9zttowxhvQDFSNsVOoHUKxVgoTA==}
     engines: {node: '>=20'}
+
+  '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.46.5':
+    resolution: {integrity: sha512-C05f17WnrUooiZdXY7DMRsh7vZ0cTnQqpvMoo2Ibjja8lwzdmyLRu4LcYFYmlIS87l69IT/5v63gVFVbz00nMg==}
+    engines: {node: '>=20.6'}
 
   '@sphereon/did-auth-siop@0.19.1-next.2':
     resolution: {integrity: sha512-rs88vWoCKOc4qdhrjlTC7Ravn9TkeuOglWYwnvRr+f9oVVoBFrnwXNnQDY3ne+tHb6s/78/GAXXXzox5jeFxvw==}
@@ -7884,6 +7901,10 @@ packages:
 
   '@sphereon/oid4vc-common@0.19.0':
     resolution: {integrity: sha512-g5DYI9ctBGZX+TXOMDq5U/hlcE81WGlMlIYVAFpSfYTpXlsmlOgaak20kFKQU2Fen7RzqFvZyADmZ9l/zoj8bA==}
+    engines: {node: '>=20'}
+
+  '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.46.5':
+    resolution: {integrity: sha512-UCidSVQdPcIpIo3aoNOxy+d/SLoA/k7hR4MQ26olw549bNiiUH1HgTLurs2qgVSqPETrrGtseQocqNDM8U7LxQ==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vc-common@0.19.1-next.2':
@@ -15429,6 +15450,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.1.5:
+    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+
 snapshots:
 
   '@0no-co/graphql.web@1.2.0':
@@ -18949,6 +18973,19 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
+  '@sphereon/did-auth-siop-adapter@0.19.1-feature.SSISDK.46.5(encoding@0.1.13)(typescript@5.8.3)':
+    dependencies:
+      '@sphereon/did-auth-siop': 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
+      '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.19.1-next.2
+      '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
+      did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
+      did-resolver: 4.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
+
   '@sphereon/did-auth-siop-adapter@0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
       '@sphereon/did-auth-siop': 0.19.1-next.2(encoding@0.1.13)(typescript@5.8.3)
@@ -18957,6 +18994,28 @@ snapshots:
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
       did-resolver: 4.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
+
+  '@sphereon/did-auth-siop@0.19.1-feature.SSISDK.46.5(encoding@0.1.13)(typescript@5.8.3)':
+    dependencies:
+      '@astronautlabs/jsonpath': 1.1.2
+      '@sphereon/jarm': 0.19.1-next.2(typescript@5.8.3)
+      '@sphereon/oid4vc-common': 0.19.1-next.2
+      '@sphereon/pex': 5.0.0-unstable.28
+      '@sphereon/pex-models': 2.3.2
+      '@sphereon/ssi-types': link:packages/ssi-types
+      cross-fetch: 4.1.0(encoding@0.1.13)
+      dcql: 0.2.19(typescript@5.8.3)
+      debug: 4.4.1
+      events: 3.3.0
+      jwt-decode: 4.0.0
+      language-tags: 1.0.9
+      multiformats: 12.1.3
+      qs: 6.14.0
+      uint8arrays: 3.1.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -19065,6 +19124,13 @@ snapshots:
       react-native: 0.81.0(@babel/core@7.28.3)(@react-native/metro-config@0.81.0(@babel/core@7.28.3))(react@18.3.1)
 
   '@sphereon/oid4vc-common@0.19.0':
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
+
+  '@sphereon/oid4vc-common@0.19.1-feature.SSISDK.46.5':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
@@ -28547,3 +28613,5 @@ snapshots:
       commander: 9.5.0
 
   zod@3.25.76: {}
+
+  zod@4.1.5: {}

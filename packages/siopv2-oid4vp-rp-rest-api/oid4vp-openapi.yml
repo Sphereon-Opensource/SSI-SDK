@@ -5,138 +5,114 @@ info:
   description: API for SIOP v2 OID4VP Relying Party operations
 
 paths:
-  /webapp/definitions/{definitionId}/auth-requests:
+  /oid4vp/backend/auth/requests:
     post:
-      summary: Create authentication request
+      tags:
+        - Backend
+      summary: Create Authorization Request and session
       description: |
-        Creates a new SIOP authentication request that can be used to request verifiable credentials from a wallet.
-        Returns URIs needed to initiate the auth flow and check its status.
+        Creates a new OID4VP Authorization Request that can be used to request Digital Credentials from a wallet.
+        Returns URIs needed to initiate the auth flow and check its status. The queryId passed in needs to be known to the agent. This endpoint is protected using OAuth2/OIDC normally with a confidential client.  Do not call from the frontend!
+      operationId: create-authorization-request
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAuthorizationRequestBody"
+      responses:
+        "201":
+          description: Authorization request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateAuthorizationRequestResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Query Id or other param not configured/found on the RP agent
+            side
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Error creating authorization request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      callbacks:
+        authorizationStatusCallback:
+          '{$request.body#/callback.url}':
+            post:
+              summary: Authorization status callback
+              description: Notify the registered URL with auth status changes for
+                the statuses this callback was registered for.
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/AuthorizationStatusResponse"
+                required: true
+              responses:
+                "200":
+                  description: Notification received by the external service.
+
+  /oid4vp/backend/auth/requests/{correlationId}:
+    get:
+      tags:
+        - Backend
+      summary: Get authorization session status
+      description: "Checks the current status of an Authorization Request session.\
+        \ Can optionally include verified credential data \nin the response when the\
+        \ status is 'verified'. Although the correlationId should be the only one\
+        \ strictly necesary we require both the queryId and correlationId, to keep\
+        \ the create response and auth request symmetrical and to not assume global\
+        \ sessions accross different queryIds in RP implementations.\n"
+      operationId: get-authorization-status
       parameters:
-        - name: definitionId
+        - name: correlationId
+          description: 'Unique identifier for the authentication session'
           in: path
           required: true
-          description: 'Identifier for the presentation definition that specifies which credentials are required'
           schema:
             type: string
-            example: 'kyc-basic-v1'
-      requestBody:
-        description: 'Optional configuration for the authentication request'
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                response_redirect_uri:
-                  type: string
-                  description: 'URI where the wallet should redirect after completing the authentication'
-                  example: 'https://example.com/callback'
+            example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
       responses:
-        '200':
-          description: Authentication request created successfully
+        "200":
+          description: Authorization status retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GenerateAuthRequestURIResponse'
-        '500':
-          description: Error creating auth request
+                $ref: "#/components/schemas/AuthorizationStatusResponse"
+        "401":
+          description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /webapp/auth-status:
-    post:
-      summary: Get authentication status
-      description: |
-        Checks the current status of an authentication request. Can optionally include verified credential data 
-        in the response when the status is 'verified'.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                correlationId:
-                  type: string
-                  description: 'Unique identifier for the authentication session'
-                  example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
-                definitionId:
-                  type: string
-                  description: 'Identifier for the presentation definition that specifies which credentials are required'
-                  example: 'kyc-basic-v1'
-                includeVerifiedData:
-                  type: string
-                  description: "Controls what verified data to include in the response. Only applies when status is 'verified'"
-                  enum: [none, vp, cs-flat]
-              required:
-                - correlationId
-                - definitionId
-      responses:
-        '200':
-          description: Authentication status retrieved successfully
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: No authorization request could be found for the given correlationId
+            side
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthStatusResponse'
-        '404':
-          description: Auth request not found
-        '500':
-          description: Error retrieving auth status
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Error creating authorization request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /webapp/definitions/{definitionId}/auth-requests/{correlationId}:
+                $ref: "#/components/schemas/Error"
     delete:
-      summary: Remove authentication request state
-      description: 'Deletes all state associated with an authentication request. Use for cleanup after completion or timeout.'
+      tags:
+        - Backend
+      summary: Remove authorization request state
+      description: Deletes all state associated with an authorization request. Use
+        for cleanup after completion or timeout.
+      operationId: delete-authorization-request
       parameters:
-        - name: definitionId
-          in: path
-          required: true
-          description: 'Identifier for the presentation definition that specifies which credentials are required'
-          schema:
-            type: string
-            example: 'kyc-basic-v1'
-        - name: correlationId
-          in: path
-          required: true
-          description: 'Unique identifier for the authentication session'
-          schema:
-            type: string
-            example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
-      responses:
-        '200':
-          description: Authentication request state removed successfully
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '404':
-          description: Auth request not found
-        '500':
-          description: Error removing auth request state
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /siop/definitions/{definitionId}/auth-responses/{correlationId}:
-    post:
-      summary: Verify authentication response
-      description: |
-        Verifies the presentation response from a wallet. Handles both direct responses and form-encoded responses.
-        Returns either a challenge response for first-party flows or a redirect URI for third-party flows.
-      parameters:
-        - name: definitionId
-          description: 'Identifier for the presentation definition that specifies which credentials are required'
-          in: path
-          required: true
-          schema:
-            type: string
-            example: 'kyc-basic-v1'
         - name: correlationId
           description: 'Unique identifier for the authentication session'
           in: path
@@ -144,32 +120,28 @@ paths:
           schema:
             type: string
             example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthorizationResponsePayload'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthorizationResponsePayload'
       responses:
-        '200':
-          description: Authentication response verified successfully
+        "204":
+          description: Authorization request state removed successfully
+        "401":
+          description: Unauthorized
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/AuthChallengeResponse'
-                  - $ref: '#/components/schemas/AuthResponseRedirect'
-        '404':
-          description: Auth request not found
-        '500':
-          description: Error verifying auth response
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: No authorization request could be found for the given correlationId
+            side
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Error creating authorization request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /siop/definitions/{definitionId}/auth-requests/{correlationId}:
     get:
@@ -204,126 +176,280 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
-    GenerateAuthRequestURIResponse:
+    CreateAuthorizationRequest:
+      required:
+        - query_id
       type: object
       properties:
-        correlationId:
+        correlation_id:
           type: string
-          description: 'Unique identifier for the authentication session'
-          example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
-        definitionId:
+          description: Optional Id typically containing a business key that can be
+            used to later query the status. If not provided a random UUID will be
+            assigned to the correlationId and will be returned in the response.
+          example: my-business-key-or-uuid
+        query_id:
           type: string
-          description: 'Identifier for the presentation definition that specifies required verifiable credentials'
-          example: 'kyc-basic-v1'
-        authRequestURI:
+          description: Identifier for the query (DCQL or PE)
+          example: example-dcql-id
+        request_uri_method:
+          $ref: "#/components/schemas/RequestUriMethod"
+        request_uri_base:
           type: string
-          description: 'SIOP protocol URI that initiates the authentication flow'
-          example: 'openid-vc://?request_uri=https://example.com/siop/definitions/kyc-basic-v1/auth-requests/N7RmqG2xT9unEh'
-        authStatusURI:
+          description: The base URI to be used for request URIs. Defaults to "oidp4vp://". It is mainly useful for web/organizational wallets that have an https:// URI for OID4VP
+          example: https://example.wallet.com
+        client_id:
           type: string
-          description: 'Endpoint URL for checking the status of the authentication request'
-          example: 'https://example.com/webapp/auth-status'
+          description: The client id and schema as defined in RFC6749 (client_id)
+            and OID4VP (scheme)
+          example: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+        response_type:
+          $ref: "#/components/schemas/ResponseType"
+        response_mode:
+          $ref: "#/components/schemas/ResponseMode"
+        transaction_data:
+          type: array
+          description: "Array of strings, where each string is a base64url encoded\
+            \ JSON object that contains a typed parameter set with details about the\
+            \ transaction that the Verifier is requesting the End-User to authorize."
+          items:
+            type: string
+        qr_code:
+          $ref: "#/components/schemas/QRCodeOpts"
+        direct_post_response_redirect_uri:
+          type: string
+          description: Optional URI where the user agent on the wallet device should
+            redirect when completing the interaction succesfully
+          example: https://example.com/callback/success/my-unique-vallue-here
+        callback:
+          $ref: "#/components/schemas/CallbackOpts"
+    CreateAuthorizationRequestResponse:
       required:
-        - correlationId
-        - definitionId
-        - authRequestURI
-        - authStatusURI
-
-    AuthStatusResponse:
+        - correlation_id
+        - query_id
+        - request_uri
+        - status_uri
+      type: object
+      properties:
+        correlation_id:
+          type: string
+          description: Unique identifier for the authentication session
+          example: 2cc29d1c-7d00-46f8-b0ae-b4779d2ff143
+        query_id:
+          type: string
+          description: Identifier for the DCQL/PE query that specifies the requested
+            Digital Credentials
+          example: example-dcql-id
+        request_uri:
+          type: string
+          description: "(Deep)link URI that initiates the authentication flow by redirect.\
+            \ The wallet will use this value. Should be part of a redirect, link or\
+            \ QR code. This API requires Auth Request be references only, meaning\
+            \ `request_uri` only and no `request`"
+          example: openid-vc://?request_uri=https://example.com/siop/definitions/PensionSdJwt/auth-requests/b5cab09e-7c08-42c9-870b-c2b83a2c8acd
+        status_uri:
+          type: string
+          description: "Endpoint URL for checking the status of the authentication\
+            \ request, conforming to this OpenAPI specification"
+          example: https://example.com/oid4vp/backend/auth/status
+        qr_uri:
+          type: string
+          description: "The QR code image as generated by the RP in data Uri format.\
+            \ Only provided in case the request contained a qr_code object (can be\
+            \ an empty object). Should not be provided in case no qr_code property\
+            \ was present, or when it was null/undefined."
+          format: dataurl
+          example: "data:image/png;base64,iVBORw0<snip>ef="
+    AuthorizationStatusResponse:
+      required:
+        - correlation_id
+        - definition_id
+        - last_updated
+        - query_id
+        - status
       type: object
       properties:
         status:
+          $ref: "#/components/schemas/AuthorizationStatus"
+        correlation_id:
           type: string
-          description: 'Current state of the authentication request in its lifecycle'
-          enum: [created, sent, received, verified, error]
-        correlationId:
-          type: string
-          description: 'Unique identifier for the authentication session'
-          example: 'b326c4ab-16f1-4304-83e1-4637f8fe4207'
+          description: Unique identifier for the authentication session
+          example: 2cc29d1c-7d00-46f8-b0ae-b4779d2ff143
         error:
+          $ref: "#/components/schemas/Error"
+        query_id:
           type: string
-        definitionId:
-          description: 'Identifier for the presentation definition that specifies which credentials are required'
-          example: 'kyc-basic-v1'
-          type: string
-        lastUpdated:
+          description: Identifier for the presentation definition that specifies which
+            credentials are required
+          example: PensionSdJwt
+        last_updated:
           type: integer
-          description: 'Unix timestamp in milliseconds representing when the status was last updated'
+          description: Unix timestamp in milliseconds representing when the status
+            was last updated
           example: 1706515200000
-        payload:
-          $ref: '#/components/schemas/AuthorizationResponsePayload'
-        verifiedData:
-          type: object
-          additionalProperties: true
-      required:
-        - status
-        - correlationId
-        - definitionId
-        - lastUpdated
-
+        verified_data:
+          $ref: "#/components/schemas/VerifiedData"
+    RequestUriMethod:
+      type: string
+      enum:
+        - get
+        - post
+    ResponseType:
+      type: string
+      default: vp_token
+      enum:
+        - vp_token
+    ResponseMode:
+      type: string
+      default: direct_post
+      enum:
+        - direct_post
+        - direct_post.jwt
+    AuthorizationStatus:
+      type: string
+      enum:
+        - authorization_request_created
+        - authorization_request_retrieved
+        - authorization_response_received
+        - authorization_response_verified
+        - error
+    VerifiedData:
+      type: object
+      properties:
+        authorization_response:
+          $ref: "#/components/schemas/AuthorizationResponsePayload"
+        vp_token:
+          type: array
+          items:
+            $ref: "#/components/schemas/VpToken"
+        credential_claims_deserialized:
+          type: array
+          description: "All the credentials received deserialized to JSON part of\
+            \ an array. Meaning (SD-)JWTs are represented as JSON object. The same\
+            \ for Mdos. For the latter different implementers of RP Agents could use\
+            \ different methods unfortunately, so there is no stability guarantee\
+            \ to find certain claims in the exact same spot, or even with the exact\
+            \ same keys between different RP agent implementations!"
+          items:
+            type: object
+            additionalProperties: true
+      description: This object is only included in case the authorization status is
+        'authorization_response_verified'
+    VpToken:
+      oneOf:
+        - $ref: "#/components/schemas/SingleObjectVpTokenPE"
+        - $ref: "#/components/schemas/SingleStringVpTokenPE"
+        - $ref: "#/components/schemas/MultipleVpTokens"
+        - $ref: "#/components/schemas/MultipleVpTokenDCQL"
+    SingleObjectVpTokenPE:
+      type: object
+    SingleStringVpTokenPE:
+      type: string
+    MultipleVpTokens:
+      type: array
+      items:
+        oneOf:
+          - $ref: "#/components/schemas/SingleObjectVpTokenPE"
+          - $ref: "#/components/schemas/SingleStringVpTokenPE"
+    MultipleVpTokenDCQL:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/MultipleVpTokens"
     AuthorizationResponsePayload:
       type: object
       properties:
         presentation_submission:
           type: object
-          description: 'Object containing information about how the presented credentials fulfill the presentation definition requirements'
+          description: Object containing information about how the presented credentials
+            fulfill the presentation definition requirements. Only if PE is used!
         vp_token:
-          oneOf:
-            - type: string
-              description: >
-                A Verifiable Presentation in JWT or JSON-LD format.
-                Required in responses when `vp_token` is the `response_type`.
-            - type: array
-              description: 'Array of verifiable presentations'
-              items:
-                type: object
-            - type: object
-              description: 'Single verifiable presentation object'
-        is_first_party:
-          type: boolean
-          description: 'Indicates if this is a first-party authentication flow'
-
-    AuthChallengeResponse:
-      type: object
-      description: 'Response containing the presentation session identifier for first-party flows'
-      properties:
-        presentation_during_issuance_session:
-          type: string
-          description: 'Identifier for the presentation session'
-          example: 'N7RmqG2xT9unEh'
+          $ref: "#/components/schemas/VpToken"
+    Error:
       required:
-        - presentation_during_issuance_session
-
-    AuthResponseRedirect:
+        - message
+        - status
       type: object
-      description: 'Response containing the redirect URI for non-first-party flows'
-      properties:
-        redirect_uri:
-          type: string
-          description: 'URI where the wallet should redirect after authentication'
-          example: 'https://example.com/callback'
-      required:
-        - redirect_uri
-
-    ErrorResponse:
-      type: object
-      description: 'Error details returned when an operation fails'
       properties:
         status:
           type: integer
-          description: 'HTTP status code'
+          description: HTTP status code
           example: 500
         message:
           type: string
-          description: 'Human-readable error message'
-          example: 'Could not verify auth status'
-        error:
-          type: object
-          description: 'Additional error details or stack trace when available'
+          description: Human-readable error message
+          example: Could not verify auth status
+        error_details:
+          type: string
+          description: Additional error details or stack trace when available
+      description: Error details returned when an operation fails
+    CallbackOpts:
       required:
-        - status
-        - message
+        - url
+      type: object
+      properties:
+        status:
+          type: array
+          description: "Limit the callbacks to certain statuses. If not provided or\
+            \ an empty array is provided, all statuses will be assumed"
+          items:
+            $ref: "#/components/schemas/AuthorizationStatus"
+        url:
+          type: string
+          description: The callback url for status updates
+          example: https://example.com/callback/status
+    QRCodeOpts:
+      type: object
+      properties:
+        size:
+          type: number
+          description: Size of the QR code in pixels.
+          default: 400
+        color_dark:
+          type: string
+          description: "Color of the blocks on the QR code. Accepts a CSS <color>.\
+            \ For more information about CSS <color>, please refer to [https://developer.mozilla.org/en-US/docs/Web/CSS/color_value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value)."
+          default: "#000000"
+        color_light:
+          type: string
+          description: "Color of the empty areas on the QR code. Accepts a CSS <color>.\
+            \ For more information about CSS <color>, please refer to [https://developer.mozilla.org/en-US/docs/Web/CSS/color_value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value)."
+          default: "#ffffff"
+      description: |
+        As soon as you include this object the OID4VP agent has to generate a QR code. Every RP implementation needs to support this, as we want to make it easy on the integration side. The integration side can choose whether they create their own QR codes, or whether they want to use the QR code from the RP. Thus every RP conforming to this spec should support generating a QR code in data-uri format. No property is mandatory, so a "qrCodeOpts": {} is already valid and generates a QR with the default properties applied. A RP implementation is free to implement additional properties like logo's etc. This API only mandates a few common properties to not make it too complex for RPs. If the integrating app wants to use their own QR codes they simply need to omit the qr_code param from the request. The agent should not generate a QT code in this case
+
+  requestBodies:
+    CreateAuthorizationRequestBody:
+      description: Configuration for the authorization request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateAuthorizationRequest"
+          examples:
+            Create request without a QR code:
+              value:
+                correlation_id: my-business-key-or-uuid
+                query_id: example-dcql-id
+                client_id: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+            Create request with a QR code:
+              value:
+                correlation_id: my-business-key-or-uuid
+                query_id: example-dcql-id
+                client_id: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+                qr_code:
+                  size: 400
+            Create request with a callback and a QR code:
+              value:
+                correlation_id: my-business-key-or-uuid
+                query_id: example-dcql-id
+                client_id: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+                qr_code:
+                  size: 400
+                callback:
+                  url: https://example.com/callback/unique-value-here
+                  status:
+                    - authorization_request_retrieved
+                    - authorization_response_verified
+                    - error

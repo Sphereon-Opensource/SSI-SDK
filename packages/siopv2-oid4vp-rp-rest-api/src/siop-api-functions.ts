@@ -75,7 +75,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        definitionId,
+        queryId: definitionId,
         presentationDefinitions: [
           {
             location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
@@ -100,7 +100,7 @@ export function verifyAuthResponseSIOPv2Endpoint(
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }
 
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId: definitionId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
@@ -135,7 +135,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       }
       const requestState = await context.agent.siopGetAuthRequestState({
         correlationId,
-        definitionId,
+        queryId: definitionId,
         errorOnNotFound: false,
       })
       if (!requestState) {
@@ -159,8 +159,8 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       } finally {
         await context.agent.siopUpdateAuthRequestState({
           correlationId,
-          definitionId,
-          state: 'sent',
+          queryId: definitionId,
+          state: 'authorization_request_created',
           error,
         })
       }
