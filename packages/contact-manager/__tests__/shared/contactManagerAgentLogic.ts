@@ -1,7 +1,6 @@
 import { TAgent } from '@veramo/core'
 import {
   CorrelationIdentifierType,
-  CredentialRole,
   ElectronicAddress,
   GetPartiesArgs,
   Identity,
@@ -15,10 +14,11 @@ import {
   PartyRelationship,
   PartyTypeType,
   PhysicalAddress,
-} from '../../../data-store/src'
+} from '../../../data-store'
 import { AddContactArgs, IContactManager } from '../../src'
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { CredentialRole } from '@sphereon/ssi-types'
 
 type ConfiguredAgent = TAgent<IContactManager>
 

@@ -246,8 +246,8 @@ export class SIOPv2RP implements IAgentPlugin {
         let definitionId: string
         if (definitionPair.dcqlPayload) {
           DcqlQuery.validate(definitionPair.dcqlPayload.dcqlQuery)
-          console.log(`persisting DCQL definition ${definitionPair.dcqlPayload.definitionId} with versionControlMode ${versionControlMode}`)
-          definitionId = definitionPair.dcqlPayload.definitionId
+          console.log(`persisting DCQL definition ${definitionPair.dcqlPayload.queryId} with versionControlMode ${versionControlMode}`)
+          definitionId = definitionPair.dcqlPayload.queryId
         }
         if (definitionPayload) {
           await context.agent.pexValidateDefinition({ definition: definitionPayload })

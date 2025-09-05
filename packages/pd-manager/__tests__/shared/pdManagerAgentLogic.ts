@@ -2,7 +2,7 @@ import { TAgent } from '@veramo/core'
 import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPresentationDefinitionItem } from '../../src'
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
-import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { DcqlQueryPayload } from '@sphereon/ssi-types'
 
@@ -20,7 +20,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   describe('PD Manager Agent Plugin', (): void => {
     const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
     const sampleDcql: DcqlQueryPayload = {
-      definitionId: 'credential1',
+      queryId: 'credential1',
       dcqlQuery: {
         credentials: [
           {
@@ -174,7 +174,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       for (let i = 2; i <= 12; i++) {
         currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
         currentItem.dcqlPayload = {
-          definitionId: `credential-v${i}`,
+          queryId: `credential-v${i}`,
           dcqlQuery: {
             credentials: [
               {
@@ -319,31 +319,66 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.pdmPersistDefinition(definition)
 
       expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
-      expect(result.dcqlPayload).toEqual(definition.definitionItem.dcqlPayload)
+      expect(result.dcqlPayload?.queryId).toEqual(definition.definitionItem.definitionId)
+      expect(result.dcqlPayload?.dcqlQuery).toEqual(definition.definitionItem.dcqlPayload?.dcqlQuery)
     })
 
     it('should update dcqlPayload in definition item', async (): Promise<void> => {
-      const updatedDcql = {
+      // First, create a definition with initial dcqlPayload
+      const initialDefinition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'dcql_update_test',
+          definitionPayload: singleDefinition,
+          dcqlPayload: {
+            queryId: 'dcql_update_test',
+            dcqlQuery: {
+              credentials: [
+                {
+                  id: 'initial-credential',
+                  require_cryptographic_holder_binding: true,
+                  multiple: false,
+                  format: 'dc+sd-jwt',
+                  claims: [
+                    {
+                      path: ['test', 'initialClaim'],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      }
+
+      const createdDefinition = await agent.pdmPersistDefinition(initialDefinition)
+
+      // Now update it
+      const updatedDcql: DcqlQueryPayload = {
+        queryId: 'dcql_update_test',
         dcqlQuery: {
           credentials: [
             {
               id: 'credential2',
-              format: 'jwt_vc',
+              format: 'dc+sd-jwt',
+              multiple: false,
+              require_cryptographic_holder_binding: true,
               claims: [
                 {
-                  namespace: 'test',
-                  claim_name: 'updatedClaim',
+                  path: ['test', 'updatedClaim'],
                 },
               ],
             },
           ],
         },
-      } as unknown as DcqlQueryPayload // FIXME I do not have another solution for this atm, I can do Partial<DcqlQuery> but that does not work for its child entities
+      }
+
+      const updatedDefinitionItem: NonPersistedPresentationDefinitionItem = {
+        ...createdDefinition,
+        dcqlPayload: updatedDcql,
+      }
 
       const result = await agent.pdmPersistDefinition({
-        definitionItem: {
-          dcqlPayload: updatedDcql,
-        } as PersistPresentationDefinitionItem,
+        definitionItem: updatedDefinitionItem,
         opts: { versionControlMode: 'Overwrite' },
       })
 

@@ -1,3 +1,4 @@
+import { DcqlQueryPayload } from '@sphereon/ssi-types'
 import { DcqlQuery } from 'dcql'
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import type { IPresentationDefinition } from '@sphereon/pex'
@@ -16,7 +17,7 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
     ...(entity.dcqlPayload && {
       dcqlPayload: {
-        definitionId: entity.definitionId,
+        queryId: entity.definitionId,
         dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
       },
     }),
@@ -44,24 +45,36 @@ export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentat
   return entity
 }
 
-function hashPayload(payload: IPresentationDefinition): string {
+function hashPayload(payload: IPresentationDefinition | DcqlQueryPayload): string {
   return blakepkg.blake2bHex(JSON.stringify(payload))
 }
 
 export function isPresentationDefinitionEqual(base: PartialPresentationDefinitionItem, compare: PartialPresentationDefinitionItem): boolean {
   if (
     base.definitionId !== compare.definitionId ||
-    base.tenantId != compare.tenantId ||
+    base.tenantId !== compare.tenantId ||
     base.version !== compare.version ||
-    base.name != compare.name ||
-    base.purpose != compare.purpose
+    base.name !== compare.name ||
+    base.purpose !== compare.purpose
   ) {
     return false
   }
 
-  if (base.definitionPayload && compare.definitionPayload) {
-    return hashPayload(base.definitionPayload) === hashPayload(compare.definitionPayload)
+  if (base.dcqlPayload && compare.dcqlPayload) {
+    if (hashPayload(base.dcqlPayload) !== hashPayload(compare.dcqlPayload)) {
+      return false
+    }
+  } else if (base.dcqlPayload || compare.dcqlPayload) {
+    return false
   }
 
-  return false
+  if (base.definitionPayload && compare.definitionPayload) {
+    if (hashPayload(base.definitionPayload) !== hashPayload(compare.definitionPayload)) {
+      return false
+    }
+  } else if (base.definitionPayload || compare.definitionPayload) {
+    return false
+  }
+
+  return true
 }

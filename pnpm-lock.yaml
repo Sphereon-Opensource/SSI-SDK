@@ -313,6 +313,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0(encoding@0.1.13)

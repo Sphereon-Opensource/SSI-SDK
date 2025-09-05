@@ -6,7 +6,7 @@ import { GetDefinitionsArgs, NonPersistedPresentationDefinitionItem, Presentatio
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 export const SAMPLE_DCQL_QUERY_PAYLOAD: DcqlQueryPayload = {
-  definitionId: 'ajax-club',
+  queryId: 'ajax-club',
   dcqlQuery: {
     credentials: [
       {
