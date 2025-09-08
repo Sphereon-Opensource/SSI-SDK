@@ -11,7 +11,7 @@ import {
   CreateAuthorizationResponse,
   DeleteAuthorizationRequest,
   GetAuthorizationRequestStatus,
-  GetAuthStatusResponse,
+  AuthStatusResponse,
   ICreateAuthRequestWebappEndpointOpts,
   IRequiredContext
 } from './types'
@@ -30,6 +30,7 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
       const queryId = request.body.query_id
       const directPostResponseRedirectUri = request.body.direct_post_response_redirect_uri // TODO Uri not URI
       const requestUriBase = request.body.request_uri_base
+      const callback = request.body.callback
 
       try {
         await context.agent.pdmGetDefinition({ itemId: queryId })
@@ -51,6 +52,7 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
         responseURIType: 'response_uri',
         responseURI,
         ...(directPostResponseRedirectUri && { responseRedirectURI: directPostResponseRedirectUri }),
+        callback
       })
 
       let qrCodeDataUri: string | undefined
@@ -140,7 +142,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
         last_updated: overallState.lastUpdated,
         ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verifiedData: responseState.verifiedData }),
         ...(overallState.error && { message: overallState.error.message })
-      } satisfies GetAuthStatusResponse
+      } satisfies AuthStatusResponse
       console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
 
       if (overallState.status === 'error') {

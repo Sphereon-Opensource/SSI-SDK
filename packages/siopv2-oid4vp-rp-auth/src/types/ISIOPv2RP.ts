@@ -2,7 +2,8 @@ import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
   AuthorizationResponsePayload,
-  AuthorizationResponseState,
+  AuthorizationResponseStateWithVerifiedData,
+  CallbackOpts,
   ClaimPayloadCommonOpts,
   ClientMetadataOpts,
   IRPSessionManager,
@@ -15,11 +16,11 @@ import {
   VerifiablePresentationTypeFormat,
   VerifiedAuthorizationResponse,
   VerifyJwtCallback,
-  VPTokenLocation,
+  VPTokenLocation
 } from '@sphereon/did-auth-siop'
 import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { AdditionalClaims, DcqlQueryREST, HasherSync, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { DcqlQueryREST, HasherSync, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { Resolvable } from 'did-resolver'
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { EventEmitter } from 'events'
@@ -54,7 +55,6 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
-
   siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
@@ -66,7 +66,7 @@ export interface ISiopv2RPOpts {
 export interface IRPDefaultOpts extends IRPOptions {}
 
 export interface ICreateAuthRequestArgs {
-  queryId: string //definitionId
+  queryId: string
   correlationId: string
   useQueryIdInstance?: boolean
   responseURIType: ResponseURIType
@@ -77,7 +77,7 @@ export interface ICreateAuthRequestArgs {
   nonce?: string
   state?: string
   claims?: ClaimPayloadCommonOpts
-
+  callback?: CallbackOpts
 }
 
 export interface IGetAuthRequestStateArgs {
@@ -209,10 +209,6 @@ export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
 // todo make the necessary changes for mdl-mdoc types
 export type CredentialOpts = {
   hasher?: HasherSync
-}
-
-export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {
-  verifiedData?: AdditionalClaims
 }
 
 export type IRequiredContext = IAgentContext<

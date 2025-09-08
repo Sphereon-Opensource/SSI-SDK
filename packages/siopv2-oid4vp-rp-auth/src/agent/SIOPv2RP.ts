@@ -3,8 +3,9 @@ import {
   AuthorizationResponsePayload,
   AuthorizationResponseState,
   AuthorizationResponseStateStatus,
+  AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
-  VerifiedAuthorizationResponse,
+  VerifiedAuthorizationResponse
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
@@ -23,7 +24,6 @@ import {
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import {
-  AuthorizationResponseStateWithVerifiedData,
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
