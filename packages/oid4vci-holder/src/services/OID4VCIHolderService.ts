@@ -596,7 +596,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
-    case 'vc+sd-jwt':
+    case 'vc+sd-jwt': // TODO see SSISDK-52 concerning vc+sd-jwt
     case 'dc+sd-jwt':
     case 'mso_mdoc': {
       const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(
