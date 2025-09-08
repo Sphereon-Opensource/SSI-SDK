@@ -63,11 +63,37 @@ export type RequestError = {
   error_details?: string
 }
 
-export interface GetAuthStatusResponse {
+export type GetAuthStatusResponse = {
   status: AuthorizationRequestStateStatus | AuthorizationResponseStateStatus
   correlation_id: string
   query_id: string
   last_updated: number
-  verified_data?: AdditionalClaims
+  verified_data?: VerifiedData
   error?: RequestError
 }
+
+export type VerifiedData = {
+  authorization_response?: AuthorizationResponse
+  credential_claims?: AdditionalClaims
+}
+
+export type AuthorizationResponse = {
+  presentation_submission?: Record<string, any>
+  vp_token?: VpToken
+}
+
+export type SingleObjectVpTokenPE = Record<string, any>
+
+export type SingleStringVpTokenPE = string
+
+export type MultipleVpTokens = Array<SingleObjectVpTokenPE> | Array<SingleStringVpTokenPE>
+
+export type MultipleVpTokenDCQL = {
+  [key: string]: MultipleVpTokens
+}
+
+export type VpToken =
+  | SingleObjectVpTokenPE
+  | SingleStringVpTokenPE
+  | MultipleVpTokens
+  | MultipleVpTokenDCQL

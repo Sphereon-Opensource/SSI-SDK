@@ -54,7 +54,6 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
-
   siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
@@ -66,7 +65,7 @@ export interface ISiopv2RPOpts {
 export interface IRPDefaultOpts extends IRPOptions {}
 
 export interface ICreateAuthRequestArgs {
-  queryId: string //definitionId
+  queryId: string
   correlationId: string
   useQueryIdInstance?: boolean
   responseURIType: ResponseURIType
@@ -77,7 +76,6 @@ export interface ICreateAuthRequestArgs {
   nonce?: string
   state?: string
   claims?: ClaimPayloadCommonOpts
-
 }
 
 export interface IGetAuthRequestStateArgs {
