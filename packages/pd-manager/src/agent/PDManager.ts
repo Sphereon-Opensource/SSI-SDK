@@ -167,14 +167,20 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
-      existingItem.name = definitionItem.definitionPayload?.name ?? definitionItem.name
-      existingItem.purpose = definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
+      existingItem.name = definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name ?? definitionItem.name
+      existingItem.purpose = definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
       existingItem.dcqlPayload = definitionItem.dcqlPayload
       existingItem.definitionPayload = definitionItem.definitionPayload
 
       return await this.store.updateDefinition(existingItem)
     } else {
-      return await this.store.addDefinition(definitionItem)
+      // Apply the same field extraction logic for new items
+      const newDefinitionItem = {
+        ...definitionItem,
+        name: definitionItem.name ?? definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name,
+        purpose: definitionItem.purpose ?? definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
+      }
+      return await this.store.addDefinition(newDefinitionItem)
     }
   }
 
@@ -185,14 +191,20 @@ export class PDManager implements IAgentPlugin {
     if (latestVersionItem) {
       latestVersionItem.definitionId = definitionItem.definitionId
       latestVersionItem.tenantId = definitionItem.tenantId
-      latestVersionItem.name = definitionItem.name
-      latestVersionItem.purpose = definitionItem.purpose
+      latestVersionItem.name = definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name ?? definitionItem.name
+      latestVersionItem.purpose = definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
       latestVersionItem.definitionPayload = definitionItem.definitionPayload
       latestVersionItem.dcqlPayload = definitionItem.dcqlPayload
 
       return await this.store.updateDefinition(latestVersionItem)
     } else {
-      return await this.store.addDefinition(definitionItem)
+      // Apply the same field extraction logic for new items
+      const newDefinitionItem = {
+        ...definitionItem,
+        name: definitionItem.name ?? definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name,
+        purpose: definitionItem.purpose ?? definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
+      }
+      return await this.store.addDefinition(newDefinitionItem)
     }
   }
 
@@ -249,10 +261,16 @@ export class PDManager implements IAgentPlugin {
       }
     }
 
-    definitionItem.version = resultVersion
-    return await this.store.addDefinition(definitionItem)
-  }
+    // Apply field extraction logic before adding
+    const newDefinitionItem = {
+      ...definitionItem,
+      version: resultVersion,
+      name: definitionItem.name ?? definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name,
+      purpose: definitionItem.purpose ?? definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
+    }
 
+    return await this.store.addDefinition(newDefinitionItem)
+  }
   private normalizeToSemverVersionFormat(version: string): string {
     const defaultVersion = '1.0.0'
     let [baseVersion, preReleaseSuffix] = version.split(/-(.+)/)

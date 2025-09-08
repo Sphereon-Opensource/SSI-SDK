@@ -175,6 +175,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
         currentItem.dcqlPayload = {
           queryId: `credential-v${i}`,
+          name: 'Credential Name',
+          defaultPurpose: 'Credential Purpose',
           dcqlQuery: {
             credentials: [
               {
@@ -201,6 +203,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         expect(result.definitionPayload.input_descriptors[0].id).toEqual(`Version ${i}.0.0`)
         expect(result.dcqlPayload).toBeTruthy()
         expect(result.dcqlPayload?.dcqlQuery.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.name).toEqual('Credential Name')
+        expect(result.purpose).toEqual('Credential Purpose')
+        expect(result.dcqlPayload?.name).toEqual('Credential Name')
+        expect(result.dcqlPayload?.defaultPurpose).toEqual('Credential Purpose')
 
         currentItem = result
       }

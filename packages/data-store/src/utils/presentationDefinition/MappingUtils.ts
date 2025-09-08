@@ -18,6 +18,8 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     ...(entity.dcqlPayload && {
       dcqlPayload: {
         queryId: entity.definitionId,
+        name: entity.name,
+        defaultPurpose: entity.purpose,
         dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
       },
     }),
