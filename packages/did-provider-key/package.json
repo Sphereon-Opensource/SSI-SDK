@@ -1,0 +1,75 @@
+{
+  "name": "@sphereon/ssi-sdk-ext.did-provider-key",
+  "description": "Sphereon SSI-SDK plugin for management of did:key identifiers.",
+  "version": "0.35.0",
+  "source": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
+    "extract-api": "sphereon dev extract-api"
+  },
+  "dependencies": {
+    "@sphereon/ssi-sdk-ext.did-resolver-key": "workspace:*",
+    "@sphereon/ssi-sdk-ext.key-utils": "workspace:*",
+    "@transmute/did-key-bls12381": "0.3.0-unstable.10",
+    "@veramo/core": "4.2.0",
+    "@veramo/did-manager": "4.2.0",
+    "debug": "^4.3.4",
+    "did-jwt": "6.11.6",
+    "did-resolver": "^4.1.0",
+    "multibase": "^4.0.6",
+    "multicodec": "^3.2.1",
+    "uint8arrays": "3.1.1"
+  },
+  "devDependencies": {
+    "@sphereon/ssi-sdk-ext.key-manager": "workspace:*",
+    "@sphereon/ssi-sdk-ext.kms-local": "workspace:*",
+    "@sphereon/ssi-sdk.dev": "workspace:*",
+    "@veramo/did-resolver": "4.2.0",
+    "@veramo/key-manager": "4.2.0"
+  },
+  "resolutions": {
+    "jsonld": "npm:@digitalcredentials/jsonld@^5.2.1",
+    "jsonld-signatures": "npm:@digitalcredentials/jsonld-signatures@^9.3.1"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/SSI-SDK-crypto-extensions.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "contributors": [],
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "did:key provider",
+    "DID",
+    "KEY",
+    "EBSI",
+    "BLS",
+    "BBS+",
+    "ed25519",
+    "secp256r1",
+    "secp256r1",
+    "RSA"
+  ]
+}

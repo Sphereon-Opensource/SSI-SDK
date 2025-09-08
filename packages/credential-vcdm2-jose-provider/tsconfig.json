@@ -15,6 +15,18 @@
     },
     {
       "path": "../vc-status-list"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../jwt-service"
+    },
+    {
+      "path": "../identifier-resolution"
     }
   ]
 }

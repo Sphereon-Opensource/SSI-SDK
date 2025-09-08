@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../kms-local"
+    },
+    {
+      "path": "../key-manager"
+    }
+  ]
+}

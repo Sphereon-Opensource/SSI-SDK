@@ -6,6 +6,12 @@
     },
     {
       "path": "../vc-status-list"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../did-utils"
     }
   ]
 }

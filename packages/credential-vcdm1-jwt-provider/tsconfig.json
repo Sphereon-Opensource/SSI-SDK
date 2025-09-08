@@ -9,6 +9,18 @@
     },
     {
       "path": "../credential-vcdm"
+    },
+    {
+      "path": "../did-provider-key"
+    },
+    {
+      "path": "../key-manager"
+    },
+    {
+      "path": "../kms-local"
+    },
+    {
+      "path": "../agent-config"
     }
   ]
 }

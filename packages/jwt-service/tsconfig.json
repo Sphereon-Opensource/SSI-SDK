@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../x509-utils"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../kms-local"
+    },
+    {
+      "path": "../key-manager"
+    },
+    {
+      "path": "../identifier-resolution"
+    }
+  ]
+}

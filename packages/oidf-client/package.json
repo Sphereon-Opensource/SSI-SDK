@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oidf-client",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -24,18 +24,18 @@
   },
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
-    "generate-plugin-schema": "ts-node ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+    "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
     "@sphereon/openid-federation-client": "0.20.9-unstable.48ddfa1",
     "@sphereon/openid-federation-common": "0.20.9-unstable.48ddfa1",
     "@sphereon/openid-federation-open-api": "0.20.9-unstable.48ddfa1",
-    "@sphereon/ssi-sdk-ext.jwt-service": "0.29.1-next.3",
     "@sphereon/ssi-sdk.resource-resolver": "workspace:*",
     "@sphereon/ssi-types": "workspace:*"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "uint8arrays": "3.1.1",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "jose": "^5.10.0"

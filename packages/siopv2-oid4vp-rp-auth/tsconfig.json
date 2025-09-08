@@ -27,6 +27,15 @@
     },
     {
       "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../did-utils",
+    },
+    {
+      "path": "../jwt-service"
     }
   ]
 }

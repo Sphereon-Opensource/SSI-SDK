@@ -1,0 +1,380 @@
+{
+  "ISphereonKeyManager": {
+    "components": {
+      "schemas": {
+        "ISphereonKeyManagerCreateArgs": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "$ref": "#/components/schemas/TKeyType",
+              "description": "Key type"
+            },
+            "kms": {
+              "type": "string",
+              "description": "Key Management System"
+            },
+            "opts": {
+              "$ref": "#/components/schemas/IkeyOptions",
+              "description": "Key options"
+            },
+            "meta": {
+              "$ref": "#/components/schemas/KeyMetadata",
+              "description": "Optional. Key meta data"
+            }
+          },
+          "required": ["type"],
+          "description": "Input arguments for  {@link ISphereonKeyManager.keyManagerCreate | keyManagerCreate }"
+        },
+        "TKeyType": {
+          "type": "string",
+          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
+          "description": "Cryptographic key type."
+        },
+        "IkeyOptions": {
+          "type": "object",
+          "properties": {
+            "ephemeral": {
+              "type": "boolean",
+              "description": "Is this a temporary key?"
+            },
+            "expiration": {
+              "type": "object",
+              "properties": {
+                "expiryDate": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "removalDate": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "description": "Expiration and remove the key"
+            }
+          }
+        },
+        "KeyMetadata": {
+          "type": "object",
+          "properties": {
+            "algorithms": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "This encapsulates data about a key.\n\nImplementations of  {@link  @veramo/key-manager#AbstractKeyManagementSystem | AbstractKeyManagementSystem }  should populate this object, for each key, with the algorithms that can be performed using it.\n\nThis can also be used to add various tags to the keys under management."
+        },
+        "PartialKey": {
+          "type": "object",
+          "properties": {
+            "privateKeyHex": {
+              "type": "string"
+            },
+            "kid": {
+              "type": "string",
+              "description": "Key ID"
+            },
+            "kms": {
+              "type": "string",
+              "description": "Key Management System"
+            },
+            "type": {
+              "$ref": "#/components/schemas/TKeyType",
+              "description": "Key type"
+            },
+            "publicKeyHex": {
+              "type": "string",
+              "description": "Public key"
+            },
+            "meta": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/KeyMetadata"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
+            }
+          },
+          "required": ["kid", "kms", "privateKeyHex", "publicKeyHex", "type"]
+        },
+        "ISphereonKeyManagerHandleExpirationsArgs": {
+          "type": "object",
+          "properties": {
+            "skipRemovals": {
+              "type": "boolean"
+            }
+          }
+        },
+        "ManagedKeyInfo": {
+          "type": "object",
+          "properties": {
+            "kid": {
+              "type": "string",
+              "description": "Key ID"
+            },
+            "kms": {
+              "type": "string",
+              "description": "Key Management System"
+            },
+            "type": {
+              "$ref": "#/components/schemas/TKeyType",
+              "description": "Key type"
+            },
+            "publicKeyHex": {
+              "type": "string",
+              "description": "Public key"
+            },
+            "meta": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/KeyMetadata"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
+            }
+          },
+          "required": ["kid", "kms", "type", "publicKeyHex"],
+          "description": "Represents information about a managed key. Private or secret key material is NOT present."
+        },
+        "MinimalImportableKey": {
+          "$ref": "#/components/schemas/RequireOnly<IKey,(\"privateKeyHex\"|\"type\"|\"kms\")>",
+          "description": "Represents the properties required to import a key."
+        },
+        "RequireOnly<IKey,(\"privateKeyHex\"|\"type\"|\"kms\")>": {
+          "type": "object",
+          "properties": {
+            "kid": {
+              "type": "string",
+              "description": "Key ID"
+            },
+            "kms": {
+              "type": "string",
+              "description": "Key Management System"
+            },
+            "type": {
+              "$ref": "#/components/schemas/TKeyType",
+              "description": "Key type"
+            },
+            "publicKeyHex": {
+              "type": "string",
+              "description": "Public key"
+            },
+            "privateKeyHex": {
+              "type": "string",
+              "description": "Optional. Private key"
+            },
+            "meta": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/KeyMetadata"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
+            }
+          },
+          "description": "Represents an object type where a subset of keys are required and everything else is optional."
+        },
+        "ISphereonKeyManagerSignArgs": {
+          "type": "object",
+          "properties": {
+            "keyRef": {
+              "type": "string",
+              "description": "The key handle, as returned during `keyManagerCreateKey`"
+            },
+            "algorithm": {
+              "type": "string",
+              "description": "The algorithm to use for signing. This must be one of the algorithms supported by the KMS for this key type.\n\nThe algorithm used here should match one of the names listed in `IKey.meta.algorithms`"
+            },
+            "data": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "BYTES_PER_ELEMENT": {
+                      "type": "number"
+                    },
+                    "buffer": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "byteLength": {
+                              "type": "number"
+                            }
+                          },
+                          "required": ["byteLength"]
+                        },
+                        {}
+                      ]
+                    },
+                    "byteLength": {
+                      "type": "number"
+                    },
+                    "byteOffset": {
+                      "type": "number"
+                    },
+                    "length": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                }
+              ],
+              "description": "Data to sign"
+            },
+            "encoding": {
+              "type": "string",
+              "enum": ["utf-8", "base16", "base64", "hex"],
+              "description": "If the data is a \"string\" then you can specify which encoding is used. Default is \"utf-8\""
+            }
+          },
+          "required": ["data", "keyRef"],
+          "description": "Input arguments for  {@link ISphereonKeyManagerSignArgs.keyManagerSign | keyManagerSign }"
+        },
+        "ISphereonKeyManagerVerifyArgs": {
+          "type": "object",
+          "properties": {
+            "kms": {
+              "type": "string"
+            },
+            "publicKeyHex": {
+              "type": "string"
+            },
+            "type": {
+              "$ref": "#/components/schemas/TKeyType"
+            },
+            "algorithm": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "BYTES_PER_ELEMENT": {
+                  "type": "number"
+                },
+                "buffer": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "byteLength": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["byteLength"]
+                    },
+                    {}
+                  ]
+                },
+                "byteLength": {
+                  "type": "number"
+                },
+                "byteOffset": {
+                  "type": "number"
+                },
+                "length": {
+                  "type": "number"
+                }
+              },
+              "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "signature": {
+              "type": "string"
+            }
+          },
+          "required": ["publicKeyHex", "type", "data", "signature"]
+        }
+      },
+      "methods": {
+        "keyManagerCreate": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ISphereonKeyManagerCreateArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/PartialKey"
+          }
+        },
+        "keyManagerGetDefaultKeyManagementSystem": {
+          "description": "Get the KMS registered as default. Handy when no explicit KMS is provided for a function",
+          "arguments": {
+            "type": "object"
+          },
+          "returnType": {
+            "type": "string"
+          }
+        },
+        "keyManagerHandleExpirations": {
+          "description": "Set keys to expired and remove keys eligible for deletion.",
+          "arguments": {
+            "$ref": "#/components/schemas/ISphereonKeyManagerHandleExpirationsArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManagedKeyInfo"
+            }
+          }
+        },
+        "keyManagerImport": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/MinimalImportableKey"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/PartialKey"
+          }
+        },
+        "keyManagerListKeys": {
+          "description": "",
+          "arguments": {
+            "type": "object"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManagedKeyInfo"
+            }
+          }
+        },
+        "keyManagerSign": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/ISphereonKeyManagerSignArgs"
+          },
+          "returnType": {
+            "type": "string"
+          }
+        },
+        "keyManagerVerify": {
+          "description": "Verifies a signature using the key",
+          "arguments": {
+            "$ref": "#/components/schemas/ISphereonKeyManagerVerifyArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
