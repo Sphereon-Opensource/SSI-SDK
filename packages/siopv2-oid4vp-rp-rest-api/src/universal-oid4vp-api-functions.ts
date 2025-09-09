@@ -31,11 +31,10 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
       const directPostResponseRedirectUri = request.body.direct_post_response_redirect_uri // TODO Uri not URI
       const requestUriBase = request.body.request_uri_base
 
-      try {
-        await context.agent.pdmGetDefinition({ itemId: queryId })
-      } catch(e) {
-        console.log(`No query could be found for the given id. Query id: ${queryId}`)
-        return sendErrorResponse(response, 404, { status: 404, message: 'No query could be found' })
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId: queryId }] })
+      if (definitionItems.length === 0) {
+          console.log(`No query could be found for the given id. Query id: ${queryId}`)
+          return sendErrorResponse(response, 404, { status: 404, message: 'No query could be found' })
       }
 
       const requestByReferenceURI = uriWithBase(`/siop/definitions/${queryId}/auth-requests/${correlationId}`, {

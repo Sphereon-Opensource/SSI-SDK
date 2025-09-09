@@ -75,7 +75,6 @@ export function verifyAuthResponseSIOPv2Endpoint(
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        queryId: definitionId,
         presentationDefinitions: [
           {
             location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
