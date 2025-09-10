@@ -10,10 +10,8 @@ import { IMetadataImportArgs, OID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-iss
 import {
   CredentialProviderJsonld,
   LdDefaultContexts,
-  MethodNames,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
-  SphereonJsonWebSignature2020,
 } from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { createAgent } from '@veramo/core'
 import { CredentialPlugin } from '@veramo/credential-w3c'
@@ -31,7 +29,7 @@ import { getResolver as getDidWebResolver } from 'web-did-resolver'
 import { IPlugins } from '../src'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
 import { start } from './RestAPI'
-// import {toJwk} from "@sphereon/ssi-sdk-ext.key-utils";
+import { VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -113,7 +111,6 @@ let importMetadatas = [
     metadataType: 'authorizationServer',
     correlationId: `${baseUrl}/sphereon`,
     overwriteExisting: true,
-
     metadata: {
       issuer: `${baseUrl}/sphereon`,
       response_types_supported: ['code', 'code id_token'],
@@ -178,7 +175,6 @@ let importMetadatas = [
     metadataType: 'authorizationServer',
     correlationId: `${baseUrl}/triall2023`,
     overwriteExisting: true,
-
     metadata: {
       issuer: `${baseUrl}/triall2023`,
       response_types_supported: ['code', 'code id_token'],
@@ -188,6 +184,12 @@ let importMetadatas = [
 ] satisfies Array<IMetadataImportArgs>
 
 // console.log(JSON.stringify(importMetadatas, null, 2))
+
+const jsonld = new CredentialProviderJsonld({
+  contextMaps: [LdDefaultContexts],
+  suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+  keyStore: privateKeyStore,
+})
 
 const agent = createAgent<IPlugins>({
   plugins: [
@@ -252,15 +254,7 @@ const agent = createAgent<IPlugins>({
       },
     }),
     new CredentialPlugin(),
-    new CredentialProviderJsonld({
-      contextMaps: [LdDefaultContexts],
-      suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020(), new SphereonJsonWebSignature2020()],
-      bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-      ]),
-      keyStore: privateKeyStore,
-    }),
+    new VcdmCredentialPlugin({ issuers: [jsonld] }),
   ],
 })
 
