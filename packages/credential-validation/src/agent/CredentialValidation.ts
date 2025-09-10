@@ -1,4 +1,5 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
@@ -25,9 +26,9 @@ import {
   VerifyMdocCredentialArgs,
   VerifySDJWTCredentialArgs,
 } from '../index'
-import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import IVerifySignatureResult = mdocPkg.com.sphereon.crypto.generic.IVerifySignatureResult
+import decodeFrom = mdocPkg.com.sphereon.kmp.decodeFrom
+import IssuerSignedCbor = mdocPkg.com.sphereon.mdoc.data.device.IssuerSignedCbor
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 // Exposing the methods here for any REST implementation
