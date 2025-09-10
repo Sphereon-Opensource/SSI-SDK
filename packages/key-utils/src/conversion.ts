@@ -105,27 +105,38 @@ export function coseToJoseSignatureAlg(coseAlg: ICoseSignatureAlgorithm): JoseSi
 
 export function joseToCoseSignatureAlg(joseAlg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString): ICoseSignatureAlgorithm {
   switch (joseAlg) {
-    case (JoseSignatureAlgorithm.ES256K, 'ES256K'):
+    case JoseSignatureAlgorithm.ES256K:
+    case 'ES256K':
       return ICoseSignatureAlgorithm.ES256K
-    case (JoseSignatureAlgorithm.ES256, 'ES256'):
+    case JoseSignatureAlgorithm.ES256:
+    case 'ES256':
       return ICoseSignatureAlgorithm.ES256
-    case (JoseSignatureAlgorithm.ES384, 'ES384'):
+    case JoseSignatureAlgorithm.ES384:
+    case 'ES384':
       return ICoseSignatureAlgorithm.ES384
-    case (JoseSignatureAlgorithm.ES512, 'ES512'):
+    case JoseSignatureAlgorithm.ES512:
+    case 'ES512':
       return ICoseSignatureAlgorithm.ES512
-    case (JoseSignatureAlgorithm.PS256, 'PS256'):
+    case JoseSignatureAlgorithm.PS256:
+    case 'PS256':
       return ICoseSignatureAlgorithm.PS256
-    case (JoseSignatureAlgorithm.PS384, 'PS384'):
+    case JoseSignatureAlgorithm.PS384:
+    case 'PS384':
       return ICoseSignatureAlgorithm.PS384
-    case (JoseSignatureAlgorithm.PS512, 'PS512'):
+    case JoseSignatureAlgorithm.PS512:
+    case 'PS512':
       return ICoseSignatureAlgorithm.PS512
-    case (JoseSignatureAlgorithm.HS256, 'HS256'):
+    case JoseSignatureAlgorithm.HS256:
+    case 'HS256':
       return ICoseSignatureAlgorithm.HS256
-    case (JoseSignatureAlgorithm.HS384, 'HS384'):
+    case JoseSignatureAlgorithm.HS384:
+    case 'HS384':
       return ICoseSignatureAlgorithm.HS384
-    case (JoseSignatureAlgorithm.HS512, 'HS512'):
+    case JoseSignatureAlgorithm.HS512:
+    case 'HS512':
       return ICoseSignatureAlgorithm.HS512
-    case (JoseSignatureAlgorithm.EdDSA, 'EdDSA'):
+    case JoseSignatureAlgorithm.EdDSA:
+    case 'EdDSA':
       return ICoseSignatureAlgorithm.EdDSA
     default:
       throw Error(`Signature algorithm ${joseAlg} not supported in Cose`)
@@ -134,21 +145,29 @@ export function joseToCoseSignatureAlg(joseAlg: JoseSignatureAlgorithm | JoseSig
 
 export function joseToCoseKeyOperation(keyOp: JoseKeyOperation | JoseKeyOperationString): ICoseKeyOperation {
   switch (keyOp) {
-    case (JoseKeyOperation.SIGN, 'sign'):
+    case JoseKeyOperation.SIGN:
+    case 'sign':
       return ICoseKeyOperation.SIGN
-    case (JoseKeyOperation.VERIFY, 'verify'):
+    case JoseKeyOperation.VERIFY:
+    case 'verify':
       return ICoseKeyOperation.VERIFY
-    case (JoseKeyOperation.ENCRYPT, 'encrypt'):
+    case JoseKeyOperation.ENCRYPT:
+    case 'encrypt':
       return ICoseKeyOperation.ENCRYPT
-    case (JoseKeyOperation.DECRYPT, 'decrypt'):
+    case JoseKeyOperation.DECRYPT:
+    case 'decrypt':
       return ICoseKeyOperation.DECRYPT
-    case (JoseKeyOperation.WRAP_KEY, 'wrapKey'):
+    case JoseKeyOperation.WRAP_KEY:
+    case 'wrapKey':
       return ICoseKeyOperation.WRAP_KEY
-    case (JoseKeyOperation.UNWRAP_KEY, 'unwrapKey'):
+    case JoseKeyOperation.UNWRAP_KEY:
+    case 'unwrapKey':
       return ICoseKeyOperation.UNWRAP_KEY
-    case (JoseKeyOperation.DERIVE_KEY, 'deriveKey'):
+    case JoseKeyOperation.DERIVE_KEY:
+    case 'deriveKey':
       return ICoseKeyOperation.DERIVE_KEY
-    case (JoseKeyOperation.DERIVE_BITS, 'deriveBits'):
+    case JoseKeyOperation.DERIVE_BITS:
+    case 'deriveBits':
       return ICoseKeyOperation.DERIVE_BITS
     default:
       throw Error(`Key operation ${keyOp} not supported in Cose`)
