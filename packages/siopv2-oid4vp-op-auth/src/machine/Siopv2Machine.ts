@@ -51,7 +51,7 @@ const Siopv2HasSelectableCredentialsAndContactGuard = (_ctx: Siopv2MachineContex
     throw new Error('Missing contact request data in context')
   }
 
-  return authorizationRequestData.presentationDefinitions !== undefined
+  return authorizationRequestData.dcqlQuery !== undefined
 }
 
 const Siopv2CreateContactGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
@@ -67,7 +67,7 @@ const Siopv2HasSelectedRequiredCredentialsGuard = (_ctx: Siopv2MachineContext, _
     throw new Error('Missing authorization request data in context')
   }
 
-  if (authorizationRequestData.presentationDefinitions === undefined || authorizationRequestData.presentationDefinitions.length === 0) {
+  if (authorizationRequestData.dcqlQuery === undefined) {
     throw Error('No presentation definitions present')
   }
 
@@ -87,7 +87,7 @@ const Siopv2IsSiopOnlyGuard = (_ctx: Siopv2MachineContext, _event: Siopv2Machine
     throw new Error('Missing authorization request data in context')
   }
 
-  return authorizationRequestData.presentationDefinitions === undefined
+  return authorizationRequestData.dcqlQuery === undefined
 }
 
 const Siopv2IsSiopWithOID4VPGuard = (_ctx: Siopv2MachineContext, _event: Siopv2MachineEventTypes): boolean => {
@@ -101,7 +101,7 @@ const Siopv2IsSiopWithOID4VPGuard = (_ctx: Siopv2MachineContext, _event: Siopv2M
     throw new Error('Missing selectableCredentialsMap in context')
   }
 
-  return authorizationRequestData.presentationDefinitions !== undefined
+  return authorizationRequestData.dcqlQuery !== undefined
 }
 
 const createSiopv2Machine = (opts: CreateSiopv2MachineOpts): Siopv2StateMachine => {

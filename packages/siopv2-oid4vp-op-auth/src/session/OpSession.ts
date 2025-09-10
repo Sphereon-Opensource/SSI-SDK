@@ -2,36 +2,30 @@ import {
   AuthorizationResponsePayload,
   JwksMetadataParams,
   OP,
-  PresentationDefinitionWithLocation,
-  PresentationExchangeResponseOpts,
-  PresentationVerificationResult,
   RequestObjectPayload,
   ResponseIss,
   SupportedVersion,
   URI,
   Verification,
-  VerifiedAuthorizationRequest,
+  VerifiedAuthorizationRequest
 } from '@sphereon/did-auth-siop'
 import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { JweAlg, JweEnc } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { encodeBase64url } from '@sphereon/ssi-sdk.core'
-import {
-  CompactSdJwtVc,
-  CredentialMapper,
-  HasherSync,
-  OriginalVerifiableCredential,
-  parseDid,
-  PresentationSubmission,
-  W3CVerifiablePresentation,
-} from '@sphereon/ssi-types'
-import { IIdentifier, IVerifyResult, TKeyType } from '@veramo/core'
+import { parseDid } from '@sphereon/ssi-types'
+import { IIdentifier, TKeyType } from '@veramo/core'
 import { v4 } from 'uuid'
-import { IOPOptions, IOpSessionArgs, IOpSessionGetOID4VPArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
+import {
+  IOPOptions,
+  IOpSessionArgs,
+  IOpSessionGetOID4VPArgs,
+  IOpsSendSiopAuthorizationResponseArgs,
+  IRequiredContext
+} from '../types'
 import { createOP } from './functions'
 import { OID4VP } from './OID4VP'
-import { PEX } from '@sphereon/pex'
 import { Loggers } from '@sphereon/ssi-types'
 
 const logger = Loggers.DEFAULT.get('sphereon:oid4vp:OpSession')
@@ -45,14 +39,12 @@ export class OpSession {
   private verifiedAuthorizationRequest?: VerifiedAuthorizationRequest | undefined
   private _nonce?: string
   private _state?: string
-  private readonly _providedPresentationDefinitions?: PresentationDefinitionWithLocation[]
 
   private constructor(options: Required<IOpSessionArgs>) {
     this.id = options.sessionId
     this.options = options.op
     this.context = options.context
     this.requestJwtOrUri = options.requestJwtOrUri
-    this._providedPresentationDefinitions = options.providedPresentationDefinitions
   }
 
   public static async init(options: Required<IOpSessionArgs>): Promise<OpSession> {
@@ -169,7 +161,7 @@ export class OpSession {
     }
     const isEBSI =
       rpMethods.length === 0 &&
-      (authReq.issuer?.includes('.ebsi.eu') || (await authReq.authorizationRequest.getMergedProperty<string>('client_id'))?.includes('.ebsi.eu'))
+      (authReq.issuer?.includes('.ebsi.eu') || authReq.authorizationRequest.getMergedProperty<string>('client_id')?.includes('.ebsi.eu'))
     let codecName: string | undefined = undefined
     if (isEBSI && (!aud || !aud.startsWith('http'))) {
       logger.debug(`EBSI detected, adding did:key to supported DID methods for RP`)
@@ -221,49 +213,8 @@ export class OpSession {
     return Promise.resolve(this.verifiedAuthorizationRequest!.responseURI!)
   }
 
-  public async hasPresentationDefinitions(): Promise<boolean> {
-    const defs = this._providedPresentationDefinitions ?? (await this.getAuthorizationRequest()).presentationDefinitions
-    return defs !== undefined && defs.length > 0
-  }
-
-  public async getPresentationDefinitions(): Promise<Array<PresentationDefinitionWithLocation> | undefined> {
-    if (!(await this.hasPresentationDefinitions())) {
-      throw Error(`No presentation definitions found`)
-    }
-    return this._providedPresentationDefinitions ?? (await this.getAuthorizationRequest()).presentationDefinitions
-  }
-
   public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
     return await OID4VP.init(this, args.allIdentifiers ?? [], args.hasher)
-  }
-
-  private createPresentationVerificationCallback(context: IRequiredContext) {
-    async function presentationVerificationCallback(
-      args: W3CVerifiablePresentation | CompactSdJwtVc,
-      presentationSubmission?: PresentationSubmission,
-    ): Promise<PresentationVerificationResult> {
-      let result: IVerifyResult
-      if (CredentialMapper.isSdJwtEncoded(args)) {
-        try {
-          const sdJwtResult = await context.agent.verifySdJwtPresentation({ presentation: args })
-          result = {
-            verified: 'header' in sdJwtResult,
-            error: 'header' in sdJwtResult ? undefined : { message: 'could not verify SD JWT presentation' },
-          }
-        } catch (error: any) {
-          result = {
-            verified: false,
-            error: { message: error.message },
-          }
-        }
-      } else {
-        // @ts-ignore TODO IVerifiablePresentation has too many union types for Veramo
-        result = await context.agent.verifyPresentation({ presentation: args })
-      }
-      return result
-    }
-
-    return presentationVerificationCallback
   }
 
   private async createJarmResponseCallback({
@@ -308,6 +259,12 @@ export class OpSession {
   }
 
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
+    const {
+      responseSignerOpts,
+      dcqlResponse,
+      isFirstParty,
+    } = args
+
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {
         uniresolverResolution: true,
@@ -318,30 +275,9 @@ export class OpSession {
     if (!resolveOpts.subjectSyntaxTypesSupported || resolveOpts.subjectSyntaxTypesSupported.length === 0) {
       resolveOpts.subjectSyntaxTypesSupported = await this.getSupportedDIDMethods(true)
     }
-    //todo: populate with the right verification params. In did-auth-siop we don't have any test that actually passes this parameter
-    const verification: Verification = {
-      presentationVerificationCallback: this.createPresentationVerificationCallback(this.context),
-    }
+
     const request = await this.getAuthorizationRequest()
-    const hasDefinitions = await this.hasPresentationDefinitions()
-    if (hasDefinitions) {
-      const totalInputDescriptors = request.presentationDefinitions?.reduce((sum, pd) => {
-        return sum + pd.definition.input_descriptors.length
-      }, 0)
-      const totalVCs = args.verifiablePresentations ? this.countVCsInAllVPs(args.verifiablePresentations, args.hasher) : 0
 
-      if (!request.presentationDefinitions || !args.verifiablePresentations || totalVCs !== totalInputDescriptors) {
-        throw Error(
-          `Amount of presentations ${args.verifiablePresentations?.length}, doesn't match expected ${request.presentationDefinitions?.length}`,
-        )
-      } else if (!args.presentationSubmission) {
-        throw Error(`Presentation submission is required when verifiable presentations are required`)
-      }
-    }
-
-    const verifiablePresentations = args.verifiablePresentations
-      ? args.verifiablePresentations.map((vp) => CredentialMapper.storedPresentationToOriginalFormat(vp))
-      : []
     const op = await createOP({
       opOptions: {
         ...this.options,
@@ -351,23 +287,16 @@ export class OpSession {
         wellknownDIDVerifyCallback: this.options.wellknownDIDVerifyCallback,
         supportedVersions: request.versions,
       },
-      idOpts: args.responseSignerOpts,
+      idOpts: responseSignerOpts,
       context: this.context,
     })
 
     //TODO change this to use the new functionalities by identifier-resolver and get the jwkIssuer for the responseOpts
-    let issuer = args.responseSignerOpts.issuer
+    let issuer = responseSignerOpts.issuer
     const responseOpts = {
-      verification,
       issuer,
-      ...(args.isFirstParty && { isFirstParty: args.isFirstParty }),
-      ...(args.verifiablePresentations && {
-        presentationExchange: {
-          verifiablePresentations,
-          presentationSubmission: args.presentationSubmission,
-        } as PresentationExchangeResponseOpts,
-      }),
-      dcqlQuery: args.dcqlResponse,
+      ...(isFirstParty && { isFirstParty }),
+      dcqlResponse: dcqlResponse,
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)
@@ -378,27 +307,6 @@ export class OpSession {
     } else {
       return response
     }
-  }
-
-  private countVCsInAllVPs(verifiablePresentations: W3CVerifiablePresentation[], hasher?: HasherSync) {
-    return verifiablePresentations.reduce((sum, vp) => {
-      if (CredentialMapper.isMsoMdocDecodedPresentation(vp) || CredentialMapper.isMsoMdocOid4VPEncoded(vp)) {
-        return sum + 1
-      }
-
-      const uvp = CredentialMapper.toUniformPresentation(vp, { hasher: hasher ?? this.options.hasher })
-      if (uvp.verifiableCredential?.length) {
-        return sum + uvp.verifiableCredential?.length
-      }
-      const isSdJWT = CredentialMapper.isSdJwtDecodedCredential(uvp)
-      if (
-        isSdJWT ||
-        (uvp.verifiableCredential && !PEX.allowMultipleVCsPerPresentation(uvp.verifiableCredential as Array<OriginalVerifiableCredential>))
-      ) {
-        return sum + 1
-      }
-      return sum
-    }, 0)
   }
 }
 

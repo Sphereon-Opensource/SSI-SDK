@@ -6,6 +6,7 @@ import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { AuthorizationChallengeCodeResponse } from '@sphereon/oid4vci-common'
 import { IIdentifier } from '@veramo/core'
 import { ErrorDetails, RequiredContext } from './IOID4VCIHolder'
+import { DcqlQuery } from 'dcql'
 
 export enum FirstPartyMachineStateTypes {
   sendAuthorizationChallengeRequest = 'sendAuthorizationChallengeRequest',
@@ -150,6 +151,7 @@ export type SiopV2AuthorizationRequestData = {
   clientId?: string
   entityId?: string
   presentationDefinitions?: PresentationDefinitionWithLocation[]
+  dcqlQuery: DcqlQuery
 }
 
 export type FirstPartyMachineNavigationArgs = {
