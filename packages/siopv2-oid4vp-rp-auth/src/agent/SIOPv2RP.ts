@@ -227,8 +227,7 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          ...(args.presentationDefinitions && !args.dcqlQuery ? { presentationDefinitions: args.presentationDefinitions } : {}),
-          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery as DcqlQuery } : {}), // TODO BEFORE PR, check compatibility and whether we can remove local type
+          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery as DcqlQuery } : {}),
           audience: args.audience,
         }),
       ),

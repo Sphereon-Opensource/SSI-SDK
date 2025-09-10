@@ -6,7 +6,6 @@ import {
   ClaimPayloadCommonOpts,
   ClientMetadataOpts,
   IRPSessionManager,
-  PresentationDefinitionWithLocation,
   PresentationVerificationCallback,
   RequestObjectPayload,
   ResponseMode,
@@ -110,7 +109,6 @@ export interface IVerifyAuthResponseStateArgs {
   definitionId?: string
   correlationId: string
   audience?: string
-  presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
   dcqlQuery?: DcqlQueryREST
 }
 
@@ -192,7 +190,6 @@ export interface IAuthRequestDetails {
 
 export interface IPresentationWithDefinition {
   location: VPTokenLocation
-  definition: PresentationDefinitionWithLocation
   format: VerifiablePresentationTypeFormat
   presentation: W3CVerifiablePresentation
 }
