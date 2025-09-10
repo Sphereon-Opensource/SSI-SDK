@@ -384,6 +384,9 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
+    if (!format) {
+      return Promise.reject(Error('format parameter missing from input'))
+    }
     const allSupported = client.getCredentialsSupported(format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(

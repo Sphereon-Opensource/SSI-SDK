@@ -1,6 +1,7 @@
 import {
   AuthorizationServerMetadata,
   CredentialRequest,
+  CredentialRequestV1_0_15,
   IssuerMetadata,
   Jwt,
   JWTHeader,
@@ -191,7 +192,7 @@ export async function getCredentialSignerCallback(
   context: IRequiredContext,
 ): Promise<CredentialSignerCallback> {
   async function issueVCCallback(args: {
-    credentialRequest: CredentialRequest
+    credentialRequest: CredentialRequestV1_0_15
     credential: CredentialIssuanceInput
     jwtVerifyResult: JwtVerifyResult
     format?: OID4VCICredentialFormat
