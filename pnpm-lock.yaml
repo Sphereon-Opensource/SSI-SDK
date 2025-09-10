@@ -2798,6 +2798,9 @@ importers:
       '@sphereon/ssi-sdk-ext.jwt-service':
         specifier: workspace:*
         version: link:../jwt-service
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
