@@ -628,8 +628,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.19.0
-        version: 0.19.0(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.86
+        version: 0.19.1-feature.DIIPv4.86(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-key':
         specifier: workspace:*
         version: link:../did-provider-key
@@ -7996,10 +7996,6 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@sphereon/oid4vc-common@0.19.0':
-    resolution: {integrity: sha512-g5DYI9ctBGZX+TXOMDq5U/hlcE81WGlMlIYVAFpSfYTpXlsmlOgaak20kFKQU2Fen7RzqFvZyADmZ9l/zoj8bA==}
-    engines: {node: '>=20'}
-
   '@sphereon/oid4vc-common@0.19.1-feat.SSISDK.34.74':
     resolution: {integrity: sha512-qWyPUjkeu6DUdtxGeJNquJ5IuvlMxG9wYnAFnt9caN1QUroEdm9JkUbi32ID4yLKHqPDXD+Sh/aYb6McC746eA==}
     engines: {node: '>=20'}
@@ -8016,8 +8012,8 @@ packages:
     resolution: {integrity: sha512-OcsFGVSihvFqk0p/CYMRO0B8qQtl1nXB6tGOEhjnLM9LhotVllFSJsVCAk8Uy/f2mj52w8C+Lakw3Nv4YNZ5PQ==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-common@0.19.0':
-    resolution: {integrity: sha512-2oIR5WMZuYGX2eN1jhLqosUVZka+4ocx7cIb12U5tH0zBPqvhSk1DQV0XmYVKpEGMS7Q/VHOIkQBBKmcyS4VlA==}
+  '@sphereon/oid4vci-common@0.19.1-feature.DIIPv4.86':
+    resolution: {integrity: sha512-41LSzcJcXIWPmjjD8GMASKtF7kVV4lajzVD6JADr3rgM919fRf1aqb7SLqYj2a59LnRuQfic7HowrrrUpeMa1A==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vci-common@0.19.1-feature.SSISDK.13.34':
@@ -19336,13 +19332,6 @@ snapshots:
       react: 18.3.1
       react-native: 0.79.1(@babel/core@7.26.10)(react@18.3.1)
 
-  '@sphereon/oid4vc-common@0.19.0':
-    dependencies:
-      '@sphereon/ssi-types': link:packages/ssi-types
-      jwt-decode: 4.0.0
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-
   '@sphereon/oid4vc-common@0.19.1-feat.SSISDK.34.74':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
@@ -19375,9 +19364,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.19.0(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.19.1-feature.DIIPv4.86(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.0
+      '@sphereon/oid4vc-common': 0.19.1-feature.SSISDK.45.92
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
       debug: 4.4.0
