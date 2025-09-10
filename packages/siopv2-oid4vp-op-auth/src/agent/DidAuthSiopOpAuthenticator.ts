@@ -1,7 +1,4 @@
-import {
-  decodeUriAsJson,
-  PresentationSignCallback,
-  VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { decodeUriAsJson, PresentationSignCallback, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import {
   ConnectionType,
   CorrelationIdentifierType,
@@ -13,12 +10,20 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import { HasherSync, Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { v4 as uuidv4 } from 'uuid'
-import { OpSession } from '../session'
 import { EventEmitter } from 'events'
+import { v4 as uuidv4 } from 'uuid'
+import { schema } from '..'
+import { Siopv2Machine } from '../machine/Siopv2Machine'
+import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
+
+import { OpSession } from '../session'
 import {
+  AddIdentityArgs,
+  CreateConfigArgs,
+  CreateConfigResult,
   DidAuthSiopOpAuthenticatorOptions,
   GetSelectableCredentialsArgs,
+  GetSiopRequestArgs,
   IDidAuthSiopOpAuthenticator,
   IGetSiopSessionArgs,
   IOpSessionArgs,
@@ -27,27 +32,18 @@ import {
   IRemoveSiopSessionArgs,
   IRequiredContext,
   LOGGER_NAMESPACE,
-  RequiredContext,
-  SelectableCredentialsMap,
-  Siopv2AuthorizationResponseData,
-} from '../types'
-import {
-  AddIdentityArgs,
-  CreateConfigArgs,
-  CreateConfigResult,
-  GetSiopRequestArgs,
   OnContactIdentityCreatedArgs,
   OnIdentifierCreatedArgs,
+  RequiredContext,
   RetrieveContactArgs,
+  SelectableCredentialsMap,
   SendResponseArgs,
   Siopv2AuthorizationRequestData,
+  Siopv2AuthorizationResponseData,
   Siopv2HolderEvent,
   Siopv2Machine as Siopv2MachineId,
   Siopv2MachineInstanceOpts,
 } from '../types'
-import { Siopv2Machine } from '../machine/Siopv2Machine'
-import { getSelectableCredentials, siopSendAuthorizationResponse, translateCorrelationIdToName } from '../services/Siopv2MachineService'
-import { schema } from '..'
 
 const logger = Loggers.DEFAULT.options(LOGGER_NAMESPACE, {}).get(LOGGER_NAMESPACE)
 
@@ -92,13 +88,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly hasher?: HasherSync
 
   constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
-    const {
-      onContactIdentityCreated,
-      onIdentifierCreated,
-      hasher,
-      customApprovals = {},
-      presentationSignCallback
-    } = { ...options }
+    const { onContactIdentityCreated, onIdentifierCreated, hasher, customApprovals = {}, presentationSignCallback } = { ...options }
 
     this.hasher = hasher
     this.onContactIdentityCreated = onContactIdentityCreated
