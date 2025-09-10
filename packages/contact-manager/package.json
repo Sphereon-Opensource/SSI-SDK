@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
-    "@sphereon/ssi-types": "0.34.1-feature.SSISDK.45.92",
+    "@sphereon/ssi-types":  "workspace:*",
     "cross-fetch": "^4.1.0",
     "debug": "^4.3.5",
     "typeorm": "0.3.20"
