@@ -1,6 +1,6 @@
+import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 import {
   AuthorizationServerMetadata,
-  CredentialRequest,
   CredentialRequestV1_0_15,
   IssuerMetadata,
   Jwt,
@@ -19,12 +19,11 @@ import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
 import { CompactSdJwtVc, CredentialMapper, ICredential, W3CVerifiableCredential } from '@sphereon/ssi-types'
 import { CredentialPayload, ProofFormat } from '@veramo/core'
 import { bytesToBase64 } from '@veramo/utils'
+import fetch from 'cross-fetch'
 import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { jwtDecode } from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
-import fetch from 'cross-fetch'
-import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult> => {
