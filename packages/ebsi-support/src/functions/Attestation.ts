@@ -5,6 +5,7 @@ import {
   AuthorizationRequestOpts,
   AuthzFlowType,
   CredentialConfigurationSupported,
+  CredentialConfigurationSupportedV1_0_15,
   getJson,
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
@@ -101,7 +102,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     retrieveServerMetadata: true,
   })
 
-  const allMatches = vciClient.getCredentialsSupported(false)
+  const allMatches = {} as Record<string, CredentialConfigurationSupportedV1_0_15> | Array<CredentialConfigurationSupported> // vciClient.getCredentialsSupported(format) FIXME SSISDK-40
   let arrayMatches: Array<CredentialConfigurationSupported>
   if (Array.isArray(allMatches)) {
     arrayMatches = allMatches

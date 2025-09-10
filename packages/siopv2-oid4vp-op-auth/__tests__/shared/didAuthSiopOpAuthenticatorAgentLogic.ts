@@ -1,11 +1,10 @@
 import * as fs from 'fs'
 import { TAgent, VerifiableCredential } from '@veramo/core'
-import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator, IPresentationWithDefinition } from '../../src'
+import { IAuthRequestDetails, IDidAuthSiopOpAuthenticator } from '../../src'
 import {
   AuthorizationRequest,
   OP,
   ParsedAuthorizationRequestURI,
-  PresentationDefinitionWithLocation,
   ResponseContext,
   ResponseMode,
   ResponseType,
@@ -41,22 +40,6 @@ type ConfiguredAgent = TAgent<IDidAuthSiopOpAuthenticator>
 
 const didMethod = 'ethr'
 const did = 'did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a'
-// @ts-ignore
-const identifier = {
-  did,
-  provider: '',
-  controllerKeyId: `${did}#controller`,
-  keys: [
-    {
-      kid: `${did}#controller`,
-      kms: '',
-      type: 'Secp256k1' as const,
-      publicKeyHex: '1e21e21e...',
-      privateKeyHex: 'eqfcvnqwdnwqn...',
-    },
-  ],
-  services: [],
-}
 const authKeys = [
   {
     kid: `${did}#controller`,
@@ -99,11 +82,13 @@ const openIDURI =
   stateId +
   '&registration=registration_value' +
   '&request=ey...'
+
 const registration = {
   did_methods_supported: [`did:${didMethod}:`],
   subject_identifiers_supported: SubjectIdentifierType.DID,
   credential_formats_supported: [],
 }
+
 const authorizationRequest: ParsedAuthorizationRequestURI = {
   encodedUri: 'uri_example',
   encodingFormat: UrlEncodingFormat.FORM_URL_ENCODED,
@@ -124,6 +109,7 @@ const authorizationRequest: ParsedAuthorizationRequestURI = {
   },
   registration,
 }
+
 const authorizationVerificationMockedResult = {
   payload: {},
   verifyOpts: {},
@@ -328,10 +314,10 @@ export default (testContext: {
     })
 
     it('should get authentication details with single credential', async () => {
-      const pd_single: PresentationDefinitionWithLocation = getFileAsJson(
+      const pd_single= getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json',
       )
-      const vp_single: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
+      const vp_single = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json') //: IPresentationWithDefinition
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vp_single.presentation) as WrappedW3CVerifiablePresentation
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
@@ -357,10 +343,10 @@ export default (testContext: {
     })
 
     it('should get authentication details with getting specific verifiableCredentials', async () => {
-      const pdSingle: PresentationDefinitionWithLocation = getFileAsJson(
+      const pdSingle = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_single.json',
       )
-      const vpSingle: IPresentationWithDefinition = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json')
+      const vpSingle = getFileAsJson('./packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_single.json') //: IPresentationWithDefinition
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpSingle.presentation) as WrappedW3CVerifiablePresentation
       presentation.presentation.presentation_submission!.id = expect.any(String)
 
@@ -390,10 +376,10 @@ export default (testContext: {
     })
 
     it('should get authentication details with multiple verifiableCredentials', async () => {
-      const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
+      const pdMultiple = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json',
       )
-      const vpMultiple: IPresentationWithDefinition = getFileAsJson(
+      const vpMultiple= getFileAsJson( //: IPresentationWithDefinition
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/vp/vp_multiple.json',
       )
       const presentation = CredentialMapper.toWrappedVerifiablePresentation(vpMultiple.presentation) as WrappedW3CVerifiablePresentation
@@ -443,7 +429,7 @@ export default (testContext: {
     })
 
     it('should send authentication response', async () => {
-      const pdMultiple: PresentationDefinitionWithLocation = getFileAsJson(
+      const pdMultiple = getFileAsJson(
         './packages/siopv2-openid4vp-op-auth/__tests__/vc_vp_examples/pd/pd_multiple.json',
       )
 

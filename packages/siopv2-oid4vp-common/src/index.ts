@@ -8,19 +8,21 @@ export * from './utils'
 export {
   decodeUriAsJson,
   encodeJsonAsURI,
-  AuthorizationResponsePayload,
-  AuthorizationRequestPayload,
   URI,
-  AuthorizationRequestState,
-  RequestObjectPayload,
   AuthorizationRequest,
   AuthorizationResponse,
   RP,
   OP,
   OPBuilder,
   SupportedVersion,
-  PresentationDefinitionWithLocation,
+  VPTokenLocation,
+} from '@sphereon/did-auth-siop'
+
+export type {
+  RequestObjectPayload,
+  AuthorizationRequestState,
+  AuthorizationResponsePayload,
+  AuthorizationRequestPayload,
   PresentationVerificationResult,
   PresentationVerificationCallback,
-  VPTokenLocation,
 } from '@sphereon/did-auth-siop'

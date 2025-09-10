@@ -26,9 +26,9 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-next.2",
-    "@sphereon/did-auth-siop-adapter": "0.19.1-next.2",
-    "@sphereon/oid4vc-common": "0.19.1-next.2",
+    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.86",
+    "@sphereon/did-auth-siop-adapter": "0.19.1-feature.DIIPv4.86",
+    "@sphereon/oid4vc-common": "0.19.1-feature.DIIPv4.86",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
@@ -45,7 +45,7 @@
     "@sphereon/wellknown-dids-client": "^0.1.3",
     "@veramo/core": "4.2.0",
     "@veramo/credential-w3c": "4.2.0",
-    "cross-fetch": "^3.1.8",
+    "cross-fetch": "^4.1.0",
     "dcql": "0.2.19",
     "uuid": "^9.0.1"
   },

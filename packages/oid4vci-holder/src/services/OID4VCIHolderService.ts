@@ -1,16 +1,15 @@
 import { LOG } from '@sphereon/oid4vci-client'
 import {
+  AuthorizationChallengeCodeResponse,
   CredentialConfigurationSupported,
-  CredentialSupportedSdJwtVc,
-  CredentialConfigurationSupportedSdJwtVcV1_0_13,
-  CredentialOfferFormatV1_0_11,
+  CredentialConfigurationSupportedSdJwtVcV1_0_15,
   CredentialResponse,
+  CredentialResponseV1_0_15,
+  CredentialSupportedSdJwtVc,
   getSupportedCredentials,
   getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
-  OpenId4VCIVersion,
-  AuthorizationChallengeCodeResponse,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -23,6 +22,7 @@ import {
   managedIdentifierToJwk,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
 import {
   CredentialMapper,
@@ -40,8 +40,12 @@ import {
 } from '@sphereon/ssi-types'
 import { asArray } from '@veramo/utils'
 import { translate } from '../localization/Localization'
+import { FirstPartyMachine } from '../machines/firstPartyMachine'
+import { issuerLocaleBrandingFrom, oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom } from '../mappers/OIDC4VCIBrandingMapper'
+import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
 import {
   DidAgents,
+  GetBasicIssuerLocaleBrandingArgs,
   GetCredentialBrandingArgs,
   GetCredentialConfigsSupportedArgs,
   GetCredentialConfigsSupportedBySingleTypeOrIdArgs,
@@ -49,22 +53,17 @@ import {
   GetIssuanceCryptoSuiteArgs,
   GetIssuanceDidMethodArgs,
   GetIssuanceOptsArgs,
-  GetBasicIssuerLocaleBrandingArgs,
   GetPreferredCredentialFormatsArgs,
   IssuanceOpts,
   MapCredentialToAcceptArgs,
   MappedCredentialToAccept,
   OID4VCIHolderEvent,
+  RequiredContext,
   SelectAppLocaleBrandingArgs,
+  StartFirstPartApplicationMachine,
   VerificationResult,
   VerifyCredentialToAcceptArgs,
-  StartFirstPartApplicationMachine,
-  RequiredContext,
 } from '../types/IOID4VCIHolder'
-import { oid4vciGetCredentialBrandingFrom, sdJwtGetCredentialBrandingFrom, issuerLocaleBrandingFrom } from '../mappers/OIDC4VCIBrandingMapper'
-import { FirstPartyMachine } from '../machines/firstPartyMachine'
-import { FirstPartyMachineState, FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
@@ -72,8 +71,8 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   await Promise.all(
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]): Promise<void> => {
       let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
-      if (credentialsConfigSupported.format === 'vc+sd-jwt') {
-        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_13>credentialsConfigSupported).vct
+      if (credentialsConfigSupported.format === 'dc+sd-jwt') {
+        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_15>credentialsConfigSupported).vct
         if (vct.startsWith('http')) {
           try {
             sdJwtTypeMetadata = await context.agent.fetchSdJwtTypeMetadataFromVctUrl({ vct })
@@ -153,10 +152,7 @@ export const selectCredentialLocaleBranding = async (
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
   const { mappedCredential, hasher, onVerifyEBSICredentialIssuer, schemaValidation, context } = args
 
-  const credential = mappedCredential.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
-  if (!credential) {
-    return Promise.reject(Error('No credential found in credential response'))
-  }
+  const credential = extractCredentialFromResponse(mappedCredential.credentialToAccept.credentialResponse)
 
   const wrappedVC = CredentialMapper.toWrappedVerifiableCredential(credential, { hasher: hasher ?? defaultHasher })
   if (
@@ -205,11 +201,7 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
 export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Promise<MappedCredentialToAccept> => {
   const { credentialToAccept, hasher } = args
 
-  const credentialResponse: CredentialResponse = credentialToAccept.credentialResponse
-  const verifiableCredential: W3CVerifiableCredential | undefined = credentialResponse.credential
-  if (!verifiableCredential) {
-    return Promise.reject(Error('No credential found in credential response'))
-  }
+  const verifiableCredential = extractCredentialFromResponse(credentialToAccept.credentialResponse) as W3CVerifiableCredential
 
   const wrappedVerifiableCredential: WrappedVerifiableCredential = CredentialMapper.toWrappedVerifiableCredential(
     verifiableCredential as OriginalVerifiableCredential,
@@ -240,6 +232,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
         ? uniformVerifiableCredential.decodedPayload.iss
         : uniformVerifiableCredential.issuer.id
 
+  const credentialResponse = credentialToAccept.credentialResponse as CredentialResponseV1_0_15
   return {
     correlationId,
     credentialToAccept,
@@ -248,6 +241,27 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     uniformVerifiableCredential,
     ...(credentialResponse.credential_subject_issuance && { credential_subject_issuance: credentialResponse.credential_subject_issuance }),
   }
+}
+
+export const extractCredentialFromResponse = (credentialResponse: CredentialResponse): OriginalVerifiableCredential => {
+  let credential: OriginalVerifiableCredential | undefined
+
+  if ('credential' in credentialResponse) {
+    credential = credentialResponse.credential as OriginalVerifiableCredential
+  } else if (
+    'credentials' in credentialResponse &&
+    credentialResponse.credentials &&
+    Array.isArray(credentialResponse.credentials) &&
+    credentialResponse.credentials.length > 0
+  ) {
+    credential = credentialResponse.credentials[0].credential as OriginalVerifiableCredential // FIXME SSISDK-13 (no multi-credential support yet)
+  }
+
+  if (!credential) {
+    throw new Error('No credential found in credential response')
+  }
+
+  return credential
 }
 
 export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<ManagedIdentifierResult> => {
@@ -370,7 +384,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
-    const allSupported = client.getCredentialsSupported(false)
+    const allSupported = client.getCredentialsSupported(format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
         ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
@@ -378,29 +392,15 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     )
   }
 
-  if (!types && !client.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no types where provided'))
-    /*} else if (!format && !client.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no formats where provided'))*/
+  if (!client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
   }
-  // We should always have a credential offer at this point given the above
-  if (!Array.isArray(format) && client.credentialOffer) {
-    if (
-      client.version() > OpenId4VCIVersion.VER_1_0_09 &&
-      typeof client.credentialOffer.credential_offer === 'object' &&
-      'credentials' in client.credentialOffer.credential_offer
-    ) {
-      format = client.credentialOffer.credential_offer.credentials
-        .filter((cred: CredentialOfferFormatV1_0_11 | string) => typeof cred !== 'string')
-        .map((cred: CredentialOfferFormatV1_0_11 | string) => (cred as CredentialOfferFormatV1_0_11).format)
-      if (format?.length === 0) {
-        format = undefined // Otherwise we would match nothing
-      }
-    }
+  if (!types) {
+    return Promise.reject(Error('openID4VCIClient has no types'))
   }
 
   const offerSupported = getSupportedCredentials({
-    types: types ? [types] : client.getCredentialOfferTypes(),
+    types: [types],
     format,
     version: client.version(),
     issuerMetadata: client.endpointMetadata.credentialIssuerMetadata,
@@ -580,7 +580,8 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
-    case 'vc+sd-jwt':
+    //case 'vc+sd-jwt':  FIXME re-enable for vcdm2
+    case 'dc+sd-jwt':
     case 'mso_mdoc': {
       const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(
         (suite: JoseSignatureAlgorithm | JoseSignatureAlgorithmString) => signing_algs_supported.includes(suite),

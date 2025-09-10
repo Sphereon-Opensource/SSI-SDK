@@ -1,7 +1,6 @@
-import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
+import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { CredentialMapper } from '@sphereon/ssi-types'
-import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -41,11 +40,7 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
   )
 }
 
-export function verifyAuthResponseSIOPv2Endpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation },
-) {
+export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
@@ -72,45 +67,39 @@ export function verifyAuthResponseSIOPv2Endpoint(
       console.log(`URI: ${JSON.stringify(authorizationResponse)}`)
 
       const definitionItem = definitionItems[0]
-      const verifiedResponse = await context.agent.siopVerifyAuthResponse({
+      /* const verifiedResponse = */ await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
         definitionId,
-        presentationDefinitions: [
-          {
-            location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
-            definition: definitionItem.definitionPayload,
-          },
-        ],
         dcqlQuery: definitionItem.dcqlPayload,
       })
 
-      const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]
-      if (wrappedPresentation) {
-        // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
-        // console.log(JSON.stringify(credentialSubject, null, 2))
-        console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
-        response.statusCode = 200
-
-        const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
-          presentation_during_issuance_session: verifiedResponse.correlationId,
-        }
-        if (authorizationResponse.is_first_party) {
-          response.setHeader('Content-Type', 'application/json')
-          return response.send(JSON.stringify(authorizationChallengeValidationResponse))
-        }
-
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
-        if (responseRedirectURI) {
-          response.setHeader('Content-Type', 'application/json')
-          return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
-        }
-        // todo: delete session
-      } else {
-        console.log('Missing Presentation (Verifiable Credentials)')
-        response.statusCode = 500
-        response.statusMessage = 'Missing Presentation (Verifiable Credentials)'
-      }
+      // const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]
+      // if (wrappedPresentation) {
+      //   // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
+      //   // console.log(JSON.stringify(credentialSubject, null, 2))
+      //   console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
+      //   response.statusCode = 200
+      //
+      //   const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
+      //     presentation_during_issuance_session: verifiedResponse.correlationId,
+      //   }
+      //   if (authorizationResponse.is_first_party) {
+      //     response.setHeader('Content-Type', 'application/json')
+      //     return response.send(JSON.stringify(authorizationChallengeValidationResponse))
+      //   }
+      //
+      //   const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
+      //   if (responseRedirectURI) {
+      //     response.setHeader('Content-Type', 'application/json')
+      //     return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
+      //   }
+      //   // todo: delete session
+      // } else {
+      //   console.log('Missing Presentation (Verifiable Credentials)')
+      //   response.statusCode = 500
+      //   response.statusMessage = 'Missing Presentation (Verifiable Credentials)'
+      // }
       return response.send()
     } catch (error) {
       console.error(error)

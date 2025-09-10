@@ -23,7 +23,7 @@
     "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-next.2",
+    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.86",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
@@ -41,7 +41,7 @@
     "casbin": "^5.30.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "cross-fetch": "^3.1.8",
+    "cross-fetch": "^4.1.0",
     "debug": "^4.3.5",
     "dotenv-flow": "^3.3.0",
     "express": "^4.19.2",
