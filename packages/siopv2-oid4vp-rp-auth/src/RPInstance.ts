@@ -45,7 +45,7 @@ export class RPInstance {
   }
 
   get definitionId(): string | undefined {
-    return this.pexOptions?.definitionId
+    return this.pexOptions?.queryId
   }
 
   public async getPresentationDefinition(context: IRequiredContext): Promise<IPresentationDefinition | undefined> {
@@ -57,8 +57,8 @@ export class RPInstance {
       : undefined
   }
 
-  public async createAuthorizationRequestURI(createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>, context: IRequiredContext): Promise<URI> {
-    const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
+  public async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<URI> {
+    const { correlationId, queryId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
     let jwtIssuer: JwtIssuer
@@ -84,6 +84,7 @@ export class RPInstance {
       rp.createAuthorizationRequestURI({
         version: getRequestVersion(this.rpOptions),
         correlationId,
+        queryId,
         nonce,
         state,
         claims,
@@ -96,7 +97,7 @@ export class RPInstance {
   }
 
   public async createAuthorizationRequest(
-    createArgs: Omit<ICreateAuthRequestArgs, 'definitionId'>,
+    createArgs: Omit<ICreateAuthRequestArgs, 'queryId'>,
     context: IRequiredContext,
   ): Promise<AuthorizationRequest> {
     const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs

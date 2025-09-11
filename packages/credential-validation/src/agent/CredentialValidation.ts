@@ -177,7 +177,7 @@ export class CredentialValidation implements IAgentPlugin {
   private async cvVerifyMdoc(args: VerifyMdocCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
     const { credential } = args
 
-    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, com.sphereon.kmp.Encoding.BASE64URL))
+    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, mdocPkg.com.sphereon.kmp.Encoding.BASE64URL))
 
     const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
       console.error(error)
