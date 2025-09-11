@@ -346,7 +346,7 @@
             "di_vp": {
               "$ref": "#/components/schemas/DiObject"
             },
-            "vc+sd-jwt": {
+            "dc+sd-jwt": {
               "$ref": "#/components/schemas/SdJwtObject"
             }
           }
