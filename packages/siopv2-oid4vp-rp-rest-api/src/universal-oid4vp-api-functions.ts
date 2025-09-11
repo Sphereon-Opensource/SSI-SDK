@@ -137,7 +137,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
         correlation_id: overallState.correlationId,
         query_id: overallState.queryId,
         last_updated: overallState.lastUpdated,
-        ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verifiedData: responseState.verifiedData }),
+        ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verified_data: responseState.verifiedData }),
         ...(overallState.error && { message: overallState.error.message })
       } satisfies GetAuthStatusResponse
       console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
