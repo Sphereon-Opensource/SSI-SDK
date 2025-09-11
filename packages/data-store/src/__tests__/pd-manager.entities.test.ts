@@ -1,4 +1,5 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { DcqlQuery } from 'dcql'
 import { DataSource } from 'typeorm'
 import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { DataStorePresentationDefinitionMigrations } from '../migrations'
@@ -31,7 +32,6 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     const entity = new PresentationDefinitionItemEntity()
     entity.definitionId = 'ajax-club'
     entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'ajax-club', input_descriptors: [] })
     entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_PAYLOAD.dcqlQuery)
 
     const savedEntity = await repository.save(entity)
@@ -54,7 +54,6 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     const entity = new PresentationDefinitionItemEntity()
     entity.definitionId = 'ajax-club'
     entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'ajax-club', input_descriptors: [] })
     entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_PAYLOAD.dcqlQuery)
 
     const savedEntity = await repository.save(entity)
