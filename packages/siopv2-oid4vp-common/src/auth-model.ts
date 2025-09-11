@@ -10,19 +10,9 @@ export interface AuthorizationChallengeValidationResponse {
   presentation_during_issuance_session: string
 }
 
-export const authorizationRequestStatuses = [
-  "authorization_request_created",
-  "authorization_request_retrieved",
-  "error",
-] as const;
-export type AuthorizationRequestStateStatus = (typeof authorizationRequestStatuses)[number];
+export type AuthorizationRequestStateStatus = "authorization_request_created" | "authorization_request_retrieved" | "error"
 
-export const authorizationResponseStatuses = [
-  "authorization_response_received",
-  "authorization_response_verified",
-  "error",
-] as const;
-export type AuthorizationResponseStateStatus = (typeof authorizationResponseStatuses)[number];
+export type AuthorizationResponseStateStatus = "authorization_response_received" | "authorization_response_verified" | "error"
 
 export interface GenerateAuthRequestURIResponse {
   correlationId: string

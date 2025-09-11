@@ -63,7 +63,7 @@ export type RequestError = {
   error_details?: string
 }
 
-export type GetAuthStatusResponse = {
+export interface AuthStatusResponse {
   status: AuthorizationRequestStateStatus | AuthorizationResponseStateStatus
   correlation_id: string
   query_id: string
