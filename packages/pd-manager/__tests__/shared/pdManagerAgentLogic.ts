@@ -1,4 +1,5 @@
 import { TAgent } from '@veramo/core'
+import { DcqlQuery } from 'dcql'
 import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPresentationDefinitionItem } from '../../src'
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
@@ -21,7 +22,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
     const sampleDcql: DcqlQueryPayload = {
       queryId: 'credential1',
-      dcqlQuery: {
+      dcqlQuery: DcqlQuery.parse({
         credentials: [
           {
             id: 'credential1',
@@ -35,7 +36,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             ],
           },
         ],
-      },
+      }),
     }
 
     let agent: ConfiguredAgent
@@ -177,7 +178,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           queryId: `credential-v${i}`,
           name: 'Credential Name',
           defaultPurpose: 'Credential Purpose',
-          dcqlQuery: {
+          dcqlQuery: DcqlQuery.parse({
             credentials: [
               {
                 id: `credential-v${i}`,
@@ -191,7 +192,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
                 ],
               },
             ],
-          },
+          }),
         }
         currentItem.version = undefined
         const result = await agent.pdmPersistDefinition({
@@ -337,7 +338,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           definitionPayload: singleDefinition,
           dcqlPayload: {
             queryId: 'dcql_update_test',
-            dcqlQuery: {
+            dcqlQuery: DcqlQuery.parse({
               credentials: [
                 {
                   id: 'initial-credential',
@@ -351,7 +352,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
                   ],
                 },
               ],
-            },
+            }),
           },
         },
       }
@@ -361,7 +362,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       // Now update it
       const updatedDcql: DcqlQueryPayload = {
         queryId: 'dcql_update_test',
-        dcqlQuery: {
+        dcqlQuery: DcqlQuery.parse({
           credentials: [
             {
               id: 'credential2',
@@ -375,7 +376,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
               ],
             },
           ],
-        },
+        }),
       }
 
       const updatedDefinitionItem: NonPersistedPresentationDefinitionItem = {

@@ -31,6 +31,7 @@
     "@sphereon/pex-models": "^2.3.2",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
+    "dcql": "1.0.1",
     "cross-fetch": "^4.1.0",
     "debug": "^4.3.5",
     "semver": "^7.6.3",
