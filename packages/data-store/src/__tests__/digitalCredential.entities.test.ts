@@ -1,6 +1,7 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
+import { DataStoreDigitalCredentialEntities } from '../index'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 import { computeEntryHash } from '@veramo/utils'

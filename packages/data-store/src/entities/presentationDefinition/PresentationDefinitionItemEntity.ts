@@ -25,7 +25,7 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   @Column({ name: 'name', length: 255, type: 'varchar', nullable: true, unique: false })
   name?: string
 
-  @Column({ name: 'definition_payload', type: 'text', nullable: false, unique: false }) // TODO should this become nullable now we have dcqlPayload?
+  @Column({ name: 'definition_payload', type: 'text', nullable: true, unique: false })
   @IsNotEmpty({ message: 'A blank PD definition payload field is not allowed' })
   definitionPayload!: string
 

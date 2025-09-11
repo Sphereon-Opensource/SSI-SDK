@@ -33,6 +33,17 @@ import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKe
 
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { AdditionalClaims, DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
+import { VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+
+import { Resolvable } from 'did-resolver'
+import { EventEmitter } from 'events'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -107,12 +118,12 @@ export interface IVerifyAuthResponseStateArgs {
   definitionId?: string
   correlationId: string
   audience?: string
-  dcqlQuery?: DcqlQueryREST
+  dcqlQueryPayload?: DcqlQueryPayload
 }
 
 export interface IDefinitionPair {
   definitionPayload?: IPresentationDefinition
-  dcqlPayload?: DcqlQueryREST
+  dcqlPayload?: DcqlQueryPayload
 }
 
 export interface ImportDefinitionsArgs {
@@ -183,12 +194,6 @@ export interface IAuthRequestDetails {
   rpDIDDocument?: DIDDocument
   id: string
   alsoKnownAs?: string[]
-}
-
-export interface IPresentationWithDefinition {
-  location: VPTokenLocation
-  format: VerifiablePresentationTypeFormat
-  presentation: W3CVerifiablePresentation
 }
 
 export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {

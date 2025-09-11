@@ -2,6 +2,7 @@ import { CreateContacts1659463079429 } from './1-CreateContacts'
 import { CreatePresentationDefinitions1716533767523 } from './10-CreatePresentationDefinitions'
 import { FixCredentialClaimsReferencesUuid1741895822987 } from './11-FixCredentialClaimsReferenceUuid'
 import { AddBitstringStatusListEnum1741895823000, CreateBitstringStatusList1741895823000 } from './12-CreateBitstringStatusList'
+import { UpdatePresentationDefinitionItemNullable1741895824000 } from './13-UpdatePresentationDefinitionItemNullable'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
@@ -35,7 +36,10 @@ export const DataStoreStatusListMigrations = [
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
 export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
-export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523]
+export const DataStorePresentationDefinitionMigrations = [
+  CreatePresentationDefinitions1716533767523,
+  UpdatePresentationDefinitionItemNullable1741895824000,
+]
 
 // All migrations together
 export const DataStoreMigrations = [

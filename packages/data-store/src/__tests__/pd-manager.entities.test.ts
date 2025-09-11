@@ -1,9 +1,11 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { DcqlQuery } from 'dcql'
 import { DataSource } from 'typeorm'
 import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import { DataStorePresentationDefinitionMigrations } from '../migrations'
 import { DataStorePresentationDefinitionEntities } from '../index'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { SAMPLE_DCQL_QUERY_PAYLOAD } from './pd-manager.store.test'
 
 describe('PresentationDefinitionItemEntity tests', (): void => {
   let dbConnection: DataSource
@@ -28,23 +30,9 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
   it('should create and retrieve PresentationDefinitionItemEntity with dcqlPayload', async (): Promise<void> => {
     const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
     const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'definition1'
+    entity.definitionId = 'ajax-club'
     entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-    entity.dcqlPayload = JSON.stringify({
-      credentials: [
-        {
-          id: 'credential1',
-          format: 'jwt_vc',
-          claims: [
-            {
-              namespace: 'test',
-              claim_name: 'testClaim',
-            },
-          ],
-        },
-      ],
-    })
+    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_PAYLOAD.dcqlQuery)
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -55,29 +43,18 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     expect(retrievedEntity).toBeDefined()
     expect(retrievedEntity!.dcqlPayload).toBeDefined()
     const parsedDcql = JSON.parse(retrievedEntity!.dcqlPayload)
-    expect(parsedDcql.credentials[0].id).toEqual('credential1')
+    expect(parsedDcql.credentials[0].id).toEqual('clubcard-v1')
+    expect(parsedDcql.credentials[0].format).toEqual('dc+sd-jwt')
+    expect(parsedDcql.credentials[0].meta.vct_values).toContain('clubcard-v1')
+    expect(parsedDcql.credentials[0].claims).toHaveLength(4)
   })
 
   it('should update PresentationDefinitionItemEntity dcqlPayload', async (): Promise<void> => {
     const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
     const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'definition1'
+    entity.definitionId = 'ajax-club'
     entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-    entity.dcqlPayload = JSON.stringify({
-      credentials: [
-        {
-          id: 'credential1',
-          format: 'jwt_vc',
-          claims: [
-            {
-              namespace: 'test',
-              claim_name: 'testClaim',
-            },
-          ],
-        },
-      ],
-    })
+    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_PAYLOAD.dcqlQuery)
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -85,12 +62,11 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     const updatedDcql = {
       credentials: [
         {
-          id: 'credential2',
+          id: 'updated-clubcard',
           format: 'jwt_vc',
           claims: [
             {
-              namespace: 'test',
-              claim_name: 'updatedClaim',
+              path: ['name'],
             },
           ],
         },
@@ -99,7 +75,8 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     savedEntity.dcqlPayload = JSON.stringify(updatedDcql)
     const updatedEntity = await repository.save(savedEntity)
     expect(updatedEntity).toBeDefined()
-    expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].id).toEqual('credential2')
+    expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].id).toEqual('updated-clubcard')
+    expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].format).toEqual('jwt_vc')
   })
 
   it('should create and retrieve PresentationDefinitionItemEntity', async (): Promise<void> => {

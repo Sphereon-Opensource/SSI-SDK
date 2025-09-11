@@ -1,5 +1,6 @@
 import Debug from 'debug'
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
+
 import {
   AddBitstringStatusListEnumPG1741895823000,
   CreateBitstringStatusListPG1741895823000,
