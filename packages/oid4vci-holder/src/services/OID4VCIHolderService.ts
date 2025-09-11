@@ -3,7 +3,6 @@ import {
   AuthorizationChallengeCodeResponse,
   CredentialConfigurationSupported,
   CredentialConfigurationSupportedSdJwtVcV1_0_15,
-  CredentialOfferFormatV1_0_11,
   CredentialResponse,
   CredentialResponseV1_0_15,
   CredentialSupportedSdJwtVc,
@@ -11,7 +10,6 @@ import {
   getTypesFromCredentialSupported,
   getTypesFromObject,
   MetadataDisplay,
-  OpenId4VCIVersion,
 } from '@sphereon/oid4vci-common'
 import { KeyUse } from '@sphereon/ssi-sdk-ext.did-resolver-jwk'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -386,7 +384,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
-    const allSupported = client.getCredentialsSupported(false)
+    const allSupported = client.getCredentialsSupported(format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
         ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
@@ -394,29 +392,15 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
     )
   }
 
-  if (!types && !client.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no types where provided'))
-    /*} else if (!format && !client.credentialOffer) {
-    return Promise.reject(Error('openID4VCIClient has no credentialOffer and no formats where provided'))*/
+  if (!client.credentialOffer) {
+    return Promise.reject(Error('openID4VCIClient has no credentialOffer'))
   }
-  // We should always have a credential offer at this point given the above
-  if (!Array.isArray(format) && client.credentialOffer) {
-    if (
-      client.version() > OpenId4VCIVersion.VER_1_0_09 &&
-      typeof client.credentialOffer.credential_offer === 'object' &&
-      'credentials' in client.credentialOffer.credential_offer
-    ) {
-      format = client.credentialOffer.credential_offer.credentials
-        .filter((cred: CredentialOfferFormatV1_0_11 | string) => typeof cred !== 'string')
-        .map((cred: CredentialOfferFormatV1_0_11 | string) => (cred as CredentialOfferFormatV1_0_11).format)
-      if (format?.length === 0) {
-        format = undefined // Otherwise we would match nothing
-      }
-    }
+  if (!types) {
+    return Promise.reject(Error('openID4VCIClient has no types'))
   }
 
   const offerSupported = getSupportedCredentials({
-    types: types ? [types] : client.getCredentialOfferTypes(),
+    types: [types],
     format,
     version: client.version(),
     issuerMetadata: client.endpointMetadata.credentialIssuerMetadata,
@@ -596,7 +580,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
-    case 'vc+sd-jwt':
+    //case 'vc+sd-jwt':  FIXME re-enable for vcdm2
     case 'dc+sd-jwt':
     case 'mso_mdoc': {
       const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(

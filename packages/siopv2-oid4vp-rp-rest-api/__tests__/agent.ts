@@ -3,9 +3,7 @@ import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import {
   CredentialProviderJsonld,
-  ICredentialHandlerLDLocal,
   LdDefaultContexts,
-  MethodNames,
   SphereonEd25519Signature2018,
   SphereonEd25519Signature2020,
 } from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
@@ -24,10 +22,10 @@ import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
 import Debug from 'debug'
-
 import { SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { defaultHasher } from '@sphereon/ssi-types'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -101,8 +99,14 @@ export const didProviders = {
 const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
+const jsonld = new CredentialProviderJsonld({
+  contextMaps: [LdDefaultContexts],
+  suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+  keyStore: privateKeyStore,
+})
+
 const agent = createAgent<
-  IDIDManager & IKeyManager & IResolver & IPresentationExchange & ISIOPv2RP & ICredentialVerifier & ICredentialHandlerLDLocal
+  IDIDManager & IKeyManager & IResolver & IPresentationExchange & ISIOPv2RP & ICredentialVerifier & IVcdmCredentialPlugin
 >({
   plugins: [
     new DataStore(dbConnection),
@@ -135,7 +139,6 @@ const agent = createAgent<
       instanceOpts: [
         {
           definitionId: entraAndSphereonCompatibleDef.id,
-          definition: entraAndSphereonCompatibleDef,
           rpOpts: {
             identifierOpts: {
               checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
@@ -158,15 +161,7 @@ const agent = createAgent<
       ],
     }),
     new CredentialPlugin(),
-    new CredentialProviderJsonld({
-      contextMaps: [LdDefaultContexts],
-      suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
-      bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-      ]),
-      keyStore: privateKeyStore,
-    }),
+    new VcdmCredentialPlugin({ issuers: [jsonld] }),
   ],
 })
 
