@@ -1,5 +1,4 @@
 import mdocPkg from '@sphereon/kmp-mdoc-core'
-const { com } = mdocPkg
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,

@@ -1,8 +1,5 @@
 import { RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
 import { OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
-import { RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
-import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { AuthorizationChallengeCodeResponse } from '@sphereon/oid4vci-common'
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'

@@ -14,13 +14,8 @@ import {
   SupportedVersion,
   VerifiedAuthorizationResponse,
   VerifyJwtCallback,
-  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
-import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { DcqlQueryREST, HasherSync, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import { Resolvable } from 'did-resolver'
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
@@ -33,21 +28,9 @@ import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, DcqlQueryREST, HasherSync } from '@sphereon/ssi-types'
+import { DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-
-import { Resolvable } from 'did-resolver'
-import { EventEmitter } from 'events'
-import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
-import { VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 

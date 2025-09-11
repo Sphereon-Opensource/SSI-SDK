@@ -19,7 +19,6 @@ export {
   OP,
   OPBuilder,
   SupportedVersion,
-  type PresentationDefinitionWithLocation,
   type PresentationVerificationResult,
   type PresentationVerificationCallback,
   VPTokenLocation,
