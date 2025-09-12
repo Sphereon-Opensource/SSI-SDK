@@ -28,7 +28,7 @@
     "@4sure-tech/vc-bitstring-status-lists": "0.1.0-unstable.1",
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.102",
+    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.104",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
