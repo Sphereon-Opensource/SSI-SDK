@@ -12191,7 +12191,6 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
-    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
@@ -12201,7 +12200,6 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.isinteger@4.0.4:
     resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
@@ -12644,7 +12642,6 @@ packages:
   multibase@4.0.6:
     resolution: {integrity: sha512-x23pDe5+svdLz/k5JPGCVdfn7Q5mZVMBETiC+ORfO+sor9Sgs0smJzAjfTbM5tckeCqnaUuMYoz+k3RXMmJClQ==}
     engines: {node: '>=12.0.0', npm: '>=6.0.0'}
-    deprecated: This module has been superseded by the multiformats module
 
   multicodec@3.2.1:
     resolution: {integrity: sha512-+expTPftro8VAW8kfvcuNNNBgb9gPeNYV9dn+z1kJRWF2vih+/S79f2RVeIwmrJBUJ6NT9IUPWnZDQvegEh5pw==}
@@ -20739,14 +20736,6 @@ snapshots:
     optionalDependencies:
       vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
 
-  '@vitest/mocker@3.1.2(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))':
-    dependencies:
-      '@vitest/spy': 3.1.2
-      estree-walker: 3.0.3
-      magic-string: 0.30.17
-    optionalDependencies:
-      vite: 6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
-
   '@vitest/mocker@3.1.2(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.20.4)(yaml@2.7.1))':
     dependencies:
       '@vitest/spy': 3.1.2
@@ -28503,7 +28492,7 @@ snapshots:
   vitest@3.1.2(@types/debug@4.1.8)(@types/node@20.17.30)(@vitest/ui@3.1.1(vitest@3.1.1))(jsdom@21.1.2(canvas@2.11.2(encoding@0.1.13)))(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.20.4)(yaml@2.7.1):
     dependencies:
       '@vitest/expect': 3.1.2
-      '@vitest/mocker': 3.1.2(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      '@vitest/mocker': 3.1.2(vite@6.3.2(@types/node@20.17.30)(lightningcss@1.27.0)(terser@5.39.0)(tsx@4.20.4)(yaml@2.7.1))
       '@vitest/pretty-format': 3.1.2
       '@vitest/runner': 3.1.2
       '@vitest/snapshot': 3.1.2
