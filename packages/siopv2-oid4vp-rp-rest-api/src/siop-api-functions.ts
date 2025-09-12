@@ -48,7 +48,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
   const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const { correlationId, definitionId, tenantId, version, credentialQueryId } = request.params // TODO Can credentialQueryId be a request param
+      const { correlationId, definitionId, tenantId, version } = request.params // TODO Can credentialQueryId be a request param
       if (!correlationId || !definitionId) {
         console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')

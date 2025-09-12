@@ -37,7 +37,7 @@
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "@sd-jwt/core": "^0.15.0",
-    "@sd-jwt/sd-jwt-vc": "^0.15.0",
+    "@sd-jwt/sd-jwt-vc": "^0.15.1",
     "@sd-jwt/decode": "^0.15.0",
     "@sd-jwt/types": "^0.15.0",
     "@sd-jwt/utils": "^0.15.0",
