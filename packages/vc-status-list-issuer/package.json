@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@sd-jwt/core": "^0.15.0",
-    "@sd-jwt/sd-jwt-vc": "^0.15.0",
+    "@sd-jwt/sd-jwt-vc": "^0.15.1",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
