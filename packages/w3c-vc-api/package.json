@@ -23,7 +23,7 @@
     "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.100",
+    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.102",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",

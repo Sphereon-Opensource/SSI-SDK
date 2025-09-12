@@ -26,9 +26,9 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/oid4vci-client": "0.19.1-feature.DIIPv4.100",
-    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.100",
-    "@sphereon/oid4vci-issuer": "0.19.1-feature.DIIPv4.100",
+    "@sphereon/oid4vci-client": "0.19.1-feature.DIIPv4.102",
+    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.102",
+    "@sphereon/oid4vci-issuer": "0.19.1-feature.DIIPv4.102",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
@@ -50,7 +50,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.100",
+    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.102",
     "@sphereon/did-uni-client": "^0.6.3",
     "@veramo/did-provider-key": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
