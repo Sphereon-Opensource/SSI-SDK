@@ -185,12 +185,6 @@ export interface IAuthRequestDetails {
   alsoKnownAs?: string[]
 }
 
-export interface IPresentationWithDefinition {
-  location: VPTokenLocation
-  format: VerifiablePresentationTypeFormat
-  presentation: W3CVerifiablePresentation
-}
-
 export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
   // we replace the legacy idOpts with the Managed Identifier opts from the identifier resolution module
   idOpts: ManagedIdentifierOptsOrResult
