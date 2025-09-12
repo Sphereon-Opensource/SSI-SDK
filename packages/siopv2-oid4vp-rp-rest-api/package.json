@@ -23,7 +23,7 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.104",
+    "@sphereon/did-auth-siop": "0.19.1-fix.105",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
-    "@sphereon/did-auth-siop-adapter": "0.19.1-feature.DIIPv4.104",
+    "@sphereon/did-auth-siop-adapter": "0.19.1-fix.105",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
