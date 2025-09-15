@@ -27,6 +27,9 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     lastUpdatedAt: entity.lastUpdatedAt,
   }
 
+  if (result.dcqlPayload?.dcqlQuery) {
+    DcqlQuery.validate(result.dcqlPayload?.dcqlQuery)
+  }
   return replaceNullWithUndefined(result)
 }
 
@@ -42,6 +45,8 @@ export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentat
     entity.definitionPayload = JSON.stringify(item.definitionPayload)
   }
   if (item.dcqlPayload) {
+    const dcqlQuery = DcqlQuery.parse(item.dcqlPayload.dcqlQuery)
+    DcqlQuery.validate(dcqlQuery)
     entity.dcqlPayload = JSON.stringify(item.dcqlPayload.dcqlQuery)
   }
   return entity
