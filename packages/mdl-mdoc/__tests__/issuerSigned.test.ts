@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { CoseCryptoService, KeyInfo, MdocValidations, Oid4VPPresentationSubmission } from '../src'
 import { funkePdTestVector, funkeTestCA, sphereonCA } from './shared/testvectors'
 import { CoseCryptoServiceJS, decodeFrom, encodeTo, Encoding, Jwk, CoseSign1Json, CoseSign1Cbor } from '../src'
@@ -98,7 +99,13 @@ describe('Issuer Auth', (): void => {
     const holderMdoc = issuerSigned.toDocument()
 
     // Let's perform the validations. Since our IsserSigned is not valid anymore we expect 1 error in the result
-    const validations = await MdocValidations.fromDocumentAsync(holderMdoc, null, [sphereonCA, funkeTestCA], new LocalDateTimeKMP(2025, 1, 1, 1, 1, 1), true)
+    const validations = await MdocValidations.fromDocumentAsync(
+      holderMdoc,
+      null,
+      [sphereonCA, funkeTestCA],
+      new LocalDateTimeKMP(2025, 1, 1, 1, 1, 1),
+      true,
+    )
     expect(validations.error).toEqual(true)
     const errors = validations.verifications.filter((ver) => ver.error)
     expect(1).toEqual(errors.length)

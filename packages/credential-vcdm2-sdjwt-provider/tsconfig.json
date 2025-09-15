@@ -1,0 +1,35 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../credential-vcdm"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../vc-status-list"
+    },
+    {
+      "path": "../key-utils"
+    },
+    {
+      "path": "../did-utils"
+    },
+    {
+      "path": "../jwt-service"
+    },
+    {
+      "path": "../identifier-resolution"
+    }
+  ]
+}

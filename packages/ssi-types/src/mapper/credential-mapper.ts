@@ -43,10 +43,10 @@ import {
   ObjectUtils,
   sdJwtDecodedCredentialToUniformCredential,
 } from '../utils'
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
 import { jwtDecode } from 'jwt-decode'
 
-type DeviceResponseCbor = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
+type DeviceResponseCbor = mdocPkg.com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export const sha256 = (data: string | ArrayBuffer): Uint8Array => {
   return defaultHasher(data, 'sha256')
@@ -487,6 +487,16 @@ export class CredentialMapper {
       typeof original === 'object' &&
       ((<SdJwtDecodedVerifiableCredential>original).compactSdJwtVc !== undefined || (<SdJwtDecodedVerifiableCredential>original).kbJwt !== undefined)
     )
+  }
+
+  public static isSdJwtVcdm2DecodedCredential(
+    original: OriginalVerifiableCredential | OriginalVerifiablePresentation | ICredential | IPresentation
+  ): original is SdJwtDecodedVerifiableCredential {
+    if (typeof original !== 'object') {
+      return false
+    }
+    const decoded = <SdJwtDecodedVerifiableCredential>original
+    return decoded.compactSdJwtVc !== undefined && !decoded.decodedPayload.vct && !decoded.decodedPayload['@context']
   }
 
   public static isMsoMdocDecodedCredential(
@@ -937,7 +947,6 @@ export enum OriginalType {
   JWT_ENCODED = 'jwt-encoded',
   JWT_DECODED = 'jwt-decoded',
 
-  // SD-JWT
   SD_JWT_VC_ENCODED = 'sd-jwt-vc-encoded',
   SD_JWT_VC_DECODED = 'sd-jwt-vc-decoded',
 
