@@ -243,7 +243,7 @@ export class PDManager implements IAgentPlugin {
       let fullVersionToIncrement = preReleaseIdentifier ? `${normalizedBaseVersion}-${preReleaseSuffix}` : normalizedBaseVersion
 
       // Use semver to increment the version
-      let incrementedVersion = semver.inc(fullVersionToIncrement, releaseType, preReleaseIdentifier)
+      let incrementedVersion = semver.inc(fullVersionToIncrement, releaseType, undefined, preReleaseIdentifier)
       if (!incrementedVersion) {
         throw new Error(`Could not increment ${releaseType} version on ${currentVersion} ${preReleaseSuffix}`)
       }
