@@ -49,7 +49,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
   const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const { correlationId, definitionId, tenantId, version, credentialQueryId } = request.params // TODO Can credentialQueryId be a request param
+      const { correlationId, definitionId, tenantId, version } = request.params
       if (!correlationId || !definitionId) {
         console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
@@ -75,11 +75,10 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         dcqlQueryPayload: definitionItem.dcqlPayload,
       })
 
-      const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentation[credentialQueryId]
-      if (wrappedPresentation) {
-        // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
-        // console.log(JSON.stringify(credentialSubject, null, 2))
-        console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
+      // FIXME SSISDK-55 add proper support for checking for DCQL presentations
+      const presentation = verifiedResponse?.oid4vpSubmission?.presentation
+      if (presentation && Object.keys(presentation).length > 0) {
+        console.log('PRESENTATIONS:' + JSON.stringify(verifiedResponse?.oid4vpSubmission?.presentation, null, 2))
         response.statusCode = 200
 
         const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
