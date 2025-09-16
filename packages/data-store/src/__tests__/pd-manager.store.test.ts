@@ -1,11 +1,10 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { DcqlQueryPayload } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { DataStorePresentationDefinitionEntities, DataStorePresentationDefinitionMigrations, PDStore } from '../index'
+import { DataStorePresentationDefinitionEntities, DataStorePresentationDefinitionMigrations, DcqlQueryImportItem, PDStore } from '../index'
 import { GetDefinitionsArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
-export const SAMPLE_DCQL_QUERY_PAYLOAD: DcqlQueryPayload = {
+export const SAMPLE_DCQL_QUERY_PAYLOAD: DcqlQueryImportItem = {
   queryId: 'ajax-club',
   dcqlQuery: {
     credentials: [
@@ -167,16 +166,16 @@ describe('PDStore tests', (): void => {
       definitionId: 'ajax-club',
       version: '1.0',
       definitionPayload: { id: 'ajax-club', input_descriptors: [] },
-      dcqlPayload: SAMPLE_DCQL_QUERY_PAYLOAD,
+      dcqlQuery: SAMPLE_DCQL_QUERY_PAYLOAD,
     }
 
     const result: PresentationDefinitionItem = await pdStore.addDefinition(definition)
 
     expect(result).toBeDefined()
     expect(result.definitionId).toEqual(definition.definitionId)
-    expect(result.dcqlPayload).toBeDefined()
-    expect(result.dcqlPayload?.dcqlQuery.credentials[0].id).toEqual('clubcard-v1')
-    expect(result.dcqlPayload?.dcqlQuery.credentials[0].format).toEqual('dc+sd-jwt')
+    expect(result.dcqlQuery).toBeDefined()
+    expect(result.dcqlQuery?.dcqlQuery.credentials[0].id).toEqual('clubcard-v1')
+    expect(result.dcqlQuery?.dcqlQuery.credentials[0].format).toEqual('dc+sd-jwt')
   })
 
   it('should update definition', async (): Promise<void> => {
@@ -205,7 +204,7 @@ describe('PDStore tests', (): void => {
       definitionId: 'ajax-club',
       version: '1.0',
       definitionPayload: { id: 'ajax-club', input_descriptors: [] },
-      dcqlPayload: SAMPLE_DCQL_QUERY_PAYLOAD,
+      dcqlQuery: SAMPLE_DCQL_QUERY_PAYLOAD,
     }
     const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
     expect(savedDefinition).toBeDefined()
@@ -225,12 +224,12 @@ describe('PDStore tests', (): void => {
           },
         ],
       },
-    } as unknown as DcqlQueryPayload // FIXME I do not have another solution for this atm, I can do Partial<DcqlQuery> but that does not work for its child entities
+    } as unknown as DcqlQueryImportItem // FIXME I do not have another solution for this atm, I can do Partial<DcqlQuery> but that does not work for its child entities
 
     const updatedDefinition: PresentationDefinitionItem = {
       ...savedDefinition,
       version: '1.1',
-      dcqlPayload: updatedDcqlQueryPayload,
+      dcqlQuery: updatedDcqlQueryPayload,
     }
 
     await pdStore.updateDefinition(updatedDefinition)
@@ -238,8 +237,8 @@ describe('PDStore tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.version).toEqual('1.1')
-    expect(result.dcqlPayload?.dcqlQuery.credentials[0].id).toEqual('updated-clubcard')
-    expect(result.dcqlPayload?.dcqlQuery.credentials[0].format).toEqual('dc+sd-jwt')
+    expect(result.dcqlQuery?.dcqlQuery.credentials[0].id).toEqual('updated-clubcard')
+    expect(result.dcqlQuery?.dcqlQuery.credentials[0].format).toEqual('dc+sd-jwt')
   })
 
   it('should get definition with dcqlPayload by id', async (): Promise<void> => {
@@ -247,7 +246,7 @@ describe('PDStore tests', (): void => {
       definitionId: 'ajax-club',
       version: '1.0',
       definitionPayload: { id: 'ajax-club', input_descriptors: [] },
-      dcqlPayload: SAMPLE_DCQL_QUERY_PAYLOAD,
+      dcqlQuery: SAMPLE_DCQL_QUERY_PAYLOAD,
     }
 
     const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
@@ -256,12 +255,12 @@ describe('PDStore tests', (): void => {
     const result: PresentationDefinitionItem = await pdStore.getDefinition({ itemId: savedDefinition.id })
 
     expect(result).toBeDefined()
-    expect(result.dcqlPayload).toBeDefined()
-    expect(result.dcqlPayload?.dcqlQuery.credentials[0].format).toBe('dc+sd-jwt')
-    if (result.dcqlPayload?.dcqlQuery.credentials[0].format === 'dc+sd-jwt') {
-      expect(result.dcqlPayload.dcqlQuery.credentials[0].meta?.vct_values).toContain('clubcard-v1')
+    expect(result.dcqlQuery).toBeDefined()
+    expect(result.dcqlQuery?.dcqlQuery.credentials[0].format).toBe('dc+sd-jwt')
+    if (result.dcqlQuery?.dcqlQuery.credentials[0].format === 'dc+sd-jwt') {
+      expect(result.dcqlQuery.dcqlQuery.credentials[0].meta?.vct_values).toContain('clubcard-v1')
     }
-    expect(result.dcqlPayload?.dcqlQuery.credentials[0].claims).toHaveLength(4)
+    expect(result.dcqlQuery?.dcqlQuery.credentials[0].claims).toHaveLength(4)
   })
 
   it('should get definitions with dcqlPayload by filter', async (): Promise<void> => {
@@ -269,7 +268,7 @@ describe('PDStore tests', (): void => {
       definitionId: 'ajax-club',
       version: '1.0',
       definitionPayload: { id: 'ajax-club', input_descriptors: [] },
-      dcqlPayload: SAMPLE_DCQL_QUERY_PAYLOAD,
+      dcqlQuery: SAMPLE_DCQL_QUERY_PAYLOAD,
     }
     const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
     expect(savedDefinition).toBeDefined()
@@ -280,8 +279,8 @@ describe('PDStore tests', (): void => {
     const result: Array<PresentationDefinitionItem> = await pdStore.getDefinitions(args)
 
     expect(result.length).toEqual(1)
-    expect(result[0].dcqlPayload).toBeDefined()
-    expect(result[0].dcqlPayload?.dcqlQuery.credentials[0].id).toEqual('clubcard-v1')
+    expect(result[0].dcqlQuery).toBeDefined()
+    expect(result[0].dcqlQuery?.dcqlQuery.credentials[0].id).toEqual('clubcard-v1')
   })
 
   it('should delete definition', async (): Promise<void> => {

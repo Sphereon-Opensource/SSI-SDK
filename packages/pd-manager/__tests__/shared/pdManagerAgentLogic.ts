@@ -3,9 +3,8 @@ import { DcqlQuery } from 'dcql'
 import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPresentationDefinitionItem } from '../../src'
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { DcqlQueryImportItem, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { DcqlQueryPayload } from '@sphereon/ssi-types'
 
 type ConfiguredAgent = TAgent<IPDManager>
 
@@ -20,7 +19,7 @@ function getFileAsJson(path: string) {
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('PD Manager Agent Plugin', (): void => {
     const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
-    const sampleDcql: DcqlQueryPayload = {
+    const sampleDcql: DcqlQueryImportItem = {
       queryId: 'credential1',
       dcqlQuery: DcqlQuery.parse({
         credentials: [
@@ -174,7 +173,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       for (let i = 2; i <= 12; i++) {
         currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
-        currentItem.dcqlPayload = {
+        currentItem.dcqlQuery = {
           queryId: `credential-v${i}`,
           name: 'Credential Name',
           defaultPurpose: 'Credential Purpose',
@@ -202,12 +201,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
         expect(result.version).toEqual(`${i}.0.0`)
         expect(result.definitionPayload.input_descriptors[0].id).toEqual(`Version ${i}.0.0`)
-        expect(result.dcqlPayload).toBeTruthy()
-        expect(result.dcqlPayload?.dcqlQuery.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.dcqlQuery).toBeTruthy()
+        expect(result.dcqlQuery?.dcqlQuery.credentials[0].id).toEqual(`credential-v${i}`)
         expect(result.name).toEqual('Credential Name')
         expect(result.purpose).toEqual('Credential Purpose')
-        expect(result.dcqlPayload?.name).toEqual('Credential Name')
-        expect(result.dcqlPayload?.defaultPurpose).toEqual('Credential Purpose')
+        expect(result.dcqlQuery?.name).toEqual('Credential Name')
+        expect(result.dcqlQuery?.defaultPurpose).toEqual('Credential Purpose')
 
         currentItem = result
       }
@@ -319,15 +318,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         definitionItem: {
           definitionId: 'new_definition_id',
           definitionPayload: singleDefinition,
-          dcqlPayload: sampleDcql,
+          dcqlQuery: sampleDcql,
         },
       }
 
       const result = await agent.pdmPersistDefinition(definition)
 
       expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
-      expect(result.dcqlPayload?.queryId).toEqual(definition.definitionItem.definitionId)
-      expect(result.dcqlPayload?.dcqlQuery).toEqual(definition.definitionItem.dcqlPayload?.dcqlQuery)
+      expect(result.dcqlQuery?.queryId).toEqual(definition.definitionItem.definitionId)
+      expect(result.dcqlQuery?.dcqlQuery).toEqual(definition.definitionItem.dcqlQuery?.dcqlQuery)
     })
 
     it('should update dcqlPayload in definition item', async (): Promise<void> => {
@@ -336,7 +335,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         definitionItem: {
           definitionId: 'dcql_update_test',
           definitionPayload: singleDefinition,
-          dcqlPayload: {
+          dcqlQuery: {
             queryId: 'dcql_update_test',
             dcqlQuery: DcqlQuery.parse({
               credentials: [
@@ -360,7 +359,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const createdDefinition = await agent.pdmPersistDefinition(initialDefinition)
 
       // Now update it
-      const updatedDcql: DcqlQueryPayload = {
+      const updatedDcql: DcqlQueryImportItem = {
         queryId: 'dcql_update_test',
         dcqlQuery: DcqlQuery.parse({
           credentials: [
@@ -381,7 +380,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const updatedDefinitionItem: NonPersistedPresentationDefinitionItem = {
         ...createdDefinition,
-        dcqlPayload: updatedDcql,
+        dcqlQuery: updatedDcql,
       }
 
       const result = await agent.pdmPersistDefinition({
@@ -389,7 +388,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         opts: { versionControlMode: 'Overwrite' },
       })
 
-      expect(result.dcqlPayload).toEqual(updatedDcql)
+      expect(result.dcqlQuery).toEqual(updatedDcql)
     })
   })
 }

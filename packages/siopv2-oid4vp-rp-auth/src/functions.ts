@@ -27,12 +27,7 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
-import {
-  CredentialMapper,
-  HasherSync,
-  OriginalVerifiableCredential,
-  PresentationSubmission
-} from '@sphereon/ssi-types'
+import { CredentialMapper, HasherSync, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
@@ -72,7 +67,7 @@ export function getPresentationVerificationCallback(
   ): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
-        presentation: args
+        presentation: args,
       })
       // fixme: investigate the correct way to handle this
       return { verified: !!result.payload }
@@ -130,8 +125,8 @@ export async function createRPBuilder(args: {
     if (presentationDefinitionItems.length > 0) {
       const presentationDefinitionItem = presentationDefinitionItems[0]
       definition = presentationDefinitionItem.definitionPayload
-      if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
-        dcqlQuery = presentationDefinitionItem.dcqlPayload as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
+      if (!dcqlQuery && presentationDefinitionItem.dcqlQuery) {
+        dcqlQuery = presentationDefinitionItem.dcqlQuery as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
       }
     }
   }
@@ -203,11 +198,10 @@ export async function createRPBuilder(args: {
     builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
-    builder
-      .withClientId(
-        resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-        PropertyTarget.REQUEST_OBJECT,
-      )
+    builder.withClientId(
+      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
+      PropertyTarget.REQUEST_OBJECT,
+    )
   }
 
   if (hasher) {

@@ -1,9 +1,8 @@
-import { DcqlQueryPayload } from '@sphereon/ssi-types'
+import type { IPresentationDefinition } from '@sphereon/pex'
+import * as blakepkg from 'blakejs'
 import { DcqlQuery } from 'dcql'
 import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
-import type { IPresentationDefinition } from '@sphereon/pex'
 import type { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
-import * as blakepkg from 'blakejs'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
@@ -16,19 +15,14 @@ export const presentationDefinitionItemFrom = (entity: PresentationDefinitionIte
     purpose: entity.purpose,
     definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
     ...(entity.dcqlPayload && {
-      dcqlPayload: {
-        queryId: entity.definitionId,
-        name: entity.name,
-        defaultPurpose: entity.purpose,
-        dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
-      },
+      dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
     }),
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }
 
-  if (result.dcqlPayload?.dcqlQuery) {
-    DcqlQuery.validate(result.dcqlPayload?.dcqlQuery)
+  if (result.dcqlQuery) {
+    DcqlQuery.validate(result.dcqlQuery)
   }
   return replaceNullWithUndefined(result)
 }
@@ -44,15 +38,15 @@ export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentat
   if (item.definitionPayload) {
     entity.definitionPayload = JSON.stringify(item.definitionPayload)
   }
-  if (item.dcqlPayload) {
-    const dcqlQuery = DcqlQuery.parse(item.dcqlPayload.dcqlQuery)
+  if (item.dcqlQuery) {
+    const dcqlQuery = DcqlQuery.parse(item.dcqlQuery)
     DcqlQuery.validate(dcqlQuery)
-    entity.dcqlPayload = JSON.stringify(item.dcqlPayload.dcqlQuery)
+    entity.dcqlPayload = JSON.stringify(item.dcqlQuery)
   }
   return entity
 }
 
-function hashPayload(payload: IPresentationDefinition | DcqlQueryPayload): string {
+function hashPayload(payload: IPresentationDefinition | DcqlQuery): string {
   return blakepkg.blake2bHex(JSON.stringify(payload))
 }
 
@@ -67,11 +61,11 @@ export function isPresentationDefinitionEqual(base: PartialPresentationDefinitio
     return false
   }
 
-  if (base.dcqlPayload && compare.dcqlPayload) {
-    if (hashPayload(base.dcqlPayload) !== hashPayload(compare.dcqlPayload)) {
+  if (base.dcqlQuery && compare.dcqlQuery) {
+    if (hashPayload(base.dcqlQuery) !== hashPayload(compare.dcqlQuery)) {
       return false
     }
-  } else if (base.dcqlPayload || compare.dcqlPayload) {
+  } else if (base.dcqlQuery || compare.dcqlQuery) {
     return false
   }
 

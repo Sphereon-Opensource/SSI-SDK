@@ -27,7 +27,7 @@ import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
+import { AdditionalClaims, DcqlQueryImportItem, HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
@@ -107,16 +107,10 @@ export interface IVerifyAuthResponseStateArgs {
   definitionId?: string
   correlationId: string
   audience?: string
-  dcqlQueryPayload?: DcqlQueryPayload
+  dcqlQueryPayload?: DcqlQueryImportItem
 }
-
-export interface IDefinitionPair {
-  definitionPayload?: IPresentationDefinition
-  dcqlPayload?: DcqlQueryPayload
-}
-
 export interface ImportDefinitionsArgs {
-  definitions: Array<IDefinitionPair>
+  importItems: Array<DcqlQueryImportItem>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode

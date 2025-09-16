@@ -109,8 +109,8 @@ export class PDStore extends AbstractPDStore {
     if (item.definitionPayload) {
       updatedEntity.definitionPayload = JSON.stringify(item.definitionPayload!)
     }
-    if (item.dcqlPayload) {
-      updatedEntity.dcqlPayload = JSON.stringify(item.dcqlPayload!.dcqlQuery)
+    if (item.dcqlQuery) {
+      updatedEntity.dcqlPayload = JSON.stringify(item.dcqlQuery)
     }
 
     debug('Updating presentation definition entity', updatedEntity)

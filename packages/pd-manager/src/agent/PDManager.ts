@@ -167,9 +167,9 @@ export class PDManager implements IAgentPlugin {
       existingItem.definitionId = definitionItem.definitionId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
-      existingItem.name = definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name ?? definitionItem.name
-      existingItem.purpose = definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
-      existingItem.dcqlPayload = definitionItem.dcqlPayload
+      existingItem.name = definitionItem.dcqlQuery?.name ?? definitionItem.definitionPayload?.name ?? definitionItem.name
+      existingItem.purpose = definitionItem.dcqlQuery?.defaultPurpose ?? definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
+      existingItem.dcqlQuery = definitionItem.dcqlQuery
       existingItem.definitionPayload = definitionItem.definitionPayload
 
       return await this.store.updateDefinition(existingItem)
@@ -177,8 +177,8 @@ export class PDManager implements IAgentPlugin {
       // Apply the same field extraction logic for new items
       const newDefinitionItem = {
         ...definitionItem,
-        name: definitionItem.name ?? definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name,
-        purpose: definitionItem.purpose ?? definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
+        name: definitionItem.name ?? definitionItem.dcqlQuery?.name ?? definitionItem.definitionPayload?.name,
+        purpose: definitionItem.purpose ?? definitionItem.dcqlQuery?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
       }
       return await this.store.addDefinition(newDefinitionItem)
     }
@@ -191,18 +191,18 @@ export class PDManager implements IAgentPlugin {
     if (latestVersionItem) {
       latestVersionItem.definitionId = definitionItem.definitionId
       latestVersionItem.tenantId = definitionItem.tenantId
-      latestVersionItem.name = definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name ?? definitionItem.name
-      latestVersionItem.purpose = definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
+      latestVersionItem.name = definitionItem.dcqlQuery?.name ?? definitionItem.definitionPayload?.name ?? definitionItem.name
+      latestVersionItem.purpose = definitionItem.dcqlQuery?.defaultPurpose ?? definitionItem.definitionPayload?.purpose ?? definitionItem.purpose
       latestVersionItem.definitionPayload = definitionItem.definitionPayload
-      latestVersionItem.dcqlPayload = definitionItem.dcqlPayload
+      latestVersionItem.dcqlQuery = definitionItem.dcqlQuery
 
       return await this.store.updateDefinition(latestVersionItem)
     } else {
       // Apply the same field extraction logic for new items
       const newDefinitionItem = {
         ...definitionItem,
-        name: definitionItem.name ?? definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name,
-        purpose: definitionItem.purpose ?? definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
+        name: definitionItem.name ?? definitionItem.dcqlQuery?.name ?? definitionItem.definitionPayload?.name,
+        purpose: definitionItem.purpose ?? definitionItem.dcqlQuery?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
       }
       return await this.store.addDefinition(newDefinitionItem)
     }
@@ -265,8 +265,8 @@ export class PDManager implements IAgentPlugin {
     const newDefinitionItem = {
       ...definitionItem,
       version: resultVersion,
-      name: definitionItem.name ?? definitionItem.dcqlPayload?.name ?? definitionItem.definitionPayload?.name,
-      purpose: definitionItem.purpose ?? definitionItem.dcqlPayload?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
+      name: definitionItem.name ?? definitionItem.dcqlQuery?.name ?? definitionItem.definitionPayload?.name,
+      purpose: definitionItem.purpose ?? definitionItem.dcqlQuery?.defaultPurpose ?? definitionItem.definitionPayload?.purpose,
     }
 
     return await this.store.addDefinition(newDefinitionItem)

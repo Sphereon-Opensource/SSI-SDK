@@ -10,6 +10,7 @@ import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   AdditionalClaims,
   CredentialMapper,
+  DcqlQueryImportItem,
   HasherSync,
   ICredentialSubject,
   IPresentation,
@@ -235,33 +236,19 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
-    const { definitions, tenantId, version, versionControlMode } = args
+    const { definitions: importItems, tenantId, version, versionControlMode } = args
     await Promise.all(
-      definitions.map(async (definitionPair) => {
-        const definitionPayload = definitionPair.definitionPayload
-        if (!definitionPayload && !definitionPair.dcqlPayload) {
-          return Promise.reject(Error('Either dcqlPayload or definitionPayload must be suppplied'))
-        }
-
-        let definitionId: string
-        if (definitionPair.dcqlPayload) {
-          DcqlQuery.validate(definitionPair.dcqlPayload.dcqlQuery)
-          console.log(`persisting DCQL definition ${definitionPair.dcqlPayload.queryId} with versionControlMode ${versionControlMode}`)
-          definitionId = definitionPair.dcqlPayload.queryId
-        }
-        if (definitionPayload) {
-          await context.agent.pexValidateDefinition({ definition: definitionPayload })
-          console.log(`persisting PEX definition ${definitionPayload.id} / ${definitionPayload.name} with versionControlMode ${versionControlMode}`)
-          definitionId = definitionPayload.id
-        }
+      importItems.map(async (importItem: DcqlQueryImportItem) => {
+        DcqlQuery.validate(importItem.dcqlQuery)
+        console.log(`persisting DCQL definition ${importItem.queryId} with versionControlMode ${versionControlMode}`)
 
         return context.agent.pdmPersistDefinition({
           definitionItem: {
-            definitionId: definitionId!,
+            definitionId: importItem.queryId!,
             tenantId: tenantId,
             version: version,
             definitionPayload,
-            dcqlPayload: definitionPair.dcqlPayload,
+            dcqlQuery: importItem,
           },
           opts: { versionControlMode: versionControlMode },
         })
