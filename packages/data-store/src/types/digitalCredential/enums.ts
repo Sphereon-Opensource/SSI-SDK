@@ -56,13 +56,6 @@ export enum CredentialCorrelationType {
   URL = 'URL',
 }
 
-export enum CredentialRole {
-  ISSUER = 'ISSUER',
-  VERIFIER = 'VERIFIER',
-  HOLDER = 'HOLDER',
-  FEDERATION_TRUST_ANCHOR = 'FEDERATION_TRUST_ANCHOR',
-}
-
 export enum CredentialStateType {
   REVOKED = 'REVOKED',
   VERIFIED = 'VERIFIED',

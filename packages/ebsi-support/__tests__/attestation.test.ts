@@ -4,7 +4,7 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { IOID4VCIHolder } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { jwksURIFromIdentifier, PublicKeyHosting } from '@sphereon/ssi-sdk.public-key-hosting'

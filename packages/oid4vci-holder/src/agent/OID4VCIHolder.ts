@@ -36,7 +36,6 @@ import {
   ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
-  CredentialRole,
   ensureRawDocument,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
@@ -59,6 +58,7 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
+  CredentialRole,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -230,7 +230,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreIssuerBranding: this.oid4vciHolderStoreIssuerBranding.bind(this),
   }
 
-  private readonly vcFormatPreferences: Array<string> = ['dc+sd-jwt', 'vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
+  private readonly vcFormatPreferences: Array<string> = ['dc+sd-jwt', 'vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc'] // TODO see SSISDK-52 concerning vc+sd-jwt
   private readonly jsonldCryptographicSuitePreferences: Array<string> = [
     'Ed25519Signature2018',
     'EcdsaSecp256k1Signature2019',

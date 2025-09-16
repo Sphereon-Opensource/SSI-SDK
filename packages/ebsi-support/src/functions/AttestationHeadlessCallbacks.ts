@@ -3,7 +3,6 @@ import { getIssuerName } from '@sphereon/oid4vci-common'
 import {
   ConnectionType,
   CorrelationIdentifierType,
-  CredentialRole,
   IdentityOrigin,
   NonPersistedParty,
   Party,
@@ -12,6 +11,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store'
 import { OID4VCIMachine, OID4VCIMachineEvents, OID4VCIMachineInterpreter, OID4VCIMachineState } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { Siopv2MachineInterpreter, Siopv2MachineState, Siopv2OID4VPLinkHandler } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
+import { CredentialRole } from '@sphereon/ssi-types'
 import fetch from 'cross-fetch'
 import { logger } from '../index'
 import { IRequiredContext } from '../types/IEbsiSupport'

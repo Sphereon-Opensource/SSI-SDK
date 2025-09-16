@@ -4,7 +4,6 @@ import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, Identity
 import { ContactStore } from '../contact/ContactStore'
 import {
   CorrelationIdentifierType,
-  CredentialRole,
   ElectronicAddress,
   GetElectronicAddressesArgs,
   GetIdentitiesArgs,
@@ -27,6 +26,7 @@ import {
   PhysicalAddress,
 } from '../types'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { CredentialRole } from "@sphereon/ssi-types"
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource

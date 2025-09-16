@@ -37,7 +37,7 @@
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.2.1",
     "class-validator": "0.14.1",
-    "dcql": "0.2.19",
+    "dcql": "1.0.1",
     "debug": "^4.3.5",
     "typeorm": "0.3.20"
   },
