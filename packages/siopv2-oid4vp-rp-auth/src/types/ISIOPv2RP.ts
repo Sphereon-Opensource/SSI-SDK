@@ -23,13 +23,14 @@ import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdent
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { IPDManager, VersionControlMode, DcqlQueryImportItem } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, DcqlQueryImportItem, HasherSync } from '@sphereon/ssi-types'
+import { AdditionalClaims, HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { DcqlQuery } from 'dcql'
 
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
@@ -107,7 +108,7 @@ export interface IVerifyAuthResponseStateArgs {
   definitionId?: string
   correlationId: string
   audience?: string
-  dcqlQueryPayload?: DcqlQueryImportItem
+  dcqlQuery?: DcqlQuery
 }
 export interface ImportDefinitionsArgs {
   importItems: Array<DcqlQueryImportItem>

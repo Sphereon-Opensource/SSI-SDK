@@ -7,10 +7,12 @@ import {
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
+
+import type { DcqlQueryImportItem } from '@sphereon/ssi-sdk.pd-manager'
 import {
   AdditionalClaims,
   CredentialMapper,
-  DcqlQueryImportItem,
   HasherSync,
   ICredentialSubject,
   IPresentation,
@@ -46,7 +48,6 @@ import {
 import { RPInstance } from '../RPInstance'
 
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -228,7 +229,7 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          ...(args.dcqlQueryPayload ? { dcqlQuery: args.dcqlQueryPayload.dcqlQuery } : {}),
+          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery } : {}),
           audience: args.audience,
         }),
       ),
@@ -236,7 +237,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
-    const { definitions: importItems, tenantId, version, versionControlMode } = args
+    const { importItems, tenantId, version, versionControlMode } = args
     await Promise.all(
       importItems.map(async (importItem: DcqlQueryImportItem) => {
         DcqlQuery.validate(importItem.dcqlQuery)
@@ -247,8 +248,7 @@ export class SIOPv2RP implements IAgentPlugin {
             definitionId: importItem.queryId!,
             tenantId: tenantId,
             version: version,
-            definitionPayload,
-            dcqlQuery: importItem,
+            dcqlQuery: importItem.dcqlQuery,
           },
           opts: { versionControlMode: versionControlMode },
         })

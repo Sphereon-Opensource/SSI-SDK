@@ -176,7 +176,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         currentItem.dcqlQuery = {
           queryId: `credential-v${i}`,
           name: 'Credential Name',
-          defaultPurpose: 'Credential Purpose',
+          purpose: 'Credential Purpose',
           dcqlQuery: DcqlQuery.parse({
             credentials: [
               {
@@ -206,7 +206,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         expect(result.name).toEqual('Credential Name')
         expect(result.purpose).toEqual('Credential Purpose')
         expect(result.dcqlQuery?.name).toEqual('Credential Name')
-        expect(result.dcqlQuery?.defaultPurpose).toEqual('Credential Purpose')
+        expect(result.dcqlQuery?.purpose).toEqual('Credential Purpose')
 
         currentItem = result
       }
