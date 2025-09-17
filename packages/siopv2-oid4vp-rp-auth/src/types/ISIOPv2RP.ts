@@ -23,7 +23,7 @@ import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdent
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { IPDManager, VersionControlMode, DcqlQueryImportItem } from '@sphereon/ssi-sdk.pd-manager'
+import { IPDManager, VersionControlMode, ImportDcqlQueryItem } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
@@ -111,7 +111,7 @@ export interface IVerifyAuthResponseStateArgs {
   dcqlQuery?: DcqlQuery
 }
 export interface ImportDefinitionsArgs {
-  importItems: Array<DcqlQueryImportItem>
+  importItems: Array<ImportDcqlQueryItem>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode

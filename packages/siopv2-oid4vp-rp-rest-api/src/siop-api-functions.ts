@@ -56,7 +56,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       }
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId: definitionId, tenantId, version }] })
       if (definitionItems.length === 0) {
         console.log(`Could not get definition ${definitionId} from agent. Will return 404`)
         response.statusCode = 404

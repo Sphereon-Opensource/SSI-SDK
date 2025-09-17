@@ -9,7 +9,7 @@ import {
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
-import type { DcqlQueryImportItem } from '@sphereon/ssi-sdk.pd-manager'
+import type { ImportDcqlQueryItem } from '@sphereon/ssi-sdk.pd-manager'
 import {
   AdditionalClaims,
   CredentialMapper,
@@ -239,13 +239,13 @@ export class SIOPv2RP implements IAgentPlugin {
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
     const { importItems, tenantId, version, versionControlMode } = args
     await Promise.all(
-      importItems.map(async (importItem: DcqlQueryImportItem) => {
+      importItems.map(async (importItem: ImportDcqlQueryItem) => {
         DcqlQuery.validate(importItem.dcqlQuery)
         console.log(`persisting DCQL definition ${importItem.queryId} with versionControlMode ${versionControlMode}`)
 
         return context.agent.pdmPersistDefinition({
           definitionItem: {
-            definitionId: importItem.queryId!,
+            queryId: importItem.queryId!,
             tenantId: tenantId,
             version: version,
             dcqlQuery: importItem.dcqlQuery,

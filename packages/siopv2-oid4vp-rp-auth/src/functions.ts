@@ -115,7 +115,7 @@ export async function createRPBuilder(args: {
     const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
       filter: [
         {
-          definitionId: pexOpts.definitionId,
+          queryId: pexOpts.definitionId,
           version: pexOpts.version,
           tenantId: pexOpts.tenantId,
         },

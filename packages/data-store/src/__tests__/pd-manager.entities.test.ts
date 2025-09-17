@@ -1,11 +1,10 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { DcqlQuery } from 'dcql'
 import { DataSource } from 'typeorm'
-import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
-import { DataStorePresentationDefinitionMigrations } from '../migrations'
-import { DataStorePresentationDefinitionEntities } from '../index'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { SAMPLE_DCQL_QUERY_PAYLOAD } from './pd-manager.store.test'
+import { DcqlQueryItemEntity } from '../entities/presentationDefinition/DcqlQueryItemEntity'
+import { DataStorePresentationDefinitionEntities } from '../index'
+import { DataStorePresentationDefinitionMigrations } from '../migrations'
+import { SAMPLE_DCQL_QUERY_IMPORT } from './pd-manager.store.test'
 
 describe('PresentationDefinitionItemEntity tests', (): void => {
   let dbConnection: DataSource
@@ -28,11 +27,11 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
   })
 
   it('should create and retrieve PresentationDefinitionItemEntity with dcqlPayload', async (): Promise<void> => {
-    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
-    const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'ajax-club'
+    const repository = dbConnection.getRepository(DcqlQueryItemEntity)
+    const entity = new DcqlQueryItemEntity()
+    entity.queryId = 'ajax-club'
     entity.version = '1.0'
-    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_PAYLOAD.dcqlQuery)
+    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_IMPORT.dcqlQuery)
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -50,11 +49,11 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
   })
 
   it('should update PresentationDefinitionItemEntity dcqlPayload', async (): Promise<void> => {
-    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
-    const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'ajax-club'
+    const repository = dbConnection.getRepository(DcqlQueryItemEntity)
+    const entity = new DcqlQueryItemEntity()
+    entity.queryId = 'ajax-club'
     entity.version = '1.0'
-    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_PAYLOAD.dcqlQuery)
+    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_IMPORT.dcqlQuery)
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -77,52 +76,5 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     expect(updatedEntity).toBeDefined()
     expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].id).toEqual('updated-clubcard')
     expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].format).toEqual('jwt_vc')
-  })
-
-  it('should create and retrieve PresentationDefinitionItemEntity', async (): Promise<void> => {
-    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
-    const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'definition1'
-    entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-
-    const savedEntity = await repository.save(entity)
-    expect(savedEntity).toBeDefined()
-    expect(savedEntity.id).toBeDefined()
-
-    const retrievedEntity = await repository.findOneBy({ id: savedEntity.id })
-    expect(retrievedEntity).toBeDefined()
-    expect(retrievedEntity!.definitionId).toEqual('definition1')
-  })
-
-  it('should update PresentationDefinitionItemEntity', async (): Promise<void> => {
-    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
-    const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'definition1'
-    entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-
-    const savedEntity = await repository.save(entity)
-    expect(savedEntity).toBeDefined()
-
-    savedEntity.version = '1.1'
-    const updatedEntity = await repository.save(savedEntity)
-    expect(updatedEntity).toBeDefined()
-    expect(updatedEntity.version).toEqual('1.1')
-  })
-
-  it('should delete PresentationDefinitionItemEntity', async (): Promise<void> => {
-    const repository = dbConnection.getRepository(PresentationDefinitionItemEntity)
-    const entity = new PresentationDefinitionItemEntity()
-    entity.definitionId = 'definition1'
-    entity.version = '1.0'
-    entity.definitionPayload = JSON.stringify({ id: 'definition1', input_descriptors: [] })
-
-    const savedEntity = await repository.save(entity)
-    expect(savedEntity).toBeDefined()
-
-    await repository.delete(savedEntity.id)
-    const retrievedEntity = await repository.findOneBy({ id: savedEntity.id })
-    expect(retrievedEntity).toBeNull()
   })
 })

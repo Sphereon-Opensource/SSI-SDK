@@ -1,26 +1,18 @@
-import { IPresentationDefinition } from '@sphereon/pex'
 import { DcqlQuery } from 'dcql'
 
-export type PresentationDefinitionItem = {
+export type DcqlQueryItem = {
   id: string
-  definitionId: string
+  queryId: string
   tenantId?: string
   version: string
   name?: string
   purpose?: string
-  definitionPayload?: IPresentationDefinition
-  dcqlQuery?: DcqlQuery
+  dcqlQuery: DcqlQuery
   createdAt: Date
   lastUpdatedAt: Date
 }
 
-export type NonPersistedPresentationDefinitionItem = Omit<PresentationDefinitionItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
-export type PartialPresentationDefinitionItem = Partial<PresentationDefinitionItem>
-export type PresentationDefinitionItemFilter = Partial<Omit<PresentationDefinitionItem, 'definitionPayload' | 'dcqlQuery'>>
-
-export type DcqlQueryImportItem = {
-  queryId: string
-  name?: string
-  purpose?: string
-  dcqlQuery: DcqlQuery
-}
+export type ImportDcqlQueryItem = Omit<DcqlQueryItem, 'id' | 'tenantId' | 'version' | 'createdAt' | 'lastUpdatedAt'>
+export type NonPersistedDcqlQueryItem = Omit<DcqlQueryItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
+export type PartialDcqlQueryItem = Partial<DcqlQueryItem>
+export type DcqlQueryItemFilter = Partial<Omit<DcqlQueryItem, 'dcqlQuery'>>
