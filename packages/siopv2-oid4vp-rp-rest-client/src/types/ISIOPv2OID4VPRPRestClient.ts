@@ -1,32 +1,29 @@
+import { AuthStatusResponse, type CreateAuthorizationRequest, type CreateAuthorizationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { BearerTokenArg } from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-
-import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 
 export interface ISIOPv2OID4VPRPRestClient extends IPluginMethodMap {
   siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs, context: IRequiredContext): Promise<boolean>
 
-  siopClientCreateAuthRequest(args: ISiopClientGenerateAuthRequestArgs, context: IRequiredContext): Promise<GenerateAuthRequestURIResponse>
+  siopClientCreateAuthRequest(args: ISiopClientGenerateAuthRequestArgs, context: IRequiredContext): Promise<CreateAuthorizationResponse>
 
   siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs, context: IRequiredContext): Promise<AuthStatusResponse>
 }
 
-export interface ISiopClientGenerateAuthRequestArgs {
-  definitionId?: string
+export type ISiopClientGenerateAuthRequestArgs = Omit<CreateAuthorizationRequest, 'requestUriMethod'> & {
   baseUrl?: string
-  responseRedirectURI?: string
+  requestUriMethod: 'get'
 }
 
 export interface ISiopClientRemoveAuthRequestSessionArgs {
   correlationId: string
   baseUrl?: string
-  definitionId?: string
+  queryId?: string
 }
 
 export interface ISiopClientGetAuthStatusArgs {
   correlationId: string
   baseUrl?: string
-  definitionId?: string
 }
 
 export interface Siopv2RestClientAuthenticationOpts {
@@ -36,7 +33,7 @@ export interface Siopv2RestClientAuthenticationOpts {
 
 export interface Siopv2RestClientOpts {
   baseUrl?: string
-  definitionId?: string
+  queryId?: string
   authentication?: Siopv2RestClientAuthenticationOpts
 }
 

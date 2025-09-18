@@ -44,7 +44,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.106",
+    "@sphereon/oid4vci-common": "0.19.1-feature.SSISDK.57.uni.client.129",
     "@sphereon/ssi-sdk-ext.did-provider-key": "workspace:*",
     "@sphereon/ssi-sdk-ext.key-manager": "workspace:*",
     "@sphereon/ssi-sdk-ext.kms-local": "workspace:*",

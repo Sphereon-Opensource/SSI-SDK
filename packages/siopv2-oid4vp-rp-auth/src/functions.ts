@@ -124,8 +124,8 @@ export async function createRPBuilder(args: {
 
     if (presentationDefinitionItems.length > 0) {
       const presentationDefinitionItem = presentationDefinitionItems[0]
-      if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
-        dcqlQuery = presentationDefinitionItem.dcqlPayload.dcqlQuery as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
+      if (!dcqlQuery) {
+        dcqlQuery = presentationDefinitionItem.dcqlQuery
       }
     }
   }

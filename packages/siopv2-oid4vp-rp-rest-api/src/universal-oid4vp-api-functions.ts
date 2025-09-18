@@ -1,19 +1,24 @@
-import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
+import {
+  AuthorizationResponseStateStatus,
+  CreateAuthorizationRequest,
+  createAuthorizationRequestFromPayload,
+  CreateAuthorizationRequestPayloadSchema,
+  CreateAuthorizationResponsePayload,
+} from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { uriWithBase } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
 import { validateData } from './middleware/validationMiddleware'
-import { CreateAuthorizationRequestBodySchema } from './schemas'
 import {
-  CreateAuthorizationRequest,
-  CreateAuthorizationRequestResponse,
-  CreateAuthorizationResponse,
+  AuthStatusResponse,
+  CreateAuthorizationRequestPayloadRequest,
+  CreateAuthorizationResponsePayloadResponse,
   DeleteAuthorizationRequest,
   GetAuthorizationRequestStatus,
-  AuthStatusResponse,
   ICreateAuthRequestWebappEndpointOpts,
-  IRequiredContext
+  IRequiredContext,
+  QRCodeOpts,
 } from './types'
 
 export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
@@ -23,58 +28,61 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
   }
 
   const path = opts?.path ?? '/backend/auth/requests'
-  router.post(path, checkAuth(opts?.endpoint), validateData(CreateAuthorizationRequestBodySchema), async (request: CreateAuthorizationRequest, response: CreateAuthorizationResponse) => {
-    try {
-      const correlationId = request.body.correlation_id ?? uuid.uuid()
-      const qrCodeOpts = request.body.qr_code ?? opts?.qrCodeOpts
-      const queryId = request.body.query_id
-      const directPostResponseRedirectUri = request.body.direct_post_response_redirect_uri // TODO Uri not URI
-      const requestUriBase = request.body.request_uri_base
-      const callback = request.body.callback
+  router.post(
+    path,
+    checkAuth(opts?.endpoint),
+    validateData(CreateAuthorizationRequestPayloadSchema),
+    async (request: CreateAuthorizationRequestPayloadRequest, response: CreateAuthorizationResponsePayloadResponse) => {
+      try {
+        const authRequest: CreateAuthorizationRequest = createAuthorizationRequestFromPayload(request.body)
+        const correlationId = authRequest.correlationId ?? uuid.uuid()
+        const qrCodeOpts = authRequest.qrCode ? ({ ...authRequest.qrCode } satisfies QRCodeOpts) : opts?.qrCodeOpts
+        const queryId = authRequest.queryId
 
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId: queryId }] })
-      if (definitionItems.length === 0) {
+        const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId }] })
+        if (definitionItems.length === 0) {
           console.log(`No query could be found for the given id. Query id: ${queryId}`)
           return sendErrorResponse(response, 404, { status: 404, message: 'No query could be found' })
+        }
+
+        const requestByReferenceURI = uriWithBase(`/siop/definitions/${queryId}/auth-requests/${correlationId}`, {
+          baseURI: authRequest.requestUriBase ?? opts?.siopBaseURI,
+        })
+        const responseURI = uriWithBase(`/siop/definitions/${queryId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
+
+        const authRequestURI = await context.agent.siopCreateAuthRequestURI({
+          queryId,
+          correlationId,
+          nonce: uuid.uuid(),
+          requestByReferenceURI,
+          responseURIType: 'response_uri',
+          responseURI,
+          ...(authRequest.directPostResponseRedirectUri && { responseRedirectURI: authRequest.directPostResponseRedirectUri }),
+          ...(authRequest.callback && { callback: authRequest.callback }),
+        })
+
+        let qrCodeDataUri: string | undefined
+        if (qrCodeOpts) {
+          const { AwesomeQR } = await import('awesome-qr')
+          const qrCode = new AwesomeQR({ ...qrCodeOpts, text: authRequestURI })
+          qrCodeDataUri = `data:image/png;base64,${(await qrCode.draw())!.toString('base64')}`
+        }
+
+        const authRequestBody = {
+          query_id: queryId,
+          correlation_id: correlationId,
+          request_uri: authRequestURI,
+          status_uri: `${uriWithBase(opts?.webappAuthStatusPath ?? `/backend/auth/status/${correlationId}`, { baseURI: opts?.webappBaseURI })}`,
+          ...(qrCodeDataUri && { qr_uri: qrCodeDataUri }),
+        } satisfies CreateAuthorizationResponsePayload
+        console.log(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
+
+        return response.status(201).json(authRequestBody)
+      } catch (error) {
+        return sendErrorResponse(response, 500, { status: 500, message: 'Could not create an authorization request URI' }, error)
       }
-
-      const requestByReferenceURI = uriWithBase(`/siop/definitions/${queryId}/auth-requests/${correlationId}`, {
-        baseURI: requestUriBase ?? opts?.siopBaseURI,
-      })
-      const responseURI = uriWithBase(`/siop/definitions/${queryId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
-
-      const authRequestURI = await context.agent.siopCreateAuthRequestURI({
-        queryId,
-        correlationId,
-        nonce: uuid.uuid(),
-        requestByReferenceURI,
-        responseURIType: 'response_uri',
-        responseURI,
-        ...(directPostResponseRedirectUri && { responseRedirectURI: directPostResponseRedirectUri }),
-        callback
-      })
-
-      let qrCodeDataUri: string | undefined
-      if (qrCodeOpts) {
-        const { AwesomeQR } = await import('awesome-qr')
-        const qrCode = new AwesomeQR({ ...qrCodeOpts, text: authRequestURI })
-        qrCodeDataUri = `data:image/png;base64,${(await qrCode.draw())!.toString('base64')}`
-      }
-
-      const authRequestBody = {
-        query_id: queryId,
-        correlation_id: correlationId,
-        request_uri: authRequestURI,
-        status_uri: `${uriWithBase(opts?.webappAuthStatusPath ?? `/backend/auth/status/${correlationId}`, { baseURI: opts?.webappBaseURI })}`,
-        ...(qrCodeDataUri && { qr_uri: qrCodeDataUri }),
-      } satisfies CreateAuthorizationRequestResponse
-      console.log(`Auth Request URI data to send back: ${JSON.stringify(authRequestBody)}`)
-
-      return response.status(201).json(authRequestBody)
-    } catch (error) {
-      return sendErrorResponse(response, 500, { status: 500, message: 'Could not create an authorization request URI' }, error)
-    }
-  })
+    },
+  )
 }
 
 export function removeAuthRequestStateUniversalOID4VPEndpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
@@ -90,7 +98,7 @@ export function removeAuthRequestStateUniversalOID4VPEndpoint(router: Router, co
 
       const authRequestState = await context.agent.siopGetAuthRequestState({
         correlationId,
-        errorOnNotFound: false
+        errorOnNotFound: false,
       })
       if (!authRequestState) {
         console.log(`No authorization request could be found for the given correlationId. correlationId: ${correlationId}`)
@@ -120,7 +128,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
 
       const requestState = await context.agent.siopGetAuthRequestState({
         correlationId,
-        errorOnNotFound: false
+        errorOnNotFound: false,
       })
 
       if (!requestState) {
@@ -130,7 +138,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
 
       let responseState
       if (requestState.status === 'authorization_request_created') {
-        responseState = (await context.agent.siopGetAuthResponseState({ correlationId, errorOnNotFound: false }))
+        responseState = await context.agent.siopGetAuthResponseState({ correlationId, errorOnNotFound: false })
       }
       const overallState = responseState ?? requestState
 
@@ -139,8 +147,9 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
         correlation_id: overallState.correlationId,
         query_id: overallState.queryId,
         last_updated: overallState.lastUpdated,
-        ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verifiedData: responseState.verifiedData }),
-        ...(overallState.error && { message: overallState.error.message })
+        ...(responseState?.status === AuthorizationResponseStateStatus.VERIFIED &&
+          responseState.verifiedData !== undefined && { verifiedData: responseState.verifiedData }),
+        ...(overallState.error && { message: overallState.error.message }),
       } satisfies AuthStatusResponse
       console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
 

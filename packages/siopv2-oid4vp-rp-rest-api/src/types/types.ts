@@ -1,13 +1,12 @@
-import { IAgentContext, ICredentialVerifier } from '@veramo/core'
+import { CreateAuthorizationRequestPayload, CreateAuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
-import { AdditionalClaims } from '@sphereon/ssi-types'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { AuthorizationRequestStateStatus, AuthorizationResponseStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { AdditionalClaims } from '@sphereon/ssi-types'
+import { IAgentContext, ICredentialVerifier } from '@veramo/core'
 import { Request, Response } from 'express'
-import { z } from 'zod'
-import { CreateAuthorizationRequestBodySchema, CreateAuthorizationResponseSchema } from '../schemas'
 import { QRCodeOpts } from './QRCode.types'
 
 export type SiopFeatures = 'rp-status' | 'siop'
@@ -37,24 +36,20 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
 export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPresentationExchange & IPDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
-export type CreateAuthorizationRequest = Request<Record<string, never>, any, CreateAuthorizationRequestBody, Record<string, never>>
+export type CreateAuthorizationRequestPayloadRequest = Request<Record<string, never>, any, CreateAuthorizationRequestPayload, Record<string, never>>
 
-export type CreateAuthorizationRequestBody = z.infer<typeof CreateAuthorizationRequestBodySchema>;
-
-export type CreateAuthorizationResponse = Response<CreateAuthorizationRequestResponse>
-
-export type CreateAuthorizationRequestResponse = z.infer<typeof CreateAuthorizationResponseSchema>;
+export type CreateAuthorizationResponsePayloadResponse = Response<CreateAuthorizationResponsePayload>
 
 export type DeleteAuthorizationRequest = Request<DeleteAuthorizationRequestPathParameters, any, Record<string, any>, Record<string, any>>
 
 export type DeleteAuthorizationRequestPathParameters = {
-  correlationId: string;
+  correlationId: string
 }
 
 export type GetAuthorizationRequestStatus = Request<GetAuthorizationRequestStatusPathParameters, any, Record<string, any>, Record<string, any>>
 
 export type GetAuthorizationRequestStatusPathParameters = {
-  correlationId: string;
+  correlationId: string
 }
 
 export type RequestError = {
@@ -92,8 +87,4 @@ export type MultipleVpTokenDCQL = {
   [key: string]: MultipleVpTokens
 }
 
-export type VpToken =
-  | SingleObjectVpTokenPE
-  | SingleStringVpTokenPE
-  | MultipleVpTokens
-  | MultipleVpTokenDCQL
+export type VpToken = SingleObjectVpTokenPE | SingleStringVpTokenPE | MultipleVpTokens | MultipleVpTokenDCQL

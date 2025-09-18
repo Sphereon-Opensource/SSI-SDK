@@ -46,23 +46,21 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
+  const path = opts?.path ?? '/siop/definitions/:queryId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const { correlationId, tenantId, version } = request.params
-      if (!correlationId || !credentialQueryId) {
-        console.log(
-          `No authorization request could be found for the given url. correlationId: ${correlationId}, credentialQueryId: ${credentialQueryId}`,
-        )
+      const { correlationId, queryId, tenantId, version } = request.params
+      if (!correlationId) {
+        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId: definitionId: credentialQueryId, tenantId, version }] })
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId, tenantId, version }] })
       if (definitionItems.length === 0) {
-        console.log(`Could not get definition ${credentialQueryId} from agent. Will return 404`)
+        console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
         response.statusCode = 404
-        response.statusMessage = `No definition ${credentialQueryId}`
+        response.statusMessage = `No definition ${queryId}`
         return response.send()
       }
 
@@ -73,8 +71,8 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        queryId: credentialQueryId,
-        dcqlQueryPayload: definitionItem.dcqlQuery,
+        queryId,
+        dcqlQuery: definitionItem.dcqlQuery,
       })
 
       // FIXME SSISDK-55 add proper support for checking for DCQL presentations
@@ -91,7 +89,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }
 
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, definitionId, state: verifiedResponse.state })
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
