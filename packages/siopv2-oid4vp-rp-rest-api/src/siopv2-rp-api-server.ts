@@ -1,6 +1,5 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
 import express, { Express, Request, Response, Router } from 'express'
@@ -17,7 +16,7 @@ import swaggerUi from 'swagger-ui-express'
 export class SIOPv2RPApiServer {
   private readonly _express: Express
   private readonly _router: Router
-  private readonly _agent: TAgent<IPresentationExchange & ISIOPv2RP>
+  private readonly _agent: TAgent<ISIOPv2RP>
   private readonly _opts?: ISIOPv2RPRestAPIOpts
   private readonly _basePath: string
 
@@ -92,7 +91,7 @@ export class SIOPv2RPApiServer {
     return this._router
   }
 
-  get agent(): TAgent<IPresentationExchange & ISIOPv2RP> {
+  get agent(): TAgent<ISIOPv2RP> {
     return this._agent
   }
 

@@ -4078,12 +4078,6 @@ importers:
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
-      '@sphereon/pex':
-        specifier: 5.0.0-unstable.28
-        version: 5.0.0-unstable.28
-      '@sphereon/pex-models':
-        specifier: ^2.3.2
-        version: 2.3.2
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: workspace:*
         version: link:../did-provider-jwk

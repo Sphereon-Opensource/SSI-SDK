@@ -34,7 +34,6 @@ import {
   PresentationSubmission
 } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-// import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
