@@ -111,11 +111,11 @@ export async function createRPBuilder(args: {
   let definition: IPresentationDefinition | undefined = args.definition
   let dcqlQuery: DcqlQuery | undefined = args.dcql
 
-  if (!definition && pexOpts && pexOpts.definitionId) {
+  if (!definition && pexOpts && pexOpts.queryId) {
     const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
       filter: [
         {
-          queryId: pexOpts.definitionId,
+          queryId: pexOpts.queryId,
           version: pexOpts.version,
           tenantId: pexOpts.tenantId,
         },
