@@ -201,11 +201,8 @@ export async function createRPBuilder(args: {
     builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
-    builder
-      .withClientId(
-        resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-        PropertyTarget.REQUEST_OBJECT,
-      )
+    const clientId = rpOpts.clientMetadataOpts?.client_id ?? resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint)
+    builder.withClientId(clientId, PropertyTarget.REQUEST_OBJECT)
   }
 
   if (hasher) {
