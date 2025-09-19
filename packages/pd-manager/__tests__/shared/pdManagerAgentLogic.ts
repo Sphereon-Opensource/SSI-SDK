@@ -1,9 +1,11 @@
 import { TAgent } from '@veramo/core'
+import { DcqlQuery } from 'dcql'
 import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPresentationDefinitionItem } from '../../src'
 import { IPresentationDefinition } from '@sphereon/pex'
 import * as fs from 'fs'
-import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { DcqlQueryPayload } from '@sphereon/ssi-types'
 
 type ConfiguredAgent = TAgent<IPDManager>
 
@@ -18,19 +20,23 @@ function getFileAsJson(path: string) {
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('PD Manager Agent Plugin', (): void => {
     const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
-    const sampleDcql = {
-      credentials: [
-        {
-          id: 'credential1',
-          format: 'jwt_vc',
-          claims: [
-            {
-              namespace: 'test',
-              claim_name: 'testClaim',
-            },
-          ],
-        },
-      ],
+    const sampleDcql: DcqlQueryPayload = {
+      queryId: 'credential1',
+      dcqlQuery: DcqlQuery.parse({
+        credentials: [
+          {
+            id: 'credential1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', `testClaim`],
+              },
+            ],
+          },
+        ],
+      }),
     }
 
     let agent: ConfiguredAgent
@@ -169,18 +175,24 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       for (let i = 2; i <= 12; i++) {
         currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
         currentItem.dcqlPayload = {
-          credentials: [
-            {
-              id: `credential-v${i}`,
-              format: 'jwt_vc',
-              claims: [
-                {
-                  namespace: 'test',
-                  claim_name: `claim-v${i}`,
-                },
-              ],
-            },
-          ],
+          queryId: `credential-v${i}`,
+          name: 'Credential Name',
+          defaultPurpose: 'Credential Purpose',
+          dcqlQuery: DcqlQuery.parse({
+            credentials: [
+              {
+                id: `credential-v${i}`,
+                format: 'dc+sd-jwt',
+                require_cryptographic_holder_binding: true,
+                multiple: false,
+                claims: [
+                  {
+                    path: ['test', `claim-v${i}`],
+                  },
+                ],
+              },
+            ],
+          }),
         }
         currentItem.version = undefined
         const result = await agent.pdmPersistDefinition({
@@ -191,7 +203,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         expect(result.version).toEqual(`${i}.0.0`)
         expect(result.definitionPayload.input_descriptors[0].id).toEqual(`Version ${i}.0.0`)
         expect(result.dcqlPayload).toBeTruthy()
-        expect(result.dcqlPayload?.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.dcqlPayload?.dcqlQuery.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.name).toEqual('Credential Name')
+        expect(result.purpose).toEqual('Credential Purpose')
+        expect(result.dcqlPayload?.name).toEqual('Credential Name')
+        expect(result.dcqlPayload?.defaultPurpose).toEqual('Credential Purpose')
 
         currentItem = result
       }
@@ -310,27 +326,61 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.pdmPersistDefinition(definition)
 
       expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
-      expect(result.dcqlPayload).toEqual(definition.definitionItem.dcqlPayload)
+      expect(result.dcqlPayload?.queryId).toEqual(definition.definitionItem.definitionId)
+      expect(result.dcqlPayload?.dcqlQuery).toEqual(definition.definitionItem.dcqlPayload?.dcqlQuery)
     })
 
     it('should update dcqlPayload in definition item', async (): Promise<void> => {
-      const updatedDcql = {
-        credentials: [
-          {
-            id: 'credential2',
-            format: 'jwt_vc',
-            claims: [
-              {
-                namespace: 'test',
-                claim_name: 'updatedClaim',
-              },
-            ],
+      // First, create a definition with initial dcqlPayload
+      const initialDefinition: PersistDefinitionArgs = {
+        definitionItem: {
+          definitionId: 'dcql_update_test',
+          definitionPayload: singleDefinition,
+          dcqlPayload: {
+            queryId: 'dcql_update_test',
+            dcqlQuery: DcqlQuery.parse({
+              credentials: [
+                {
+                  id: 'initial-credential',
+                  require_cryptographic_holder_binding: true,
+                  multiple: false,
+                  format: 'dc+sd-jwt',
+                  claims: [
+                    {
+                      path: ['test', 'initialClaim'],
+                    },
+                  ],
+                },
+              ],
+            }),
           },
-        ],
+        },
       }
 
-      const updatedDefinitionItem = {
-        ...defaultDefinitionItem,
+      const createdDefinition = await agent.pdmPersistDefinition(initialDefinition)
+
+      // Now update it
+      const updatedDcql: DcqlQueryPayload = {
+        queryId: 'dcql_update_test',
+        dcqlQuery: DcqlQuery.parse({
+          credentials: [
+            {
+              id: 'credential2',
+              format: 'dc+sd-jwt',
+              multiple: false,
+              require_cryptographic_holder_binding: true,
+              claims: [
+                {
+                  path: ['test', 'updatedClaim'],
+                },
+              ],
+            },
+          ],
+        }),
+      }
+
+      const updatedDefinitionItem: NonPersistedPresentationDefinitionItem = {
+        ...createdDefinition,
         dcqlPayload: updatedDcql,
       }
 

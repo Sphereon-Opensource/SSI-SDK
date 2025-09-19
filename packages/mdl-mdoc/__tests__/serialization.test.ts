@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import CoseAlgorithm = com.sphereon.crypto.cose.CoseAlgorithm
 import CoseKeyJson = com.sphereon.crypto.cose.CoseKeyJson
 import CoseKeyType = com.sphereon.crypto.cose.CoseKeyType

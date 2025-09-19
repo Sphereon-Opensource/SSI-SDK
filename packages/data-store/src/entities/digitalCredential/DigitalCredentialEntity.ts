@@ -1,9 +1,10 @@
 import { typeormDate, typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+
 import {
   CredentialCorrelationType,
   CredentialDocumentFormat,
-  CredentialRole,
   CredentialStateType,
   type DigitalCredential,
   DocumentType,

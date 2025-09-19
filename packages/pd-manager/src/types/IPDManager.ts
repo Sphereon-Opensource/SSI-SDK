@@ -72,9 +72,8 @@ export type DeleteDefinitionItemArgs = {
 
 export type DeleteDefinitionItemsArgs = GetDefinitionItemsArgs
 
-export type PersistPresentationDefinitionItem = Omit<NonPersistedPresentationDefinitionItem, 'definitionId' | 'version'> & {
+export type PersistPresentationDefinitionItem = Omit<NonPersistedPresentationDefinitionItem, 'version'> & {
   id?: string
-  definitionId?: string
   version?: string
 }
 

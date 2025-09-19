@@ -1,5 +1,4 @@
 import {
-  ClientIdScheme,
   ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
@@ -28,7 +27,12 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
-import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  HasherSync,
+  OriginalVerifiableCredential,
+  PresentationSubmission
+} from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
 // import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
@@ -68,8 +72,7 @@ export function getPresentationVerificationCallback(
   ): Promise<PresentationVerificationResult> {
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
-        presentation: args,
-        kb: true,
+        presentation: args
       })
       // fixme: investigate the correct way to handle this
       return { verified: !!result.payload }
@@ -126,9 +129,8 @@ export async function createRPBuilder(args: {
 
     if (presentationDefinitionItems.length > 0) {
       const presentationDefinitionItem = presentationDefinitionItems[0]
-      definition = presentationDefinitionItem.definitionPayload
       if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
-        dcqlQuery = presentationDefinitionItem.dcqlPayload as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
+        dcqlQuery = presentationDefinitionItem.dcqlPayload.dcqlQuery as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
       }
     }
   }
@@ -161,7 +163,7 @@ export async function createRPBuilder(args: {
       uniresolverResolution: rpOpts.identifierOpts.resolveOpts?.noUniversalResolverFallback !== true,
     })
   //todo: probably wise to first look and see if we actually need the hasher to begin with
-  let hasher: Hasher | undefined = rpOpts.credentialOpts?.hasher
+  let hasher: HasherSync | undefined = rpOpts.credentialOpts?.hasher
   if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
     hasher = defaultHasher
   }
@@ -197,16 +199,12 @@ export async function createRPBuilder(args: {
 
   const oidfOpts = identifierOpts.oidfOpts
   if (oidfOpts && isExternalIdentifierOIDFEntityIdOpts(oidfOpts)) {
-    builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT).withClientIdScheme('entity_id', PropertyTarget.REQUEST_OBJECT)
+    builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
     builder
       .withClientId(
         resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-        PropertyTarget.REQUEST_OBJECT,
-      )
-      .withClientIdScheme(
-        (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
         PropertyTarget.REQUEST_OBJECT,
       )
   }
@@ -222,9 +220,6 @@ export async function createRPBuilder(args: {
   //fixme: this has been removed in the new version of did-auth-siop
   // builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
 
-  if (definition) {
-    builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
-  }
   if (dcqlQuery) {
     builder.withDcqlQuery(dcqlQuery)
   }

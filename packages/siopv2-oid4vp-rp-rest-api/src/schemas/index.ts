@@ -9,7 +9,8 @@ export const ResponseTypeSchema = z.enum([ResponseType.VP_TOKEN]);
 
 export const ResponseModeSchema = z.enum([ResponseMode.DIRECT_POST, ResponseMode.DIRECT_POST_JWT]);
 
-export const RequestUriMethodSchema = z.enum([RequestUriMethod.GET, RequestUriMethod.POST]);
+const requestUriMethods = ["get", "post"] as const satisfies Array<RequestUriMethod>;
+export const RequestUriMethodSchema = z.enum(requestUriMethods);
 
 export const AuthorizationStatusSchema = z.enum([
   ...authorizationRequestStatuses,

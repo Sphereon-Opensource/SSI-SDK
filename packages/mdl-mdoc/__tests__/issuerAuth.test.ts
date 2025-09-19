@@ -1,4 +1,5 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { CoseCryptoService } from '../src'
 
 import { describe, expect, it } from 'vitest'

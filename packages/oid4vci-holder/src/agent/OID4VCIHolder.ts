@@ -4,13 +4,14 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
-  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13,
-  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13,
+  CredentialConfigurationSupported,
+  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15,
+  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
   getTypesFromAuthorizationDetails,
-  getTypesFromCredentialOffer,
+  getTypesFromCredentialSupported,
   getTypesFromObject,
   Jwt,
   NotificationRequest,
@@ -30,11 +31,11 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
 import {
   ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
-  CredentialRole,
   ensureRawDocument,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
@@ -54,10 +55,10 @@ import {
   JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
-  OriginalVerifiableCredential,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
+  CredentialRole,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -73,6 +74,19 @@ import { asArray, computeEntryHash } from '@veramo/utils'
 import { decodeJWT } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machines/oid4vciMachine'
+import {
+  extractCredentialFromResponse,
+  getBasicIssuerLocaleBranding,
+  getCredentialBranding,
+  getCredentialConfigsSupportedMerged,
+  getIdentifierOpts,
+  getIssuanceOpts,
+  mapCredentialToAccept,
+  selectCredentialLocaleBranding,
+  startFirstPartApplicationMachine,
+  verifyCredentialToAccept,
+} from '../services/OID4VCIHolderService'
+import 'cross-fetch/polyfill'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,
@@ -111,19 +125,6 @@ import {
   VerifyEBSICredentialIssuerArgs,
   VerifyEBSICredentialIssuerResult,
 } from '../types/IOID4VCIHolder'
-import {
-  getBasicIssuerLocaleBranding,
-  getCredentialBranding,
-  getCredentialConfigsSupportedMerged,
-  getIdentifierOpts,
-  getIssuanceOpts,
-  mapCredentialToAccept,
-  selectCredentialLocaleBranding,
-  startFirstPartApplicationMachine,
-  verifyCredentialToAccept,
-} from '../services/OID4VCIHolderService'
-import 'cross-fetch/polyfill'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 /**
  * {@inheritDoc IOID4VCIHolder}
@@ -151,7 +152,7 @@ export function signCallback(
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
   nonce?: string,
 ) {
-  return async (jwt: Jwt, kid?: string) => {
+  return async (jwt: Jwt, kid?: string, noIssPayloadUpdate?: boolean) => {
     let resolution = await context.agent.identifierManagedGet(identifier)
     const jwk = jwt.header.jwk ?? (resolution.method === 'jwk' ? resolution.jwk : undefined)
     if (!resolution.issuer && !jwt.payload.iss) {
@@ -170,7 +171,7 @@ export function signCallback(
     }
     return (
       await context.agent.jwtCreateJwsCompactSignature({
-        issuer: { ...resolution, noIssPayloadUpdate: false },
+        issuer: { ...resolution, noIssPayloadUpdate: noIssPayloadUpdate ?? false },
         protectedHeader: header,
         payload,
       })
@@ -229,7 +230,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreIssuerBranding: this.oid4vciHolderStoreIssuerBranding.bind(this),
   }
 
-  private readonly vcFormatPreferences: Array<string> = ['vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
+  private readonly vcFormatPreferences: Array<string> = ['dc+sd-jwt', 'vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc'] // TODO see SSISDK-52 concerning vc+sd-jwt
   private readonly jsonldCryptographicSuitePreferences: Array<string> = [
     'Ed25519Signature2018',
     'EcdsaSecp256k1Signature2019',
@@ -443,7 +444,13 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     if (offer) {
-      types = getTypesFromCredentialOffer(offer.original_credential_offer)
+      const credentialsSupported: CredentialConfigurationSupported[] = offer.original_credential_offer.credential_configuration_ids.flatMap(
+        (configId) => {
+          const config = oid4vciClient.endpointMetadata.credentialIssuerMetadata?.credential_configurations_supported[configId]
+          return config ? [config as CredentialConfigurationSupported] : []
+        },
+      )
+      types = credentialsSupported.map((credentialSupported) => getTypesFromCredentialSupported(credentialSupported))
     } else {
       types = asArray(authorizationRequestOpts.authorizationDetails)
         .map((authReqOpts) => getTypesFromAuthorizationDetails(authReqOpts) ?? [])
@@ -939,7 +946,8 @@ export class OID4VCIHolder implements IAgentPlugin {
           ? 'credential_accepted_holder_signed'
           : 'credential_deleted_holder_signed'
         logger.log(`Subject issuance/signing will be used, with event`, event)
-        const issuerVC = mappedCredentialToAccept.credentialToAccept.credentialResponse.credential as OriginalVerifiableCredential
+
+        const issuerVC = extractCredentialFromResponse(mappedCredentialToAccept.credentialToAccept.credentialResponse)
         const wrappedIssuerVC = CredentialMapper.toWrappedVerifiableCredential(issuerVC, { hasher: this.hasher ?? defaultHasher })
         console.log(`Wrapped VC: ${wrappedIssuerVC.type}, ${wrappedIssuerVC.format}`)
         // We will use the subject of the VCI Issuer (the holder, as the issuer of the new credential, so the below is not a mistake!)
@@ -1169,9 +1177,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     return undefined
   }
 
-  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_13 | undefined {
+  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15 | undefined {
     if (issuanceOpt.format == 'ldp_vc' || issuanceOpt.format == 'jwt_vc_json-ld') {
-      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_13).credential_definition
+      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15).credential_definition
     }
     return undefined
   }
