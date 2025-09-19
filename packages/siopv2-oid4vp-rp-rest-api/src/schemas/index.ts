@@ -1,16 +1,17 @@
-import { z } from 'zod'
 import {
-  ResponseMode,
-  ResponseType,
+  CallbackOptsSchema,
   RequestUriMethod,
-  CallbackOptsSchema
+  ResponseMode,
+  ResponseType
 } from '@sphereon/did-auth-siop'
+import { z } from 'zod'
 
 export const ResponseTypeSchema = z.enum([ResponseType.VP_TOKEN]);
 
 export const ResponseModeSchema = z.enum([ResponseMode.DIRECT_POST, ResponseMode.DIRECT_POST_JWT]);
 
-export const RequestUriMethodSchema = z.enum(Object.values(RequestUriMethod));
+const requestUriMethods = ['get', 'post'] as const satisfies Array<RequestUriMethod>;
+export const RequestUriMethodSchema = z.enum(requestUriMethods);
 
 export const QRCodeOptsSchema = z.object({
   size: z.number().optional(),

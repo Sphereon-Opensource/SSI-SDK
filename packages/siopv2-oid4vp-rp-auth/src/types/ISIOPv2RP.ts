@@ -7,35 +7,33 @@ import {
   ClaimPayloadCommonOpts,
   ClientMetadataOpts,
   IRPSessionManager,
-  PresentationDefinitionWithLocation,
   PresentationVerificationCallback,
   RequestObjectPayload,
   ResponseMode,
   ResponseURIType,
   SupportedVersion,
-  VerifiablePresentationTypeFormat,
   VerifiedAuthorizationResponse,
   VerifyJwtCallback,
-  VPTokenLocation
 } from '@sphereon/did-auth-siop'
-import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { DcqlQueryREST, HasherSync, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-import { Resolvable } from 'did-resolver'
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { DIDDocument } from '@sphereon/did-uni-client'
-import { EventEmitter } from 'events'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
-import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { JwtIssuer } from '@sphereon/oid4vc-common'
-import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
+import { VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+
+import { Resolvable } from 'did-resolver'
+import { EventEmitter } from 'events'
 
 export enum VerifiedDataMode {
   NONE = 'none',
@@ -111,13 +109,12 @@ export interface IVerifyAuthResponseStateArgs {
   queryId?: string
   correlationId: string
   audience?: string
-  presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
-  dcqlQuery?: DcqlQueryREST
+  dcqlQueryPayload?: DcqlQueryPayload
 }
 
 export interface IDefinitionPair {
-  definitionPayload: IPresentationDefinition
-  dcqlPayload?: DcqlQueryREST
+  definitionPayload?: IPresentationDefinition
+  dcqlPayload?: DcqlQueryPayload
 }
 
 export interface ImportDefinitionsArgs {
@@ -187,15 +184,7 @@ export interface PerDidResolver {
 export interface IAuthRequestDetails {
   rpDIDDocument?: DIDDocument
   id: string
-  verifiablePresentationMatches: IPresentationWithDefinition[]
   alsoKnownAs?: string[]
-}
-
-export interface IPresentationWithDefinition {
-  location: VPTokenLocation
-  definition: PresentationDefinitionWithLocation
-  format: VerifiablePresentationTypeFormat
-  presentation: W3CVerifiablePresentation
 }
 
 export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {

@@ -11,7 +11,7 @@ import express, { Application, NextFunction, Request, Response } from 'express'
 import { createServer, Server } from 'http'
 import { importJWK, SignJWT } from 'jose'
 import { IEbsiSupport } from '../../src'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 type ConfiguredAgent = TAgent<IKeyManager & IDIDManager & IIdentifierResolution & IJwtService & IDidAuthSiopOpAuthenticator & IEbsiSupport>

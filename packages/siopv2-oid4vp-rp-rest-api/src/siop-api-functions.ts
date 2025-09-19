@@ -1,7 +1,7 @@
-import { AuthorizationResponsePayload, PresentationDefinitionLocation } from '@sphereon/did-auth-siop'
+import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
-import { CredentialMapper } from '@sphereon/ssi-types'
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { CredentialMapper } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -41,11 +41,7 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
   )
 }
 
-export function verifyAuthResponseSIOPv2Endpoint(
-  router: Router,
-  context: IRequiredContext,
-  opts?: ISingleEndpointOpts & { presentationDefinitionLocation?: PresentationDefinitionLocation },
-) {
+export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
@@ -75,21 +71,13 @@ export function verifyAuthResponseSIOPv2Endpoint(
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        queryId: definitionId,
-        presentationDefinitions: [
-          {
-            location: opts?.presentationDefinitionLocation ?? PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
-            definition: definitionItem.definitionPayload,
-          },
-        ],
-        dcqlQuery: definitionItem.dcqlPayload,
+        dcqlQueryPayload: definitionItem.dcqlPayload,
       })
 
-      const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentations[0]
-      if (wrappedPresentation) {
-        // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
-        // console.log(JSON.stringify(credentialSubject, null, 2))
-        console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
+      // FIXME SSISDK-55 add proper support for checking for DCQL presentations
+      const presentation = verifiedResponse?.oid4vpSubmission?.presentation
+      if (presentation && Object.keys(presentation).length > 0) {
+        console.log('PRESENTATIONS:' + JSON.stringify(verifiedResponse?.oid4vpSubmission?.presentation, null, 2))
         response.statusCode = 200
 
         const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {

@@ -32,11 +32,10 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
       const requestUriBase = request.body.request_uri_base
       const callback = request.body.callback
 
-      try {
-        await context.agent.pdmGetDefinition({ itemId: queryId })
-      } catch(e) {
-        console.log(`No query could be found for the given id. Query id: ${queryId}`)
-        return sendErrorResponse(response, 404, { status: 404, message: 'No query could be found' })
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId: queryId }] })
+      if (definitionItems.length === 0) {
+          console.log(`No query could be found for the given id. Query id: ${queryId}`)
+          return sendErrorResponse(response, 404, { status: 404, message: 'No query could be found' })
       }
 
       const requestByReferenceURI = uriWithBase(`/siop/definitions/${queryId}/auth-requests/${correlationId}`, {
@@ -140,7 +139,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
         correlation_id: overallState.correlationId,
         query_id: overallState.queryId,
         last_updated: overallState.lastUpdated,
-        ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verifiedData: responseState.verifiedData }),
+        ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verified_data: responseState.verifiedData }),
         ...(overallState.error && { message: overallState.error.message })
       } satisfies AuthStatusResponse
       console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)

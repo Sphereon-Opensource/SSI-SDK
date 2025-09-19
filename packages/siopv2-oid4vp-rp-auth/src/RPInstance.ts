@@ -57,8 +57,8 @@ export class RPInstance {
       : undefined
   }
 
-  public async createAuthorizationRequestURI(createArgs: Omit<ICreateAuthRequestArgs, 'queryId'>, context: IRequiredContext): Promise<URI> {
-    const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType, callback } = createArgs
+  public async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<URI> {
+    const { correlationId, queryId, claims, requestByReferenceURI, responseURI, responseURIType, callback } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
     let jwtIssuer: JwtIssuer
@@ -84,6 +84,7 @@ export class RPInstance {
       rp.createAuthorizationRequestURI({
         version: getRequestVersion(this.rpOptions),
         correlationId,
+        queryId,
         nonce,
         state,
         claims,

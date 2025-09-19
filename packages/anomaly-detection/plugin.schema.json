@@ -19,7 +19,9 @@
               "type": "string"
             }
           },
-          "required": ["ipOrHostname"]
+          "required": [
+            "ipOrHostname"
+          ]
         },
         "AnomalyDetectionLookupLocationResult": {
           "type": "object",

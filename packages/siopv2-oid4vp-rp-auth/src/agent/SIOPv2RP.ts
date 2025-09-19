@@ -23,6 +23,7 @@ import {
   SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
+import { DcqlQuery } from 'dcql'
 import {
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
@@ -44,7 +45,6 @@ import {
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
-import { DcqlQuery } from 'dcql'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -228,8 +228,7 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          ...(args.presentationDefinitions && !args.dcqlQuery ? { presentationDefinitions: args.presentationDefinitions } : {}),
-          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery as DcqlQuery } : {}), // TODO BEFORE PR, check compatibility and whether we can remove local type
+          ...(args.dcqlQueryPayload ? { dcqlQuery: args.dcqlQueryPayload.dcqlQuery } : {}),
           audience: args.audience,
         }),
       ),
@@ -241,11 +240,25 @@ export class SIOPv2RP implements IAgentPlugin {
     await Promise.all(
       queries.map(async (definitionPair) => {
         const definitionPayload = definitionPair.definitionPayload
-        await context.agent.pexValidateDefinition({ definition: definitionPayload })
+        if (!definitionPayload && !definitionPair.dcqlPayload) {
+          return Promise.reject(Error('Either dcqlPayload or definitionPayload must be suppplied'))
+        }
 
-        console.log(`persisting definition ${definitionPayload.id} / ${definitionPayload.name} with versionControlMode ${versionControlMode}`)
+        let definitionId: string
+        if (definitionPair.dcqlPayload) {
+          DcqlQuery.validate(definitionPair.dcqlPayload.dcqlQuery)
+          console.log(`persisting DCQL definition ${definitionPair.dcqlPayload.queryId} with versionControlMode ${versionControlMode}`)
+          definitionId = definitionPair.dcqlPayload.queryId
+        }
+        if (definitionPayload) {
+          await context.agent.pexValidateDefinition({ definition: definitionPayload })
+          console.log(`persisting PEX definition ${definitionPayload.id} / ${definitionPayload.name} with versionControlMode ${versionControlMode}`)
+          definitionId = definitionPayload.id
+        }
+
         return context.agent.pdmPersistDefinition({
           definitionItem: {
+            definitionId: definitionId!,
             tenantId: tenantId,
             version: version,
             definitionPayload,

@@ -67,7 +67,7 @@ export class DataSources {
     return [...this.configs.keys()]
   }
 
-  async getDbConnection(dbName: string): Promise<DataSource> {
+  async getDbConnection(dbName: string, allowAutomaticMigrations: boolean = true): Promise<DataSource> {
     const config = this.getConfig(dbName)
     if (!this._defaultDbType) {
       this._defaultDbType = config.type as SupportedDatabaseType
@@ -91,7 +91,7 @@ export class DataSources {
       debug(
         `Migrations are currently managed from config. Please set migrationsRun and synchronize to false to get consistent behaviour. We run migrations from code explicitly`,
       )
-    } else {
+    } else if (allowAutomaticMigrations) {
       debug(`Running ${dataSource.migrations.length} migration(s) from code if needed...`)
       await dataSource.runMigrations()
       debug(`${dataSource.migrations.length} migration(s) from code were inspected and applied`)
