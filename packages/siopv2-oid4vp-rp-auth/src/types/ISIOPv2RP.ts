@@ -2,7 +2,8 @@ import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
   AuthorizationResponsePayload,
-  AuthorizationResponseState,
+  AuthorizationResponseStateWithVerifiedData,
+  CallbackOpts,
   ClaimPayloadCommonOpts,
   ClientMetadataOpts,
   IRPSessionManager,
@@ -27,7 +28,7 @@ import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
+import { DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
@@ -74,6 +75,7 @@ export interface ICreateAuthRequestArgs {
   nonce?: string
   state?: string
   claims?: ClaimPayloadCommonOpts
+  callback?: CallbackOpts
 }
 
 export interface IGetAuthRequestStateArgs {
@@ -196,10 +198,6 @@ export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
 // todo make the necessary changes for mdl-mdoc types
 export type CredentialOpts = {
   hasher?: HasherSync
-}
-
-export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {
-  verifiedData?: AdditionalClaims
 }
 
 export type IRequiredContext = IAgentContext<

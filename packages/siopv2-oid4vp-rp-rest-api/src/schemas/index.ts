@@ -1,26 +1,17 @@
-import { z } from 'zod';
 import {
-  authorizationRequestStatuses,
-  authorizationResponseStatuses
-} from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { ResponseMode, ResponseType, RequestUriMethod } from '@sphereon/did-auth-siop'
+  CallbackOptsSchema,
+  RequestUriMethod,
+  ResponseMode,
+  ResponseType
+} from '@sphereon/did-auth-siop'
+import { z } from 'zod'
 
 export const ResponseTypeSchema = z.enum([ResponseType.VP_TOKEN]);
 
 export const ResponseModeSchema = z.enum([ResponseMode.DIRECT_POST, ResponseMode.DIRECT_POST_JWT]);
 
-const requestUriMethods = ["get", "post"] as const satisfies Array<RequestUriMethod>;
+const requestUriMethods = ['get', 'post'] as const satisfies Array<RequestUriMethod>;
 export const RequestUriMethodSchema = z.enum(requestUriMethods);
-
-export const AuthorizationStatusSchema = z.enum([
-  ...authorizationRequestStatuses,
-  ...authorizationResponseStatuses
-]);
-
-export const CallbackOptsSchema = z.object({
-  url: z.string(),
-  status: z.array(AuthorizationStatusSchema).optional(),
-});
 
 export const QRCodeOptsSchema = z.object({
   size: z.number().optional(),
