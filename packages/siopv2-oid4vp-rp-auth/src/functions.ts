@@ -1,4 +1,5 @@
 import {
+  ClientIdentifierPrefix,
   ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
@@ -13,7 +14,7 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback,
+  VerifyJwtCallback
 } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload, SigningAlgo } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
@@ -202,7 +203,7 @@ export async function createRPBuilder(args: {
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
     const clientId = rpOpts.clientMetadataOpts?.client_id ?? resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint)
-    builder.withClientId(clientId, PropertyTarget.REQUEST_OBJECT)
+    builder.withClientId(prefixClientId(clientId), PropertyTarget.REQUEST_OBJECT)
   }
 
   if (hasher) {
@@ -299,4 +300,13 @@ export function getSigningAlgo(type: TKeyType): SigningAlgo {
     default:
       throw Error('Key type not yet supported')
   }
+}
+
+export function prefixClientId(clientId: string): string {
+  // FIXME SSISDK-60
+  if (clientId.startsWith('did:')) {
+    return `${ClientIdentifierPrefix.DECENTRALIZED_IDENTIFIER}:${clientId}`;
+  }
+
+  return clientId;
 }
