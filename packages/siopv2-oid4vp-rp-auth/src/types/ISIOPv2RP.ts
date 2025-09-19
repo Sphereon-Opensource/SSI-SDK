@@ -52,7 +52,6 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
-
   siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
@@ -64,8 +63,9 @@ export interface ISiopv2RPOpts {
 export interface IRPDefaultOpts extends IRPOptions {}
 
 export interface ICreateAuthRequestArgs {
-  definitionId: string
+  queryId: string
   correlationId: string
+  useQueryIdInstance?: boolean
   responseURIType: ResponseURIType
   responseURI: string
   responseRedirectURI?: string
@@ -78,20 +78,20 @@ export interface ICreateAuthRequestArgs {
 
 export interface IGetAuthRequestStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
   errorOnNotFound?: boolean
 }
 
 export interface IGetAuthResponseStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
   includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {
-  definitionId: string
+  queryId: string
   correlationId: string
   state: AuthorizationRequestStateStatus
   error?: string
@@ -99,12 +99,12 @@ export interface IUpdateRequestStateArgs {
 
 export interface IDeleteAuthStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
 }
 
 export interface IVerifyAuthResponseStateArgs {
   authorizationResponse: string | AuthorizationResponsePayload
-  definitionId?: string
+  queryId?: string
   correlationId: string
   audience?: string
   dcqlQueryPayload?: DcqlQueryPayload
@@ -116,7 +116,7 @@ export interface IDefinitionPair {
 }
 
 export interface ImportDefinitionsArgs {
-  definitions: Array<IDefinitionPair>
+  queries: Array<IDefinitionPair>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode
@@ -124,7 +124,7 @@ export interface ImportDefinitionsArgs {
 
 export interface IGetRedirectUriArgs {
   correlationId: string
-  definitionId?: string
+  queryId?: string
   state?: string
 }
 
@@ -140,7 +140,7 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 }
 
 export interface ISiopRPInstanceArgs {
-  definitionId?: string
+  queryId?: string
   responseRedirectURI?: string
 }
 
@@ -165,7 +165,7 @@ export interface IRPOptions {
 export interface IPEXOptions {
   presentationVerifyCallback?: PresentationVerificationCallback
   // definition?: IPresentationDefinition
-  definitionId: string
+  queryId: string
   version?: string
   tenantId?: string
 }
