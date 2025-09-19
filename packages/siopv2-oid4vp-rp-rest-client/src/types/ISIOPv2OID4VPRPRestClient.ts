@@ -12,7 +12,6 @@ export interface ISIOPv2OID4VPRPRestClient extends IPluginMethodMap {
 
 export type ISiopClientGenerateAuthRequestArgs = Omit<CreateAuthorizationRequest, 'requestUriMethod'> & {
   baseUrl?: string
-  requestUriMethod: 'get'
 }
 
 export interface ISiopClientRemoveAuthRequestSessionArgs {
@@ -33,7 +32,6 @@ export interface Siopv2RestClientAuthenticationOpts {
 
 export interface Siopv2RestClientOpts {
   baseUrl?: string
-  queryId?: string
   authentication?: Siopv2RestClientAuthenticationOpts
 }
 

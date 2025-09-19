@@ -29,9 +29,10 @@ export {
   type CallbackOptsPayload,
   type QRCodeOpts,
   type QRCodeOptsPayload,
-  type ResponseType,
-  type ResponseMode,
   createAuthorizationResponseFromPayload,
   createAuthorizationRequestToPayload,
+  ResponseType,
+  ResponseMode,
   VPTokenLocation,
+  RequestUriMethod,
 } from '@sphereon/did-auth-siop'
