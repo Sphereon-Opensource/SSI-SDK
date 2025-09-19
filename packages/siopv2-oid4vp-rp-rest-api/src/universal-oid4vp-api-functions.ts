@@ -39,16 +39,21 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
         const qrCodeOpts = authRequest.qrCode ? ({ ...authRequest.qrCode } satisfies QRCodeOpts) : opts?.qrCodeOpts
         const queryId = authRequest.queryId
 
-        const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId }] })
+        const definitionItems = await context.agent.pdmGetDefinitions({
+          filter: [
+            { id: queryId }, // Allow both PK (unique queryId + version combi) or just plain queryId which assumes the latest version
+            { queryId },
+          ],
+        })
         if (definitionItems.length === 0) {
           console.log(`No query could be found for the given id. Query id: ${queryId}`)
           return sendErrorResponse(response, 404, { status: 404, message: 'No query could be found' })
         }
 
-        const requestByReferenceURI = uriWithBase(`/siop/definitions/${queryId}/auth-requests/${correlationId}`, {
+        const requestByReferenceURI = uriWithBase(`/siop/queries/${queryId}/auth-requests/${correlationId}`, {
           baseURI: authRequest.requestUriBase ?? opts?.siopBaseURI,
         })
-        const responseURI = uriWithBase(`/siop/definitions/${queryId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
+        const responseURI = uriWithBase(`/siop/queries/${queryId}/auth-responses/${correlationId}`, { baseURI: opts?.siopBaseURI })
 
         const authRequestURI = await context.agent.siopCreateAuthRequestURI({
           queryId,
@@ -66,6 +71,8 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
           const { AwesomeQR } = await import('awesome-qr')
           const qrCode = new AwesomeQR({ ...qrCodeOpts, text: authRequestURI })
           qrCodeDataUri = `data:image/png;base64,${(await qrCode.draw())!.toString('base64')}`
+        } else {
+          qrCodeDataUri = authRequestURI
         }
 
         const authRequestBody = {
