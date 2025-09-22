@@ -1,5 +1,6 @@
 import {
   ClientMetadataOpts,
+  DcqlQueryLookupCallback,
   InMemoryRPSessionManager,
   PassBy,
   PresentationVerificationCallback,
@@ -34,7 +35,7 @@ import { TKeyType } from '@veramo/core'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
-import { IPEXOptions, IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
+import { IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 import { DcqlQuery } from 'dcql'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
@@ -55,6 +56,30 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
         })
         return { verified: result.result }
       }
+}
+
+export function getDcqlQueryLookupCallback(context: IRequiredContext): DcqlQueryLookupCallback {
+  async function dcqlQueryLookup(queryId: string, version?: string, tenantId?: string): Promise<DcqlQuery> {
+    const result = await context.agent.pdmGetDefinitions({
+      filter: [
+        {
+          queryId: queryId,
+          version: version,
+          tenantId: tenantId,
+        },
+        {
+          id: queryId,
+        },
+      ],
+    })
+    if (result && result.length > 0) {
+      return result[0].dcqlQuery
+    }
+
+    return Promise.reject(Error(`No dcql query found for queryId ${queryId}`))
+  }
+
+  return dcqlQueryLookup
 }
 
 export function getPresentationVerificationCallback(
@@ -101,34 +126,11 @@ export function getPresentationVerificationCallback(
 
 export async function createRPBuilder(args: {
   rpOpts: IRPOptions
-  pexOpts?: IPEXOptions | undefined
   definition?: IPresentationDefinition
-  dcql?: DcqlQuery
   context: IRequiredContext
 }): Promise<RPBuilder> {
-  const { rpOpts, pexOpts, context } = args
+  const { rpOpts, context } = args
   const { identifierOpts } = rpOpts
-  let definition: IPresentationDefinition | undefined = args.definition
-  let dcqlQuery: DcqlQuery | undefined = args.dcql
-
-  if (!definition && pexOpts && pexOpts.queryId) {
-    const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
-      filter: [
-        {
-          queryId: pexOpts.queryId,
-          version: pexOpts.version,
-          tenantId: pexOpts.tenantId,
-        },
-      ],
-    })
-
-    if (presentationDefinitionItems.length > 0) {
-      const presentationDefinitionItem = presentationDefinitionItems[0]
-      if (!dcqlQuery) {
-        dcqlQuery = presentationDefinitionItem.dcqlQuery
-      }
-    }
-  }
 
   const didMethods = identifierOpts.supportedDIDMethods ?? (await getAgentDIDMethods(context))
   const eventEmitter = rpOpts.eventEmitter ?? new EventEmitter()
@@ -189,6 +191,7 @@ export async function createRPBuilder(args: {
             context,
           ),
     )
+    .withDcqlQueryLookup(getDcqlQueryLookupCallback(context))
     .withRevocationVerification(RevocationVerification.NEVER)
     .withPresentationVerification(getPresentationVerificationCallback(identifierOpts.idOpts, context))
 
@@ -213,10 +216,6 @@ export async function createRPBuilder(args: {
   }*/
   //fixme: this has been removed in the new version of did-auth-siop
   // builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
-
-  if (dcqlQuery) {
-    builder.withDcqlQuery(dcqlQuery)
-  }
 
   if (rpOpts.responseRedirectUri) {
     builder.withResponseRedirectUri(rpOpts.responseRedirectUri)

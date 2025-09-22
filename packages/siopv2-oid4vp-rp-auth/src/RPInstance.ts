@@ -1,6 +1,5 @@
 import { AuthorizationRequest, RP, URI } from '@sphereon/did-auth-siop'
-import { ICreateAuthRequestArgs, IPEXOptions, IRequiredContext, IRPOptions } from './types/ISIOPv2RP'
-import { IPresentationDefinition } from '@sphereon/pex'
+import { ICreateAuthRequestArgs, IPresentationOptions, IRequiredContext, IRPOptions } from './types/ISIOPv2RP'
 import { createRPBuilder, getRequestVersion, getSigningAlgo } from './functions'
 import { v4 as uuidv4 } from 'uuid'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
@@ -12,19 +11,18 @@ import {
 
 export class RPInstance {
   private _rp: RP | undefined
-  private readonly _pexOptions: IPEXOptions | undefined
+  private readonly _presentationOptions: IPresentationOptions | undefined
   private readonly _rpOptions: IRPOptions
 
-  public constructor({ rpOpts, pexOpts }: { rpOpts: IRPOptions; pexOpts?: IPEXOptions }) {
+  public constructor({ rpOpts, pexOpts }: { rpOpts: IRPOptions; pexOpts?: IPresentationOptions }) {
     this._rpOptions = rpOpts
-    this._pexOptions = pexOpts
+    this._presentationOptions = pexOpts
   }
 
   public async get(context: IRequiredContext): Promise<RP> {
     if (!this._rp) {
       const builder = await createRPBuilder({
         rpOpts: this._rpOptions,
-        pexOpts: this._pexOptions,
         context,
       })
       this._rp = builder.build()
@@ -36,25 +34,8 @@ export class RPInstance {
     return this._rpOptions
   }
 
-  get pexOptions() {
-    return this._pexOptions
-  }
-
-  public hasDefinition(): boolean {
-    return this.definitionId !== undefined
-  }
-
-  get definitionId(): string | undefined {
-    return this.pexOptions?.queryId
-  }
-
-  public async getPresentationDefinition(context: IRequiredContext): Promise<IPresentationDefinition | undefined> {
-    return this.definitionId
-      ? await context.agent.pexStoreGetDefinition({
-          definitionId: this.definitionId,
-          tenantId: this.pexOptions?.tenantId,
-        })
-      : undefined
+  get presentationOptions() {
+    return this._presentationOptions
   }
 
   public async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<URI> {
@@ -92,7 +73,7 @@ export class RPInstance {
         responseURI,
         responseURIType,
         jwtIssuer,
-        callback
+        callback,
       }),
     )
   }
