@@ -30,7 +30,7 @@ import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { IAgentContext, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
@@ -205,7 +205,6 @@ export type IRequiredContext = IAgentContext<
     IDIDManager &
     IKeyManager &
     IIdentifierResolution &
-    ICredentialIssuer &
     ICredentialValidation &
     ICredentialVerifier &
     IPresentationExchange &
