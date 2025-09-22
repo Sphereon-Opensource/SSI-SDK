@@ -60,6 +60,7 @@ function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOption
 
 export function getDcqlQueryLookupCallback(context: IRequiredContext): DcqlQueryLookupCallback {
   async function dcqlQueryLookup(queryId: string, version?: string, tenantId?: string): Promise<DcqlQuery> {
+    // TODO Add caching?
     const result = await context.agent.pdmGetDefinitions({
       filter: [
         {
