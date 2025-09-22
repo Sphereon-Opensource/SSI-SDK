@@ -42,6 +42,7 @@ jobs:
           node-version: '20.x'
           cache: 'pnpm'
       - run: pnpm install
+      - run: pnpm -g turbo
       - run: turbo clean
       - run: pnpm build
 #      - name: run CI tests
