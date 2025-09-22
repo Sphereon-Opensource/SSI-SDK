@@ -23,7 +23,7 @@
     "start:dev": "ts-node __tests__/RestAPI.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.106",
+    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.126",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",
@@ -44,16 +44,19 @@
     "express": "^4.19.2",
     "short-uuid": "^4.2.2",
     "swagger-ui-express": "^5.0.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@decentralized-identity/ion-sdk": "^0.6.0",
-    "@sphereon/did-auth-siop-adapter": "0.19.1-feature.DIIPv4.106",
+    "@sphereon/did-auth-siop-adapter": "0.19.1-feature.DIIPv4.126",
     "@sphereon/did-uni-client": "^0.6.3",
     "@sphereon/ssi-sdk-ext.did-provider-jwk": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm-jsonld-provider": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
+    "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

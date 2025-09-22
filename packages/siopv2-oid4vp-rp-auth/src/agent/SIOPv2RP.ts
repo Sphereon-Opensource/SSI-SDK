@@ -3,8 +3,9 @@ import {
   AuthorizationResponsePayload,
   AuthorizationResponseState,
   AuthorizationResponseStateStatus,
+  AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
-  VerifiedAuthorizationResponse,
+  VerifiedAuthorizationResponse
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
@@ -25,7 +26,6 @@ import {
 import { IAgentPlugin } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
 import {
-  AuthorizationResponseStateWithVerifiedData,
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
   IGetAuthRequestStateArgs,
@@ -84,7 +84,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {
-    return await this.getRPInstance({ definitionId: createArgs.definitionId, responseRedirectURI: createArgs.responseRedirectURI }, context)
+    return await this.getRPInstance({ responseRedirectURI: createArgs.responseRedirectURI, ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId } ) }, context)
       .then((rp) => rp.createAuthorizationRequestURI(createArgs, context))
       .then((URI) => URI.encodedUri)
   }
@@ -93,7 +93,7 @@ export class SIOPv2RP implements IAgentPlugin {
     createArgs: ICreateAuthRequestArgs,
     context: IRequiredContext,
   ): Promise<IAuthorizationRequestPayloads> {
-    return await this.getRPInstance({ definitionId: createArgs.definitionId }, context)
+    return await this.getRPInstance({ queryId: createArgs.queryId }, context)
       .then((rp) => rp.createAuthorizationRequest(createArgs, context))
       .then(async (request) => {
         const authRequest: IAuthorizationRequestPayloads = {
@@ -106,8 +106,10 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined> {
-    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
+    return await this.getRPInstance({ queryId: args.queryId }, context).then((rp) =>
+      rp.get(context).then((rp) =>
+        rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)
+      ),
     )
   }
 
@@ -115,7 +117,7 @@ export class SIOPv2RP implements IAgentPlugin {
     args: IGetAuthResponseStateArgs,
     context: IRequiredContext,
   ): Promise<AuthorizationResponseStateWithVerifiedData | undefined> {
-    const rpInstance: RPInstance = await this.getRPInstance({ definitionId: args.definitionId }, context)
+    const rpInstance: RPInstance = await this.getRPInstance({ queryId: args.queryId }, context)
     const authorizationResponseState: AuthorizationResponseState | undefined = await rpInstance
       .get(context)
       .then((rp) => rp.sessionManager.getResponseStateByCorrelationId(args.correlationId, args.errorOnNotFound))
@@ -192,10 +194,10 @@ export class SIOPv2RP implements IAgentPlugin {
       : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
-    if (args.state !== 'sent') {
-      throw Error(`Only 'sent' status is supported for this method at this point`)
+    if (args.state !== 'authorization_request_created') {
+      throw Error(`Only 'authorization_request_created' status is supported for this method at this point`)
     }
-    return await this.getRPInstance({ definitionId: args.definitionId }, context)
+    return await this.getRPInstance({ queryId: args.queryId }, context)
       // todo: In the SIOP library we need to update the signal method to be more like this method
       .then((rp) =>
         rp.get(context).then(async (rp) => {
@@ -209,7 +211,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopDeleteState(args: IGetAuthResponseStateArgs, context: IRequiredContext): Promise<boolean> {
-    return await this.getRPInstance({ definitionId: args.definitionId }, context)
+    return await this.getRPInstance({ queryId: args.queryId }, context)
       .then((rp) => rp.get(context).then((rp) => rp.sessionManager.deleteStateForCorrelationId(args.correlationId)))
       .then(() => true)
   }
@@ -222,7 +224,7 @@ export class SIOPv2RP implements IAgentPlugin {
       typeof args.authorizationResponse === 'string'
         ? (decodeUriAsJson(args.authorizationResponse) as AuthorizationResponsePayload)
         : args.authorizationResponse
-    return await this.getRPInstance({ definitionId: args.definitionId }, context).then((rp) =>
+    return await this.getRPInstance({ queryId: args.queryId }, context).then((rp) =>
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
@@ -234,9 +236,9 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
-    const { definitions, tenantId, version, versionControlMode } = args
+    const { queries, tenantId, version, versionControlMode } = args
     await Promise.all(
-      definitions.map(async (definitionPair) => {
+      queries.map(async (definitionPair) => {
         const definitionPayload = definitionPair.definitionPayload
         if (!definitionPayload && !definitionPair.dcqlPayload) {
           return Promise.reject(Error('Either dcqlPayload or definitionPayload must be suppplied'))
@@ -269,7 +271,7 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined> {
-    const instanceId = args.definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
+    const instanceId = args.queryId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (this.instances.has(instanceId)) {
       const rpInstance = this.instances.get(instanceId)
       if (rpInstance !== undefined) {
@@ -284,17 +286,17 @@ export class SIOPv2RP implements IAgentPlugin {
     return undefined
   }
 
-  async getRPInstance({ definitionId, responseRedirectURI }: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
-    const instanceId = definitionId ?? SIOPv2RP._DEFAULT_OPTS_KEY
+  async getRPInstance({ queryId, responseRedirectURI }: ISiopRPInstanceArgs, context: IRequiredContext): Promise<RPInstance> {
+    const instanceId = queryId ?? SIOPv2RP._DEFAULT_OPTS_KEY
     if (!this.instances.has(instanceId)) {
-      const instanceOpts = this.getInstanceOpts(definitionId)
-      const rpOpts = await this.getRPOptions(context, { definitionId, responseRedirectURI: responseRedirectURI })
+      const instanceOpts = this.getInstanceOpts(queryId)
+      const rpOpts = await this.getRPOptions(context, { queryId, responseRedirectURI: responseRedirectURI })
       if (!rpOpts.identifierOpts.resolveOpts?.resolver || typeof rpOpts.identifierOpts.resolveOpts.resolver.resolve !== 'function') {
         if (!rpOpts.identifierOpts?.resolveOpts) {
           rpOpts.identifierOpts = { ...rpOpts.identifierOpts }
           rpOpts.identifierOpts.resolveOpts = { ...rpOpts.identifierOpts.resolveOpts }
         }
-        console.log('Using agent DID resolver for RP instance with definition id ' + definitionId)
+        console.log('Using agent DID resolver for RP instance with definition id ' + queryId)
         rpOpts.identifierOpts.resolveOpts.resolver = getAgentResolver(context, {
           uniresolverResolution: true,
           localResolution: true,
@@ -310,11 +312,11 @@ export class SIOPv2RP implements IAgentPlugin {
     return rpInstance
   }
 
-  async getRPOptions(context: IRequiredContext, opts: { definitionId?: string; responseRedirectURI?: string }): Promise<IRPOptions> {
-    const { definitionId, responseRedirectURI: responseRedirectURI } = opts
-    const options = this.getInstanceOpts(definitionId)?.rpOpts ?? this.opts.defaultOpts
+  async getRPOptions(context: IRequiredContext, opts: { queryId?: string; responseRedirectURI?: string }): Promise<IRPOptions> {
+    const { queryId, responseRedirectURI: responseRedirectURI } = opts
+    const options = this.getInstanceOpts(queryId)?.rpOpts ?? this.opts.defaultOpts
     if (!options) {
-      throw Error(`Could not get specific nor default options for definition ${definitionId}`)
+      throw Error(`Could not get specific nor default options for definition ${queryId}`)
     }
     if (this.opts.defaultOpts) {
       if (!options.identifierOpts) {
@@ -348,7 +350,7 @@ export class SIOPv2RP implements IAgentPlugin {
   getInstanceOpts(definitionId?: string): IPEXInstanceOptions | undefined {
     if (!this.opts.instanceOpts) return undefined
 
-    const instanceOpt = definitionId ? this.opts.instanceOpts.find((i) => i.definitionId === definitionId) : undefined
+    const instanceOpt = definitionId ? this.opts.instanceOpts.find((i) => i.queryId === definitionId) : undefined
 
     return instanceOpt ?? this.getDefaultOptions(definitionId)
   }
@@ -356,11 +358,11 @@ export class SIOPv2RP implements IAgentPlugin {
   private getDefaultOptions(definitionId: string | undefined) {
     if (!this.opts.instanceOpts) return undefined
 
-    const defaultOptions = this.opts.instanceOpts.find((i) => i.definitionId === 'default')
+    const defaultOptions = this.opts.instanceOpts.find((i) => i.queryId === 'default')
     if (defaultOptions) {
       const clonedOptions = { ...defaultOptions }
       if (definitionId !== undefined) {
-        clonedOptions.definitionId = definitionId
+        clonedOptions.queryId = definitionId
       }
       return clonedOptions
     }

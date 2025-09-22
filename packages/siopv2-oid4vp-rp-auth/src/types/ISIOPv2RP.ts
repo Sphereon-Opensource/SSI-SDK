@@ -2,7 +2,8 @@ import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
   AuthorizationResponsePayload,
-  AuthorizationResponseState,
+  AuthorizationResponseStateWithVerifiedData,
+  CallbackOpts,
   ClaimPayloadCommonOpts,
   ClientMetadataOpts,
   IRPSessionManager,
@@ -27,7 +28,7 @@ import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AdditionalClaims, DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
+import { DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 
@@ -52,7 +53,6 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
-
   siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
@@ -64,8 +64,9 @@ export interface ISiopv2RPOpts {
 export interface IRPDefaultOpts extends IRPOptions {}
 
 export interface ICreateAuthRequestArgs {
-  definitionId: string
+  queryId: string
   correlationId: string
+  useQueryIdInstance?: boolean
   responseURIType: ResponseURIType
   responseURI: string
   responseRedirectURI?: string
@@ -74,24 +75,25 @@ export interface ICreateAuthRequestArgs {
   nonce?: string
   state?: string
   claims?: ClaimPayloadCommonOpts
+  callback?: CallbackOpts
 }
 
 export interface IGetAuthRequestStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
   errorOnNotFound?: boolean
 }
 
 export interface IGetAuthResponseStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
   includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {
-  definitionId: string
+  queryId: string
   correlationId: string
   state: AuthorizationRequestStateStatus
   error?: string
@@ -99,12 +101,12 @@ export interface IUpdateRequestStateArgs {
 
 export interface IDeleteAuthStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
 }
 
 export interface IVerifyAuthResponseStateArgs {
   authorizationResponse: string | AuthorizationResponsePayload
-  definitionId?: string
+  queryId?: string
   correlationId: string
   audience?: string
   dcqlQueryPayload?: DcqlQueryPayload
@@ -116,7 +118,7 @@ export interface IDefinitionPair {
 }
 
 export interface ImportDefinitionsArgs {
-  definitions: Array<IDefinitionPair>
+  queries: Array<IDefinitionPair>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode
@@ -124,7 +126,7 @@ export interface ImportDefinitionsArgs {
 
 export interface IGetRedirectUriArgs {
   correlationId: string
-  definitionId?: string
+  queryId?: string
   state?: string
 }
 
@@ -140,7 +142,7 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 }
 
 export interface ISiopRPInstanceArgs {
-  definitionId?: string
+  queryId?: string
   responseRedirectURI?: string
 }
 
@@ -165,7 +167,7 @@ export interface IRPOptions {
 export interface IPEXOptions {
   presentationVerifyCallback?: PresentationVerificationCallback
   // definition?: IPresentationDefinition
-  definitionId: string
+  queryId: string
   version?: string
   tenantId?: string
 }
@@ -196,10 +198,6 @@ export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
 // todo make the necessary changes for mdl-mdoc types
 export type CredentialOpts = {
   hasher?: HasherSync
-}
-
-export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {
-  verifiedData?: AdditionalClaims
 }
 
 export type IRequiredContext = IAgentContext<

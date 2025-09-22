@@ -6,11 +6,11 @@ import express, { Express, Request, Response, Router } from 'express'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import {
-  authStatusWebappEndpoint,
-  createAuthRequestWebappEndpoint,
+  authStatusUniversalOID4VPEndpoint,
+  createAuthRequestUniversalOID4VPEndpoint,
   getDefinitionsEndpoint,
-  removeAuthRequestStateWebappEndpoint,
-} from './webapp-api-functions'
+  removeAuthRequestStateUniversalOID4VPEndpoint,
+} from './universal-oid4vp-api-functions'
 import swaggerUi from 'swagger-ui-express'
 
 export class SIOPv2RPApiServer {
@@ -39,9 +39,9 @@ export class SIOPv2RPApiServer {
 
     // Webapp endpoints
     if (features.includes('rp-status')) {
-      createAuthRequestWebappEndpoint(this._router, context, opts?.endpointOpts?.webappCreateAuthRequest)
-      authStatusWebappEndpoint(this._router, context, opts?.endpointOpts?.webappAuthStatus)
-      removeAuthRequestStateWebappEndpoint(this._router, context, opts?.endpointOpts?.webappDeleteAuthRequest)
+      createAuthRequestUniversalOID4VPEndpoint(this._router, context, opts?.endpointOpts?.webappCreateAuthRequest)
+      authStatusUniversalOID4VPEndpoint(this._router, context, opts?.endpointOpts?.webappAuthStatus)
+      removeAuthRequestStateUniversalOID4VPEndpoint(this._router, context, opts?.endpointOpts?.webappDeleteAuthRequest)
       getDefinitionsEndpoint(this._router, context, opts?.endpointOpts?.webappGetDefinitions)
     }
 
