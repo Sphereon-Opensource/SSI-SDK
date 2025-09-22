@@ -8,6 +8,7 @@ import {
   VerifiedAuthorizationResponse
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import {
   AdditionalClaims,
   CredentialMapper,
@@ -44,7 +45,6 @@ import {
 } from '../index'
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts

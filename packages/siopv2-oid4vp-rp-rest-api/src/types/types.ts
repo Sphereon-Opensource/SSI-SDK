@@ -1,6 +1,5 @@
 import { IAgentContext, ICredentialVerifier } from '@veramo/core'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { AdditionalClaims } from '@sphereon/ssi-types'
@@ -34,7 +33,7 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
   responseRedirectURI?: string
 }
 
-export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPresentationExchange & IPDManager
+export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export type CreateAuthorizationRequest = Request<Record<string, never>, any, CreateAuthorizationRequestBody, Record<string, never>>
