@@ -64,9 +64,9 @@ export function getDcqlQueryLookupCallback(context: IRequiredContext): DcqlQuery
     const result = await context.agent.pdmGetDefinitions({
       filter: [
         {
-          queryId: queryId,
-          version: version,
-          tenantId: tenantId,
+          queryId,
+          ...(tenantId && { tenantId }),
+          ...(version && { version }),
         },
         {
           id: queryId,

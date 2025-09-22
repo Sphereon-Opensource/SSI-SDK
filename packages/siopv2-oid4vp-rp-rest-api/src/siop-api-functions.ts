@@ -54,9 +54,20 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
-      console.log('Authorization Response (siop-sessions')
-      console.log(JSON.stringify(request.body, null, 2))
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId, tenantId, version }] })
+      console.debug('Authorization Response (siop-sessions') // TODO use logger
+      console.debug(JSON.stringify(request.body, null, 2))
+      const definitionItems = await context.agent.pdmGetDefinitions({
+        filter: [
+          {
+            queryId,
+            ...(tenantId && { tenantId }),
+            ...(version && { version }),
+          },
+          {
+            id: queryId,
+          },
+        ],
+      })
       if (definitionItems.length === 0) {
         console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
         response.statusCode = 404
