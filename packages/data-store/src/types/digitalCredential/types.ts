@@ -1,4 +1,5 @@
-import { CredentialCorrelationType, CredentialDocumentFormat, CredentialRole, CredentialStateType, DocumentType, RegulationType } from './enums'
+import { CredentialCorrelationType, CredentialDocumentFormat, CredentialStateType, DocumentType, RegulationType } from './enums'
+import { CredentialRole } from '@sphereon/ssi-types'
 
 /**
  * DigitalCredential

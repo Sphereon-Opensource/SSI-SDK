@@ -1,8 +1,46 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { DcqlQuery } from 'dcql'
 import { DataSource } from 'typeorm'
-import { DataStorePresentationDefinitionEntities, DataStorePresentationDefinitionMigrations, PDStore } from '../index'
-import { GetDefinitionsArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '../types'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import {
+  DataStorePresentationDefinitionEntities,
+  DataStorePresentationDefinitionMigrations,
+  type DeleteDefinitionsArgs,
+  ImportDcqlQueryItem,
+  PDStore,
+} from '../index'
+import { DcqlQueryItem, GetDefinitionsArgs, NonPersistedDcqlQueryItem } from '../types'
+
+export const SAMPLE_DCQL_QUERY_IMPORT: ImportDcqlQueryItem = {
+  queryId: 'ajax-club',
+  query: {
+    credentials: [
+      {
+        id: 'clubcard-v1',
+        format: 'dc+sd-jwt',
+        require_cryptographic_holder_binding: true,
+        multiple: false,
+        meta: {
+          vct_values: ['clubcard-v1'],
+        },
+        claims: [
+          {
+            path: ['personData', 'name'],
+          },
+          {
+            path: ['personData', 'birthDate'],
+          },
+          {
+            path: ['membershipData', 'membershipId'],
+          },
+          {
+            path: ['membershipData', 'season'],
+          },
+        ],
+      },
+    ],
+  },
+}
 
 describe('PDStore tests', (): void => {
   let dbConnection: DataSource
@@ -28,136 +66,148 @@ describe('PDStore tests', (): void => {
     await dbConnection.destroy()
   })
 
-  it('should check if definition exists', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
-      version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
-    }
-    const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
-    expect(savedDefinition).toBeDefined()
-
-    const exists: boolean = await pdStore.hasDefinition({ itemId: savedDefinition.id })
-
-    expect(exists).toBeTruthy()
-  })
-
-  it('should check if definitions exist by filter', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
-      version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
-    }
-    const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
-    expect(savedDefinition).toBeDefined()
-
-    const exists: boolean = await pdStore.hasDefinitions({ filter: [{ definitionId: 'definition1' }] })
-
-    expect(exists).toBeTruthy()
-  })
-
-  it('should get definition by id', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
-      version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
-    }
-
-    const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
-    expect(savedDefinition).toBeDefined()
-
-    const result: PresentationDefinitionItem = await pdStore.getDefinition({ itemId: savedDefinition.id })
-
-    expect(result).toBeDefined()
-  })
-
-  it('should throw error when getting definition with unknown id', async (): Promise<void> => {
+  it('should throw error when getting query with unknown id', async (): Promise<void> => {
     const itemId = 'unknownDefinitionId'
 
     await expect(pdStore.getDefinition({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
   })
 
-  it('should get all definitions', async (): Promise<void> => {
-    const definition1: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
+  it('should get all queries', async (): Promise<void> => {
+    const definition1: NonPersistedDcqlQueryItem = {
+      queryId: 'definition1',
       version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
+      query: {
+        credentials: [
+          {
+            id: 'id-card-v1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['name'],
+              },
+            ],
+          },
+        ],
+      },
     }
-    const savedDefinition1: PresentationDefinitionItem = await pdStore.addDefinition(definition1)
+    const savedDefinition1: DcqlQueryItem = await pdStore.addDefinition(definition1)
     expect(savedDefinition1).toBeDefined()
 
-    const definition2: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition2',
+    const definition2: NonPersistedDcqlQueryItem = {
+      queryId: 'definition2',
       version: '1.0',
-      definitionPayload: { id: 'definition2', input_descriptors: [] },
+      query: {
+        credentials: [
+          {
+            id: 'driver-license-v1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['dateOfBirth'],
+              },
+            ],
+          },
+        ],
+      },
     }
-    const savedDefinition2: PresentationDefinitionItem = await pdStore.addDefinition(definition2)
+    const savedDefinition2: DcqlQueryItem = await pdStore.addDefinition(definition2)
     expect(savedDefinition2).toBeDefined()
 
-    const result: Array<PresentationDefinitionItem> = await pdStore.getDefinitions({})
+    const result: Array<DcqlQueryItem> = await pdStore.getDefinitions({})
 
     expect(result).toBeDefined()
     expect(result.length).toEqual(2)
   })
 
-  it('should get definitions by filter', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
+  it('should update dcql query', async (): Promise<void> => {
+    const definition: NonPersistedDcqlQueryItem = {
+      queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
       version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
+      query: SAMPLE_DCQL_QUERY_IMPORT.query,
     }
-    const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
+    const savedDefinition: DcqlQueryItem = await pdStore.addDefinition(definition)
     expect(savedDefinition).toBeDefined()
 
-    const args: GetDefinitionsArgs = {
-      filter: [{ definitionId: 'definition1' }],
-    }
-    const result: Array<PresentationDefinitionItem> = await pdStore.getDefinitions(args)
+    const updatedDcqlQuery = DcqlQuery.parse({
+      credentials: [
+        {
+          id: 'updated-clubcard',
+          format: 'dc+sd-jwt',
+          claims: [
+            {
+              path: ['name'],
+            },
+          ],
+        },
+      ],
+    })
 
-    expect(result.length).toEqual(1)
-  })
-
-  it('should add definition', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
-      version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
-    }
-
-    const result: PresentationDefinitionItem = await pdStore.addDefinition(definition)
-
-    expect(result).toBeDefined()
-    expect(result.definitionId).toEqual(definition.definitionId)
-  })
-
-  it('should update definition', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
-      version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
-    }
-    const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
-    expect(savedDefinition).toBeDefined()
-
-    const updatedDefinition: PresentationDefinitionItem = {
+    const updatedDefinition: DcqlQueryItem = {
       ...savedDefinition,
       version: '1.1',
+      query: updatedDcqlQuery,
     }
 
     await pdStore.updateDefinition(updatedDefinition)
-    const result: PresentationDefinitionItem = await pdStore.getDefinition({ itemId: savedDefinition.id })
+    const result: DcqlQueryItem = await pdStore.getDefinition({ itemId: savedDefinition.id })
 
     expect(result).toBeDefined()
     expect(result.version).toEqual('1.1')
+    expect(result.query?.credentials[0].id).toEqual('updated-clubcard')
+    expect(result.query?.credentials[0].format).toEqual('dc+sd-jwt')
   })
 
-  it('should delete definition', async (): Promise<void> => {
-    const definition: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
+  it('should get dcql queries by id', async (): Promise<void> => {
+    const definition: NonPersistedDcqlQueryItem = {
+      queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
       version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
+      query: SAMPLE_DCQL_QUERY_IMPORT.query,
     }
-    const savedDefinition: PresentationDefinitionItem = await pdStore.addDefinition(definition)
+
+    const savedDefinition: DcqlQueryItem = await pdStore.addDefinition(definition)
+    expect(savedDefinition).toBeDefined()
+
+    const result: DcqlQueryItem = await pdStore.getDefinition({ itemId: savedDefinition.id })
+
+    expect(result).toBeDefined()
+    expect(result.query).toBeDefined()
+    expect(result.query.credentials[0].format).toBe('dc+sd-jwt')
+    if (result.query.credentials[0].format === 'dc+sd-jwt') {
+      expect(result.query.credentials[0].meta?.vct_values).toContain('clubcard-v1')
+    }
+    expect(result.query.credentials[0].claims).toHaveLength(4)
+  })
+
+  it('should get dcql queries by filter', async (): Promise<void> => {
+    const definition: NonPersistedDcqlQueryItem = {
+      queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
+      version: '1.0',
+      query: SAMPLE_DCQL_QUERY_IMPORT.query,
+    }
+    const savedDefinition: DcqlQueryItem = await pdStore.addDefinition(definition)
+    expect(savedDefinition).toBeDefined()
+
+    const args: GetDefinitionsArgs = {
+      filter: [{ queryId: 'ajax-club' }],
+    }
+    const result: Array<DcqlQueryItem> = await pdStore.getDefinitions(args)
+
+    expect(result.length).toEqual(1)
+    expect(result[0].query).toBeDefined()
+    expect(result[0].query.credentials[0].id).toEqual('clubcard-v1')
+  })
+
+  it('should delete dcql query', async (): Promise<void> => {
+    const definition: NonPersistedDcqlQueryItem = {
+      queryId: 'definition1',
+      version: '1.0',
+      query: SAMPLE_DCQL_QUERY_IMPORT.query,
+    }
+    const savedDefinition: DcqlQueryItem = await pdStore.addDefinition(definition)
     expect(savedDefinition).toBeDefined()
 
     await pdStore.deleteDefinition({ itemId: savedDefinition.id })
@@ -167,28 +217,28 @@ describe('PDStore tests', (): void => {
     )
   })
 
-  it('should delete definitions by filter', async (): Promise<void> => {
-    const definition1: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition1',
+  it('should delete dcql queries by filter', async (): Promise<void> => {
+    const definition1: NonPersistedDcqlQueryItem = {
+      queryId: 'definition1',
       version: '1.0',
-      definitionPayload: { id: 'definition1', input_descriptors: [] },
+      query: SAMPLE_DCQL_QUERY_IMPORT.query,
     }
-    const savedDefinition1: PresentationDefinitionItem = await pdStore.addDefinition(definition1)
+    const savedDefinition1: DcqlQueryItem = await pdStore.addDefinition(definition1)
     expect(savedDefinition1).toBeDefined()
 
-    const definition2: NonPersistedPresentationDefinitionItem = {
-      definitionId: 'definition2',
+    const definition2: NonPersistedDcqlQueryItem = {
+      queryId: 'definition2',
       version: '1.0',
-      definitionPayload: { id: 'definition2', input_descriptors: [] },
+      query: SAMPLE_DCQL_QUERY_IMPORT.query,
     }
-    const savedDefinition2: PresentationDefinitionItem = await pdStore.addDefinition(definition2)
+    const savedDefinition2: DcqlQueryItem = await pdStore.addDefinition(definition2)
     expect(savedDefinition2).toBeDefined()
 
-    const filter = { filter: [{ definitionId: 'definition1' }] }
+    const filter = { filter: [{ queryId: 'definition1' }] } satisfies DeleteDefinitionsArgs
     await pdStore.deleteDefinitions(filter)
 
-    const remainingDefinitions: Array<PresentationDefinitionItem> = await pdStore.getDefinitions({})
+    const remainingDefinitions: Array<DcqlQueryItem> = await pdStore.getDefinitions({})
     expect(remainingDefinitions.length).toEqual(1)
-    expect(remainingDefinitions[0].definitionId).toEqual('definition2')
+    expect(remainingDefinitions[0].queryId).toEqual('definition2')
   })
 })

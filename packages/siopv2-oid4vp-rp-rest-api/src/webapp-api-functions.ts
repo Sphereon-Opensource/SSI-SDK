@@ -2,10 +2,10 @@ import { AuthorizationRequestState, AuthorizationResponseStateStatus } from '@sp
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse, uriWithBase } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
 import { ICreateAuthRequestWebappEndpointOpts, IRequiredContext } from './types'
-import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export function createAuthRequestWebappEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {

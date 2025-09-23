@@ -4,13 +4,14 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
+  CredentialConfigurationSupported,
   CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
   getTypesFromAuthorizationDetails,
-  getTypesFromCredentialOffer,
+  getTypesFromCredentialSupported,
   getTypesFromObject,
   Jwt,
   NotificationRequest,
@@ -35,7 +36,6 @@ import {
   ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
-  CredentialRole,
   ensureRawDocument,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
@@ -58,6 +58,7 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
+  CredentialRole,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -229,7 +230,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStoreIssuerBranding: this.oid4vciHolderStoreIssuerBranding.bind(this),
   }
 
-  private readonly vcFormatPreferences: Array<string> = ['dc+sd-jwt', 'vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc']
+  private readonly vcFormatPreferences: Array<string> = ['dc+sd-jwt', 'vc+sd-jwt', 'mso_mdoc', 'jwt_vc_json', 'jwt_vc', 'ldp_vc'] // TODO see SSISDK-52 concerning vc+sd-jwt
   private readonly jsonldCryptographicSuitePreferences: Array<string> = [
     'Ed25519Signature2018',
     'EcdsaSecp256k1Signature2019',
@@ -443,7 +444,13 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     if (offer) {
-      types = getTypesFromCredentialOffer(offer.original_credential_offer)
+      const credentialsSupported: CredentialConfigurationSupported[] = offer.original_credential_offer.credential_configuration_ids.flatMap(
+        (configId) => {
+          const config = oid4vciClient.endpointMetadata.credentialIssuerMetadata?.credential_configurations_supported[configId]
+          return config ? [config as CredentialConfigurationSupported] : []
+        },
+      )
+      types = credentialsSupported.map((credentialSupported) => getTypesFromCredentialSupported(credentialSupported))
     } else {
       types = asArray(authorizationRequestOpts.authorizationDetails)
         .map((authReqOpts) => getTypesFromAuthorizationDetails(authReqOpts) ?? [])

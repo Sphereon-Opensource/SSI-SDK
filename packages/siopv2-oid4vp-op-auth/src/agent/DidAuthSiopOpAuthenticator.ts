@@ -1,17 +1,6 @@
-import {
-  decodeUriAsJson,
-  PresentationSignCallback,
-  VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
-import {
-  ConnectionType,
-  CorrelationIdentifierType,
-  CredentialRole,
-  Identity,
-  IdentityOrigin,
-  NonPersistedIdentity,
-  Party,
-} from '@sphereon/ssi-sdk.data-store'
-import { HasherSync, Loggers } from '@sphereon/ssi-types'
+import { decodeUriAsJson, PresentationSignCallback, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
+import { ConnectionType, CorrelationIdentifierType, Identity, IdentityOrigin, NonPersistedIdentity, Party } from '@sphereon/ssi-sdk.data-store'
+import { HasherSync, Loggers, CredentialRole } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'
 import { OpSession } from '../session'
@@ -92,13 +81,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
   private readonly hasher?: HasherSync
 
   constructor(options?: DidAuthSiopOpAuthenticatorOptions) {
-    const {
-      onContactIdentityCreated,
-      onIdentifierCreated,
-      hasher,
-      customApprovals = {},
-      presentationSignCallback
-    } = { ...options }
+    const { onContactIdentityCreated, onIdentifierCreated, hasher, customApprovals = {}, presentationSignCallback } = { ...options }
 
     this.hasher = hasher
     this.onContactIdentityCreated = onContactIdentityCreated

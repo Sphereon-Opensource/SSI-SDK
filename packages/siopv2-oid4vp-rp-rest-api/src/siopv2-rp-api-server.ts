@@ -1,23 +1,22 @@
 import { agentContext } from '@sphereon/ssi-sdk.core'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
 import express, { Express, Request, Response, Router } from 'express'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import {
-  authStatusWebappEndpoint,
-  createAuthRequestWebappEndpoint,
+  authStatusUniversalOID4VPEndpoint,
+  createAuthRequestUniversalOID4VPEndpoint,
   getDefinitionsEndpoint,
-  removeAuthRequestStateWebappEndpoint,
-} from './webapp-api-functions'
+  removeAuthRequestStateUniversalOID4VPEndpoint,
+} from './universal-oid4vp-api-functions'
 import swaggerUi from 'swagger-ui-express'
 
 export class SIOPv2RPApiServer {
   private readonly _express: Express
   private readonly _router: Router
-  private readonly _agent: TAgent<IPresentationExchange & ISIOPv2RP>
+  private readonly _agent: TAgent<ISIOPv2RP>
   private readonly _opts?: ISIOPv2RPRestAPIOpts
   private readonly _basePath: string
 
@@ -40,9 +39,9 @@ export class SIOPv2RPApiServer {
 
     // Webapp endpoints
     if (features.includes('rp-status')) {
-      createAuthRequestWebappEndpoint(this._router, context, opts?.endpointOpts?.webappCreateAuthRequest)
-      authStatusWebappEndpoint(this._router, context, opts?.endpointOpts?.webappAuthStatus)
-      removeAuthRequestStateWebappEndpoint(this._router, context, opts?.endpointOpts?.webappDeleteAuthRequest)
+      createAuthRequestUniversalOID4VPEndpoint(this._router, context, opts?.endpointOpts?.webappCreateAuthRequest)
+      authStatusUniversalOID4VPEndpoint(this._router, context, opts?.endpointOpts?.webappAuthStatus)
+      removeAuthRequestStateUniversalOID4VPEndpoint(this._router, context, opts?.endpointOpts?.webappDeleteAuthRequest)
       getDefinitionsEndpoint(this._router, context, opts?.endpointOpts?.webappGetDefinitions)
     }
 
@@ -92,7 +91,7 @@ export class SIOPv2RPApiServer {
     return this._router
   }
 
-  get agent(): TAgent<IPresentationExchange & ISIOPv2RP> {
+  get agent(): TAgent<ISIOPv2RP> {
     return this._agent
   }
 

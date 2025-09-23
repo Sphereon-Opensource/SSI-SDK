@@ -1,9 +1,9 @@
+import { DcqlQueryItem, ImportDcqlQueryItem, NonPersistedDcqlQueryItem } from '@sphereon/ssi-sdk.data-store'
 import { TAgent } from '@veramo/core'
-import { GetDefinitionItemsArgs, IPDManager, PersistDefinitionArgs, PersistPresentationDefinitionItem } from '../../src'
-import { IPresentationDefinition } from '@sphereon/pex'
+import { DcqlQuery } from 'dcql'
 import * as fs from 'fs'
-import { PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { GetDcqlQueryItemsArgs, IPDManager, PersistDcqlQueryArgs, PersistDcqlQueryItem } from '../../src'
 
 type ConfiguredAgent = TAgent<IPDManager>
 
@@ -17,33 +17,36 @@ function getFileAsJson(path: string) {
 
 export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Promise<boolean>; tearDown: () => Promise<boolean> }): void => {
   describe('PD Manager Agent Plugin', (): void => {
-    const singleDefinition: IPresentationDefinition = getFileAsJson('./packages/pd-manager/__tests__/fixtures/pd_single.json')
-    const sampleDcql = {
-      credentials: [
-        {
-          id: 'credential1',
-          format: 'jwt_vc',
-          claims: [
-            {
-              namespace: 'test',
-              claim_name: 'testClaim',
-            },
-          ],
-        },
-      ],
+    const sampleDcql: ImportDcqlQueryItem = {
+      queryId: 'credential1',
+      query: DcqlQuery.parse({
+        credentials: [
+          {
+            id: 'credential1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', `testClaim`],
+              },
+            ],
+          },
+        ],
+      }),
     }
 
     let agent: ConfiguredAgent
-    let defaultDefinitionItem: PresentationDefinitionItem
+    let defaultDefinitionItem: DcqlQueryItem
 
     beforeAll(async (): Promise<void> => {
       await testContext.setup()
       agent = testContext.getAgent()
 
-      const definition: PersistDefinitionArgs = {
+      const definition: PersistDcqlQueryArgs = {
         definitionItem: {
-          definitionId: 'default_definition_id',
-          definitionPayload: singleDefinition,
+          queryId: 'default_definition_id',
+          query: sampleDcql.query,
         },
       }
 
@@ -59,7 +62,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get definition item by id', async (): Promise<void> => {
-      const result: PresentationDefinitionItem = await agent.pdmGetDefinition({ itemId: defaultDefinitionItem.id })
+      const result: DcqlQueryItem = await agent.pdmGetDefinition({ itemId: defaultDefinitionItem.id })
 
       expect(result.id).toEqual(defaultDefinitionItem.id)
     })
@@ -72,10 +75,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should check if any definition items exist by filter', async (): Promise<void> => {
-      const args: GetDefinitionItemsArgs = {
+      const args: GetDcqlQueryItemsArgs = {
         filter: [
           {
-            definitionId: 'default_definition_id',
+            queryId: 'default_definition_id',
           },
         ],
       }
@@ -91,97 +94,155 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get definition items by filter', async (): Promise<void> => {
-      const args: GetDefinitionItemsArgs = {
+      const args: GetDcqlQueryItemsArgs = {
         filter: [
           {
-            definitionId: 'default_definition_id',
+            queryId: 'default_definition_id',
           },
         ],
       }
-      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions(args)
+      const result: Array<DcqlQueryItem> = await agent.pdmGetDefinitions(args)
 
       expect(result.length).toBe(1)
     })
 
     it('should add definition item with default version', async (): Promise<void> => {
-      const definition: PersistDefinitionArgs = {
+      const definition: PersistDcqlQueryArgs = {
         definitionItem: {
-          definitionId: 'new_definition_id',
-          definitionPayload: singleDefinition,
+          queryId: 'new_definition_id',
+          query: DcqlQuery.parse({
+            credentials: [
+              {
+                id: 'new_credential',
+                format: 'dc+sd-jwt',
+                require_cryptographic_holder_binding: true,
+                multiple: false,
+                claims: [
+                  {
+                    path: ['test', 'newClaim'],
+                  },
+                ],
+              },
+            ],
+          }),
         },
       }
 
-      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition(definition)
+      const result: DcqlQueryItem = await agent.pdmPersistDefinition(definition)
 
-      expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(result.queryId).toEqual(definition.definitionItem.queryId)
       expect(result.version).toEqual('1')
     })
 
     it('should update definition item by id', async (): Promise<void> => {
-      const updatedDefinitionItem: PresentationDefinitionItem = {
+      const updatedDefinitionItem: DcqlQueryItem = {
         ...defaultDefinitionItem,
       }
-      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'Updated Credential'
-      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+      updatedDefinitionItem.query = DcqlQuery.parse({
+        credentials: [
+          {
+            id: 'updated_credential',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', 'updatedClaim'],
+              },
+            ],
+          },
+        ],
+      })
+      const result: DcqlQueryItem = await agent.pdmPersistDefinition({
         definitionItem: updatedDefinitionItem,
         opts: { versionControlMode: 'Overwrite' },
       })
 
-      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
-      expect(result.definitionPayload.input_descriptors[0].id).toEqual('Updated Credential')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('updated_credential')
     })
 
     it('should create a new major version of the default definition item', async (): Promise<void> => {
-      const updatedDefinitionItem: PresentationDefinitionItem = {
+      const updatedDefinitionItem: DcqlQueryItem = {
         ...defaultDefinitionItem,
       }
-      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New major version'
-      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+      updatedDefinitionItem.query = DcqlQuery.parse({
+        credentials: [
+          {
+            id: 'major_version_credential',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', 'majorVersionClaim'],
+              },
+            ],
+          },
+        ],
+      })
+      const result: DcqlQueryItem = await agent.pdmPersistDefinition({
         definitionItem: updatedDefinitionItem,
       })
 
       expect(result.version).toEqual('2')
-      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
-      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New major version')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('major_version_credential')
 
       defaultDefinitionItem.version = result.version
     })
 
-    let versionedDefinitionItem: PresentationDefinitionItem
+    let versionedDefinitionItem: DcqlQueryItem
     it('should add definition item v1.0.0', async (): Promise<void> => {
-      const definition: PersistDefinitionArgs = {
+      const definition: PersistDcqlQueryArgs = {
         definitionItem: {
-          definitionId: 'versioned_definition_id',
+          queryId: 'versioned_definition_id',
           version: '1.0.0',
-          definitionPayload: singleDefinition,
+          query: DcqlQuery.parse({
+            credentials: [
+              {
+                id: 'versioned_credential',
+                format: 'dc+sd-jwt',
+                require_cryptographic_holder_binding: true,
+                multiple: false,
+                claims: [
+                  {
+                    path: ['test', 'versionedClaim'],
+                  },
+                ],
+              },
+            ],
+          }),
         },
       }
 
       versionedDefinitionItem = await agent.pdmPersistDefinition(definition)
 
-      expect(versionedDefinitionItem.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(versionedDefinitionItem.queryId).toEqual(definition.definitionItem.queryId)
       expect(versionedDefinitionItem.version).toEqual(definition.definitionItem.version)
     })
 
     it('should increment major versions up to 12.0.0', async (): Promise<void> => {
-      let currentItem = { ...versionedDefinitionItem } as PersistPresentationDefinitionItem
+      let currentItem = { ...versionedDefinitionItem } as PersistDcqlQueryItem
 
       for (let i = 2; i <= 12; i++) {
-        currentItem.definitionPayload.input_descriptors[0].id = `Version ${i}.0.0`
-        currentItem.dcqlPayload = {
+        currentItem.name = 'Credential Name'
+        currentItem.purpose = 'Credential Purpose'
+        currentItem.query = DcqlQuery.parse({
           credentials: [
             {
               id: `credential-v${i}`,
-              format: 'jwt_vc',
+              format: 'dc+sd-jwt',
+              require_cryptographic_holder_binding: true,
+              multiple: false,
               claims: [
                 {
-                  namespace: 'test',
-                  claim_name: `claim-v${i}`,
+                  path: ['test', `claim-v${i}`],
                 },
               ],
             },
           ],
-        }
+        })
         currentItem.version = undefined
         const result = await agent.pdmPersistDefinition({
           definitionItem: currentItem,
@@ -189,72 +250,115 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         })
 
         expect(result.version).toEqual(`${i}.0.0`)
-        expect(result.definitionPayload.input_descriptors[0].id).toEqual(`Version ${i}.0.0`)
-        expect(result.dcqlPayload).toBeTruthy()
-        expect(result.dcqlPayload?.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.query).toBeTruthy()
+        expect(result.query.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.name).toEqual('Credential Name')
+        expect(result.purpose).toEqual('Credential Purpose')
 
         currentItem = result
       }
 
-      versionedDefinitionItem = currentItem as PresentationDefinitionItem
+      versionedDefinitionItem = currentItem as DcqlQueryItem
     })
 
     it('should create a new minor version of the definition item', async (): Promise<void> => {
-      const updatedDefinitionItem: PresentationDefinitionItem = {
+      const updatedDefinitionItem: DcqlQueryItem = {
         ...versionedDefinitionItem,
       }
-      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New minor version'
-      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+      updatedDefinitionItem.query = DcqlQuery.parse({
+        credentials: [
+          {
+            id: 'minor_version_credential',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', 'minorVersionClaim'],
+              },
+            ],
+          },
+        ],
+      })
+      const result: DcqlQueryItem = await agent.pdmPersistDefinition({
         definitionItem: updatedDefinitionItem,
         opts: { versionControlMode: 'AutoIncrement', versionIncrementReleaseType: 'minor' },
       })
 
       expect(result.version).toEqual('12.1.0')
-      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
-      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New minor version')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('minor_version_credential')
     })
 
-    let preReleaseVersionedDefinitionItem: PresentationDefinitionItem
+    let preReleaseVersionedDefinitionItem: DcqlQueryItem
     it('should add pre-release definition item v1.0.0-beta.1', async (): Promise<void> => {
-      const definition: PersistDefinitionArgs = {
+      const definition: PersistDcqlQueryArgs = {
         definitionItem: {
-          definitionId: 'pr_versioned_definition_id',
+          queryId: 'pr_versioned_definition_id',
           version: '1.0.0-beta.1',
-          definitionPayload: singleDefinition,
+          query: DcqlQuery.parse({
+            credentials: [
+              {
+                id: 'prerelease_credential',
+                format: 'dc+sd-jwt',
+                require_cryptographic_holder_binding: true,
+                multiple: false,
+                claims: [
+                  {
+                    path: ['test', 'prereleaseClaim'],
+                  },
+                ],
+              },
+            ],
+          }),
         },
       }
 
       preReleaseVersionedDefinitionItem = await agent.pdmPersistDefinition(definition)
 
-      expect(preReleaseVersionedDefinitionItem.definitionId).toEqual(definition.definitionItem.definitionId)
+      expect(preReleaseVersionedDefinitionItem.queryId).toEqual(definition.definitionItem.queryId)
       expect(preReleaseVersionedDefinitionItem.version).toEqual(definition.definitionItem.version)
     })
 
     it('should create a new pre-release version of the definition item', async (): Promise<void> => {
-      const updatedDefinitionItem: PresentationDefinitionItem = {
+      const updatedDefinitionItem: DcqlQueryItem = {
         ...preReleaseVersionedDefinitionItem,
       }
-      updatedDefinitionItem.definitionPayload.input_descriptors[0].id = 'New pre-release version'
-      const result: PresentationDefinitionItem = await agent.pdmPersistDefinition({
+      updatedDefinitionItem.query = DcqlQuery.parse({
+        credentials: [
+          {
+            id: 'prerelease_v2_credential',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['test', 'prereleaseV2Claim'],
+              },
+            ],
+          },
+        ],
+      })
+      const result: DcqlQueryItem = await agent.pdmPersistDefinition({
         definitionItem: updatedDefinitionItem,
         opts: { versionControlMode: 'AutoIncrement', versionIncrementReleaseType: 'prerelease' },
       })
 
       expect(result.version).toEqual('1.0.0-beta.2')
-      expect(result.definitionPayload.input_descriptors.length).toEqual(1)
-      expect(result.definitionPayload.input_descriptors[0].id).toEqual('New pre-release version')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('prerelease_v2_credential')
 
       versionedDefinitionItem.version = result.version
     })
 
     it('should get all definition items including all version', async (): Promise<void> => {
-      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({ opts: { showVersionHistory: true } })
+      const result: Array<DcqlQueryItem> = await agent.pdmGetDefinitions({ opts: { showVersionHistory: true } })
 
       expect(result.length).toBe(18)
     })
 
     it('should get all definition items only containing the latest versions', async (): Promise<void> => {
-      const result: Array<PresentationDefinitionItem> = await agent.pdmGetDefinitions({})
+      const result: Array<DcqlQueryItem> = await agent.pdmGetDefinitions({})
 
       expect(result.length).toBe(4)
     })
@@ -272,10 +376,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should return false when checking for non-existing definition items by filter', async (): Promise<void> => {
-      const args: GetDefinitionItemsArgs = {
+      const args: GetDcqlQueryItemsArgs = {
         filter: [
           {
-            definitionId: 'non_existing_definition_id',
+            queryId: 'non_existing_definition_id',
           },
         ],
       }
@@ -285,10 +389,10 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should delete multiple definition items by filter', async (): Promise<void> => {
-      const args: GetDefinitionItemsArgs = {
+      const args: GetDcqlQueryItemsArgs = {
         filter: [
           {
-            definitionId: 'default_definition_id',
+            queryId: 'default_definition_id',
           },
         ],
       }
@@ -298,40 +402,65 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result).toBe(false)
     })
 
-    it('should add definition item with dcqlPayload', async (): Promise<void> => {
-      const definition: PersistDefinitionArgs = {
+    it('should add definition item with dcqlQuery', async (): Promise<void> => {
+      const definition: PersistDcqlQueryArgs = {
         definitionItem: {
-          definitionId: 'new_definition_id',
-          definitionPayload: singleDefinition,
-          dcqlPayload: sampleDcql,
+          queryId: 'new_dcql_definition_id',
+          query: sampleDcql.query,
         },
       }
 
       const result = await agent.pdmPersistDefinition(definition)
 
-      expect(result.definitionId).toEqual(definition.definitionItem.definitionId)
-      expect(result.dcqlPayload).toEqual(definition.definitionItem.dcqlPayload)
+      expect(result.queryId).toEqual(definition.definitionItem.queryId)
+      expect(result.query.credentials[0].id).toEqual('credential1')
     })
 
-    it('should update dcqlPayload in definition item', async (): Promise<void> => {
-      const updatedDcql = {
+    it('should update dcqlQuery in definition item', async (): Promise<void> => {
+      // First, create a definition with initial dcqlQuery
+      const initialDefinition: PersistDcqlQueryArgs = {
+        definitionItem: {
+          queryId: 'dcql_update_test',
+          query: DcqlQuery.parse({
+            credentials: [
+              {
+                id: 'initial-credential',
+                require_cryptographic_holder_binding: true,
+                multiple: false,
+                format: 'dc+sd-jwt',
+                claims: [
+                  {
+                    path: ['test', 'initialClaim'],
+                  },
+                ],
+              },
+            ],
+          }),
+        },
+      }
+
+      const createdDefinition = await agent.pdmPersistDefinition(initialDefinition)
+
+      // Now update it
+      const updatedDcql = DcqlQuery.parse({
         credentials: [
           {
             id: 'credential2',
-            format: 'jwt_vc',
+            format: 'dc+sd-jwt',
+            multiple: false,
+            require_cryptographic_holder_binding: true,
             claims: [
               {
-                namespace: 'test',
-                claim_name: 'updatedClaim',
+                path: ['test', 'updatedClaim'],
               },
             ],
           },
         ],
-      }
+      })
 
-      const updatedDefinitionItem = {
-        ...defaultDefinitionItem,
-        dcqlPayload: updatedDcql,
+      const updatedDefinitionItem: NonPersistedDcqlQueryItem = {
+        ...createdDefinition,
+        query: updatedDcql,
       }
 
       const result = await agent.pdmPersistDefinition({
@@ -339,7 +468,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         opts: { versionControlMode: 'Overwrite' },
       })
 
-      expect(result.dcqlPayload).toEqual(updatedDcql)
+      expect(result.query.credentials[0].id).toEqual('credential2')
     })
   })
 }

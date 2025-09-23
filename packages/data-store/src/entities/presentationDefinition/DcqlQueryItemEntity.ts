@@ -2,15 +2,15 @@ import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entit
 import { IsNotEmpty } from 'class-validator'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 
-@Entity('PresentationDefinitionItem')
+@Entity('DcqlQueryItem')
 @Index(['version'], { unique: false })
-export class PresentationDefinitionItemEntity extends BaseEntity {
+export class DcqlQueryItemEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ name: 'definition_id', length: 255, type: 'varchar', nullable: false, unique: false })
-  @IsNotEmpty({ message: 'A blank definition id field is not allowed' })
-  definitionId!: string
+  @Column({ name: 'query_id', length: 255, type: 'varchar', nullable: false, unique: false })
+  @IsNotEmpty({ message: 'A blank query id field is not allowed' })
+  queryId!: string
 
   @Column({ name: 'version', length: 255, type: 'varchar', nullable: false, unique: false })
   @IsNotEmpty({ message: 'A blank version field is not allowed' })
@@ -25,13 +25,9 @@ export class PresentationDefinitionItemEntity extends BaseEntity {
   @Column({ name: 'name', length: 255, type: 'varchar', nullable: true, unique: false })
   name?: string
 
-  @Column({ name: 'definition_payload', type: 'text', nullable: false, unique: false }) // TODO should this become nullable now we have dcqlPayload?
-  @IsNotEmpty({ message: 'A blank PD definition payload field is not allowed' })
-  definitionPayload!: string
-
-  @Column({ name: 'dcql_payload', type: 'text', nullable: true, unique: false })
-  @IsNotEmpty({ message: 'A blank dcql definition payload field is not allowed' })
-  dcqlPayload!: string
+  @Column({ name: 'query', type: 'text', nullable: false, unique: false })
+  @IsNotEmpty({ message: 'A blank dcql query payload field is not allowed' })
+  query!: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date

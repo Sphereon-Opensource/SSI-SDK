@@ -4,7 +4,7 @@ import { IService } from '@veramo/core'
 import { DIDDocument } from 'did-resolver'
 import { AccessListish, BigNumberish, BytesLike } from 'ethers'
 import { ApiOpts, EbsiEnvironment } from '../types/IEbsiSupport'
-import { CredentialRole } from '@sphereon/ssi-sdk.data-store'
+import { CredentialRole } from '@sphereon/ssi-types'
 
 export type IContext = IAgentContext<IKeyManager>
 

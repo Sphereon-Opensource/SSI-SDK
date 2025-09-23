@@ -384,6 +384,9 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
+    if (!format) {
+      return Promise.reject(Error('format parameter missing from input'))
+    }
     const allSupported = client.getCredentialsSupported(format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
@@ -580,7 +583,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
-    //case 'vc+sd-jwt':  FIXME re-enable for vcdm2
+    //case 'vc+sd-jwt': // TODO see SSISDK-52 concerning vc+sd-jwt
     case 'dc+sd-jwt':
     case 'mso_mdoc': {
       const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(

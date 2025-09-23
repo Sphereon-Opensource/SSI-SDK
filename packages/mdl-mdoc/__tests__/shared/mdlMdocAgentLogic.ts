@@ -1,4 +1,5 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { TAgent } from '@veramo/core'
 //@ts-ignore
 import express, { Application, NextFunction, Request, Response } from 'express'

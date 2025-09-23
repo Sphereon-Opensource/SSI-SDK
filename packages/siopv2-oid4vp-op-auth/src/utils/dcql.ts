@@ -27,6 +27,7 @@ export function convertToDcqlCredentials(credential: UniqueDigitalCredential | O
   if (CredentialMapper.isJwtDecodedCredential(originalVerifiableCredential)) {
     return Dcql.toDcqlJwtCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedW3CVerifiableCredential)
   } else if (CredentialMapper.isSdJwtDecodedCredential(originalVerifiableCredential)) {
+    // FIXME: SD-JWT VC vs VCDM2 + SD-JWT would need to be handled here
     return Dcql.toDcqlSdJwtCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedSdJwtVerifiableCredential)
   } else if (CredentialMapper.isMsoMdocDecodedCredential(originalVerifiableCredential)) {
     return Dcql.toDcqlMdocCredential(CredentialMapper.toWrappedVerifiableCredential(originalVerifiableCredential) as WrappedMdocCredential)

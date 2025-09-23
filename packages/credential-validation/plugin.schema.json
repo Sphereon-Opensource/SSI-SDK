@@ -888,7 +888,7 @@
             },
             "format": {
               "type": "string",
-              "const": "vc+sd-jwt",
+              "const": "dc+sd-jwt",
               "description": "The claim format, typically used during exchange transport protocols"
             },
             "credential": {
@@ -1275,7 +1275,7 @@
             },
             "format": {
               "type": "string",
-              "const": "vc+sd-jwt",
+              "const": "dc+sd-jwt",
               "description": "The claim format, typically used during exchange transport protocols"
             },
             "presentation": {

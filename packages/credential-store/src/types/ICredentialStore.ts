@@ -1,12 +1,12 @@
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import {
-  CredentialRole,
   type DigitalCredential,
   type FindDigitalCredentialArgs,
   type NonPersistedDigitalCredential,
   type UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store'
 import type {
+  CredentialRole,
   HasherSync,
   ICredential,
   IPresentation,

@@ -1,5 +1,5 @@
 import {
-  ClientIdScheme,
+  ClientIdentifierPrefix,
   ClientMetadataOpts,
   InMemoryRPSessionManager,
   PassBy,
@@ -14,7 +14,7 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback,
+  VerifyJwtCallback
 } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload, SigningAlgo } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
@@ -28,9 +28,8 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
-import { CredentialMapper, Hasher, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
+import { CredentialMapper, HasherSync, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-// import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
@@ -69,7 +68,6 @@ export function getPresentationVerificationCallback(
     if (CredentialMapper.isSdJwtEncoded(args)) {
       const result: IVerifySdJwtPresentationResult = await context.agent.verifySdJwtPresentation({
         presentation: args,
-        kb: true,
       })
       // fixme: investigate the correct way to handle this
       return { verified: !!result.payload }
@@ -113,11 +111,11 @@ export async function createRPBuilder(args: {
   let definition: IPresentationDefinition | undefined = args.definition
   let dcqlQuery: DcqlQuery | undefined = args.dcql
 
-  if (!definition && pexOpts && pexOpts.definitionId) {
+  if (!definition && pexOpts && pexOpts.queryId) {
     const presentationDefinitionItems = await context.agent.pdmGetDefinitions({
       filter: [
         {
-          definitionId: pexOpts.definitionId,
+          queryId: pexOpts.queryId,
           version: pexOpts.version,
           tenantId: pexOpts.tenantId,
         },
@@ -126,9 +124,8 @@ export async function createRPBuilder(args: {
 
     if (presentationDefinitionItems.length > 0) {
       const presentationDefinitionItem = presentationDefinitionItems[0]
-      definition = presentationDefinitionItem.definitionPayload
       if (!dcqlQuery && presentationDefinitionItem.dcqlPayload) {
-        dcqlQuery = presentationDefinitionItem.dcqlPayload as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
+        dcqlQuery = presentationDefinitionItem.dcqlPayload.dcqlQuery as DcqlQuery // cast from DcqlQueryREST back to valibot DcqlQuery
       }
     }
   }
@@ -161,7 +158,7 @@ export async function createRPBuilder(args: {
       uniresolverResolution: rpOpts.identifierOpts.resolveOpts?.noUniversalResolverFallback !== true,
     })
   //todo: probably wise to first look and see if we actually need the hasher to begin with
-  let hasher: Hasher | undefined = rpOpts.credentialOpts?.hasher
+  let hasher: HasherSync | undefined = rpOpts.credentialOpts?.hasher
   if (!rpOpts.credentialOpts?.hasher || typeof rpOpts.credentialOpts?.hasher !== 'function') {
     hasher = defaultHasher
   }
@@ -197,18 +194,14 @@ export async function createRPBuilder(args: {
 
   const oidfOpts = identifierOpts.oidfOpts
   if (oidfOpts && isExternalIdentifierOIDFEntityIdOpts(oidfOpts)) {
-    builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT).withClientIdScheme('entity_id', PropertyTarget.REQUEST_OBJECT)
+    builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
-    builder
-      .withClientId(
-        resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-        PropertyTarget.REQUEST_OBJECT,
-      )
-      .withClientIdScheme(
-        (resolution.clientIdScheme as ClientIdScheme) ?? (identifierOpts.idOpts.clientIdScheme as ClientIdScheme),
-        PropertyTarget.REQUEST_OBJECT,
-      )
+    const clientId: string = rpOpts.clientMetadataOpts?.client_id ??
+      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint)
+     const clientIdPrefixed = prefixClientId(clientId)
+    builder.withClientId(clientIdPrefixed, PropertyTarget.REQUEST_OBJECT
+    )
   }
 
   if (hasher) {
@@ -222,9 +215,6 @@ export async function createRPBuilder(args: {
   //fixme: this has been removed in the new version of did-auth-siop
   // builder.withWellknownDIDVerifyCallback(getWellKnownDIDVerifyCallback(didOpts, context))
 
-  if (definition) {
-    builder.withPresentationDefinition({ definition }, PropertyTarget.REQUEST_OBJECT)
-  }
   if (dcqlQuery) {
     builder.withDcqlQuery(dcqlQuery)
   }
@@ -308,4 +298,13 @@ export function getSigningAlgo(type: TKeyType): SigningAlgo {
     default:
       throw Error('Key type not yet supported')
   }
+}
+
+export function prefixClientId(clientId: string): string {
+  // FIXME SSISDK-60
+  if (clientId.startsWith('did:')) {
+    return `${ClientIdentifierPrefix.DECENTRALIZED_IDENTIFIER}:${clientId}`;
+  }
+
+  return clientId;
 }

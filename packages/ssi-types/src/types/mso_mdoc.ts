@@ -4,23 +4,23 @@
  * but it would be nice if we can remove the imports and just have some interfaces here we can then use, like done
  * for sd-jwts
  */
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
 import { OriginalType } from '../mapper'
 
-export type DocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
-export type IssuerSignedItemJson = mdoc.com.sphereon.mdoc.data.device.IssuerSignedItemJson
+export type DocumentJson = mdocPkg.com.sphereon.mdoc.data.device.DocumentJson
+export type IssuerSignedItemJson = mdocPkg.com.sphereon.mdoc.data.device.IssuerSignedItemJson
 
 /**
  * Represents a selective disclosure JWT vc in compact form.
  */
 export type MdocOid4vpIssuerSigned = string
 export type MdocOid4vpMdocVpToken = string
-export type MdocIssuerSigned = mdoc.com.sphereon.mdoc.data.device.IssuerSignedCbor
-export type MdocDocument = mdoc.com.sphereon.mdoc.data.device.DocumentCbor
-export type MdocDocumentJson = mdoc.com.sphereon.mdoc.data.device.DocumentJson
-export type IssuerSignedJson = mdoc.com.sphereon.mdoc.data.device.IssuerSignedJson
-export type DeviceSignedJson = mdoc.com.sphereon.mdoc.data.device.DeviceSignedJson
-export type MdocDeviceResponse = mdoc.com.sphereon.mdoc.data.device.DeviceResponseCbor
+export type MdocIssuerSigned = mdocPkg.com.sphereon.mdoc.data.device.IssuerSignedCbor
+export type MdocDocument = mdocPkg.com.sphereon.mdoc.data.device.DocumentCbor
+export type MdocDocumentJson = mdocPkg.com.sphereon.mdoc.data.device.DocumentJson
+export type IssuerSignedJson = mdocPkg.com.sphereon.mdoc.data.device.IssuerSignedJson
+export type DeviceSignedJson = mdocPkg.com.sphereon.mdoc.data.device.DeviceSignedJson
+export type MdocDeviceResponse = mdocPkg.com.sphereon.mdoc.data.device.DeviceResponseCbor
 
 export interface WrappedMdocCredential {
   /**
