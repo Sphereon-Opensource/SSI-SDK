@@ -26,7 +26,7 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop-adapter": " 0.19.1-feature.DIIPv4.158",
+    "@sphereon/did-auth-siop-adapter": "0.19.1-feature.DIIPv4.161",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/pex-models": "^2.3.2",
@@ -47,8 +47,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@sphereon/oid4vci-client": " 0.19.1-feature.DIIPv4.158",
-    "@sphereon/oid4vci-common": " 0.19.1-feature.DIIPv4.158",
+    "@sphereon/oid4vci-client": "0.19.1-feature.DIIPv4.161",
+    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.161",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.key-manager": "workspace:*",
     "@sphereon/ssi-sdk-ext.kms-local": "workspace:*",

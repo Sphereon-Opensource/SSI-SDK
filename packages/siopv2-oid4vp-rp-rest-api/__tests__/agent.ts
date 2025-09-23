@@ -155,6 +155,7 @@ const agent = createAgent<
       instanceOpts: [
         {
           queryId: entraAndSphereonCompatibleDef.id,
+          //definition: entraAndSphereonCompatibleDef,
           rpOpts: {
             identifierOpts: {
               checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
