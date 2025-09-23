@@ -21,4 +21,5 @@ export {
   SupportedVersion,
   type PresentationVerificationResult,
   type PresentationVerificationCallback,
+  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
