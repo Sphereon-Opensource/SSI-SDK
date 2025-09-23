@@ -5,10 +5,11 @@ import {
   AuthorizationResponseStateStatus,
   AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
-  VerifiedAuthorizationResponse
+  VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
+import type { ImportDcqlQueryItem } from '@sphereon/ssi-sdk.pd-manager'
 import {
   AdditionalClaims,
   CredentialMapper,
@@ -84,7 +85,10 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string> {
-    return await this.getRPInstance({ responseRedirectURI: createArgs.responseRedirectURI, ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId } ) }, context)
+    return await this.getRPInstance(
+      { responseRedirectURI: createArgs.responseRedirectURI, ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId }) },
+      context,
+    )
       .then((rp) => rp.createAuthorizationRequestURI(createArgs, context))
       .then((URI) => URI.encodedUri)
   }
@@ -107,9 +111,7 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async siopGetRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined> {
     return await this.getRPInstance({ queryId: args.queryId }, context).then((rp) =>
-      rp.get(context).then((rp) =>
-        rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)
-      ),
+      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
     )
   }
 
@@ -228,7 +230,7 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          ...(args.dcqlQueryPayload ? { dcqlQuery: args.dcqlQueryPayload.dcqlQuery } : {}),
+          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery } : {}),
           audience: args.audience,
         }),
       ),
@@ -236,33 +238,18 @@ export class SIOPv2RP implements IAgentPlugin {
   }
 
   private async siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void> {
-    const { queries, tenantId, version, versionControlMode } = args
+    const { importItems, tenantId, version, versionControlMode } = args
     await Promise.all(
-      queries.map(async (definitionPair) => {
-        const definitionPayload = definitionPair.definitionPayload
-        if (!definitionPayload && !definitionPair.dcqlPayload) {
-          return Promise.reject(Error('Either dcqlPayload or definitionPayload must be suppplied'))
-        }
-
-        let definitionId: string
-        if (definitionPair.dcqlPayload) {
-          DcqlQuery.validate(definitionPair.dcqlPayload.dcqlQuery)
-          console.log(`persisting DCQL definition ${definitionPair.dcqlPayload.queryId} with versionControlMode ${versionControlMode}`)
-          definitionId = definitionPair.dcqlPayload.queryId
-        }
-        if (definitionPayload) {
-          await context.agent.pexValidateDefinition({ definition: definitionPayload })
-          console.log(`persisting PEX definition ${definitionPayload.id} / ${definitionPayload.name} with versionControlMode ${versionControlMode}`)
-          definitionId = definitionPayload.id
-        }
+      importItems.map(async (importItem: ImportDcqlQueryItem) => {
+        DcqlQuery.validate(importItem.query)
+        console.log(`persisting DCQL definition ${importItem.queryId} with versionControlMode ${versionControlMode}`)
 
         return context.agent.pdmPersistDefinition({
           definitionItem: {
-            definitionId: definitionId!,
+            queryId: importItem.queryId!,
             tenantId: tenantId,
             version: version,
-            definitionPayload,
-            dcqlPayload: definitionPair.dcqlPayload,
+            query: importItem.query,
           },
           opts: { versionControlMode: versionControlMode },
         })

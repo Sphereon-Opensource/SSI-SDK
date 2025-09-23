@@ -236,7 +236,7 @@ export const toMinimalImportableKey = async (args: { key?: IKeyOpts; type: EbsiK
   }
 
   minimalImportableKey.meta = {
-    purposes: assertedPurposes({ key }) ?? setDefaultPurposes({ key, type }),
+    purposes: assertedPurposes({ key }) ?? setPurposes({ key, type }),
     jwkThumbprint: calculateJwkThumbprintForKey({
       key: minimalImportableKey as MinimalImportableKey,
       digestAlgorithm: 'sha256',
@@ -275,7 +275,7 @@ export const assertedPurposes = (args: { key?: IKeyOpts }): EbsiPublicKeyPurpose
   return key?.purposes
 }
 
-export const setDefaultPurposes = (args: { key?: IKeyOpts; type: EbsiKeyType }): EbsiPublicKeyPurpose[] => {
+export const setPurposes = (args: { key?: IKeyOpts; type: EbsiKeyType }): EbsiPublicKeyPurpose[] => {
   const { key, type } = args
   if (!key?.purposes || key.purposes.length === 0) {
     switch (type) {
