@@ -1,7 +1,6 @@
 import { CreateAuthorizationRequestPayload, CreateAuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { AuthorizationRequestStateStatus, AuthorizationResponseStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { AdditionalClaims } from '@sphereon/ssi-types'

@@ -1,7 +1,7 @@
-import { AuthorizationRequestState, AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
+import { AuthorizationRequestState, AuthorizationResponseStateStatus, AuthorizationResponseStateWithVerifiedData } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { AuthStatusResponse, GenerateAuthRequestURIResponse, uriWithBase } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { AuthorizationResponseStateWithVerifiedData, VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { VerifiedDataMode } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
@@ -12,29 +12,29 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
     console.log(`createAuthRequest Webapp endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/webapp/definitions/:definitionId/auth-requests'
+  const path = opts?.path ?? '/webapp/queries/:queryId/auth-requests'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       // if (!request.agent) throw Error('No agent configured')
-      const definitionId = request.params.definitionId
-      if (!definitionId) {
-        return sendErrorResponse(response, 400, 'No definitionId query parameter provided')
+      const queryId = request.params.queryId
+      if (!queryId) {
+        return sendErrorResponse(response, 400, 'No queryId query parameter provided')
       }
       const state: string = request.body.state ?? uuid.uuid()
       const correlationId = request.body.correlationId ?? state
       const qrCodeOpts = request.body.qrCodeOpts ?? opts?.qrCodeOpts
 
-      const requestByReferenceURI = uriWithBase(`/siop/definitions/${definitionId}/auth-requests/${state}`, {
+      const requestByReferenceURI = uriWithBase(`/siop/queries/${queryId}/auth-requests/${state}`, {
         baseURI: opts?.siopBaseURI,
       })
-      const responseURI = uriWithBase(`/siop/definitions/${definitionId}/auth-responses/${state}`, { baseURI: opts?.siopBaseURI })
+      const responseURI = uriWithBase(`/siop/queries/${queryId}/auth-responses/${state}`, { baseURI: opts?.siopBaseURI })
       // first version is for backwards compat
       const responseRedirectURI =
         ('response_redirect_uri' in request.body && (request.body.response_redirect_uri as string | undefined)) ??
         ('responseRedirectURI' in request.body && (request.body.responseRedirectURI as string | undefined))
 
       const authRequestURI = await context.agent.siopCreateAuthRequestURI({
-        definitionId,
+        queryId,
         correlationId,
         state,
         nonce: uuid.uuid(),
@@ -53,7 +53,7 @@ export function createAuthRequestWebappEndpoint(router: Router, context: IRequir
       const authRequestBody: GenerateAuthRequestURIResponse = {
         correlationId,
         state,
-        definitionId,
+        queryId,
         authRequestURI,
         authStatusURI: `${uriWithBase(opts?.webappAuthStatusPath ?? '/webapp/auth-status', { baseURI: opts?.webappBaseURI })}`,
         ...(qrCodeDataUri && { qrCodeDataUri }),
@@ -76,26 +76,24 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
     try {
       console.log('Received auth-status request...')
       const correlationId: string = request.body.correlationId as string
-      const definitionId: string = request.body.definitionId as string
+      const queryId: string = request.body.queryId as string
 
       const requestState =
-        correlationId && definitionId
+        correlationId && queryId
           ? await context.agent.siopGetAuthRequestState({
               correlationId,
-              definitionId,
+              queryId,
               errorOnNotFound: false,
             })
           : undefined
-      if (!requestState || !definitionId || !correlationId) {
-        console.log(
-          `No authentication request mapping could be found for the given URL. correlation: ${correlationId}, definitionId: ${definitionId}`,
-        )
+      if (!requestState || !queryId || !correlationId) {
+        console.log(`No authentication request mapping could be found for the given URL. correlation: ${correlationId}, queryId: ${queryId}`)
         response.statusCode = 404
         const statusBody: AuthStatusResponse = {
           status: requestState ? requestState.status : 'error',
           error: 'No authentication request mapping could be found for the given URL.',
           correlationId,
-          definitionId,
+          queryId,
           lastUpdated: requestState ? requestState.lastUpdated : Date.now(),
         }
         return response.json(statusBody)
@@ -107,10 +105,10 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
       }
 
       let responseState
-      if (requestState.status === 'sent') {
+      if (requestState.status === 'authorization_request_retrieved') {
         responseState = (await context.agent.siopGetAuthResponseState({
           correlationId,
-          definitionId,
+          queryId,
           includeVerifiedData: includeVerifiedData,
           errorOnNotFound: false,
         })) as AuthorizationResponseStateWithVerifiedData
@@ -121,7 +119,7 @@ export function authStatusWebappEndpoint(router: Router, context: IRequiredConte
         status: overallState.status,
         ...(overallState.error ? { error: overallState.error?.message } : {}),
         correlationId,
-        definitionId,
+        queryId,
         lastUpdated: overallState.lastUpdated,
         ...(responseState && responseState.status === AuthorizationResponseStateStatus.VERIFIED
           ? {
@@ -148,17 +146,17 @@ export function removeAuthRequestStateWebappEndpoint(router: Router, context: IR
     console.log(`removeAuthStatus Webapp endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/webapp/definitions/:definitionId/auth-requests/:correlationId'
+  const path = opts?.path ?? '/webapp/queries/:queryId/auth-requests/:correlationId'
   router.delete(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId: string = request.params.correlationId
-      const definitionId: string = request.params.definitionId
-      if (!correlationId || !definitionId) {
-        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
+      const queryId: string = request.params.queryId
+      if (!correlationId || !queryId) {
+        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, queryId: ${queryId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
       response.statusCode = 200
-      return response.json(await context.agent.siopDeleteAuthState({ definitionId, correlationId }))
+      return response.json(await context.agent.siopDeleteAuthState({ queryId, correlationId }))
     } catch (error) {
       return sendErrorResponse(response, 500, error.message, error)
     }
@@ -170,7 +168,7 @@ export function getDefinitionsEndpoint(router: Router, context: IRequiredContext
     console.log(`getDefinitions Webapp endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/webapp/definitions'
+  const path = opts?.path ?? '/webapp/queries'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const definitions = await context.agent.pdmGetDefinitions()

@@ -4,7 +4,6 @@ import {
   createAuthorizationRequestToPayload,
   type CreateAuthorizationResponse,
   createAuthorizationResponseFromPayload,
-  RequestUriMethod,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
@@ -85,9 +84,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     const origResponse = await fetch(url, {
       method: 'POST',
       headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(
-        createAuthorizationRequestToPayload({ ...args, requestUriMethod: RequestUriMethod.GET } satisfies CreateAuthorizationRequest),
-      ),
+      body: JSON.stringify(createAuthorizationRequestToPayload({ ...args, requestUriMethod: 'get' } satisfies CreateAuthorizationRequest)),
     })
     return createAuthorizationResponseFromPayload(await origResponse.json())
   }

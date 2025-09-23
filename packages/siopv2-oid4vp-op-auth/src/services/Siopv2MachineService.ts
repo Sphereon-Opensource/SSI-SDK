@@ -1,17 +1,22 @@
-import { AuthorizationRequest, Json, SupportedVersion } from '@sphereon/did-auth-siop'
+import { AuthorizationRequest, Json } from '@sphereon/did-auth-siop'
+import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
-import { CredentialRole } from '@sphereon/ssi-types'
-
-import { CredentialMapper, HasherSync, Loggers, OriginalVerifiableCredential, SdJwtDecodedVerifiableCredential } from '@sphereon/ssi-types'
+import {
+  CredentialMapper,
+  CredentialRole,
+  HasherSync,
+  Loggers,
+  OriginalVerifiableCredential,
+  SdJwtDecodedVerifiableCredential,
+} from '@sphereon/ssi-types'
+import { IAgentContext, IDIDManager } from '@veramo/core'
+import { DcqlPresentation, DcqlQuery } from 'dcql'
 import { OpSession } from '../session'
 import { LOGGER_NAMESPACE, RequiredContext, SelectableCredential, SelectableCredentialsMap, Siopv2HolderEvent } from '../types'
-import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
-import { DcqlPresentation, DcqlQuery } from 'dcql'
 import { convertToDcqlCredentials } from '../utils/dcql'
-import { IAgentContext, IDIDManager } from '@veramo/core'
-import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -60,9 +65,8 @@ export const siopSendAuthorizationResponse = async (
   logger.debug(JSON.stringify(request.authorizationRequest))
 
   const domain =
-    ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ??
-    request.issuer ??
-    (request.versions.includes(SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1) ? 'https://self-issued.me/v2/openid-vc' : 'https://self-issued.me/v2')
+    ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ?? request.issuer ?? 'https://self-issued.me/v2/openid-vc'
+
   logger.debug(`NONCE: ${session.nonce}, domain: ${domain}`)
 
   const firstUniqueDC = credentials[0]

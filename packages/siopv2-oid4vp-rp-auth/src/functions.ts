@@ -15,7 +15,7 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback
+  VerifyJwtCallback,
 } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload, SigningAlgo } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
@@ -43,7 +43,7 @@ export function getRequestVersion(rpOptions: IRPOptions): SupportedVersion {
   if (Array.isArray(rpOptions.supportedVersions) && rpOptions.supportedVersions.length > 0) {
     return rpOptions.supportedVersions[0]
   }
-  return SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1
+  return SupportedVersion.OID4VP_v1
 }
 
 function getWellKnownDIDVerifyCallback(siopIdentifierOpts: ISIOPIdentifierOptions, context: IRequiredContext) {
@@ -74,7 +74,7 @@ export function getDcqlQueryLookupCallback(context: IRequiredContext): DcqlQuery
       ],
     })
     if (result && result.length > 0) {
-      return result[0].dcqlQuery
+      return result[0].query
     }
 
     return Promise.reject(Error(`No dcql query found for queryId ${queryId}`))
@@ -171,9 +171,7 @@ export async function createRPBuilder(args: {
     .withResponseMode(rpOpts.responseMode ?? ResponseMode.POST)
     .withResponseType(ResponseType.VP_TOKEN, PropertyTarget.REQUEST_OBJECT)
     // todo: move to options fill/correct method
-    .withSupportedVersions(
-      rpOpts.supportedVersions ?? [SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1, SupportedVersion.SIOPv2_ID1, SupportedVersion.SIOPv2_D11],
-    )
+    .withSupportedVersions(rpOpts.supportedVersions ?? [SupportedVersion.OID4VP_v1, SupportedVersion.SIOPv2_OID4VP_D28])
 
     .withEventEmitter(eventEmitter)
     .withSessionManager(rpOpts.sessionManager ?? new InMemoryRPSessionManager(eventEmitter))
@@ -201,11 +199,12 @@ export async function createRPBuilder(args: {
     builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
-    const clientId: string = rpOpts.clientMetadataOpts?.client_id ??
-      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint)
-     const clientIdPrefixed = prefixClientId(clientId)
-    builder.withClientId(clientIdPrefixed, PropertyTarget.REQUEST_OBJECT
-    )
+    const clientId: string =
+      rpOpts.clientMetadataOpts?.client_id ??
+      resolution.issuer ??
+      (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint)
+    const clientIdPrefixed = prefixClientId(clientId)
+    builder.withClientId(clientIdPrefixed, PropertyTarget.REQUEST_OBJECT)
   }
 
   if (hasher) {
@@ -303,8 +302,8 @@ export function getSigningAlgo(type: TKeyType): SigningAlgo {
 export function prefixClientId(clientId: string): string {
   // FIXME SSISDK-60
   if (clientId.startsWith('did:')) {
-    return `${ClientIdentifierPrefix.DECENTRALIZED_IDENTIFIER}:${clientId}`;
+    return `${ClientIdentifierPrefix.DECENTRALIZED_IDENTIFIER}:${clientId}`
   }
 
-  return clientId;
+  return clientId
 }
