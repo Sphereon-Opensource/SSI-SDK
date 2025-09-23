@@ -4,13 +4,14 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
+  CredentialConfigurationSupported,
   CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
   getTypesFromAuthorizationDetails,
-  getTypesFromCredentialOffer,
+  getTypesFromCredentialSupported,
   getTypesFromObject,
   Jwt,
   NotificationRequest,
@@ -443,7 +444,13 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     if (offer) {
-      types = getTypesFromCredentialOffer(offer.original_credential_offer)
+      const credentialsSupported: CredentialConfigurationSupported[] = offer.original_credential_offer.credential_configuration_ids.flatMap(
+        (configId) => {
+          const config = oid4vciClient.endpointMetadata.credentialIssuerMetadata?.credential_configurations_supported[configId]
+          return config ? [config as CredentialConfigurationSupported] : []
+        },
+      )
+      types = credentialsSupported.map((credentialSupported) => getTypesFromCredentialSupported(credentialSupported))
     } else {
       types = asArray(authorizationRequestOpts.authorizationDetails)
         .map((authReqOpts) => getTypesFromAuthorizationDetails(authReqOpts) ?? [])

@@ -29,7 +29,7 @@
     "@sd-jwt/decode": "^0.15.0",
     "@sd-jwt/types": "^0.15.0",
     "@sd-jwt/core": "^0.15.0",
-    "@sd-jwt/sd-jwt-vc": "^0.15.0",
+    "@sd-jwt/sd-jwt-vc": "^0.15.1",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",

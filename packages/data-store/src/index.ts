@@ -29,7 +29,7 @@ import { ElectronicAddressEntity } from './entities/contact/ElectronicAddressEnt
 import { PhysicalAddressEntity } from './entities/contact/PhysicalAddressEntity'
 import { AuditEventEntity } from './entities/eventLogger/AuditEventEntity'
 import { DigitalCredentialEntity } from './entities/digitalCredential/DigitalCredentialEntity'
-import { PresentationDefinitionItemEntity } from './entities/presentationDefinition/PresentationDefinitionItemEntity'
+import { DcqlQueryItemEntity } from './entities/presentationDefinition/DcqlQueryItemEntity'
 import { ContactMetadataItemEntity } from './entities/contact/ContactMetadataItemEntity'
 import { CredentialClaimsEntity } from './entities/issuanceBranding/CredentialClaimsEntity'
 
@@ -99,7 +99,7 @@ export const DataStoreIssuanceBrandingEntities = [
   CredentialClaimsEntity,
 ]
 
-export const DataStorePresentationDefinitionEntities = [PresentationDefinitionItemEntity]
+export const DataStorePresentationDefinitionEntities = [DcqlQueryItemEntity]
 
 export const DataStoreStatusListEntities = [
   StatusListEntity,
@@ -158,7 +158,7 @@ export {
   AuditEventEntity,
   DigitalCredentialEntity,
   MachineStateInfoEntity,
-  PresentationDefinitionItemEntity,
+  DcqlQueryItemEntity,
   ContactMetadataItemEntity,
   CredentialClaimsEntity,
   Oid4vcStateEntity,

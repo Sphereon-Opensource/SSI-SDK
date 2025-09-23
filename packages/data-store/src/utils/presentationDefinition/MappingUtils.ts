@@ -1,59 +1,52 @@
-import { DcqlQueryPayload } from '@sphereon/ssi-types'
-import { DcqlQuery } from 'dcql'
-import { PresentationDefinitionItemEntity } from '../../entities/presentationDefinition/PresentationDefinitionItemEntity'
 import type { IPresentationDefinition } from '@sphereon/pex'
-import type { NonPersistedPresentationDefinitionItem, PartialPresentationDefinitionItem, PresentationDefinitionItem } from '../../types'
 import * as blakepkg from 'blakejs'
+import { DcqlQuery } from 'dcql'
+import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQueryItemEntity'
+import type { NonPersistedDcqlQueryItem, PartialDcqlQueryItem, DcqlQueryItem } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
-export const presentationDefinitionItemFrom = (entity: PresentationDefinitionItemEntity): PresentationDefinitionItem => {
-  const result: PresentationDefinitionItem = {
+export const dcqlQueryItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
+  const result: DcqlQueryItem = {
     id: entity.id,
     tenantId: entity.tenantId,
-    definitionId: entity.definitionId,
+    queryId: entity.queryId,
     version: entity.version,
     name: entity.name,
     purpose: entity.purpose,
-    definitionPayload: JSON.parse(entity.definitionPayload) as IPresentationDefinition,
-    ...(entity.dcqlPayload && {
-      dcqlPayload: {
-        queryId: entity.definitionId,
-        name: entity.name,
-        defaultPurpose: entity.purpose,
-        dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
-      },
-    }),
+    query: DcqlQuery.parse(JSON.parse(entity.query)),
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }
 
+  if (result.query) {
+    DcqlQuery.validate(result.query)
+  }
   return replaceNullWithUndefined(result)
 }
 
-export const presentationDefinitionEntityItemFrom = (item: NonPersistedPresentationDefinitionItem): PresentationDefinitionItemEntity => {
-  const entity = new PresentationDefinitionItemEntity()
+export const dcqlQueryEntityItemFrom = (item: NonPersistedDcqlQueryItem): DcqlQueryItemEntity => {
+  const entity = new DcqlQueryItemEntity()
 
   entity.tenantId = item.tenantId
-  entity.definitionId = item.definitionId!
+  entity.queryId = item.queryId!
   entity.version = item.version
   entity.name = item.name
   entity.purpose = item.purpose
-  if (item.definitionPayload) {
-    entity.definitionPayload = JSON.stringify(item.definitionPayload)
-  }
-  if (item.dcqlPayload) {
-    entity.dcqlPayload = JSON.stringify(item.dcqlPayload.dcqlQuery)
+  if (item.query) {
+    const dcqlQuery = DcqlQuery.parse(item.query)
+    DcqlQuery.validate(dcqlQuery)
+    entity.query = JSON.stringify(item.query)
   }
   return entity
 }
 
-function hashPayload(payload: IPresentationDefinition | DcqlQueryPayload): string {
+function hashPayload(payload: IPresentationDefinition | DcqlQuery): string {
   return blakepkg.blake2bHex(JSON.stringify(payload))
 }
 
-export function isPresentationDefinitionEqual(base: PartialPresentationDefinitionItem, compare: PartialPresentationDefinitionItem): boolean {
+export function isPresentationDefinitionEqual(base: PartialDcqlQueryItem, compare: PartialDcqlQueryItem): boolean {
   if (
-    base.definitionId !== compare.definitionId ||
+    base.queryId !== compare.queryId ||
     base.tenantId !== compare.tenantId ||
     base.version !== compare.version ||
     base.name !== compare.name ||
@@ -62,19 +55,11 @@ export function isPresentationDefinitionEqual(base: PartialPresentationDefinitio
     return false
   }
 
-  if (base.dcqlPayload && compare.dcqlPayload) {
-    if (hashPayload(base.dcqlPayload) !== hashPayload(compare.dcqlPayload)) {
+  if (base.query && compare.query) {
+    if (hashPayload(base.query) !== hashPayload(compare.query)) {
       return false
     }
-  } else if (base.dcqlPayload || compare.dcqlPayload) {
-    return false
-  }
-
-  if (base.definitionPayload && compare.definitionPayload) {
-    if (hashPayload(base.definitionPayload) !== hashPayload(compare.definitionPayload)) {
-      return false
-    }
-  } else if (base.definitionPayload || compare.definitionPayload) {
+  } else if (base.query || compare.query) {
     return false
   }
 

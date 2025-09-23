@@ -49,20 +49,18 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
   const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const { correlationId, tenantId, version, credentialQueryId } = request.params // TODO Can credentialQueryId be a request param
-      if (!correlationId || !credentialQueryId) {
-        console.log(
-          `No authorization request could be found for the given url. correlationId: ${correlationId}, credentialQueryId: ${credentialQueryId}`,
-        )
+      const { correlationId, queryId, tenantId, version } = request.params
+      if (!correlationId || !queryId) {
+        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, queryId: ${queryId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
       console.log('Authorization Response (siop-sessions')
       console.log(JSON.stringify(request.body, null, 2))
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId: credentialQueryId, tenantId, version }] })
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId, tenantId, version }] })
       if (definitionItems.length === 0) {
-        console.log(`Could not get definition ${credentialQueryId} from agent. Will return 404`)
+        console.log(`Could not get definition ${queryId} from agent. Will return 404`)
         response.statusCode = 404
-        response.statusMessage = `No definition ${credentialQueryId}`
+        response.statusMessage = `No definition ${queryId}`
         return response.send()
       }
 
@@ -73,15 +71,14 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        queryId: credentialQueryId,
-        dcqlQueryPayload: definitionItem.dcqlPayload,
+        queryId,
+        dcqlQuery: definitionItem.query,
       })
 
-      const wrappedPresentation = verifiedResponse?.oid4vpSubmission?.presentation[credentialQueryId]
-      if (wrappedPresentation) {
-        // const credentialSubject = wrappedPresentation.presentation.verifiableCredential[0]?.credential?.credentialSubject
-        // console.log(JSON.stringify(credentialSubject, null, 2))
-        console.log('PRESENTATION:' + JSON.stringify(wrappedPresentation.presentation, null, 2))
+      // FIXME SSISDK-55 add proper support for checking for DCQL presentations
+      const presentation = verifiedResponse?.oid4vpSubmission?.presentation
+      if (presentation && Object.keys(presentation).length > 0) {
+        console.log('PRESENTATIONS:' + JSON.stringify(verifiedResponse?.oid4vpSubmission?.presentation, null, 2))
         response.statusCode = 200
 
         const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
@@ -92,11 +89,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }
 
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({
-          correlationId,
-          queryId: credentialQueryId,
-          state: verifiedResponse.state,
-        })
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId: queryId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
