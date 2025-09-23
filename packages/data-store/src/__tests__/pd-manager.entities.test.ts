@@ -6,7 +6,7 @@ import { DataStorePresentationDefinitionEntities } from '../index'
 import { DataStorePresentationDefinitionMigrations } from '../migrations'
 import { SAMPLE_DCQL_QUERY_IMPORT } from './pd-manager.store.test'
 
-describe('PresentationDefinitionItemEntity tests', (): void => {
+describe('DcqlQueryItemEntity tests', (): void => {
   let dbConnection: DataSource
 
   beforeEach(async (): Promise<void> => {
@@ -26,7 +26,7 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     await dbConnection.destroy()
   })
 
-  it('should create and retrieve PresentationDefinitionItemEntity with dcqlPayload', async (): Promise<void> => {
+  it('should create and retrieve DcqlQueryItemEntity with dcqlPayload', async (): Promise<void> => {
     const repository = dbConnection.getRepository(DcqlQueryItemEntity)
     const entity = new DcqlQueryItemEntity()
     entity.queryId = 'ajax-club'
@@ -48,7 +48,7 @@ describe('PresentationDefinitionItemEntity tests', (): void => {
     expect(parsedDcql.credentials[0].claims).toHaveLength(4)
   })
 
-  it('should update PresentationDefinitionItemEntity dcqlPayload', async (): Promise<void> => {
+  it('should update DcqlQueryItemEntity dcqlPayload', async (): Promise<void> => {
     const repository = dbConnection.getRepository(DcqlQueryItemEntity)
     const entity = new DcqlQueryItemEntity()
     entity.queryId = 'ajax-club'

@@ -5,7 +5,7 @@ import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQ
 import type { NonPersistedDcqlQueryItem, PartialDcqlQueryItem, DcqlQueryItem } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
-export const presentationDefinitionItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
+export const dcqlQueryItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
   const result: DcqlQueryItem = {
     id: entity.id,
     tenantId: entity.tenantId,
@@ -24,7 +24,7 @@ export const presentationDefinitionItemFrom = (entity: DcqlQueryItemEntity): Dcq
   return replaceNullWithUndefined(result)
 }
 
-export const presentationDefinitionEntityItemFrom = (item: NonPersistedDcqlQueryItem): DcqlQueryItemEntity => {
+export const dcqlQueryEntityItemFrom = (item: NonPersistedDcqlQueryItem): DcqlQueryItemEntity => {
   const entity = new DcqlQueryItemEntity()
 
   entity.tenantId = item.tenantId

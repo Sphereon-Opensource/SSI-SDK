@@ -72,6 +72,57 @@ describe('PDStore tests', (): void => {
     await expect(pdStore.getDefinition({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
   })
 
+  it('should get all definitions', async (): Promise<void> => {
+    const definition1: NonPersistedDcqlQueryItem = {
+      queryId: 'definition1',
+      version: '1.0',
+      dcqlQuery: {
+        credentials: [
+          {
+            id: 'id-card-v1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['name'],
+              },
+            ],
+          },
+        ],
+      },
+    }
+    const savedDefinition1: DcqlQueryItem = await pdStore.addDefinition(definition1)
+    expect(savedDefinition1).toBeDefined()
+
+    const definition2: NonPersistedDcqlQueryItem = {
+      queryId: 'definition2',
+      version: '1.0',
+      dcqlQuery: {
+        credentials: [
+          {
+            id: 'driver-license-v1',
+            format: 'dc+sd-jwt',
+            require_cryptographic_holder_binding: true,
+            multiple: false,
+            claims: [
+              {
+                path: ['dateOfBirth'],
+              },
+            ],
+          },
+        ],
+      },
+    }
+    const savedDefinition2: DcqlQueryItem = await pdStore.addDefinition(definition2)
+    expect(savedDefinition2).toBeDefined()
+
+    const result: Array<DcqlQueryItem> = await pdStore.getDefinitions({})
+
+    expect(result).toBeDefined()
+    expect(result.length).toEqual(2)
+  })
+
   it('should update definition with dcqlPayload', async (): Promise<void> => {
     const definition: NonPersistedDcqlQueryItem = {
       queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
