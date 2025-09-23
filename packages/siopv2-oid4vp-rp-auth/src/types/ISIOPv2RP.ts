@@ -136,11 +136,12 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 }
 
 export interface ISiopRPInstanceArgs {
+  createWhenNotPresent: boolean
   queryId?: string
   responseRedirectURI?: string
 }
 
-export interface IPEXInstanceOptions extends IPEXOptions {
+export interface IPEXInstanceOptions extends IPresentationOptions {
   rpOpts?: IRPOptions
 }
 
@@ -158,12 +159,9 @@ export interface IRPOptions {
   responseRedirectUri?: string
 }
 
-export interface IPEXOptions {
-  presentationVerifyCallback?: PresentationVerificationCallback
-  // definition?: IPresentationDefinition
+export interface IPresentationOptions {
   queryId: string
-  version?: string
-  tenantId?: string
+  presentationVerifyCallback?: PresentationVerificationCallback
 }
 
 export type VerificationPolicies = {

@@ -7,7 +7,6 @@ export function statusListResultToEntity(result: StatusListResult): StatusList20
     id: result.id,
     correlationId: result.correlationId,
     driverType: result.driverType,
-    credentialIdMode: result.credentialIdMode,
     length: result.length,
     issuer: result.issuer,
     type: result.type,
@@ -19,32 +18,36 @@ export function statusListResultToEntity(result: StatusListResult): StatusList20
     if (!result.statusList2021) {
       throw new Error('Missing statusList2021 details')
     }
-    return Object.assign(new StatusList2021Entity(), {
-      ...baseFields,
+    const entity = new StatusList2021Entity()
+    Object.assign(entity, baseFields, {
       indexingDirection: result.statusList2021.indexingDirection,
       statusPurpose: result.statusList2021.statusPurpose,
+      credentialIdMode: result.statusList2021.credentialIdMode,
     })
+    return entity
   } else if (result.type === StatusListType.OAuthStatusList) {
     if (!result.oauthStatusList) {
       throw new Error('Missing oauthStatusList details')
     }
-    return Object.assign(new OAuthStatusListEntity(), {
-      ...baseFields,
+    const entity = new OAuthStatusListEntity()
+    Object.assign(entity, baseFields, {
       bitsPerStatus: result.oauthStatusList.bitsPerStatus,
       expiresAt: result.oauthStatusList.expiresAt,
     })
+    return entity
   } else if (result.type === StatusListType.BitstringStatusList) {
     if (!result.bitstringStatusList) {
       throw new Error('Missing bitstringStatusList details')
     }
-    return Object.assign(new BitstringStatusListEntity(), {
-      ...baseFields,
+    const entity = new BitstringStatusListEntity()
+    Object.assign(entity, baseFields, {
       statusPurpose: result.bitstringStatusList.statusPurpose,
       ttl: result.bitstringStatusList.ttl,
       bitsPerStatus: result.bitstringStatusList.bitsPerStatus,
       validFrom: result.bitstringStatusList.validFrom,
       validUntil: result.bitstringStatusList.validUntil,
     })
+    return entity
   }
   throw new Error(`Unsupported status list type: ${result.type}`)
 }

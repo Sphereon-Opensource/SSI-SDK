@@ -25,7 +25,7 @@ const getCredentialFromProofOrWrapped = (cred: any, hasher?: HasherSync): Origin
     return cred.proof.jwt
   }
 
-  return CredentialMapper.toWrappedVerifiableCredential(cred as OriginalVerifiableCredential, { hasher }).original
+  return CredentialMapper.toWrappedVerifiableCredential(cred as OriginalVerifiableCredential, { hasher }).original as OriginalVerifiableCredential // FIXME SSISDK-59
 }
 
 export const isUniqueDigitalCredential = (credential: InputCredential): credential is UniqueDigitalCredential => {
