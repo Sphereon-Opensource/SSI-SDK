@@ -123,7 +123,7 @@ describe('PDStore tests', (): void => {
     expect(result.length).toEqual(2)
   })
 
-  it('should update definition with dcqlPayload', async (): Promise<void> => {
+  it('should update dcql query', async (): Promise<void> => {
     const definition: NonPersistedDcqlQueryItem = {
       queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
       version: '1.0',
