@@ -26,7 +26,7 @@ describe('DcqlQueryItemEntity tests', (): void => {
     await dbConnection.destroy()
   })
 
-  it('should create and retrieve DcqlQueryItemEntity with dcqlPayload', async (): Promise<void> => {
+  it('should create and retrieve DcqlQueryItemEntity', async (): Promise<void> => {
     const repository = dbConnection.getRepository(DcqlQueryItemEntity)
     const entity = new DcqlQueryItemEntity()
     entity.queryId = 'ajax-club'
@@ -48,7 +48,7 @@ describe('DcqlQueryItemEntity tests', (): void => {
     expect(parsedDcql.credentials[0].claims).toHaveLength(4)
   })
 
-  it('should update DcqlQueryItemEntity dcqlPayload', async (): Promise<void> => {
+  it('should update DcqlQueryItemEntity dcql query', async (): Promise<void> => {
     const repository = dbConnection.getRepository(DcqlQueryItemEntity)
     const entity = new DcqlQueryItemEntity()
     entity.queryId = 'ajax-club'

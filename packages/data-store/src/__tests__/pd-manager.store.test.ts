@@ -72,7 +72,7 @@ describe('PDStore tests', (): void => {
     await expect(pdStore.getDefinition({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
   })
 
-  it('should get all definitions', async (): Promise<void> => {
+  it('should get all queries', async (): Promise<void> => {
     const definition1: NonPersistedDcqlQueryItem = {
       queryId: 'definition1',
       version: '1.0',
@@ -161,7 +161,7 @@ describe('PDStore tests', (): void => {
     expect(result.query?.credentials[0].format).toEqual('dc+sd-jwt')
   })
 
-  it('should get definition with dcqlPayload by id', async (): Promise<void> => {
+  it('should get dcql queries by id', async (): Promise<void> => {
     const definition: NonPersistedDcqlQueryItem = {
       queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
       version: '1.0',
@@ -182,7 +182,7 @@ describe('PDStore tests', (): void => {
     expect(result.query.credentials[0].claims).toHaveLength(4)
   })
 
-  it('should get definitions with dcqlPayload by filter', async (): Promise<void> => {
+  it('should get dcql queries by filter', async (): Promise<void> => {
     const definition: NonPersistedDcqlQueryItem = {
       queryId: SAMPLE_DCQL_QUERY_IMPORT.queryId,
       version: '1.0',
@@ -201,7 +201,7 @@ describe('PDStore tests', (): void => {
     expect(result[0].query.credentials[0].id).toEqual('clubcard-v1')
   })
 
-  it('should delete query', async (): Promise<void> => {
+  it('should delete dcql query', async (): Promise<void> => {
     const definition: NonPersistedDcqlQueryItem = {
       queryId: 'definition1',
       version: '1.0',
@@ -217,7 +217,7 @@ describe('PDStore tests', (): void => {
     )
   })
 
-  it('should delete queries by filter', async (): Promise<void> => {
+  it('should delete dcql queries by filter', async (): Promise<void> => {
     const definition1: NonPersistedDcqlQueryItem = {
       queryId: 'definition1',
       version: '1.0',
