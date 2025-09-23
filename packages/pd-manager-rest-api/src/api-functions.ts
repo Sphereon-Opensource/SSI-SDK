@@ -1,7 +1,7 @@
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
-import { PersistDefinitionArgs } from '@sphereon/ssi-sdk.pd-manager'
+import { PersistDcqlQueryArgs } from '@sphereon/ssi-sdk.pd-manager'
 import { DeleteDefinitionArgs } from '@sphereon/ssi-sdk.data-store'
 
 const operation = '/presentation-definitions'
@@ -69,7 +69,7 @@ export function pdPersistEndpoint(router: Router, context: IRequiredContext, opt
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body
-      const pd = await context.agent.pdmPersistDefinitionItem(addPd as PersistDefinitionArgs)
+      const pd = await context.agent.pdmPersistDefinitionItem(addPd as PersistDcqlQueryArgs)
       response.statusCode = 200 // TODO find out if pdmPersistDefinitionItem added or updated
       return response.json(pd)
     } catch (error) {

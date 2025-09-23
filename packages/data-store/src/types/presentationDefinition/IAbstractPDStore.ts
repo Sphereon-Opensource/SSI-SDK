@@ -1,6 +1,6 @@
-import { NonPersistedPresentationDefinitionItem, PresentationDefinitionItem, PresentationDefinitionItemFilter } from './presentationDefinition'
+import { NonPersistedDcqlQueryItem, DcqlQueryItem, DcqlQueryItemFilter } from './presentationDefinition'
 
-export type FindDefinitionArgs = Array<PresentationDefinitionItemFilter>
+export type FindDcqlQueryArgs = Array<DcqlQueryItemFilter>
 
 export type GetDefinitionArgs = {
   itemId: string
@@ -9,14 +9,14 @@ export type GetDefinitionArgs = {
 export type HasDefinitionArgs = GetDefinitionArgs
 
 export type GetDefinitionsArgs = {
-  filter?: FindDefinitionArgs
+  filter?: FindDcqlQueryArgs
 }
 
 export type HasDefinitionsArgs = GetDefinitionsArgs
 
-export type AddDefinitionArgs = NonPersistedPresentationDefinitionItem
+export type AddDefinitionArgs = NonPersistedDcqlQueryItem
 
-export type UpdateDefinitionArgs = PresentationDefinitionItem
+export type UpdateDefinitionArgs = DcqlQueryItem
 
 export type DeleteDefinitionArgs = {
   itemId: string

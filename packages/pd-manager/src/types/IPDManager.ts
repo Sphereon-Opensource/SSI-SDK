@@ -1,5 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindDefinitionArgs, NonPersistedPresentationDefinitionItem, PresentationDefinitionItem } from '@sphereon/ssi-sdk.data-store'
+import { FindDcqlQueryArgs, NonPersistedDcqlQueryItem, DcqlQueryItem } from '@sphereon/ssi-sdk.data-store'
 import { ReleaseType } from 'semver'
 
 export interface IPDManager extends IPluginMethodMap {
@@ -7,13 +7,13 @@ export interface IPDManager extends IPluginMethodMap {
    * Get a single presentation definition records by primary key
    * @param args
    */
-  pdmGetDefinition(args: GetDefinitionItemArgs): Promise<PresentationDefinitionItem>
+  pdmGetDefinition(args: GetDcqlQueryItemArgs): Promise<DcqlQueryItem>
 
   /**
    * Find one or more presentation definition records using filters
    * @param args
    */
-  pdmGetDefinitions(args: GetDefinitionItemsArgs): Promise<Array<PresentationDefinitionItem>>
+  pdmGetDefinitions(args: GetDcqlQueryItemsArgs): Promise<Array<DcqlQueryItem>>
 
   /**
    * Checks whether a presentation definition record exists by primary key
@@ -25,54 +25,54 @@ export interface IPDManager extends IPluginMethodMap {
    * Checks whether one or more presentation definition records exist using filters
    * @param args
    */
-  pdmHasDefinitions(args: HasDefinitionItemsArgs): Promise<boolean>
+  pdmHasDefinitions(args: HasDcqlQueryItemsArgs): Promise<boolean>
 
   /**
    * Delete a single presentation definition records by primary key
    * @param args
    */
-  pdmDeleteDefinition(args: DeleteDefinitionItemArgs): Promise<boolean>
+  pdmDeleteDefinition(args: DeleteDcqlQueryItemArgs): Promise<boolean>
 
   /**
    * Delete multiple presentation definitions records using filters
    * @param args
    */
-  pdmDeleteDefinitions(args: DeleteDefinitionItemsArgs): Promise<number>
+  pdmDeleteDefinitions(args: DeleteDcqlQueryItemsArgs): Promise<number>
 
   /**
    * Check in a presentation definition.
    * It has version control logic which will add or update presentation definition records and has settings for automatic version numbering.
    * @param args
    */
-  pdmPersistDefinition(args: PersistDefinitionArgs): Promise<PresentationDefinitionItem>
+  pdmPersistDefinition(args: PersistDcqlQueryArgs): Promise<DcqlQueryItem>
 }
 
 export type VersionControlMode = 'AutoIncrement' | 'Manual' | 'Overwrite' | 'OverwriteLatest'
 
-export type GetDefinitionItemArgs = {
+export type GetDcqlQueryItemArgs = {
   itemId: string
 }
 
-export type HasDefinitionItemArgs = GetDefinitionItemArgs
+export type HasDefinitionItemArgs = GetDcqlQueryItemArgs
 
 export type FetchOptions = {
   showVersionHistory?: boolean
 }
 
-export type GetDefinitionItemsArgs = {
-  filter?: FindDefinitionArgs
+export type GetDcqlQueryItemsArgs = {
+  filter?: FindDcqlQueryArgs
   opts?: FetchOptions
 }
 
-export type HasDefinitionItemsArgs = GetDefinitionItemsArgs
+export type HasDcqlQueryItemsArgs = GetDcqlQueryItemsArgs
 
-export type DeleteDefinitionItemArgs = {
+export type DeleteDcqlQueryItemArgs = {
   itemId: string
 }
 
-export type DeleteDefinitionItemsArgs = GetDefinitionItemsArgs
+export type DeleteDcqlQueryItemsArgs = GetDcqlQueryItemsArgs
 
-export type PersistPresentationDefinitionItem = Omit<NonPersistedPresentationDefinitionItem, 'version'> & {
+export type PersistDcqlQueryItem = Omit<NonPersistedDcqlQueryItem, 'version'> & {
   id?: string
   version?: string
 }
@@ -82,8 +82,8 @@ export type PersistOptions = {
   versionIncrementReleaseType?: ReleaseType
 }
 
-export type PersistDefinitionArgs = {
-  definitionItem: PersistPresentationDefinitionItem
+export type PersistDcqlQueryArgs = {
+  definitionItem: PersistDcqlQueryItem
   opts?: PersistOptions
 }
 
