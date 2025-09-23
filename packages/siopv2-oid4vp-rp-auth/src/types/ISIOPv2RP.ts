@@ -32,7 +32,6 @@ import { HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
-
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 

@@ -5,7 +5,7 @@ import {
   AuthorizationResponseStateStatus,
   AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
-  VerifiedAuthorizationResponse,
+  VerifiedAuthorizationResponse
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
@@ -91,7 +91,7 @@ export class SIOPv2RP implements IAgentPlugin {
       {
         createWhenNotPresent: true,
         responseRedirectURI: createArgs.responseRedirectURI,
-        ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId }),
+        ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId } ),
       },
       context,
     )
@@ -117,7 +117,9 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async siopGetRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined> {
     return await this.getRPInstance({ createWhenNotPresent: false, queryId: args.queryId }, context).then((rp) =>
-      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
+      rp.get(context).then((rp) =>
+        rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)
+      ),
     )
   }
 
@@ -236,8 +238,8 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery } : {}),
-          audience: args.audience,
+            ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery } : {}),
+            audience: args.audience,
         }),
       ),
     )
