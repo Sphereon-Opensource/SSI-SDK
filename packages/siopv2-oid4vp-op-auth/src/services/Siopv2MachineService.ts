@@ -64,8 +64,7 @@ export const siopSendAuthorizationResponse = async (
   logger.debug(`AUD: ${aud}`)
   logger.debug(JSON.stringify(request.authorizationRequest))
 
-  const domain =
-    ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ?? request.issuer ?? 'https://self-issued.me/v2/openid-vc'
+  const domain = ((await request.authorizationRequest.getMergedProperty('client_id')) as string) ?? request.issuer ?? 'https://self-issued.me/v2'
 
   logger.debug(`NONCE: ${session.nonce}, domain: ${domain}`)
 
