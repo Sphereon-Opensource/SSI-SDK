@@ -14,7 +14,7 @@ import type {
   DcqlQueryItemFilter,
 } from '../types'
 import { DcqlQueryItemEntity } from '../entities/presentationDefinition/DcqlQueryItemEntity'
-import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinition/MappingUtils'
+import { dcqlQueryEntityItemFrom, dcqlQueryItemFrom } from '../utils/presentationDefinition/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:pd-store')
 
@@ -36,7 +36,7 @@ export class PDStore extends AbstractPDStore {
       return Promise.reject(Error(`No presentation definition item found for id: ${itemId}`))
     }
 
-    return presentationDefinitionItemFrom(result)
+    return dcqlQueryItemFrom(result)
   }
 
   hasDefinition = async (args: HasDefinitionArgs): Promise<boolean> => {
@@ -73,19 +73,19 @@ export class PDStore extends AbstractPDStore {
       },
     })
 
-    return result.map((entity: DcqlQueryItemEntity) => presentationDefinitionItemFrom(entity))
+    return result.map((entity: DcqlQueryItemEntity) => dcqlQueryItemFrom(entity))
   }
 
   addDefinition = async (item: NonPersistedDcqlQueryItem): Promise<DcqlQueryItem> => {
     const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
 
-    const entity: DcqlQueryItemEntity = presentationDefinitionEntityItemFrom(item)
+    const entity: DcqlQueryItemEntity = dcqlQueryEntityItemFrom(item)
     debug('Adding presentation definition entity', item)
     const result: DcqlQueryItemEntity = await pdRepository.save(entity, {
       transaction: true,
     })
 
-    return presentationDefinitionItemFrom(result)
+    return dcqlQueryItemFrom(result)
   }
 
   updateDefinition = async (item: DcqlQueryItem): Promise<DcqlQueryItem> => {
@@ -106,14 +106,14 @@ export class PDStore extends AbstractPDStore {
     updatedEntity.version = item.version
     updatedEntity.name = item.name
     updatedEntity.purpose = item.purpose
-    updatedEntity.dcqlPayload = JSON.stringify(item.dcqlQuery)
+    updatedEntity.query = JSON.stringify(item.query)
 
     debug('Updating presentation definition entity', updatedEntity)
     const updateResult: DcqlQueryItemEntity = await pdRepository.save(updatedEntity, {
       transaction: true,
     })
 
-    return presentationDefinitionItemFrom(updateResult)
+    return dcqlQueryItemFrom(updateResult)
   }
 
   deleteDefinition = async (args: DeleteDefinitionArgs): Promise<void> => {

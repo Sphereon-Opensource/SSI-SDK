@@ -1,4 +1,5 @@
 import {
+  ClientIdentifierPrefix,
   ClientMetadataOpts,
   DcqlQueryLookupCallback,
   InMemoryRPSessionManager,
@@ -14,7 +15,7 @@ import {
   Scope,
   SubjectType,
   SupportedVersion,
-  VerifyJwtCallback,
+  VerifyJwtCallback
 } from '@sphereon/did-auth-siop'
 import { CreateJwtCallback, JwtHeader, JwtIssuer, JwtPayload, SigningAlgo } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
@@ -30,7 +31,6 @@ import { JwtCompactResult } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVerifySdJwtPresentationResult } from '@sphereon/ssi-sdk.sd-jwt'
 import { CredentialMapper, HasherSync, OriginalVerifiableCredential, PresentationSubmission } from '@sphereon/ssi-types'
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback } from '@sphereon/wellknown-dids-client'
-// import { KeyAlgo, SuppliedSigner } from '@sphereon/ssi-sdk.core'
 import { TKeyType } from '@veramo/core'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
@@ -201,9 +201,10 @@ export async function createRPBuilder(args: {
     builder.withEntityId(oidfOpts.identifier, PropertyTarget.REQUEST_OBJECT)
   } else {
     const resolution = await context.agent.identifierManagedGet(identifierOpts.idOpts)
-    builder.withClientId(
-      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint),
-      PropertyTarget.REQUEST_OBJECT,
+    const clientId: string = rpOpts.clientMetadataOpts?.client_id ??
+      resolution.issuer ?? (isManagedIdentifierDidResult(resolution) ? resolution.did : resolution.jwkThumbprint)
+     const clientIdPrefixed = prefixClientId(clientId)
+    builder.withClientId(clientIdPrefixed, PropertyTarget.REQUEST_OBJECT
     )
   }
 
@@ -297,4 +298,13 @@ export function getSigningAlgo(type: TKeyType): SigningAlgo {
     default:
       throw Error('Key type not yet supported')
   }
+}
+
+export function prefixClientId(clientId: string): string {
+  // FIXME SSISDK-60
+  if (clientId.startsWith('did:')) {
+    return `${ClientIdentifierPrefix.DECENTRALIZED_IDENTIFIER}:${clientId}`;
+  }
+
+  return clientId;
 }

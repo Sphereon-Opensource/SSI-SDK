@@ -7,7 +7,7 @@ export type DcqlQueryItem = {
   version: string
   name?: string
   purpose?: string
-  dcqlQuery: DcqlQuery
+  query: DcqlQuery
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -15,4 +15,4 @@ export type DcqlQueryItem = {
 export type ImportDcqlQueryItem = Omit<DcqlQueryItem, 'id' | 'tenantId' | 'version' | 'createdAt' | 'lastUpdatedAt'>
 export type NonPersistedDcqlQueryItem = Omit<DcqlQueryItem, 'id' | 'createdAt' | 'lastUpdatedAt'>
 export type PartialDcqlQueryItem = Partial<DcqlQueryItem>
-export type DcqlQueryItemFilter = Partial<Omit<DcqlQueryItem, 'dcqlQuery'>>
+export type DcqlQueryItemFilter = Partial<Omit<DcqlQueryItem, 'query'>>

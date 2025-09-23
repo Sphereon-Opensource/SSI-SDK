@@ -12,7 +12,7 @@ export class CreateDcqlQueryItemSQlite1726617600000 implements MigrationInterfac
                                       "name" varchar,
                                       "version" varchar NOT NULL,
                                       "purpose" varchar,
-                                      "dcql_payload" varchar NOT NULL,
+                                      "query" varchar NOT NULL,
                                       "created_at" datetime NOT NULL DEFAULT (datetime('now')),
                                       "last_updated_at" datetime NOT NULL DEFAULT (datetime('now')))`,
     )

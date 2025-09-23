@@ -83,7 +83,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         authorizationResponse,
         correlationId,
         queryId,
-        dcqlQuery: definitionItem.dcqlQuery,
+        dcqlQuery: definitionItem.query,
       })
 
       // FIXME SSISDK-55 add proper support for checking for DCQL presentations

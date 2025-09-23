@@ -1,12 +1,4 @@
 import { createAgent, ICredentialVerifier, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
-import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
-import { getUniResolver } from '@sphereon/did-uni-client'
-import {
-  CredentialProviderJsonld,
-  LdDefaultContexts,
-  SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'

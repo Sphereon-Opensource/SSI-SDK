@@ -33,7 +33,7 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
   responseRedirectURI?: string
 }
 
-export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPresentationExchange & IPDManager
+export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export type CreateAuthorizationRequestPayloadRequest = Request<Record<string, never>, any, CreateAuthorizationRequestPayload, Record<string, never>>

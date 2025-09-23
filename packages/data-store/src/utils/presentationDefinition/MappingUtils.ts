@@ -5,7 +5,7 @@ import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQ
 import type { NonPersistedDcqlQueryItem, PartialDcqlQueryItem, DcqlQueryItem } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
-export const presentationDefinitionItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
+export const dcqlQueryItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
   const result: DcqlQueryItem = {
     id: entity.id,
     tenantId: entity.tenantId,
@@ -13,18 +13,18 @@ export const presentationDefinitionItemFrom = (entity: DcqlQueryItemEntity): Dcq
     version: entity.version,
     name: entity.name,
     purpose: entity.purpose,
-    dcqlQuery: DcqlQuery.parse(JSON.parse(entity.dcqlPayload)),
+    query: DcqlQuery.parse(JSON.parse(entity.query)),
     createdAt: entity.createdAt,
     lastUpdatedAt: entity.lastUpdatedAt,
   }
 
-  if (result.dcqlQuery) {
-    DcqlQuery.validate(result.dcqlQuery)
+  if (result.query) {
+    DcqlQuery.validate(result.query)
   }
   return replaceNullWithUndefined(result)
 }
 
-export const presentationDefinitionEntityItemFrom = (item: NonPersistedDcqlQueryItem): DcqlQueryItemEntity => {
+export const dcqlQueryEntityItemFrom = (item: NonPersistedDcqlQueryItem): DcqlQueryItemEntity => {
   const entity = new DcqlQueryItemEntity()
 
   entity.tenantId = item.tenantId
@@ -32,10 +32,10 @@ export const presentationDefinitionEntityItemFrom = (item: NonPersistedDcqlQuery
   entity.version = item.version
   entity.name = item.name
   entity.purpose = item.purpose
-  if (item.dcqlQuery) {
-    const dcqlQuery = DcqlQuery.parse(item.dcqlQuery)
+  if (item.query) {
+    const dcqlQuery = DcqlQuery.parse(item.query)
     DcqlQuery.validate(dcqlQuery)
-    entity.dcqlPayload = JSON.stringify(item.dcqlQuery)
+    entity.query = JSON.stringify(item.query)
   }
   return entity
 }
@@ -55,11 +55,11 @@ export function isPresentationDefinitionEqual(base: PartialDcqlQueryItem, compar
     return false
   }
 
-  if (base.dcqlQuery && compare.dcqlQuery) {
-    if (hashPayload(base.dcqlQuery) !== hashPayload(compare.dcqlQuery)) {
+  if (base.query && compare.query) {
+    if (hashPayload(base.query) !== hashPayload(compare.query)) {
       return false
     }
-  } else if (base.dcqlQuery || compare.dcqlQuery) {
+  } else if (base.query || compare.query) {
     return false
   }
 

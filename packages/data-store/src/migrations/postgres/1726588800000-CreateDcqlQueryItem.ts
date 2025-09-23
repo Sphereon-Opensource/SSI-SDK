@@ -12,7 +12,7 @@ export class CreateDcqlQueryItemPG1726588800000 implements MigrationInterface {
                                      "name" TEXT,
                                      "version" TEXT NOT NULL,
                                      "purpose" TEXT,
-                                     "dcql_payload" TEXT NOT NULL,
+                                     "query" TEXT NOT NULL,
                                      "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                                      "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                                      CONSTRAINT "PK_DcqlQueryItem_id" PRIMARY KEY ("id"))
