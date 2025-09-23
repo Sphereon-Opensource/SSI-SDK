@@ -31,17 +31,17 @@ describe('DcqlQueryItemEntity tests', (): void => {
     const entity = new DcqlQueryItemEntity()
     entity.queryId = 'ajax-club'
     entity.version = '1.0'
-    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_IMPORT.dcqlQuery)
+    entity.query = JSON.stringify(SAMPLE_DCQL_QUERY_IMPORT.query)
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
     expect(savedEntity.id).toBeDefined()
-    expect(savedEntity.dcqlPayload).toBeDefined()
+    expect(savedEntity.query).toBeDefined()
 
     const retrievedEntity = await repository.findOneBy({ id: savedEntity.id })
     expect(retrievedEntity).toBeDefined()
-    expect(retrievedEntity!.dcqlPayload).toBeDefined()
-    const parsedDcql = JSON.parse(retrievedEntity!.dcqlPayload)
+    expect(retrievedEntity!.query).toBeDefined()
+    const parsedDcql = JSON.parse(retrievedEntity!.query)
     expect(parsedDcql.credentials[0].id).toEqual('clubcard-v1')
     expect(parsedDcql.credentials[0].format).toEqual('dc+sd-jwt')
     expect(parsedDcql.credentials[0].meta.vct_values).toContain('clubcard-v1')
@@ -53,7 +53,7 @@ describe('DcqlQueryItemEntity tests', (): void => {
     const entity = new DcqlQueryItemEntity()
     entity.queryId = 'ajax-club'
     entity.version = '1.0'
-    entity.dcqlPayload = JSON.stringify(SAMPLE_DCQL_QUERY_IMPORT.dcqlQuery)
+    entity.query = JSON.stringify(SAMPLE_DCQL_QUERY_IMPORT.query)
 
     const savedEntity = await repository.save(entity)
     expect(savedEntity).toBeDefined()
@@ -71,10 +71,10 @@ describe('DcqlQueryItemEntity tests', (): void => {
         },
       ],
     }
-    savedEntity.dcqlPayload = JSON.stringify(updatedDcql)
+    savedEntity.query = JSON.stringify(updatedDcql)
     const updatedEntity = await repository.save(savedEntity)
     expect(updatedEntity).toBeDefined()
-    expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].id).toEqual('updated-clubcard')
-    expect(JSON.parse(updatedEntity.dcqlPayload).credentials[0].format).toEqual('jwt_vc')
+    expect(JSON.parse(updatedEntity.query).credentials[0].id).toEqual('updated-clubcard')
+    expect(JSON.parse(updatedEntity.query).credentials[0].format).toEqual('jwt_vc')
   })
 })

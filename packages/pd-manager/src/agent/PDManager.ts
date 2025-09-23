@@ -170,7 +170,7 @@ export class PDManager implements IAgentPlugin {
       existingItem.tenantId = definitionItem.tenantId
       existingItem.name = definitionItem.name
       existingItem.purpose = definitionItem.purpose
-      existingItem.dcqlQuery = definitionItem.dcqlQuery
+      existingItem.query = definitionItem.query
 
       return await this.store.updateDefinition(existingItem)
     } else {
@@ -191,7 +191,7 @@ export class PDManager implements IAgentPlugin {
       latestVersionItem.tenantId = definitionItem.tenantId
       latestVersionItem.name = definitionItem.name
       latestVersionItem.purpose = definitionItem.purpose
-      latestVersionItem.dcqlQuery = definitionItem.dcqlQuery
+      latestVersionItem.query = definitionItem.query
 
       return await this.store.updateDefinition(latestVersionItem)
     } else {

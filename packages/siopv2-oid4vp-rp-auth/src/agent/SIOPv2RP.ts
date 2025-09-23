@@ -241,7 +241,7 @@ export class SIOPv2RP implements IAgentPlugin {
     const { importItems, tenantId, version, versionControlMode } = args
     await Promise.all(
       importItems.map(async (importItem: ImportDcqlQueryItem) => {
-        DcqlQuery.validate(importItem.dcqlQuery)
+        DcqlQuery.validate(importItem.query)
         console.log(`persisting DCQL definition ${importItem.queryId} with versionControlMode ${versionControlMode}`)
 
         return context.agent.pdmPersistDefinition({
@@ -249,7 +249,7 @@ export class SIOPv2RP implements IAgentPlugin {
             queryId: importItem.queryId!,
             tenantId: tenantId,
             version: version,
-            dcqlQuery: importItem.dcqlQuery,
+            query: importItem.query,
           },
           opts: { versionControlMode: versionControlMode },
         })

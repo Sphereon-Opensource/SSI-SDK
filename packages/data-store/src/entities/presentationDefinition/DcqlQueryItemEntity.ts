@@ -25,9 +25,9 @@ export class DcqlQueryItemEntity extends BaseEntity {
   @Column({ name: 'name', length: 255, type: 'varchar', nullable: true, unique: false })
   name?: string
 
-  @Column({ name: 'dcql_payload', type: 'text', nullable: false, unique: false })
+  @Column({ name: 'query', type: 'text', nullable: false, unique: false })
   @IsNotEmpty({ message: 'A blank dcql query payload field is not allowed' })
-  dcqlPayload!: string
+  query!: string
 
   @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })
   createdAt!: Date

@@ -106,7 +106,7 @@ export class PDStore extends AbstractPDStore {
     updatedEntity.version = item.version
     updatedEntity.name = item.name
     updatedEntity.purpose = item.purpose
-    updatedEntity.dcqlPayload = JSON.stringify(item.dcqlQuery)
+    updatedEntity.query = JSON.stringify(item.query)
 
     debug('Updating presentation definition entity', updatedEntity)
     const updateResult: DcqlQueryItemEntity = await pdRepository.save(updatedEntity, {

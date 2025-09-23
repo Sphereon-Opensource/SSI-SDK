@@ -19,7 +19,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   describe('PD Manager Agent Plugin', (): void => {
     const sampleDcql: ImportDcqlQueryItem = {
       queryId: 'credential1',
-      dcqlQuery: DcqlQuery.parse({
+      query: DcqlQuery.parse({
         credentials: [
           {
             id: 'credential1',
@@ -46,7 +46,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const definition: PersistDcqlQueryArgs = {
         definitionItem: {
           queryId: 'default_definition_id',
-          dcqlQuery: sampleDcql.dcqlQuery,
+          query: sampleDcql.query,
         },
       }
 
@@ -110,7 +110,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const definition: PersistDcqlQueryArgs = {
         definitionItem: {
           queryId: 'new_definition_id',
-          dcqlQuery: DcqlQuery.parse({
+          query: DcqlQuery.parse({
             credentials: [
               {
                 id: 'new_credential',
@@ -138,7 +138,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const updatedDefinitionItem: DcqlQueryItem = {
         ...defaultDefinitionItem,
       }
-      updatedDefinitionItem.dcqlQuery = DcqlQuery.parse({
+      updatedDefinitionItem.query = DcqlQuery.parse({
         credentials: [
           {
             id: 'updated_credential',
@@ -158,15 +158,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         opts: { versionControlMode: 'Overwrite' },
       })
 
-      expect(result.dcqlQuery.credentials.length).toEqual(1)
-      expect(result.dcqlQuery.credentials[0].id).toEqual('updated_credential')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('updated_credential')
     })
 
     it('should create a new major version of the default definition item', async (): Promise<void> => {
       const updatedDefinitionItem: DcqlQueryItem = {
         ...defaultDefinitionItem,
       }
-      updatedDefinitionItem.dcqlQuery = DcqlQuery.parse({
+      updatedDefinitionItem.query = DcqlQuery.parse({
         credentials: [
           {
             id: 'major_version_credential',
@@ -186,8 +186,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
 
       expect(result.version).toEqual('2')
-      expect(result.dcqlQuery.credentials.length).toEqual(1)
-      expect(result.dcqlQuery.credentials[0].id).toEqual('major_version_credential')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('major_version_credential')
 
       defaultDefinitionItem.version = result.version
     })
@@ -198,7 +198,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         definitionItem: {
           queryId: 'versioned_definition_id',
           version: '1.0.0',
-          dcqlQuery: DcqlQuery.parse({
+          query: DcqlQuery.parse({
             credentials: [
               {
                 id: 'versioned_credential',
@@ -228,7 +228,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       for (let i = 2; i <= 12; i++) {
         currentItem.name = 'Credential Name'
         currentItem.purpose = 'Credential Purpose'
-        currentItem.dcqlQuery = DcqlQuery.parse({
+        currentItem.query = DcqlQuery.parse({
           credentials: [
             {
               id: `credential-v${i}`,
@@ -250,8 +250,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         })
 
         expect(result.version).toEqual(`${i}.0.0`)
-        expect(result.dcqlQuery).toBeTruthy()
-        expect(result.dcqlQuery.credentials[0].id).toEqual(`credential-v${i}`)
+        expect(result.query).toBeTruthy()
+        expect(result.query.credentials[0].id).toEqual(`credential-v${i}`)
         expect(result.name).toEqual('Credential Name')
         expect(result.purpose).toEqual('Credential Purpose')
 
@@ -265,7 +265,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const updatedDefinitionItem: DcqlQueryItem = {
         ...versionedDefinitionItem,
       }
-      updatedDefinitionItem.dcqlQuery = DcqlQuery.parse({
+      updatedDefinitionItem.query = DcqlQuery.parse({
         credentials: [
           {
             id: 'minor_version_credential',
@@ -286,8 +286,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
 
       expect(result.version).toEqual('12.1.0')
-      expect(result.dcqlQuery.credentials.length).toEqual(1)
-      expect(result.dcqlQuery.credentials[0].id).toEqual('minor_version_credential')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('minor_version_credential')
     })
 
     let preReleaseVersionedDefinitionItem: DcqlQueryItem
@@ -296,7 +296,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         definitionItem: {
           queryId: 'pr_versioned_definition_id',
           version: '1.0.0-beta.1',
-          dcqlQuery: DcqlQuery.parse({
+          query: DcqlQuery.parse({
             credentials: [
               {
                 id: 'prerelease_credential',
@@ -324,7 +324,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const updatedDefinitionItem: DcqlQueryItem = {
         ...preReleaseVersionedDefinitionItem,
       }
-      updatedDefinitionItem.dcqlQuery = DcqlQuery.parse({
+      updatedDefinitionItem.query = DcqlQuery.parse({
         credentials: [
           {
             id: 'prerelease_v2_credential',
@@ -345,8 +345,8 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       })
 
       expect(result.version).toEqual('1.0.0-beta.2')
-      expect(result.dcqlQuery.credentials.length).toEqual(1)
-      expect(result.dcqlQuery.credentials[0].id).toEqual('prerelease_v2_credential')
+      expect(result.query.credentials.length).toEqual(1)
+      expect(result.query.credentials[0].id).toEqual('prerelease_v2_credential')
 
       versionedDefinitionItem.version = result.version
     })
@@ -406,14 +406,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const definition: PersistDcqlQueryArgs = {
         definitionItem: {
           queryId: 'new_dcql_definition_id',
-          dcqlQuery: sampleDcql.dcqlQuery,
+          query: sampleDcql.query,
         },
       }
 
       const result = await agent.pdmPersistDefinition(definition)
 
       expect(result.queryId).toEqual(definition.definitionItem.queryId)
-      expect(result.dcqlQuery.credentials[0].id).toEqual('credential1')
+      expect(result.query.credentials[0].id).toEqual('credential1')
     })
 
     it('should update dcqlQuery in definition item', async (): Promise<void> => {
@@ -421,7 +421,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const initialDefinition: PersistDcqlQueryArgs = {
         definitionItem: {
           queryId: 'dcql_update_test',
-          dcqlQuery: DcqlQuery.parse({
+          query: DcqlQuery.parse({
             credentials: [
               {
                 id: 'initial-credential',
@@ -460,7 +460,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       const updatedDefinitionItem: NonPersistedDcqlQueryItem = {
         ...createdDefinition,
-        dcqlQuery: updatedDcql,
+        query: updatedDcql,
       }
 
       const result = await agent.pdmPersistDefinition({
@@ -468,7 +468,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         opts: { versionControlMode: 'Overwrite' },
       })
 
-      expect(result.dcqlQuery.credentials[0].id).toEqual('credential2')
+      expect(result.query.credentials[0].id).toEqual('credential2')
     })
   })
 }
