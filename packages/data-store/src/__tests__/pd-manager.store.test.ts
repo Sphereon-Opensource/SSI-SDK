@@ -66,7 +66,7 @@ describe('PDStore tests', (): void => {
     await dbConnection.destroy()
   })
 
-  it('should throw error when getting definition with unknown id', async (): Promise<void> => {
+  it('should throw error when getting query with unknown id', async (): Promise<void> => {
     const itemId = 'unknownDefinitionId'
 
     await expect(pdStore.getDefinition({ itemId })).rejects.toThrow(`No presentation definition item found for id: ${itemId}`)
