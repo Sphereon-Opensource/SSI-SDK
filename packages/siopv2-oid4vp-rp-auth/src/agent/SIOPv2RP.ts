@@ -10,18 +10,18 @@ import {
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import {
-  AdditionalClaims,
+  //AdditionalClaims,
   CredentialMapper,
   HasherSync,
-  ICredentialSubject,
-  IPresentation,
-  IVerifiableCredential,
-  IVerifiablePresentation,
-  JwtDecodedVerifiablePresentation,
-  MdocDeviceResponse,
-  MdocOid4vpMdocVpToken,
+  //ICredentialSubject,
+  //IPresentation,
+  //IVerifiableCredential,
+  //IVerifiablePresentation,
+  //JwtDecodedVerifiablePresentation,
+  //MdocDeviceResponse,
+  //MdocOid4vpMdocVpToken,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
+  //SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
@@ -41,7 +41,7 @@ import {
   IUpdateRequestStateArgs,
   IVerifyAuthResponseStateArgs,
   schema,
-  VerifiedDataMode,
+  // VerifiedDataMode,
 } from '../index'
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
@@ -126,10 +126,11 @@ export class SIOPv2RP implements IAgentPlugin {
     }
 
     const responseState = authorizationResponseState as AuthorizationResponseStateWithVerifiedData
-    if (
-      responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
-      args.includeVerifiedData &&
-      args.includeVerifiedData !== VerifiedDataMode.NONE
+    if (responseState.status === AuthorizationResponseStateStatus.VERIFIED
+
+      //&&
+      // args.includeVerifiedData &&
+      // args.includeVerifiedData !== VerifiedDataMode.NONE
     ) {
       let hasher: HasherSync | undefined
       if (
@@ -144,54 +145,70 @@ export class SIOPv2RP implements IAgentPlugin {
         //todo: later we want to conditionally pass in options for mdl-mdoc here
         hasher,
       )
-      switch (args.includeVerifiedData) {
-        case VerifiedDataMode.VERIFIED_PRESENTATION:
-          responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
-          break
-        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
-          const allClaims: AdditionalClaims = {}
-          for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
-            const vc = credential as IVerifiableCredential
-            const schemaValidationResult = await context.agent.cvVerifySchema({
-              credential,
-              hasher,
-              validationPolicy: rpInstance.rpOptions.verificationPolicies?.schemaValidation,
-            })
-            if (!schemaValidationResult.result) {
-              responseState.status = AuthorizationResponseStateStatus.ERROR
-              responseState.error = new Error(schemaValidationResult.error)
-              return responseState
-            }
+      console.log(`presentationDecoded: ${JSON.stringify(presentationDecoded)}`)
 
-            const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
-            if (!('id' in allClaims)) {
-              allClaims['id'] = credentialSubject.id
-            }
-
-            Object.entries(credentialSubject).forEach(([key, value]) => {
-              if (!(key in allClaims)) {
-                allClaims[key] = value
-              }
-            })
+      responseState.verifiedData = {
+        ...(responseState.response.payload.vp_token && {
+          authorization_response: {
+            vp_token: typeof responseState.response.payload.vp_token === 'string'
+                ? JSON.parse(responseState.response.payload.vp_token)
+                : responseState.response.payload.vp_token
           }
-          responseState.verifiedData = allClaims
-          break
+        }),
+
+        // TODO use ??
+        credential_claims: []//(this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []).map()
       }
+
+      // switch (args.includeVerifiedData) {
+      //   case VerifiedDataMode.VERIFIED_PRESENTATION:
+      //     responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
+      //     break
+      //   case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
+      //     const allClaims: AdditionalClaims = {}
+      //     for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
+      //       const vc = credential as IVerifiableCredential
+      //       const schemaValidationResult = await context.agent.cvVerifySchema({
+      //         credential,
+      //         hasher,
+      //         validationPolicy: rpInstance.rpOptions.verificationPolicies?.schemaValidation,
+      //       })
+      //       if (!schemaValidationResult.result) {
+      //         responseState.status = AuthorizationResponseStateStatus.ERROR
+      //         responseState.error = new Error(schemaValidationResult.error)
+      //         return responseState
+      //       }
+      //
+      //       const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
+      //       if (!('id' in allClaims)) {
+      //         allClaims['id'] = credentialSubject.id
+      //       }
+      //
+      //       Object.entries(credentialSubject).forEach(([key, value]) => {
+      //         if (!(key in allClaims)) {
+      //           allClaims[key] = value
+      //         }
+      //       })
+      //     }
+      //     responseState.verifiedData = allClaims
+      //     break
+      // }
     }
     return responseState
   }
 
-  private presentationOrClaimsFrom = (
-    presentationDecoded:
-      | JwtDecodedVerifiablePresentation
-      | IVerifiablePresentation
-      | SdJwtDecodedVerifiableCredential
-      | MdocOid4vpMdocVpToken
-      | MdocDeviceResponse,
-  ): AdditionalClaims | IPresentation =>
-    CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
-      ? presentationDecoded.decodedPayload
-      : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
+  // private presentationOrClaimsFrom = (
+  //   presentationDecoded:
+  //     | JwtDecodedVerifiablePresentation
+  //     | IVerifiablePresentation
+  //     | SdJwtDecodedVerifiableCredential
+  //     | MdocOid4vpMdocVpToken
+  //     | MdocDeviceResponse
+  //     | DcqlPresentation
+  // ): AdditionalClaims | IPresentation =>
+  //   CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
+  //     ? presentationDecoded.decodedPayload
+  //     : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
     if (args.state !== 'authorization_request_created') {

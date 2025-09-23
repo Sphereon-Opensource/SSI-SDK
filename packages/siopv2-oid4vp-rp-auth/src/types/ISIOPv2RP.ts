@@ -89,11 +89,11 @@ export interface IGetAuthResponseStateArgs {
   queryId?: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
-  includeVerifiedData?: VerifiedDataMode
+  //includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {
-  queryId: string
+  queryId?: string
   correlationId: string
   state: AuthorizationRequestStateStatus
   error?: string

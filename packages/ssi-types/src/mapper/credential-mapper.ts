@@ -111,6 +111,7 @@ export class CredentialMapper {
    * an async hasher implementation, use the decodeSdJwtVcAsync method instead and you can provide the decoded payload to methods
    * instead of the compact SD-JWT.
    *
+   * @param credential
    * @param hasher Hasher implementation to use for SD-JWT decoding
    */
   static decodeVerifiableCredential(
@@ -149,7 +150,8 @@ export class CredentialMapper {
    * an async hasher implementation, use the decodeSdJwtVcAsync method instead and you can provide the decoded payload to methods
    * instead of the compact SD-JWT.
    *
-   * @param hasher Hasher implementation to use for SD-JWT decoding
+   * @param originalPresentation
+   * @param opts
    */
   static toWrappedVerifiablePresentation(
     originalPresentation: OriginalVerifiablePresentation,

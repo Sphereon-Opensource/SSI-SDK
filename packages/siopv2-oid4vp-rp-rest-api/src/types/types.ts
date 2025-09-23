@@ -2,12 +2,12 @@ import { IAgentContext, ICredentialVerifier } from '@veramo/core'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
-import { AdditionalClaims } from '@sphereon/ssi-types'
 import { AuthorizationRequestStateStatus, AuthorizationResponseStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response } from 'express'
 import { z } from 'zod'
 import { CreateAuthorizationRequestBodySchema, CreateAuthorizationResponseSchema } from '../schemas'
 import { QRCodeOpts } from './QRCode.types'
+import { VerifiedData } from '@sphereon/did-auth-siop'
 
 export type SiopFeatures = 'rp-status' | 'siop'
 
@@ -71,28 +71,28 @@ export interface AuthStatusResponse {
   error?: RequestError
 }
 
-export type VerifiedData = {
-  authorization_response?: AuthorizationResponse
-  credential_claims?: AdditionalClaims
-}
-
-export type AuthorizationResponse = {
-  presentation_submission?: Record<string, any>
-  vp_token?: VpToken
-}
-
-export type SingleObjectVpTokenPE = Record<string, any>
-
-export type SingleStringVpTokenPE = string
-
-export type MultipleVpTokens = Array<SingleObjectVpTokenPE> | Array<SingleStringVpTokenPE>
-
-export type MultipleVpTokenDCQL = {
-  [key: string]: MultipleVpTokens
-}
-
-export type VpToken =
-  | SingleObjectVpTokenPE
-  | SingleStringVpTokenPE
-  | MultipleVpTokens
-  | MultipleVpTokenDCQL
+// export type VerifiedData = {
+//   authorization_response?: AuthorizationResponse
+//   credential_claims?: AdditionalClaims
+// }
+//
+// export type AuthorizationResponse = {
+//   presentation_submission?: Record<string, any>
+//   vp_token?: VpToken
+// }
+//
+// export type SingleObjectVpTokenPE = Record<string, any>
+//
+// export type SingleStringVpTokenPE = string
+//
+// export type MultipleVpTokens = Array<SingleObjectVpTokenPE> | Array<SingleStringVpTokenPE>
+//
+// export type MultipleVpTokenDCQL = {
+//   [key: string]: MultipleVpTokens
+// }
+//
+// export type VpToken =
+//   | SingleObjectVpTokenPE
+//   | SingleStringVpTokenPE
+//   | MultipleVpTokens
+//   | MultipleVpTokenDCQL

@@ -3912,14 +3912,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.126
-        version: 0.19.1-feature.DIIPv4.126(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-fix.161
+        version: 0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.126
-        version: 0.19.1-feature.DIIPv4.126(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-fix.161
+        version: 0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feature.DIIPv4.126
-        version: 0.19.1-feature.DIIPv4.126
+        specifier: 0.19.1-fix.161
+        version: 0.19.1-fix.161
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -4003,8 +4003,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.126
-        version: 0.19.1-feature.DIIPv4.126(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-fix.161
+        version: 0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -4076,8 +4076,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.126
-        version: 0.19.1-feature.DIIPv4.126(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-fix.161
+        version: 0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -7995,8 +7995,16 @@ packages:
     resolution: {integrity: sha512-pzo7rV6wnMgn18BQn3MFXJiT60CQorl/gYdwXh2t1yNRbjapatqBcpVZo47HCLC0nFw7OLlk2HxBoMI2onYRYA==}
     engines: {node: '>=20'}
 
+  '@sphereon/did-auth-siop-adapter@0.19.1-fix.161':
+    resolution: {integrity: sha512-x3R+ULt76mv0g57cl9II6vGGQPwYiy77t/karvN5weD2RvzA4GP7yuSwWIEqqnIig2Gd1jnbRcrmZdiUoJ2G0w==}
+    engines: {node: '>=20'}
+
   '@sphereon/did-auth-siop@0.19.1-feature.DIIPv4.126':
     resolution: {integrity: sha512-I3kvhhz8cdMipr5SiWsomUOymHN6LRqsUGeTasQDKMVfVxc8yy4CTvB4KfHSejT9egmbOMG+5j7RP3XPNUnOxQ==}
+    engines: {node: '>=20.6'}
+
+  '@sphereon/did-auth-siop@0.19.1-fix.161':
+    resolution: {integrity: sha512-Q7iJmeZkLghTIh4ygTPnnxxVBuvGyQ/K0HeCjh4sWCLX/LyFSzfHvH22o+qWmDTm0A6aUI0jn3LVy5TZxm9lew==}
     engines: {node: '>=20.6'}
 
   '@sphereon/did-uni-client@0.4.0':
@@ -8045,6 +8053,10 @@ packages:
 
   '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.126':
     resolution: {integrity: sha512-YUgkAQq7eV4kfQtJy8BljujyDKC2SLYqojAoOMGQjyQ7UiKEWXZGyc/ux0XQ9DQcM6+cpXseFU+me30WajDh7w==}
+    engines: {node: '>=20'}
+
+  '@sphereon/oid4vc-common@0.19.1-fix.161':
+    resolution: {integrity: sha512-Kx97NSDSCo8dhAoE0K5Iye2i5cxHLKujPD0dtqGu8u6O7WCjJr/TAp8qwHcNKwC0qESVtBCQUqiktJ+r4oqNEQ==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vc-common@0.19.1-next.2':
@@ -19241,6 +19253,19 @@ snapshots:
       - supports-color
       - typescript
 
+  '@sphereon/did-auth-siop-adapter@0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)':
+    dependencies:
+      '@sphereon/did-auth-siop': 0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)
+      '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.19.1-fix.161
+      '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
+      did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
+      did-resolver: 4.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
+
   '@sphereon/did-auth-siop@0.19.1-feature.DIIPv4.126(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
@@ -19248,6 +19273,28 @@ snapshots:
       '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.126
       '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/pex-models': 2.3.2
+      '@sphereon/ssi-types': link:packages/ssi-types
+      cross-fetch: 4.1.0(encoding@0.1.13)
+      dcql: 1.0.1(typescript@5.8.3)
+      debug: 4.4.1
+      events: 3.3.0
+      jwt-decode: 4.0.0
+      language-tags: 1.0.9
+      multiformats: 12.1.3
+      qs: 6.14.0
+      uint8arrays: 3.1.1
+      zod: 4.1.9
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
+
+  '@sphereon/did-auth-siop@0.19.1-fix.161(encoding@0.1.13)(typescript@5.8.3)':
+    dependencies:
+      '@astronautlabs/jsonpath': 1.1.2
+      '@sphereon/jarm': 0.19.1-next.2(typescript@5.8.3)
+      '@sphereon/oid4vc-common': 0.19.1-fix.161
+      '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
       dcql: 1.0.1(typescript@5.8.3)
@@ -19345,6 +19392,13 @@ snapshots:
       react-native: 0.79.1(@babel/core@7.28.4)(react@18.3.1)
 
   '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.126':
+    dependencies:
+      '@sphereon/ssi-types': link:packages/ssi-types
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
+
+  '@sphereon/oid4vc-common@0.19.1-fix.161':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0

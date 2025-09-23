@@ -63,6 +63,7 @@ export type OriginalVerifiablePresentation =
   | SdJwtDecodedVerifiableCredential
   | MdocOid4vpMdocVpToken
   | MdocDeviceResponse
+  //| DcqlPresentation
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
 
 export type JwtObject = {

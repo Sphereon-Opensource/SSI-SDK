@@ -1,4 +1,3 @@
-import { AuthorizationResponseStateStatus } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { uriWithBase } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
@@ -129,7 +128,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
       }
 
       let responseState
-      if (requestState.status === 'authorization_request_created') {
+      if (requestState.status === "authorization_request_retrieved") {
         responseState = (await context.agent.siopGetAuthResponseState({ correlationId, errorOnNotFound: false }))
       }
       const overallState = responseState ?? requestState
@@ -139,7 +138,8 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
         correlation_id: overallState.correlationId,
         query_id: overallState.queryId,
         last_updated: overallState.lastUpdated,
-        ...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verified_data: responseState.verifiedData }),
+        ...('verifiedData' in overallState && { verified_data: overallState.verifiedData }),
+        //...((responseState?.status === AuthorizationResponseStateStatus.VERIFIED && responseState.verifiedData !== undefined) && { verified_data: responseState.verifiedData }),
         ...(overallState.error && { message: overallState.error.message })
       } satisfies AuthStatusResponse
       console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
