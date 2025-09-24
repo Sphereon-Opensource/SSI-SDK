@@ -11,17 +11,21 @@ import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import {
   AdditionalClaims,
-  CredentialMapper, decodeSdJwtVc,
+  CredentialMapper,
+  //decodeSdJwtVc,
   HasherSync,
   ICredentialSubject,
-  IPresentation, IProofPurpose, IProofType,
+  IPresentation,
+  //IProofPurpose,
+  //IProofType,
   IVerifiableCredential,
   IVerifiablePresentation,
   JwtDecodedVerifiablePresentation,
   MdocDeviceResponse,
   MdocOid4vpMdocVpToken,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential, sha256
+  SdJwtDecodedVerifiableCredential,
+  //sha256
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
@@ -44,7 +48,7 @@ import {
 } from '../index'
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-import { jwtDecode } from 'jwt-decode'
+//import { jwtDecode } from 'jwt-decode'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
