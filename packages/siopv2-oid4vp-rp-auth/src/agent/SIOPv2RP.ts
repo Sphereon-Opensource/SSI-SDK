@@ -4,7 +4,8 @@ import {
   AuthorizationResponseState,
   AuthorizationResponseStateStatus,
   AuthorizationResponseStateWithVerifiedData,
-  decodeUriAsJson, EncodedDcqlPresentationVpToken,
+  decodeUriAsJson,
+  EncodedDcqlPresentationVpToken,
   VerifiedAuthorizationResponse
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -12,23 +13,19 @@ import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import {
   AdditionalClaims,
   CredentialMapper,
-  //decodeSdJwtVc,
   HasherSync,
   ICredentialSubject,
   IPresentation,
-  //IProofPurpose,
-  //IProofType,
   IVerifiableCredential,
   IVerifiablePresentation,
   JwtDecodedVerifiablePresentation,
   MdocDeviceResponse,
   MdocOid4vpMdocVpToken,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
-  //sha256
+  SdJwtDecodedVerifiableCredential
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { DcqlQuery } from 'dcql'
+import { DcqlPresentation, DcqlQuery } from 'dcql'
 import {
   IAuthorizationRequestPayloads,
   ICreateAuthRequestArgs,
@@ -48,7 +45,6 @@ import {
 } from '../index'
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
-//import { jwtDecode } from 'jwt-decode'
 
 export class SIOPv2RP implements IAgentPlugin {
   private readonly opts: ISiopv2RPOpts
@@ -139,9 +135,13 @@ export class SIOPv2RP implements IAgentPlugin {
         hasher = defaultHasher
       }
 
+
       const vpToken = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
+      const xx = DcqlPresentation.parse(vpToken)
+      console.log(`IS DCQL PRESENTATION: ${JSON.stringify(xx)}`)
       const claims = []
       for (const [key, value] of Object.entries(vpToken)) {
+        // todo this should also include mdl-mdoc
         const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
           value as OriginalVerifiablePresentation,
           //todo: later we want to conditionally pass in options for mdl-mdoc here
@@ -149,7 +149,7 @@ export class SIOPv2RP implements IAgentPlugin {
         )
         console.log(`presentationDecoded: ${JSON.stringify(presentationDecoded)}`)
 
-        let allClaims: AdditionalClaims = {}
+        const allClaims: AdditionalClaims = {}
         const presentationOrClaims = this.presentationOrClaimsFrom(presentationDecoded)
         if ('verifiableCredential' in presentationOrClaims) {
           for (const credential of presentationOrClaims.verifiableCredential) {
@@ -191,75 +191,18 @@ export class SIOPv2RP implements IAgentPlugin {
         }
       }
 
-      // const claimsPromises = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
-      //   .map(async (presentation: OriginalVerifiablePresentation) => {
-      //     const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-      //       presentation,
-      //       //todo: later we want to conditionally pass in options for mdl-mdoc here
-      //       hasher,
-      //     )
-      //
-      //
-      //
-      //     return {
-      //       id: presentationDecoded.id
-      //     }
-      //
-      //   })
-
-      // // todo this should also include mdl-mdoc
-      // const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-      //   responseState.response.payload.vp_token as OriginalVerifiablePresentation,
-      //   //todo: later we want to conditionally pass in options for mdl-mdoc here
-      //   hasher,
-      // )
-      // console.log(`presentationDecoded: ${JSON.stringify(presentationDecoded)}`)
-
       responseState.verifiedData = {
         ...(responseState.response.payload.vp_token && {
           authorization_response: {
-            vp_token: typeof responseState.response.payload.vp_token === 'string' // TODO we might not need this string check
+            vp_token: typeof responseState.response.payload.vp_token === 'string'
                 ? JSON.parse(responseState.response.payload.vp_token)
                 : responseState.response.payload.vp_token
           }
         }),
-        credential_claims: claims//(this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []).map()
+        ...(claims.length > 0 && { credential_claims: claims })
       }
-
-      // switch (args.includeVerifiedData) {
-      //   case VerifiedDataMode.VERIFIED_PRESENTATION:
-      //     responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
-      //     break
-      //   case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
-      //     const allClaims: AdditionalClaims = {}
-      //     for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
-      //       const vc = credential as IVerifiableCredential
-      //       const schemaValidationResult = await context.agent.cvVerifySchema({
-      //         credential,
-      //         hasher,
-      //         validationPolicy: rpInstance.rpOptions.verificationPolicies?.schemaValidation,
-      //       })
-      //       if (!schemaValidationResult.result) {
-      //         responseState.status = AuthorizationResponseStateStatus.ERROR
-      //         responseState.error = new Error(schemaValidationResult.error)
-      //         return responseState
-      //       }
-      //
-      //       const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
-      //       if (!('id' in allClaims)) {
-      //         allClaims['id'] = credentialSubject.id
-      //       }
-      //
-      //       Object.entries(credentialSubject).forEach(([key, value]) => {
-      //         if (!(key in allClaims)) {
-      //           allClaims[key] = value
-      //         }
-      //       })
-      //     }
-      //     responseState.verifiedData = allClaims
-      //     break
-      // }
     }
+
     return responseState
   }
 
