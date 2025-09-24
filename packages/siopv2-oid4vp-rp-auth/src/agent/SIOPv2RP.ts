@@ -135,10 +135,8 @@ export class SIOPv2RP implements IAgentPlugin {
         hasher = defaultHasher
       }
 
-
+      // FIXME SSISDK-64 currently assuming that all vp tokens are or type EncodedDcqlPresentationVpToken as we only work with DCQL now. But the types still indicate it can be another type of vp token
       const vpToken = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
-      const xx = DcqlPresentation.parse(vpToken)
-      console.log(`IS DCQL PRESENTATION: ${JSON.stringify(xx)}`)
       const claims = []
       for (const [key, value] of Object.entries(vpToken)) {
         // todo this should also include mdl-mdoc
@@ -254,7 +252,7 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-          ...(args.dcqlQueryPayload ? { dcqlQuery: args.dcqlQueryPayload.dcqlQuery } : {}),
+          ...(args.dcqlQueryPayload && { dcqlQuery: args.dcqlQueryPayload.dcqlQuery }),
           audience: args.audience,
         }),
       ),
