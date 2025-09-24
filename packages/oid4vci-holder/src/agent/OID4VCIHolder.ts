@@ -86,7 +86,7 @@ import {
   startFirstPartApplicationMachine,
   verifyCredentialToAccept,
 } from '../services/OID4VCIHolderService'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,

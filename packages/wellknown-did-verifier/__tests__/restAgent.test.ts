@@ -1,4 +1,4 @@
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 // @ts-ignore
 import express from 'express'
 import { Server } from 'http'

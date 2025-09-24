@@ -1,5 +1,5 @@
 import { describe } from 'vitest'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import { createAgent, IAgent, IAgentOptions, IDIDManager, IKeyManager } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'

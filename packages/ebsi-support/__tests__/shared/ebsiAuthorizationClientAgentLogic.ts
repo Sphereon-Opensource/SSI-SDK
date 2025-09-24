@@ -5,7 +5,7 @@ import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { toJwk } from '@sphereon/ssi-sdk-ext.key-utils'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { IDIDManager, IIdentifier, IKeyManager, MinimalImportableKey, TAgent } from '@veramo/core'
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 //@ts-ignore
 import express, { Application, NextFunction, Request, Response } from 'express'
 import { createServer, Server } from 'http'

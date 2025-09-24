@@ -1,6 +1,6 @@
 import { describe } from 'vitest'
 import * as fs from 'fs'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 // @ts-ignore
 import express from 'express'
 import { createAgent, IAgent, IAgentOptions } from '@veramo/core'

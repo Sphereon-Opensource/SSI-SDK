@@ -7,7 +7,7 @@ import {
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Loggers } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 import {
   ISiopClientGenerateAuthRequestArgs,
   ISiopClientGetAuthStatusArgs,

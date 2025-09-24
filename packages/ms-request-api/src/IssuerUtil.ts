@@ -1,10 +1,10 @@
 import { IIssueRequest, IIssueRequestResponse } from './types/IMsRequestApi'
 
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 export async function fetchIssuanceRequestMs(
   issuanceInfo: IIssueRequest,
   accessToken: string,
-  msIdentityHostName: string,
+  msIdentityHostName: string
 ): Promise<IIssueRequestResponse> {
   const requestEndpoint = `${msIdentityHostName}${issuanceInfo.authenticationInfo.azTenantId}/verifiablecredentials/request`
 

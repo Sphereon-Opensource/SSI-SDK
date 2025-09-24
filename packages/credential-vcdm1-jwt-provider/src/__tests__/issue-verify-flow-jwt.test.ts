@@ -9,7 +9,7 @@ import { EthrDIDProvider } from '@veramo/did-provider-ethr'
 import { Resolver } from 'did-resolver'
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver'
 
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import { CredentialProviderJWT } from '../agent/CredentialProviderJWT'
 import { type ISphereonKeyManager, MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
