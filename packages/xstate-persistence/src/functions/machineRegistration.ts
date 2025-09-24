@@ -1,6 +1,6 @@
 import { IAgentContext, TAgent } from '@veramo/core'
 import { DefaultContext, EventObject, Interpreter, State, StateSchema, TypegenDisabled, Typestate } from 'xstate'
-import { waitFor } from 'xstate/lib/waitFor'
+import { waitFor } from 'xstate/lib/waitFor.js'
 import {
   IMachineStatePersistence,
   InitMachineStateArgs,

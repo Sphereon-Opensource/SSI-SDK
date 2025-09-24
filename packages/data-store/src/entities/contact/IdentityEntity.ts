@@ -1,26 +1,26 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { IdentityOrigin, ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialRole } from '@sphereon/ssi-types'
+import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import {
   BaseEntity,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  OneToOne,
-  JoinColumn,
-  ManyToOne,
-  Column,
-  OneToMany,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm'
-import { IsNotEmpty, validate, ValidationError } from 'class-validator'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
-import { ConnectionEntity } from './ConnectionEntity'
-import { IdentityMetadataItemEntity } from './IdentityMetadataItemEntity'
-import { IdentityOrigin, ValidationConstraint } from '../../types'
-import { CredentialRole } from '@sphereon/ssi-types'
-import { PartyEntity } from './PartyEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { ConnectionEntity } from './ConnectionEntity'
+import { CorrelationIdentifierEntity } from './CorrelationIdentifierEntity'
+import { IdentityMetadataItemEntity } from './IdentityMetadataItemEntity'
+import { PartyEntity } from './PartyEntity'
 
 @Entity('Identity')
 export class IdentityEntity extends BaseEntity {

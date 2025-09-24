@@ -1,7 +1,9 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { ContactStore } from '../contact/ContactStore'
+import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
 import {
   CorrelationIdentifierType,
   ElectronicAddress,
@@ -25,8 +27,6 @@ import {
   PartyTypeType,
   PhysicalAddress,
 } from '../types'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { CredentialRole } from "@sphereon/ssi-types"
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource

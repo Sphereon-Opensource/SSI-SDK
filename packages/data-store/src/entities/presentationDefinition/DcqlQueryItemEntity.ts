@@ -1,6 +1,6 @@
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { IsNotEmpty } from 'class-validator'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { IsNotEmpty } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity('DcqlQueryItem')
 @Index(['version'], { unique: false })

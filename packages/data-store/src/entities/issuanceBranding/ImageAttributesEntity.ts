@@ -1,7 +1,7 @@
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { ImageDimensionsEntity } from './ImageDimensionsEntity'
 import { validate, Validate, ValidationError } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
+import { ImageDimensionsEntity } from './ImageDimensionsEntity'
 
 @Entity('ImageAttributes')
 export class ImageAttributesEntity extends BaseEntity {

@@ -313,6 +313,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -356,6 +359,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -489,6 +495,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0(encoding@0.1.13)
@@ -726,6 +735,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -1159,6 +1171,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1193,6 +1208,22 @@ importers:
       sqlite3:
         specifier: ^5.1.7
         version: 5.1.7
+
+  packages/data-store-types:
+    dependencies:
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      dcql:
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
+    devDependencies:
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: workspace:*
+        version: link:../identifier-resolution
 
   packages/dev:
     dependencies:
@@ -1691,6 +1722,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.public-key-hosting':
         specifier: workspace:*
         version: link:../public-key-hosting
@@ -1745,6 +1779,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1886,6 +1923,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       debug:
         specifier: ^4.3.5
         version: 4.4.1
@@ -2364,6 +2404,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.public-key-hosting':
         specifier: workspace:*
         version: link:../public-key-hosting
@@ -2601,6 +2644,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
@@ -2716,6 +2762,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -2880,6 +2929,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -3181,6 +3233,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3224,6 +3279,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.pd-manager':
         specifier: workspace:*
         version: link:../pd-manager
@@ -3363,6 +3421,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.sd-jwt':
         specifier: workspace:*
         version: link:../sd-jwt
@@ -3808,6 +3869,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
@@ -4105,6 +4169,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -4473,6 +4540,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -4599,6 +4669,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -4736,6 +4809,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -4829,6 +4905,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -4881,6 +4960,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -5169,6 +5251,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -5461,6 +5546,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -5596,6 +5684,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -11169,6 +11260,7 @@ packages:
 
   glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
@@ -11176,6 +11268,7 @@ packages:
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
@@ -22485,7 +22578,7 @@ snapshots:
 
   dotenv-expand@11.0.7:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv-flow@3.3.0:
     dependencies:
@@ -26287,7 +26380,7 @@ snapshots:
   ora@5.3.0:
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0

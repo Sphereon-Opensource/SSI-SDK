@@ -1,16 +1,16 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  Column,
-  Index,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { PartyEntity } from './PartyEntity'
 
 @Entity('PartyRelationship')

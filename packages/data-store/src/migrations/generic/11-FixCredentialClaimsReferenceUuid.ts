@@ -1,8 +1,8 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreateIssuanceBranding1685628974232 } from '../postgres/1685628974232-CreateIssuanceBranding'
-import { CreateIssuanceBranding1685628973231 } from '../sqlite/1685628973231-CreateIssuanceBranding'
 import { FixCredentialClaimsReferencesUuidPG1741895822987 } from '../postgres/1741895822987-FixCredentialClaimsReferencesUuid'
+import { CreateIssuanceBranding1685628973231 } from '../sqlite/1685628973231-CreateIssuanceBranding'
 import { FixCredentialClaimsReferencesUuidSqlite1741895822987 } from '../sqlite/1741895822987-FixCredentialClaimsReferencesUuid'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')

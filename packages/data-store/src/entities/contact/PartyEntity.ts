@@ -1,3 +1,6 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
+import { validate, ValidationError } from 'class-validator'
 import {
   BaseEntity,
   BeforeInsert,
@@ -12,15 +15,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ValidationConstraint } from '../../types'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { IdentityEntity } from './IdentityEntity'
-import { validate, ValidationError } from 'class-validator'
-import { PartyTypeEntity } from './PartyTypeEntity'
-import { BaseContactEntity } from './BaseContactEntity'
-import { PartyRelationshipEntity } from './PartyRelationshipEntity'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { BaseContactEntity } from './BaseContactEntity'
 import { ElectronicAddressEntity } from './ElectronicAddressEntity'
+import { IdentityEntity } from './IdentityEntity'
+import { PartyRelationshipEntity } from './PartyRelationshipEntity'
+import { PartyTypeEntity } from './PartyTypeEntity'
 import { PhysicalAddressEntity } from './PhysicalAddressEntity'
 
 @Entity('Party')

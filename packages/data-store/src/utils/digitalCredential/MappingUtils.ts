@@ -1,3 +1,6 @@
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import type { AddCredentialArgs, DigitalCredential, NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialDocumentFormat, DocumentType, RegulationType } from '@sphereon/ssi-sdk.data-store-types'
 import {
   CredentialMapper,
   DocumentFormat,
@@ -10,10 +13,7 @@ import {
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import type { AddCredentialArgs, DigitalCredential, NonPersistedDigitalCredential } from '../../types'
-import { CredentialDocumentFormat, DocumentType, RegulationType } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)

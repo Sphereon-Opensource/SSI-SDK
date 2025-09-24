@@ -9,6 +9,9 @@
     },
     {
       "path": "../agent-config"
+    },
+    {
+      "path": "../data-store-types"
     }
   ]
 }

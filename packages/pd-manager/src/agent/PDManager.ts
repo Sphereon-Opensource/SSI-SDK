@@ -17,7 +17,7 @@ import {
   DcqlQueryItem,
   AddDefinitionArgs,
 } from '@sphereon/ssi-sdk.data-store'
-import semver from 'semver/preload'
+import semver from 'semver/preload.js'
 import { ReleaseType } from 'semver'
 
 // Exposing the methods here for any REST implementation

@@ -1,5 +1,5 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreatePresentationDefinitions1716475165345 } from '../postgres/1716475165345-CreatePresentationDefinitions'
 import { CreatePresentationDefinitions1716475165344 } from '../sqlite/1716475165344-CreatePresentationDefinitions'
 

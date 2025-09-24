@@ -1,9 +1,8 @@
-import typeorm from 'typeorm'
-const { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } = typeorm
-import { CorrelationIdentifierType, ValidationConstraint } from '../../types'
-import { IdentityEntity } from './IdentityEntity'
+import { CorrelationIdentifierType, ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { IdentityEntity } from './IdentityEntity'
 
 @Entity('CorrelationIdentifier')
 export class CorrelationIdentifierEntity extends BaseEntity {

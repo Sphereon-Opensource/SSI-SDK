@@ -1,7 +1,7 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug, { Debugger } from 'debug'
-import { CreateAuditEvents1701634819487 } from '../sqlite/1701634819487-CreateAuditEvents'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreateAuditEvents1701634812183 } from '../postgres/1701634812183-CreateAuditEvents'
+import { CreateAuditEvents1701634819487 } from '../sqlite/1701634819487-CreateAuditEvents'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:migrations')
 

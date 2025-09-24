@@ -1,8 +1,6 @@
-import { type OrPromise } from '@sphereon/ssi-types'
-import { DataSource, In, Repository } from 'typeorm'
-import { AbstractPDStore } from './AbstractPDStore'
-import Debug from 'debug'
 import type {
+  DcqlQueryItem,
+  DcqlQueryItemFilter,
   DeleteDefinitionArgs,
   DeleteDefinitionsArgs,
   GetDefinitionArgs,
@@ -10,9 +8,11 @@ import type {
   HasDefinitionArgs,
   HasDefinitionsArgs,
   NonPersistedDcqlQueryItem,
-  DcqlQueryItem,
-  DcqlQueryItemFilter,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { AbstractPDStore } from '@sphereon/ssi-sdk.data-store-types'
+import { type OrPromise } from '@sphereon/ssi-types'
+import Debug from 'debug'
+import { DataSource, In, Repository } from 'typeorm'
 import { DcqlQueryItemEntity } from '../entities/presentationDefinition/DcqlQueryItemEntity'
 import { dcqlQueryEntityItemFrom, dcqlQueryItemFrom } from '../utils/presentationDefinition/MappingUtils'
 

@@ -30,7 +30,7 @@ import {
   Siopv2OID4VPLinkHandler,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { _ExtendedIKey } from '@veramo/utils'
-import { waitFor } from 'xstate/lib/waitFor'
+import { waitFor } from 'xstate/lib/waitFor.js'
 import { logger } from '../index'
 import { AttestationResult, CreateAttestationAuthRequestURLArgs, EbsiEnvironment, GetAttestationArgs, IRequiredContext } from '../types/IEbsiSupport'
 import {

@@ -2,12 +2,12 @@ import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import { ActionType, InitiatorType, LoggingEventType, LogLevel, SubSystem, System, SystemCorrelationIdType } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations'
-import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import { NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../types'
 import { activityEventEntityFrom, auditEventEntityFrom } from '../utils/eventLogger/MappingUtils'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

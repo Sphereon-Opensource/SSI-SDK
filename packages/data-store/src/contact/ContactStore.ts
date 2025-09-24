@@ -1,37 +1,5 @@
-import { OrPromise } from '@sphereon/ssi-types'
-import { BaseEntity, DataSource, type FindOptionsWhere, In, type Repository } from 'typeorm'
-import Debug from 'debug'
-import { AbstractContactStore } from './AbstractContactStore'
-import { PartyEntity } from '../entities/contact/PartyEntity'
-import { IdentityEntity } from '../entities/contact/IdentityEntity'
-import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
-import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
-import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
-import { BaseConfigEntity } from '../entities/contact/BaseConfigEntity'
-import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
-import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
-import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
-import { ElectronicAddressEntity } from '../entities/contact/ElectronicAddressEntity'
-import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
 import {
-  electronicAddressEntityFrom,
-  electronicAddressFrom,
-  identityEntityFrom,
-  identityFrom,
-  isDidAuthConfig,
-  isNaturalPerson,
-  isOpenIdConfig,
-  isOrganization,
-  partyEntityFrom,
-  partyFrom,
-  partyRelationshipEntityFrom,
-  partyRelationshipFrom,
-  partyTypeEntityFrom,
-  partyTypeFrom,
-  physicalAddressEntityFrom,
-  physicalAddressFrom,
-} from '../utils/contact/MappingUtils'
-import {
+  AbstractContactStore,
   AddElectronicAddressArgs,
   AddIdentityArgs,
   AddPartyArgs,
@@ -53,8 +21,8 @@ import {
   GetPhysicalAddressesArgs,
   GetRelationshipArgs,
   GetRelationshipsArgs,
-  IMetadataEntity,
   Identity,
+  IMetadataEntity,
   MetadataItem,
   MetadataTypes,
   NonPersistedConnectionConfig,
@@ -76,7 +44,39 @@ import {
   UpdatePartyTypeArgs,
   UpdatePhysicalAddressArgs,
   UpdateRelationshipArgs,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { OrPromise } from '@sphereon/ssi-types'
+import Debug from 'debug'
+import { BaseEntity, DataSource, type FindOptionsWhere, In, type Repository } from 'typeorm'
+import { BaseConfigEntity } from '../entities/contact/BaseConfigEntity'
+import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
+import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
+import { CorrelationIdentifierEntity } from '../entities/contact/CorrelationIdentifierEntity'
+import { ElectronicAddressEntity } from '../entities/contact/ElectronicAddressEntity'
+import { IdentityEntity } from '../entities/contact/IdentityEntity'
+import { IdentityMetadataItemEntity } from '../entities/contact/IdentityMetadataItemEntity'
+import { PartyEntity } from '../entities/contact/PartyEntity'
+import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
+import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
+import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
+import {
+  electronicAddressEntityFrom,
+  electronicAddressFrom,
+  identityEntityFrom,
+  identityFrom,
+  isDidAuthConfig,
+  isNaturalPerson,
+  isOpenIdConfig,
+  isOrganization,
+  partyEntityFrom,
+  partyFrom,
+  partyRelationshipEntityFrom,
+  partyRelationshipFrom,
+  partyTypeEntityFrom,
+  partyTypeFrom,
+  physicalAddressEntityFrom,
+  physicalAddressFrom,
+} from '../utils/contact/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:contact-store')
 

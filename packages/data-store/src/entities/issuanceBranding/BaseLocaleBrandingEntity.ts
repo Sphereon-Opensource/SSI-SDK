@@ -1,5 +1,6 @@
-import typeorm from 'typeorm'
-const {
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { validate, Validate, ValidationError } from 'class-validator'
+import {
   BaseEntity,
   BeforeInsert,
   BeforeUpdate,
@@ -11,13 +12,11 @@ const {
   PrimaryGeneratedColumn,
   TableInheritance,
   UpdateDateColumn,
-} = typeorm
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { ImageAttributesEntity } from './ImageAttributesEntity'
-import { BackgroundAttributesEntity } from './BackgroundAttributesEntity'
-import { TextAttributesEntity } from './TextAttributesEntity'
-import { validate, Validate, ValidationError } from 'class-validator'
+} from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
+import { BackgroundAttributesEntity } from './BackgroundAttributesEntity'
+import { ImageAttributesEntity } from './ImageAttributesEntity'
+import { TextAttributesEntity } from './TextAttributesEntity'
 
 @Entity('BaseLocaleBranding')
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })

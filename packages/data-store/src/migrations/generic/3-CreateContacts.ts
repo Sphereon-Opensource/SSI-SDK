@@ -1,7 +1,7 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
-import { CreateContacts1690925872693 } from '../sqlite/1690925872693-CreateContacts'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreateContacts1690925872592 } from '../postgres/1690925872592-CreateContacts'
+import { CreateContacts1690925872693 } from '../sqlite/1690925872693-CreateContacts'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 

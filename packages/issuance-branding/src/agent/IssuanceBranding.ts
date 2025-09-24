@@ -16,7 +16,7 @@ import {
   IIssuerBranding,
   IIssuerLocaleBranding,
   ILocaleBranding,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { schema } from '../index'
 import {
   IAddCredentialBrandingArgs,

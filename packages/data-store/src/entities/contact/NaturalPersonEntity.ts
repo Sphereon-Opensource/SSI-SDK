@@ -1,9 +1,9 @@
-import { Column, ChildEntity, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { BaseContactEntity } from './BaseContactEntity'
-import { ValidationConstraint } from '../../types'
-import { validate, IsNotEmpty, ValidationError, Validate } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
+import { IsNotEmpty, validate, Validate, ValidationError } from 'class-validator'
+import { BeforeInsert, BeforeUpdate, ChildEntity, Column } from 'typeorm'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { IsNonEmptyStringConstraint } from '../validators'
+import { BaseContactEntity } from './BaseContactEntity'
 
 @ChildEntity('NaturalPerson')
 export class NaturalPersonEntity extends BaseContactEntity {

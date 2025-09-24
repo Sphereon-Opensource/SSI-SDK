@@ -177,6 +177,9 @@
       "path": "./packages/pd-manager-rest-api"
     },
     {
+      "path": "./packages/data-store-types"
+    },
+    {
       "path": "./packages/data-store"
     },
     {

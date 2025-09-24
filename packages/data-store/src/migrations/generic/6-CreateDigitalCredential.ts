@@ -1,5 +1,5 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug, { Debugger } from 'debug'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreateDigitalCredential1708525189001 } from '../postgres/1708525189001-CreateDigitalCredential'
 import { CreateDigitalCredential1708525189002 } from '../sqlite/1708525189002-CreateDigitalCredential'
 

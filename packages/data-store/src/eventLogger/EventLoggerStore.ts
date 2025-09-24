@@ -1,11 +1,11 @@
 import type { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
+import type { GetActivityEventsArgs, GetAuditEventsArgs, StoreActivityEventArgs, StoreAuditEventArgs } from '@sphereon/ssi-sdk.data-store-types'
+import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store-types'
 import { LoggingEventType, type OrPromise } from '@sphereon/ssi-types'
 import Debug, { Debugger } from 'debug'
 import { DataSource } from 'typeorm'
-import { AbstractEventLoggerStore } from './AbstractEventLoggerStore'
 import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import { activityEventEntityFrom, activityEventFrom, auditEventEntityFrom, auditEventFrom } from '../utils/eventLogger/MappingUtils'
-import type { GetActivityEventsArgs, GetAuditEventsArgs, StoreActivityEventArgs, StoreAuditEventArgs } from '../types'
 
 const debug: Debugger = Debug('sphereon:ssi-sdk:event-store')
 
