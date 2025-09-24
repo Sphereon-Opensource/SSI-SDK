@@ -149,35 +149,44 @@ export class SIOPv2RP implements IAgentPlugin {
         )
         console.log(`presentationDecoded: ${JSON.stringify(presentationDecoded)}`)
 
-        const allClaims: AdditionalClaims = {}
-        for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
-          const vc = credential as IVerifiableCredential
-          const schemaValidationResult = await context.agent.cvVerifySchema({
-            credential,
-            hasher,
-            validationPolicy: rpInstance.rpOptions.verificationPolicies?.schemaValidation,
-          })
-          if (!schemaValidationResult.result) {
-            responseState.status = AuthorizationResponseStateStatus.ERROR
-            responseState.error = new Error(schemaValidationResult.error)
-            return responseState
-          }
-
-          const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
-          if (!('id' in allClaims)) {
-            allClaims['id'] = credentialSubject.id
-          }
-
-          Object.entries(credentialSubject).forEach(([key, value]) => {
-            if (!(key in allClaims)) {
-              allClaims[key] = value
+        let allClaims: AdditionalClaims = {}
+        const presentationOrClaims = this.presentationOrClaimsFrom(presentationDecoded)
+        if ('verifiableCredential' in presentationOrClaims) {
+          for (const credential of presentationOrClaims.verifiableCredential) {
+            const vc = credential as IVerifiableCredential
+            const schemaValidationResult = await context.agent.cvVerifySchema({
+              credential,
+              hasher,
+              validationPolicy: rpInstance.rpOptions.verificationPolicies?.schemaValidation,
+            })
+            if (!schemaValidationResult.result) {
+              responseState.status = AuthorizationResponseStateStatus.ERROR
+              responseState.error = new Error(schemaValidationResult.error)
+              return responseState
             }
-          })
 
+            const credentialSubject = vc.credentialSubject as ICredentialSubject & AdditionalClaims
+            if (!('id' in allClaims)) {
+              allClaims['id'] = credentialSubject.id
+            }
+
+            Object.entries(credentialSubject).forEach(([key, value]) => {
+              if (!(key in allClaims)) {
+                allClaims[key] = value
+              }
+            })
+
+            claims.push({
+              id: key,
+              type: vc.type[0],
+              claims: allClaims
+            })
+          }
+        } else {
           claims.push({
             id: key,
-            type: vc.type[0],
-            claims: allClaims
+            type: (presentationDecoded as SdJwtDecodedVerifiableCredential).decodedPayload.vct,
+            claims: presentationOrClaims
           })
         }
       }
@@ -214,7 +223,6 @@ export class SIOPv2RP implements IAgentPlugin {
                 : responseState.response.payload.vp_token
           }
         }),
-
         credential_claims: claims//(this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []).map()
       }
 
@@ -262,10 +270,11 @@ export class SIOPv2RP implements IAgentPlugin {
       | SdJwtDecodedVerifiableCredential
       | MdocOid4vpMdocVpToken
       | MdocDeviceResponse
-  ): AdditionalClaims | IPresentation =>
-    CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
+  ): AdditionalClaims | IPresentation => {
+    return CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
       ? presentationDecoded.decodedPayload
       : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
+  }
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
     if (args.state !== 'authorization_request_created') {
