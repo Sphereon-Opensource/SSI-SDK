@@ -4,14 +4,11 @@ import {
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
-  CredentialConfigurationSupported,
   CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
-  getTypesFromAuthorizationDetails,
-  getTypesFromCredentialSupported,
   getTypesFromObject,
   Jwt,
   NotificationRequest,
@@ -49,6 +46,7 @@ import {
 import {
   CredentialMapper,
   type CredentialProofFormat,
+  CredentialRole,
   HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
@@ -58,7 +56,6 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
-  CredentialRole,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -401,7 +398,6 @@ export class OID4VCIHolder implements IAgentPlugin {
       formats = Array.from(new Set(authFormats))
     }
     let oid4vciClient: OpenID4VCIClient
-    let types: string[][] | undefined = undefined
     let offer: CredentialOfferRequestWithBaseUrl | undefined
     if (requestData.existingClientState) {
       oid4vciClient = await OpenID4VCIClient.fromState({ state: requestData.existingClientState })
@@ -443,26 +439,23 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
     }
 
+    let configurationIds: Array<string> = []
     if (offer) {
-      const credentialsSupported: CredentialConfigurationSupported[] = offer.original_credential_offer.credential_configuration_ids.flatMap(
-        (configId) => {
-          const config = oid4vciClient.endpointMetadata.credentialIssuerMetadata?.credential_configurations_supported[configId]
-          return config ? [config as CredentialConfigurationSupported] : []
-        },
-      )
-      types = credentialsSupported.map((credentialSupported) => getTypesFromCredentialSupported(credentialSupported))
+      configurationIds = offer.original_credential_offer.credential_configuration_ids
     } else {
-      types = asArray(authorizationRequestOpts.authorizationDetails)
-        .map((authReqOpts) => getTypesFromAuthorizationDetails(authReqOpts) ?? [])
-        .filter((inner) => inner.length > 0)
+      configurationIds = asArray(authorizationRequestOpts.authorizationDetails)
+        .filter((authDetails): authDetails is Exclude<AuthorizationDetails, string> => typeof authDetails !== 'string')
+        .map((authReqOpts) => authReqOpts.credential_configuration_id)
+        .filter((id): id is string => !!id)
     }
 
-    const serverMetadata = await oid4vciClient.retrieveServerMetadata()
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client: oid4vciClient,
       vcFormatPreferences: formats,
-      types,
+      configurationIds,
     })
+
+    const serverMetadata = await oid4vciClient.retrieveServerMetadata()
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
     const authorizationCodeURL = oid4vciClient.authorizationURL
     if (authorizationCodeURL) {
