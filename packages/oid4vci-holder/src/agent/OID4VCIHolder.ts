@@ -32,7 +32,7 @@ import {
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import { ensureRawDocument } from '@sphereon/ssi-sdk.data-store'
+import { ensureRawDocument } from '@sphereon/ssi-sdk.data-store-types'
 import {
   ConnectionType,
   CorrelationIdentifierType,

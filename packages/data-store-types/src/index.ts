@@ -8,3 +8,4 @@ export { IAbstractMachineStateStore } from './machineState/IAbstractMachineState
 export { AbstractPDStore } from './presentationDefinition/AbstractPDStore'
 
 export * from './types'
+export * from './utils/MappingUtils'
