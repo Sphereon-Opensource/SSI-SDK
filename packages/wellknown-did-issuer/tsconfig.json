@@ -5,6 +5,9 @@
       "path": "../ssi-types"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../agent-config"
     },
     {

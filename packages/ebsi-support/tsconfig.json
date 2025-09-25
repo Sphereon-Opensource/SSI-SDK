@@ -23,6 +23,9 @@
       "path": "../public-key-hosting"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

@@ -2401,12 +2401,6 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
-      '@sphereon/ssi-sdk.data-store-types':
-        specifier: workspace:*
-        version: link:../data-store-types
       '@sphereon/ssi-sdk.public-key-hosting':
         specifier: workspace:*
         version: link:../public-key-hosting
