@@ -35,12 +35,6 @@ import { DcqlQuery } from 'dcql'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
 
-export enum VerifiedDataMode {
-  NONE = 'none',
-  VERIFIED_PRESENTATION = 'vp',
-  CREDENTIAL_SUBJECT_FLATTENED = 'cs-flat',
-}
-
 export interface ISIOPv2RP extends IPluginMethodMap {
   siopCreateAuthRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string>
   siopCreateAuthRequestPayloads(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<IAuthorizationRequestPayloads>
@@ -89,11 +83,10 @@ export interface IGetAuthResponseStateArgs {
   queryId?: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
-  includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {
-  queryId: string
+  queryId?: string
   correlationId: string
   state: AuthorizationRequestStateStatus
   error?: string
