@@ -1,6 +1,6 @@
 import { AuthorizationRequest } from '@sphereon/did-auth-siop'
-import type { PartialSdJwtDecodedVerifiableCredential, PartialSdJwtKbJwt } from '@sphereon/pex/dist/main/lib'
-import { calculateSdHash } from '@sphereon/pex/dist/main/lib/utils'
+import type { PartialSdJwtDecodedVerifiableCredential, PartialSdJwtKbJwt } from '@sphereon/pex/dist/main/lib/index.js'
+import { calculateSdHash } from '@sphereon/pex/dist/main/lib/utils/index.js'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
