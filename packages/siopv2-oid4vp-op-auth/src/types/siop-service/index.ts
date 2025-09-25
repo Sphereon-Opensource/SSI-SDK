@@ -1,13 +1,10 @@
-import {
-  PresentationSignCallback,
-  RPRegistrationMetadataPayload,
-  VerifiedAuthorizationRequest,
-} from '@sphereon/did-auth-siop'
+import { PresentationSignCallback, RPRegistrationMetadataPayload, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'
 import { IDidAuthSiopOpAuthenticator } from '../IDidAuthSiopOpAuthenticator'
 import { Siopv2MachineContext, Siopv2MachineInterpreter, Siopv2MachineState } from '../machine'
@@ -90,5 +87,12 @@ export type OnIdentifierCreatedArgs = {
 }
 
 export type RequiredContext = IAgentContext<
-  IContactManager & IDidAuthSiopOpAuthenticator & IDIDManager & IResolver & IIdentifierResolution & ICredentialStore & IIssuanceBranding
+  IContactManager &
+    IDidAuthSiopOpAuthenticator &
+    IDIDManager &
+    IResolver &
+    IIdentifierResolution &
+    ICredentialStore &
+    IIssuanceBranding &
+    ISDJwtPlugin
 >
