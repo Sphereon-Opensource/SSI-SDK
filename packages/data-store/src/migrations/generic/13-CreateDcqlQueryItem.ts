@@ -1,13 +1,13 @@
 import Debug from 'debug'
 import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 
-import { UpdatePresentationDefinitionItemNullablePG1741895824000 } from '../postgres/1756975509000-UpdatePresentationDefinitionItemNullable'
-import { UpdatePresentationDefinitionItemNullableSqlite1756975340000 } from '../sqlite/1756975340000-UpdatePresentationDefinitionItemNullable'
+import { CreateDcqlQueryItemPG1726588800000 } from '../postgres/1726588800000-CreateDcqlQueryItem'
+import { CreateDcqlQueryItemSQlite1726617600000 } from '../sqlite/1726617600000-CreateDcqlQueryItem'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:migrations')
 
-export class UpdatePresentationDefinitionItemNullable1741895824000 implements MigrationInterface {
-  name = 'UpdatePresentationDefinitionItemNullable1741895824000'
+export class CreateDcqlQueryItem1726617600000 implements MigrationInterface {
+  name = 'CreateDcqlQueryItem1726617600000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     debug('migration: updating presentation definition item nullable fields')
@@ -16,7 +16,7 @@ export class UpdatePresentationDefinitionItemNullable1741895824000 implements Mi
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: UpdatePresentationDefinitionItemNullablePG1741895824000 = new UpdatePresentationDefinitionItemNullablePG1741895824000()
+        const mig: CreateDcqlQueryItemPG1726588800000 = new CreateDcqlQueryItemPG1726588800000()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -25,7 +25,7 @@ export class UpdatePresentationDefinitionItemNullable1741895824000 implements Mi
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: UpdatePresentationDefinitionItemNullableSqlite1756975340000 = new UpdatePresentationDefinitionItemNullableSqlite1756975340000()
+        const mig: CreateDcqlQueryItemSQlite1726617600000 = new CreateDcqlQueryItemSQlite1726617600000()
         await mig.up(queryRunner)
         debug('Migration statements executed')
         return
@@ -44,7 +44,7 @@ export class UpdatePresentationDefinitionItemNullable1741895824000 implements Mi
     switch (dbType) {
       case 'postgres': {
         debug('using postgres migration file')
-        const mig: UpdatePresentationDefinitionItemNullablePG1741895824000 = new UpdatePresentationDefinitionItemNullablePG1741895824000()
+        const mig: CreateDcqlQueryItemPG1726588800000 = new CreateDcqlQueryItemPG1726588800000()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return
@@ -53,7 +53,7 @@ export class UpdatePresentationDefinitionItemNullable1741895824000 implements Mi
       case 'expo':
       case 'react-native': {
         debug('using sqlite/react-native migration file')
-        const mig: UpdatePresentationDefinitionItemNullableSqlite1756975340000 = new UpdatePresentationDefinitionItemNullableSqlite1756975340000()
+        const mig: CreateDcqlQueryItemSQlite1726617600000 = new CreateDcqlQueryItemSQlite1726617600000()
         await mig.down(queryRunner)
         debug('Migration statements executed')
         return

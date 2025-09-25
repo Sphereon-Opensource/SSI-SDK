@@ -46,21 +46,32 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/siop/definitions/:definitionId/auth-responses/:correlationId'
+  const path = opts?.path ?? '/siop/queries/:queryId/auth-responses/:correlationId'
   router.post(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
-      const { correlationId, definitionId, tenantId, version } = request.params
-      if (!correlationId || !definitionId) {
-        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
+      const { correlationId, queryId, tenantId, version } = request.params
+      if (!correlationId) {
+        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
-      console.log('Authorization Response (siop-sessions')
-      console.log(JSON.stringify(request.body, null, 2))
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ definitionId, tenantId, version }] })
+      console.debug('Authorization Response (siop-sessions') // TODO use logger
+      console.debug(JSON.stringify(request.body, null, 2))
+      const definitionItems = await context.agent.pdmGetDefinitions({
+        filter: [
+          {
+            queryId,
+            ...(tenantId && { tenantId }),
+            ...(version && { version }),
+          },
+          {
+            id: queryId,
+          },
+        ],
+      })
       if (definitionItems.length === 0) {
-        console.log(`Could not get definition ${definitionId} from agent. Will return 404`)
+        console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
         response.statusCode = 404
-        response.statusMessage = `No definition ${definitionId}`
+        response.statusMessage = `No definition ${queryId}`
         return response.send()
       }
 
@@ -71,7 +82,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        dcqlQueryPayload: definitionItem.dcqlPayload,
+        dcqlQuery: definitionItem.query,
       })
 
       // FIXME SSISDK-55 add proper support for checking for DCQL presentations
@@ -88,7 +99,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }
 
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId: definitionId, state: verifiedResponse.state })
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
@@ -112,37 +123,35 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
     console.log(`getAuthRequest SIOP endpoint is disabled`)
     return
   }
-  const path = opts?.path ?? '/siop/definitions/:definitionId/auth-requests/:correlationId'
+  const path = opts?.path ?? '/siop/queries/:queryId/auth-requests/:correlationId'
   router.get(path, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const correlationId = request.params.correlationId
-      const definitionId = request.params.definitionId
-      if (!correlationId || !definitionId) {
-        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, definitionId: ${definitionId}`)
+      const queryId = request.params.queryId
+      if (!correlationId || !queryId) {
+        console.log(`No authorization request could be found for the given url. correlationId: ${correlationId}, queryId: ${queryId}`)
         return sendErrorResponse(response, 404, 'No authorization request could be found')
       }
       const requestState = await context.agent.siopGetAuthRequestState({
         correlationId,
-        //queryId: definitionId,
         errorOnNotFound: false,
       })
       if (!requestState) {
         console.log(
-          `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${definitionId}`,
+          `No authorization request could be found for the given url in the state manager. correlationId: ${correlationId}, definitionId: ${queryId}`,
         )
         return sendErrorResponse(response, 404, `No authorization request could be found`)
       }
 
-      const definitionItems = await context.agent.pdmGetDefinitions({
-        filter: [
-          {
-            definitionId: definitionId
-          }
-        ]
-      });
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId }] });
+      if (definitionItems.length === 0) {
+        console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
+        response.statusCode = 404
+        response.statusMessage = `No definition ${queryId}`
+        return response.send()
+      }
       const payload = requestState.request?.requestObject?.getPayload()!
-      payload.dcql_query = definitionItems[0].dcqlPayload!.dcqlQuery
-
+      payload.dcql_query = definitionItems[0].query
       const requestObject = await requestState.request?.requestObject?.toJwt()
       console.log('JWT Request object:')
       console.log(requestObject)
@@ -158,7 +167,6 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       } finally {
         await context.agent.siopUpdateAuthRequestState({
           correlationId,
-          //queryId: definitionId,
           state: 'authorization_request_created',
           error,
         })

@@ -328,6 +328,11 @@ export async function createVciIssuerBuilder(
   builder.withAuthorizationMetadata(authorizationServerMetadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
   builder.withCredentialSignerCallback(await getCredentialSignerCallback(idOpts, context))
+  if (issuerOpts.nonceEndpoint) {
+    builder.withNonceEndpoint(issuerOpts.nonceEndpoint)
+  } else if (issuerMetadata.nonce_endpoint) {
+    builder.withNonceEndpoint(issuerOpts.nonceEndpoint ?? issuerMetadata.nonce_endpoint)
+  }
 
   if (issuerOpts.asClientOpts) {
     builder.withASClientMetadata(issuerOpts.asClientOpts)

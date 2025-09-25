@@ -60,14 +60,7 @@ export async function createOPBuilder({
   const eventEmitter = opOptions.eventEmitter ?? new EventEmitter()
   const builder = OP.builder()
     .withResponseMode(opOptions.responseMode ?? ResponseMode.DIRECT_POST)
-    .withSupportedVersions(
-      opOptions.supportedVersions ?? [
-        SupportedVersion.SIOPv2_ID1,
-        SupportedVersion.JWT_VC_PRESENTATION_PROFILE_v1,
-        SupportedVersion.SIOPv2_D11,
-        SupportedVersion.SIOPv2_D12_OID4VP_D18,
-      ],
-    )
+    .withSupportedVersions(opOptions.supportedVersions ?? [SupportedVersion.OID4VP_v1, SupportedVersion.SIOPv2_OID4VP_D28])
     .withExpiresIn(opOptions.expiresIn ?? 300)
     .withEventEmitter(eventEmitter)
     .withRegistration({

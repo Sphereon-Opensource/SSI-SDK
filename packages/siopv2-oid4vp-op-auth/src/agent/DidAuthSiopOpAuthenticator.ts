@@ -214,7 +214,7 @@ export class DidAuthSiopOpAuthenticator implements IAgentPlugin {
       (args.url.includes('request_uri')
         ? decodeURIComponent(args.url.split('?request_uri=')[1].trim())
         : (verifiedAuthorizationRequest.issuer ?? verifiedAuthorizationRequest.registrationMetadataPayload?.client_id))
-    const uri: URL | undefined = url.includes('://') ? new URL(url) : undefined
+    const uri: URL | undefined = url?.includes('://') ? new URL(url) : undefined
     const correlationId: string = uri?.hostname ?? (await this.determineCorrelationId(uri, verifiedAuthorizationRequest, clientName, context))
     const clientId: string | undefined = verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>('client_id')
 

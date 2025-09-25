@@ -96,6 +96,7 @@ export interface IIssuerOptions {
    */
   didOpts?: IDIDOptions
   userPinRequired?: boolean
+  nonceEndpoint?: string
   cNonceExpiresIn?: number
 
   /**

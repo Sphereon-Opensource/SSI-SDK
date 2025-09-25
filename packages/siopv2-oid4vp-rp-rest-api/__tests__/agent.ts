@@ -33,6 +33,7 @@ import Debug from 'debug'
 import { Resolver } from 'did-resolver'
 import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
 import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -155,6 +156,7 @@ const agent = createAgent<
       instanceOpts: [
         {
           queryId: entraAndSphereonCompatibleDef.id,
+          //definition: entraAndSphereonCompatibleDef,
           rpOpts: {
             identifierOpts: {
               checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,

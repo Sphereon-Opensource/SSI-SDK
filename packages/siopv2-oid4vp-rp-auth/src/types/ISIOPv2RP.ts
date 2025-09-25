@@ -24,22 +24,16 @@ import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdent
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
-import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { ImportDcqlQueryItem, IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { DcqlQueryPayload, HasherSync } from '@sphereon/ssi-types'
+import { HasherSync } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import { IAgentContext, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-
+import { DcqlQuery } from 'dcql'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
-
-export enum VerifiedDataMode {
-  NONE = 'none',
-  VERIFIED_PRESENTATION = 'vp',
-  CREDENTIAL_SUBJECT_FLATTENED = 'cs-flat',
-}
 
 export interface ISIOPv2RP extends IPluginMethodMap {
   siopCreateAuthRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string>
@@ -89,7 +83,6 @@ export interface IGetAuthResponseStateArgs {
   queryId?: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
-  //includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {
@@ -109,16 +102,10 @@ export interface IVerifyAuthResponseStateArgs {
   queryId?: string
   correlationId: string
   audience?: string
-  dcqlQueryPayload?: DcqlQueryPayload
+  dcqlQuery?: DcqlQuery
 }
-
-export interface IDefinitionPair {
-  definitionPayload?: IPresentationDefinition
-  dcqlPayload?: DcqlQueryPayload
-}
-
 export interface ImportDefinitionsArgs {
-  queries: Array<IDefinitionPair>
+  importItems: Array<ImportDcqlQueryItem>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode
@@ -142,11 +129,12 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 }
 
 export interface ISiopRPInstanceArgs {
+  createWhenNotPresent: boolean
   queryId?: string
   responseRedirectURI?: string
 }
 
-export interface IPEXInstanceOptions extends IPEXOptions {
+export interface IPEXInstanceOptions extends IPresentationOptions {
   rpOpts?: IRPOptions
 }
 
@@ -164,12 +152,9 @@ export interface IRPOptions {
   responseRedirectUri?: string
 }
 
-export interface IPEXOptions {
-  presentationVerifyCallback?: PresentationVerificationCallback
-  // definition?: IPresentationDefinition
+export interface IPresentationOptions {
   queryId: string
-  version?: string
-  tenantId?: string
+  presentationVerifyCallback?: PresentationVerificationCallback
 }
 
 export type VerificationPolicies = {
