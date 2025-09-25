@@ -11,7 +11,7 @@
 //  // ProofOptions
 // } from '@sphereon/ssi-sdk.core'
 //import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-//import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store-types-types'
+//import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store-types'
 import {
   //CompactJWT,
   HasherSync,

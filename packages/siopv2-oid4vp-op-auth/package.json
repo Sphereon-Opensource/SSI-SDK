@@ -38,7 +38,6 @@
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk.credential-validation": "workspace:*",
-    "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@sphereon/ssi-sdk.issuance-branding": "workspace:*",
     "@sphereon/ssi-sdk.pd-manager": "workspace:*",
