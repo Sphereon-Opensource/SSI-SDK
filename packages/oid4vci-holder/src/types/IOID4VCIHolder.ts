@@ -34,7 +34,7 @@ import {
   Identity,
   IIssuerLocaleBranding,
   Party,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'

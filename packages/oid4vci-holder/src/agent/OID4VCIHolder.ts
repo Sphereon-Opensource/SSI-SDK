@@ -32,11 +32,11 @@ import {
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import { ensureRawDocument } from '@sphereon/ssi-sdk.data-store'
 import {
   ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
-  ensureRawDocument,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
@@ -45,10 +45,11 @@ import {
   IIssuerLocaleBranding,
   NonPersistedIdentity,
   Party,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import {
   CredentialMapper,
   type CredentialProofFormat,
+  CredentialRole,
   HasherSync,
   IVerifiableCredential,
   JoseSignatureAlgorithm,
@@ -58,7 +59,6 @@ import {
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
-  CredentialRole,
 } from '@sphereon/ssi-types'
 import {
   CredentialPayload,
@@ -71,6 +71,7 @@ import {
   W3CVerifiableCredential,
 } from '@veramo/core'
 import { asArray, computeEntryHash } from '@veramo/utils'
+import fetch from 'cross-fetch'
 import { decodeJWT } from 'did-jwt'
 import { v4 as uuidv4 } from 'uuid'
 import { OID4VCIMachine } from '../machines/oid4vciMachine'
@@ -86,7 +87,6 @@ import {
   startFirstPartApplicationMachine,
   verifyCredentialToAccept,
 } from '../services/OID4VCIHolderService'
-import fetch from 'cross-fetch'
 import {
   AddContactIdentityArgs,
   AssertValidCredentialsArgs,

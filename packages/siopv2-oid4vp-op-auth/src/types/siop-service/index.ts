@@ -2,7 +2,7 @@ import { PresentationSignCallback, RPRegistrationMetadataPayload, VerifiedAuthor
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store'
+import { DidAuthConfig, ICredentialLocaleBranding, Identity, Party } from '@sphereon/ssi-sdk.data-store-types'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IAgentContext, IDIDManager, IIdentifier, IResolver } from '@veramo/core'

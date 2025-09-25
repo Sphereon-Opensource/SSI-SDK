@@ -6,8 +6,8 @@ import {
   NonPersistedActivityLoggingEvent as NPActivityLoggingEvent,
   ActivityLoggingEvent,
 } from '@sphereon/ssi-sdk.core'
-import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store'
-import { FindActivityLoggingEventArgs, FindAuditLoggingEventArgs } from '@sphereon/ssi-sdk.data-store-data'
+import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store-types'
+import { FindActivityLoggingEventArgs, FindAuditLoggingEventArgs } from '@sphereon/ssi-sdk.data-store-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 
 export interface IEventLogger extends IPluginMethodMap {

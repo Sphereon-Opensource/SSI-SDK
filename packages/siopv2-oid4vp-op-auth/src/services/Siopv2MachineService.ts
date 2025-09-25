@@ -5,7 +5,7 @@ import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
+import { ConnectionType } from '@sphereon/ssi-sdk.data-store-types'
 import { defaultGenerateDigest } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,

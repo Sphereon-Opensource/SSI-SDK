@@ -23,7 +23,7 @@ import {
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store'
+import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store-types'
 import {
   CredentialMapper,
   Hasher,

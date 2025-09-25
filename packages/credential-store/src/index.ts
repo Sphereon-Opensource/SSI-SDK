@@ -16,7 +16,7 @@ export {
   DocumentType,
   type DigitalCredential,
   type FindDigitalCredentialArgs,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 export { CredentialRole } from '@sphereon/ssi-types'
 export * from './types/ICredentialStore'
 export * from './types/claims'

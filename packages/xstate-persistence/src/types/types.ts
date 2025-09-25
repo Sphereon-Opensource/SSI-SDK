@@ -3,7 +3,7 @@ import {
   StoreMachineStateDeleteExpiredArgs,
   StoreMachineStateInfo,
   StoreMachineStatesFindActiveArgs,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { IAgentContext } from '@veramo/core'
 import {
   AnyEventObject,

@@ -1,4 +1,4 @@
-import { StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store'
+import { StoreMachineStateInfo } from '@sphereon/ssi-sdk.data-store-types'
 import { State } from 'xstate'
 import { EventObject } from 'xstate/lib/types'
 import { MachineStateInfo, MachineStateInit, MachineStateInitType, MachineStatePersistArgs, SerializableState } from '../types'

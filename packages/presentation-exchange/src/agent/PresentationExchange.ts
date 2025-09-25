@@ -16,7 +16,7 @@ import { CompactJWT, CredentialMapper, IProof, JWT_PROOF_TYPE_2020, W3CVerifiabl
 import { InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
 import { toDIDs } from '@sphereon/ssi-sdk-ext.did-utils'
 import { CredentialRole, UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
+import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store-types'
 
 export class PresentationExchange implements IAgentPlugin {
   readonly schema = schema.IDidAuthSiopOpAuthenticator

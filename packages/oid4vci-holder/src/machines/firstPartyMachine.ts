@@ -1,6 +1,6 @@
 import { assign, createMachine, DoneInvokeEvent, interpret } from 'xstate'
 import { AuthorizationChallengeCodeResponse, AuthorizationChallengeError, AuthorizationChallengeErrorResponse } from '@sphereon/oid4vci-common'
-import { DidAuthConfig } from '@sphereon/ssi-sdk.data-store'
+import { DidAuthConfig } from '@sphereon/ssi-sdk.data-store-types'
 import { CreateConfigResult } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { createConfig, getSiopRequest, sendAuthorizationChallengeRequest, sendAuthorizationResponse } from '../services/FirstPartyMachineServices'
 import { translate } from '../localization/Localization'

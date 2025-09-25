@@ -1,5 +1,5 @@
 import { decodeUriAsJson, PresentationSignCallback, VerifiedAuthorizationRequest } from '@sphereon/did-auth-siop'
-import { ConnectionType, CorrelationIdentifierType, Identity, IdentityOrigin, NonPersistedIdentity, Party } from '@sphereon/ssi-sdk.data-store'
+import { ConnectionType, CorrelationIdentifierType, Identity, IdentityOrigin, NonPersistedIdentity, Party } from '@sphereon/ssi-sdk.data-store-types'
 import { HasherSync, Loggers, CredentialRole } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { v4 as uuidv4 } from 'uuid'

@@ -1,5 +1,5 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { FindDcqlQueryArgs, NonPersistedDcqlQueryItem, DcqlQueryItem } from '@sphereon/ssi-sdk.data-store'
+import { FindDcqlQueryArgs, NonPersistedDcqlQueryItem, DcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
 import { ReleaseType } from 'semver'
 
 export interface IPDManager extends IPluginMethodMap {
