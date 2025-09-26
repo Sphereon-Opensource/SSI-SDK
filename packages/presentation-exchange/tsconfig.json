@@ -8,6 +8,9 @@
       "path": "../sd-jwt"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

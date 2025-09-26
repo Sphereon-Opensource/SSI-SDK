@@ -1,9 +1,9 @@
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm'
-import { IMetadataEntity, ValidationConstraint } from '../../types'
-import { IdentityEntity } from './IdentityEntity'
+import { IMetadataEntity, ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { IdentityEntity } from './IdentityEntity'
 
 @Entity('IdentityMetadata')
 export class IdentityMetadataItemEntity extends BaseEntity implements IMetadataEntity {

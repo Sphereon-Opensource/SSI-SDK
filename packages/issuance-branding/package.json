@@ -29,6 +29,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "debug": "^4.3.5",
     "typeorm": "0.3.20"
   },

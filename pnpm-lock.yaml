@@ -313,6 +313,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -356,6 +359,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -489,6 +495,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0(encoding@0.1.13)
@@ -628,8 +637,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-key':
         specifier: workspace:*
         version: link:../did-provider-key
@@ -726,6 +735,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -1159,6 +1171,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1193,6 +1208,22 @@ importers:
       sqlite3:
         specifier: ^5.1.7
         version: 5.1.7
+
+  packages/data-store-types:
+    dependencies:
+      '@sphereon/ssi-sdk.core':
+        specifier: workspace:*
+        version: link:../ssi-sdk-core
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      dcql:
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
+    devDependencies:
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: workspace:*
+        version: link:../identifier-resolution
 
   packages/dev:
     dependencies:
@@ -1589,11 +1620,11 @@ importers:
         specifier: ^5.7.0
         version: 5.8.0
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -1671,11 +1702,11 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -1691,6 +1722,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.public-key-hosting':
         specifier: workspace:*
         version: link:../public-key-hosting
@@ -1745,6 +1779,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -1886,6 +1923,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       debug:
         specifier: ^4.3.5
         version: 4.4.1
@@ -2286,8 +2326,8 @@ importers:
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
@@ -2344,11 +2384,11 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2361,9 +2401,6 @@ importers:
       '@sphereon/ssi-sdk.agent-config':
         specifier: workspace:*
         version: link:../agent-config
-      '@sphereon/ssi-sdk.data-store':
-        specifier: workspace:*
-        version: link:../data-store
       '@sphereon/ssi-sdk.public-key-hosting':
         specifier: workspace:*
         version: link:../public-key-hosting
@@ -2563,17 +2600,17 @@ importers:
   packages/oid4vci-holder:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/kmp-mdoc-core':
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-client':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: workspace:*
         version: link:../did-utils
@@ -2598,9 +2635,9 @@ importers:
       '@sphereon/ssi-sdk.credential-validation':
         specifier: workspace:*
         version: link:../credential-validation
-      '@sphereon/ssi-sdk.data-store':
+      '@sphereon/ssi-sdk.data-store-types':
         specifier: workspace:*
-        version: link:../data-store
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
@@ -2657,8 +2694,8 @@ importers:
         version: 4.38.3
     devDependencies:
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173
       '@sphereon/ssi-sdk-ext.did-resolver-jwk':
         specifier: workspace:*
         version: link:../did-resolver-jwk
@@ -2690,14 +2727,14 @@ importers:
   packages/oid4vci-issuer:
     dependencies:
       '@sphereon/oid4vci-client':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: workspace:*
         version: link:../did-utils
@@ -2716,6 +2753,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.kv-store-temp':
         specifier: workspace:*
         version: link:../kv-store
@@ -2757,8 +2797,8 @@ importers:
         version: 9.0.1
     devDependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -2781,14 +2821,14 @@ importers:
   packages/oid4vci-issuer-rest-api:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/oid4vci-issuer':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/oid4vci-issuer-server':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -2880,6 +2920,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -2962,8 +3005,8 @@ importers:
   packages/oid4vci-issuer-rest-client:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -2999,8 +3042,8 @@ importers:
   packages/oid4vci-issuer-store:
     dependencies:
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: workspace:*
         version: link:../did-utils
@@ -3181,6 +3224,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -3224,6 +3270,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.pd-manager':
         specifier: workspace:*
         version: link:../pd-manager
@@ -3363,6 +3412,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.sd-jwt':
         specifier: workspace:*
         version: link:../sd-jwt
@@ -3748,8 +3800,8 @@ importers:
   packages/siopv2-oid4vp-common:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
@@ -3770,14 +3822,14 @@ importers:
   packages/siopv2-oid4vp-op-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -3805,9 +3857,9 @@ importers:
       '@sphereon/ssi-sdk.credential-validation':
         specifier: workspace:*
         version: link:../credential-validation
-      '@sphereon/ssi-sdk.data-store':
+      '@sphereon/ssi-sdk.data-store-types':
         specifier: workspace:*
-        version: link:../data-store
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.issuance-branding':
         specifier: workspace:*
         version: link:../issuance-branding
@@ -3912,14 +3964,14 @@ importers:
   packages/siopv2-oid4vp-rp-auth:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/oid4vc-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173
       '@sphereon/pex':
         specifier: 5.0.0-unstable.28
         version: 5.0.0-unstable.28
@@ -4003,8 +4055,8 @@ importers:
   packages/siopv2-oid4vp-rp-rest-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -4076,8 +4128,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@sphereon/did-auth-siop-adapter':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-uni-client':
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
@@ -4105,6 +4157,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -4473,6 +4528,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -4582,8 +4640,8 @@ importers:
         specifier: 0.2.0-SNAPSHOT.26
         version: 0.2.0-SNAPSHOT.26
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-utils':
         specifier: workspace:*
         version: link:../did-utils
@@ -4599,6 +4657,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -4713,8 +4774,8 @@ importers:
         specifier: ^0.6.3
         version: 0.6.3(encoding@0.1.13)
       '@sphereon/oid4vci-common':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-sdk-ext.did-provider-jwk':
         specifier: workspace:*
         version: link:../did-provider-jwk
@@ -4736,6 +4797,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -4829,6 +4893,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -4881,6 +4948,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-sdk.vc-status-list':
         specifier: workspace:*
         version: link:../vc-status-list
@@ -5076,8 +5146,8 @@ importers:
   packages/w3c-vc-api:
     dependencies:
       '@sphereon/did-auth-siop':
-        specifier: 0.19.1-feature.DIIPv4.170
-        version: 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+        specifier: 0.19.1-feature.DIIPv4.173
+        version: 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/ssi-express-support':
         specifier: workspace:*
         version: link:../ssi-express-support
@@ -5169,6 +5239,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.6
@@ -5461,6 +5534,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -5596,6 +5672,9 @@ importers:
       '@sphereon/ssi-sdk.data-store':
         specifier: workspace:*
         version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
@@ -7997,12 +8076,12 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sphereon/did-auth-siop-adapter@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-MwtnMbBZtLafBRTz6ypYxWaT+6PNbq5qnPbFwZTx0Rm8UzqbQl9cv7ghUX3hY4PaNqz6UQ/EZwLI9Jh/++dMcw==}
+  '@sphereon/did-auth-siop-adapter@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-JgDuwoOhyHrkW3uQfxNN0d6ZQbvva8D/qaPq+1b4OHdeNznzVykWCZcd0qb6uVM5egTY427vvpQ9c3n3YeUDhg==}
     engines: {node: '>=20'}
 
-  '@sphereon/did-auth-siop@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-ZjkDuPxuvcC+QrcJm0xn66U+vkFEzW2uFgWAbhtrH967IcQ7HCMRbQtHKZxRX7yQunudfoUALhoPvuLuiNgxcA==}
+  '@sphereon/did-auth-siop@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-2CLpe+CDnON3Ll6ikxXKhN5OO52F7uvz9HJfzspWXmovW2H6ijGCLyOA83WNZpRkb7NXA3lXXQkK6j93Oyn1mg==}
     engines: {node: '>=20.6'}
 
   '@sphereon/did-uni-client@0.4.0':
@@ -8049,24 +8128,24 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-A/dIATE8E37PBSdvlMV2qZus/VrEx4k2CWxLAvgZDQQYm8nJVSoFCjP42jnVyxpN9Bcvb0e/Zx47no7ZMQKgew==}
+  '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-oCQCzqK/I8VVIrN8KGC1eG0DlfljoOBlQKVyaDE4ARdLrRhbxd8dhsgHHazemIvz9NhKALmvwwwS3l9GFQ/ieg==}
     engines: {node: '>=20'}
 
   '@sphereon/oid4vc-common@0.19.1-next.2':
     resolution: {integrity: sha512-lPlEeMWyW7iBqxsaikcRXhSj8lRD+jzz5XgTdOxQvVXbny+cycroHisxfcAOIWy/IeRbaq8nFJW92jOn/FYo2w==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-client@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-lLrlJWjja7s+TsZmJ4MmLnGhi9wV5CJFyKqFpzqxrDUHP0c75LZK4xovU6oncLtLjiBidMzie4C0rPPfgSZsdA==}
+  '@sphereon/oid4vci-client@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-Cwjpq8hiUwrQMh5RYHsaGtl3EqBmTdDrZljpYn/Hlk7ZXStzF4ocdZSbPeExmijgTQ+c0UXjZmBZGhT247pcLA==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-common@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-tyPqMMz5J5dAiwYJ6VqyZyqbL12Zd73rArOWg9MNyGONeWZHYOQ+KT+jybbCmiKe/7M6MEVovlc5OqYD4bvuEQ==}
+  '@sphereon/oid4vci-common@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-2iQ60PSQwGC9vMQxIkcIdWNE4R9rShZp3d4i6P1r+5oJ2KwZu0uh61Z0TVM2eoqSgyM8yWfa/EVkpgcc8Ma4yg==}
     engines: {node: '>=20'}
 
-  '@sphereon/oid4vci-issuer-server@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-MGz6+aPlF7zm8y4aT/NlejtOY9KtVnNECymi8ZKq17RUK5+XpPTIy+5xWp6yajMdnkL7A6YTvIhgMM/1qn07cQ==}
+  '@sphereon/oid4vci-issuer-server@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-ljiqw5l7vefMt2TnV9iiMEYn/8jZdibVww8XdkphDfoKvAJyp8irwZ6FP++g48gMbF+yKAVM77F9YYLZuSvpkw==}
     engines: {node: '>=20'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -8074,8 +8153,8 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/oid4vci-issuer@0.19.1-feature.DIIPv4.170':
-    resolution: {integrity: sha512-X8n4MshADHtcZbAdRCOdkrm09KQvUQm27sVX7nVW5PwJapETs3Mh7P+SDONL63Af8yDHWt4F5ozsyCZlOTDjZA==}
+  '@sphereon/oid4vci-issuer@0.19.1-feature.DIIPv4.173':
+    resolution: {integrity: sha512-XgCxKlavvt/38+opALx3xZ9IXtK6bsA4WRDzwPSnRWsZkDSyKWKzShYObVK3Mn1lh+g71VgB8j4cEB1vmYS1OA==}
     engines: {node: '>=20'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -19234,11 +19313,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sphereon/did-auth-siop-adapter@0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)':
+  '@sphereon/did-auth-siop-adapter@0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
-      '@sphereon/did-auth-siop': 0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)
+      '@sphereon/did-auth-siop': 0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)
       '@sphereon/did-uni-client': 0.6.3(encoding@0.1.13)
-      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.170
+      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.173
       '@sphereon/wellknown-dids-client': 0.1.3(encoding@0.1.13)
       did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
       did-resolver: 4.1.0
@@ -19247,11 +19326,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@sphereon/did-auth-siop@0.19.1-feature.DIIPv4.170(encoding@0.1.13)(typescript@5.8.3)':
+  '@sphereon/did-auth-siop@0.19.1-feature.DIIPv4.173(encoding@0.1.13)(typescript@5.8.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/jarm': 0.19.1-next.2(typescript@5.8.3)
-      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.170
+      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.173
       '@sphereon/pex': 5.0.0-unstable.28
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
@@ -19349,7 +19428,7 @@ snapshots:
       react: 18.3.1
       react-native: 0.79.1(@babel/core@7.28.4)(react@18.3.1)
 
-  '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.170':
+  '@sphereon/oid4vc-common@0.19.1-feature.DIIPv4.173':
     dependencies:
       '@sphereon/ssi-types': link:packages/ssi-types
       jwt-decode: 4.0.0
@@ -19363,10 +19442,10 @@ snapshots:
       uint8arrays: 3.1.1
       uuid: 9.0.1
 
-  '@sphereon/oid4vci-client@0.19.1-feature.DIIPv4.170(encoding@0.1.13)':
+  '@sphereon/oid4vci-client@0.19.1-feature.DIIPv4.173(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.170
-      '@sphereon/oid4vci-common': 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.173
+      '@sphereon/oid4vci-common': 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
       debug: 4.4.1
@@ -19374,9 +19453,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.19.1-feature.DIIPv4.170(encoding@0.1.13)':
+  '@sphereon/oid4vci-common@0.19.1-feature.DIIPv4.173(encoding@0.1.13)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.170
+      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.173
       '@sphereon/ssi-types': link:packages/ssi-types
       cross-fetch: 4.1.0(encoding@0.1.13)
       debug: 4.4.1
@@ -19387,11 +19466,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer-server@0.19.1-feature.DIIPv4.170(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer-server@0.19.1-feature.DIIPv4.173(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.170
-      '@sphereon/oid4vci-common': 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
-      '@sphereon/oid4vci-issuer': 0.19.1-feature.DIIPv4.170(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
+      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.173
+      '@sphereon/oid4vci-common': 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
+      '@sphereon/oid4vci-issuer': 0.19.1-feature.DIIPv4.173(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-express-support': 0.34.1-next.3(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       body-parser: 1.20.3
@@ -19410,10 +19489,10 @@ snapshots:
       - passport-http-bearer
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.19.1-feature.DIIPv4.170(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
+  '@sphereon/oid4vci-issuer@0.19.1-feature.DIIPv4.173(@noble/hashes@1.6.1)(awesome-qr@2.1.5-rc.0(encoding@0.1.13))(encoding@0.1.13)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.170
-      '@sphereon/oid4vci-common': 0.19.1-feature.DIIPv4.170(encoding@0.1.13)
+      '@sphereon/oid4vc-common': 0.19.1-feature.DIIPv4.173
+      '@sphereon/oid4vci-common': 0.19.1-feature.DIIPv4.173(encoding@0.1.13)
       '@sphereon/ssi-express-support': 0.34.1-next.3(@noble/hashes@1.6.1)(passport-azure-ad@4.3.5)(passport-http-bearer@1.0.1)
       '@sphereon/ssi-types': link:packages/ssi-types
       short-uuid: 4.2.2
@@ -22485,7 +22564,7 @@ snapshots:
 
   dotenv-expand@11.0.7:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv-flow@3.3.0:
     dependencies:
@@ -26287,7 +26366,7 @@ snapshots:
   ora@5.3.0:
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0

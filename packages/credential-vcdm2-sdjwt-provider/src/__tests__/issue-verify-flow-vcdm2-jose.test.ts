@@ -10,18 +10,13 @@ import { EthrDIDProvider } from '@veramo/did-provider-ethr'
 import { Resolver } from 'did-resolver'
 import { getResolver as ethrDidResolver } from 'ethr-did-resolver'
 
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import { CredentialProviderVcdm2SdJwt } from '../agent/CredentialProviderVcdm2SdJwt'
 import { type ISphereonKeyManager, MemoryKeyStore, MemoryPrivateKeyStore, SphereonKeyManager } from '@sphereon/ssi-sdk-ext.key-manager'
 import { SphereonKeyManagementSystem } from '@sphereon/ssi-sdk-ext.kms-local'
 import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import {
-  CredentialMapper,
-  JwtDecodedVerifiableCredential,
-  OriginalVerifiableCredential,
-  VCDM_CREDENTIAL_CONTEXT_V2
-} from '@sphereon/ssi-types'
+import { CredentialMapper, JwtDecodedVerifiableCredential, OriginalVerifiableCredential, VCDM_CREDENTIAL_CONTEXT_V2 } from '@sphereon/ssi-types'
 import { SDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 const infuraProjectId = '3586660d179141e3801c3895de1c2eba'

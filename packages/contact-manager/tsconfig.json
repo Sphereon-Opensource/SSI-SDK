@@ -5,6 +5,9 @@
       "path": "../data-store"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../agent-config"
     }
   ]

@@ -21,7 +21,7 @@ import {
   PartyType as ContactType,
   PartyTypeType as ContactTypeType,
   PhysicalAddress,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 
 export interface IContactManager extends IPluginMethodMap {
   cmGetContact(args: GetContactArgs, context: RequiredContext): Promise<Contact>

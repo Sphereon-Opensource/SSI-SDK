@@ -33,6 +33,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.2.1",

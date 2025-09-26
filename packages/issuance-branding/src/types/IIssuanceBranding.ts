@@ -12,7 +12,7 @@ import {
   IIssuerLocaleBranding,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 
 export interface IIssuanceBranding extends IPluginMethodMap {
   ibAddCredentialBranding(args: IAddCredentialBrandingArgs, context: IRequiredContext): Promise<ICredentialBranding>

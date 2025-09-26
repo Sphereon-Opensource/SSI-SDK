@@ -1,9 +1,12 @@
-import { AuthorizationRequest, Json } from '@sphereon/did-auth-siop'
+import { AuthorizationRequest } from '@sphereon/did-auth-siop'
+import type { PartialSdJwtDecodedVerifiableCredential, PartialSdJwtKbJwt } from '@sphereon/pex/dist/main/lib/index.js'
+import { calculateSdHash } from '@sphereon/pex/dist/main/lib/utils/index.js'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-import { ConnectionType } from '@sphereon/ssi-sdk.data-store'
+import { ConnectionType } from '@sphereon/ssi-sdk.data-store-types'
+import { defaultGenerateDigest } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
   CredentialRole,
@@ -17,6 +20,8 @@ import { DcqlPresentation, DcqlQuery } from 'dcql'
 import { OpSession } from '../session'
 import { LOGGER_NAMESPACE, RequiredContext, SelectableCredential, SelectableCredentialsMap, Siopv2HolderEvent } from '../types'
 import { convertToDcqlCredentials } from '../utils/dcql'
+
+const CLOCK_SKEW = 120
 
 export const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
@@ -140,8 +145,26 @@ export const siopSendAuthorizationResponse = async (
       if (!originalVc) {
         continue
       }
+      // FIXME SSISDK-44
+      const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(originalVc as string, defaultGenerateDigest)
+      const updatedSdJwt = updateSdJwtCredential(decodedSdJwt, request.requestObject?.getPayload()?.nonce, domain)
+
+      const presentationResult = await context.agent.createSdJwtPresentation({
+        presentation: updatedSdJwt.compactSdJwtVc,
+        kb: {
+          payload: {
+            ...updatedSdJwt.kbJwt?.payload,
+            // FIXME SSISDK-44
+            nonce: updatedSdJwt.kbJwt?.payload.nonce ?? request.requestObject!.getPayload()!.nonce,
+            // FIXME SSISDK-44
+            aud: updatedSdJwt.kbJwt?.payload.aud ?? domain,
+            iat: updatedSdJwt.kbJwt?.payload?.iat ?? Math.floor(Date.now() / 1000 - CLOCK_SKEW),
+          },
+        },
+      })
+
       if (originalVc) {
-        presentation[key] = originalVc as string | { [x: string]: Json }
+        presentation[key] = presentationResult.presentation
       }
     }
   }
@@ -222,4 +245,34 @@ export const translateCorrelationIdToName = async (correlationId: string, contex
   }
 
   return contacts[0].contact.displayName
+}
+
+const updateSdJwtCredential = (
+  credential: SdJwtDecodedVerifiableCredential,
+  nonce?: string,
+  aud?: string,
+): PartialSdJwtDecodedVerifiableCredential => {
+  const sdJwtCredential = credential as SdJwtDecodedVerifiableCredential
+
+  // extract sd_alg or default to sha-256
+  const hashAlg = sdJwtCredential.signedPayload._sd_alg ?? 'sha-256'
+  const sdHash = calculateSdHash(sdJwtCredential.compactSdJwtVc, hashAlg, defaultGenerateDigest)
+
+  const kbJwt = {
+    // alg MUST be set by the signer
+    header: {
+      typ: 'kb+jwt',
+    },
+    payload: {
+      iat: Math.floor(new Date().getTime() / 1000),
+      sd_hash: sdHash,
+      ...(nonce && { nonce }),
+      ...(aud && { aud }),
+    },
+  } satisfies PartialSdJwtKbJwt
+
+  return {
+    ...sdJwtCredential,
+    kbJwt,
+  } satisfies PartialSdJwtDecodedVerifiableCredential
 }

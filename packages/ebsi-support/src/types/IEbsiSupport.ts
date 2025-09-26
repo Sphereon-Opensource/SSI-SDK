@@ -3,7 +3,7 @@ import { OID4VCICredentialFormat, RequestObjectOpts } from '@sphereon/oid4vci-co
 import { Format, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import { IIdentifierResolution, ManagedIdentifierDidOpts, ManagedIdentifierDidResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store'
+import { IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole } from '@sphereon/ssi-types'
 import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'

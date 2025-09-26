@@ -10,7 +10,7 @@ import {
 } from '@sphereon/ssi-types'
 import { IAgentPlugin, IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import addFormats from 'ajv-formats'
-import Ajv2020 from 'ajv/dist/2020'
+import Ajv2020 from 'ajv/dist/2020.js'
 import fetch from 'cross-fetch'
 import {
   CredentialVerificationError,

@@ -34,15 +34,15 @@
           }
         },
         "PresentationDefinitionItemFilter": {
-          "$ref": "#/components/schemas/Partial<Omit<PresentationDefinitionItem,(\"definitionPayload\"|\"dcqlPayload\")>>"
+          "$ref": "#/components/schemas/Partial<Omit<PresentationDefinitionItem,(\"queryPayload\"|\"dcqlPayload\")>>"
         },
-        "Partial<Omit<PresentationDefinitionItem,(\"definitionPayload\"|\"dcqlPayload\")>>": {
+        "Partial<Omit<PresentationDefinitionItem,(\"queryPayload\"|\"dcqlPayload\")>>": {
           "type": "object",
           "properties": {
             "id": {
               "type": "string"
             },
-            "definitionId": {
+            "queryId": {
               "type": "string"
             },
             "tenantId": {
@@ -93,7 +93,7 @@
             "id": {
               "type": "string"
             },
-            "definitionId": {
+            "queryId": {
               "type": "string"
             },
             "tenantId": {
@@ -108,11 +108,8 @@
             "purpose": {
               "type": "string"
             },
-            "definitionPayload": {
-              "$ref": "#/components/schemas/IPresentationDefinition"
-            },
             "dcqlPayload": {
-              "$ref": "#/components/schemas/DcqlQueryREST"
+              "$ref": "#/components/schemas/DcqlQuery"
             },
             "createdAt": {
               "type": "string",
@@ -123,7 +120,7 @@
               "format": "date-time"
             }
           },
-          "required": ["id", "definitionId", "version", "definitionPayload", "createdAt", "lastUpdatedAt"],
+          "required": ["id", "queryId", "version", "query", "createdAt", "lastUpdatedAt"],
           "additionalProperties": false
         },
         "IPresentationDefinition": {
@@ -803,7 +800,7 @@
           },
           "additionalProperties": false
         },
-        "DcqlQueryREST": {
+        "DcqlQuery": {
           "type": "object",
           "properties": {
             "credentials": {
@@ -892,14 +889,14 @@
         "PersistDefinitionArgs": {
           "type": "object",
           "properties": {
-            "definitionItem": {
+            "queryItem": {
               "$ref": "#/components/schemas/PersistPresentationDefinitionItem"
             },
             "opts": {
               "$ref": "#/components/schemas/PersistOptions"
             }
           },
-          "required": ["definitionItem"],
+          "required": ["queryItem"],
           "additionalProperties": false
         },
         "PersistPresentationDefinitionItem": {
@@ -909,7 +906,7 @@
             "id": {
               "type": "string"
             },
-            "definitionId": {
+            "queryId": {
               "type": "string"
             },
             "version": {
@@ -924,14 +921,11 @@
             "purpose": {
               "type": "string"
             },
-            "definitionPayload": {
-              "$ref": "#/components/schemas/IPresentationDefinition"
-            },
             "dcqlPayload": {
-              "$ref": "#/components/schemas/DcqlQueryREST"
+              "$ref": "#/components/schemas/DcqlQuery"
             }
           },
-          "required": ["definitionPayload"]
+          "required": ["queryPayload"]
         },
         "PersistOptions": {
           "type": "object",
@@ -956,7 +950,7 @@
       },
       "methods": {
         "pdmDeleteDefinition": {
-          "description": "Delete a single presentation definition records by primary key",
+          "description": "Delete a single presentation query records by primary key",
           "arguments": {
             "$ref": "#/components/schemas/DeleteDefinitionItemArgs"
           },
@@ -965,7 +959,7 @@
           }
         },
         "pdmDeleteDefinitions": {
-          "description": "Delete multiple presentation definitions records using filters",
+          "description": "Delete multiple presentation querys records using filters",
           "arguments": {
             "$ref": "#/components/schemas/DeleteDefinitionItemsArgs"
           },
@@ -974,7 +968,7 @@
           }
         },
         "pdmGetDefinition": {
-          "description": "Get a single presentation definition records by primary key",
+          "description": "Get a single presentation query records by primary key",
           "arguments": {
             "$ref": "#/components/schemas/GetDefinitionItemArgs"
           },
@@ -983,7 +977,7 @@
           }
         },
         "pdmGetDefinitions": {
-          "description": "Find one or more presentation definition records using filters",
+          "description": "Find one or more presentation query records using filters",
           "arguments": {
             "$ref": "#/components/schemas/GetDefinitionItemsArgs"
           },
@@ -995,7 +989,7 @@
           }
         },
         "pdmHasDefinition": {
-          "description": "Checks whether a presentation definition record exists by primary key",
+          "description": "Checks whether a presentation query record exists by primary key",
           "arguments": {
             "$ref": "#/components/schemas/HasDefinitionItemArgs"
           },
@@ -1004,7 +998,7 @@
           }
         },
         "pdmHasDefinitions": {
-          "description": "Checks whether one or more presentation definition records exist using filters",
+          "description": "Checks whether one or more presentation query records exist using filters",
           "arguments": {
             "$ref": "#/components/schemas/HasDefinitionItemsArgs"
           },
@@ -1013,7 +1007,7 @@
           }
         },
         "pdmPersistDefinition": {
-          "description": "Check in a presentation definition. It has version control logic which will add or update presentation definition records and has settings for automatic version numbering.",
+          "description": "Check in a presentation query. It has version control logic which will add or update presentation query records and has settings for automatic version numbering.",
           "arguments": {
             "$ref": "#/components/schemas/PersistDefinitionArgs"
           },

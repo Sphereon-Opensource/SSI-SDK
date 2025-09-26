@@ -1,4 +1,4 @@
-import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store'
+import { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store-types'
 import { Loggers, LoggingEventType, LogLevel, LogMethod } from '@sphereon/ssi-types'
 import { ActivityLoggingEvent, AuditLoggingEvent } from '@sphereon/ssi-sdk.core'
 import { IAgentPlugin } from '@veramo/core'

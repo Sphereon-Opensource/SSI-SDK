@@ -1,4 +1,4 @@
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import { ExpressBuilder } from '@sphereon/ssi-express-support'
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'

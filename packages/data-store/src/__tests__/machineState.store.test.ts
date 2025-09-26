@@ -1,8 +1,8 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DataStoreMachineStateEntities, MachineStateStore, StoreMachineStatePersistArgs, StoreMachineStatesFindActiveArgs } from '../index'
 import { DataStoreMachineStateMigrations } from '../migrations'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Machine State store tests', (): void => {
   let dbConnection: DataSource

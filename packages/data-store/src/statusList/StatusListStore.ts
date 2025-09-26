@@ -1,9 +1,9 @@
 import { type OrPromise, StatusListType } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, In, type Repository } from 'typeorm'
-import { BitstringStatusListEntity, OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
-import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import { BitstringStatusListEntryEntity } from '../entities/statusList/BitstringStatusListEntryEntity'
+import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
+import { BitstringStatusListEntity, OAuthStatusListEntity, StatusList2021Entity, StatusListEntity } from '../entities/statusList/StatusListEntities'
 import {
   IAddStatusListArgs,
   IAddStatusListEntryArgs,
@@ -20,8 +20,8 @@ import {
   IStatusListEntryEntity,
   IUpdateStatusListIndexArgs,
 } from '../types'
-import type { IStatusListStore } from './IStatusListStore'
 import { statusListEntityFrom, statusListFrom } from '../utils/statusList/MappingUtils'
+import type { IStatusListStore } from './IStatusListStore'
 
 const debug = Debug('sphereon:ssi-sdk:data-store:status-list')
 

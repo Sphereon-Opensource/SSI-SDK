@@ -1,5 +1,4 @@
 import type {
-  MetadataTypes,
   Connection,
   ConnectionConfig,
   Contact,
@@ -8,6 +7,7 @@ import type {
   ElectronicAddress,
   Identity,
   MetadataItem,
+  MetadataTypes,
   NaturalPerson,
   NonPersistedConnection,
   NonPersistedConnectionConfig,
@@ -30,23 +30,23 @@ import type {
   PartyRelationship,
   PartyType,
   PhysicalAddress,
-} from '../../types'
-import { PartyEntity } from '../../entities/contact/PartyEntity'
-import { IdentityEntity } from '../../entities/contact/IdentityEntity'
-import { ElectronicAddressEntity } from '../../entities/contact/ElectronicAddressEntity'
-import { PartyRelationshipEntity } from '../../entities/contact/PartyRelationshipEntity'
-import { BaseContactEntity } from '../../entities/contact/BaseContactEntity'
-import { NaturalPersonEntity } from '../../entities/contact/NaturalPersonEntity'
-import { OrganizationEntity } from '../../entities/contact/OrganizationEntity'
-import { ConnectionEntity } from '../../entities/contact/ConnectionEntity'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { BaseConfigEntity } from '../../entities/contact/BaseConfigEntity'
+import { BaseContactEntity } from '../../entities/contact/BaseContactEntity'
+import { ConnectionEntity } from '../../entities/contact/ConnectionEntity'
+import { ContactMetadataItemEntity } from '../../entities/contact/ContactMetadataItemEntity'
 import { CorrelationIdentifierEntity } from '../../entities/contact/CorrelationIdentifierEntity'
 import { DidAuthConfigEntity } from '../../entities/contact/DidAuthConfigEntity'
+import { ElectronicAddressEntity } from '../../entities/contact/ElectronicAddressEntity'
+import { IdentityEntity } from '../../entities/contact/IdentityEntity'
 import { IdentityMetadataItemEntity } from '../../entities/contact/IdentityMetadataItemEntity'
+import { NaturalPersonEntity } from '../../entities/contact/NaturalPersonEntity'
 import { OpenIdConfigEntity } from '../../entities/contact/OpenIdConfigEntity'
+import { OrganizationEntity } from '../../entities/contact/OrganizationEntity'
+import { PartyEntity } from '../../entities/contact/PartyEntity'
+import { PartyRelationshipEntity } from '../../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../../entities/contact/PhysicalAddressEntity'
-import { ContactMetadataItemEntity } from '../../entities/contact/ContactMetadataItemEntity'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const partyEntityFrom = (party: NonPersistedParty): PartyEntity => {

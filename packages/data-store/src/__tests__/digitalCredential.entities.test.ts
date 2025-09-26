@@ -1,14 +1,20 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import {
+  AddCredentialArgs,
+  CredentialCorrelationType,
+  CredentialDocumentFormat,
+  DocumentType,
+  NonPersistedDigitalCredential,
+} from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole } from '@sphereon/ssi-types'
+import { computeEntryHash } from '@veramo/utils'
 import { DataSource } from 'typeorm'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 import { DataStoreDigitalCredentialEntities } from '../index'
 import { DataStoreDigitalCredentialMigrations } from '../migrations'
-import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
-import { computeEntryHash } from '@veramo/utils'
 import { nonPersistedDigitalCredentialEntityFromAddArgs } from '../utils/digitalCredential/MappingUtils'
-import { AddCredentialArgs, CredentialCorrelationType, CredentialDocumentFormat, DocumentType, NonPersistedDigitalCredential } from '../types'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

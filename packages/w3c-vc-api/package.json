@@ -23,7 +23,7 @@
     "start:dev": "ts-node __tests__/agent.ts"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.170",
+    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.173",
     "@sphereon/ssi-express-support": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
@@ -65,6 +65,7 @@
     "@sphereon/ssi-sdk.credential-vcdm1-jwt-provider": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm2-jose-provider": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

@@ -23,7 +23,7 @@
       "path": "../issuance-branding"
     },
     {
-      "path": "../data-store"
+      "path": "../data-store-types"
     },
     {
       "path": "../credential-validation"

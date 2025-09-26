@@ -1,5 +1,5 @@
 import { DIDDocument, DIDResolutionOptions } from 'did-resolver'
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 
 export const EBSI_TEST_REGISTRY = 'https://api-test.ebsi.eu/did-registry/v5/identifiers'
 export const EBSI_PILOT_REGISTRY_V5 = 'https://api-pilot.ebsi.eu/did-registry/v5'

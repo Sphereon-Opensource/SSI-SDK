@@ -18,17 +18,11 @@ import { PartyEntity } from '../entities/contact/PartyEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
+import { contactMetadataItemEntityFrom, DataStoreContactEntities, DataStoreMigrations, identityMetadataItemEntityFrom, partyTypeFrom } from '../index'
 import {
-  contactMetadataItemEntityFrom,
-  DataStoreContactEntities,
-  DataStoreMigrations,
-  identityMetadataItemEntityFrom,
   IdentityOrigin,
   MetadataTypes,
   PartyOrigin,
-  partyTypeFrom,
-} from '../index'
-import {
   ConnectionType,
   CorrelationIdentifierType,
   NaturalPerson,
@@ -44,7 +38,7 @@ import {
   NonPersistedPhysicalAddress,
   Organization,
   PartyTypeType,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
 import {
   connectionEntityFrom,
   didAuthConfigEntityFrom,

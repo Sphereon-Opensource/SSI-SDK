@@ -10,7 +10,7 @@ import {
   IVerifyCredentialResult,
 } from '../types/IVcApiVerifierClient'
 
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 
 /**
  * {@inheritDoc IVcApiVerifier}

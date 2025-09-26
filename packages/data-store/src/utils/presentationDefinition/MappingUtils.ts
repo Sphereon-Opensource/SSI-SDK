@@ -1,8 +1,8 @@
 import type { IPresentationDefinition } from '@sphereon/pex'
+import type { DcqlQueryItem, NonPersistedDcqlQueryItem, PartialDcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
 import * as blakepkg from 'blakejs'
 import { DcqlQuery } from 'dcql'
 import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQueryItemEntity'
-import type { NonPersistedDcqlQueryItem, PartialDcqlQueryItem, DcqlQueryItem } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const dcqlQueryItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {

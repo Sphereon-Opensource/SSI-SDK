@@ -1,5 +1,5 @@
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 import { validate, Validate, ValidationError } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
 
 @Entity('TextAttributes')

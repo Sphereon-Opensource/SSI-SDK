@@ -1,4 +1,4 @@
-import { DcqlQueryItem, ImportDcqlQueryItem, NonPersistedDcqlQueryItem } from '@sphereon/ssi-sdk.data-store'
+import { DcqlQueryItem, ImportDcqlQueryItem, NonPersistedDcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
 import { TAgent } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
 import * as fs from 'fs'

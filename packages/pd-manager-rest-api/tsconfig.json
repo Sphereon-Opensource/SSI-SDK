@@ -8,6 +8,9 @@
       "path": "../pd-manager"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

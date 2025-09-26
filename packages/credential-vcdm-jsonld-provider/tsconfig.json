@@ -18,6 +18,9 @@
       "path": "../vc-status-list"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

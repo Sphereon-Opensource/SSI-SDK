@@ -1,15 +1,3 @@
-import { replaceNullWithUndefined } from '../FormattingUtils'
-import { isEmptyString } from '../../entities/validators'
-import { CredentialBrandingEntity } from '../../entities/issuanceBranding/CredentialBrandingEntity'
-import { BaseLocaleBrandingEntity } from '../../entities/issuanceBranding/BaseLocaleBrandingEntity'
-import { IssuerBrandingEntity } from '../../entities/issuanceBranding/IssuerBrandingEntity'
-import { ImageAttributesEntity } from '../../entities/issuanceBranding/ImageAttributesEntity'
-import { BackgroundAttributesEntity } from '../../entities/issuanceBranding/BackgroundAttributesEntity'
-import { TextAttributesEntity } from '../../entities/issuanceBranding/TextAttributesEntity'
-import { IssuerLocaleBrandingEntity } from '../../entities/issuanceBranding/IssuerLocaleBrandingEntity'
-import { CredentialLocaleBrandingEntity } from '../../entities/issuanceBranding/CredentialLocaleBrandingEntity'
-import { ImageDimensionsEntity } from '../../entities/issuanceBranding/ImageDimensionsEntity'
-import { CredentialClaimsEntity } from '../../entities/issuanceBranding/CredentialClaimsEntity'
 import type {
   IBasicBackgroundAttributes,
   IBasicCredentialBranding,
@@ -23,7 +11,19 @@ import type {
   ICredentialBranding,
   IIssuerBranding,
   ILocaleBranding,
-} from '../../types'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { BackgroundAttributesEntity } from '../../entities/issuanceBranding/BackgroundAttributesEntity'
+import { BaseLocaleBrandingEntity } from '../../entities/issuanceBranding/BaseLocaleBrandingEntity'
+import { CredentialBrandingEntity } from '../../entities/issuanceBranding/CredentialBrandingEntity'
+import { CredentialClaimsEntity } from '../../entities/issuanceBranding/CredentialClaimsEntity'
+import { CredentialLocaleBrandingEntity } from '../../entities/issuanceBranding/CredentialLocaleBrandingEntity'
+import { ImageAttributesEntity } from '../../entities/issuanceBranding/ImageAttributesEntity'
+import { ImageDimensionsEntity } from '../../entities/issuanceBranding/ImageDimensionsEntity'
+import { IssuerBrandingEntity } from '../../entities/issuanceBranding/IssuerBrandingEntity'
+import { IssuerLocaleBrandingEntity } from '../../entities/issuanceBranding/IssuerLocaleBrandingEntity'
+import { TextAttributesEntity } from '../../entities/issuanceBranding/TextAttributesEntity'
+import { isEmptyString } from '../../entities/validators'
+import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const credentialBrandingFrom = (credentialBranding: CredentialBrandingEntity): ICredentialBranding => {
   const result: ICredentialBranding = {

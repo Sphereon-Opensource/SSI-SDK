@@ -9,7 +9,7 @@ import {
   ImportDcqlQueryItem,
   PDStore,
 } from '../index'
-import { DcqlQueryItem, GetDefinitionsArgs, NonPersistedDcqlQueryItem } from '../types'
+import { DcqlQueryItem, GetDefinitionsArgs, NonPersistedDcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
 
 export const SAMPLE_DCQL_QUERY_IMPORT: ImportDcqlQueryItem = {
   queryId: 'ajax-club',

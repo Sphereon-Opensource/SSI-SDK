@@ -1,5 +1,5 @@
-import { MigrationInterface, QueryRunner } from 'typeorm'
 import { enablePostgresUuidExtension } from '@sphereon/ssi-sdk.core'
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreateContacts1659463079428 implements MigrationInterface {
   name = 'CreateContacts1659463079428'

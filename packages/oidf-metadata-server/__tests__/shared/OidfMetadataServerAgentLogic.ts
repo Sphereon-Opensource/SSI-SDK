@@ -7,7 +7,7 @@ import {
   OpenidFederationMetadata,
   OpenidFederationValueData,
 } from '../../src'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
 import { HttpTerminator } from 'http-terminator'
 import { IRequiredContext } from '../../src/types/metadata-server'

@@ -15,7 +15,7 @@ import {
   DocumentType,
   GetCredentialsArgs,
   GetCredentialsResponse,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

@@ -1,3 +1,5 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import type { PhysicalAddressType, ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
 import {
   BaseEntity,
@@ -10,11 +12,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { getConstraint } from '../../utils/ValidatorUtils'
-import type { PhysicalAddressType, ValidationConstraint } from '../../types/index'
-import { PartyEntity } from './PartyEntity'
 import { IsNonEmptyStringConstraint } from '../validators'
+import { PartyEntity } from './PartyEntity'
 
 @Entity('PhysicalAddress')
 export class PhysicalAddressEntity extends BaseEntity {

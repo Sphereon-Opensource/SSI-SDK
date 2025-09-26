@@ -4,7 +4,7 @@ import { schema } from '../index'
 import { events, IIssueCredentialArgs, IRequiredContext, IVcApiIssuerClient, IVcApiIssuerArgs } from '../types/IVcApiIssuerClient'
 import { VerifiableCredentialSP } from '@sphereon/ssi-sdk.core'
 
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 
 /**
  * {@inheritDoc IVcApiIssuer}

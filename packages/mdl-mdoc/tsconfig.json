@@ -11,9 +11,6 @@
       "path": "../public-key-hosting"
     },
     {
-      "path": "../data-store"
-    },
-    {
       "path": "../ssi-express-support"
     },
     {

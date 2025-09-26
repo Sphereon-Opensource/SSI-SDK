@@ -1,5 +1,5 @@
 import { describe } from 'vitest'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'

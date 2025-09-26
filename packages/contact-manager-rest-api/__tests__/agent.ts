@@ -10,7 +10,7 @@ import {
   NonPersistedIdentity,
   PartyOrigin,
   PartyTypeType,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { v4 } from 'uuid'
 import { DIDManager } from '@veramo/did-manager'

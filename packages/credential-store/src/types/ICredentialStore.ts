@@ -4,7 +4,7 @@ import {
   type FindDigitalCredentialArgs,
   type NonPersistedDigitalCredential,
   type UpdateCredentialStateArgs,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import type {
   CredentialRole,
   HasherSync,
