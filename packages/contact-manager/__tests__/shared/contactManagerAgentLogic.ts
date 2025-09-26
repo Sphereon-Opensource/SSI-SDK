@@ -14,7 +14,7 @@ import {
   PartyRelationship,
   PartyTypeType,
   PhysicalAddress,
-} from '../../../data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { AddContactArgs, IContactManager } from '../../src'
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
