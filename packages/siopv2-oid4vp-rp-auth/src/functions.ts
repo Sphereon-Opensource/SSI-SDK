@@ -35,6 +35,7 @@ import { TKeyType } from '@veramo/core'
 import { JWTVerifyOptions } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { EventEmitter } from 'events'
+import { validate as isValidUUID } from 'uuid'
 import { IRequiredContext, IRPOptions, ISIOPIdentifierOptions } from './types/ISIOPv2RP'
 import { DcqlQuery } from 'dcql'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
@@ -68,9 +69,7 @@ export function getDcqlQueryLookupCallback(context: IRequiredContext): DcqlQuery
           ...(tenantId && { tenantId }),
           ...(version && { version }),
         },
-        {
-          id: queryId,
-        },
+        ...(isValidUUID(queryId) ? [{ id: queryId }] : []),
       ],
     })
     if (result && result.length > 0) {

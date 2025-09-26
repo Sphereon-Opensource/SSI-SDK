@@ -20,6 +20,7 @@ import {
   IRequiredContext,
   QRCodeOpts,
 } from './types'
+import { validate as isValidUUID } from 'uuid'
 
 export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {
@@ -40,10 +41,7 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
         const queryId = authRequest.queryId
 
         const definitionItems = await context.agent.pdmGetDefinitions({
-          filter: [
-            { id: queryId }, // Allow both PK (unique queryId + version combi) or just plain queryId which assumes the latest version
-            { queryId },
-          ],
+          filter: buildQueryIdFilter(queryId),
         })
         if (definitionItems.length === 0) {
           console.log(`No query could be found for the given id. Query id: ${queryId}`)
@@ -147,7 +145,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
       if (requestState.status === AuthorizationRequestStateStatus.RETRIEVED) {
         responseState = await context.agent.siopGetAuthResponseState({
           correlationId,
-          errorOnNotFound: false
+          errorOnNotFound: false,
         })
       }
       const overallState = responseState ?? requestState
@@ -158,7 +156,7 @@ export function authStatusUniversalOID4VPEndpoint(router: Router, context: IRequ
         query_id: overallState.queryId,
         last_updated: overallState.lastUpdated,
         ...('verifiedData' in overallState && { verified_data: overallState.verifiedData }),
-        ...(overallState.error && { message: overallState.error.message })
+        ...(overallState.error && { message: overallState.error.message }),
       } satisfies AuthStatusResponse
       console.debug(`Will send auth status: ${JSON.stringify(statusBody)}`)
 
@@ -188,4 +186,11 @@ export function getDefinitionsEndpoint(router: Router, context: IRequiredContext
       return sendErrorResponse(response, 500, { status: 500, message: error.message }, error)
     }
   })
+}
+
+function buildQueryIdFilter(queryId: string) {
+  return [
+    ...(isValidUUID(queryId) ? [{ id: queryId }] : []), // Allow both PK (unique queryId + version combi) or just plain queryId which assumes the latest version
+    { queryId },
+  ]
 }
