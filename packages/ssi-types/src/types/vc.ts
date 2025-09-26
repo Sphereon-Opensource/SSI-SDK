@@ -84,8 +84,8 @@ export type SdJwtObject = {
 }
 
 export type MsoMdocObject = {
-  ['issuerauth_alg_values']?: Array<string>
-  ['deviceauth_alg_values']?: Array<string>
+  ['issuerauth_alg_values']?: Array<number>
+  ['deviceauth_alg_values']?: Array<number>
 }
 
 export type Format = {
