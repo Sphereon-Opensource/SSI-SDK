@@ -6,7 +6,12 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { EventLoggerStore } from '../eventLogger/EventLoggerStore'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations'
-import { GetActivityEventsArgs, GetAuditEventsArgs, NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../types'
+import {
+  GetActivityEventsArgs,
+  GetAuditEventsArgs,
+  NonPersistedActivityLoggingEvent,
+  NonPersistedAuditLoggingEvent,
+} from '@sphereon/ssi-sdk.data-store-types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

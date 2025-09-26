@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { AuditEventEntity } from '../entities/eventLogger/AuditEventEntity'
 import { DataStoreEventLoggerEntities } from '../index'
 import { DataStoreEventLoggerMigrations } from '../migrations'
-import { NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '../types'
+import { NonPersistedActivityLoggingEvent, NonPersistedAuditLoggingEvent } from '@sphereon/ssi-sdk.data-store-types'
 import { activityEventEntityFrom, auditEventEntityFrom } from '../utils/eventLogger/MappingUtils'
 
 describe('Database entities tests', (): void => {
