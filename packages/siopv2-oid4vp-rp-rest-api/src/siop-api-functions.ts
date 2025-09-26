@@ -82,7 +82,6 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       const verifiedResponse = await context.agent.siopVerifyAuthResponse({
         authorizationResponse,
         correlationId,
-        queryId,
         dcqlQuery: definitionItem.query,
       })
 
@@ -135,7 +134,6 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       }
       const requestState = await context.agent.siopGetAuthRequestState({
         correlationId,
-        queryId,
         errorOnNotFound: false,
       })
       if (!requestState) {
@@ -144,6 +142,16 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
         )
         return sendErrorResponse(response, 404, `No authorization request could be found`)
       }
+
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId }] });
+      if (definitionItems.length === 0) {
+        console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
+        response.statusCode = 404
+        response.statusMessage = `No definition ${queryId}`
+        return response.send()
+      }
+      const payload = requestState.request?.requestObject?.getPayload()!
+      payload.dcql_query = definitionItems[0].query
       const requestObject = await requestState.request?.requestObject?.toJwt()
       console.log('JWT Request object:')
       console.log(requestObject)
@@ -159,7 +167,6 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       } finally {
         await context.agent.siopUpdateAuthRequestState({
           correlationId,
-          queryId: queryId,
           state: 'authorization_request_created',
           error,
         })

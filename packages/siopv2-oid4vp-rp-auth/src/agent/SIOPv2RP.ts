@@ -5,12 +5,12 @@ import {
   AuthorizationResponseStateStatus,
   AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
+  EncodedDcqlPresentationVpToken,
   VerifiedAuthorizationResponse
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
 import { validate as isValidUUID } from 'uuid'
-
 import type { ImportDcqlQueryItem } from '@sphereon/ssi-sdk.pd-manager'
 import {
   AdditionalClaims,
@@ -24,7 +24,7 @@ import {
   MdocDeviceResponse,
   MdocOid4vpMdocVpToken,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential,
+  SdJwtDecodedVerifiableCredential
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
@@ -43,8 +43,7 @@ import {
   ISiopv2RPOpts,
   IUpdateRequestStateArgs,
   IVerifyAuthResponseStateArgs,
-  schema,
-  VerifiedDataMode,
+  schema
 } from '../index'
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
@@ -136,11 +135,7 @@ export class SIOPv2RP implements IAgentPlugin {
     }
 
     const responseState = authorizationResponseState as AuthorizationResponseStateWithVerifiedData
-    if (
-      responseState.status === AuthorizationResponseStateStatus.VERIFIED &&
-      args.includeVerifiedData &&
-      args.includeVerifiedData !== VerifiedDataMode.NONE
-    ) {
+    if (responseState.status === AuthorizationResponseStateStatus.VERIFIED) {
       let hasher: HasherSync | undefined
       if (
         CredentialMapper.isSdJwtEncoded(responseState.response.payload.vp_token as OriginalVerifiablePresentation) &&
@@ -148,19 +143,23 @@ export class SIOPv2RP implements IAgentPlugin {
       ) {
         hasher = defaultHasher
       }
-      // todo this should also include mdl-mdoc
-      const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-        responseState.response.payload.vp_token as OriginalVerifiablePresentation,
-        //todo: later we want to conditionally pass in options for mdl-mdoc here
-        hasher,
-      )
-      switch (args.includeVerifiedData) {
-        case VerifiedDataMode.VERIFIED_PRESENTATION:
-          responseState.response.payload.verifiedData = this.presentationOrClaimsFrom(presentationDecoded)
-          break
-        case VerifiedDataMode.CREDENTIAL_SUBJECT_FLATTENED: // TODO debug cs-flat for SD-JWT
-          const allClaims: AdditionalClaims = {}
-          for (const credential of this.presentationOrClaimsFrom(presentationDecoded).verifiableCredential || []) {
+
+      // FIXME SSISDK-64 currently assuming that all vp tokens are or type EncodedDcqlPresentationVpToken as we only work with DCQL now. But the types still indicate it can be another type of vp token
+      const vpToken = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
+      const claims = []
+      for (const [key, value] of Object.entries(vpToken)) {
+        // todo this should also include mdl-mdoc
+        const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
+          value as OriginalVerifiablePresentation,
+          //todo: later we want to conditionally pass in options for mdl-mdoc here
+          hasher,
+        )
+        console.log(`presentationDecoded: ${JSON.stringify(presentationDecoded)}`)
+
+        const allClaims: AdditionalClaims = {}
+        const presentationOrClaims = this.presentationOrClaimsFrom(presentationDecoded)
+        if ('verifiableCredential' in presentationOrClaims) {
+          for (const credential of presentationOrClaims.verifiableCredential) {
             const vc = credential as IVerifiableCredential
             const schemaValidationResult = await context.agent.cvVerifySchema({
               credential,
@@ -183,11 +182,34 @@ export class SIOPv2RP implements IAgentPlugin {
                 allClaims[key] = value
               }
             })
+
+            claims.push({
+              id: key,
+              type: vc.type[0],
+              claims: allClaims
+            })
           }
-          responseState.verifiedData = allClaims
-          break
+        } else {
+          claims.push({
+            id: key,
+            type: (presentationDecoded as SdJwtDecodedVerifiableCredential).decodedPayload.vct,
+            claims: presentationOrClaims
+          })
+        }
+      }
+
+      responseState.verifiedData = {
+        ...(responseState.response.payload.vp_token && {
+          authorization_response: {
+            vp_token: typeof responseState.response.payload.vp_token === 'string'
+                ? JSON.parse(responseState.response.payload.vp_token)
+                : responseState.response.payload.vp_token
+          }
+        }),
+        ...(claims.length > 0 && { credential_claims: claims })
       }
     }
+
     return responseState
   }
 
@@ -197,11 +219,12 @@ export class SIOPv2RP implements IAgentPlugin {
       | IVerifiablePresentation
       | SdJwtDecodedVerifiableCredential
       | MdocOid4vpMdocVpToken
-      | MdocDeviceResponse,
-  ): AdditionalClaims | IPresentation =>
-    CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
+      | MdocDeviceResponse
+  ): AdditionalClaims | IPresentation => {
+    return CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
       ? presentationDecoded.decodedPayload
       : CredentialMapper.toUniformPresentation(presentationDecoded as OriginalVerifiablePresentation)
+  }
 
   private async siopUpdateRequestState(args: IUpdateRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState> {
     if (args.state !== 'authorization_request_created') {
@@ -238,7 +261,7 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-            ...(args.dcqlQuery ? { dcqlQuery: args.dcqlQuery } : {}),
+            ...(args.dcqlQuery && { dcqlQuery: args.dcqlQuery }),
             audience: args.audience,
         }),
       ),
