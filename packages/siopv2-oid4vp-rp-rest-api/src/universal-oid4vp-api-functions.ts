@@ -10,6 +10,7 @@ import { uriWithBase } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { Request, Response, Router } from 'express'
 import uuid from 'short-uuid'
 import { validateData } from './middleware/validationMiddleware'
+import { buildQueryIdFilter } from './siop-api-functions'
 import {
   AuthStatusResponse,
   CreateAuthorizationRequestPayloadRequest,
@@ -20,7 +21,6 @@ import {
   IRequiredContext,
   QRCodeOpts,
 } from './types'
-import { validate as isValidUUID } from 'uuid'
 
 export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context: IRequiredContext, opts?: ICreateAuthRequestWebappEndpointOpts) {
   if (opts?.enabled === false) {
@@ -186,11 +186,4 @@ export function getDefinitionsEndpoint(router: Router, context: IRequiredContext
       return sendErrorResponse(response, 500, { status: 500, message: error.message }, error)
     }
   })
-}
-
-function buildQueryIdFilter(queryId: string) {
-  return [
-    ...(isValidUUID(queryId) ? [{ id: queryId }] : []), // Allow both PK (unique queryId + version combi) or just plain queryId which assumes the latest version
-    { queryId },
-  ]
 }
