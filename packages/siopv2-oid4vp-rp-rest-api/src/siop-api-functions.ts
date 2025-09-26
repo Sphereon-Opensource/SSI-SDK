@@ -1,9 +1,10 @@
-import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
+import { AuthorizationResponsePayload, PresentationSubmission } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
+import { DcqlQuery } from 'dcql'
 
 const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayload => {
   const contentType = request.header('content-type')
@@ -39,6 +40,10 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
   throw new Error(
     `Unsupported content type: ${contentType}. Currently only application/x-www-form-urlencoded and application/json (for direct_post) are supported`,
   )
+}
+
+const validatePresentationSubmission = (query: DcqlQuery, submission: PresentationSubmission): boolean => {
+  return query.credentials.every(credential => credential.id in submission)
 }
 
 export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
@@ -85,10 +90,9 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         dcqlQuery: definitionItem.query,
       })
 
-      // FIXME SSISDK-55 add proper support for checking for DCQL presentations
       const presentation = verifiedResponse?.oid4vpSubmission?.presentation
-      if (presentation && Object.keys(presentation).length > 0) {
-        console.log('PRESENTATIONS:' + JSON.stringify(verifiedResponse?.oid4vpSubmission?.presentation, null, 2))
+      if (presentation && validatePresentationSubmission(definitionItem.query, presentation)) {
+        console.log('PRESENTATIONS:' + JSON.stringify(presentation, null, 2))
         response.statusCode = 200
 
         const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
