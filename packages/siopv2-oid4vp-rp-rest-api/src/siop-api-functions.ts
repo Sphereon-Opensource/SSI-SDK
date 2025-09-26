@@ -103,7 +103,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }
 
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId, state: verifiedResponse.state })
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
