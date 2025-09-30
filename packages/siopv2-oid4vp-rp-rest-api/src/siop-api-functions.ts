@@ -1,10 +1,11 @@
-import { AuthorizationResponsePayload } from '@sphereon/did-auth-siop'
+import { AuthorizationResponsePayload, PresentationSubmission } from '@sphereon/did-auth-siop'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { validate as isValidUUID } from 'uuid'
 import { IRequiredContext } from './types'
+import { DcqlQuery } from 'dcql'
 
 const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayload => {
   const contentType = request.header('content-type')
@@ -42,6 +43,10 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
   )
 }
 
+const validatePresentationSubmission = (query: DcqlQuery, submission: PresentationSubmission): boolean => {
+  return query.credentials.every(credential => credential.id in submission)
+}
+
 export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {
   if (opts?.enabled === false) {
     console.log(`verifyAuthResponse SIOP endpoint is disabled`)
@@ -77,10 +82,9 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
         dcqlQuery: definitionItem.query,
       })
 
-      // FIXME SSISDK-55 add proper support for checking for DCQL presentations
       const presentation = verifiedResponse?.oid4vpSubmission?.presentation
-      if (presentation && Object.keys(presentation).length > 0) {
-        console.log('PRESENTATIONS:' + JSON.stringify(verifiedResponse?.oid4vpSubmission?.presentation, null, 2))
+      if (presentation && validatePresentationSubmission(definitionItem.query, presentation)) {
+        console.log('PRESENTATIONS:' + JSON.stringify(presentation, null, 2))
         response.statusCode = 200
 
         const authorizationChallengeValidationResponse: AuthorizationChallengeValidationResponse = {
@@ -91,7 +95,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
           return response.send(JSON.stringify(authorizationChallengeValidationResponse))
         }
 
-        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, queryId, state: verifiedResponse.state })
+        const responseRedirectURI = await context.agent.siopGetRedirectURI({ correlationId, state: verifiedResponse.state })
         if (responseRedirectURI) {
           response.setHeader('Content-Type', 'application/json')
           return response.send(JSON.stringify({ redirect_uri: responseRedirectURI }))
