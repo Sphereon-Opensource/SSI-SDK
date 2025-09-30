@@ -3,6 +3,7 @@ import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi
 import { AuthorizationChallengeValidationResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { CredentialMapper } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
+import { validate as isValidUUID } from 'uuid'
 import { IRequiredContext } from './types'
 import { DcqlQuery } from 'dcql'
 
@@ -62,16 +63,7 @@ export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequi
       console.debug('Authorization Response (siop-sessions') // TODO use logger
       console.debug(JSON.stringify(request.body, null, 2))
       const definitionItems = await context.agent.pdmGetDefinitions({
-        filter: [
-          {
-            queryId,
-            ...(tenantId && { tenantId }),
-            ...(version && { version }),
-          },
-          {
-            id: queryId,
-          },
-        ],
+        filter: buildQueryIdFilter(queryId, tenantId, version),
       })
       if (definitionItems.length === 0) {
         console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
@@ -147,7 +139,7 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
         return sendErrorResponse(response, 404, `No authorization request could be found`)
       }
 
-      const definitionItems = await context.agent.pdmGetDefinitions({ filter: [{ queryId }] });
+      const definitionItems = await context.agent.pdmGetDefinitions({ filter: buildQueryIdFilter(queryId) })
       if (definitionItems.length === 0) {
         console.log(`Could not get dcql query with id ${queryId} from agent. Will return 404`)
         response.statusCode = 404
@@ -179,4 +171,14 @@ export function getAuthRequestSIOPv2Endpoint(router: Router, context: IRequiredC
       return sendErrorResponse(response, 500, 'Could not get authorization request', error)
     }
   })
+}
+
+export function buildQueryIdFilter(queryId: string, tenantId?: string, version?: string) {
+  const queryFilter = {
+    queryId,
+    ...(tenantId ? { tenantId } : {}),
+    ...(version ? { version } : {}),
+  }
+
+  return [queryFilter, ...(isValidUUID(queryId) ? [{ id: queryId }] : [])] // Allow both PK (unique queryId + version combi) or just plain queryId which assumes the latest version
 }
