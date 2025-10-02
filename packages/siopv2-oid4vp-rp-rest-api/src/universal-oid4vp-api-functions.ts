@@ -67,7 +67,12 @@ export function createAuthRequestUniversalOID4VPEndpoint(router: Router, context
         let qrCodeDataUri: string | undefined
         if (qrCodeOpts) {
           const { AwesomeQR } = await import('awesome-qr')
-          const qrCode = new AwesomeQR({ ...qrCodeOpts, text: authRequestURI })
+          const qrCode = new AwesomeQR({
+            text: authRequestURI,
+            size: qrCodeOpts.size ?? 250,
+            colorDark: qrCodeOpts.colorDark ?? '#000000',
+            colorLight: qrCodeOpts.colorLight ?? '#FFFFFF',
+          })
           qrCodeDataUri = `data:image/png;base64,${(await qrCode.draw())!.toString('base64')}`
         } else {
           qrCodeDataUri = authRequestURI
