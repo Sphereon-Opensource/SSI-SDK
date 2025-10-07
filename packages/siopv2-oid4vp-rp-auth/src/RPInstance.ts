@@ -39,7 +39,7 @@ export class RPInstance {
   }
 
   public async createAuthorizationRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<URI> {
-    const { correlationId, queryId, claims, requestByReferenceURI, responseURI, responseURIType, callback } = createArgs
+    const { correlationId, queryId, claims, requestByReferenceURI, responseURI, responseURIType, callback, responseRedirectURI } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
     let jwtIssuer: JwtIssuer
@@ -74,6 +74,7 @@ export class RPInstance {
         responseURIType,
         jwtIssuer,
         callback,
+        responseRedirectURI,
       }),
     )
   }
@@ -82,7 +83,7 @@ export class RPInstance {
     createArgs: Omit<ICreateAuthRequestArgs, 'queryId'>,
     context: IRequiredContext,
   ): Promise<AuthorizationRequest> {
-    const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType } = createArgs
+    const { correlationId, claims, requestByReferenceURI, responseURI, responseURIType, responseRedirectURI } = createArgs
     const nonce = createArgs.nonce ?? uuidv4()
     const state = createArgs.state ?? correlationId
     const idOpts = this.rpOptions.identifierOpts.idOpts
@@ -117,6 +118,7 @@ export class RPInstance {
         responseURIType,
         responseURI,
         jwtIssuer,
+        responseRedirectURI,
       }),
     )
   }
