@@ -28,7 +28,7 @@
     "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.19.1-feature.SSISDK.65.redirect.fix.194",
+    "@sphereon/oid4vci-common": "0.19.1-feature.DIIPv4.196",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^4.1.0"
