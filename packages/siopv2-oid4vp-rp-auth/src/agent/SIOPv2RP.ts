@@ -6,7 +6,7 @@ import {
   AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
   EncodedDcqlPresentationVpToken,
-  VerifiedAuthorizationResponse
+  VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { shaHasher as defaultHasher } from '@sphereon/ssi-sdk.core'
@@ -24,7 +24,7 @@ import {
   MdocDeviceResponse,
   MdocOid4vpMdocVpToken,
   OriginalVerifiablePresentation,
-  SdJwtDecodedVerifiableCredential
+  SdJwtDecodedVerifiableCredential,
 } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { DcqlQuery } from 'dcql'
@@ -43,7 +43,7 @@ import {
   ISiopv2RPOpts,
   IUpdateRequestStateArgs,
   IVerifyAuthResponseStateArgs,
-  schema
+  schema,
 } from '../index'
 import { RPInstance } from '../RPInstance'
 import { ISIOPv2RP } from '../types/ISIOPv2RP'
@@ -90,7 +90,7 @@ export class SIOPv2RP implements IAgentPlugin {
       {
         createWhenNotPresent: true,
         responseRedirectURI: createArgs.responseRedirectURI,
-        ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId } ),
+        ...(createArgs.useQueryIdInstance === true && { queryId: createArgs.queryId }),
       },
       context,
     )
@@ -116,9 +116,7 @@ export class SIOPv2RP implements IAgentPlugin {
 
   private async siopGetRequestState(args: IGetAuthRequestStateArgs, context: IRequiredContext): Promise<AuthorizationRequestState | undefined> {
     return await this.getRPInstance({ createWhenNotPresent: false, queryId: args.queryId }, context).then((rp) =>
-      rp.get(context).then((rp) =>
-        rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)
-      ),
+      rp.get(context).then((rp) => rp.sessionManager.getRequestStateByCorrelationId(args.correlationId, args.errorOnNotFound)),
     )
   }
 
@@ -186,14 +184,14 @@ export class SIOPv2RP implements IAgentPlugin {
             claims.push({
               id: key,
               type: vc.type[0],
-              claims: allClaims
+              claims: allClaims,
             })
           }
         } else {
           claims.push({
             id: key,
             type: (presentationDecoded as SdJwtDecodedVerifiableCredential).decodedPayload.vct,
-            claims: presentationOrClaims
+            claims: presentationOrClaims,
           })
         }
       }
@@ -201,12 +199,13 @@ export class SIOPv2RP implements IAgentPlugin {
       responseState.verifiedData = {
         ...(responseState.response.payload.vp_token && {
           authorization_response: {
-            vp_token: typeof responseState.response.payload.vp_token === 'string'
+            vp_token:
+              typeof responseState.response.payload.vp_token === 'string'
                 ? JSON.parse(responseState.response.payload.vp_token)
-                : responseState.response.payload.vp_token
-          }
+                : responseState.response.payload.vp_token,
+          },
         }),
-        ...(claims.length > 0 && { credential_claims: claims })
+        ...(claims.length > 0 && { credential_claims: claims }),
       }
     }
 
@@ -219,7 +218,7 @@ export class SIOPv2RP implements IAgentPlugin {
       | IVerifiablePresentation
       | SdJwtDecodedVerifiableCredential
       | MdocOid4vpMdocVpToken
-      | MdocDeviceResponse
+      | MdocDeviceResponse,
   ): AdditionalClaims | IPresentation => {
     return CredentialMapper.isSdJwtDecodedCredential(presentationDecoded)
       ? presentationDecoded.decodedPayload
@@ -261,8 +260,8 @@ export class SIOPv2RP implements IAgentPlugin {
       rp.get(context).then((rp) =>
         rp.verifyAuthorizationResponse(authResponse, {
           correlationId: args.correlationId,
-            ...(args.dcqlQuery && { dcqlQuery: args.dcqlQuery }),
-            audience: args.audience,
+          ...(args.dcqlQuery && { dcqlQuery: args.dcqlQuery }),
+          audience: args.audience,
         }),
       ),
     )
@@ -294,7 +293,7 @@ export class SIOPv2RP implements IAgentPlugin {
       const rpInstance = this.instances.get(instanceId)
       if (rpInstance !== undefined) {
         const rp = await rpInstance.get(context)
-        return rp.getResponseRedirectUri({
+        return await rp.getResponseRedirectUri({
           correlation_id: args.correlationId,
           correlationId: args.correlationId,
           ...(args.state && { state: args.state }),
