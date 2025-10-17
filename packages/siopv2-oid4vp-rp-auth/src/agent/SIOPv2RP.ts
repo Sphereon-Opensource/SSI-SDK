@@ -146,9 +146,22 @@ export class SIOPv2RP implements IAgentPlugin {
       const vpToken = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
       const claims = []
       for (const [key, value] of Object.entries(vpToken)) {
+        let singleVP: OriginalVerifiablePresentation
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            throw Error(`DCQL query '${key}' has empty array of presentations`)
+          }
+          if (value.length > 1) {
+            throw Error(`DCQL query '${key}' has multiple presentations (${value.length}), but only one is supported atm`)
+          }
+          singleVP = value[0] as OriginalVerifiablePresentation
+        } else {
+          singleVP = value as OriginalVerifiablePresentation
+        }
+
         // todo this should also include mdl-mdoc
         const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-          value as OriginalVerifiablePresentation,
+          singleVP as OriginalVerifiablePresentation,
           //todo: later we want to conditionally pass in options for mdl-mdoc here
           hasher,
         )
