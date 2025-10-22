@@ -10,12 +10,12 @@ import { DcqlQuery } from 'dcql'
 const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayload => {
   const contentType = request.header('content-type')
 
-  if (contentType === 'application/json') {
+  if (contentType?.startsWith('application/json')) {
     const payload = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
     return payload as AuthorizationResponsePayload
   }
 
-  if (contentType === 'application/x-www-form-urlencoded') {
+  if (contentType?.startsWith('application/x-www-form-urlencoded')) {
     const payload = request.body as AuthorizationResponsePayload
 
     // Parse presentation_submission if it's a string
@@ -44,7 +44,7 @@ const parseAuthorizationResponse = (request: Request): AuthorizationResponsePayl
 }
 
 const validatePresentationSubmission = (query: DcqlQuery, submission: PresentationSubmission): boolean => {
-  return query.credentials.every(credential => credential.id in submission)
+  return query.credentials.every((credential) => credential.id in submission)
 }
 
 export function verifyAuthResponseSIOPv2Endpoint(router: Router, context: IRequiredContext, opts?: ISingleEndpointOpts) {

@@ -145,10 +145,23 @@ export class SIOPv2RP implements IAgentPlugin {
       // FIXME SSISDK-64 currently assuming that all vp tokens are or type EncodedDcqlPresentationVpToken as we only work with DCQL now. But the types still indicate it can be another type of vp token
       const vpToken = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
       const claims = []
-      for (const [key, value] of Object.entries(vpToken)) {
+      for (const [credentialQueryId, presentationValue] of Object.entries(vpToken)) {
+        let singleVP: OriginalVerifiablePresentation
+        if (Array.isArray(presentationValue)) {
+          if (presentationValue.length === 0) {
+            throw Error(`DCQL query '${credentialQueryId}' has empty array of presentations`)
+          }
+          if (presentationValue.length > 1) {
+            throw Error(`DCQL query '${credentialQueryId}' has multiple presentations (${presentationValue.length}), but only one is supported atm`)
+          }
+          singleVP = presentationValue[0] as OriginalVerifiablePresentation
+        } else {
+          singleVP = presentationValue as OriginalVerifiablePresentation
+        }
+
         // todo this should also include mdl-mdoc
         const presentationDecoded = CredentialMapper.decodeVerifiablePresentation(
-          value as OriginalVerifiablePresentation,
+          singleVP as OriginalVerifiablePresentation,
           //todo: later we want to conditionally pass in options for mdl-mdoc here
           hasher,
         )
@@ -182,14 +195,14 @@ export class SIOPv2RP implements IAgentPlugin {
             })
 
             claims.push({
-              id: key,
+              id: credentialQueryId,
               type: vc.type[0],
               claims: allClaims,
             })
           }
         } else {
           claims.push({
-            id: key,
+            id: credentialQueryId,
             type: (presentationDecoded as SdJwtDecodedVerifiableCredential).decodedPayload.vct,
             claims: presentationOrClaims,
           })

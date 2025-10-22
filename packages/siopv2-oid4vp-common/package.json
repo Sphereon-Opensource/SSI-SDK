@@ -25,7 +25,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-feature.DIIPv4.196",
+    "@sphereon/did-auth-siop": "0.19.1-feature.SSISDK.73.dcql.array.fix.211",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "^3.1.1"
