@@ -69,10 +69,11 @@ export function pdPersistEndpoint(router: Router, context: IRequiredContext, opt
   router.post(path, async (request: Request, response: Response) => {
     try {
       const addPd = request.body
-      const pd = await context.agent.pdmPersistDefinitionItem(addPd as PersistDcqlQueryArgs)
+      const pd = await context.agent.pdmPersistDefinition(addPd as PersistDcqlQueryArgs)
       response.statusCode = 200 // TODO find out if pdmPersistDefinitionItem added or updated
       return response.json(pd)
     } catch (error) {
+      console.error(error)
       return sendErrorResponse(response, 500, error.message, error)
     }
   })

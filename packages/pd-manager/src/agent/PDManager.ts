@@ -106,51 +106,56 @@ export class PDManager implements IAgentPlugin {
 
   /** {@inheritDoc IPDManager.pdmPersistDefinition} */
   private async pdmPersistDefinition(args: PersistDcqlQueryArgs): Promise<DcqlQueryItem> {
-    const { definitionItem, opts } = args
-    const { versionControlMode, versionIncrementReleaseType } = opts ?? { versionControlMode: 'AutoIncrement' }
-    const { version, tenantId } = definitionItem
-    const definitionId = definitionItem.queryId
+    try {
+      const { definitionItem, opts } = args
+      const { versionControlMode, versionIncrementReleaseType } = opts ?? { versionControlMode: 'AutoIncrement' }
+      const { version, tenantId } = definitionItem
+      const definitionId = definitionItem.queryId
 
-    let { id } = definitionItem
-    if (id !== undefined && versionControlMode !== 'Overwrite') {
-      id = undefined
-    }
+      let { id } = definitionItem
+      if (id !== undefined && versionControlMode !== 'Overwrite') {
+        id = undefined
+      }
 
-    const nonPersistedDefinitionItem: NonPersistedDcqlQueryItem = {
-      ...definitionItem,
-      version: version ?? '1',
-    }
+      const nonPersistedDefinitionItem: NonPersistedDcqlQueryItem = {
+        ...definitionItem,
+        version: version ?? '1',
+      }
 
-    const existing = await this.store.getDefinitions({ filter: [{ id, queryId: definitionId, tenantId, version }] })
-    const existingItem = existing[0]
+      const existing = await this.store.getDefinitions({ filter: [{ id, queryId: definitionId, tenantId, version }] })
+      const existingItem = existing[0]
 
-    // Always fetch all definitions for the definitionId/tenantId and determine the truly latest version
-    const allDefinitions = await this.store.getDefinitions({ filter: [{ queryId: definitionId, tenantId }] })
-    allDefinitions.sort((a, b) => semver.compare(this.normalizeToSemverVersionFormat(a.version), this.normalizeToSemverVersionFormat(b.version)))
-    const trulyLatestVersionItem = allDefinitions[allDefinitions.length - 1]
+      // Always fetch all definitions for the definitionId/tenantId and determine the truly latest version
+      const allDefinitions = await this.store.getDefinitions({ filter: [{ queryId: definitionId, tenantId }] })
+      allDefinitions.sort((a, b) => semver.compare(this.normalizeToSemverVersionFormat(a.version), this.normalizeToSemverVersionFormat(b.version)))
+      const trulyLatestVersionItem = allDefinitions[allDefinitions.length - 1]
 
-    let latestVersionItem: DcqlQueryItem | undefined = trulyLatestVersionItem
+      let latestVersionItem: DcqlQueryItem | undefined = trulyLatestVersionItem
 
-    // If a specific version exists and matches existingItem, we keep that as a base.
-    // Otherwise we use the trulyLatestVersionItem
-    if (existingItem && version) {
-      latestVersionItem = trulyLatestVersionItem ?? existingItem
-    }
+      // If a specific version exists and matches existingItem, we keep that as a base.
+      // Otherwise we use the trulyLatestVersionItem
+      if (existingItem && version) {
+        latestVersionItem = trulyLatestVersionItem ?? existingItem
+      }
 
-    const isPayloadModified = !existingItem || !isPresentationDefinitionEqual(existingItem, definitionItem)
-    if (!isPayloadModified) return existingItem
+      const isPayloadModified = !existingItem || !isPresentationDefinitionEqual(existingItem, definitionItem)
+      if (!isPayloadModified) return existingItem
 
-    switch (versionControlMode) {
-      case 'Overwrite':
-        return this.handleOverwriteMode(existingItem, nonPersistedDefinitionItem, version)
-      case 'OverwriteLatest':
-        return this.handleOverwriteLatestMode(latestVersionItem, nonPersistedDefinitionItem)
-      case 'Manual':
-        return this.handleManualMode(existingItem, nonPersistedDefinitionItem, tenantId, version)
-      case 'AutoIncrement':
-        return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, versionIncrementReleaseType ?? 'major')
-      default:
-        throw new Error(`Unknown version control mode: ${versionControlMode}`)
+      switch (versionControlMode) {
+        case 'Overwrite':
+          return this.handleOverwriteMode(existingItem, nonPersistedDefinitionItem, version)
+        case 'OverwriteLatest':
+          return this.handleOverwriteLatestMode(latestVersionItem, nonPersistedDefinitionItem)
+        case 'Manual':
+          return this.handleManualMode(existingItem, nonPersistedDefinitionItem, tenantId, version)
+        case 'AutoIncrement':
+          return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, versionIncrementReleaseType ?? 'major')
+        default:
+          throw new Error(`Unknown version control mode: ${versionControlMode}`)
+      }
+    } catch (e) {
+      console.log('pdmPersistDefinition failed', e)
+      throw e
     }
   }
 
@@ -257,7 +262,13 @@ export class PDManager implements IAgentPlugin {
       version: resultVersion,
     } satisfies AddDefinitionArgs
 
-    return await this.store.addDefinition(newDefinitionItem)
+    try {
+      const dcqlQueryItem = await this.store.addDefinition(newDefinitionItem)
+      return dcqlQueryItem
+    } catch (e) {
+      console.log(e)
+      throw e
+    }
   }
   private normalizeToSemverVersionFormat(version: string): string {
     const defaultVersion = '1.0.0'

@@ -128,6 +128,7 @@ export async function importProvidedOrGeneratedKey(
         ...args.options.x509,
         ...key.meta?.x509,
       },
+      providerName: args.providerName,
     }
   }
 

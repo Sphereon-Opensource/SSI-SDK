@@ -30,6 +30,7 @@ export interface X509Opts {
 }
 
 export interface IImportProvidedOrGeneratedKeyArgs {
+  providerName: string
   kms?: string
   alias?: string
   options?: IKeyOpts

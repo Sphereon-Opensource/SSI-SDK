@@ -18,6 +18,7 @@ import type {
   OydDidSupportedKeyTypes,
 } from './types/oyd-provider-types'
 
+const PROVIDER_NAME = 'OYD DID Provider'
 const debug = Debug('veramo:oyd-did:identifier-provider')
 const OYDID_REGISTRAR_URL = 'https://oydid-registrar.data-container.net/1.0/createIdentifier'
 
@@ -50,7 +51,7 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
 
   async createIdentifier(
     { kms, alias, options }: { kms?: string; alias?: string; options: OydCreateIdentifierOptions },
-    context: IContext
+    context: IContext,
   ): Promise<Omit<IIdentifier, 'provider'>> {
     const resolvedKms = await this.assertedKms(kms, this.defaultKms)
 
@@ -89,6 +90,7 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
     const keyType: OydDidSupportedKeyTypes = options?.type ?? 'Secp256r1'
     const key = await importProvidedOrGeneratedKey(
       {
+        providerName: PROVIDER_NAME,
         kms: resolvedKms,
         alias: alias ?? options.alias ?? options.kid ?? `${didDoc.did}#key-doc`,
         options: {
@@ -100,7 +102,7 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
           },
         },
       },
-      context
+      context,
     )
 
     const identifier: Omit<IIdentifier, 'provider'> = {
@@ -115,7 +117,7 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
 
   async createIdentifierWithCMSM(
     { kms, options }: { kms?: string; options: OydCreateIdentifierOptions },
-    context: IContext
+    context: IContext,
   ): Promise<Omit<IIdentifier, 'provider'>> {
     const cmsmCallbackOpts = this.cmsmCallbackOpts
     if (!cmsmCallbackOpts) {
@@ -209,7 +211,7 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
 
   async updateIdentifier(
     args: { did: string; kms?: string | undefined; alias?: string | undefined; options?: any },
-    context: IAgentContext<IKeyManager>
+    context: IAgentContext<IKeyManager>,
   ): Promise<IIdentifier> {
     throw new Error('OydDIDProvider updateIdentifier not supported yet.')
   }
@@ -258,7 +260,7 @@ const base58btc = ({ publicKeyHex, keyType = 'Secp256r1' }: { publicKeyHex: stri
 }
 
 export function defaultOydCmsmPublicKeyCallback(
-  keyManager: KeyManager
+  keyManager: KeyManager,
 ): (kid: string, kms?: string, create?: boolean, createKeyType?: TKeyType) => Promise<IKey> {
   return async (kid: string, kms?: string, create?: boolean, createKeyType?: TKeyType): Promise<IKey> => {
     try {
@@ -276,6 +278,7 @@ export function defaultOydCmsmPublicKeyCallback(
       const agent = keyManager
       const key = await importProvidedOrGeneratedKey(
         {
+          providerName: PROVIDER_NAME,
           kms,
           alias,
           options: {
@@ -287,7 +290,7 @@ export function defaultOydCmsmPublicKeyCallback(
         {
           //@ts-ignore
           agent,
-        }
+        },
       )
       return key
 
