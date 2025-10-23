@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,47 +12,44 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Cryptographic digest (hash) algorithm identifier.
  * @export
  */
 export const DigestAlg = {
-    None: 'NONE',
-    Sha256: 'SHA256',
-    Sha384: 'SHA384',
-    Sha512: 'SHA512',
-    Sha3256: 'SHA3_256',
-    Sha3384: 'SHA3_384',
-    Sha3512: 'SHA3_512'
-} as const;
-export type DigestAlg = typeof DigestAlg[keyof typeof DigestAlg];
-
+  None: 'NONE',
+  Sha256: 'SHA256',
+  Sha384: 'SHA384',
+  Sha512: 'SHA512',
+  Sha3256: 'SHA3_256',
+  Sha3384: 'SHA3_384',
+  Sha3512: 'SHA3_512',
+} as const
+export type DigestAlg = (typeof DigestAlg)[keyof typeof DigestAlg]
 
 export function instanceOfDigestAlg(value: any): boolean {
-    for (const key in DigestAlg) {
-        if (Object.prototype.hasOwnProperty.call(DigestAlg, key)) {
-            if (DigestAlg[key as keyof typeof DigestAlg] === value) {
-                return true;
-            }
-        }
+  for (const key in DigestAlg) {
+    if (Object.prototype.hasOwnProperty.call(DigestAlg, key)) {
+      if (DigestAlg[key as keyof typeof DigestAlg] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function DigestAlgFromJSON(json: any): DigestAlg {
-    return DigestAlgFromJSONTyped(json, false);
+  return DigestAlgFromJSONTyped(json, false)
 }
 
 export function DigestAlgFromJSONTyped(json: any, ignoreDiscriminator: boolean): DigestAlg {
-    return json as DigestAlg;
+  return json as DigestAlg
 }
 
 export function DigestAlgToJSON(value?: DigestAlg | null): any {
-    return value as any;
+  return value as any
 }
 
 export function DigestAlgToJSONTyped(value: any, ignoreDiscriminator: boolean): DigestAlg {
-    return value as DigestAlg;
+  return value as DigestAlg
 }
-

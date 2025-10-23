@@ -12,21 +12,12 @@
  * Do not edit the class manually.
  */
 
-import type { KeyOperations } from './KeyOperations';
-import {
-    KeyOperationsFromJSON,
-    KeyOperationsToJSON,
-} from './KeyOperations';
-import type { SignatureAlgorithm } from './SignatureAlgorithm';
-import {
-    SignatureAlgorithmFromJSON,
-    SignatureAlgorithmToJSON,
-} from './SignatureAlgorithm';
-import type { JwkUse } from './JwkUse';
-import {
-    JwkUseFromJSON,
-    JwkUseToJSON,
-} from './JwkUse';
+import type { KeyOperations } from './KeyOperations'
+import { KeyOperationsFromJSON, KeyOperationsToJSON } from './KeyOperations'
+import type { SignatureAlgorithm } from './SignatureAlgorithm'
+import { SignatureAlgorithmFromJSON, SignatureAlgorithmToJSON } from './SignatureAlgorithm'
+import type { JwkUse } from './JwkUse'
+import { JwkUseFromJSON, JwkUseToJSON } from './JwkUse'
 
 /**
  * Parameters for key generation.
@@ -34,73 +25,68 @@ import {
  * @interface GenerateKey
  */
 export interface GenerateKey {
-    /**
-     * Alias for the generated key.
-     * @type {string}
-     * @memberof GenerateKey
-     */
-    alias?: string;
-    /**
-     *
-     * @type {JwkUse}
-     * @memberof GenerateKey
-     */
-    use?: JwkUse;
-    /**
-     *
-     * @type {Array<KeyOperations>}
-     * @memberof GenerateKey
-     */
-    keyOperations?: Array<KeyOperations>;
-    /**
-     *
-     * @type {SignatureAlgorithm}
-     * @memberof GenerateKey
-     */
-    alg?: SignatureAlgorithm;
+  /**
+   * Alias for the generated key.
+   * @type {string}
+   * @memberof GenerateKey
+   */
+  alias?: string
+  /**
+   *
+   * @type {JwkUse}
+   * @memberof GenerateKey
+   */
+  use?: JwkUse
+  /**
+   *
+   * @type {Array<KeyOperations>}
+   * @memberof GenerateKey
+   */
+  keyOperations?: Array<KeyOperations>
+  /**
+   *
+   * @type {SignatureAlgorithm}
+   * @memberof GenerateKey
+   */
+  alg?: SignatureAlgorithm
 }
-
-
 
 /**
  * Check if a given object implements the GenerateKey interface.
  */
 export function instanceOfGenerateKey(value: object): value is GenerateKey {
-    return true;
+  return true
 }
 
 export function GenerateKeyFromJSON(json: any): GenerateKey {
-    return GenerateKeyFromJSONTyped(json, false);
+  return GenerateKeyFromJSONTyped(json, false)
 }
 
 export function GenerateKeyFromJSONTyped(json: any, ignoreDiscriminator: boolean): GenerateKey {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'alias': json['alias'] == null ? undefined : json['alias'],
-        'use': json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
-        'keyOperations': json['keyOperations'] == null ? undefined : ((json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON)),
-        'alg': json['alg'] == null ? undefined : SignatureAlgorithmFromJSON(json['alg']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    alias: json['alias'] == null ? undefined : json['alias'],
+    use: json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
+    keyOperations: json['keyOperations'] == null ? undefined : (json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON),
+    alg: json['alg'] == null ? undefined : SignatureAlgorithmFromJSON(json['alg']),
+  }
 }
 
 export function GenerateKeyToJSON(json: any): GenerateKey {
-    return GenerateKeyToJSONTyped(json, false);
+  return GenerateKeyToJSONTyped(json, false)
 }
 
 export function GenerateKeyToJSONTyped(value?: GenerateKey | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'alias': value['alias'],
-        'use': JwkUseToJSON(value['use']),
-        'keyOperations': value['keyOperations'] == null ? undefined : ((value['keyOperations'] as Array<any>).map(KeyOperationsToJSON)),
-        'alg': SignatureAlgorithmToJSON(value['alg']),
-    };
+  return {
+    alias: value['alias'],
+    use: JwkUseToJSON(value['use']),
+    keyOperations: value['keyOperations'] == null ? undefined : (value['keyOperations'] as Array<any>).map(KeyOperationsToJSON),
+    alg: SignatureAlgorithmToJSON(value['alg']),
+  }
 }
-

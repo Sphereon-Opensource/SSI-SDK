@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { LookupMode } from './LookupMode';
-import {
-    LookupModeFromJSON,
-    LookupModeToJSON,
-} from './LookupMode';
+import type { LookupMode } from './LookupMode'
+import { LookupModeFromJSON, LookupModeToJSON } from './LookupMode'
 
 /**
  * Credentials obtained using a web identity token (e.g., from Cognito, OIDC provider).
@@ -24,76 +21,71 @@ import {
  * @interface AwsWebIdentityTokenCredentials
  */
 export interface AwsWebIdentityTokenCredentials {
-    /**
-     * The Amazon Resource Name (ARN) of the role to assume.
-     * @type {string}
-     * @memberof AwsWebIdentityTokenCredentials
-     */
-    roleArn: string;
-    /**
-     * An identifier for the assumed role session.
-     * @type {string}
-     * @memberof AwsWebIdentityTokenCredentials
-     */
-    roleSessionName: string;
-    /**
-     * The web identity token (e.g., OIDC token, Cognito token) itself.
-     * @type {string}
-     * @memberof AwsWebIdentityTokenCredentials
-     */
-    webIdentityToken: string;
-    /**
-     *
-     * @type {LookupMode}
-     * @memberof AwsWebIdentityTokenCredentials
-     */
-    lookupMode?: LookupMode;
+  /**
+   * The Amazon Resource Name (ARN) of the role to assume.
+   * @type {string}
+   * @memberof AwsWebIdentityTokenCredentials
+   */
+  roleArn: string
+  /**
+   * An identifier for the assumed role session.
+   * @type {string}
+   * @memberof AwsWebIdentityTokenCredentials
+   */
+  roleSessionName: string
+  /**
+   * The web identity token (e.g., OIDC token, Cognito token) itself.
+   * @type {string}
+   * @memberof AwsWebIdentityTokenCredentials
+   */
+  webIdentityToken: string
+  /**
+   *
+   * @type {LookupMode}
+   * @memberof AwsWebIdentityTokenCredentials
+   */
+  lookupMode?: LookupMode
 }
-
-
 
 /**
  * Check if a given object implements the AwsWebIdentityTokenCredentials interface.
  */
 export function instanceOfAwsWebIdentityTokenCredentials(value: object): value is AwsWebIdentityTokenCredentials {
-    if (!('roleArn' in value) || value['roleArn'] === undefined) return false;
-    if (!('roleSessionName' in value) || value['roleSessionName'] === undefined) return false;
-    if (!('webIdentityToken' in value) || value['webIdentityToken'] === undefined) return false;
-    return true;
+  if (!('roleArn' in value) || value['roleArn'] === undefined) return false
+  if (!('roleSessionName' in value) || value['roleSessionName'] === undefined) return false
+  if (!('webIdentityToken' in value) || value['webIdentityToken'] === undefined) return false
+  return true
 }
 
 export function AwsWebIdentityTokenCredentialsFromJSON(json: any): AwsWebIdentityTokenCredentials {
-    return AwsWebIdentityTokenCredentialsFromJSONTyped(json, false);
+  return AwsWebIdentityTokenCredentialsFromJSONTyped(json, false)
 }
 
 export function AwsWebIdentityTokenCredentialsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AwsWebIdentityTokenCredentials {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'roleArn': json['roleArn'],
-        'roleSessionName': json['roleSessionName'],
-        'webIdentityToken': json['webIdentityToken'],
-        'lookupMode': json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    roleArn: json['roleArn'],
+    roleSessionName: json['roleSessionName'],
+    webIdentityToken: json['webIdentityToken'],
+    lookupMode: json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
+  }
 }
 
 export function AwsWebIdentityTokenCredentialsToJSON(json: any): AwsWebIdentityTokenCredentials {
-    return AwsWebIdentityTokenCredentialsToJSONTyped(json, false);
+  return AwsWebIdentityTokenCredentialsToJSONTyped(json, false)
 }
 
 export function AwsWebIdentityTokenCredentialsToJSONTyped(value?: AwsWebIdentityTokenCredentials | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'roleArn': value['roleArn'],
-        'roleSessionName': value['roleSessionName'],
-        'webIdentityToken': value['webIdentityToken'],
-        'lookupMode': LookupModeToJSON(value['lookupMode']),
-    };
+  return {
+    roleArn: value['roleArn'],
+    roleSessionName: value['roleSessionName'],
+    webIdentityToken: value['webIdentityToken'],
+    lookupMode: LookupModeToJSON(value['lookupMode']),
+  }
 }
-

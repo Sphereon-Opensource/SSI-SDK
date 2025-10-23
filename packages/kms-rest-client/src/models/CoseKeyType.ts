@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,44 +12,41 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * COSE key type parameter. 1=OKP (Octet Key Pair), 2=EC2 (Elliptic Curve), 3=RSA, 4=Symmetric.
  * @export
  */
 export const CoseKeyType = {
-    NUMBER_1: 1,
-    NUMBER_2: 2,
-    NUMBER_3: 3,
-    NUMBER_4: 4
-} as const;
-export type CoseKeyType = typeof CoseKeyType[keyof typeof CoseKeyType];
-
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+  NUMBER_4: 4,
+} as const
+export type CoseKeyType = (typeof CoseKeyType)[keyof typeof CoseKeyType]
 
 export function instanceOfCoseKeyType(value: any): boolean {
-    for (const key in CoseKeyType) {
-        if (Object.prototype.hasOwnProperty.call(CoseKeyType, key)) {
-            if (CoseKeyType[key as keyof typeof CoseKeyType] === value) {
-                return true;
-            }
-        }
+  for (const key in CoseKeyType) {
+    if (Object.prototype.hasOwnProperty.call(CoseKeyType, key)) {
+      if (CoseKeyType[key as keyof typeof CoseKeyType] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function CoseKeyTypeFromJSON(json: any): CoseKeyType {
-    return CoseKeyTypeFromJSONTyped(json, false);
+  return CoseKeyTypeFromJSONTyped(json, false)
 }
 
 export function CoseKeyTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): CoseKeyType {
-    return json as CoseKeyType;
+  return json as CoseKeyType
 }
 
 export function CoseKeyTypeToJSON(value?: CoseKeyType | null): any {
-    return value as any;
+  return value as any
 }
 
 export function CoseKeyTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): CoseKeyType {
-    return value as CoseKeyType;
+  return value as CoseKeyType
 }
-

@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { LookupMode } from './LookupMode';
-import {
-    LookupModeFromJSON,
-    LookupModeToJSON,
-} from './LookupMode';
+import type { LookupMode } from './LookupMode'
+import { LookupModeFromJSON, LookupModeToJSON } from './LookupMode'
 
 /**
  * Azure Service Principal credentials using a client secret.
@@ -24,67 +21,65 @@ import {
  * @interface AzureClientSecretCredentialOpts
  */
 export interface AzureClientSecretCredentialOpts {
-    /**
-     * The Application (client) ID of the Azure service principal.
-     * @type {string}
-     * @memberof AzureClientSecretCredentialOpts
-     */
-    clientId: string;
-    /**
-     * The client secret for the service principal.
-     * @type {string}
-     * @memberof AzureClientSecretCredentialOpts
-     */
-    clientSecret: string;
-    /**
-     *
-     * @type {LookupMode}
-     * @memberof AzureClientSecretCredentialOpts
-     */
-    lookupMode?: LookupMode;
+  /**
+   * The Application (client) ID of the Azure service principal.
+   * @type {string}
+   * @memberof AzureClientSecretCredentialOpts
+   */
+  clientId: string
+  /**
+   * The client secret for the service principal.
+   * @type {string}
+   * @memberof AzureClientSecretCredentialOpts
+   */
+  clientSecret: string
+  /**
+   *
+   * @type {LookupMode}
+   * @memberof AzureClientSecretCredentialOpts
+   */
+  lookupMode?: LookupMode
 }
-
-
 
 /**
  * Check if a given object implements the AzureClientSecretCredentialOpts interface.
  */
 export function instanceOfAzureClientSecretCredentialOpts(value: object): value is AzureClientSecretCredentialOpts {
-    if (!('clientId' in value) || value['clientId'] === undefined) return false;
-    if (!('clientSecret' in value) || value['clientSecret'] === undefined) return false;
-    return true;
+  if (!('clientId' in value) || value['clientId'] === undefined) return false
+  if (!('clientSecret' in value) || value['clientSecret'] === undefined) return false
+  return true
 }
 
 export function AzureClientSecretCredentialOptsFromJSON(json: any): AzureClientSecretCredentialOpts {
-    return AzureClientSecretCredentialOptsFromJSONTyped(json, false);
+  return AzureClientSecretCredentialOptsFromJSONTyped(json, false)
 }
 
 export function AzureClientSecretCredentialOptsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AzureClientSecretCredentialOpts {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'clientId': json['clientId'],
-        'clientSecret': json['clientSecret'],
-        'lookupMode': json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    clientId: json['clientId'],
+    clientSecret: json['clientSecret'],
+    lookupMode: json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
+  }
 }
 
 export function AzureClientSecretCredentialOptsToJSON(json: any): AzureClientSecretCredentialOpts {
-    return AzureClientSecretCredentialOptsToJSONTyped(json, false);
+  return AzureClientSecretCredentialOptsToJSONTyped(json, false)
 }
 
-export function AzureClientSecretCredentialOptsToJSONTyped(value?: AzureClientSecretCredentialOpts | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+export function AzureClientSecretCredentialOptsToJSONTyped(
+  value?: AzureClientSecretCredentialOpts | null,
+  ignoreDiscriminator: boolean = false,
+): any {
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'clientId': value['clientId'],
-        'clientSecret': value['clientSecret'],
-        'lookupMode': LookupModeToJSON(value['lookupMode']),
-    };
+  return {
+    clientId: value['clientId'],
+    clientSecret: value['clientSecret'],
+    lookupMode: LookupModeToJSON(value['lookupMode']),
+  }
 }
-

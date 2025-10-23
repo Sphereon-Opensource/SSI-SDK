@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { Signature } from './Signature';
-import {
-    SignatureFromJSON,
-    SignatureToJSON,
-} from './Signature';
+import type { Signature } from './Signature'
+import { SignatureFromJSON, SignatureToJSON } from './Signature'
 
 /**
  * The output of a signature creation operation.
@@ -24,56 +21,53 @@ import {
  * @interface SignOutput
  */
 export interface SignOutput {
-    /**
-     *
-     * @type {Signature}
-     * @memberof SignOutput
-     */
-    signature: Signature;
-    /**
-     * Additional metadata included in the signature output.
-     * @type {{ [key: string]: any; }}
-     * @memberof SignOutput
-     */
-    metadata?: { [key: string]: any; };
+  /**
+   *
+   * @type {Signature}
+   * @memberof SignOutput
+   */
+  signature: Signature
+  /**
+   * Additional metadata included in the signature output.
+   * @type {{ [key: string]: any; }}
+   * @memberof SignOutput
+   */
+  metadata?: { [key: string]: any }
 }
 
 /**
  * Check if a given object implements the SignOutput interface.
  */
 export function instanceOfSignOutput(value: object): value is SignOutput {
-    if (!('signature' in value) || value['signature'] === undefined) return false;
-    return true;
+  if (!('signature' in value) || value['signature'] === undefined) return false
+  return true
 }
 
 export function SignOutputFromJSON(json: any): SignOutput {
-    return SignOutputFromJSONTyped(json, false);
+  return SignOutputFromJSONTyped(json, false)
 }
 
 export function SignOutputFromJSONTyped(json: any, ignoreDiscriminator: boolean): SignOutput {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'signature': SignatureFromJSON(json['signature']),
-        'metadata': json['metadata'] == null ? undefined : json['metadata'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    signature: SignatureFromJSON(json['signature']),
+    metadata: json['metadata'] == null ? undefined : json['metadata'],
+  }
 }
 
 export function SignOutputToJSON(json: any): SignOutput {
-    return SignOutputToJSONTyped(json, false);
+  return SignOutputToJSONTyped(json, false)
 }
 
 export function SignOutputToJSONTyped(value?: SignOutput | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'signature': SignatureToJSON(value['signature']),
-        'metadata': value['metadata'],
-    };
+  return {
+    signature: SignatureToJSON(value['signature']),
+    metadata: value['metadata'],
+  }
 }
-

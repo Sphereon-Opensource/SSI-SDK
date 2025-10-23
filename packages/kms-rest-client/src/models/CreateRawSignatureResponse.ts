@@ -18,48 +18,45 @@
  * @interface CreateRawSignatureResponse
  */
 export interface CreateRawSignatureResponse {
-    /**
-     * The created signature encoded as a base64 string.
-     * @type {string}
-     * @memberof CreateRawSignatureResponse
-     */
-    signature: string;
+  /**
+   * The created signature encoded as a base64 string.
+   * @type {string}
+   * @memberof CreateRawSignatureResponse
+   */
+  signature: string
 }
 
 /**
  * Check if a given object implements the CreateRawSignatureResponse interface.
  */
 export function instanceOfCreateRawSignatureResponse(value: object): value is CreateRawSignatureResponse {
-    if (!('signature' in value) || value['signature'] === undefined) return false;
-    return true;
+  if (!('signature' in value) || value['signature'] === undefined) return false
+  return true
 }
 
 export function CreateRawSignatureResponseFromJSON(json: any): CreateRawSignatureResponse {
-    return CreateRawSignatureResponseFromJSONTyped(json, false);
+  return CreateRawSignatureResponseFromJSONTyped(json, false)
 }
 
 export function CreateRawSignatureResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateRawSignatureResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'signature': json['signature'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    signature: json['signature'],
+  }
 }
 
 export function CreateRawSignatureResponseToJSON(json: any): CreateRawSignatureResponse {
-    return CreateRawSignatureResponseToJSONTyped(json, false);
+  return CreateRawSignatureResponseToJSONTyped(json, false)
 }
 
 export function CreateRawSignatureResponseToJSONTyped(value?: CreateRawSignatureResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'signature': value['signature'],
-    };
+  return {
+    signature: value['signature'],
+  }
 }
-

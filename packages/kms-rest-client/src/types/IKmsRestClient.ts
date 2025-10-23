@@ -16,7 +16,7 @@ import {
   Resolver,
   StoreKey,
   VerifyRawSignature,
-  VerifyRawSignatureResponse
+  VerifyRawSignatureResponse,
 } from '../models'
 
 export interface IKmsRestClient extends IPluginMethodMap {
@@ -126,7 +126,7 @@ export type RestClientAuthenticationOpts = {
 }
 
 export type KmsRestClientArgs = {
-  baseUrl?: string,
+  baseUrl?: string
   authentication?: RestClientAuthenticationOpts
 }
 

@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,41 +12,38 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Mask generation function algorithm.
  * @export
  */
 export const MaskGenFunction = {
-    Mgf1: 'MGF1'
-} as const;
-export type MaskGenFunction = typeof MaskGenFunction[keyof typeof MaskGenFunction];
-
+  Mgf1: 'MGF1',
+} as const
+export type MaskGenFunction = (typeof MaskGenFunction)[keyof typeof MaskGenFunction]
 
 export function instanceOfMaskGenFunction(value: any): boolean {
-    for (const key in MaskGenFunction) {
-        if (Object.prototype.hasOwnProperty.call(MaskGenFunction, key)) {
-            if (MaskGenFunction[key as keyof typeof MaskGenFunction] === value) {
-                return true;
-            }
-        }
+  for (const key in MaskGenFunction) {
+    if (Object.prototype.hasOwnProperty.call(MaskGenFunction, key)) {
+      if (MaskGenFunction[key as keyof typeof MaskGenFunction] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function MaskGenFunctionFromJSON(json: any): MaskGenFunction {
-    return MaskGenFunctionFromJSONTyped(json, false);
+  return MaskGenFunctionFromJSONTyped(json, false)
 }
 
 export function MaskGenFunctionFromJSONTyped(json: any, ignoreDiscriminator: boolean): MaskGenFunction {
-    return json as MaskGenFunction;
+  return json as MaskGenFunction
 }
 
 export function MaskGenFunctionToJSON(value?: MaskGenFunction | null): any {
-    return value as any;
+  return value as any
 }
 
 export function MaskGenFunctionToJSONTyped(value: any, ignoreDiscriminator: boolean): MaskGenFunction {
-    return value as MaskGenFunction;
+  return value as MaskGenFunction
 }
-

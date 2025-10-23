@@ -12,16 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { SignInput } from './SignInput';
-import {
-    SignInputFromJSON,
-    SignInputToJSON,
-} from './SignInput';
-import type { Signature } from './Signature';
-import {
-    SignatureFromJSON,
-    SignatureToJSON,
-} from './Signature';
+import type { SignInput } from './SignInput'
+import { SignInputFromJSON, SignInputToJSON } from './SignInput'
+import type { Signature } from './Signature'
+import { SignatureFromJSON, SignatureToJSON } from './Signature'
 
 /**
  * Request body for verifying a digital signature.
@@ -29,57 +23,54 @@ import {
  * @interface VerifySimpleSignature
  */
 export interface VerifySimpleSignature {
-    /**
-     *
-     * @type {SignInput}
-     * @memberof VerifySimpleSignature
-     */
-    signInput: SignInput;
-    /**
-     *
-     * @type {Signature}
-     * @memberof VerifySimpleSignature
-     */
-    signature: Signature;
+  /**
+   *
+   * @type {SignInput}
+   * @memberof VerifySimpleSignature
+   */
+  signInput: SignInput
+  /**
+   *
+   * @type {Signature}
+   * @memberof VerifySimpleSignature
+   */
+  signature: Signature
 }
 
 /**
  * Check if a given object implements the VerifySimpleSignature interface.
  */
 export function instanceOfVerifySimpleSignature(value: object): value is VerifySimpleSignature {
-    if (!('signInput' in value) || value['signInput'] === undefined) return false;
-    if (!('signature' in value) || value['signature'] === undefined) return false;
-    return true;
+  if (!('signInput' in value) || value['signInput'] === undefined) return false
+  if (!('signature' in value) || value['signature'] === undefined) return false
+  return true
 }
 
 export function VerifySimpleSignatureFromJSON(json: any): VerifySimpleSignature {
-    return VerifySimpleSignatureFromJSONTyped(json, false);
+  return VerifySimpleSignatureFromJSONTyped(json, false)
 }
 
 export function VerifySimpleSignatureFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifySimpleSignature {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'signInput': SignInputFromJSON(json['signInput']),
-        'signature': SignatureFromJSON(json['signature']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    signInput: SignInputFromJSON(json['signInput']),
+    signature: SignatureFromJSON(json['signature']),
+  }
 }
 
 export function VerifySimpleSignatureToJSON(json: any): VerifySimpleSignature {
-    return VerifySimpleSignatureToJSONTyped(json, false);
+  return VerifySimpleSignatureToJSONTyped(json, false)
 }
 
 export function VerifySimpleSignatureToJSONTyped(value?: VerifySimpleSignature | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'signInput': SignInputToJSON(value['signInput']),
-        'signature': SignatureToJSON(value['signature']),
-    };
+  return {
+    signInput: SignInputToJSON(value['signInput']),
+    signature: SignatureToJSON(value['signature']),
+  }
 }
-

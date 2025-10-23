@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,45 +12,42 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Method used to identify cryptographic keys.
  * @export
  */
 export const IdentifierMethod = {
-    Jwk: 'JWK',
-    Kid: 'KID',
-    CoseKey: 'COSE_KEY',
-    X5C: 'X5C',
-    Did: 'DID'
-} as const;
-export type IdentifierMethod = typeof IdentifierMethod[keyof typeof IdentifierMethod];
-
+  Jwk: 'JWK',
+  Kid: 'KID',
+  CoseKey: 'COSE_KEY',
+  X5C: 'X5C',
+  Did: 'DID',
+} as const
+export type IdentifierMethod = (typeof IdentifierMethod)[keyof typeof IdentifierMethod]
 
 export function instanceOfIdentifierMethod(value: any): boolean {
-    for (const key in IdentifierMethod) {
-        if (Object.prototype.hasOwnProperty.call(IdentifierMethod, key)) {
-            if (IdentifierMethod[key as keyof typeof IdentifierMethod] === value) {
-                return true;
-            }
-        }
+  for (const key in IdentifierMethod) {
+    if (Object.prototype.hasOwnProperty.call(IdentifierMethod, key)) {
+      if (IdentifierMethod[key as keyof typeof IdentifierMethod] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function IdentifierMethodFromJSON(json: any): IdentifierMethod {
-    return IdentifierMethodFromJSONTyped(json, false);
+  return IdentifierMethodFromJSONTyped(json, false)
 }
 
 export function IdentifierMethodFromJSONTyped(json: any, ignoreDiscriminator: boolean): IdentifierMethod {
-    return json as IdentifierMethod;
+  return json as IdentifierMethod
 }
 
 export function IdentifierMethodToJSON(value?: IdentifierMethod | null): any {
-    return value as any;
+  return value as any
 }
 
 export function IdentifierMethodToJSONTyped(value: any, ignoreDiscriminator: boolean): IdentifierMethod {
-    return value as IdentifierMethod;
+  return value as IdentifierMethod
 }
-

@@ -18,65 +18,62 @@
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
-    /**
-     * Error code identifying the type of error.
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    code: string;
-    /**
-     * Human-readable error message.
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    message: string;
-    /**
-     * Additional error details.
-     * @type {{ [key: string]: any; }}
-     * @memberof ErrorResponse
-     */
-    details?: { [key: string]: any; };
+  /**
+   * Error code identifying the type of error.
+   * @type {string}
+   * @memberof ErrorResponse
+   */
+  code: string
+  /**
+   * Human-readable error message.
+   * @type {string}
+   * @memberof ErrorResponse
+   */
+  message: string
+  /**
+   * Additional error details.
+   * @type {{ [key: string]: any; }}
+   * @memberof ErrorResponse
+   */
+  details?: { [key: string]: any }
 }
 
 /**
  * Check if a given object implements the ErrorResponse interface.
  */
 export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('code' in value) || value['code'] === undefined) return false;
-    if (!('message' in value) || value['message'] === undefined) return false;
-    return true;
+  if (!('code' in value) || value['code'] === undefined) return false
+  if (!('message' in value) || value['message'] === undefined) return false
+  return true
 }
 
 export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+  return ErrorResponseFromJSONTyped(json, false)
 }
 
 export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'code': json['code'],
-        'message': json['message'],
-        'details': json['details'] == null ? undefined : json['details'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    code: json['code'],
+    message: json['message'],
+    details: json['details'] == null ? undefined : json['details'],
+  }
 }
 
 export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+  return ErrorResponseToJSONTyped(json, false)
 }
 
 export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'code': value['code'],
-        'message': value['message'],
-        'details': value['details'],
-    };
+  return {
+    code: value['code'],
+    message: value['message'],
+    details: value['details'],
+  }
 }
-

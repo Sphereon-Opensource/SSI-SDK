@@ -12,16 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { KeyInfo } from './KeyInfo';
-import {
-    KeyInfoFromJSON,
-    KeyInfoToJSON,
-} from './KeyInfo';
-import type { IdentifierMethod } from './IdentifierMethod';
-import {
-    IdentifierMethodFromJSON,
-    IdentifierMethodToJSON,
-} from './IdentifierMethod';
+import type { KeyInfo } from './KeyInfo'
+import { KeyInfoFromJSON, KeyInfoToJSON } from './KeyInfo'
+import type { IdentifierMethod } from './IdentifierMethod'
+import { IdentifierMethodFromJSON, IdentifierMethodToJSON } from './IdentifierMethod'
 
 /**
  * Request body for resolving a public key.
@@ -29,74 +23,69 @@ import {
  * @interface ResolvePublicKey
  */
 export interface ResolvePublicKey {
-    /**
-     *
-     * @type {KeyInfo}
-     * @memberof ResolvePublicKey
-     */
-    keyInfo: KeyInfo;
-    /**
-     *
-     * @type {IdentifierMethod}
-     * @memberof ResolvePublicKey
-     */
-    identifierMethod?: IdentifierMethod;
-    /**
-     * Optional array of trusted certificates (base64-encoded) that may be used in the resolution process.
-     * @type {Array<string>}
-     * @memberof ResolvePublicKey
-     */
-    trustedCerts?: Array<string>;
-    /**
-     * Optional boolean indicating whether the X.509 certificate chain should be verified.
-     * @type {boolean}
-     * @memberof ResolvePublicKey
-     */
-    verifyX509CertificateChain?: boolean;
+  /**
+   *
+   * @type {KeyInfo}
+   * @memberof ResolvePublicKey
+   */
+  keyInfo: KeyInfo
+  /**
+   *
+   * @type {IdentifierMethod}
+   * @memberof ResolvePublicKey
+   */
+  identifierMethod?: IdentifierMethod
+  /**
+   * Optional array of trusted certificates (base64-encoded) that may be used in the resolution process.
+   * @type {Array<string>}
+   * @memberof ResolvePublicKey
+   */
+  trustedCerts?: Array<string>
+  /**
+   * Optional boolean indicating whether the X.509 certificate chain should be verified.
+   * @type {boolean}
+   * @memberof ResolvePublicKey
+   */
+  verifyX509CertificateChain?: boolean
 }
-
-
 
 /**
  * Check if a given object implements the ResolvePublicKey interface.
  */
 export function instanceOfResolvePublicKey(value: object): value is ResolvePublicKey {
-    if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false;
-    return true;
+  if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false
+  return true
 }
 
 export function ResolvePublicKeyFromJSON(json: any): ResolvePublicKey {
-    return ResolvePublicKeyFromJSONTyped(json, false);
+  return ResolvePublicKeyFromJSONTyped(json, false)
 }
 
 export function ResolvePublicKeyFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResolvePublicKey {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyInfo': KeyInfoFromJSON(json['keyInfo']),
-        'identifierMethod': json['identifierMethod'] == null ? undefined : IdentifierMethodFromJSON(json['identifierMethod']),
-        'trustedCerts': json['trustedCerts'] == null ? undefined : json['trustedCerts'],
-        'verifyX509CertificateChain': json['verifyX509CertificateChain'] == null ? undefined : json['verifyX509CertificateChain'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyInfo: KeyInfoFromJSON(json['keyInfo']),
+    identifierMethod: json['identifierMethod'] == null ? undefined : IdentifierMethodFromJSON(json['identifierMethod']),
+    trustedCerts: json['trustedCerts'] == null ? undefined : json['trustedCerts'],
+    verifyX509CertificateChain: json['verifyX509CertificateChain'] == null ? undefined : json['verifyX509CertificateChain'],
+  }
 }
 
 export function ResolvePublicKeyToJSON(json: any): ResolvePublicKey {
-    return ResolvePublicKeyToJSONTyped(json, false);
+  return ResolvePublicKeyToJSONTyped(json, false)
 }
 
 export function ResolvePublicKeyToJSONTyped(value?: ResolvePublicKey | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyInfo': KeyInfoToJSON(value['keyInfo']),
-        'identifierMethod': IdentifierMethodToJSON(value['identifierMethod']),
-        'trustedCerts': value['trustedCerts'],
-        'verifyX509CertificateChain': value['verifyX509CertificateChain'],
-    };
+  return {
+    keyInfo: KeyInfoToJSON(value['keyInfo']),
+    identifierMethod: IdentifierMethodToJSON(value['identifierMethod']),
+    trustedCerts: value['trustedCerts'],
+    verifyX509CertificateChain: value['verifyX509CertificateChain'],
+  }
 }
-

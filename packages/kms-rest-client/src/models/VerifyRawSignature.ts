@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { KeyInfo } from './KeyInfo';
-import {
-    KeyInfoFromJSON,
-    KeyInfoToJSON,
-} from './KeyInfo';
+import type { KeyInfo } from './KeyInfo'
+import { KeyInfoFromJSON, KeyInfoToJSON } from './KeyInfo'
 
 /**
  * Request body for verifying a raw signature.
@@ -24,66 +21,63 @@ import {
  * @interface VerifyRawSignature
  */
 export interface VerifyRawSignature {
-    /**
-     *
-     * @type {KeyInfo}
-     * @memberof VerifyRawSignature
-     */
-    keyInfo: KeyInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof VerifyRawSignature
-     */
-    input: string;
-    /**
-     *
-     * @type {string}
-     * @memberof VerifyRawSignature
-     */
-    signature: string;
+  /**
+   *
+   * @type {KeyInfo}
+   * @memberof VerifyRawSignature
+   */
+  keyInfo: KeyInfo
+  /**
+   *
+   * @type {string}
+   * @memberof VerifyRawSignature
+   */
+  input: string
+  /**
+   *
+   * @type {string}
+   * @memberof VerifyRawSignature
+   */
+  signature: string
 }
 
 /**
  * Check if a given object implements the VerifyRawSignature interface.
  */
 export function instanceOfVerifyRawSignature(value: object): value is VerifyRawSignature {
-    if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false;
-    if (!('input' in value) || value['input'] === undefined) return false;
-    if (!('signature' in value) || value['signature'] === undefined) return false;
-    return true;
+  if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false
+  if (!('input' in value) || value['input'] === undefined) return false
+  if (!('signature' in value) || value['signature'] === undefined) return false
+  return true
 }
 
 export function VerifyRawSignatureFromJSON(json: any): VerifyRawSignature {
-    return VerifyRawSignatureFromJSONTyped(json, false);
+  return VerifyRawSignatureFromJSONTyped(json, false)
 }
 
 export function VerifyRawSignatureFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifyRawSignature {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyInfo': KeyInfoFromJSON(json['keyInfo']),
-        'input': json['input'],
-        'signature': json['signature'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyInfo: KeyInfoFromJSON(json['keyInfo']),
+    input: json['input'],
+    signature: json['signature'],
+  }
 }
 
 export function VerifyRawSignatureToJSON(json: any): VerifyRawSignature {
-    return VerifyRawSignatureToJSONTyped(json, false);
+  return VerifyRawSignatureToJSONTyped(json, false)
 }
 
 export function VerifyRawSignatureToJSONTyped(value?: VerifyRawSignature | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyInfo': KeyInfoToJSON(value['keyInfo']),
-        'input': value['input'],
-        'signature': value['signature'],
-    };
+  return {
+    keyInfo: KeyInfoToJSON(value['keyInfo']),
+    input: value['input'],
+    signature: value['signature'],
+  }
 }
-

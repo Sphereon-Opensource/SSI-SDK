@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { CoseKey } from './CoseKey';
-import {
-    CoseKeyFromJSON,
-    CoseKeyToJSON,
-} from './CoseKey';
+import type { CoseKey } from './CoseKey'
+import { CoseKeyFromJSON, CoseKeyToJSON } from './CoseKey'
 
 /**
  * Represents a cryptographic key pair for COSE (CBOR Object Signing and Encryption) operations.
@@ -24,56 +21,53 @@ import {
  * @interface CoseKeyPair
  */
 export interface CoseKeyPair {
-    /**
-     *
-     * @type {CoseKey}
-     * @memberof CoseKeyPair
-     */
-    privateCoseKey?: CoseKey;
-    /**
-     *
-     * @type {CoseKey}
-     * @memberof CoseKeyPair
-     */
-    publicCoseKey: CoseKey;
+  /**
+   *
+   * @type {CoseKey}
+   * @memberof CoseKeyPair
+   */
+  privateCoseKey?: CoseKey
+  /**
+   *
+   * @type {CoseKey}
+   * @memberof CoseKeyPair
+   */
+  publicCoseKey: CoseKey
 }
 
 /**
  * Check if a given object implements the CoseKeyPair interface.
  */
 export function instanceOfCoseKeyPair(value: object): value is CoseKeyPair {
-    if (!('publicCoseKey' in value) || value['publicCoseKey'] === undefined) return false;
-    return true;
+  if (!('publicCoseKey' in value) || value['publicCoseKey'] === undefined) return false
+  return true
 }
 
 export function CoseKeyPairFromJSON(json: any): CoseKeyPair {
-    return CoseKeyPairFromJSONTyped(json, false);
+  return CoseKeyPairFromJSONTyped(json, false)
 }
 
 export function CoseKeyPairFromJSONTyped(json: any, ignoreDiscriminator: boolean): CoseKeyPair {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'privateCoseKey': json['privateCoseKey'] == null ? undefined : CoseKeyFromJSON(json['privateCoseKey']),
-        'publicCoseKey': CoseKeyFromJSON(json['publicCoseKey']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    privateCoseKey: json['privateCoseKey'] == null ? undefined : CoseKeyFromJSON(json['privateCoseKey']),
+    publicCoseKey: CoseKeyFromJSON(json['publicCoseKey']),
+  }
 }
 
 export function CoseKeyPairToJSON(json: any): CoseKeyPair {
-    return CoseKeyPairToJSONTyped(json, false);
+  return CoseKeyPairToJSONTyped(json, false)
 }
 
 export function CoseKeyPairToJSONTyped(value?: CoseKeyPair | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'privateCoseKey': CoseKeyToJSON(value['privateCoseKey']),
-        'publicCoseKey': CoseKeyToJSON(value['publicCoseKey']),
-    };
+  return {
+    privateCoseKey: CoseKeyToJSON(value['privateCoseKey']),
+    publicCoseKey: CoseKeyToJSON(value['publicCoseKey']),
+  }
 }
-

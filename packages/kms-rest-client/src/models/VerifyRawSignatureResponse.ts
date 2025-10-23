@@ -18,48 +18,45 @@
  * @interface VerifyRawSignatureResponse
  */
 export interface VerifyRawSignatureResponse {
-    /**
-     * Indicates whether the signature is valid or not.
-     * @type {boolean}
-     * @memberof VerifyRawSignatureResponse
-     */
-    isValid: boolean;
+  /**
+   * Indicates whether the signature is valid or not.
+   * @type {boolean}
+   * @memberof VerifyRawSignatureResponse
+   */
+  isValid: boolean
 }
 
 /**
  * Check if a given object implements the VerifyRawSignatureResponse interface.
  */
 export function instanceOfVerifyRawSignatureResponse(value: object): value is VerifyRawSignatureResponse {
-    if (!('isValid' in value) || value['isValid'] === undefined) return false;
-    return true;
+  if (!('isValid' in value) || value['isValid'] === undefined) return false
+  return true
 }
 
 export function VerifyRawSignatureResponseFromJSON(json: any): VerifyRawSignatureResponse {
-    return VerifyRawSignatureResponseFromJSONTyped(json, false);
+  return VerifyRawSignatureResponseFromJSONTyped(json, false)
 }
 
 export function VerifyRawSignatureResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifyRawSignatureResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'isValid': json['isValid'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    isValid: json['isValid'],
+  }
 }
 
 export function VerifyRawSignatureResponseToJSON(json: any): VerifyRawSignatureResponse {
-    return VerifyRawSignatureResponseToJSONTyped(json, false);
+  return VerifyRawSignatureResponseToJSONTyped(json, false)
 }
 
 export function VerifyRawSignatureResponseToJSONTyped(value?: VerifyRawSignatureResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'isValid': value['isValid'],
-    };
+  return {
+    isValid: value['isValid'],
+  }
 }
-

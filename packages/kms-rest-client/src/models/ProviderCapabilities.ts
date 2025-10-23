@@ -12,31 +12,16 @@
  * Do not edit the class manually.
  */
 
-import type { KeyType } from './KeyType';
-import {
-    KeyTypeFromJSON,
-    KeyTypeToJSON,
-} from './KeyType';
-import type { DigestAlg } from './DigestAlg';
-import {
-    DigestAlgFromJSON,
-    DigestAlgToJSON,
-} from './DigestAlg';
-import type { Curve } from './Curve';
-import {
-    CurveFromJSON,
-    CurveToJSON,
-} from './Curve';
-import type { KeyOperations } from './KeyOperations';
-import {
-    KeyOperationsFromJSON,
-    KeyOperationsToJSON,
-} from './KeyOperations';
-import type { SignatureAlgorithm } from './SignatureAlgorithm';
-import {
-    SignatureAlgorithmFromJSON,
-    SignatureAlgorithmToJSON,
-} from './SignatureAlgorithm';
+import type { KeyType } from './KeyType'
+import { KeyTypeFromJSON, KeyTypeToJSON } from './KeyType'
+import type { DigestAlg } from './DigestAlg'
+import { DigestAlgFromJSON, DigestAlgToJSON } from './DigestAlg'
+import type { Curve } from './Curve'
+import { CurveFromJSON, CurveToJSON } from './Curve'
+import type { KeyOperations } from './KeyOperations'
+import { KeyOperationsFromJSON, KeyOperationsToJSON } from './KeyOperations'
+import type { SignatureAlgorithm } from './SignatureAlgorithm'
+import { SignatureAlgorithmFromJSON, SignatureAlgorithmToJSON } from './SignatureAlgorithm'
 
 /**
  * Comprehensive information about a provider's cryptographic capabilities.
@@ -44,79 +29,78 @@ import {
  * @interface ProviderCapabilities
  */
 export interface ProviderCapabilities {
-    /**
-     * List of key types supported by this provider.
-     * @type {Array<KeyType>}
-     * @memberof ProviderCapabilities
-     */
-    keyTypes?: Array<KeyType>;
-    /**
-     * List of signature algorithms supported by this provider.
-     * @type {Array<SignatureAlgorithm>}
-     * @memberof ProviderCapabilities
-     */
-    signatureAlgorithms?: Array<SignatureAlgorithm>;
-    /**
-     * List of digest algorithms supported by this provider.
-     * @type {Array<DigestAlg>}
-     * @memberof ProviderCapabilities
-     */
-    digests?: Array<DigestAlg>;
-    /**
-     * List of elliptic curves supported by this provider.
-     * @type {Array<Curve>}
-     * @memberof ProviderCapabilities
-     */
-    curves?: Array<Curve>;
-    /**
-     * List of key operations supported by this provider.
-     * @type {Array<KeyOperations>}
-     * @memberof ProviderCapabilities
-     */
-    keyOperations?: Array<KeyOperations>;
+  /**
+   * List of key types supported by this provider.
+   * @type {Array<KeyType>}
+   * @memberof ProviderCapabilities
+   */
+  keyTypes?: Array<KeyType>
+  /**
+   * List of signature algorithms supported by this provider.
+   * @type {Array<SignatureAlgorithm>}
+   * @memberof ProviderCapabilities
+   */
+  signatureAlgorithms?: Array<SignatureAlgorithm>
+  /**
+   * List of digest algorithms supported by this provider.
+   * @type {Array<DigestAlg>}
+   * @memberof ProviderCapabilities
+   */
+  digests?: Array<DigestAlg>
+  /**
+   * List of elliptic curves supported by this provider.
+   * @type {Array<Curve>}
+   * @memberof ProviderCapabilities
+   */
+  curves?: Array<Curve>
+  /**
+   * List of key operations supported by this provider.
+   * @type {Array<KeyOperations>}
+   * @memberof ProviderCapabilities
+   */
+  keyOperations?: Array<KeyOperations>
 }
 
 /**
  * Check if a given object implements the ProviderCapabilities interface.
  */
 export function instanceOfProviderCapabilities(value: object): value is ProviderCapabilities {
-    return true;
+  return true
 }
 
 export function ProviderCapabilitiesFromJSON(json: any): ProviderCapabilities {
-    return ProviderCapabilitiesFromJSONTyped(json, false);
+  return ProviderCapabilitiesFromJSONTyped(json, false)
 }
 
 export function ProviderCapabilitiesFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProviderCapabilities {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyTypes': json['keyTypes'] == null ? undefined : ((json['keyTypes'] as Array<any>).map(KeyTypeFromJSON)),
-        'signatureAlgorithms': json['signatureAlgorithms'] == null ? undefined : ((json['signatureAlgorithms'] as Array<any>).map(SignatureAlgorithmFromJSON)),
-        'digests': json['digests'] == null ? undefined : ((json['digests'] as Array<any>).map(DigestAlgFromJSON)),
-        'curves': json['curves'] == null ? undefined : ((json['curves'] as Array<any>).map(CurveFromJSON)),
-        'keyOperations': json['keyOperations'] == null ? undefined : ((json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON)),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyTypes: json['keyTypes'] == null ? undefined : (json['keyTypes'] as Array<any>).map(KeyTypeFromJSON),
+    signatureAlgorithms:
+      json['signatureAlgorithms'] == null ? undefined : (json['signatureAlgorithms'] as Array<any>).map(SignatureAlgorithmFromJSON),
+    digests: json['digests'] == null ? undefined : (json['digests'] as Array<any>).map(DigestAlgFromJSON),
+    curves: json['curves'] == null ? undefined : (json['curves'] as Array<any>).map(CurveFromJSON),
+    keyOperations: json['keyOperations'] == null ? undefined : (json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON),
+  }
 }
 
 export function ProviderCapabilitiesToJSON(json: any): ProviderCapabilities {
-    return ProviderCapabilitiesToJSONTyped(json, false);
+  return ProviderCapabilitiesToJSONTyped(json, false)
 }
 
 export function ProviderCapabilitiesToJSONTyped(value?: ProviderCapabilities | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyTypes': value['keyTypes'] == null ? undefined : ((value['keyTypes'] as Array<any>).map(KeyTypeToJSON)),
-        'signatureAlgorithms': value['signatureAlgorithms'] == null ? undefined : ((value['signatureAlgorithms'] as Array<any>).map(SignatureAlgorithmToJSON)),
-        'digests': value['digests'] == null ? undefined : ((value['digests'] as Array<any>).map(DigestAlgToJSON)),
-        'curves': value['curves'] == null ? undefined : ((value['curves'] as Array<any>).map(CurveToJSON)),
-        'keyOperations': value['keyOperations'] == null ? undefined : ((value['keyOperations'] as Array<any>).map(KeyOperationsToJSON)),
-    };
+  return {
+    keyTypes: value['keyTypes'] == null ? undefined : (value['keyTypes'] as Array<any>).map(KeyTypeToJSON),
+    signatureAlgorithms:
+      value['signatureAlgorithms'] == null ? undefined : (value['signatureAlgorithms'] as Array<any>).map(SignatureAlgorithmToJSON),
+    digests: value['digests'] == null ? undefined : (value['digests'] as Array<any>).map(DigestAlgToJSON),
+    curves: value['curves'] == null ? undefined : (value['curves'] as Array<any>).map(CurveToJSON),
+    keyOperations: value['keyOperations'] == null ? undefined : (value['keyOperations'] as Array<any>).map(KeyOperationsToJSON),
+  }
 }
-

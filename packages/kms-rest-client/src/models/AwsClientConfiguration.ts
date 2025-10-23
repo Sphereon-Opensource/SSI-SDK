@@ -18,55 +18,52 @@
  * @interface AwsClientConfiguration
  */
 export interface AwsClientConfiguration {
-    /**
-     * Amount of time (in milliseconds) to wait when initially establishing a connection before giving up.
-     * @type {number}
-     * @memberof AwsClientConfiguration
-     */
-    connectionTimeoutInMillis?: number;
-    /**
-     * Amount of time (in milliseconds) to wait for data to be transferred over an established, open connection before timing out.
-     * @type {number}
-     * @memberof AwsClientConfiguration
-     */
-    socketTimeoutInMillis?: number;
+  /**
+   * Amount of time (in milliseconds) to wait when initially establishing a connection before giving up.
+   * @type {number}
+   * @memberof AwsClientConfiguration
+   */
+  connectionTimeoutInMillis?: number
+  /**
+   * Amount of time (in milliseconds) to wait for data to be transferred over an established, open connection before timing out.
+   * @type {number}
+   * @memberof AwsClientConfiguration
+   */
+  socketTimeoutInMillis?: number
 }
 
 /**
  * Check if a given object implements the AwsClientConfiguration interface.
  */
 export function instanceOfAwsClientConfiguration(value: object): value is AwsClientConfiguration {
-    return true;
+  return true
 }
 
 export function AwsClientConfigurationFromJSON(json: any): AwsClientConfiguration {
-    return AwsClientConfigurationFromJSONTyped(json, false);
+  return AwsClientConfigurationFromJSONTyped(json, false)
 }
 
 export function AwsClientConfigurationFromJSONTyped(json: any, ignoreDiscriminator: boolean): AwsClientConfiguration {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'connectionTimeoutInMillis': json['connectionTimeoutInMillis'] == null ? undefined : json['connectionTimeoutInMillis'],
-        'socketTimeoutInMillis': json['socketTimeoutInMillis'] == null ? undefined : json['socketTimeoutInMillis'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    connectionTimeoutInMillis: json['connectionTimeoutInMillis'] == null ? undefined : json['connectionTimeoutInMillis'],
+    socketTimeoutInMillis: json['socketTimeoutInMillis'] == null ? undefined : json['socketTimeoutInMillis'],
+  }
 }
 
 export function AwsClientConfigurationToJSON(json: any): AwsClientConfiguration {
-    return AwsClientConfigurationToJSONTyped(json, false);
+  return AwsClientConfigurationToJSONTyped(json, false)
 }
 
 export function AwsClientConfigurationToJSONTyped(value?: AwsClientConfiguration | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'connectionTimeoutInMillis': value['connectionTimeoutInMillis'],
-        'socketTimeoutInMillis': value['socketTimeoutInMillis'],
-    };
+  return {
+    connectionTimeoutInMillis: value['connectionTimeoutInMillis'],
+    socketTimeoutInMillis: value['socketTimeoutInMillis'],
+  }
 }
-

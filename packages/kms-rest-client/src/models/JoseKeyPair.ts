@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { Jwk } from './Jwk';
-import {
-    JwkFromJSON,
-    JwkToJSON,
-} from './Jwk';
+import type { Jwk } from './Jwk'
+import { JwkFromJSON, JwkToJSON } from './Jwk'
 
 /**
  * Data class representing a cryptographic key pair used with JOSE (JSON Object Signing and Encryption).
@@ -24,56 +21,53 @@ import {
  * @interface JoseKeyPair
  */
 export interface JoseKeyPair {
-    /**
-     *
-     * @type {Jwk}
-     * @memberof JoseKeyPair
-     */
-    privateJwk?: Jwk;
-    /**
-     *
-     * @type {Jwk}
-     * @memberof JoseKeyPair
-     */
-    publicJwk: Jwk;
+  /**
+   *
+   * @type {Jwk}
+   * @memberof JoseKeyPair
+   */
+  privateJwk?: Jwk
+  /**
+   *
+   * @type {Jwk}
+   * @memberof JoseKeyPair
+   */
+  publicJwk: Jwk
 }
 
 /**
  * Check if a given object implements the JoseKeyPair interface.
  */
 export function instanceOfJoseKeyPair(value: object): value is JoseKeyPair {
-    if (!('publicJwk' in value) || value['publicJwk'] === undefined) return false;
-    return true;
+  if (!('publicJwk' in value) || value['publicJwk'] === undefined) return false
+  return true
 }
 
 export function JoseKeyPairFromJSON(json: any): JoseKeyPair {
-    return JoseKeyPairFromJSONTyped(json, false);
+  return JoseKeyPairFromJSONTyped(json, false)
 }
 
 export function JoseKeyPairFromJSONTyped(json: any, ignoreDiscriminator: boolean): JoseKeyPair {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'privateJwk': json['privateJwk'] == null ? undefined : JwkFromJSON(json['privateJwk']),
-        'publicJwk': JwkFromJSON(json['publicJwk']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    privateJwk: json['privateJwk'] == null ? undefined : JwkFromJSON(json['privateJwk']),
+    publicJwk: JwkFromJSON(json['publicJwk']),
+  }
 }
 
 export function JoseKeyPairToJSON(json: any): JoseKeyPair {
-    return JoseKeyPairToJSONTyped(json, false);
+  return JoseKeyPairToJSONTyped(json, false)
 }
 
 export function JoseKeyPairToJSONTyped(value?: JoseKeyPair | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'privateJwk': JwkToJSON(value['privateJwk']),
-        'publicJwk': JwkToJSON(value['publicJwk']),
-    };
+  return {
+    privateJwk: JwkToJSON(value['privateJwk']),
+    publicJwk: JwkToJSON(value['publicJwk']),
+  }
 }
-

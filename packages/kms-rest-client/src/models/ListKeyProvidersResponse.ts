@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { KeyProvider } from './KeyProvider';
-import {
-    KeyProviderFromJSON,
-    KeyProviderToJSON,
-} from './KeyProvider';
+import type { KeyProvider } from './KeyProvider'
+import { KeyProviderFromJSON, KeyProviderToJSON } from './KeyProvider'
 
 /**
  * Response body containing the details of a Key Provider instance.
@@ -24,48 +21,45 @@ import {
  * @interface ListKeyProvidersResponse
  */
 export interface ListKeyProvidersResponse {
-    /**
-     *
-     * @type {Array<KeyProvider>}
-     * @memberof ListKeyProvidersResponse
-     */
-    providers: Array<KeyProvider>;
+  /**
+   *
+   * @type {Array<KeyProvider>}
+   * @memberof ListKeyProvidersResponse
+   */
+  providers: Array<KeyProvider>
 }
 
 /**
  * Check if a given object implements the ListKeyProvidersResponse interface.
  */
 export function instanceOfListKeyProvidersResponse(value: object): value is ListKeyProvidersResponse {
-    if (!('providers' in value) || value['providers'] === undefined) return false;
-    return true;
+  if (!('providers' in value) || value['providers'] === undefined) return false
+  return true
 }
 
 export function ListKeyProvidersResponseFromJSON(json: any): ListKeyProvidersResponse {
-    return ListKeyProvidersResponseFromJSONTyped(json, false);
+  return ListKeyProvidersResponseFromJSONTyped(json, false)
 }
 
 export function ListKeyProvidersResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListKeyProvidersResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'providers': ((json['providers'] as Array<any>).map(KeyProviderFromJSON)),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    providers: (json['providers'] as Array<any>).map(KeyProviderFromJSON),
+  }
 }
 
 export function ListKeyProvidersResponseToJSON(json: any): ListKeyProvidersResponse {
-    return ListKeyProvidersResponseToJSONTyped(json, false);
+  return ListKeyProvidersResponseToJSONTyped(json, false)
 }
 
 export function ListKeyProvidersResponseToJSONTyped(value?: ListKeyProvidersResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'providers': ((value['providers'] as Array<any>).map(KeyProviderToJSON)),
-    };
+  return {
+    providers: (value['providers'] as Array<any>).map(KeyProviderToJSON),
+  }
 }
-

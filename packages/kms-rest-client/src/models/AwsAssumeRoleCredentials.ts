@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { LookupMode } from './LookupMode';
-import {
-    LookupModeFromJSON,
-    LookupModeToJSON,
-} from './LookupMode';
+import type { LookupMode } from './LookupMode'
+import { LookupModeFromJSON, LookupModeToJSON } from './LookupMode'
 
 /**
  * Credentials obtained by assuming an IAM role.
@@ -24,75 +21,70 @@ import {
  * @interface AwsAssumeRoleCredentials
  */
 export interface AwsAssumeRoleCredentials {
-    /**
-     * The Amazon Resource Name (ARN) of the role to assume.
-     * @type {string}
-     * @memberof AwsAssumeRoleCredentials
-     */
-    roleArn: string;
-    /**
-     * An identifier for the assumed role session. Use characters compatible with file systems.
-     * @type {string}
-     * @memberof AwsAssumeRoleCredentials
-     */
-    roleSessionName: string;
-    /**
-     * An optional external ID that might be required by the role's trust policy.
-     * @type {string}
-     * @memberof AwsAssumeRoleCredentials
-     */
-    externalId?: string;
-    /**
-     *
-     * @type {LookupMode}
-     * @memberof AwsAssumeRoleCredentials
-     */
-    lookupMode?: LookupMode;
+  /**
+   * The Amazon Resource Name (ARN) of the role to assume.
+   * @type {string}
+   * @memberof AwsAssumeRoleCredentials
+   */
+  roleArn: string
+  /**
+   * An identifier for the assumed role session. Use characters compatible with file systems.
+   * @type {string}
+   * @memberof AwsAssumeRoleCredentials
+   */
+  roleSessionName: string
+  /**
+   * An optional external ID that might be required by the role's trust policy.
+   * @type {string}
+   * @memberof AwsAssumeRoleCredentials
+   */
+  externalId?: string
+  /**
+   *
+   * @type {LookupMode}
+   * @memberof AwsAssumeRoleCredentials
+   */
+  lookupMode?: LookupMode
 }
-
-
 
 /**
  * Check if a given object implements the AwsAssumeRoleCredentials interface.
  */
 export function instanceOfAwsAssumeRoleCredentials(value: object): value is AwsAssumeRoleCredentials {
-    if (!('roleArn' in value) || value['roleArn'] === undefined) return false;
-    if (!('roleSessionName' in value) || value['roleSessionName'] === undefined) return false;
-    return true;
+  if (!('roleArn' in value) || value['roleArn'] === undefined) return false
+  if (!('roleSessionName' in value) || value['roleSessionName'] === undefined) return false
+  return true
 }
 
 export function AwsAssumeRoleCredentialsFromJSON(json: any): AwsAssumeRoleCredentials {
-    return AwsAssumeRoleCredentialsFromJSONTyped(json, false);
+  return AwsAssumeRoleCredentialsFromJSONTyped(json, false)
 }
 
 export function AwsAssumeRoleCredentialsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AwsAssumeRoleCredentials {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'roleArn': json['roleArn'],
-        'roleSessionName': json['roleSessionName'],
-        'externalId': json['externalId'] == null ? undefined : json['externalId'],
-        'lookupMode': json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    roleArn: json['roleArn'],
+    roleSessionName: json['roleSessionName'],
+    externalId: json['externalId'] == null ? undefined : json['externalId'],
+    lookupMode: json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
+  }
 }
 
 export function AwsAssumeRoleCredentialsToJSON(json: any): AwsAssumeRoleCredentials {
-    return AwsAssumeRoleCredentialsToJSONTyped(json, false);
+  return AwsAssumeRoleCredentialsToJSONTyped(json, false)
 }
 
 export function AwsAssumeRoleCredentialsToJSONTyped(value?: AwsAssumeRoleCredentials | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'roleArn': value['roleArn'],
-        'roleSessionName': value['roleSessionName'],
-        'externalId': value['externalId'],
-        'lookupMode': LookupModeToJSON(value['lookupMode']),
-    };
+  return {
+    roleArn: value['roleArn'],
+    roleSessionName: value['roleSessionName'],
+    externalId: value['externalId'],
+    lookupMode: LookupModeToJSON(value['lookupMode']),
+  }
 }
-

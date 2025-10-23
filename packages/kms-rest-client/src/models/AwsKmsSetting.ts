@@ -12,26 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { AwsAssumeRoleCredentials } from './AwsAssumeRoleCredentials';
-import {
-    AwsAssumeRoleCredentialsFromJSON,
-    AwsAssumeRoleCredentialsToJSON,
-} from './AwsAssumeRoleCredentials';
-import type { AwsStaticCredentials } from './AwsStaticCredentials';
-import {
-    AwsStaticCredentialsFromJSON,
-    AwsStaticCredentialsToJSON,
-} from './AwsStaticCredentials';
-import type { AwsWebIdentityTokenCredentials } from './AwsWebIdentityTokenCredentials';
-import {
-    AwsWebIdentityTokenCredentialsFromJSON,
-    AwsWebIdentityTokenCredentialsToJSON,
-} from './AwsWebIdentityTokenCredentials';
-import type { AwsClientConfiguration } from './AwsClientConfiguration';
-import {
-    AwsClientConfigurationFromJSON,
-    AwsClientConfigurationToJSON,
-} from './AwsClientConfiguration';
+import type { AwsAssumeRoleCredentials } from './AwsAssumeRoleCredentials'
+import { AwsAssumeRoleCredentialsFromJSON, AwsAssumeRoleCredentialsToJSON } from './AwsAssumeRoleCredentials'
+import type { AwsStaticCredentials } from './AwsStaticCredentials'
+import { AwsStaticCredentialsFromJSON, AwsStaticCredentialsToJSON } from './AwsStaticCredentials'
+import type { AwsWebIdentityTokenCredentials } from './AwsWebIdentityTokenCredentials'
+import { AwsWebIdentityTokenCredentialsFromJSON, AwsWebIdentityTokenCredentialsToJSON } from './AwsWebIdentityTokenCredentials'
+import type { AwsClientConfiguration } from './AwsClientConfiguration'
+import { AwsClientConfigurationFromJSON, AwsClientConfigurationToJSON } from './AwsClientConfiguration'
 
 /**
  * Configuration settings specific to the AWS_KMS provider type. Defines how to connect and authenticate to AWS KMS. If no specific credential provider is specified, the implementation should rely on the default AWS SDK credential provider chain.
@@ -39,88 +27,86 @@ import {
  * @interface AwsKmsSetting
  */
 export interface AwsKmsSetting {
-    /**
-     * The AWS region where the KMS keys reside (e.g., 'us-east-1', 'eu-west-1').
-     * @type {string}
-     * @memberof AwsKmsSetting
-     */
-    region: string;
-    /**
-     *
-     * @type {AwsStaticCredentials}
-     * @memberof AwsKmsSetting
-     */
-    staticCredentials?: AwsStaticCredentials;
-    /**
-     *
-     * @type {AwsAssumeRoleCredentials}
-     * @memberof AwsKmsSetting
-     */
-    assumeRoleCredentials?: AwsAssumeRoleCredentials;
-    /**
-     *
-     * @type {AwsWebIdentityTokenCredentials}
-     * @memberof AwsKmsSetting
-     */
-    webIdentityTokenCredentials?: AwsWebIdentityTokenCredentials;
-    /**
-     * Optional custom endpoint URL for AWS KMS (e.g., for VPC endpoints or local testing).
-     * @type {string}
-     * @memberof AwsKmsSetting
-     */
-    endpointUrl?: string;
-    /**
-     *
-     * @type {AwsClientConfiguration}
-     * @memberof AwsKmsSetting
-     */
-    clientConfiguration?: AwsClientConfiguration;
+  /**
+   * The AWS region where the KMS keys reside (e.g., 'us-east-1', 'eu-west-1').
+   * @type {string}
+   * @memberof AwsKmsSetting
+   */
+  region: string
+  /**
+   *
+   * @type {AwsStaticCredentials}
+   * @memberof AwsKmsSetting
+   */
+  staticCredentials?: AwsStaticCredentials
+  /**
+   *
+   * @type {AwsAssumeRoleCredentials}
+   * @memberof AwsKmsSetting
+   */
+  assumeRoleCredentials?: AwsAssumeRoleCredentials
+  /**
+   *
+   * @type {AwsWebIdentityTokenCredentials}
+   * @memberof AwsKmsSetting
+   */
+  webIdentityTokenCredentials?: AwsWebIdentityTokenCredentials
+  /**
+   * Optional custom endpoint URL for AWS KMS (e.g., for VPC endpoints or local testing).
+   * @type {string}
+   * @memberof AwsKmsSetting
+   */
+  endpointUrl?: string
+  /**
+   *
+   * @type {AwsClientConfiguration}
+   * @memberof AwsKmsSetting
+   */
+  clientConfiguration?: AwsClientConfiguration
 }
 
 /**
  * Check if a given object implements the AwsKmsSetting interface.
  */
 export function instanceOfAwsKmsSetting(value: object): value is AwsKmsSetting {
-    if (!('region' in value) || value['region'] === undefined) return false;
-    return true;
+  if (!('region' in value) || value['region'] === undefined) return false
+  return true
 }
 
 export function AwsKmsSettingFromJSON(json: any): AwsKmsSetting {
-    return AwsKmsSettingFromJSONTyped(json, false);
+  return AwsKmsSettingFromJSONTyped(json, false)
 }
 
 export function AwsKmsSettingFromJSONTyped(json: any, ignoreDiscriminator: boolean): AwsKmsSetting {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'region': json['region'],
-        'staticCredentials': json['staticCredentials'] == null ? undefined : AwsStaticCredentialsFromJSON(json['staticCredentials']),
-        'assumeRoleCredentials': json['assumeRoleCredentials'] == null ? undefined : AwsAssumeRoleCredentialsFromJSON(json['assumeRoleCredentials']),
-        'webIdentityTokenCredentials': json['webIdentityTokenCredentials'] == null ? undefined : AwsWebIdentityTokenCredentialsFromJSON(json['webIdentityTokenCredentials']),
-        'endpointUrl': json['endpointUrl'] == null ? undefined : json['endpointUrl'],
-        'clientConfiguration': json['clientConfiguration'] == null ? undefined : AwsClientConfigurationFromJSON(json['clientConfiguration']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    region: json['region'],
+    staticCredentials: json['staticCredentials'] == null ? undefined : AwsStaticCredentialsFromJSON(json['staticCredentials']),
+    assumeRoleCredentials: json['assumeRoleCredentials'] == null ? undefined : AwsAssumeRoleCredentialsFromJSON(json['assumeRoleCredentials']),
+    webIdentityTokenCredentials:
+      json['webIdentityTokenCredentials'] == null ? undefined : AwsWebIdentityTokenCredentialsFromJSON(json['webIdentityTokenCredentials']),
+    endpointUrl: json['endpointUrl'] == null ? undefined : json['endpointUrl'],
+    clientConfiguration: json['clientConfiguration'] == null ? undefined : AwsClientConfigurationFromJSON(json['clientConfiguration']),
+  }
 }
 
 export function AwsKmsSettingToJSON(json: any): AwsKmsSetting {
-    return AwsKmsSettingToJSONTyped(json, false);
+  return AwsKmsSettingToJSONTyped(json, false)
 }
 
 export function AwsKmsSettingToJSONTyped(value?: AwsKmsSetting | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'region': value['region'],
-        'staticCredentials': AwsStaticCredentialsToJSON(value['staticCredentials']),
-        'assumeRoleCredentials': AwsAssumeRoleCredentialsToJSON(value['assumeRoleCredentials']),
-        'webIdentityTokenCredentials': AwsWebIdentityTokenCredentialsToJSON(value['webIdentityTokenCredentials']),
-        'endpointUrl': value['endpointUrl'],
-        'clientConfiguration': AwsClientConfigurationToJSON(value['clientConfiguration']),
-    };
+  return {
+    region: value['region'],
+    staticCredentials: AwsStaticCredentialsToJSON(value['staticCredentials']),
+    assumeRoleCredentials: AwsAssumeRoleCredentialsToJSON(value['assumeRoleCredentials']),
+    webIdentityTokenCredentials: AwsWebIdentityTokenCredentialsToJSON(value['webIdentityTokenCredentials']),
+    endpointUrl: value['endpointUrl'],
+    clientConfiguration: AwsClientConfigurationToJSON(value['clientConfiguration']),
+  }
 }
-

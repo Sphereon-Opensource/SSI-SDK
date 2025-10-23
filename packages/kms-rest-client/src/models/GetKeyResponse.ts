@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ManagedKeyInfo } from './ManagedKeyInfo';
-import {
-    ManagedKeyInfoFromJSON,
-    ManagedKeyInfoToJSON,
-} from './ManagedKeyInfo';
+import type { ManagedKeyInfo } from './ManagedKeyInfo'
+import { ManagedKeyInfoFromJSON, ManagedKeyInfoToJSON } from './ManagedKeyInfo'
 
 /**
  * Response body containing a managed key.
@@ -24,48 +21,45 @@ import {
  * @interface GetKeyResponse
  */
 export interface GetKeyResponse {
-    /**
-     *
-     * @type {ManagedKeyInfo}
-     * @memberof GetKeyResponse
-     */
-    keyInfo: ManagedKeyInfo;
+  /**
+   *
+   * @type {ManagedKeyInfo}
+   * @memberof GetKeyResponse
+   */
+  keyInfo: ManagedKeyInfo
 }
 
 /**
  * Check if a given object implements the GetKeyResponse interface.
  */
 export function instanceOfGetKeyResponse(value: object): value is GetKeyResponse {
-    if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false;
-    return true;
+  if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false
+  return true
 }
 
 export function GetKeyResponseFromJSON(json: any): GetKeyResponse {
-    return GetKeyResponseFromJSONTyped(json, false);
+  return GetKeyResponseFromJSONTyped(json, false)
 }
 
 export function GetKeyResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): GetKeyResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyInfo': ManagedKeyInfoFromJSON(json['keyInfo']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyInfo: ManagedKeyInfoFromJSON(json['keyInfo']),
+  }
 }
 
 export function GetKeyResponseToJSON(json: any): GetKeyResponse {
-    return GetKeyResponseToJSONTyped(json, false);
+  return GetKeyResponseToJSONTyped(json, false)
 }
 
 export function GetKeyResponseToJSONTyped(value?: GetKeyResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyInfo': ManagedKeyInfoToJSON(value['keyInfo']),
-    };
+  return {
+    keyInfo: ManagedKeyInfoToJSON(value['keyInfo']),
+  }
 }
-

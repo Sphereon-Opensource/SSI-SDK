@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { KeyInfo } from './KeyInfo';
-import {
-    KeyInfoFromJSON,
-    KeyInfoToJSON,
-} from './KeyInfo';
+import type { KeyInfo } from './KeyInfo'
+import { KeyInfoFromJSON, KeyInfoToJSON } from './KeyInfo'
 
 /**
  * Request body for creating a raw signature.
@@ -24,57 +21,54 @@ import {
  * @interface CreateRawSignature
  */
 export interface CreateRawSignature {
-    /**
-     *
-     * @type {KeyInfo}
-     * @memberof CreateRawSignature
-     */
-    keyInfo: KeyInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof CreateRawSignature
-     */
-    input: string;
+  /**
+   *
+   * @type {KeyInfo}
+   * @memberof CreateRawSignature
+   */
+  keyInfo: KeyInfo
+  /**
+   *
+   * @type {string}
+   * @memberof CreateRawSignature
+   */
+  input: string
 }
 
 /**
  * Check if a given object implements the CreateRawSignature interface.
  */
 export function instanceOfCreateRawSignature(value: object): value is CreateRawSignature {
-    if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false;
-    if (!('input' in value) || value['input'] === undefined) return false;
-    return true;
+  if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false
+  if (!('input' in value) || value['input'] === undefined) return false
+  return true
 }
 
 export function CreateRawSignatureFromJSON(json: any): CreateRawSignature {
-    return CreateRawSignatureFromJSONTyped(json, false);
+  return CreateRawSignatureFromJSONTyped(json, false)
 }
 
 export function CreateRawSignatureFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateRawSignature {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyInfo': KeyInfoFromJSON(json['keyInfo']),
-        'input': json['input'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyInfo: KeyInfoFromJSON(json['keyInfo']),
+    input: json['input'],
+  }
 }
 
 export function CreateRawSignatureToJSON(json: any): CreateRawSignature {
-    return CreateRawSignatureToJSONTyped(json, false);
+  return CreateRawSignatureToJSONTyped(json, false)
 }
 
 export function CreateRawSignatureToJSONTyped(value?: CreateRawSignature | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyInfo': KeyInfoToJSON(value['keyInfo']),
-        'input': value['input'],
-    };
+  return {
+    keyInfo: KeyInfoToJSON(value['keyInfo']),
+    input: value['input'],
+  }
 }
-

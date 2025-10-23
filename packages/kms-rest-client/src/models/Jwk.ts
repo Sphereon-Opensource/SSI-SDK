@@ -12,26 +12,14 @@
  * Do not edit the class manually.
  */
 
-import type { Curve } from './Curve';
-import {
-    CurveFromJSON,
-    CurveToJSON,
-} from './Curve';
-import type { KeyOperations } from './KeyOperations';
-import {
-    KeyOperationsFromJSON,
-    KeyOperationsToJSON,
-} from './KeyOperations';
-import type { JwkUse } from './JwkUse';
-import {
-    JwkUseFromJSON,
-    JwkUseToJSON,
-} from './JwkUse';
-import type { JwkKeyType } from './JwkKeyType';
-import {
-    JwkKeyTypeFromJSON,
-    JwkKeyTypeToJSON,
-} from './JwkKeyType';
+import type { Curve } from './Curve'
+import { CurveFromJSON, CurveToJSON } from './Curve'
+import type { KeyOperations } from './KeyOperations'
+import { KeyOperationsFromJSON, KeyOperationsToJSON } from './KeyOperations'
+import type { JwkUse } from './JwkUse'
+import { JwkUseFromJSON, JwkUseToJSON } from './JwkUse'
+import type { JwkKeyType } from './JwkKeyType'
+import { JwkKeyTypeFromJSON, JwkKeyTypeToJSON } from './JwkKeyType'
 
 /**
  * Represents a JSON Web Key (JWK) as defined by the JSON Web Key specification.
@@ -39,210 +27,205 @@ import {
  * @interface Jwk
  */
 export interface Jwk {
-    /**
-     *
-     * @type {JwkKeyType}
-     * @memberof Jwk
-     */
-    kty: JwkKeyType;
-    /**
-     * Key identifier used to uniquely identify the key.
-     * @type {string}
-     * @memberof Jwk
-     */
-    kid?: string;
-    /**
-     * The algorithm intended for use with the key (JWA algorithm name).
-     * @type {string}
-     * @memberof Jwk
-     */
-    alg?: string;
-    /**
-     *
-     * @type {JwkUse}
-     * @memberof Jwk
-     */
-    use?: JwkUse;
-    /**
-     * The allowed cryptographic operations for the key.
-     * @type {Array<KeyOperations>}
-     * @memberof Jwk
-     */
-    keyOps?: Array<KeyOperations>;
-    /**
-     *
-     * @type {Curve}
-     * @memberof Jwk
-     */
-    crv?: Curve;
-    /**
-     * The x coordinate for elliptic curve keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    x?: string;
-    /**
-     * The y coordinate for elliptic curve keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    y?: string;
-    /**
-     * The private key parameter (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    d?: string;
-    /**
-     * The modulus value for RSA keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    n?: string;
-    /**
-     * The public exponent for RSA keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    e?: string;
-    /**
-     * The first prime factor for RSA private keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    p?: string;
-    /**
-     * The second prime factor for RSA private keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    q?: string;
-    /**
-     * The first factor CRT exponent for RSA private keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    dp?: string;
-    /**
-     * The second factor CRT exponent for RSA private keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    dq?: string;
-    /**
-     * The first CRT coefficient for RSA private keys (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    qi?: string;
-    /**
-     * The symmetric key value (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    k?: string;
-    /**
-     * X.509 certificate chain as base64-encoded DER certificates.
-     * @type {Array<string>}
-     * @memberof Jwk
-     */
-    x5c?: Array<string>;
-    /**
-     * X.509 certificate SHA-1 thumbprint (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    x5t?: string;
-    /**
-     * URL pointing to X.509 certificate or certificate chain.
-     * @type {string}
-     * @memberof Jwk
-     */
-    x5u?: string;
-    /**
-     * X.509 certificate SHA-256 thumbprint (base64url-encoded).
-     * @type {string}
-     * @memberof Jwk
-     */
-    x5tS256?: string;
+  /**
+   *
+   * @type {JwkKeyType}
+   * @memberof Jwk
+   */
+  kty: JwkKeyType
+  /**
+   * Key identifier used to uniquely identify the key.
+   * @type {string}
+   * @memberof Jwk
+   */
+  kid?: string
+  /**
+   * The algorithm intended for use with the key (JWA algorithm name).
+   * @type {string}
+   * @memberof Jwk
+   */
+  alg?: string
+  /**
+   *
+   * @type {JwkUse}
+   * @memberof Jwk
+   */
+  use?: JwkUse
+  /**
+   * The allowed cryptographic operations for the key.
+   * @type {Array<KeyOperations>}
+   * @memberof Jwk
+   */
+  keyOps?: Array<KeyOperations>
+  /**
+   *
+   * @type {Curve}
+   * @memberof Jwk
+   */
+  crv?: Curve
+  /**
+   * The x coordinate for elliptic curve keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  x?: string
+  /**
+   * The y coordinate for elliptic curve keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  y?: string
+  /**
+   * The private key parameter (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  d?: string
+  /**
+   * The modulus value for RSA keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  n?: string
+  /**
+   * The public exponent for RSA keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  e?: string
+  /**
+   * The first prime factor for RSA private keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  p?: string
+  /**
+   * The second prime factor for RSA private keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  q?: string
+  /**
+   * The first factor CRT exponent for RSA private keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  dp?: string
+  /**
+   * The second factor CRT exponent for RSA private keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  dq?: string
+  /**
+   * The first CRT coefficient for RSA private keys (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  qi?: string
+  /**
+   * The symmetric key value (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  k?: string
+  /**
+   * X.509 certificate chain as base64-encoded DER certificates.
+   * @type {Array<string>}
+   * @memberof Jwk
+   */
+  x5c?: Array<string>
+  /**
+   * X.509 certificate SHA-1 thumbprint (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  x5t?: string
+  /**
+   * URL pointing to X.509 certificate or certificate chain.
+   * @type {string}
+   * @memberof Jwk
+   */
+  x5u?: string
+  /**
+   * X.509 certificate SHA-256 thumbprint (base64url-encoded).
+   * @type {string}
+   * @memberof Jwk
+   */
+  x5tS256?: string
 }
-
-
 
 /**
  * Check if a given object implements the Jwk interface.
  */
 export function instanceOfJwk(value: object): value is Jwk {
-    if (!('kty' in value) || value['kty'] === undefined) return false;
-    return true;
+  if (!('kty' in value) || value['kty'] === undefined) return false
+  return true
 }
 
 export function JwkFromJSON(json: any): Jwk {
-    return JwkFromJSONTyped(json, false);
+  return JwkFromJSONTyped(json, false)
 }
 
 export function JwkFromJSONTyped(json: any, ignoreDiscriminator: boolean): Jwk {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'kty': JwkKeyTypeFromJSON(json['kty']),
-        'kid': json['kid'] == null ? undefined : json['kid'],
-        'alg': json['alg'] == null ? undefined : json['alg'],
-        'use': json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
-        'keyOps': json['key_ops'] == null ? undefined : ((json['key_ops'] as Array<any>).map(KeyOperationsFromJSON)),
-        'crv': json['crv'] == null ? undefined : CurveFromJSON(json['crv']),
-        'x': json['x'] == null ? undefined : json['x'],
-        'y': json['y'] == null ? undefined : json['y'],
-        'd': json['d'] == null ? undefined : json['d'],
-        'n': json['n'] == null ? undefined : json['n'],
-        'e': json['e'] == null ? undefined : json['e'],
-        'p': json['p'] == null ? undefined : json['p'],
-        'q': json['q'] == null ? undefined : json['q'],
-        'dp': json['dp'] == null ? undefined : json['dp'],
-        'dq': json['dq'] == null ? undefined : json['dq'],
-        'qi': json['qi'] == null ? undefined : json['qi'],
-        'k': json['k'] == null ? undefined : json['k'],
-        'x5c': json['x5c'] == null ? undefined : json['x5c'],
-        'x5t': json['x5t'] == null ? undefined : json['x5t'],
-        'x5u': json['x5u'] == null ? undefined : json['x5u'],
-        'x5tS256': json['x5t#S256'] == null ? undefined : json['x5t#S256'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    kty: JwkKeyTypeFromJSON(json['kty']),
+    kid: json['kid'] == null ? undefined : json['kid'],
+    alg: json['alg'] == null ? undefined : json['alg'],
+    use: json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
+    keyOps: json['key_ops'] == null ? undefined : (json['key_ops'] as Array<any>).map(KeyOperationsFromJSON),
+    crv: json['crv'] == null ? undefined : CurveFromJSON(json['crv']),
+    x: json['x'] == null ? undefined : json['x'],
+    y: json['y'] == null ? undefined : json['y'],
+    d: json['d'] == null ? undefined : json['d'],
+    n: json['n'] == null ? undefined : json['n'],
+    e: json['e'] == null ? undefined : json['e'],
+    p: json['p'] == null ? undefined : json['p'],
+    q: json['q'] == null ? undefined : json['q'],
+    dp: json['dp'] == null ? undefined : json['dp'],
+    dq: json['dq'] == null ? undefined : json['dq'],
+    qi: json['qi'] == null ? undefined : json['qi'],
+    k: json['k'] == null ? undefined : json['k'],
+    x5c: json['x5c'] == null ? undefined : json['x5c'],
+    x5t: json['x5t'] == null ? undefined : json['x5t'],
+    x5u: json['x5u'] == null ? undefined : json['x5u'],
+    x5tS256: json['x5t#S256'] == null ? undefined : json['x5t#S256'],
+  }
 }
 
 export function JwkToJSON(json: any): Jwk {
-    return JwkToJSONTyped(json, false);
+  return JwkToJSONTyped(json, false)
 }
 
 export function JwkToJSONTyped(value?: Jwk | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'kty': JwkKeyTypeToJSON(value['kty']),
-        'kid': value['kid'],
-        'alg': value['alg'],
-        'use': JwkUseToJSON(value['use']),
-        'key_ops': value['keyOps'] == null ? undefined : ((value['keyOps'] as Array<any>).map(KeyOperationsToJSON)),
-        'crv': CurveToJSON(value['crv']),
-        'x': value['x'],
-        'y': value['y'],
-        'd': value['d'],
-        'n': value['n'],
-        'e': value['e'],
-        'p': value['p'],
-        'q': value['q'],
-        'dp': value['dp'],
-        'dq': value['dq'],
-        'qi': value['qi'],
-        'k': value['k'],
-        'x5c': value['x5c'],
-        'x5t': value['x5t'],
-        'x5u': value['x5u'],
-        'x5t#S256': value['x5tS256'],
-    };
+  return {
+    kty: JwkKeyTypeToJSON(value['kty']),
+    kid: value['kid'],
+    alg: value['alg'],
+    use: JwkUseToJSON(value['use']),
+    key_ops: value['keyOps'] == null ? undefined : (value['keyOps'] as Array<any>).map(KeyOperationsToJSON),
+    crv: CurveToJSON(value['crv']),
+    x: value['x'],
+    y: value['y'],
+    d: value['d'],
+    n: value['n'],
+    e: value['e'],
+    p: value['p'],
+    q: value['q'],
+    dp: value['dp'],
+    dq: value['dq'],
+    qi: value['qi'],
+    k: value['k'],
+    x5c: value['x5c'],
+    x5t: value['x5t'],
+    x5u: value['x5u'],
+    'x5t#S256': value['x5tS256'],
+  }
 }
-

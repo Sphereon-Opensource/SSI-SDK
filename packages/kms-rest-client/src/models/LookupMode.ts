@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,43 +12,40 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Determines how configuration values are looked up. - VALUE: The actual configuration values are provided directly. - CONFIG_SERVICE: Configuration values are looked up from a configuration service using keys. - SECRET_SERVICE: Configuration values are looked up from a secret service using keys.
  * @export
  */
 export const LookupMode = {
-    Value: 'VALUE',
-    ConfigService: 'CONFIG_SERVICE',
-    SecretService: 'SECRET_SERVICE'
-} as const;
-export type LookupMode = typeof LookupMode[keyof typeof LookupMode];
-
+  Value: 'VALUE',
+  ConfigService: 'CONFIG_SERVICE',
+  SecretService: 'SECRET_SERVICE',
+} as const
+export type LookupMode = (typeof LookupMode)[keyof typeof LookupMode]
 
 export function instanceOfLookupMode(value: any): boolean {
-    for (const key in LookupMode) {
-        if (Object.prototype.hasOwnProperty.call(LookupMode, key)) {
-            if (LookupMode[key as keyof typeof LookupMode] === value) {
-                return true;
-            }
-        }
+  for (const key in LookupMode) {
+    if (Object.prototype.hasOwnProperty.call(LookupMode, key)) {
+      if (LookupMode[key as keyof typeof LookupMode] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function LookupModeFromJSON(json: any): LookupMode {
-    return LookupModeFromJSONTyped(json, false);
+  return LookupModeFromJSONTyped(json, false)
 }
 
 export function LookupModeFromJSONTyped(json: any, ignoreDiscriminator: boolean): LookupMode {
-    return json as LookupMode;
+  return json as LookupMode
 }
 
 export function LookupModeToJSON(value?: LookupMode | null): any {
-    return value as any;
+  return value as any
 }
 
 export function LookupModeToJSONTyped(value: any, ignoreDiscriminator: boolean): LookupMode {
-    return value as LookupMode;
+  return value as LookupMode
 }
-

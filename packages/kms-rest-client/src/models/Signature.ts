@@ -12,16 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { KeyInfo } from './KeyInfo';
-import {
-    KeyInfoFromJSON,
-    KeyInfoToJSON,
-} from './KeyInfo';
-import type { SignatureAlgorithm } from './SignatureAlgorithm';
-import {
-    SignatureAlgorithmFromJSON,
-    SignatureAlgorithmToJSON,
-} from './SignatureAlgorithm';
+import type { KeyInfo } from './KeyInfo'
+import { KeyInfoFromJSON, KeyInfoToJSON } from './KeyInfo'
+import type { SignatureAlgorithm } from './SignatureAlgorithm'
+import { SignatureAlgorithmFromJSON, SignatureAlgorithmToJSON } from './SignatureAlgorithm'
 
 /**
  * A cryptographic signature including the signature value and related information.
@@ -29,75 +23,70 @@ import {
  * @interface Signature
  */
 export interface Signature {
-    /**
-     * The signature value, encoded as a base64 string.
-     * @type {string}
-     * @memberof Signature
-     */
-    value: string;
-    /**
-     *
-     * @type {SignatureAlgorithm}
-     * @memberof Signature
-     */
-    algorithm: SignatureAlgorithm;
-    /**
-     *
-     * @type {KeyInfo}
-     * @memberof Signature
-     */
-    keyInfo?: KeyInfo;
-    /**
-     * Additional metadata included in the signature.
-     * @type {{ [key: string]: any; }}
-     * @memberof Signature
-     */
-    metadata?: { [key: string]: any; };
+  /**
+   * The signature value, encoded as a base64 string.
+   * @type {string}
+   * @memberof Signature
+   */
+  value: string
+  /**
+   *
+   * @type {SignatureAlgorithm}
+   * @memberof Signature
+   */
+  algorithm: SignatureAlgorithm
+  /**
+   *
+   * @type {KeyInfo}
+   * @memberof Signature
+   */
+  keyInfo?: KeyInfo
+  /**
+   * Additional metadata included in the signature.
+   * @type {{ [key: string]: any; }}
+   * @memberof Signature
+   */
+  metadata?: { [key: string]: any }
 }
-
-
 
 /**
  * Check if a given object implements the Signature interface.
  */
 export function instanceOfSignature(value: object): value is Signature {
-    if (!('value' in value) || value['value'] === undefined) return false;
-    if (!('algorithm' in value) || value['algorithm'] === undefined) return false;
-    return true;
+  if (!('value' in value) || value['value'] === undefined) return false
+  if (!('algorithm' in value) || value['algorithm'] === undefined) return false
+  return true
 }
 
 export function SignatureFromJSON(json: any): Signature {
-    return SignatureFromJSONTyped(json, false);
+  return SignatureFromJSONTyped(json, false)
 }
 
 export function SignatureFromJSONTyped(json: any, ignoreDiscriminator: boolean): Signature {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'value': json['value'],
-        'algorithm': SignatureAlgorithmFromJSON(json['algorithm']),
-        'keyInfo': json['keyInfo'] == null ? undefined : KeyInfoFromJSON(json['keyInfo']),
-        'metadata': json['metadata'] == null ? undefined : json['metadata'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    value: json['value'],
+    algorithm: SignatureAlgorithmFromJSON(json['algorithm']),
+    keyInfo: json['keyInfo'] == null ? undefined : KeyInfoFromJSON(json['keyInfo']),
+    metadata: json['metadata'] == null ? undefined : json['metadata'],
+  }
 }
 
 export function SignatureToJSON(json: any): Signature {
-    return SignatureToJSONTyped(json, false);
+  return SignatureToJSONTyped(json, false)
 }
 
 export function SignatureToJSONTyped(value?: Signature | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'value': value['value'],
-        'algorithm': SignatureAlgorithmToJSON(value['algorithm']),
-        'keyInfo': KeyInfoToJSON(value['keyInfo']),
-        'metadata': value['metadata'],
-    };
+  return {
+    value: value['value'],
+    algorithm: SignatureAlgorithmToJSON(value['algorithm']),
+    keyInfo: KeyInfoToJSON(value['keyInfo']),
+    metadata: value['metadata'],
+  }
 }
-

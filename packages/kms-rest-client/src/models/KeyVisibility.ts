@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,42 +12,39 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Indicates the visibility status of a cryptographic key.
  * @export
  */
 export const KeyVisibility = {
-    Public: 'PUBLIC',
-    Private: 'PRIVATE'
-} as const;
-export type KeyVisibility = typeof KeyVisibility[keyof typeof KeyVisibility];
-
+  Public: 'PUBLIC',
+  Private: 'PRIVATE',
+} as const
+export type KeyVisibility = (typeof KeyVisibility)[keyof typeof KeyVisibility]
 
 export function instanceOfKeyVisibility(value: any): boolean {
-    for (const key in KeyVisibility) {
-        if (Object.prototype.hasOwnProperty.call(KeyVisibility, key)) {
-            if (KeyVisibility[key as keyof typeof KeyVisibility] === value) {
-                return true;
-            }
-        }
+  for (const key in KeyVisibility) {
+    if (Object.prototype.hasOwnProperty.call(KeyVisibility, key)) {
+      if (KeyVisibility[key as keyof typeof KeyVisibility] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function KeyVisibilityFromJSON(json: any): KeyVisibility {
-    return KeyVisibilityFromJSONTyped(json, false);
+  return KeyVisibilityFromJSONTyped(json, false)
 }
 
 export function KeyVisibilityFromJSONTyped(json: any, ignoreDiscriminator: boolean): KeyVisibility {
-    return json as KeyVisibility;
+  return json as KeyVisibility
 }
 
 export function KeyVisibilityToJSON(value?: KeyVisibility | null): any {
-    return value as any;
+  return value as any
 }
 
 export function KeyVisibilityToJSONTyped(value: any, ignoreDiscriminator: boolean): KeyVisibility {
-    return value as KeyVisibility;
+  return value as KeyVisibility
 }
-

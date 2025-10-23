@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,44 +12,41 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * JSON Web Key (JWK) key type parameter identifying the cryptographic algorithm family.
  * @export
  */
 export const JwkKeyType = {
-    Ec: 'EC',
-    Rsa: 'RSA',
-    Okp: 'OKP',
-    Oct: 'oct'
-} as const;
-export type JwkKeyType = typeof JwkKeyType[keyof typeof JwkKeyType];
-
+  Ec: 'EC',
+  Rsa: 'RSA',
+  Okp: 'OKP',
+  Oct: 'oct',
+} as const
+export type JwkKeyType = (typeof JwkKeyType)[keyof typeof JwkKeyType]
 
 export function instanceOfJwkKeyType(value: any): boolean {
-    for (const key in JwkKeyType) {
-        if (Object.prototype.hasOwnProperty.call(JwkKeyType, key)) {
-            if (JwkKeyType[key as keyof typeof JwkKeyType] === value) {
-                return true;
-            }
-        }
+  for (const key in JwkKeyType) {
+    if (Object.prototype.hasOwnProperty.call(JwkKeyType, key)) {
+      if (JwkKeyType[key as keyof typeof JwkKeyType] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function JwkKeyTypeFromJSON(json: any): JwkKeyType {
-    return JwkKeyTypeFromJSONTyped(json, false);
+  return JwkKeyTypeFromJSONTyped(json, false)
 }
 
 export function JwkKeyTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): JwkKeyType {
-    return json as JwkKeyType;
+  return json as JwkKeyType
 }
 
 export function JwkKeyTypeToJSON(value?: JwkKeyType | null): any {
-    return value as any;
+  return value as any
 }
 
 export function JwkKeyTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): JwkKeyType {
-    return value as JwkKeyType;
+  return value as JwkKeyType
 }
-

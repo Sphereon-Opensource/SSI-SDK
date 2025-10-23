@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { LookupMode } from './LookupMode';
-import {
-    LookupModeFromJSON,
-    LookupModeToJSON,
-} from './LookupMode';
+import type { LookupMode } from './LookupMode'
+import { LookupModeFromJSON, LookupModeToJSON } from './LookupMode'
 
 /**
  * Explicit AWS access key ID and secret access key. Use with caution; prefer IAM roles or other mechanisms where possible.
@@ -24,75 +21,70 @@ import {
  * @interface AwsStaticCredentials
  */
 export interface AwsStaticCredentials {
-    /**
-     * AWS Access Key ID.
-     * @type {string}
-     * @memberof AwsStaticCredentials
-     */
-    accesskid: string;
-    /**
-     * AWS Secret Access Key.
-     * @type {string}
-     * @memberof AwsStaticCredentials
-     */
-    secretAccessKey: string;
-    /**
-     * Optional AWS session token, typically used with temporary credentials.
-     * @type {string}
-     * @memberof AwsStaticCredentials
-     */
-    sessionToken?: string;
-    /**
-     *
-     * @type {LookupMode}
-     * @memberof AwsStaticCredentials
-     */
-    lookupMode?: LookupMode;
+  /**
+   * AWS Access Key ID.
+   * @type {string}
+   * @memberof AwsStaticCredentials
+   */
+  accesskid: string
+  /**
+   * AWS Secret Access Key.
+   * @type {string}
+   * @memberof AwsStaticCredentials
+   */
+  secretAccessKey: string
+  /**
+   * Optional AWS session token, typically used with temporary credentials.
+   * @type {string}
+   * @memberof AwsStaticCredentials
+   */
+  sessionToken?: string
+  /**
+   *
+   * @type {LookupMode}
+   * @memberof AwsStaticCredentials
+   */
+  lookupMode?: LookupMode
 }
-
-
 
 /**
  * Check if a given object implements the AwsStaticCredentials interface.
  */
 export function instanceOfAwsStaticCredentials(value: object): value is AwsStaticCredentials {
-    if (!('accesskid' in value) || value['accesskid'] === undefined) return false;
-    if (!('secretAccessKey' in value) || value['secretAccessKey'] === undefined) return false;
-    return true;
+  if (!('accesskid' in value) || value['accesskid'] === undefined) return false
+  if (!('secretAccessKey' in value) || value['secretAccessKey'] === undefined) return false
+  return true
 }
 
 export function AwsStaticCredentialsFromJSON(json: any): AwsStaticCredentials {
-    return AwsStaticCredentialsFromJSONTyped(json, false);
+  return AwsStaticCredentialsFromJSONTyped(json, false)
 }
 
 export function AwsStaticCredentialsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AwsStaticCredentials {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'accesskid': json['accesskid'],
-        'secretAccessKey': json['secretAccessKey'],
-        'sessionToken': json['sessionToken'] == null ? undefined : json['sessionToken'],
-        'lookupMode': json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    accesskid: json['accesskid'],
+    secretAccessKey: json['secretAccessKey'],
+    sessionToken: json['sessionToken'] == null ? undefined : json['sessionToken'],
+    lookupMode: json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
+  }
 }
 
 export function AwsStaticCredentialsToJSON(json: any): AwsStaticCredentials {
-    return AwsStaticCredentialsToJSONTyped(json, false);
+  return AwsStaticCredentialsToJSONTyped(json, false)
 }
 
 export function AwsStaticCredentialsToJSONTyped(value?: AwsStaticCredentials | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'accesskid': value['accesskid'],
-        'secretAccessKey': value['secretAccessKey'],
-        'sessionToken': value['sessionToken'],
-        'lookupMode': LookupModeToJSON(value['lookupMode']),
-    };
+  return {
+    accesskid: value['accesskid'],
+    secretAccessKey: value['secretAccessKey'],
+    sessionToken: value['sessionToken'],
+    lookupMode: LookupModeToJSON(value['lookupMode']),
+  }
 }
-

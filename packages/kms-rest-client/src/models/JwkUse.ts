@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,42 +12,39 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Intended use of the key (signing or encryption).
  * @export
  */
 export const JwkUse = {
-    Sig: 'sig',
-    Enc: 'enc'
-} as const;
-export type JwkUse = typeof JwkUse[keyof typeof JwkUse];
-
+  Sig: 'sig',
+  Enc: 'enc',
+} as const
+export type JwkUse = (typeof JwkUse)[keyof typeof JwkUse]
 
 export function instanceOfJwkUse(value: any): boolean {
-    for (const key in JwkUse) {
-        if (Object.prototype.hasOwnProperty.call(JwkUse, key)) {
-            if (JwkUse[key as keyof typeof JwkUse] === value) {
-                return true;
-            }
-        }
+  for (const key in JwkUse) {
+    if (Object.prototype.hasOwnProperty.call(JwkUse, key)) {
+      if (JwkUse[key as keyof typeof JwkUse] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function JwkUseFromJSON(json: any): JwkUse {
-    return JwkUseFromJSONTyped(json, false);
+  return JwkUseFromJSONTyped(json, false)
 }
 
 export function JwkUseFromJSONTyped(json: any, ignoreDiscriminator: boolean): JwkUse {
-    return json as JwkUse;
+  return json as JwkUse
 }
 
 export function JwkUseToJSON(value?: JwkUse | null): any {
-    return value as any;
+  return value as any
 }
 
 export function JwkUseToJSONTyped(value: any, ignoreDiscriminator: boolean): JwkUse {
-    return value as JwkUse;
+  return value as JwkUse
 }
-

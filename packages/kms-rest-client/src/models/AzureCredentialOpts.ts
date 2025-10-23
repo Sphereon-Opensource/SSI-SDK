@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { AzureClientSecretCredentialOpts } from './AzureClientSecretCredentialOpts';
-import {
-    AzureClientSecretCredentialOptsFromJSON,
-    AzureClientSecretCredentialOptsToJSON,
-} from './AzureClientSecretCredentialOpts';
+import type { AzureClientSecretCredentialOpts } from './AzureClientSecretCredentialOpts'
+import { AzureClientSecretCredentialOptsFromJSON, AzureClientSecretCredentialOptsToJSON } from './AzureClientSecretCredentialOpts'
 
 /**
  * Azure credential options for authenticating to Key Vault. Currently assumes Service Principal with Client Secret.
@@ -24,47 +21,45 @@ import {
  * @interface AzureCredentialOpts
  */
 export interface AzureCredentialOpts {
-    /**
-     *
-     * @type {AzureClientSecretCredentialOpts}
-     * @memberof AzureCredentialOpts
-     */
-    clientSecretCredentialOpts?: AzureClientSecretCredentialOpts;
+  /**
+   *
+   * @type {AzureClientSecretCredentialOpts}
+   * @memberof AzureCredentialOpts
+   */
+  clientSecretCredentialOpts?: AzureClientSecretCredentialOpts
 }
 
 /**
  * Check if a given object implements the AzureCredentialOpts interface.
  */
 export function instanceOfAzureCredentialOpts(value: object): value is AzureCredentialOpts {
-    return true;
+  return true
 }
 
 export function AzureCredentialOptsFromJSON(json: any): AzureCredentialOpts {
-    return AzureCredentialOptsFromJSONTyped(json, false);
+  return AzureCredentialOptsFromJSONTyped(json, false)
 }
 
 export function AzureCredentialOptsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AzureCredentialOpts {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'clientSecretCredentialOpts': json['clientSecretCredentialOpts'] == null ? undefined : AzureClientSecretCredentialOptsFromJSON(json['clientSecretCredentialOpts']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    clientSecretCredentialOpts:
+      json['clientSecretCredentialOpts'] == null ? undefined : AzureClientSecretCredentialOptsFromJSON(json['clientSecretCredentialOpts']),
+  }
 }
 
 export function AzureCredentialOptsToJSON(json: any): AzureCredentialOpts {
-    return AzureCredentialOptsToJSONTyped(json, false);
+  return AzureCredentialOptsToJSONTyped(json, false)
 }
 
 export function AzureCredentialOptsToJSONTyped(value?: AzureCredentialOpts | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'clientSecretCredentialOpts': AzureClientSecretCredentialOptsToJSON(value['clientSecretCredentialOpts']),
-    };
+  return {
+    clientSecretCredentialOpts: AzureClientSecretCredentialOptsToJSON(value['clientSecretCredentialOpts']),
+  }
 }
-

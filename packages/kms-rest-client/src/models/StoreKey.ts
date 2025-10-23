@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ResolvedKeyInfo } from './ResolvedKeyInfo';
-import {
-    ResolvedKeyInfoFromJSON,
-    ResolvedKeyInfoToJSON,
-} from './ResolvedKeyInfo';
+import type { ResolvedKeyInfo } from './ResolvedKeyInfo'
+import { ResolvedKeyInfoFromJSON, ResolvedKeyInfoToJSON } from './ResolvedKeyInfo'
 
 /**
  * Request body for storing a key.
@@ -24,56 +21,53 @@ import {
  * @interface StoreKey
  */
 export interface StoreKey {
-    /**
-     *
-     * @type {ResolvedKeyInfo}
-     * @memberof StoreKey
-     */
-    keyInfo: ResolvedKeyInfo;
-    /**
-     * X.509 certificate chain as base64-encoded DER certificates.
-     * @type {Array<string>}
-     * @memberof StoreKey
-     */
-    certChain?: Array<string>;
+  /**
+   *
+   * @type {ResolvedKeyInfo}
+   * @memberof StoreKey
+   */
+  keyInfo: ResolvedKeyInfo
+  /**
+   * X.509 certificate chain as base64-encoded DER certificates.
+   * @type {Array<string>}
+   * @memberof StoreKey
+   */
+  certChain?: Array<string>
 }
 
 /**
  * Check if a given object implements the StoreKey interface.
  */
 export function instanceOfStoreKey(value: object): value is StoreKey {
-    if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false;
-    return true;
+  if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false
+  return true
 }
 
 export function StoreKeyFromJSON(json: any): StoreKey {
-    return StoreKeyFromJSONTyped(json, false);
+  return StoreKeyFromJSONTyped(json, false)
 }
 
 export function StoreKeyFromJSONTyped(json: any, ignoreDiscriminator: boolean): StoreKey {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyInfo': ResolvedKeyInfoFromJSON(json['keyInfo']),
-        'certChain': json['certChain'] == null ? undefined : json['certChain'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyInfo: ResolvedKeyInfoFromJSON(json['keyInfo']),
+    certChain: json['certChain'] == null ? undefined : json['certChain'],
+  }
 }
 
 export function StoreKeyToJSON(json: any): StoreKey {
-    return StoreKeyToJSONTyped(json, false);
+  return StoreKeyToJSONTyped(json, false)
 }
 
 export function StoreKeyToJSONTyped(value?: StoreKey | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyInfo': ResolvedKeyInfoToJSON(value['keyInfo']),
-        'certChain': value['certChain'],
-    };
+  return {
+    keyInfo: ResolvedKeyInfoToJSON(value['keyInfo']),
+    certChain: value['certChain'],
+  }
 }
-

@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,48 +12,45 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Elliptic curve identifier.
  * @export
  */
 export const Curve = {
-    P256: 'P-256',
-    P384: 'P-384',
-    P521: 'P-521',
-    Secp256k1: 'secp256k1',
-    Ed25519: 'Ed25519',
-    Ed448: 'Ed448',
-    X25519: 'X25519',
-    X448: 'X448'
-} as const;
-export type Curve = typeof Curve[keyof typeof Curve];
-
+  P256: 'P-256',
+  P384: 'P-384',
+  P521: 'P-521',
+  Secp256k1: 'secp256k1',
+  Ed25519: 'Ed25519',
+  Ed448: 'Ed448',
+  X25519: 'X25519',
+  X448: 'X448',
+} as const
+export type Curve = (typeof Curve)[keyof typeof Curve]
 
 export function instanceOfCurve(value: any): boolean {
-    for (const key in Curve) {
-        if (Object.prototype.hasOwnProperty.call(Curve, key)) {
-            if (Curve[key as keyof typeof Curve] === value) {
-                return true;
-            }
-        }
+  for (const key in Curve) {
+    if (Object.prototype.hasOwnProperty.call(Curve, key)) {
+      if (Curve[key as keyof typeof Curve] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function CurveFromJSON(json: any): Curve {
-    return CurveFromJSONTyped(json, false);
+  return CurveFromJSONTyped(json, false)
 }
 
 export function CurveFromJSONTyped(json: any, ignoreDiscriminator: boolean): Curve {
-    return json as Curve;
+  return json as Curve
 }
 
 export function CurveToJSON(value?: Curve | null): any {
-    return value as any;
+  return value as any
 }
 
 export function CurveToJSONTyped(value: any, ignoreDiscriminator: boolean): Curve {
-    return value as Curve;
+  return value as Curve
 }
-

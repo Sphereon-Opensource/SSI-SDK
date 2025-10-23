@@ -18,75 +18,70 @@
  * @interface SignInput
  */
 export interface SignInput {
-    /**
-     * The data to be signed, encoded as a base64 string.
-     * @type {string}
-     * @memberof SignInput
-     */
-    data: string;
-    /**
-     * The signing mode to be used.
-     * @type {string}
-     * @memberof SignInput
-     */
-    mode?: SignInputModeEnum;
-    /**
-     * Additional metadata to be included in the signature.
-     * @type {{ [key: string]: any; }}
-     * @memberof SignInput
-     */
-    metadata?: { [key: string]: any; };
+  /**
+   * The data to be signed, encoded as a base64 string.
+   * @type {string}
+   * @memberof SignInput
+   */
+  data: string
+  /**
+   * The signing mode to be used.
+   * @type {string}
+   * @memberof SignInput
+   */
+  mode?: SignInputModeEnum
+  /**
+   * Additional metadata to be included in the signature.
+   * @type {{ [key: string]: any; }}
+   * @memberof SignInput
+   */
+  metadata?: { [key: string]: any }
 }
-
 
 /**
  * @export
  */
 export const SignInputModeEnum = {
-    Detached: 'DETACHED',
-    Attached: 'ATTACHED'
-} as const;
-export type SignInputModeEnum = typeof SignInputModeEnum[keyof typeof SignInputModeEnum];
-
+  Detached: 'DETACHED',
+  Attached: 'ATTACHED',
+} as const
+export type SignInputModeEnum = (typeof SignInputModeEnum)[keyof typeof SignInputModeEnum]
 
 /**
  * Check if a given object implements the SignInput interface.
  */
 export function instanceOfSignInput(value: object): value is SignInput {
-    if (!('data' in value) || value['data'] === undefined) return false;
-    return true;
+  if (!('data' in value) || value['data'] === undefined) return false
+  return true
 }
 
 export function SignInputFromJSON(json: any): SignInput {
-    return SignInputFromJSONTyped(json, false);
+  return SignInputFromJSONTyped(json, false)
 }
 
 export function SignInputFromJSONTyped(json: any, ignoreDiscriminator: boolean): SignInput {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'data': json['data'],
-        'mode': json['mode'] == null ? undefined : json['mode'],
-        'metadata': json['metadata'] == null ? undefined : json['metadata'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    data: json['data'],
+    mode: json['mode'] == null ? undefined : json['mode'],
+    metadata: json['metadata'] == null ? undefined : json['metadata'],
+  }
 }
 
 export function SignInputToJSON(json: any): SignInput {
-    return SignInputToJSONTyped(json, false);
+  return SignInputToJSONTyped(json, false)
 }
 
 export function SignInputToJSONTyped(value?: SignInput | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'data': value['data'],
-        'mode': value['mode'],
-        'metadata': value['metadata'],
-    };
+  return {
+    data: value['data'],
+    mode: value['mode'],
+    metadata: value['metadata'],
+  }
 }
-

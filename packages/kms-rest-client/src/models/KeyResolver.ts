@@ -12,16 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { KeyType } from './KeyType';
-import {
-    KeyTypeFromJSON,
-    KeyTypeToJSON,
-} from './KeyType';
-import type { IdentifierMethod } from './IdentifierMethod';
-import {
-    IdentifierMethodFromJSON,
-    IdentifierMethodToJSON,
-} from './IdentifierMethod';
+import type { KeyType } from './KeyType'
+import { KeyTypeFromJSON, KeyTypeToJSON } from './KeyType'
+import type { IdentifierMethod } from './IdentifierMethod'
+import { IdentifierMethodFromJSON, IdentifierMethodToJSON } from './IdentifierMethod'
 
 /**
  * Represents a key resolver instance with detailed configuration.
@@ -29,64 +23,63 @@ import {
  * @interface KeyResolver
  */
 export interface KeyResolver {
-    /**
-     * Unique identifier for the resolver.
-     * @type {string}
-     * @memberof KeyResolver
-     */
-    resolverId: string;
-    /**
-     * List of identifier methods supported by this resolver.
-     * @type {Array<IdentifierMethod>}
-     * @memberof KeyResolver
-     */
-    supportedIdentifierMethods?: Array<IdentifierMethod>;
-    /**
-     * List of key types supported by this resolver.
-     * @type {Array<KeyType>}
-     * @memberof KeyResolver
-     */
-    supportedKeyTypes?: Array<KeyType>;
+  /**
+   * Unique identifier for the resolver.
+   * @type {string}
+   * @memberof KeyResolver
+   */
+  resolverId: string
+  /**
+   * List of identifier methods supported by this resolver.
+   * @type {Array<IdentifierMethod>}
+   * @memberof KeyResolver
+   */
+  supportedIdentifierMethods?: Array<IdentifierMethod>
+  /**
+   * List of key types supported by this resolver.
+   * @type {Array<KeyType>}
+   * @memberof KeyResolver
+   */
+  supportedKeyTypes?: Array<KeyType>
 }
 
 /**
  * Check if a given object implements the KeyResolver interface.
  */
 export function instanceOfKeyResolver(value: object): value is KeyResolver {
-    if (!('resolverId' in value) || value['resolverId'] === undefined) return false;
-    return true;
+  if (!('resolverId' in value) || value['resolverId'] === undefined) return false
+  return true
 }
 
 export function KeyResolverFromJSON(json: any): KeyResolver {
-    return KeyResolverFromJSONTyped(json, false);
+  return KeyResolverFromJSONTyped(json, false)
 }
 
 export function KeyResolverFromJSONTyped(json: any, ignoreDiscriminator: boolean): KeyResolver {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'resolverId': json['resolverId'],
-        'supportedIdentifierMethods': json['supportedIdentifierMethods'] == null ? undefined : ((json['supportedIdentifierMethods'] as Array<any>).map(IdentifierMethodFromJSON)),
-        'supportedKeyTypes': json['supportedKeyTypes'] == null ? undefined : ((json['supportedKeyTypes'] as Array<any>).map(KeyTypeFromJSON)),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    resolverId: json['resolverId'],
+    supportedIdentifierMethods:
+      json['supportedIdentifierMethods'] == null ? undefined : (json['supportedIdentifierMethods'] as Array<any>).map(IdentifierMethodFromJSON),
+    supportedKeyTypes: json['supportedKeyTypes'] == null ? undefined : (json['supportedKeyTypes'] as Array<any>).map(KeyTypeFromJSON),
+  }
 }
 
 export function KeyResolverToJSON(json: any): KeyResolver {
-    return KeyResolverToJSONTyped(json, false);
+  return KeyResolverToJSONTyped(json, false)
 }
 
 export function KeyResolverToJSONTyped(value?: KeyResolver | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'resolverId': value['resolverId'],
-        'supportedIdentifierMethods': value['supportedIdentifierMethods'] == null ? undefined : ((value['supportedIdentifierMethods'] as Array<any>).map(IdentifierMethodToJSON)),
-        'supportedKeyTypes': value['supportedKeyTypes'] == null ? undefined : ((value['supportedKeyTypes'] as Array<any>).map(KeyTypeToJSON)),
-    };
+  return {
+    resolverId: value['resolverId'],
+    supportedIdentifierMethods:
+      value['supportedIdentifierMethods'] == null ? undefined : (value['supportedIdentifierMethods'] as Array<any>).map(IdentifierMethodToJSON),
+    supportedKeyTypes: value['supportedKeyTypes'] == null ? undefined : (value['supportedKeyTypes'] as Array<any>).map(KeyTypeToJSON),
+  }
 }
-

@@ -12,16 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { AzureCredentialOpts } from './AzureCredentialOpts';
-import {
-    AzureCredentialOptsFromJSON,
-    AzureCredentialOptsToJSON,
-} from './AzureCredentialOpts';
-import type { LookupMode } from './LookupMode';
-import {
-    LookupModeFromJSON,
-    LookupModeToJSON,
-} from './LookupMode';
+import type { AzureCredentialOpts } from './AzureCredentialOpts'
+import { AzureCredentialOptsFromJSON, AzureCredentialOptsToJSON } from './AzureCredentialOpts'
+import type { LookupMode } from './LookupMode'
+import { LookupModeFromJSON, LookupModeToJSON } from './LookupMode'
 
 /**
  * Configuration settings specific to the Azure KeyVault provider type.
@@ -29,84 +23,79 @@ import {
  * @interface AzureKeyVaultSetting
  */
 export interface AzureKeyVaultSetting {
-    /**
-     * The URL of the Azure Key Vault or Managed HSM instance.
-     * @type {string}
-     * @memberof AzureKeyVaultSetting
-     */
-    keyvaultUrl: string;
-    /**
-     * The Azure Active Directory tenant (directory) ID.
-     * @type {string}
-     * @memberof AzureKeyVaultSetting
-     */
-    tenantId: string;
-    /**
-     *
-     * @type {AzureCredentialOpts}
-     * @memberof AzureKeyVaultSetting
-     */
-    credentialOpts: AzureCredentialOpts;
-    /**
-     * An optional identifier for your application using the Key Vault.
-     * @type {string}
-     * @memberof AzureKeyVaultSetting
-     */
-    applicationId?: string;
-    /**
-     *
-     * @type {LookupMode}
-     * @memberof AzureKeyVaultSetting
-     */
-    lookupMode?: LookupMode;
+  /**
+   * The URL of the Azure Key Vault or Managed HSM instance.
+   * @type {string}
+   * @memberof AzureKeyVaultSetting
+   */
+  keyvaultUrl: string
+  /**
+   * The Azure Active Directory tenant (directory) ID.
+   * @type {string}
+   * @memberof AzureKeyVaultSetting
+   */
+  tenantId: string
+  /**
+   *
+   * @type {AzureCredentialOpts}
+   * @memberof AzureKeyVaultSetting
+   */
+  credentialOpts: AzureCredentialOpts
+  /**
+   * An optional identifier for your application using the Key Vault.
+   * @type {string}
+   * @memberof AzureKeyVaultSetting
+   */
+  applicationId?: string
+  /**
+   *
+   * @type {LookupMode}
+   * @memberof AzureKeyVaultSetting
+   */
+  lookupMode?: LookupMode
 }
-
-
 
 /**
  * Check if a given object implements the AzureKeyVaultSetting interface.
  */
 export function instanceOfAzureKeyVaultSetting(value: object): value is AzureKeyVaultSetting {
-    if (!('keyvaultUrl' in value) || value['keyvaultUrl'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('credentialOpts' in value) || value['credentialOpts'] === undefined) return false;
-    return true;
+  if (!('keyvaultUrl' in value) || value['keyvaultUrl'] === undefined) return false
+  if (!('tenantId' in value) || value['tenantId'] === undefined) return false
+  if (!('credentialOpts' in value) || value['credentialOpts'] === undefined) return false
+  return true
 }
 
 export function AzureKeyVaultSettingFromJSON(json: any): AzureKeyVaultSetting {
-    return AzureKeyVaultSettingFromJSONTyped(json, false);
+  return AzureKeyVaultSettingFromJSONTyped(json, false)
 }
 
 export function AzureKeyVaultSettingFromJSONTyped(json: any, ignoreDiscriminator: boolean): AzureKeyVaultSetting {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyvaultUrl': json['keyvaultUrl'],
-        'tenantId': json['tenantId'],
-        'credentialOpts': AzureCredentialOptsFromJSON(json['credentialOpts']),
-        'applicationId': json['applicationId'] == null ? undefined : json['applicationId'],
-        'lookupMode': json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyvaultUrl: json['keyvaultUrl'],
+    tenantId: json['tenantId'],
+    credentialOpts: AzureCredentialOptsFromJSON(json['credentialOpts']),
+    applicationId: json['applicationId'] == null ? undefined : json['applicationId'],
+    lookupMode: json['lookupMode'] == null ? undefined : LookupModeFromJSON(json['lookupMode']),
+  }
 }
 
 export function AzureKeyVaultSettingToJSON(json: any): AzureKeyVaultSetting {
-    return AzureKeyVaultSettingToJSONTyped(json, false);
+  return AzureKeyVaultSettingToJSONTyped(json, false)
 }
 
 export function AzureKeyVaultSettingToJSONTyped(value?: AzureKeyVaultSetting | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyvaultUrl': value['keyvaultUrl'],
-        'tenantId': value['tenantId'],
-        'credentialOpts': AzureCredentialOptsToJSON(value['credentialOpts']),
-        'applicationId': value['applicationId'],
-        'lookupMode': LookupModeToJSON(value['lookupMode']),
-    };
+  return {
+    keyvaultUrl: value['keyvaultUrl'],
+    tenantId: value['tenantId'],
+    credentialOpts: AzureCredentialOptsToJSON(value['credentialOpts']),
+    applicationId: value['applicationId'],
+    lookupMode: LookupModeToJSON(value['lookupMode']),
+  }
 }
-

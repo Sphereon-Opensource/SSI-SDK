@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,52 +12,49 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Cryptographic signature algorithm identifier.
  * @export
  */
 export const SignatureAlgorithm = {
-    Ed25519: 'ED25519',
-    EcdsaSha256: 'ECDSA_SHA256',
-    EcdsaSha384: 'ECDSA_SHA384',
-    EcdsaSha512: 'ECDSA_SHA512',
-    Es256K: 'ES256K',
-    EckaDhSha256: 'ECKA_DH_SHA256',
-    HmacSha256: 'HMAC_SHA256',
-    HmacSha384: 'HMAC_SHA384',
-    HmacSha512: 'HMAC_SHA512',
-    RsaSsaPssSha256Mgf1: 'RSA_SSA_PSS_SHA256_MGF1',
-    RsaSsaPssSha384Mgf1: 'RSA_SSA_PSS_SHA384_MGF1',
-    RsaSsaPssSha512Mgf1: 'RSA_SSA_PSS_SHA512_MGF1'
-} as const;
-export type SignatureAlgorithm = typeof SignatureAlgorithm[keyof typeof SignatureAlgorithm];
-
+  Ed25519: 'ED25519',
+  EcdsaSha256: 'ECDSA_SHA256',
+  EcdsaSha384: 'ECDSA_SHA384',
+  EcdsaSha512: 'ECDSA_SHA512',
+  Es256K: 'ES256K',
+  EckaDhSha256: 'ECKA_DH_SHA256',
+  HmacSha256: 'HMAC_SHA256',
+  HmacSha384: 'HMAC_SHA384',
+  HmacSha512: 'HMAC_SHA512',
+  RsaSsaPssSha256Mgf1: 'RSA_SSA_PSS_SHA256_MGF1',
+  RsaSsaPssSha384Mgf1: 'RSA_SSA_PSS_SHA384_MGF1',
+  RsaSsaPssSha512Mgf1: 'RSA_SSA_PSS_SHA512_MGF1',
+} as const
+export type SignatureAlgorithm = (typeof SignatureAlgorithm)[keyof typeof SignatureAlgorithm]
 
 export function instanceOfSignatureAlgorithm(value: any): boolean {
-    for (const key in SignatureAlgorithm) {
-        if (Object.prototype.hasOwnProperty.call(SignatureAlgorithm, key)) {
-            if (SignatureAlgorithm[key as keyof typeof SignatureAlgorithm] === value) {
-                return true;
-            }
-        }
+  for (const key in SignatureAlgorithm) {
+    if (Object.prototype.hasOwnProperty.call(SignatureAlgorithm, key)) {
+      if (SignatureAlgorithm[key as keyof typeof SignatureAlgorithm] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function SignatureAlgorithmFromJSON(json: any): SignatureAlgorithm {
-    return SignatureAlgorithmFromJSONTyped(json, false);
+  return SignatureAlgorithmFromJSONTyped(json, false)
 }
 
 export function SignatureAlgorithmFromJSONTyped(json: any, ignoreDiscriminator: boolean): SignatureAlgorithm {
-    return json as SignatureAlgorithm;
+  return json as SignatureAlgorithm
 }
 
 export function SignatureAlgorithmToJSON(value?: SignatureAlgorithm | null): any {
-    return value as any;
+  return value as any
 }
 
 export function SignatureAlgorithmToJSONTyped(value: any, ignoreDiscriminator: boolean): SignatureAlgorithm {
-    return value as SignatureAlgorithm;
+  return value as SignatureAlgorithm
 }
-

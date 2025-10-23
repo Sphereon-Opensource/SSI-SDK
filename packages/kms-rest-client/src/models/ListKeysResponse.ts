@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ManagedKeyInfo } from './ManagedKeyInfo';
-import {
-    ManagedKeyInfoFromJSON,
-    ManagedKeyInfoToJSON,
-} from './ManagedKeyInfo';
+import type { ManagedKeyInfo } from './ManagedKeyInfo'
+import { ManagedKeyInfoFromJSON, ManagedKeyInfoToJSON } from './ManagedKeyInfo'
 
 /**
  * Response body containing all the managed keys.
@@ -24,48 +21,45 @@ import {
  * @interface ListKeysResponse
  */
 export interface ListKeysResponse {
-    /**
-     *
-     * @type {Array<ManagedKeyInfo>}
-     * @memberof ListKeysResponse
-     */
-    keyInfos: Array<ManagedKeyInfo>;
+  /**
+   *
+   * @type {Array<ManagedKeyInfo>}
+   * @memberof ListKeysResponse
+   */
+  keyInfos: Array<ManagedKeyInfo>
 }
 
 /**
  * Check if a given object implements the ListKeysResponse interface.
  */
 export function instanceOfListKeysResponse(value: object): value is ListKeysResponse {
-    if (!('keyInfos' in value) || value['keyInfos'] === undefined) return false;
-    return true;
+  if (!('keyInfos' in value) || value['keyInfos'] === undefined) return false
+  return true
 }
 
 export function ListKeysResponseFromJSON(json: any): ListKeysResponse {
-    return ListKeysResponseFromJSONTyped(json, false);
+  return ListKeysResponseFromJSONTyped(json, false)
 }
 
 export function ListKeysResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListKeysResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyInfos': ((json['keyInfos'] as Array<any>).map(ManagedKeyInfoFromJSON)),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyInfos: (json['keyInfos'] as Array<any>).map(ManagedKeyInfoFromJSON),
+  }
 }
 
 export function ListKeysResponseToJSON(json: any): ListKeysResponse {
-    return ListKeysResponseToJSONTyped(json, false);
+  return ListKeysResponseToJSONTyped(json, false)
 }
 
 export function ListKeysResponseToJSONTyped(value?: ListKeysResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyInfos': ((value['keyInfos'] as Array<any>).map(ManagedKeyInfoToJSON)),
-    };
+  return {
+    keyInfos: (value['keyInfos'] as Array<any>).map(ManagedKeyInfoToJSON),
+  }
 }
-

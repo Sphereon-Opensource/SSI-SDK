@@ -12,21 +12,12 @@
  * Do not edit the class manually.
  */
 
-import type { KeyOperations } from './KeyOperations';
-import {
-    KeyOperationsFromJSON,
-    KeyOperationsToJSON,
-} from './KeyOperations';
-import type { SignatureAlgorithm } from './SignatureAlgorithm';
-import {
-    SignatureAlgorithmFromJSON,
-    SignatureAlgorithmToJSON,
-} from './SignatureAlgorithm';
-import type { JwkUse } from './JwkUse';
-import {
-    JwkUseFromJSON,
-    JwkUseToJSON,
-} from './JwkUse';
+import type { KeyOperations } from './KeyOperations'
+import { KeyOperationsFromJSON, KeyOperationsToJSON } from './KeyOperations'
+import type { SignatureAlgorithm } from './SignatureAlgorithm'
+import { SignatureAlgorithmFromJSON, SignatureAlgorithmToJSON } from './SignatureAlgorithm'
+import type { JwkUse } from './JwkUse'
+import { JwkUseFromJSON, JwkUseToJSON } from './JwkUse'
 
 /**
  * Parameters for global key generation with optional provider specification.
@@ -34,81 +25,76 @@ import {
  * @interface GenerateKeyGlobal
  */
 export interface GenerateKeyGlobal {
-    /**
-     * Alias for the generated key.
-     * @type {string}
-     * @memberof GenerateKeyGlobal
-     */
-    alias?: string;
-    /**
-     *
-     * @type {JwkUse}
-     * @memberof GenerateKeyGlobal
-     */
-    use?: JwkUse;
-    /**
-     *
-     * @type {Array<KeyOperations>}
-     * @memberof GenerateKeyGlobal
-     */
-    keyOperations?: Array<KeyOperations>;
-    /**
-     *
-     * @type {SignatureAlgorithm}
-     * @memberof GenerateKeyGlobal
-     */
-    alg?: SignatureAlgorithm;
-    /**
-     * Optional provider ID. If not specified, the default provider will be used.
-     * @type {string}
-     * @memberof GenerateKeyGlobal
-     */
-    providerId?: string;
+  /**
+   * Alias for the generated key.
+   * @type {string}
+   * @memberof GenerateKeyGlobal
+   */
+  alias?: string
+  /**
+   *
+   * @type {JwkUse}
+   * @memberof GenerateKeyGlobal
+   */
+  use?: JwkUse
+  /**
+   *
+   * @type {Array<KeyOperations>}
+   * @memberof GenerateKeyGlobal
+   */
+  keyOperations?: Array<KeyOperations>
+  /**
+   *
+   * @type {SignatureAlgorithm}
+   * @memberof GenerateKeyGlobal
+   */
+  alg?: SignatureAlgorithm
+  /**
+   * Optional provider ID. If not specified, the default provider will be used.
+   * @type {string}
+   * @memberof GenerateKeyGlobal
+   */
+  providerId?: string
 }
-
-
 
 /**
  * Check if a given object implements the GenerateKeyGlobal interface.
  */
 export function instanceOfGenerateKeyGlobal(value: object): value is GenerateKeyGlobal {
-    return true;
+  return true
 }
 
 export function GenerateKeyGlobalFromJSON(json: any): GenerateKeyGlobal {
-    return GenerateKeyGlobalFromJSONTyped(json, false);
+  return GenerateKeyGlobalFromJSONTyped(json, false)
 }
 
 export function GenerateKeyGlobalFromJSONTyped(json: any, ignoreDiscriminator: boolean): GenerateKeyGlobal {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'alias': json['alias'] == null ? undefined : json['alias'],
-        'use': json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
-        'keyOperations': json['keyOperations'] == null ? undefined : ((json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON)),
-        'alg': json['alg'] == null ? undefined : SignatureAlgorithmFromJSON(json['alg']),
-        'providerId': json['providerId'] == null ? undefined : json['providerId'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    alias: json['alias'] == null ? undefined : json['alias'],
+    use: json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
+    keyOperations: json['keyOperations'] == null ? undefined : (json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON),
+    alg: json['alg'] == null ? undefined : SignatureAlgorithmFromJSON(json['alg']),
+    providerId: json['providerId'] == null ? undefined : json['providerId'],
+  }
 }
 
 export function GenerateKeyGlobalToJSON(json: any): GenerateKeyGlobal {
-    return GenerateKeyGlobalToJSONTyped(json, false);
+  return GenerateKeyGlobalToJSONTyped(json, false)
 }
 
 export function GenerateKeyGlobalToJSONTyped(value?: GenerateKeyGlobal | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'alias': value['alias'],
-        'use': JwkUseToJSON(value['use']),
-        'keyOperations': value['keyOperations'] == null ? undefined : ((value['keyOperations'] as Array<any>).map(KeyOperationsToJSON)),
-        'alg': SignatureAlgorithmToJSON(value['alg']),
-        'providerId': value['providerId'],
-    };
+  return {
+    alias: value['alias'],
+    use: JwkUseToJSON(value['use']),
+    keyOperations: value['keyOperations'] == null ? undefined : (value['keyOperations'] as Array<any>).map(KeyOperationsToJSON),
+    alg: SignatureAlgorithmToJSON(value['alg']),
+    providerId: value['providerId'],
+  }
 }
-

@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ManagedKeyPair } from './ManagedKeyPair';
-import {
-    ManagedKeyPairFromJSON,
-    ManagedKeyPairToJSON,
-} from './ManagedKeyPair';
+import type { ManagedKeyPair } from './ManagedKeyPair'
+import { ManagedKeyPairFromJSON, ManagedKeyPairToJSON } from './ManagedKeyPair'
 
 /**
  * Response body containing a generated key pair.
@@ -24,48 +21,45 @@ import {
  * @interface GenerateKeyResponse
  */
 export interface GenerateKeyResponse {
-    /**
-     *
-     * @type {ManagedKeyPair}
-     * @memberof GenerateKeyResponse
-     */
-    keyPair: ManagedKeyPair;
+  /**
+   *
+   * @type {ManagedKeyPair}
+   * @memberof GenerateKeyResponse
+   */
+  keyPair: ManagedKeyPair
 }
 
 /**
  * Check if a given object implements the GenerateKeyResponse interface.
  */
 export function instanceOfGenerateKeyResponse(value: object): value is GenerateKeyResponse {
-    if (!('keyPair' in value) || value['keyPair'] === undefined) return false;
-    return true;
+  if (!('keyPair' in value) || value['keyPair'] === undefined) return false
+  return true
 }
 
 export function GenerateKeyResponseFromJSON(json: any): GenerateKeyResponse {
-    return GenerateKeyResponseFromJSONTyped(json, false);
+  return GenerateKeyResponseFromJSONTyped(json, false)
 }
 
 export function GenerateKeyResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): GenerateKeyResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'keyPair': ManagedKeyPairFromJSON(json['keyPair']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    keyPair: ManagedKeyPairFromJSON(json['keyPair']),
+  }
 }
 
 export function GenerateKeyResponseToJSON(json: any): GenerateKeyResponse {
-    return GenerateKeyResponseToJSONTyped(json, false);
+  return GenerateKeyResponseToJSONTyped(json, false)
 }
 
 export function GenerateKeyResponseToJSONTyped(value?: GenerateKeyResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'keyPair': ManagedKeyPairToJSON(value['keyPair']),
-    };
+  return {
+    keyPair: ManagedKeyPairToJSON(value['keyPair']),
+  }
 }
-

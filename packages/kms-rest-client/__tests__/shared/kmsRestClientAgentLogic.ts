@@ -19,7 +19,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should list resolvers', async () => {
       const result = await agent.kmsListResolvers({
-        baseUrl: 'https://ssi-backend.sphereon.com'
+        baseUrl: 'https://ssi-backend.sphereon.com',
       })
 
       expect(result.resolvers.length).toBeGreaterThan(0)
@@ -28,7 +28,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get resolver by id', async (): Promise<void> => {
       const result = await agent.kmsGetResolver({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        resolverId: 'jose_cose_resolver'
+        resolverId: 'jose_cose_resolver',
       })
 
       expect(result.resolverId).toBeDefined()
@@ -42,25 +42,23 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         resolverId: 'jose_cose_resolver',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "HAnuRAJHmahYSmnfcmX9lF25bRsi_IWoFkJ2KueEXOU",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "DwRiRyvtMXhFwCKuoAMnpviMmrE1B0Fu44_LeQEycEs",
-            y: "3BnhvdB6QYGp7x9Ey7qW_TNZ0MI0hNZgLlyl6rbxln8",
-            d: "xVjyhcZDnLR3zJcuMMlQjXlNGDz3hxS0_aCoDd8P9XY"
+            kty: 'EC',
+            kid: 'HAnuRAJHmahYSmnfcmX9lF25bRsi_IWoFkJ2KueEXOU',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'DwRiRyvtMXhFwCKuoAMnpviMmrE1B0Fu44_LeQEycEs',
+            y: '3BnhvdB6QYGp7x9Ey7qW_TNZ0MI0hNZgLlyl6rbxln8',
+            d: 'xVjyhcZDnLR3zJcuMMlQjXlNGDz3hxS0_aCoDd8P9XY',
           },
-          alias: "HAnuRAJHmahYSmnfcmX9lF25bRsi_IWoFkJ2KueEXOU",
-          providerId: "test-software",
-          kid: "HAnuRAJHmahYSmnfcmX9lF25bRsi_IWoFkJ2KueEXOU",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PRIVATE",
-          keyType: "EC",
-          keyEncoding: "JOSE"
-        }
+          alias: 'HAnuRAJHmahYSmnfcmX9lF25bRsi_IWoFkJ2KueEXOU',
+          providerId: 'test-software',
+          kid: 'HAnuRAJHmahYSmnfcmX9lF25bRsi_IWoFkJ2KueEXOU',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PRIVATE',
+          keyType: 'EC',
+          keyEncoding: 'JOSE',
+        },
       })
 
       expect(result.key).toBeDefined()
@@ -76,30 +74,28 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "7KYAtmhlRu4M5k5Uv9-jV3XKgRc8wpzJYKg3l89LkGQ",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '7KYAtmhlRu4M5k5Uv9-jV3XKgRc8wpzJYKg3l89LkGQ',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
-        input: "aGVsbG8="
+        input: 'aGVsbG8=',
       })
 
       expect(result.signature).toBeDefined()
@@ -110,31 +106,29 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "7KYAtmhlRu4M5k5Uv9-jV3XKgRc8wpzJYKg3l89LkGQ",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '7KYAtmhlRu4M5k5Uv9-jV3XKgRc8wpzJYKg3l89LkGQ',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
-        input: "aGVsbG8=",
-        signature: "RrTEoBb/3KQSEiCYnrTizM4O7qWeY5cNQYlQYl4pLMZKyLBYaoU1uxzmwLMFAIfnwA41mMTyLZlG4JG0zCm9iA=="
+        input: 'aGVsbG8=',
+        signature: 'RrTEoBb/3KQSEiCYnrTizM4O7qWeY5cNQYlQYl4pLMZKyLBYaoU1uxzmwLMFAIfnwA41mMTyLZlG4JG0zCm9iA==',
       })
 
       expect(result.isValid).toBeTruthy()
@@ -145,40 +139,38 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(storeResult.alias).toBeDefined()
 
       const result = await agent.kmsGetKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        aliasOrKid: storeResult.alias
+        aliasOrKid: storeResult.alias,
       })
 
       expect(result.key).toBeDefined()
@@ -196,39 +188,37 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(storeResult.alias).toBeDefined()
 
       const result = await agent.kmsListKeys({
-        baseUrl: 'https://ssi-backend.sphereon.com'
+        baseUrl: 'https://ssi-backend.sphereon.com',
       })
 
       expect(result.keyInfos.length).toBeGreaterThan(0)
@@ -239,33 +229,31 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(storeResult.alias).toBeDefined()
@@ -283,33 +271,31 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(result.key).toBeDefined()
@@ -325,9 +311,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should generate key', async (): Promise<void> => {
       const result = await agent.kmsGenerateKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        use: "sig",
-        alg: "ECDSA_SHA256",
-        keyOperations: ["sign"]
+        use: 'sig',
+        alg: 'ECDSA_SHA256',
+        keyOperations: ['sign'],
       })
 
       expect(result.providerId).toBeDefined()
@@ -342,40 +328,38 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(storeResult.alias).toBeDefined()
 
       const result = await agent.kmsDeleteKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        aliasOrKid: storeResult.alias
+        aliasOrKid: storeResult.alias,
       })
 
       expect(result).toBeTruthy()
@@ -384,7 +368,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     it('should get provider by id', async (): Promise<void> => {
       const result = await agent.kmsGetKeyProvider({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        providerId: 'test-software'
+        providerId: 'test-software',
       })
 
       expect(result.providerId).toBeDefined()
@@ -393,7 +377,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should list providers', async () => {
       const result = await agent.kmsListKeyProviders({
-        baseUrl: 'https://ssi-backend.sphereon.com'
+        baseUrl: 'https://ssi-backend.sphereon.com',
       })
 
       expect(result.providers.length).toBeGreaterThan(0)
@@ -405,40 +389,38 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         providerId: 'test-software',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(generateResult.alias).toBeDefined()
 
       const result = await agent.kmsProviderListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        providerId: 'test-software'
+        providerId: 'test-software',
       })
 
       expect(result.keyInfos.length).toBeGreaterThan(0)
@@ -450,33 +432,31 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         providerId: 'test-software',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(result.key).toBeDefined()
@@ -493,9 +473,9 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.kmsProviderGenerateKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
-        use: "sig",
-        alg: "ECDSA_SHA256",
-        keyOperations: ["sign"]
+        use: 'sig',
+        alg: 'ECDSA_SHA256',
+        keyOperations: ['sign'],
       })
 
       expect(result.providerId).toBeDefined()
@@ -511,33 +491,31 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         providerId: 'test-software',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(generateResult.alias).toBeDefined()
@@ -545,7 +523,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.kmsProviderGetKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
-        aliasOrKid: generateResult.alias
+        aliasOrKid: generateResult.alias,
       })
 
       expect(result.key).toBeDefined()
@@ -564,33 +542,31 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         providerId: 'test-software',
         keyInfo: {
           key: {
-            kty: "EC",
-            kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-            use: "sig",
-            keyOps: [
-              "sign"
-            ],
-            crv: "P-256",
-            x: "HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM",
-            y: "9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI",
-            d: "P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ"
+            kty: 'EC',
+            kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+            use: 'sig',
+            keyOps: ['sign'],
+            crv: 'P-256',
+            x: 'HFL67WWh6PYWKOy1mzt9Y2ANs-CWFIyVtouR-Jx_mAM',
+            y: '9f_1x7fwUuEbEwxSNTYE3jQF-zForWpKkEMpiUp1MNI',
+            d: 'P_4YEyuDj4aA4IVYVku4dm3BoDReFTKVsBwb1utoWCQ',
           },
-          kid: "00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE",
-          alias: "Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4",
-          providerId: "test-software",
-          signatureAlgorithm: "ECDSA_SHA256",
-          keyVisibility: "PUBLIC",
-          x5c: ["1", "2"],
-          keyEncoding: "JOSE",
+          kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE',
+          alias: 'Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4',
+          providerId: 'test-software',
+          signatureAlgorithm: 'ECDSA_SHA256',
+          keyVisibility: 'PUBLIC',
+          x5c: ['1', '2'],
+          keyEncoding: 'JOSE',
           opts: {
-            "test": "test"
+            test: 'test',
           },
-          keyType: "EC"
+          keyType: 'EC',
         },
         certChain: [
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=",
-          "MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA="
-        ]
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+          'MIIByTCCAW6gAwIBAgIQF+SpO+EPJj42boA4WHPL2zAKBggqhkjOPQQDAjBAMT4wPAYDVQQDEzVBY2MgS2l3YSBEaWdpdGFsIENlcnRpZmljYXRpb24gV2FsbGV0IEludGVybWVkaWF0ZSBDQTAeFw0yNTA2MjUxMzA4MzJaFw0yNjA2MjUxMzA4MzJaMDYxNDAyBgNVBAMTK3dhbGxldC02NDA2MzA3OS02ZmM3LTRhZTgtOWEwMi0yNTE4YTRhYmQyZmIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASnaLC4eYSs/8XkDz8rDANemjmyI+N5g0yIJIiScgCnjZogmlDGGQ8HYCdvs9SJJJ3c17YSax44vVl6LMnidvKno1QwUjAJBgNVHRMEAjAAMB0GA1UdDgQWBBRI7w4/H9JCty7T4aVl+im74XEV0zAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwCgYIKoZIzj0EAwIDSQAwRgIhAPnLEppg5TGMCqp/Nn+2os6vupEclyKv1yk/JQFQME8TAiEAiYrVm/6J8zGmhtiG958kZB0afXhM/i3DuY8+0kpTUzA=',
+        ],
       })
 
       expect(generateResult.alias).toBeDefined()
@@ -598,7 +574,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.kmsProviderDeleteKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
-        aliasOrKid: generateResult.alias
+        aliasOrKid: generateResult.alias,
       })
 
       expect(result).toBeTruthy()

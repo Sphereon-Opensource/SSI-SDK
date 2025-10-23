@@ -21,7 +21,7 @@ import type {
   KmsProviderDeleteKeyArgs,
   RestClientAuthenticationOpts,
   KmsRestClientArgs,
-  KmsIsValidRawSignatureArgs
+  KmsIsValidRawSignatureArgs,
 } from '../types/IKmsRestClient'
 import type {
   CreateRawSignature,
@@ -57,7 +57,7 @@ import {
   VerifyRawSignatureResponseFromJSONTyped,
   StoreKeyToJSONTyped,
   VerifyRawSignatureToJSONTyped,
-  KeyProviderResponseFromJSONTyped
+  KeyProviderResponseFromJSONTyped,
 } from '../models'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:kms:rest-client')
@@ -86,7 +86,7 @@ export class KmsRestClient implements IAgentPlugin {
     kmsResolveKey: this.kmsResolveKey.bind(this),
 
     kmsCreateRawSignature: this.kmsCreateRawSignature.bind(this),
-    kmsIsValidRawSignature: this.kmsIsValidRawSignature.bind(this)
+    kmsIsValidRawSignature: this.kmsIsValidRawSignature.bind(this),
   }
 
   private readonly agentBaseUrl?: string
@@ -109,7 +109,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`/resolvers/${args.resolverId}`, baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`get resolver response: ${response}`)
 
@@ -126,7 +126,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase('/resolvers', baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`list resolvers response: ${response}`)
 
@@ -146,7 +146,7 @@ export class KmsRestClient implements IAgentPlugin {
       keyInfo: args.keyInfo,
       identifierMethod: args.identifierMethod,
       trustedCerts: args.trustedCerts,
-      verifyX509CertificateChain: args.verifyX509CertificateChain
+      verifyX509CertificateChain: args.verifyX509CertificateChain,
     } satisfies ResolvePublicKey
     const response = await fetch(url, {
       method: 'POST',
@@ -215,7 +215,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`/keys/${args.aliasOrKid}`, baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`get key response: ${response}`)
 
@@ -297,7 +297,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`/keys/${args.aliasOrKid}`, baseUrl)
 
     await fetch(url, {
-      method: 'DELETE'
+      method: 'DELETE',
     })
 
     return true
@@ -309,7 +309,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}`, baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`get provider response: ${response}`)
 
@@ -326,7 +326,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase('/providers', baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`list providers response: ${response}`)
 
@@ -343,7 +343,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys`, baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`list provider keys response: ${response}`)
 
@@ -407,7 +407,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys/${args.aliasOrKid}`, baseUrl)
 
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
     })
     logger.debug(`get provider key response: ${response}`)
 
@@ -424,7 +424,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = KmsRestClient.urlWithBase(`providers/${args.providerId}/keys/${args.aliasOrKid}`, baseUrl)
 
     await fetch(url, {
-      method: 'DELETE'
+      method: 'DELETE',
     })
 
     return true
@@ -456,13 +456,12 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   private addSearchParams(baseUrl: string, params: Record<string, string | number | boolean>): URL {
-    const url = new URL(baseUrl);
+    const url = new URL(baseUrl)
 
     for (const [key, value] of Object.entries(params)) {
-      url.searchParams.set(key, String(value));
+      url.searchParams.set(key, String(value))
     }
 
-    return url;
+    return url
   }
-
 }

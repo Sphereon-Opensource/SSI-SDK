@@ -12,21 +12,12 @@
  * Do not edit the class manually.
  */
 
-import type { AwsKmsSetting } from './AwsKmsSetting';
-import {
-    AwsKmsSettingFromJSON,
-    AwsKmsSettingToJSON,
-} from './AwsKmsSetting';
-import type { AzureKeyVaultSetting } from './AzureKeyVaultSetting';
-import {
-    AzureKeyVaultSettingFromJSON,
-    AzureKeyVaultSettingToJSON,
-} from './AzureKeyVaultSetting';
-import type { KeyProviderType } from './KeyProviderType';
-import {
-    KeyProviderTypeFromJSON,
-    KeyProviderTypeToJSON,
-} from './KeyProviderType';
+import type { AwsKmsSetting } from './AwsKmsSetting'
+import { AwsKmsSettingFromJSON, AwsKmsSettingToJSON } from './AwsKmsSetting'
+import type { AzureKeyVaultSetting } from './AzureKeyVaultSetting'
+import { AzureKeyVaultSettingFromJSON, AzureKeyVaultSettingToJSON } from './AzureKeyVaultSetting'
+import type { KeyProviderType } from './KeyProviderType'
+import { KeyProviderTypeFromJSON, KeyProviderTypeToJSON } from './KeyProviderType'
 
 /**
  * Request body for creating a new Key Provider instance.
@@ -34,82 +25,77 @@ import {
  * @interface CreateKeyProvider
  */
 export interface CreateKeyProvider {
-    /**
-     *
-     * @type {KeyProviderType}
-     * @memberof CreateKeyProvider
-     */
-    type: KeyProviderType;
-    /**
-     *
-     * @type {AzureKeyVaultSetting}
-     * @memberof CreateKeyProvider
-     */
-    azureKeyvaultSettings?: AzureKeyVaultSetting;
-    /**
-     *
-     * @type {AwsKmsSetting}
-     * @memberof CreateKeyProvider
-     */
-    awsKmsSettings?: AwsKmsSetting;
-    /**
-     * Whether to enable caching for keys retrieved from this provider.
-     * @type {boolean}
-     * @memberof CreateKeyProvider
-     */
-    cacheEnabled?: boolean;
-    /**
-     * Time-to-live for cached keys in seconds (if cacheEnabled is true).
-     * @type {number}
-     * @memberof CreateKeyProvider
-     */
-    cacheTTLInSeconds?: number;
+  /**
+   *
+   * @type {KeyProviderType}
+   * @memberof CreateKeyProvider
+   */
+  type: KeyProviderType
+  /**
+   *
+   * @type {AzureKeyVaultSetting}
+   * @memberof CreateKeyProvider
+   */
+  azureKeyvaultSettings?: AzureKeyVaultSetting
+  /**
+   *
+   * @type {AwsKmsSetting}
+   * @memberof CreateKeyProvider
+   */
+  awsKmsSettings?: AwsKmsSetting
+  /**
+   * Whether to enable caching for keys retrieved from this provider.
+   * @type {boolean}
+   * @memberof CreateKeyProvider
+   */
+  cacheEnabled?: boolean
+  /**
+   * Time-to-live for cached keys in seconds (if cacheEnabled is true).
+   * @type {number}
+   * @memberof CreateKeyProvider
+   */
+  cacheTTLInSeconds?: number
 }
-
-
 
 /**
  * Check if a given object implements the CreateKeyProvider interface.
  */
 export function instanceOfCreateKeyProvider(value: object): value is CreateKeyProvider {
-    if (!('type' in value) || value['type'] === undefined) return false;
-    return true;
+  if (!('type' in value) || value['type'] === undefined) return false
+  return true
 }
 
 export function CreateKeyProviderFromJSON(json: any): CreateKeyProvider {
-    return CreateKeyProviderFromJSONTyped(json, false);
+  return CreateKeyProviderFromJSONTyped(json, false)
 }
 
 export function CreateKeyProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateKeyProvider {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'type': KeyProviderTypeFromJSON(json['type']),
-        'azureKeyvaultSettings': json['azureKeyvaultSettings'] == null ? undefined : AzureKeyVaultSettingFromJSON(json['azureKeyvaultSettings']),
-        'awsKmsSettings': json['awsKmsSettings'] == null ? undefined : AwsKmsSettingFromJSON(json['awsKmsSettings']),
-        'cacheEnabled': json['cacheEnabled'] == null ? undefined : json['cacheEnabled'],
-        'cacheTTLInSeconds': json['cacheTTLInSeconds'] == null ? undefined : json['cacheTTLInSeconds'],
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    type: KeyProviderTypeFromJSON(json['type']),
+    azureKeyvaultSettings: json['azureKeyvaultSettings'] == null ? undefined : AzureKeyVaultSettingFromJSON(json['azureKeyvaultSettings']),
+    awsKmsSettings: json['awsKmsSettings'] == null ? undefined : AwsKmsSettingFromJSON(json['awsKmsSettings']),
+    cacheEnabled: json['cacheEnabled'] == null ? undefined : json['cacheEnabled'],
+    cacheTTLInSeconds: json['cacheTTLInSeconds'] == null ? undefined : json['cacheTTLInSeconds'],
+  }
 }
 
 export function CreateKeyProviderToJSON(json: any): CreateKeyProvider {
-    return CreateKeyProviderToJSONTyped(json, false);
+  return CreateKeyProviderToJSONTyped(json, false)
 }
 
 export function CreateKeyProviderToJSONTyped(value?: CreateKeyProvider | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'type': KeyProviderTypeToJSON(value['type']),
-        'azureKeyvaultSettings': AzureKeyVaultSettingToJSON(value['azureKeyvaultSettings']),
-        'awsKmsSettings': AwsKmsSettingToJSON(value['awsKmsSettings']),
-        'cacheEnabled': value['cacheEnabled'],
-        'cacheTTLInSeconds': value['cacheTTLInSeconds'],
-    };
+  return {
+    type: KeyProviderTypeToJSON(value['type']),
+    azureKeyvaultSettings: AzureKeyVaultSettingToJSON(value['azureKeyvaultSettings']),
+    awsKmsSettings: AwsKmsSettingToJSON(value['awsKmsSettings']),
+    cacheEnabled: value['cacheEnabled'],
+    cacheTTLInSeconds: value['cacheTTLInSeconds'],
+  }
 }
-

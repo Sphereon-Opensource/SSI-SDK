@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { KeyProviderType } from './KeyProviderType';
-import {
-    KeyProviderTypeFromJSON,
-    KeyProviderTypeToJSON,
-} from './KeyProviderType';
+import type { KeyProviderType } from './KeyProviderType'
+import { KeyProviderTypeFromJSON, KeyProviderTypeToJSON } from './KeyProviderType'
 
 /**
  * Response body containing the details of a Key Provider instance.
@@ -24,59 +21,54 @@ import {
  * @interface KeyProviderResponse
  */
 export interface KeyProviderResponse {
-    /**
-     * The unique identifier assigned to the Key Provider instance upon creation.
-     * @type {string}
-     * @memberof KeyProviderResponse
-     */
-    providerId: string;
-    /**
-     *
-     * @type {KeyProviderType}
-     * @memberof KeyProviderResponse
-     */
-    type: KeyProviderType;
+  /**
+   * The unique identifier assigned to the Key Provider instance upon creation.
+   * @type {string}
+   * @memberof KeyProviderResponse
+   */
+  providerId: string
+  /**
+   *
+   * @type {KeyProviderType}
+   * @memberof KeyProviderResponse
+   */
+  type: KeyProviderType
 }
-
-
 
 /**
  * Check if a given object implements the KeyProviderResponse interface.
  */
 export function instanceOfKeyProviderResponse(value: object): value is KeyProviderResponse {
-    if (!('providerId' in value) || value['providerId'] === undefined) return false;
-    if (!('type' in value) || value['type'] === undefined) return false;
-    return true;
+  if (!('providerId' in value) || value['providerId'] === undefined) return false
+  if (!('type' in value) || value['type'] === undefined) return false
+  return true
 }
 
 export function KeyProviderResponseFromJSON(json: any): KeyProviderResponse {
-    return KeyProviderResponseFromJSONTyped(json, false);
+  return KeyProviderResponseFromJSONTyped(json, false)
 }
 
 export function KeyProviderResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): KeyProviderResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'providerId': json['providerId'],
-        'type': KeyProviderTypeFromJSON(json['type']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    providerId: json['providerId'],
+    type: KeyProviderTypeFromJSON(json['type']),
+  }
 }
 
 export function KeyProviderResponseToJSON(json: any): KeyProviderResponse {
-    return KeyProviderResponseToJSONTyped(json, false);
+  return KeyProviderResponseToJSONTyped(json, false)
 }
 
 export function KeyProviderResponseToJSONTyped(value?: KeyProviderResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'providerId': value['providerId'],
-        'type': KeyProviderTypeToJSON(value['type']),
-    };
+  return {
+    providerId: value['providerId'],
+    type: KeyProviderTypeToJSON(value['type']),
+  }
 }
-

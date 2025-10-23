@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * KMS REST Server API
- * A REST API for managing cryptographic keys and performing signing and verification operations. 
+ * A REST API for managing cryptographic keys and performing signing and verification operations.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: support@sphereon.com
@@ -12,48 +12,45 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * Specific operations the key is intended for.
  * @export
  */
 export const KeyOperations = {
-    Sign: 'sign',
-    Verify: 'verify',
-    Encrypt: 'encrypt',
-    Decrypt: 'decrypt',
-    WrapKey: 'wrapKey',
-    UnwrapKey: 'unwrapKey',
-    DeriveKey: 'deriveKey',
-    DeriveBits: 'deriveBits'
-} as const;
-export type KeyOperations = typeof KeyOperations[keyof typeof KeyOperations];
-
+  Sign: 'sign',
+  Verify: 'verify',
+  Encrypt: 'encrypt',
+  Decrypt: 'decrypt',
+  WrapKey: 'wrapKey',
+  UnwrapKey: 'unwrapKey',
+  DeriveKey: 'deriveKey',
+  DeriveBits: 'deriveBits',
+} as const
+export type KeyOperations = (typeof KeyOperations)[keyof typeof KeyOperations]
 
 export function instanceOfKeyOperations(value: any): boolean {
-    for (const key in KeyOperations) {
-        if (Object.prototype.hasOwnProperty.call(KeyOperations, key)) {
-            if (KeyOperations[key as keyof typeof KeyOperations] === value) {
-                return true;
-            }
-        }
+  for (const key in KeyOperations) {
+    if (Object.prototype.hasOwnProperty.call(KeyOperations, key)) {
+      if (KeyOperations[key as keyof typeof KeyOperations] === value) {
+        return true
+      }
     }
-    return false;
+  }
+  return false
 }
 
 export function KeyOperationsFromJSON(json: any): KeyOperations {
-    return KeyOperationsFromJSONTyped(json, false);
+  return KeyOperationsFromJSONTyped(json, false)
 }
 
 export function KeyOperationsFromJSONTyped(json: any, ignoreDiscriminator: boolean): KeyOperations {
-    return json as KeyOperations;
+  return json as KeyOperations
 }
 
 export function KeyOperationsToJSON(value?: KeyOperations | null): any {
-    return value as any;
+  return value as any
 }
 
 export function KeyOperationsToJSONTyped(value: any, ignoreDiscriminator: boolean): KeyOperations {
-    return value as KeyOperations;
+  return value as KeyOperations
 }
-

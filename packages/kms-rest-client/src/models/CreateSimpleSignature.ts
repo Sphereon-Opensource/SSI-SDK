@@ -12,21 +12,12 @@
  * Do not edit the class manually.
  */
 
-import type { KeyInfo } from './KeyInfo';
-import {
-    KeyInfoFromJSON,
-    KeyInfoToJSON,
-} from './KeyInfo';
-import type { SignInput } from './SignInput';
-import {
-    SignInputFromJSON,
-    SignInputToJSON,
-} from './SignInput';
-import type { SignatureAlgorithm } from './SignatureAlgorithm';
-import {
-    SignatureAlgorithmFromJSON,
-    SignatureAlgorithmToJSON,
-} from './SignatureAlgorithm';
+import type { KeyInfo } from './KeyInfo'
+import { KeyInfoFromJSON, KeyInfoToJSON } from './KeyInfo'
+import type { SignInput } from './SignInput'
+import { SignInputFromJSON, SignInputToJSON } from './SignInput'
+import type { SignatureAlgorithm } from './SignatureAlgorithm'
+import { SignatureAlgorithmFromJSON, SignatureAlgorithmToJSON } from './SignatureAlgorithm'
 
 /**
  * Request body for creating a digital signature.
@@ -34,67 +25,62 @@ import {
  * @interface CreateSimpleSignature
  */
 export interface CreateSimpleSignature {
-    /**
-     *
-     * @type {SignInput}
-     * @memberof CreateSimpleSignature
-     */
-    signInput: SignInput;
-    /**
-     *
-     * @type {KeyInfo}
-     * @memberof CreateSimpleSignature
-     */
-    keyInfo: KeyInfo;
-    /**
-     *
-     * @type {SignatureAlgorithm}
-     * @memberof CreateSimpleSignature
-     */
-    signatureAlgorithm?: SignatureAlgorithm;
+  /**
+   *
+   * @type {SignInput}
+   * @memberof CreateSimpleSignature
+   */
+  signInput: SignInput
+  /**
+   *
+   * @type {KeyInfo}
+   * @memberof CreateSimpleSignature
+   */
+  keyInfo: KeyInfo
+  /**
+   *
+   * @type {SignatureAlgorithm}
+   * @memberof CreateSimpleSignature
+   */
+  signatureAlgorithm?: SignatureAlgorithm
 }
-
-
 
 /**
  * Check if a given object implements the CreateSimpleSignature interface.
  */
 export function instanceOfCreateSimpleSignature(value: object): value is CreateSimpleSignature {
-    if (!('signInput' in value) || value['signInput'] === undefined) return false;
-    if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false;
-    return true;
+  if (!('signInput' in value) || value['signInput'] === undefined) return false
+  if (!('keyInfo' in value) || value['keyInfo'] === undefined) return false
+  return true
 }
 
 export function CreateSimpleSignatureFromJSON(json: any): CreateSimpleSignature {
-    return CreateSimpleSignatureFromJSONTyped(json, false);
+  return CreateSimpleSignatureFromJSONTyped(json, false)
 }
 
 export function CreateSimpleSignatureFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateSimpleSignature {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'signInput': SignInputFromJSON(json['signInput']),
-        'keyInfo': KeyInfoFromJSON(json['keyInfo']),
-        'signatureAlgorithm': json['signatureAlgorithm'] == null ? undefined : SignatureAlgorithmFromJSON(json['signatureAlgorithm']),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    signInput: SignInputFromJSON(json['signInput']),
+    keyInfo: KeyInfoFromJSON(json['keyInfo']),
+    signatureAlgorithm: json['signatureAlgorithm'] == null ? undefined : SignatureAlgorithmFromJSON(json['signatureAlgorithm']),
+  }
 }
 
 export function CreateSimpleSignatureToJSON(json: any): CreateSimpleSignature {
-    return CreateSimpleSignatureToJSONTyped(json, false);
+  return CreateSimpleSignatureToJSONTyped(json, false)
 }
 
 export function CreateSimpleSignatureToJSONTyped(value?: CreateSimpleSignature | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'signInput': SignInputToJSON(value['signInput']),
-        'keyInfo': KeyInfoToJSON(value['keyInfo']),
-        'signatureAlgorithm': SignatureAlgorithmToJSON(value['signatureAlgorithm']),
-    };
+  return {
+    signInput: SignInputToJSON(value['signInput']),
+    keyInfo: KeyInfoToJSON(value['keyInfo']),
+    signatureAlgorithm: SignatureAlgorithmToJSON(value['signatureAlgorithm']),
+  }
 }
-

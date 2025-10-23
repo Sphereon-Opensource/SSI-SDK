@@ -12,11 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { Resolver } from './Resolver';
-import {
-    ResolverFromJSON,
-    ResolverToJSON,
-} from './Resolver';
+import type { Resolver } from './Resolver'
+import { ResolverFromJSON, ResolverToJSON } from './Resolver'
 
 /**
  * Response body containing all the resolvers.
@@ -24,48 +21,45 @@ import {
  * @interface ListResolversResponse
  */
 export interface ListResolversResponse {
-    /**
-     *
-     * @type {Array<Resolver>}
-     * @memberof ListResolversResponse
-     */
-    resolvers: Array<Resolver>;
+  /**
+   *
+   * @type {Array<Resolver>}
+   * @memberof ListResolversResponse
+   */
+  resolvers: Array<Resolver>
 }
 
 /**
  * Check if a given object implements the ListResolversResponse interface.
  */
 export function instanceOfListResolversResponse(value: object): value is ListResolversResponse {
-    if (!('resolvers' in value) || value['resolvers'] === undefined) return false;
-    return true;
+  if (!('resolvers' in value) || value['resolvers'] === undefined) return false
+  return true
 }
 
 export function ListResolversResponseFromJSON(json: any): ListResolversResponse {
-    return ListResolversResponseFromJSONTyped(json, false);
+  return ListResolversResponseFromJSONTyped(json, false)
 }
 
 export function ListResolversResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListResolversResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-
-        'resolvers': ((json['resolvers'] as Array<any>).map(ResolverFromJSON)),
-    };
+  if (json == null) {
+    return json
+  }
+  return {
+    resolvers: (json['resolvers'] as Array<any>).map(ResolverFromJSON),
+  }
 }
 
 export function ListResolversResponseToJSON(json: any): ListResolversResponse {
-    return ListResolversResponseToJSONTyped(json, false);
+  return ListResolversResponseToJSONTyped(json, false)
 }
 
 export function ListResolversResponseToJSONTyped(value?: ListResolversResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
+  if (value == null) {
+    return value
+  }
 
-    return {
-
-        'resolvers': ((value['resolvers'] as Array<any>).map(ResolverToJSON)),
-    };
+  return {
+    resolvers: (value['resolvers'] as Array<any>).map(ResolverToJSON),
+  }
 }
-
