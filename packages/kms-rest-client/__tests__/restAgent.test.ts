@@ -62,6 +62,6 @@ const testContext = {
 }
 
 // todo: for now we're skipping this test, uncomment if we want the integration tests
-describe.skip('REST integration tests', () => {
+describe.skip('REST integration tests', (): void => {
   kmsRestClientAgentLogic(testContext)
 })

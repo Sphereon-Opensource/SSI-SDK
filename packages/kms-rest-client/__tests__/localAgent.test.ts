@@ -26,6 +26,6 @@ const testContext = {
   tearDown,
 }
 
-describe('Local integration tests', () => {
+describe('Local integration tests', (): void => {
   kmsRestClientAgentLogic(testContext)
 })
