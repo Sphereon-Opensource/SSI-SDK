@@ -120,15 +120,20 @@ export async function importProvidedOrGeneratedKey(
   // @ts-ignore
   const type = args.options?.type ?? args.options?.key?.type ?? args.options?.keyType ?? 'Secp256r1'
   const key = args?.options?.key
-  // Make sure x509 options are also set on the metadata as that is what the kms will look for
-  if (args.options?.x509 && key) {
+  if (key) {
     key.meta = {
-      ...key.meta,
-      x509: {
-        ...args.options.x509,
-        ...key.meta?.x509,
-      },
       providerName: args.providerName,
+    }
+
+    // Make sure x509 options are also set on the metadata as that is what the kms will look for
+    if (args.options?.x509) {
+      key.meta = {
+        ...key.meta,
+        x509: {
+          ...args.options.x509,
+          ...key.meta?.x509,
+        },
+      }
     }
   }
 
