@@ -2,25 +2,22 @@ import 'cross-fetch/polyfill'
 // @ts-ignore
 import express, { Router } from 'express'
 import { Server } from 'http'
-import { DataSource } from 'typeorm'
+import { describe } from 'vitest'
 import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
 import { AgentRestClient } from '@veramo/remote-client'
 import { AgentRouter, RequestWithAgentRouter } from '@veramo/remote-server'
-import { createObjects, getConfig } from '../../agent-config/dist'
-import { IContactManager } from '../src'
-import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
+import { createObjects, getConfig } from '../../agent-config/src'
+import kmsRestClientAgentLogic from './shared/kmsRestClientAgentLogic'
+import { IKmsRestClient } from '../src'
 
-import { describe } from 'vitest'
-
-const port = 4202
+const port = 3004
 const basePath = '/agent'
 
 let serverAgent: IAgent
 let restServer: Server
-let dbConnection: Promise<DataSource>
 
 const getAgent = (options?: IAgentOptions) =>
-  createAgent<IContactManager>({
+  createAgent<IKmsRestClient>({
     ...options,
     plugins: [
       new AgentRestClient({
@@ -32,12 +29,11 @@ const getAgent = (options?: IAgentOptions) =>
   })
 
 const setup = async (): Promise<boolean> => {
-  const config = await getConfig('packages/contact-manager/agent.yml')
-  const { agent, db } = await createObjects(config, { agent: '/agent', db: '/dbConnection' })
+  const config = await getConfig('packages/kms-rest-client/agent.yml')
+  const { agent } = await createObjects(config, { agent: '/agent' })
   serverAgent = agent
-  dbConnection = db
 
-  const agentRouter = AgentRouter({
+  const agentRouter: Router = AgentRouter({
     exposedMethods: serverAgent.availableMethods(),
   })
 
@@ -48,7 +44,7 @@ const setup = async (): Promise<boolean> => {
   return new Promise((resolve): void => {
     const app = express()
     app.use(basePath, requestWithAgent, agentRouter)
-    restServer = app.listen(port, (): void => {
+    restServer = app.listen(port, () => {
       resolve(true)
     })
   })
@@ -56,7 +52,6 @@ const setup = async (): Promise<boolean> => {
 
 const tearDown = async (): Promise<boolean> => {
   restServer?.close()
-  await (await dbConnection)?.close()
   return true
 }
 
@@ -66,6 +61,7 @@ const testContext = {
   tearDown,
 }
 
-describe('REST integration tests', (): void => {
-  contactManagerAgentLogic(testContext)
+// todo: for now we're skipping this test, uncomment if we want the integration tests
+describe.skip('REST integration tests', () => {
+  kmsRestClientAgentLogic(testContext)
 })

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <artifactId>bc-wallet-openapi</artifactId>
+
+    <profiles>
+        <profile>
+            <id>typescript-fetch-models</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <groupId>org.openapitools</groupId>
+                        <version>${openapi-generator-version}</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <apiPackage>com.sphereon.crypto.kms.openapi.api</apiPackage>
+                                    <invokerPackage>com.sphereon.crypto.kms.openapi.handler</invokerPackage>
+                                    <modelPackage>com.sphereon.crypto.kms.openapi.model</modelPackage>
+
+                                    <addCompileSourceRoot>true</addCompileSourceRoot>
+
+                                    <artifactVersion>${project.version}</artifactVersion>
+
+                                    <artifactVersion>${project.version}</artifactVersion>
+                                    <configOptions>
+                                        <useTags>true</useTags>
+                                        <serializableModel>true</serializableModel>
+                                        <snapshotVersion>true</snapshotVersion>
+                                    </configOptions>
+
+                                    <enablePostProcessFile>true</enablePostProcessFile>
+                                    <generateApis>false</generateApis>
+                                    <generateModelDocumentation>true</generateModelDocumentation>
+                                    <generateModels>true</generateModels>
+
+                                    <generateSupportingFiles>true</generateSupportingFiles>
+                                    <generatorName>typescript-fetch</generatorName>
+
+                                    <ignoreFileOverride>
+                                        ${project.basedir}/target/generated-sources/java/api/.swagger-codegen-ignore
+                                    </ignoreFileOverride>
+                                    <importMappings>
+                                        <importMapping>java.time.OffsetDateTime=java.time.Instant</importMapping>
+                                    </importMappings>
+                                    <inputSpec>${project.basedir}/openapi/openapi.yml</inputSpec>
+
+                                    <output>${project.basedir}/src</output>
+
+                                    <skipOverwrite>false</skipOverwrite>
+                                    <typeMappings>
+                                        <typeMapping>OffsetDateTime=Instant</typeMapping>
+                                    </typeMappings>
+                                    <verbose>${openapi-codegen-verbose}</verbose>
+                                </configuration>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <id>typescript-fetch-models</id>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <proc>none</proc>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
+                        </configuration>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <version>${maven-compiler-plugin-version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <description>Credential Showcase Openapi</description>
+    <modelVersion>4.0.0</modelVersion>
+    <name>Credential Showcase Openapi</name>
+
+    <parent>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <version>2.7.6</version>
+    </parent>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-central</id>
+            <name>Maven Central</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <openapi-codegen-verbose>false</openapi-codegen-verbose>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <openapi-generator-version>7.16.0</openapi-generator-version>
+        <maven-compiler-plugin-version>3.14.1</maven-compiler-plugin-version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
+</project>

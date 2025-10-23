@@ -1,0 +1,54 @@
+{
+  "name": "@sphereon/ssi-sdk.kms-rest-client",
+  "description": "contains the client side to call REST endpoints of a KMS server",
+  "version": "0.35.0",
+  "source": "src/index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "react-native": "./dist/index.js",
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
+    "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
+  },
+  "dependencies": {
+    "@sphereon/ssi-types": "workspace:*",
+    "cross-fetch": "^3.1.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.1",
+    "@veramo/remote-client": "4.2.0",
+    "@veramo/remote-server": "4.2.0",
+    "nock": "^13.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "5.8.3"
+  },
+  "files": [
+    "dist",
+    "src",
+    "plugin.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-OpenSource/ssi-sdk.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "KMS",
+    "REST"
+  ]
+}
