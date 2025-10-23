@@ -86,4 +86,4 @@ agent:
       plugins:
         - $require: ./packages/kms-rest-client/dist#KmsRestClient
           $args:
-            - baseUrl: 'http://localhost:8080'
+            - baseUrl: 'https://ssi-backend.sphereon.com'
