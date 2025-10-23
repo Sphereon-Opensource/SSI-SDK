@@ -42,10 +42,11 @@ import type {
   KeyProviderResponse,
 } from '../models'
 import {
-  CreateRawSignatureToJSONTyped,
   CreateRawSignatureResponseFromJSONTyped,
+  CreateRawSignatureToJSONTyped,
   GenerateKeyGlobalToJSONTyped,
   GenerateKeyToJSONTyped,
+  KeyProviderResponseFromJSONTyped,
   ListKeyProvidersResponseFromJSONTyped,
   ListKeysResponseFromJSONTyped,
   ListResolversResponseFromJSONTyped,
@@ -54,10 +55,9 @@ import {
   ResolvePublicKeyToJSONTyped,
   ResolvedKeyInfoFromJSONTyped,
   ResolverFromJSONTyped,
-  VerifyRawSignatureResponseFromJSONTyped,
   StoreKeyToJSONTyped,
-  VerifyRawSignatureToJSONTyped,
-  KeyProviderResponseFromJSONTyped,
+  VerifyRawSignatureResponseFromJSONTyped,
+  VerifyRawSignatureToJSONTyped
 } from '../models'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:kms:rest-client')
