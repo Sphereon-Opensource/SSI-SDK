@@ -7,6 +7,20 @@ constants:
     - kmsListResolvers
     - kmsGetResolver
     - kmsResolveKey
+    - kmsCreateRawSignature
+    - kmsIsValidRawSignature
+    - kmsGetKey
+    - kmsListKeys
+    - kmsStoreKey
+    - kmsGenerateKey
+    - kmsDeleteKey
+    - kmsGetKeyProvider
+    - kmsListKeyProviders
+    - kmsProviderListKeys
+    - kmsProviderStoreKey
+    - kmsProviderGenerateKey
+    - kmsProviderGetKey
+    - kmsProviderDeleteKey
 
 server:
   baseUrl:
