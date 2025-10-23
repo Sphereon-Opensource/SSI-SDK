@@ -18,6 +18,11 @@
       "require": "./dist/index.cjs"
     }
   },
+  "veramo": {
+    "pluginInterfaces": {
+      "IKmsRestClient": "./src/types/IKmsRestClient.ts"
+    }
+  },
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json",
     "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
