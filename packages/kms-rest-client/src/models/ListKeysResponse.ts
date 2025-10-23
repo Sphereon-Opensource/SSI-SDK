@@ -29,14 +29,14 @@ export interface ListKeysResponse {
      * @type {Array<ManagedKeyInfo>}
      * @memberof ListKeysResponse
      */
-    keys: Array<ManagedKeyInfo>;
+    keyInfos: Array<ManagedKeyInfo>;
 }
 
 /**
  * Check if a given object implements the ListKeysResponse interface.
  */
 export function instanceOfListKeysResponse(value: object): value is ListKeysResponse {
-    if (!('keys' in value) || value['keys'] === undefined) return false;
+    if (!('keyInfos' in value) || value['keyInfos'] === undefined) return false;
     return true;
 }
 
@@ -50,7 +50,7 @@ export function ListKeysResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
 
-        'keys': ((json['keys'] as Array<any>).map(ManagedKeyInfoFromJSON)),
+        'keyInfos': ((json['keyInfos'] as Array<any>).map(ManagedKeyInfoFromJSON)),
     };
 }
 
@@ -65,7 +65,7 @@ export function ListKeysResponseToJSONTyped(value?: ListKeysResponse | null, ign
 
     return {
 
-        'keys': ((value['keys'] as Array<any>).map(ManagedKeyInfoToJSON)),
+        'keyInfos': ((value['keyInfos'] as Array<any>).map(ManagedKeyInfoToJSON)),
     };
 }
 

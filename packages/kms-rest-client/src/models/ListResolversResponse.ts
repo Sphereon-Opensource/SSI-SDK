@@ -49,6 +49,7 @@ export function ListResolversResponseFromJSONTyped(json: any, ignoreDiscriminato
         return json;
     }
     return {
+
         'resolvers': ((json['resolvers'] as Array<any>).map(ResolverFromJSON)),
     };
 }
@@ -63,6 +64,7 @@ export function ListResolversResponseToJSONTyped(value?: ListResolversResponse |
     }
 
     return {
+
         'resolvers': ((value['resolvers'] as Array<any>).map(ResolverToJSON)),
     };
 }

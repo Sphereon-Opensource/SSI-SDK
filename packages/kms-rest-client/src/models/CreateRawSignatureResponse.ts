@@ -15,30 +15,30 @@
 /**
  * Response body containing the created signature.
  * @export
- * @interface CreateSignatureResponse
+ * @interface CreateRawSignatureResponse
  */
-export interface CreateSignatureResponse {
+export interface CreateRawSignatureResponse {
     /**
      * The created signature encoded as a base64 string.
      * @type {string}
-     * @memberof CreateSignatureResponse
+     * @memberof CreateRawSignatureResponse
      */
     signature: string;
 }
 
 /**
- * Check if a given object implements the CreateSignatureResponse interface.
+ * Check if a given object implements the CreateRawSignatureResponse interface.
  */
-export function instanceOfCreateSignatureResponse(value: object): value is CreateSignatureResponse {
+export function instanceOfCreateRawSignatureResponse(value: object): value is CreateRawSignatureResponse {
     if (!('signature' in value) || value['signature'] === undefined) return false;
     return true;
 }
 
-export function CreateSignatureResponseFromJSON(json: any): CreateSignatureResponse {
-    return CreateSignatureResponseFromJSONTyped(json, false);
+export function CreateRawSignatureResponseFromJSON(json: any): CreateRawSignatureResponse {
+    return CreateRawSignatureResponseFromJSONTyped(json, false);
 }
 
-export function CreateSignatureResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateSignatureResponse {
+export function CreateRawSignatureResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateRawSignatureResponse {
     if (json == null) {
         return json;
     }
@@ -48,11 +48,11 @@ export function CreateSignatureResponseFromJSONTyped(json: any, ignoreDiscrimina
     };
 }
 
-export function CreateSignatureResponseToJSON(json: any): CreateSignatureResponse {
-    return CreateSignatureResponseToJSONTyped(json, false);
+export function CreateRawSignatureResponseToJSON(json: any): CreateRawSignatureResponse {
+    return CreateRawSignatureResponseToJSONTyped(json, false);
 }
 
-export function CreateSignatureResponseToJSONTyped(value?: CreateSignatureResponse | null, ignoreDiscriminator: boolean = false): any {
+export function CreateRawSignatureResponseToJSONTyped(value?: CreateRawSignatureResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -20,7 +20,7 @@ import {
 import type { KeyVisibility } from './KeyVisibility';
 import {
     KeyVisibilityFromJSON,
-    KeyVisibilityToJSON,
+     KeyVisibilityToJSON,
 } from './KeyVisibility';
 import type { SignatureAlgorithm } from './SignatureAlgorithm';
 import {

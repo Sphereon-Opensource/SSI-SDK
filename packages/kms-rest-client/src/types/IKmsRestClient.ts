@@ -1,11 +1,11 @@
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import type { BearerTokenArg } from '@sphereon/ssi-types'
-import type {
+import {
   CreateRawSignature,
-  CreateSignatureResponse,
+  CreateRawSignatureResponse,
   GenerateKey,
   GenerateKeyGlobal,
-  KeyProvider,
+  KeyProviderResponse,
   ListKeyProvidersResponse,
   ListKeysResponse,
   ListResolversResponse,
@@ -14,23 +14,23 @@ import type {
   ResolvedKeyInfo,
   ResolvePublicKey,
   Resolver,
-  SignatureVerificationResponse,
   StoreKey,
-  VerifyRawSignature
+  VerifyRawSignature,
+  VerifyRawSignatureResponse
 } from '../models'
 
 export interface IKmsRestClient extends IPluginMethodMap {
   kmsGetResolver(args: kmsGetResolverArgs): Promise<Resolver>
   kmsListResolvers(args: KmsListResolversArgs): Promise<ListResolversResponse>
   kmsResolveKey(args: KmsResolveKeyArgs): Promise<ResolvedKeyInfo>
-  kmsCreateRawSignature(args: KmsCreateRawSignatureArgs): Promise<CreateSignatureResponse>
-  kmsIsValidRawSignature(args: KmsIsValidRawSignatureArgs): Promise<SignatureVerificationResponse>
+  kmsCreateRawSignature(args: KmsCreateRawSignatureArgs): Promise<CreateRawSignatureResponse>
+  kmsIsValidRawSignature(args: KmsIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse>
   kmsGetKey(args: KmsGetKeyArgs): Promise<ManagedKeyInfo>
   kmsListKeys(args: KmsListKeysArgs): Promise<ListKeysResponse>
   kmsStoreKey(args: KmsStoreKeyArgs): Promise<ManagedKeyInfo>
   kmsGenerateKey(args: KmsGenerateKeyArgs): Promise<ManagedKeyPair>
   kmsDeleteKey(args: KmsDeleteKeyArgs): Promise<boolean>
-  kmsGetKeyProvider(args: KmsGetKeyProviderArgs): Promise<KeyProvider>
+  kmsGetKeyProvider(args: KmsGetKeyProviderArgs): Promise<KeyProviderResponse>
   kmsListKeyProviders(args: KmsListKeyProvidersArgs): Promise<ListKeyProvidersResponse>
   kmsProviderListKeys(args: KmsProviderListKeysArgs): Promise<ListKeysResponse>
   kmsProviderStoreKey(args: KmsProviderStoreKey): Promise<ManagedKeyInfo>

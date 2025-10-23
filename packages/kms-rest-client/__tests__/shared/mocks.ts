@@ -2,7 +2,8 @@
 import nock from 'nock'
 import {
   CreateRawSignatureToJSONTyped,
-  ResolvePublicKeyToJSONTyped, StoreKeyToJSONTyped,
+  ResolvePublicKeyToJSONTyped,
+  StoreKeyToJSONTyped,
   VerifyRawSignatureToJSONTyped
 } from '../../src/models'
 
@@ -88,7 +89,7 @@ export const createMocks = (): void => {
     })
 
   nock('https://ssi-backend.sphereon.com')
-    .post('/signatures/raw/create', CreateRawSignatureToJSONTyped({
+    .post('/signatures/raw', CreateRawSignatureToJSONTyped({
       keyInfo: {
         key: {
           kty: "EC",
@@ -252,7 +253,7 @@ export const createMocks = (): void => {
     .get('/keys')
     .times(1)
     .reply(200, {
-      keys: [
+      keyInfos: [
         {
           key: {
             kty: "EC",
@@ -288,7 +289,7 @@ export const createMocks = (): void => {
     .get('/keys?providerId=test-software')
     .times(1)
     .reply(200, {
-      keys: [
+      keyInfos: [
         {
           key: {
             kty: "EC",
@@ -323,7 +324,6 @@ export const createMocks = (): void => {
   nock('https://ssi-backend.sphereon.com')
     .post('/keys/generate', {
       use: "sig",
-      curve: "P-256",
       alg: "ECDSA_SHA256",
       keyOperations: ["sign"]
     })
@@ -475,7 +475,7 @@ export const createMocks = (): void => {
     .get('/providers/test-software/keys')
     .times(1)
     .reply(200, {
-      keys: [
+      keyInfos: [
         {
           key: {
             kty: "EC",
@@ -508,7 +508,6 @@ export const createMocks = (): void => {
   nock('https://ssi-backend.sphereon.com')
     .post('/providers/test-software/keys/generate', {
       use: "sig",
-      curve: "P-256",
       alg: "ECDSA_SHA256",
       keyOperations: ["sign"]
     })

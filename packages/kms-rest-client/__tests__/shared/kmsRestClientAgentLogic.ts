@@ -231,7 +231,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com'
       })
 
-      expect(result.keys.length).toBeGreaterThan(0)
+      expect(result.keyInfos.length).toBeGreaterThan(0)
     })
 
     it('should list keys with provider id', async (): Promise<void> => {
@@ -275,7 +275,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         providerId: 'test-software',
       })
 
-      expect(result.keys.length).toBeGreaterThan(0)
+      expect(result.keyInfos.length).toBeGreaterThan(0)
     })
 
     it('should store key', async (): Promise<void> => {
@@ -326,7 +326,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result = await agent.kmsGenerateKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         use: "sig",
-        curve: "P-256",
         alg: "ECDSA_SHA256",
         keyOperations: ["sign"]
       })
@@ -442,7 +441,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         providerId: 'test-software'
       })
 
-      expect(result.keys.length).toBeGreaterThan(0)
+      expect(result.keyInfos.length).toBeGreaterThan(0)
     })
 
     it('should store provider key', async (): Promise<void> => {
@@ -495,7 +494,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         use: "sig",
-        curve: "P-256",
         alg: "ECDSA_SHA256",
         keyOperations: ["sign"]
       })

@@ -12,11 +12,6 @@
  * Do not edit the class manually.
  */
 
-import type { Curve } from './Curve';
-import {
-    CurveFromJSON,
-    CurveToJSON,
-} from './Curve';
 import type { KeyOperations } from './KeyOperations';
 import {
     KeyOperationsFromJSON,
@@ -40,6 +35,12 @@ import {
  */
 export interface GenerateKeyGlobal {
     /**
+     * Alias for the generated key.
+     * @type {string}
+     * @memberof GenerateKeyGlobal
+     */
+    alias?: string;
+    /**
      *
      * @type {JwkUse}
      * @memberof GenerateKeyGlobal
@@ -51,12 +52,6 @@ export interface GenerateKeyGlobal {
      * @memberof GenerateKeyGlobal
      */
     keyOperations?: Array<KeyOperations>;
-    /**
-     *
-     * @type {Curve}
-     * @memberof GenerateKeyGlobal
-     */
-    curve?: Curve;
     /**
      *
      * @type {SignatureAlgorithm}
@@ -90,9 +85,9 @@ export function GenerateKeyGlobalFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
 
+        'alias': json['alias'] == null ? undefined : json['alias'],
         'use': json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
         'keyOperations': json['keyOperations'] == null ? undefined : ((json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON)),
-        'curve': json['curve'] == null ? undefined : CurveFromJSON(json['curve']),
         'alg': json['alg'] == null ? undefined : SignatureAlgorithmFromJSON(json['alg']),
         'providerId': json['providerId'] == null ? undefined : json['providerId'],
     };
@@ -109,9 +104,9 @@ export function GenerateKeyGlobalToJSONTyped(value?: GenerateKeyGlobal | null, i
 
     return {
 
+        'alias': value['alias'],
         'use': JwkUseToJSON(value['use']),
         'keyOperations': value['keyOperations'] == null ? undefined : ((value['keyOperations'] as Array<any>).map(KeyOperationsToJSON)),
-        'curve': CurveToJSON(value['curve']),
         'alg': SignatureAlgorithmToJSON(value['alg']),
         'providerId': value['providerId'],
     };

@@ -25,10 +25,9 @@ import type {
 } from '../types/IKmsRestClient'
 import type {
   CreateRawSignature,
-  CreateSignatureResponse,
+  CreateRawSignatureResponse,
   GenerateKey,
   GenerateKeyGlobal,
-  KeyProvider,
   ListKeyProvidersResponse,
   ListKeysResponse,
   ListResolversResponse,
@@ -37,16 +36,16 @@ import type {
   ResolvedKeyInfo,
   ResolvePublicKey,
   Resolver,
-  SignatureVerificationResponse,
+  VerifyRawSignatureResponse,
   StoreKey,
-  VerifyRawSignature
+  VerifyRawSignature,
+  KeyProviderResponse,
 } from '../models'
 import {
   CreateRawSignatureToJSONTyped,
-  CreateSignatureResponseFromJSONTyped,
+  CreateRawSignatureResponseFromJSONTyped,
   GenerateKeyGlobalToJSONTyped,
   GenerateKeyToJSONTyped,
-  KeyProviderFromJSONTyped,
   ListKeyProvidersResponseFromJSONTyped,
   ListKeysResponseFromJSONTyped,
   ListResolversResponseFromJSONTyped,
@@ -55,9 +54,10 @@ import {
   ResolvePublicKeyToJSONTyped,
   ResolvedKeyInfoFromJSONTyped,
   ResolverFromJSONTyped,
-  SignatureVerificationResponseFromJSONTyped,
+  VerifyRawSignatureResponseFromJSONTyped,
   StoreKeyToJSONTyped,
-  VerifyRawSignatureToJSONTyped
+  VerifyRawSignatureToJSONTyped,
+  KeyProviderResponseFromJSONTyped
 } from '../models'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:kms:rest-client')
@@ -163,9 +163,9 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsCreateRawSignature} */
-  private async kmsCreateRawSignature(args: KmsCreateRawSignatureArgs): Promise<CreateSignatureResponse> {
+  private async kmsCreateRawSignature(args: KmsCreateRawSignatureArgs): Promise<CreateRawSignatureResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
-    const url = KmsRestClient.urlWithBase(`/signatures/raw/create`, baseUrl)
+    const url = KmsRestClient.urlWithBase(`/signatures/raw`, baseUrl)
 
     const body = {
       keyInfo: args.keyInfo,
@@ -179,14 +179,14 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`create raw signature response: ${response}`)
 
     try {
-      return CreateSignatureResponseFromJSONTyped(await response.json(), false)
+      return CreateRawSignatureResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
   }
 
   /** {@inheritDoc IKmsRestClient.kmsIsValidRawSignature} */
-  private async kmsIsValidRawSignature(args: KmsIsValidRawSignatureArgs): Promise<SignatureVerificationResponse> {
+  private async kmsIsValidRawSignature(args: KmsIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/signatures/raw/verify`, baseUrl)
 
@@ -203,7 +203,7 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`verify raw signature response: ${response}`)
 
     try {
-      return SignatureVerificationResponseFromJSONTyped(await response.json(), false)
+      return VerifyRawSignatureResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
@@ -236,7 +236,8 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`list keys response: ${response}`)
 
     try {
-      return ListKeysResponseFromJSONTyped(await response.json(), false)
+      const xx = await response.json()
+      return ListKeysResponseFromJSONTyped(xx, false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
@@ -272,7 +273,6 @@ export class KmsRestClient implements IAgentPlugin {
 
     const body = {
       alg: args.alg,
-      curve: args.curve,
       keyOperations: args.keyOperations,
       providerId: args.providerId,
       use: args.use,
@@ -304,7 +304,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetKeyProvider} */
-  private async kmsGetKeyProvider(args: KmsGetKeyProviderArgs): Promise<KeyProvider> {
+  private async kmsGetKeyProvider(args: KmsGetKeyProviderArgs): Promise<KeyProviderResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}`, baseUrl)
 
@@ -314,7 +314,7 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`get provider response: ${response}`)
 
     try {
-      return KeyProviderFromJSONTyped(await response.json(), false)
+      return KeyProviderResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
@@ -384,7 +384,6 @@ export class KmsRestClient implements IAgentPlugin {
 
     const body = {
       alg: args.alg,
-      curve: args.curve,
       keyOperations: args.keyOperations,
       use: args.use,
     } satisfies GenerateKey

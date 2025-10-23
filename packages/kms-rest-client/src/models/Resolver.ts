@@ -66,6 +66,7 @@ export function ResolverFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
+
         'resolverId': json['resolverId'],
         'supportedIdentifierMethods': json['supportedIdentifierMethods'] == null ? undefined : ((json['supportedIdentifierMethods'] as Array<any>).map(IdentifierMethodFromJSON)),
         'supportedKeyTypes': json['supportedKeyTypes'] == null ? undefined : ((json['supportedKeyTypes'] as Array<any>).map(KeyTypeFromJSON)),
@@ -82,6 +83,7 @@ export function ResolverToJSONTyped(value?: Resolver | null, ignoreDiscriminator
     }
 
     return {
+
         'resolverId': value['resolverId'],
         'supportedIdentifierMethods': value['supportedIdentifierMethods'] == null ? undefined : ((value['supportedIdentifierMethods'] as Array<any>).map(IdentifierMethodToJSON)),
         'supportedKeyTypes': value['supportedKeyTypes'] == null ? undefined : ((value['supportedKeyTypes'] as Array<any>).map(KeyTypeToJSON)),

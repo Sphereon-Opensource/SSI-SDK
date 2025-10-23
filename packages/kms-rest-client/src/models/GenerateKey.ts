@@ -12,11 +12,6 @@
  * Do not edit the class manually.
  */
 
-import type { Curve } from './Curve';
-import {
-    CurveFromJSON,
-    CurveToJSON,
-} from './Curve';
 import type { KeyOperations } from './KeyOperations';
 import {
     KeyOperationsFromJSON,
@@ -40,6 +35,12 @@ import {
  */
 export interface GenerateKey {
     /**
+     * Alias for the generated key.
+     * @type {string}
+     * @memberof GenerateKey
+     */
+    alias?: string;
+    /**
      *
      * @type {JwkUse}
      * @memberof GenerateKey
@@ -51,12 +52,6 @@ export interface GenerateKey {
      * @memberof GenerateKey
      */
     keyOperations?: Array<KeyOperations>;
-    /**
-     *
-     * @type {Curve}
-     * @memberof GenerateKey
-     */
-    curve?: Curve;
     /**
      *
      * @type {SignatureAlgorithm}
@@ -84,9 +79,9 @@ export function GenerateKeyFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
 
+        'alias': json['alias'] == null ? undefined : json['alias'],
         'use': json['use'] == null ? undefined : JwkUseFromJSON(json['use']),
         'keyOperations': json['keyOperations'] == null ? undefined : ((json['keyOperations'] as Array<any>).map(KeyOperationsFromJSON)),
-        'curve': json['curve'] == null ? undefined : CurveFromJSON(json['curve']),
         'alg': json['alg'] == null ? undefined : SignatureAlgorithmFromJSON(json['alg']),
     };
 }
@@ -102,9 +97,9 @@ export function GenerateKeyToJSONTyped(value?: GenerateKey | null, ignoreDiscrim
 
     return {
 
+        'alias': value['alias'],
         'use': JwkUseToJSON(value['use']),
         'keyOperations': value['keyOperations'] == null ? undefined : ((value['keyOperations'] as Array<any>).map(KeyOperationsToJSON)),
-        'curve': CurveToJSON(value['curve']),
         'alg': SignatureAlgorithmToJSON(value['alg']),
     };
 }
