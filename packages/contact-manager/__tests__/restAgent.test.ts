@@ -11,6 +11,7 @@ import { IContactManager } from '../src'
 import contactManagerAgentLogic from './shared/contactManagerAgentLogic'
 
 import { describe } from 'vitest'
+// //jest.setTimeout(60000)
 
 const port = 4202
 const basePath = '/agent'
