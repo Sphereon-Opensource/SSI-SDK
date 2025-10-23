@@ -36,6 +36,7 @@ export {
   type AuthStatusResponsePayload,
   createAuthorizationResponseFromPayload,
   createAuthorizationRequestToPayload,
+  authStatusResponseFromPayload,
   ResponseType,
   ResponseMode,
   VPTokenLocation,

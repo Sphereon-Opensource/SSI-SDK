@@ -1,5 +1,6 @@
 import {
   type AuthStatusResponse,
+  authStatusResponseFromPayload,
   type CreateAuthorizationRequest,
   createAuthorizationRequestToPayload,
   type CreateAuthorizationResponse,
@@ -71,7 +72,8 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     })
     logger.debug(`auth status response: ${statusResponse}`)
     try {
-      return await statusResponse.json()
+      const payloadResponse = await statusResponse.json()
+      return authStatusResponseFromPayload(payloadResponse)
     } catch (err) {
       throw Error(`Status has returned ${statusResponse.status}`)
     }
