@@ -33,8 +33,8 @@ export interface IKmsRestClient extends IPluginMethodMap {
   kmsClientGetKeyProvider(args: KmsClientGetKeyProviderArgs): Promise<KeyProviderResponse>
   kmsClientListKeyProviders(args: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse>
   kmsClientProviderListKeys(args: KmsClientProviderListKeysArgs): Promise<ListKeysResponse>
-  kmsClientProviderStoreKey(args: KmsClientProviderStoreKey): Promise<ManagedKeyInfo>
-  kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKey): Promise<ManagedKeyPair>
+  kmsClientProviderStoreKey(args: KmsClientProviderStoreKeyArgs): Promise<ManagedKeyInfo>
+  kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKeyArgs): Promise<ManagedKeyPair>
   kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<ManagedKeyInfo>
   kmsClientProviderDeleteKey(args: KmsClientProviderDeleteKeyArgs): Promise<boolean>
 }
@@ -98,12 +98,12 @@ export type KmsClientProviderListKeysArgs = {
   providerId: string
 }
 
-export type KmsClientProviderStoreKey = {
+export type KmsClientProviderStoreKeyArgs = {
   baseUrl?: string
   providerId: string
 } & StoreKey
 
-export type KmsClientProviderGenerateKey = {
+export type KmsClientProviderGenerateKeyArgs = {
   baseUrl?: string
   providerId: string
 } & GenerateKey

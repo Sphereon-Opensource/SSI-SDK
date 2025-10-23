@@ -15,8 +15,8 @@ import type {
   KmsClientGetKeyProviderArgs,
   KmsClientListKeyProvidersArgs,
   KmsClientProviderListKeysArgs,
-  KmsClientProviderStoreKey,
-  KmsClientProviderGenerateKey,
+  KmsClientProviderStoreKeyArgs,
+  KmsClientProviderGenerateKeyArgs,
   KmsClientProviderGetKeyArgs,
   KmsClientProviderDeleteKeyArgs,
   RestClientAuthenticationOpts,
@@ -355,7 +355,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderStoreKey} */
-  private async kmsClientProviderStoreKey(args: KmsClientProviderStoreKey): Promise<ManagedKeyInfo> {
+  private async kmsClientProviderStoreKey(args: KmsClientProviderStoreKeyArgs): Promise<ManagedKeyInfo> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys`, baseUrl)
 
@@ -378,7 +378,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGenerateKey} */
-  private async kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKey): Promise<ManagedKeyPair> {
+  private async kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKeyArgs): Promise<ManagedKeyPair> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys/generate`, baseUrl)
 
