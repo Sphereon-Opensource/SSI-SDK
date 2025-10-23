@@ -20,101 +20,101 @@ import {
 } from '../models'
 
 export interface IKmsRestClient extends IPluginMethodMap {
-  kmsGetResolver(args: kmsGetResolverArgs): Promise<Resolver>
-  kmsListResolvers(args: KmsListResolversArgs): Promise<ListResolversResponse>
-  kmsResolveKey(args: KmsResolveKeyArgs): Promise<ResolvedKeyInfo>
-  kmsCreateRawSignature(args: KmsCreateRawSignatureArgs): Promise<CreateRawSignatureResponse>
-  kmsIsValidRawSignature(args: KmsIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse>
-  kmsGetKey(args: KmsGetKeyArgs): Promise<ManagedKeyInfo>
-  kmsListKeys(args: KmsListKeysArgs): Promise<ListKeysResponse>
-  kmsStoreKey(args: KmsStoreKeyArgs): Promise<ManagedKeyInfo>
-  kmsGenerateKey(args: KmsGenerateKeyArgs): Promise<ManagedKeyPair>
-  kmsDeleteKey(args: KmsDeleteKeyArgs): Promise<boolean>
-  kmsGetKeyProvider(args: KmsGetKeyProviderArgs): Promise<KeyProviderResponse>
-  kmsListKeyProviders(args: KmsListKeyProvidersArgs): Promise<ListKeyProvidersResponse>
-  kmsProviderListKeys(args: KmsProviderListKeysArgs): Promise<ListKeysResponse>
-  kmsProviderStoreKey(args: KmsProviderStoreKey): Promise<ManagedKeyInfo>
-  kmsProviderGenerateKey(args: KmsProviderGenerateKey): Promise<ManagedKeyPair>
-  kmsProviderGetKey(args: KmsProviderGetKeyArgs): Promise<ManagedKeyInfo>
-  kmsProviderDeleteKey(args: KmsProviderDeleteKeyArgs): Promise<boolean>
+  kmsClientGetResolver(args: kmsClientGetResolverArgs): Promise<Resolver>
+  kmsClientListResolvers(args: KmsClientListResolversArgs): Promise<ListResolversResponse>
+  kmsClientResolveKey(args: KmsClientResolveKeyArgs): Promise<ResolvedKeyInfo>
+  kmsClientCreateRawSignature(args: KmsClientCreateRawSignatureArgs): Promise<CreateRawSignatureResponse>
+  kmsClientIsValidRawSignature(args: KmsClientIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse>
+  kmsClientGetKey(args: KmsClientGetKeyArgs): Promise<ManagedKeyInfo>
+  kmsClientListKeys(args: KmsClientListKeysArgs): Promise<ListKeysResponse>
+  kmsClientStoreKey(args: KmsClientStoreKeyArgs): Promise<ManagedKeyInfo>
+  kmsClientGenerateKey(args: KmsClientGenerateKeyArgs): Promise<ManagedKeyPair>
+  kmsClientDeleteKey(args: KmsClientDeleteKeyArgs): Promise<boolean>
+  kmsClientGetKeyProvider(args: KmsClientGetKeyProviderArgs): Promise<KeyProviderResponse>
+  kmsClientListKeyProviders(args: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse>
+  kmsClientProviderListKeys(args: KmsClientProviderListKeysArgs): Promise<ListKeysResponse>
+  kmsClientProviderStoreKey(args: KmsClientProviderStoreKey): Promise<ManagedKeyInfo>
+  kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKey): Promise<ManagedKeyPair>
+  kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<ManagedKeyInfo>
+  kmsClientProviderDeleteKey(args: KmsClientProviderDeleteKeyArgs): Promise<boolean>
 }
 
-export type KmsListResolversArgs = {
+export type KmsClientListResolversArgs = {
   baseUrl?: string
 }
 
-export type kmsGetResolverArgs = {
+export type kmsClientGetResolverArgs = {
   baseUrl?: string
   resolverId: string
 }
 
-export type KmsResolveKeyArgs = {
+export type KmsClientResolveKeyArgs = {
   baseUrl?: string
   resolverId: String
 } & ResolvePublicKey
 
-export type KmsCreateRawSignatureArgs = {
+export type KmsClientCreateRawSignatureArgs = {
   baseUrl?: string
 } & CreateRawSignature
 
-export type KmsIsValidRawSignatureArgs = {
+export type KmsClientIsValidRawSignatureArgs = {
   baseUrl?: string
 } & VerifyRawSignature
 
-export type KmsGetKeyArgs = {
+export type KmsClientGetKeyArgs = {
   baseUrl?: string
   aliasOrKid: string
 }
 
-export type KmsListKeysArgs = {
+export type KmsClientListKeysArgs = {
   baseUrl?: string
   providerId?: string
 }
 
-export type KmsStoreKeyArgs = {
+export type KmsClientStoreKeyArgs = {
   baseUrl?: string
 } & StoreKey
 
-export type KmsGenerateKeyArgs = {
+export type KmsClientGenerateKeyArgs = {
   baseUrl?: string
 } & GenerateKeyGlobal
 
-export type KmsDeleteKeyArgs = {
+export type KmsClientDeleteKeyArgs = {
   baseUrl?: string
   aliasOrKid?: string
 }
 
-export type KmsGetKeyProviderArgs = {
+export type KmsClientGetKeyProviderArgs = {
   baseUrl?: string
   providerId?: string
 }
 
-export type KmsListKeyProvidersArgs = {
+export type KmsClientListKeyProvidersArgs = {
   baseUrl?: string
 }
 
-export type KmsProviderListKeysArgs = {
+export type KmsClientProviderListKeysArgs = {
   baseUrl?: string
   providerId: string
 }
 
-export type KmsProviderStoreKey = {
+export type KmsClientProviderStoreKey = {
   baseUrl?: string
   providerId: string
 } & StoreKey
 
-export type KmsProviderGenerateKey = {
+export type KmsClientProviderGenerateKey = {
   baseUrl?: string
   providerId: string
 } & GenerateKey
 
-export type KmsProviderGetKeyArgs = {
+export type KmsClientProviderGetKeyArgs = {
   baseUrl?: string
   providerId: string
   aliasOrKid: string
 }
 
-export type KmsProviderDeleteKeyArgs = {
+export type KmsClientProviderDeleteKeyArgs = {
   baseUrl?: string
   providerId: string
   aliasOrKid: string

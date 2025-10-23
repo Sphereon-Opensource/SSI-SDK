@@ -2,26 +2,26 @@ import { IAgentPlugin } from '@veramo/core'
 import { Loggers } from '@sphereon/ssi-types'
 import { fetch } from 'cross-fetch'
 import type {
-  kmsGetResolverArgs,
-  KmsListResolversArgs,
+  kmsClientGetResolverArgs,
+  KmsClientListResolversArgs,
   IKmsRestClient,
-  KmsResolveKeyArgs,
-  KmsCreateRawSignatureArgs,
-  KmsGetKeyArgs,
-  KmsListKeysArgs,
-  KmsStoreKeyArgs,
-  KmsGenerateKeyArgs,
-  KmsDeleteKeyArgs,
-  KmsGetKeyProviderArgs,
-  KmsListKeyProvidersArgs,
-  KmsProviderListKeysArgs,
-  KmsProviderStoreKey,
-  KmsProviderGenerateKey,
-  KmsProviderGetKeyArgs,
-  KmsProviderDeleteKeyArgs,
+  KmsClientResolveKeyArgs,
+  KmsClientCreateRawSignatureArgs,
+  KmsClientGetKeyArgs,
+  KmsClientListKeysArgs,
+  KmsClientStoreKeyArgs,
+  KmsClientGenerateKeyArgs,
+  KmsClientDeleteKeyArgs,
+  KmsClientGetKeyProviderArgs,
+  KmsClientListKeyProvidersArgs,
+  KmsClientProviderListKeysArgs,
+  KmsClientProviderStoreKey,
+  KmsClientProviderGenerateKey,
+  KmsClientProviderGetKeyArgs,
+  KmsClientProviderDeleteKeyArgs,
   RestClientAuthenticationOpts,
   KmsRestClientArgs,
-  KmsIsValidRawSignatureArgs,
+  KmsClientIsValidRawSignatureArgs,
 } from '../types/IKmsRestClient'
 import type {
   CreateRawSignature,
@@ -67,26 +67,26 @@ const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:kms:rest-client')
  */
 export class KmsRestClient implements IAgentPlugin {
   readonly methods: IKmsRestClient = {
-    kmsGetKey: this.kmsGetKey.bind(this),
-    kmsListKeys: this.kmsListKeys.bind(this),
-    kmsStoreKey: this.kmsStoreKey.bind(this),
-    kmsGenerateKey: this.kmsGenerateKey.bind(this),
-    kmsDeleteKey: this.kmsDeleteKey.bind(this),
+    kmsClientGetKey: this.kmsClientGetKey.bind(this),
+    kmsClientListKeys: this.kmsClientListKeys.bind(this),
+    kmsClientStoreKey: this.kmsClientStoreKey.bind(this),
+    kmsClientGenerateKey: this.kmsClientGenerateKey.bind(this),
+    kmsClientDeleteKey: this.kmsClientDeleteKey.bind(this),
 
-    kmsGetKeyProvider: this.kmsGetKeyProvider.bind(this),
-    kmsListKeyProviders: this.kmsListKeyProviders.bind(this),
-    kmsProviderListKeys: this.kmsProviderListKeys.bind(this),
-    kmsProviderStoreKey: this.kmsProviderStoreKey.bind(this),
-    kmsProviderGenerateKey: this.kmsProviderGenerateKey.bind(this),
-    kmsProviderGetKey: this.kmsProviderGetKey.bind(this),
-    kmsProviderDeleteKey: this.kmsProviderDeleteKey.bind(this),
+    kmsClientGetKeyProvider: this.kmsClientGetKeyProvider.bind(this),
+    kmsClientListKeyProviders: this.kmsClientListKeyProviders.bind(this),
+    kmsClientProviderListKeys: this.kmsClientProviderListKeys.bind(this),
+    kmsClientProviderStoreKey: this.kmsClientProviderStoreKey.bind(this),
+    kmsClientProviderGenerateKey: this.kmsClientProviderGenerateKey.bind(this),
+    kmsClientProviderGetKey: this.kmsClientProviderGetKey.bind(this),
+    kmsClientProviderDeleteKey: this.kmsClientProviderDeleteKey.bind(this),
 
-    kmsGetResolver: this.kmsGetResolver.bind(this),
-    kmsListResolvers: this.kmsListResolvers.bind(this),
-    kmsResolveKey: this.kmsResolveKey.bind(this),
+    kmsClientGetResolver: this.kmsClientGetResolver.bind(this),
+    kmsClientListResolvers: this.kmsClientListResolvers.bind(this),
+    kmsClientResolveKey: this.kmsClientResolveKey.bind(this),
 
-    kmsCreateRawSignature: this.kmsCreateRawSignature.bind(this),
-    kmsIsValidRawSignature: this.kmsIsValidRawSignature.bind(this),
+    kmsClientCreateRawSignature: this.kmsClientCreateRawSignature.bind(this),
+    kmsClientIsValidRawSignature: this.kmsClientIsValidRawSignature.bind(this),
   }
 
   private readonly agentBaseUrl?: string
@@ -104,7 +104,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetResolver} */
-  private async kmsGetResolver(args: kmsGetResolverArgs): Promise<Resolver> {
+  private async kmsClientGetResolver(args: kmsClientGetResolverArgs): Promise<Resolver> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/resolvers/${args.resolverId}`, baseUrl)
 
@@ -121,7 +121,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListResolvers} */
-  private async kmsListResolvers(args: KmsListResolversArgs): Promise<ListResolversResponse> {
+  private async kmsClientListResolvers(args: KmsClientListResolversArgs): Promise<ListResolversResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase('/resolvers', baseUrl)
 
@@ -138,7 +138,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsResolveKey} */
-  private async kmsResolveKey(args: KmsResolveKeyArgs): Promise<ResolvedKeyInfo> {
+  private async kmsClientResolveKey(args: KmsClientResolveKeyArgs): Promise<ResolvedKeyInfo> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/resolvers/${args.resolverId}/resolve`, baseUrl)
 
@@ -163,7 +163,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsCreateRawSignature} */
-  private async kmsCreateRawSignature(args: KmsCreateRawSignatureArgs): Promise<CreateRawSignatureResponse> {
+  private async kmsClientCreateRawSignature(args: KmsClientCreateRawSignatureArgs): Promise<CreateRawSignatureResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/signatures/raw`, baseUrl)
 
@@ -186,7 +186,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsIsValidRawSignature} */
-  private async kmsIsValidRawSignature(args: KmsIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse> {
+  private async kmsClientIsValidRawSignature(args: KmsClientIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/signatures/raw/verify`, baseUrl)
 
@@ -210,7 +210,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetKey} */
-  private async kmsGetKey(args: KmsGetKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientGetKey(args: KmsClientGetKeyArgs): Promise<ManagedKeyInfo> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys/${args.aliasOrKid}`, baseUrl)
 
@@ -227,7 +227,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListKeys} */
-  private async kmsListKeys(args: KmsListKeysArgs): Promise<ListKeysResponse> {
+  private async kmsClientListKeys(args: KmsClientListKeysArgs): Promise<ListKeysResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = this.addSearchParams(KmsRestClient.urlWithBase('/keys', baseUrl), { ...(args.providerId && { providerId: args.providerId }) })
     const response = await fetch(url, {
@@ -244,7 +244,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsStoreKey} */
-  private async kmsStoreKey(args: KmsStoreKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientStoreKey(args: KmsClientStoreKeyArgs): Promise<ManagedKeyInfo> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys`, baseUrl)
 
@@ -267,7 +267,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGenerateKey} */
-  private async kmsGenerateKey(args: KmsGenerateKeyArgs): Promise<ManagedKeyPair> {
+  private async kmsClientGenerateKey(args: KmsClientGenerateKeyArgs): Promise<ManagedKeyPair> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys/generate`, baseUrl)
 
@@ -292,7 +292,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsDeleteKey} */
-  private async kmsDeleteKey(args: KmsDeleteKeyArgs): Promise<boolean> {
+  private async kmsClientDeleteKey(args: KmsClientDeleteKeyArgs): Promise<boolean> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys/${args.aliasOrKid}`, baseUrl)
 
@@ -304,7 +304,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetKeyProvider} */
-  private async kmsGetKeyProvider(args: KmsGetKeyProviderArgs): Promise<KeyProviderResponse> {
+  private async kmsClientGetKeyProvider(args: KmsClientGetKeyProviderArgs): Promise<KeyProviderResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}`, baseUrl)
 
@@ -321,7 +321,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListKeyProviders} */
-  private async kmsListKeyProviders(args: KmsListKeyProvidersArgs): Promise<ListKeyProvidersResponse> {
+  private async kmsClientListKeyProviders(args: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase('/providers', baseUrl)
 
@@ -338,7 +338,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderListKeys} */
-  private async kmsProviderListKeys(args: KmsProviderListKeysArgs): Promise<ListKeysResponse> {
+  private async kmsClientProviderListKeys(args: KmsClientProviderListKeysArgs): Promise<ListKeysResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys`, baseUrl)
 
@@ -355,7 +355,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderStoreKey} */
-  private async kmsProviderStoreKey(args: KmsProviderStoreKey): Promise<ManagedKeyInfo> {
+  private async kmsClientProviderStoreKey(args: KmsClientProviderStoreKey): Promise<ManagedKeyInfo> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys`, baseUrl)
 
@@ -378,7 +378,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGenerateKey} */
-  private async kmsProviderGenerateKey(args: KmsProviderGenerateKey): Promise<ManagedKeyPair> {
+  private async kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKey): Promise<ManagedKeyPair> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys/generate`, baseUrl)
 
@@ -402,7 +402,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGetKey} */
-  private async kmsProviderGetKey(args: KmsProviderGetKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<ManagedKeyInfo> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys/${args.aliasOrKid}`, baseUrl)
 
@@ -419,7 +419,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderDeleteKey} */
-  private async kmsProviderDeleteKey(args: KmsProviderDeleteKeyArgs): Promise<boolean> {
+  private async kmsClientProviderDeleteKey(args: KmsClientProviderDeleteKeyArgs): Promise<boolean> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`providers/${args.providerId}/keys/${args.aliasOrKid}`, baseUrl)
 

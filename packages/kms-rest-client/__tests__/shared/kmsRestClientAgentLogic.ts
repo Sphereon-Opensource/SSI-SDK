@@ -18,7 +18,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should list resolvers', async () => {
-      const result = await agent.kmsListResolvers({
+      const result = await agent.kmsClientListResolvers({
         baseUrl: 'https://ssi-backend.sphereon.com',
       })
 
@@ -26,7 +26,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get resolver by id', async (): Promise<void> => {
-      const result = await agent.kmsGetResolver({
+      const result = await agent.kmsClientGetResolver({
         baseUrl: 'https://ssi-backend.sphereon.com',
         resolverId: 'jose_cose_resolver',
       })
@@ -37,7 +37,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should resolve key', async (): Promise<void> => {
-      const result = await agent.kmsResolveKey({
+      const result = await agent.kmsClientResolveKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         resolverId: 'jose_cose_resolver',
         keyInfo: {
@@ -70,7 +70,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should create raw signature', async (): Promise<void> => {
-      const result = await agent.kmsCreateRawSignature({
+      const result = await agent.kmsClientCreateRawSignature({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -102,7 +102,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should verify raw signature', async (): Promise<void> => {
-      const result = await agent.kmsIsValidRawSignature({
+      const result = await agent.kmsClientIsValidRawSignature({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -135,7 +135,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get key by alias or kid', async (): Promise<void> => {
-      const storeResult = await agent.kmsStoreKey({
+      const storeResult = await agent.kmsClientStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -168,7 +168,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(storeResult.alias).toBeDefined()
 
-      const result = await agent.kmsGetKey({
+      const result = await agent.kmsClientGetKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         aliasOrKid: storeResult.alias,
       })
@@ -184,7 +184,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should list keys', async (): Promise<void> => {
-      const storeResult = await agent.kmsStoreKey({
+      const storeResult = await agent.kmsClientStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -217,7 +217,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(storeResult.alias).toBeDefined()
 
-      const result = await agent.kmsListKeys({
+      const result = await agent.kmsClientListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
       })
 
@@ -225,7 +225,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should list keys with provider id', async (): Promise<void> => {
-      const storeResult = await agent.kmsStoreKey({
+      const storeResult = await agent.kmsClientStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -258,7 +258,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(storeResult.alias).toBeDefined()
 
-      const result = await agent.kmsListKeys({
+      const result = await agent.kmsClientListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
       })
@@ -267,7 +267,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should store key', async (): Promise<void> => {
-      const result = await agent.kmsStoreKey({
+      const result = await agent.kmsClientStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -309,7 +309,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should generate key', async (): Promise<void> => {
-      const result = await agent.kmsGenerateKey({
+      const result = await agent.kmsClientGenerateKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         use: 'sig',
         alg: 'ECDSA_SHA256',
@@ -324,7 +324,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should delete key', async (): Promise<void> => {
-      const storeResult = await agent.kmsStoreKey({
+      const storeResult = await agent.kmsClientStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         keyInfo: {
           key: {
@@ -357,7 +357,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(storeResult.alias).toBeDefined()
 
-      const result = await agent.kmsDeleteKey({
+      const result = await agent.kmsClientDeleteKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         aliasOrKid: storeResult.alias,
       })
@@ -366,7 +366,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get provider by id', async (): Promise<void> => {
-      const result = await agent.kmsGetKeyProvider({
+      const result = await agent.kmsClientGetKeyProvider({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
       })
@@ -376,7 +376,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should list providers', async () => {
-      const result = await agent.kmsListKeyProviders({
+      const result = await agent.kmsClientListKeyProviders({
         baseUrl: 'https://ssi-backend.sphereon.com',
       })
 
@@ -384,7 +384,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should list provider keys', async () => {
-      const generateResult = await agent.kmsProviderStoreKey({
+      const generateResult = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -418,7 +418,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(generateResult.alias).toBeDefined()
 
-      const result = await agent.kmsProviderListKeys({
+      const result = await agent.kmsClientProviderListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
       })
@@ -427,7 +427,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should store provider key', async (): Promise<void> => {
-      const result = await agent.kmsProviderStoreKey({
+      const result = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -470,7 +470,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should generate provider key', async (): Promise<void> => {
-      const result = await agent.kmsProviderGenerateKey({
+      const result = await agent.kmsClientProviderGenerateKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         use: 'sig',
@@ -486,7 +486,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should get provider key by alias or kid', async (): Promise<void> => {
-      const generateResult = await agent.kmsProviderStoreKey({
+      const generateResult = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -520,7 +520,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(generateResult.alias).toBeDefined()
 
-      const result = await agent.kmsProviderGetKey({
+      const result = await agent.kmsClientProviderGetKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         aliasOrKid: generateResult.alias,
@@ -537,7 +537,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should delete provider key', async (): Promise<void> => {
-      const generateResult = await agent.kmsProviderStoreKey({
+      const generateResult = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -571,7 +571,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
       expect(generateResult.alias).toBeDefined()
 
-      const result = await agent.kmsProviderDeleteKey({
+      const result = await agent.kmsClientProviderDeleteKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         aliasOrKid: generateResult.alias,

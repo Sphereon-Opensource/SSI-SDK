@@ -4,23 +4,23 @@ constants:
   baseUrl: http://localhost:3335
   port: 3335
   methods:
-    - kmsListResolvers
-    - kmsGetResolver
-    - kmsResolveKey
-    - kmsCreateRawSignature
-    - kmsIsValidRawSignature
-    - kmsGetKey
-    - kmsListKeys
-    - kmsStoreKey
-    - kmsGenerateKey
-    - kmsDeleteKey
-    - kmsGetKeyProvider
-    - kmsListKeyProviders
-    - kmsProviderListKeys
-    - kmsProviderStoreKey
-    - kmsProviderGenerateKey
-    - kmsProviderGetKey
-    - kmsProviderDeleteKey
+    - kmsClientListResolvers
+    - kmsClientGetResolver
+    - kmsClientResolveKey
+    - kmsClientCreateRawSignature
+    - kmsClientIsValidRawSignature
+    - kmsClientGetKey
+    - kmsClientListKeys
+    - kmsClientStoreKey
+    - kmsClientGenerateKey
+    - kmsClientDeleteKey
+    - kmsClientGetKeyProvider
+    - kmsClientListKeyProviders
+    - kmsClientProviderListKeys
+    - kmsClientProviderStoreKey
+    - kmsClientProviderGenerateKey
+    - kmsClientProviderGetKey
+    - kmsClientProviderDeleteKey
 
 server:
   baseUrl:
