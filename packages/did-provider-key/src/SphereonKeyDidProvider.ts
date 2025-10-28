@@ -17,6 +17,8 @@ import Multicodec from 'multicodec'
 import * as u8a from 'uint8arrays'
 const { fromString, toString } = u8a
 
+const PROVIDER_NAME = 'Sphereon Key DID Provider'
+
 const debug = Debug('did-provider-key')
 
 type IContext = IAgentContext<IKeyManager>
@@ -56,7 +58,7 @@ export class SphereonKeyDidProvider extends AbstractIdentifierProvider {
         }
       }
     },
-    context: IContext
+    context: IContext,
   ): Promise<Omit<IIdentifier, 'provider'>> {
     let codecName = (options?.codecName?.toUpperCase() === 'EBSI' ? (JWK_JCS_PUB_NAME as Multicodec.CodecName) : options?.codecName) as
       | CodeNameType
@@ -69,12 +71,13 @@ export class SphereonKeyDidProvider extends AbstractIdentifierProvider {
 
     const key = await importProvidedOrGeneratedKey(
       {
+        providerName: PROVIDER_NAME,
         // @ts-ignore
         kms: kms ?? this.kms,
         alias: alias,
         options: { ...options, type: keyType },
       },
-      context
+      context,
     )
 
     let methodSpecificId: string | undefined
@@ -85,11 +88,11 @@ export class SphereonKeyDidProvider extends AbstractIdentifierProvider {
       const jwk = toJwk(key.publicKeyHex, keyType, { use: JwkKeyUse.Signature, key, noKidThumbprint: true })
       // console.log(`FIXME JWK: ${JSON.stringify(toJwk(privateKeyHex, keyType, { use: JwkKeyUse.Signature, key, isPrivateKey: true }), null, 2)}`)
       methodSpecificId = toString(
-        Multibase.encode('base58btc', Multicodec.addPrefix(fromString(JWK_JCS_PUB_PREFIX.valueOf().toString(16), 'hex'), jwkJcsEncode(jwk)))
+        Multibase.encode('base58btc', Multicodec.addPrefix(fromString(JWK_JCS_PUB_PREFIX.valueOf().toString(16), 'hex'), jwkJcsEncode(jwk))),
       )
     } else if (codecName) {
       methodSpecificId = toString(
-        Multibase.encode('base58btc', Multicodec.addPrefix(codecName as Multicodec.CodecName, fromString(compressedPublicKeyHex, 'hex')))
+        Multibase.encode('base58btc', Multicodec.addPrefix(codecName as Multicodec.CodecName, fromString(compressedPublicKeyHex, 'hex'))),
       )
     } else {
       codecName = keyCodecs[keyType]
@@ -97,7 +100,7 @@ export class SphereonKeyDidProvider extends AbstractIdentifierProvider {
       if (codecName) {
         // methodSpecificId  = bytesToMultibase({bytes: u8a.fromString(key.publicKeyHex, 'hex'), codecName})
         methodSpecificId = toString(
-          Multibase.encode('base58btc', Multicodec.addPrefix(codecName as Multicodec.CodecName, fromString(compressedPublicKeyHex, 'hex')))
+          Multibase.encode('base58btc', Multicodec.addPrefix(codecName as Multicodec.CodecName, fromString(compressedPublicKeyHex, 'hex'))),
         ).toString()
       }
     }
@@ -116,7 +119,7 @@ export class SphereonKeyDidProvider extends AbstractIdentifierProvider {
 
   async updateIdentifier(
     args: { did: string; kms?: string | undefined; alias?: string | undefined; options?: any },
-    context: IAgentContext<IKeyManager>
+    context: IAgentContext<IKeyManager>,
   ): Promise<IIdentifier> {
     throw new Error('KeyDIDProvider updateIdentifier not supported yet.')
   }
