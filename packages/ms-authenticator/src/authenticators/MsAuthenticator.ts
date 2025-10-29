@@ -7,7 +7,7 @@ import {
   PublicClientApplication,
   UsernamePasswordRequest,
 } from '@azure/msal-node'
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 import { IMSClientCredentialAuthInfo, IMsAuthenticationClientCredentialArgs, IMsAuthenticationUsernamePasswordArgs } from '../index'
 
 import hash from 'object-hash'
@@ -66,7 +66,7 @@ export async function getMSClientCredentialAccessToken(
   authenticationArgs: IMsAuthenticationClientCredentialArgs,
   opts?: {
     confidentialClient?: ConfidentialClientApplication
-  },
+  }
 ): Promise<AuthenticationResult> {
   const confidentialClient =
     opts?.confidentialClient ?? (await newMSClientCredentialAuthenticator(authenticationArgs).then((cca) => cca.confidentialClient))
@@ -99,7 +99,7 @@ export async function getMSClientCredentialAccessToken(
 }
 
 export async function newMSClientCredentialAuthenticator(
-  authenticationArgs: IMsAuthenticationClientCredentialArgs,
+  authenticationArgs: IMsAuthenticationClientCredentialArgs
 ): Promise<IMSClientCredentialAuthInfo> {
   const didEndpoint = authenticationArgs?.credentialManifestUrl
     ? await assertEntraCredentialManifestUrlInCorrectRegion(authenticationArgs)

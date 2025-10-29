@@ -1,11 +1,15 @@
+import { CreateAuthorizationRequestPayload, CreateAuthorizationResponsePayload } from '@sphereon/did-auth-siop'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { AuthorizationRequestStateStatus, AuthorizationResponseStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IAgentContext, ICredentialVerifier } from '@veramo/core'
-import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { Request, Response } from 'express'
 import { QRCodeOpts } from './QRCode.types'
+import { VerifiedData } from '@sphereon/did-auth-siop'
 
 export type SiopFeatures = 'rp-status' | 'siop'
+
 export interface ISIOPv2RPRestAPIOpts {
   enableFeatures?: SiopFeatures[]
   endpointOpts?: {
@@ -28,5 +32,36 @@ export interface ICreateAuthRequestWebappEndpointOpts extends ISingleEndpointOpt
   responseRedirectURI?: string
 }
 
-export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPresentationExchange & IPDManager
+export type IRequiredPlugins = ICredentialVerifier & ISIOPv2RP & IPDManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
+
+export type CreateAuthorizationRequestPayloadRequest = Request<Record<string, never>, any, CreateAuthorizationRequestPayload, Record<string, never>>
+
+export type CreateAuthorizationResponsePayloadResponse = Response<CreateAuthorizationResponsePayload>
+
+export type DeleteAuthorizationRequest = Request<DeleteAuthorizationRequestPathParameters, any, Record<string, any>, Record<string, any>>
+
+export type DeleteAuthorizationRequestPathParameters = {
+  correlationId: string
+}
+
+export type GetAuthorizationRequestStatus = Request<GetAuthorizationRequestStatusPathParameters, any, Record<string, any>, Record<string, any>>
+
+export type GetAuthorizationRequestStatusPathParameters = {
+  correlationId: string
+}
+
+export type RequestError = {
+  status: number
+  message: string
+  error_details?: string
+}
+
+export interface AuthStatusResponse {
+  status: AuthorizationRequestStateStatus | AuthorizationResponseStateStatus
+  correlation_id: string
+  query_id: string
+  last_updated: number
+  verified_data?: VerifiedData
+  error?: RequestError
+}

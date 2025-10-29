@@ -6,6 +6,7 @@ import {
   DocumentFormat,
   type IIssuer,
   type StatusListCredential,
+  StatusListCredentialIdMode,
   StatusListType,
 } from '@sphereon/ssi-types'
 
@@ -60,6 +61,7 @@ export class StatusList2021Implementation implements IStatusList {
       statusList2021: {
         statusPurpose,
         indexingDirection: 'rightToLeft',
+        credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
       },
       length,
       type: StatusListType.StatusList2021,
@@ -108,6 +110,7 @@ export class StatusList2021Implementation implements IStatusList {
       statusList2021: {
         statusPurpose: credentialSubject.statusPurpose,
         indexingDirection: 'rightToLeft',
+        credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
       },
       length: statusList.length - 1,
       type: StatusListType.StatusList2021,
@@ -153,6 +156,7 @@ export class StatusList2021Implementation implements IStatusList {
       statusList2021: {
         statusPurpose: args.statusList2021.statusPurpose,
         indexingDirection: 'rightToLeft',
+        credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
       },
       length: statusList.length,
       proofFormat: args.proofFormat ?? 'lds',
@@ -224,6 +228,7 @@ export class StatusList2021Implementation implements IStatusList {
         statusList2021: {
           indexingDirection: 'rightToLeft',
           statusPurpose,
+          credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
         },
       }
     } else {
@@ -251,6 +256,7 @@ export class StatusList2021Implementation implements IStatusList {
         statusList2021: {
           indexingDirection: statusList2021Entity.indexingDirection,
           statusPurpose: statusList2021Entity.statusPurpose,
+          credentialIdMode: StatusListCredentialIdMode.ISSUANCE,
         },
       }
     }

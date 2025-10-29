@@ -5,6 +5,7 @@ import {
   AuthorizationRequestOpts,
   AuthzFlowType,
   CredentialConfigurationSupported,
+  CredentialConfigurationSupportedV1_0_15,
   getJson,
   getTypesFromCredentialSupported,
   ProofOfPossessionCallbacks,
@@ -29,7 +30,7 @@ import {
   Siopv2OID4VPLinkHandler,
 } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { _ExtendedIKey } from '@veramo/utils'
-import { waitFor } from 'xstate/lib/waitFor'
+import { waitFor } from 'xstate/lib/waitFor.js'
 import { logger } from '../index'
 import { AttestationResult, CreateAttestationAuthRequestURLArgs, EbsiEnvironment, GetAttestationArgs, IRequiredContext } from '../types/IEbsiSupport'
 import {
@@ -101,7 +102,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     retrieveServerMetadata: true,
   })
 
-  const allMatches = vciClient.getCredentialsSupported(false)
+  const allMatches = {} as Record<string, CredentialConfigurationSupportedV1_0_15> | Array<CredentialConfigurationSupported> // vciClient.getCredentialsSupported(format) FIXME SSISDK-40
   let arrayMatches: Array<CredentialConfigurationSupported>
   if (Array.isArray(allMatches)) {
     arrayMatches = allMatches

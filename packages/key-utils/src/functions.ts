@@ -115,19 +115,25 @@ export async function importProvidedOrGeneratedKey(
   args: IImportProvidedOrGeneratedKeyArgs & {
     kms: string
   },
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<IKey> {
   // @ts-ignore
   const type = args.options?.type ?? args.options?.key?.type ?? args.options?.keyType ?? 'Secp256r1'
   const key = args?.options?.key
-  // Make sure x509 options are also set on the metadata as that is what the kms will look for
-  if (args.options?.x509 && key) {
+  if (key) {
     key.meta = {
-      ...key.meta,
-      x509: {
-        ...args.options.x509,
-        ...key.meta?.x509,
-      },
+      providerName: args.providerName,
+    }
+
+    // Make sure x509 options are also set on the metadata as that is what the kms will look for
+    if (args.options?.x509) {
+      key.meta = {
+        ...key.meta,
+        x509: {
+          ...args.options.x509,
+          ...key.meta?.x509,
+        },
+      }
     }
   }
 
@@ -172,8 +178,8 @@ export const calculateJwkThumbprintForKey = (args: {
   const jwk = key.publicKeyHex
     ? toJwk(key.publicKeyHex, key.type, { key: key, isPrivateKey: false })
     : 'privateKeyHex' in key && key.privateKeyHex
-    ? toJwk(key.privateKeyHex, key.type, { isPrivateKey: true })
-    : undefined
+      ? toJwk(key.privateKeyHex, key.type, { isPrivateKey: true })
+      : undefined
   if (!jwk) {
     throw Error(`Could not determine jwk from key ${key.kid}`)
   }
@@ -231,7 +237,7 @@ export const toJwkFromKey = (
   opts?: {
     use?: JwkKeyUse
     noKidThumbprint?: boolean
-  }
+  },
 ): JWK => {
   const isPrivateKey = 'privateKeyHex' in key
   return toJwk(key.publicKeyHex!, key.type, { ...opts, key, isPrivateKey })
@@ -247,7 +253,7 @@ export const toJwkFromKey = (
 export const toJwk = (
   publicKeyHex: string,
   type: TKeyType,
-  opts?: { use?: JwkKeyUse; key?: IKey | MinimalImportableKey; isPrivateKey?: boolean; noKidThumbprint?: boolean }
+  opts?: { use?: JwkKeyUse; key?: IKey | MinimalImportableKey; isPrivateKey?: boolean; noKidThumbprint?: boolean },
 ): JWK => {
   const { key, noKidThumbprint = false } = opts ?? {}
   if (key && key.publicKeyHex !== publicKeyHex && opts?.isPrivateKey !== true) {
@@ -433,10 +439,10 @@ export const jwkDetermineUse = (type: TKeyType, suppliedUse?: JwkKeyUse): JwkKey
   return suppliedUse
     ? suppliedUse
     : SIG_KEY_ALGS.includes(type)
-    ? JwkKeyUse.Signature
-    : ENC_KEY_ALGS.includes(type)
-    ? JwkKeyUse.Encryption
-    : undefined
+      ? JwkKeyUse.Signature
+      : ENC_KEY_ALGS.includes(type)
+        ? JwkKeyUse.Encryption
+        : undefined
 }
 
 /**
@@ -451,7 +457,7 @@ const assertProperKeyLength = (keyHex: string, expectedKeyLength: number | numbe
       throw Error(
         `Invalid key length. Needs to be a hex string with length from ${JSON.stringify(expectedKeyLength)} instead of ${
           keyHex.length
-        }. Input: ${keyHex}`
+        }. Input: ${keyHex}`,
       )
     }
   } else if (keyHex.length !== expectedKeyLength) {
@@ -484,8 +490,8 @@ const toSecp256k1Jwk = (keyHex: string, opts?: { use?: JwkKeyUse; isPrivateKey?:
     ...(use !== undefined && { use }),
     kty: JwkKeyType.EC,
     crv: JoseCurve.secp256k1,
-    x: hexToBase64(pubPoint.getX().toString('hex'), 'base64url'),
-    y: hexToBase64(pubPoint.getY().toString('hex'), 'base64url'),
+    x: hexToBase64(pubPoint.getX().toString('hex').padStart(64, '0'), 'base64url'),
+    y: hexToBase64(pubPoint.getY().toString('hex').padStart(64, '0'), 'base64url'),
     ...(opts?.isPrivateKey && { d: hexToBase64(keyPair.getPrivate('hex'), 'base64url') }),
   })
 }
@@ -515,8 +521,8 @@ const toSecp256r1Jwk = (keyHex: string, opts?: { use?: JwkKeyUse; isPrivateKey?:
     ...(use !== undefined && { use }),
     kty: JwkKeyType.EC,
     crv: JoseCurve.P_256,
-    x: hexToBase64(pubPoint.getX().toString('hex'), 'base64url'),
-    y: hexToBase64(pubPoint.getY().toString('hex'), 'base64url'),
+    x: hexToBase64(pubPoint.getX().toString('hex').padStart(64, '0'), 'base64url'),
+    y: hexToBase64(pubPoint.getY().toString('hex').padStart(64, '0'), 'base64url'),
     ...(opts?.isPrivateKey && { d: hexToBase64(keyPair.getPrivate('hex'), 'base64url') }),
   })
 }
@@ -532,7 +538,7 @@ const toEd25519OrX25519Jwk = (
   opts: {
     use?: JwkKeyUse
     crv: JoseCurve.Ed25519 | JoseCurve.X25519
-  }
+  },
 ): JWK => {
   assertProperKeyLength(publicKeyHex, 64)
   const { use } = opts ?? {}
@@ -954,8 +960,8 @@ export async function verifyRawSignature({
           signatureAlgorithm === JoseSignatureAlgorithm.RS512 || signatureAlgorithm === JoseSignatureAlgorithm.PS512
             ? sha512
             : signatureAlgorithm === JoseSignatureAlgorithm.RS384 || signatureAlgorithm === JoseSignatureAlgorithm.PS384
-            ? sha384
-            : sha256
+              ? sha384
+              : sha256
         switch (signatureAlgorithm) {
           case JoseSignatureAlgorithm.RS256:
             return rsa.PKCS1_SHA256.verify(
@@ -964,7 +970,7 @@ export async function verifyRawSignature({
                 e: jwkPropertyToBigInt(jwk.e!),
               },
               data,
-              signature
+              signature,
             )
           case JoseSignatureAlgorithm.RS384:
             return rsa.PKCS1_SHA384.verify(
@@ -973,7 +979,7 @@ export async function verifyRawSignature({
                 e: jwkPropertyToBigInt(jwk.e!),
               },
               data,
-              signature
+              signature,
             )
           case JoseSignatureAlgorithm.RS512:
             return rsa.PKCS1_SHA512.verify(
@@ -982,7 +988,7 @@ export async function verifyRawSignature({
                 e: jwkPropertyToBigInt(jwk.e!),
               },
               data,
-              signature
+              signature,
             )
           case JoseSignatureAlgorithm.PS256:
           case JoseSignatureAlgorithm.PS384:
@@ -1002,7 +1008,7 @@ export async function verifyRawSignature({
                 e: jwkPropertyToBigInt(jwk.e!),
               },
               data,
-              signature
+              signature,
             )
         }
       }

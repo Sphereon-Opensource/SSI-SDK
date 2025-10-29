@@ -1,4 +1,4 @@
+import { BitstringStatusListCredentialUnsigned } from '@4sure-tech/vc-bitstring-status-lists'
 import { StatusListCredential } from '@sphereon/ssi-types'
-import { BitstringStatusListCredentialUnsigned } from '../../../../../vc-bitstring-status-lists'
 
 export type BitstringStatusListCredential = BitstringStatusListCredentialUnsigned & StatusListCredential

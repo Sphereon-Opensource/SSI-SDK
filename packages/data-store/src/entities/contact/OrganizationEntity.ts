@@ -1,6 +1,6 @@
+import { ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
 import { BeforeInsert, BeforeUpdate, ChildEntity, Column } from 'typeorm'
-import { ValidationConstraint } from '../../types'
 import { getConstraint } from '../../utils/ValidatorUtils'
 import { BaseContactEntity } from './BaseContactEntity'
 

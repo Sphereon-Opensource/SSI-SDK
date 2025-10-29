@@ -1,10 +1,11 @@
-import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, StatesConfig, TypegenDisabled } from 'xstate'
+import { RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
 import { OpenID4VCIClientState } from '@sphereon/oid4vci-client'
-import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store'
-import { PresentationDefinitionWithLocation, RPRegistrationMetadataPayload } from '@sphereon/did-auth-siop'
-import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { AuthorizationChallengeCodeResponse } from '@sphereon/oid4vci-common'
+import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { DidAuthConfig, Party } from '@sphereon/ssi-sdk.data-store-types'
 import { IIdentifier } from '@veramo/core'
+import { DcqlQuery } from 'dcql'
+import { BaseActionObject, Interpreter, ResolveTypegenMeta, ServiceMap, State, StateMachine, StatesConfig, TypegenDisabled } from 'xstate'
 import { ErrorDetails, RequiredContext } from './IOID4VCIHolder'
 
 export enum FirstPartyMachineStateTypes {
@@ -149,7 +150,7 @@ export type SiopV2AuthorizationRequestData = {
   clientIdScheme?: string
   clientId?: string
   entityId?: string
-  presentationDefinitions?: PresentationDefinitionWithLocation[]
+  dcqlQuery: DcqlQuery
 }
 
 export type FirstPartyMachineNavigationArgs = {

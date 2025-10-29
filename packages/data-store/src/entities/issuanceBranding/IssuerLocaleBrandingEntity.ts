@@ -1,8 +1,8 @@
-import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
-import { IssuerBrandingEntity } from './IssuerBrandingEntity'
-import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
-import { IsNonEmptyStringConstraint } from '../validators'
 import { Validate } from 'class-validator'
+import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
+import { IsNonEmptyStringConstraint } from '../validators'
+import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
+import { IssuerBrandingEntity } from './IssuerBrandingEntity'
 
 @ChildEntity('IssuerLocaleBranding')
 @Index('IDX_IssuerLocaleBrandingEntity_issuerBranding_locale', ['issuerBranding', 'locale'], { unique: true })

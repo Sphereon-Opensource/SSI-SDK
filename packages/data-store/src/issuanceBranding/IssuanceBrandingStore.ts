@@ -1,25 +1,3 @@
-import { type OrPromise } from '@sphereon/ssi-types'
-import Debug from 'debug'
-import { DataSource, type DeleteResult, In, Not, type Repository } from 'typeorm'
-import {
-  credentialBrandingEntityFrom,
-  credentialBrandingFrom,
-  credentialLocaleBrandingEntityFrom,
-  issuerBrandingEntityFrom,
-  issuerBrandingFrom,
-  issuerLocaleBrandingEntityFrom,
-  localeBrandingFrom,
-} from '../utils/issuanceBranding/MappingUtils'
-import { BackgroundAttributesEntity } from '../entities/issuanceBranding/BackgroundAttributesEntity'
-import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
-import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
-import { IssuerBrandingEntity } from '../entities/issuanceBranding/IssuerBrandingEntity'
-import { CredentialBrandingEntity } from '../entities/issuanceBranding/CredentialBrandingEntity'
-import { CredentialLocaleBrandingEntity } from '../entities/issuanceBranding/CredentialLocaleBrandingEntity'
-import { IssuerLocaleBrandingEntity } from '../entities/issuanceBranding/IssuerLocaleBrandingEntity'
-import { BaseLocaleBrandingEntity } from '../entities/issuanceBranding/BaseLocaleBrandingEntity'
-import { TextAttributesEntity } from '../entities/issuanceBranding/TextAttributesEntity'
-import { AbstractIssuanceBrandingStore } from './AbstractIssuanceBrandingStore'
 import type {
   IAddCredentialBrandingArgs,
   IAddCredentialLocaleBrandingArgs,
@@ -28,7 +6,7 @@ import type {
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
   ICredentialBranding,
-  IPartialCredentialBranding,
+  ICredentialBrandingFilter,
   ICredentialLocaleBranding,
   ICredentialLocaleBrandingFilter,
   IGetCredentialBrandingArgs,
@@ -39,6 +17,7 @@ import type {
   IIssuerBrandingFilter,
   IIssuerLocaleBranding,
   IIssuerLocaleBrandingFilter,
+  IPartialCredentialBranding,
   IRemoveCredentialBrandingArgs,
   IRemoveCredentialLocaleBrandingArgs,
   IRemoveIssuerBrandingArgs,
@@ -47,8 +26,29 @@ import type {
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
-  ICredentialBrandingFilter,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { AbstractIssuanceBrandingStore } from '@sphereon/ssi-sdk.data-store-types'
+import { type OrPromise } from '@sphereon/ssi-types'
+import Debug from 'debug'
+import { DataSource, type DeleteResult, In, Not, type Repository } from 'typeorm'
+import { BackgroundAttributesEntity } from '../entities/issuanceBranding/BackgroundAttributesEntity'
+import { BaseLocaleBrandingEntity } from '../entities/issuanceBranding/BaseLocaleBrandingEntity'
+import { CredentialBrandingEntity } from '../entities/issuanceBranding/CredentialBrandingEntity'
+import { CredentialLocaleBrandingEntity } from '../entities/issuanceBranding/CredentialLocaleBrandingEntity'
+import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
+import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
+import { IssuerBrandingEntity } from '../entities/issuanceBranding/IssuerBrandingEntity'
+import { IssuerLocaleBrandingEntity } from '../entities/issuanceBranding/IssuerLocaleBrandingEntity'
+import { TextAttributesEntity } from '../entities/issuanceBranding/TextAttributesEntity'
+import {
+  credentialBrandingEntityFrom,
+  credentialBrandingFrom,
+  credentialLocaleBrandingEntityFrom,
+  issuerBrandingEntityFrom,
+  issuerBrandingFrom,
+  issuerLocaleBrandingEntityFrom,
+  localeBrandingFrom,
+} from '../utils/issuanceBranding/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:issuance-branding-store')
 

@@ -123,6 +123,9 @@
       "path": "./packages/credential-vcdm2-jose-provider"
     },
     {
+      "path": "./packages/credential-vcdm2-sdjwt-provider"
+    },
+    {
       "path": "./packages/credential-vcdm1-jwt-provider"
     },
     {
@@ -172,6 +175,9 @@
     },
     {
       "path": "./packages/pd-manager-rest-api"
+    },
+    {
+      "path": "./packages/data-store-types"
     },
     {
       "path": "./packages/data-store"

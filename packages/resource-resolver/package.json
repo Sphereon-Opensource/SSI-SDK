@@ -28,7 +28,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk.anomaly-detection": "workspace:*",
     "@sphereon/ssi-sdk.kv-store-temp": "workspace:*",
-    "cross-fetch": "^3.1.8",
+    "cross-fetch": "^4.1.0",
     "debug": "^4.3.5",
     "typeorm": "0.3.20",
     "uint8arrays": "3.1.1"

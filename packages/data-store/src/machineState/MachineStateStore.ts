@@ -1,8 +1,3 @@
-import { type OrPromise } from '@sphereon/ssi-types'
-import Debug from 'debug'
-import { Brackets, DataSource, type FindOptionsWhere, IsNull, LessThan, Not } from 'typeorm'
-
-import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 import type {
   StoreFindMachineStatesArgs,
   StoreMachineStateDeleteArgs,
@@ -11,8 +6,13 @@ import type {
   StoreMachineStateInfo,
   StoreMachineStatePersistArgs,
   StoreMachineStatesFindActiveArgs,
-} from '../types'
-import { IAbstractMachineStateStore } from './IAbstractMachineStateStore'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { IAbstractMachineStateStore } from '@sphereon/ssi-sdk.data-store-types'
+import { type OrPromise } from '@sphereon/ssi-types'
+import Debug from 'debug'
+import { Brackets, DataSource, type FindOptionsWhere, IsNull, LessThan, Not } from 'typeorm'
+
+import { MachineStateInfoEntity } from '../entities/machineState/MachineStateInfoEntity'
 
 const debug = Debug('sphereon:ssi-sdk:machine-state:store')
 

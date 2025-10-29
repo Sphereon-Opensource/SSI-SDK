@@ -1,5 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.json"
+  ],
   "references": [
     {
       "path": "../ssi-types"
@@ -9,6 +16,9 @@
     },
     {
       "path": "../vc-status-list"
+    },
+    {
+      "path": "../data-store-types"
     },
     {
       "path": "../data-store"

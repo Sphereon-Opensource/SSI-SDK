@@ -1,6 +1,8 @@
 import { CreateElementArgs, CreateValueArgs, events, IRequiredContext, QRType, ValueResult } from '../../types/IQRCodeGenerator'
-import QRCode from 'react-qr-code'
+import QRCodeImport from 'react-qr-code'
 import React from 'react'
+
+const QRCode = (QRCodeImport as any)?.default || QRCodeImport
 
 export async function generateQRCodeValue<T extends QRType>(
   args: CreateValueArgs<T, string> | CreateElementArgs<T, string>,
@@ -53,6 +55,5 @@ export async function generateQRCodeReactElementImpl<T extends QRType>(
   const { bgColor, fgColor, level, size, title } = renderingProps
   const result: ValueResult<T, string> = await generateQRCodeValueImpl(args, orig, context)
 
-  // @ts-ignore
   return <QRCode value={result.value} bgColor={bgColor} fgColor={fgColor} level={level} size={size} title={title} />
 }

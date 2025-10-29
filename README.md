@@ -6,6 +6,8 @@
   <br>
 </h1>
 
+_IMPORTANT the packages are still in development stage, which means that breaking changes are to be expected The current branch only supports OID4VCI draft v15, for draft v13 and lower use branch archive/draft-v13-support_
+
 # SSI SDK with OID4VC, Presentation Exchange, MS Entra support
 
 This mono repository, contains packages that add support for Presentation Exchange and OpenID4VC (SIOPv2, OID4VCI,

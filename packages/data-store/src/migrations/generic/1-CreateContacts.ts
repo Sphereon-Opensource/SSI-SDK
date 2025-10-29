@@ -1,5 +1,5 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreateContacts1659463079428 } from '../postgres/1659463079428-CreateContacts'
 import { CreateContacts1659463069549 } from '../sqlite/1659463069549-CreateContacts'
 

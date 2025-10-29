@@ -1,10 +1,7 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { DataSource } from 'typeorm'
-import { ConnectionType, DataStoreContactEntities, DataStoreMigrations, IdentityOrigin, MetadataItem, MetadataTypes, PartyOrigin } from '../index'
-import { ContactStore } from '../contact/ContactStore'
 import {
+  ConnectionType,
   CorrelationIdentifierType,
-  CredentialRole,
   ElectronicAddress,
   GetElectronicAddressesArgs,
   GetIdentitiesArgs,
@@ -12,6 +9,9 @@ import {
   GetPhysicalAddressesArgs,
   GetRelationshipsArgs,
   Identity,
+  IdentityOrigin,
+  MetadataItem,
+  MetadataTypes,
   NaturalPerson,
   NonPersistedElectronicAddress,
   NonPersistedIdentity,
@@ -21,12 +21,17 @@ import {
   NonPersistedPartyType,
   NonPersistedPhysicalAddress,
   Party,
+  PartyOrigin,
   PartyRelationship,
   PartyType,
   PartyTypeType,
   PhysicalAddress,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialRole } from '@sphereon/ssi-types'
+import { DataSource } from 'typeorm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { ContactStore } from '../contact/ContactStore'
+import { DataStoreContactEntities, DataStoreMigrations } from '../index'
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource
@@ -49,7 +54,7 @@ describe('Contact store tests', (): void => {
   })
 
   afterEach(async (): Promise<void> => {
-    await (await dbConnection).destroy()
+    await dbConnection.destroy()
   })
 
   it('should get party by contact metadata', async (): Promise<void> => {

@@ -1,11 +1,11 @@
-import { DataSource } from 'typeorm'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
+import { DataSource } from 'typeorm'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DataStoreStatusListEntities, IBitstringStatusListEntity } from '../index'
 import { DataStoreStatusListMigrations } from '../migrations'
 import { StatusListStore } from '../statusList/StatusListStore'
 import { IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntryEntity } from '../types'
-import { StatusListCredentialIdMode, StatusListDriverType, StatusListType } from '@sphereon/ssi-types'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Status list store tests', () => {
   let dbConnection: DataSource

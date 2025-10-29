@@ -8,4 +8,4 @@ const schema = require('../plugin.schema.json')
 export { schema }
 export { EbsiSupport, ebsiSupportMethods } from './agent/EbsiSupport'
 export * from './types/IEbsiSupport'
-export { EbsiDidProvider } from './did'
+export * from './did'

@@ -13,7 +13,7 @@ CREATE TABLE "PresentationDefinitionItem" (
     "version" TEXT NOT NULL, 
     "purpose" TEXT, 
     "definition_payload" TEXT NOT NULL, 
-    "dcql_payload" TEXT, 
+    "query" TEXT, 
     "created_at" TIMESTAMP NOT NULL DEFAULT now(), 
     "last_updated_at" TIMESTAMP NOT NULL DEFAULT now(), 
     CONSTRAINT "PK_PresentationDefinitionItem_id" PRIMARY KEY ("id"))

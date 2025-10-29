@@ -1,7 +1,6 @@
-import { AbstractDigitalCredentialStore } from './AbstractDigitalCredentialStore'
 import {
+  AbstractDigitalCredentialStore,
   AddCredentialArgs,
-  CredentialRole,
   CredentialStateType,
   DigitalCredential,
   GetCredentialArgs,
@@ -10,13 +9,13 @@ import {
   NonPersistedDigitalCredential,
   RemoveCredentialArgs,
   UpdateCredentialStateArgs,
-} from '../types'
-import { OrPromise } from '@sphereon/ssi-types'
-import { DataSource, type FindOptionsOrder, type FindOptionsWhere, Repository } from 'typeorm'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialRole, OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
+import { DataSource, type FindOptionsOrder, type FindOptionsWhere, Repository } from 'typeorm'
 
 import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from '../../src'
+import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 import { parseAndValidateOrderOptions } from '../utils/SortingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:credential-store')
@@ -78,7 +77,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       return false
     }
 
-    let query: FindOptionsWhere<DigitalCredentialEntity> = {}
+    const query: FindOptionsWhere<DigitalCredentialEntity> = {}
 
     if ('id' in args) {
       query.id = args.id

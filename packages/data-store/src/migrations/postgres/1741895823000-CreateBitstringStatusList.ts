@@ -1,11 +1,25 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
+export class AddBitstringStatusListEnumPG1741895823000 implements MigrationInterface {
+  name = 'AddBitstringStatusListEnum1741895823000'
+
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.startTransaction()
+    await queryRunner.query(`ALTER TYPE "StatusList_type_enum" ADD VALUE 'BitstringStatusList'`)
+    await queryRunner.commitTransaction()
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    // Note: Cannot remove enum value in Postgres without recreating the type
+  }
+}
+
 export class CreateBitstringStatusListPG1741895823000 implements MigrationInterface {
   name = 'CreateBitstringStatusList1741895823000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Add BitstringStatusList columns to StatusList table
-    await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "bitsPerStatus" integer DEFAULT 1`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "ttl" integer`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "validFrom" TIMESTAMP`)
     await queryRunner.query(`ALTER TABLE "StatusList" ADD COLUMN "validUntil" TIMESTAMP`)
@@ -21,7 +35,6 @@ export class CreateBitstringStatusListPG1741895823000 implements MigrationInterf
 
     // Add BitstringStatusListEntry specific columns to StatusListEntry table
     await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusPurpose" character varying`)
-    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "bitsPerStatus" integer DEFAULT 1`)
     await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusMessage" text`)
     await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusReference" text`)
 

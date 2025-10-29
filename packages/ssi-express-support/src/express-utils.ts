@@ -1,4 +1,5 @@
 import express, { NextFunction } from 'express'
+
 export function sendErrorResponse(response: express.Response, statusCode: number, message: string | object, error?: any) {
   let msg = message
   if (!msg) {

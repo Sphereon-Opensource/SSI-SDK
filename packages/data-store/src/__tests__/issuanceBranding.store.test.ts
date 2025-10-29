@@ -1,7 +1,6 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
-import { IssuanceBrandingStore } from '../issuanceBranding/IssuanceBrandingStore'
-import { DataStoreMigrations } from '../migrations'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   BackgroundAttributesEntity,
   CredentialLocaleBrandingEntity,
@@ -26,7 +25,8 @@ import {
   IUpdateIssuerLocaleBrandingArgs,
   TextAttributesEntity,
 } from '../index'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { IssuanceBrandingStore } from '../issuanceBranding/IssuanceBrandingStore'
+import { DataStoreMigrations } from '../migrations'
 
 describe('Issuance branding store tests', (): void => {
   let dbConnection: DataSource

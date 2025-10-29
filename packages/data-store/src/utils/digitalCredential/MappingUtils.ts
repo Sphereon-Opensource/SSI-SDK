@@ -1,3 +1,6 @@
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import type { AddCredentialArgs, DigitalCredential, NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialDocumentFormat, DocumentType, RegulationType } from '@sphereon/ssi-sdk.data-store-types'
 import {
   CredentialMapper,
   DocumentFormat,
@@ -10,10 +13,7 @@ import {
 } from '@sphereon/ssi-types'
 import { computeEntryHash } from '@veramo/utils'
 import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import type { AddCredentialArgs, DigitalCredential, NonPersistedDigitalCredential } from '../../types'
-import { CredentialDocumentFormat, DocumentType, RegulationType } from '../../types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 function determineDocumentType(raw: string): DocumentType {
   const rawDocument = parseRawDocument(raw)
@@ -48,24 +48,6 @@ export function parseRawDocument(raw: string): OriginalVerifiableCredential | Or
     return JSON.parse(raw)
   } catch (e) {
     throw new Error(`Can't parse the raw credential: ${raw}`)
-  }
-}
-
-export function ensureRawDocument(input: string | object): string {
-  if (typeof input === 'string') {
-    if (isHex(input) || ObjectUtils.isBase64(input)) {
-      // mso_mdoc
-      return input
-    } else if (CredentialMapper.isJwtEncoded(input) || CredentialMapper.isSdJwtEncoded(input)) {
-      return input
-    }
-    throw Error('Unknown input to be mapped as rawDocument')
-  }
-
-  try {
-    return JSON.stringify(input)
-  } catch (e) {
-    throw new Error(`Can't stringify to a raw credential: ${input}`)
   }
 }
 

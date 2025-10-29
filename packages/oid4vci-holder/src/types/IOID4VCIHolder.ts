@@ -7,6 +7,7 @@ import {
   CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
   CredentialResponse,
+  CredentialResponseV1_0_15,
   CredentialsSupportedDisplay,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
@@ -33,7 +34,7 @@ import {
   Identity,
   IIssuerLocaleBranding,
   Party,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
@@ -377,6 +378,7 @@ export enum OID4VCIMachineGuards {
   requirePinGuard = 'oid4vciRequirePinGuard',
   requireAuthorizationGuard = 'oid4vciRequireAuthorizationGuard',
   noAuthorizationGuard = 'oid4vciNoAuthorizationGuard',
+  hasNonceEndpointGuard = 'oid4vciHasNonceEndpointGuard ',
   hasAuthorizationResponse = 'oid4vciHasAuthorizationResponse',
   hasNoContactIdentityGuard = 'oid4vciHasNoContactIdentityGuard',
   verificationCodeGuard = 'oid4vciVerificationCodeGuard',
@@ -501,7 +503,7 @@ export type CredentialToAccept = {
   id?: string
   types: string[]
   issuanceOpt: IssuanceOpts
-  credentialResponse: CredentialResponse
+  credentialResponse: CredentialResponseV1_0_15 | CredentialResponse
 }
 
 export type GetCredentialConfigsSupportedArgs = {

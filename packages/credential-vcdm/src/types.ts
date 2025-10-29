@@ -177,6 +177,8 @@ export interface ICreateVerifiableCredentialLDArgs {
   purpose?: IAuthenticationProofPurpose | IControllerProofPurpose | IAssertionProofPurpose | IProofPurpose
 
   credentialStatusOpts?: IIssueCredentialStatusOpts
+
+  opts?: any
 }
 
 /**

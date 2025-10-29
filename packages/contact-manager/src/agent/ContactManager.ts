@@ -1,6 +1,5 @@
 import {
   AbstractContactStore,
-  BaseContactEntity,
   ElectronicAddress,
   Identity,
   NonPersistedContact,
@@ -8,9 +7,9 @@ import {
   PartyRelationship as ContactRelationship,
   PartyType as ContactType,
   PhysicalAddress,
-  isNaturalPerson,
-  isOrganization,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
+import { BaseContactEntity, isNaturalPerson, isOrganization } from '@sphereon/ssi-sdk.data-store'
+
 import { IAgentPlugin } from '@veramo/core'
 import { schema } from '../index'
 import {

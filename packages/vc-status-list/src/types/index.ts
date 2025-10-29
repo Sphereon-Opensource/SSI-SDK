@@ -7,6 +7,7 @@ import {
   type IVerifiableCredential,
   type OrPromise,
   type StatusListCredential,
+  StatusListCredentialIdMode,
   StatusListDriverType,
   type StatusListIndexingDirection,
   StatusListType,
@@ -112,6 +113,7 @@ export interface StatusListResult {
   statusList2021?: {
     indexingDirection: StatusListIndexingDirection
     statusPurpose: StatusPurpose2021
+    credentialIdMode: StatusListCredentialIdMode
   }
   oauthStatusList?: {
     bitsPerStatus: number

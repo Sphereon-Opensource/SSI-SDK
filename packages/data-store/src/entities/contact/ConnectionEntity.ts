@@ -1,10 +1,10 @@
-import typeorm from 'typeorm'
-const { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } = typeorm
+import { ConnectionType } from '@sphereon/ssi-sdk.data-store-types'
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+
 import { BaseConfigEntity } from './BaseConfigEntity'
-import { ConnectionType } from '../../types'
+import { DidAuthConfigEntity } from './DidAuthConfigEntity'
 import { IdentityEntity } from './IdentityEntity'
 import { OpenIdConfigEntity } from './OpenIdConfigEntity'
-import { DidAuthConfigEntity } from './DidAuthConfigEntity'
 
 @Entity('Connection')
 export class ConnectionEntity extends BaseEntity {

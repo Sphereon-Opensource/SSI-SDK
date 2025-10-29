@@ -1,3 +1,5 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
 import {
   BaseEntity,
   BeforeInsert,
@@ -10,8 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ArrayMinSize, IsNotEmpty, validate, ValidationError } from 'class-validator'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { IssuerLocaleBrandingEntity } from './IssuerLocaleBrandingEntity'
 
 @Entity('IssuerBranding')

@@ -1,6 +1,6 @@
+import { BitstringStatusMessage } from '../../types'
 import { ChildEntity, Column } from 'typeorm'
 import { StatusListEntryEntity } from './StatusList2021EntryEntity'
-import { BitstringStatusMessage } from '../../types'
 
 @ChildEntity('bitstring')
 export class BitstringStatusListEntryEntity extends StatusListEntryEntity {

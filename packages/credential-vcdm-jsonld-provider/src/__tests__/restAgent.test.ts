@@ -1,5 +1,5 @@
 import { describe } from 'vitest'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 import { Server } from 'http'
 
 import { createObjects, getConfig } from '@sphereon/ssi-sdk.agent-config'

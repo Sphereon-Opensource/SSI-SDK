@@ -1,8 +1,9 @@
-import * as mdoc from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+
 import { ICoseCurve, ICoseKeyOperation, ICoseKeyType, ICoseSignatureAlgorithm } from '../utils'
-type KeyType = mdoc.com.sphereon.crypto.generic.KeyType
-type KeyOperations = mdoc.com.sphereon.crypto.generic.KeyOperations
-type SignatureAlgorithm = mdoc.com.sphereon.crypto.generic.SignatureAlgorithm
+type KeyType = mdocPkg.com.sphereon.crypto.generic.KeyType
+type KeyOperations = mdocPkg.com.sphereon.crypto.generic.KeyOperations
+type SignatureAlgorithm = mdocPkg.com.sphereon.crypto.generic.SignatureAlgorithm
 
 /**
  * See our mdl-mdoc and crypto library for more information

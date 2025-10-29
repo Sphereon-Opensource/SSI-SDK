@@ -11,16 +11,14 @@ export default defineConfig({
   platform: 'neutral',
   cjsInterop: false,
   experimentalDts: false,
-  // onSuccess: "tsc -p ../../../../tsconfig.build.json --emitDeclarationOnly",
+  onSuccess: 'tsc --noEmit',
   shims: true,
   sourcemap: true,
   splitting: false,
   outDir: 'dist',
   clean: true,
   skipNodeModulesBundle: true,
-  noExternal: [
-    "@veramo/data-store",
-  ]
+  noExternal: ['@veramo/data-store'],
   /*external: [
     'module',
     'fs',

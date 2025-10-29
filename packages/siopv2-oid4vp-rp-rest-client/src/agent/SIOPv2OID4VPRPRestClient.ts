@@ -1,4 +1,13 @@
-import { fetch } from 'cross-fetch'
+import {
+  type AuthStatusResponse,
+  type CreateAuthorizationRequest,
+  createAuthorizationRequestToPayload,
+  type CreateAuthorizationResponse,
+  createAuthorizationResponseFromPayload,
+} from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { Loggers } from '@sphereon/ssi-types'
+import { IAgentPlugin } from '@veramo/core'
+import fetch from 'cross-fetch'
 import {
   ISiopClientGenerateAuthRequestArgs,
   ISiopClientGetAuthStatusArgs,
@@ -7,9 +16,6 @@ import {
   Siopv2RestClientAuthenticationOpts,
   Siopv2RestClientOpts,
 } from '../types/ISIOPv2OID4VPRPRestClient'
-import { IAgentPlugin } from '@veramo/core'
-import { AuthStatusResponse, GenerateAuthRequestURIResponse } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { Loggers } from '@sphereon/ssi-types'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk-siopv2-oid4vp-rp-rest-client')
 
@@ -24,12 +30,10 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
   }
 
   private readonly baseUrl?: string
-  private readonly definitionId?: string
   private readonly authOpts?: Siopv2RestClientAuthenticationOpts
 
   constructor(args?: Siopv2RestClientOpts) {
     this.baseUrl = args?.baseUrl
-    this.definitionId = args?.definitionId
     this.authOpts = args?.authentication
   }
 
@@ -51,8 +55,7 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
 
   private async siopClientRemoveAuthRequestState(args: ISiopClientRemoveAuthRequestSessionArgs): Promise<boolean> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
-    const definitionId = this.checkDefinitionIdParameter(args.definitionId)
-    await fetch(this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests/${args.correlationId}`, baseUrl), {
+    await fetch(this.uriWithBase(`/backend/auth/requests/${args.correlationId}`, baseUrl), {
       headers: await this.createHeaders(),
       method: 'DELETE',
     })
@@ -61,15 +64,10 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
 
   private async siopClientGetAuthStatus(args: ISiopClientGetAuthStatusArgs): Promise<AuthStatusResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
-    const url = this.uriWithBase('/webapp/auth-status', baseUrl)
-    const definitionId = this.checkDefinitionIdParameter(args.definitionId)
+    const url = this.uriWithBase(`/backend/auth/status/${args.correlationId}`, baseUrl)
     const statusResponse = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({
-        correlationId: args.correlationId,
-        definitionId,
-      }),
     })
     logger.debug(`auth status response: ${statusResponse}`)
     try {
@@ -79,18 +77,16 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
     }
   }
 
-  private async siopClientCreateAuthRequest(args: ISiopClientGenerateAuthRequestArgs): Promise<GenerateAuthRequestURIResponse> {
+  private async siopClientCreateAuthRequest(args: ISiopClientGenerateAuthRequestArgs): Promise<CreateAuthorizationResponse> {
     const baseUrl = this.checkBaseUrlParameter(args.baseUrl)
-    const definitionId = this.checkDefinitionIdParameter(args.definitionId)
-    const url = this.uriWithBase(`/webapp/definitions/${definitionId}/auth-requests`, baseUrl)
+    const url = this.uriWithBase(`/backend/auth/requests`, baseUrl)
+
     const origResponse = await fetch(url, {
       method: 'POST',
       headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({
-        ...(args.responseRedirectURI && { response_redirect_uri: args.responseRedirectURI }),
-      }),
+      body: JSON.stringify(createAuthorizationRequestToPayload({ ...args, requestUriMethod: 'get' } satisfies CreateAuthorizationRequest)),
     })
-    return await origResponse.json()
+    return createAuthorizationResponseFromPayload(await origResponse.json())
   }
 
   private uriWithBase(path: string, baseUrl?: string): string {
@@ -105,12 +101,5 @@ export class SIOPv2OID4VPRPRestClient implements IAgentPlugin {
       throw new Error('No base url has been provided')
     }
     return baseUrl ? baseUrl : (this.baseUrl as string)
-  }
-
-  private checkDefinitionIdParameter(definitionId?: string): string {
-    if (!definitionId && !this.definitionId) {
-      throw new Error('No definition id has been provided')
-    }
-    return definitionId ? definitionId : (this.definitionId as string)
   }
 }

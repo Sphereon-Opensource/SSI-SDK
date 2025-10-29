@@ -28,6 +28,7 @@
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-sdk.data-store": "workspace:*",
+    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@sphereon/ssi-sdk.vc-status-list": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",

@@ -1,20 +1,20 @@
-import { type OrPromise } from '@sphereon/ssi-types'
-import { DataSource, In, Repository } from 'typeorm'
-import { AbstractPDStore } from './AbstractPDStore'
-import Debug from 'debug'
 import type {
+  DcqlQueryItem,
+  DcqlQueryItemFilter,
   DeleteDefinitionArgs,
   DeleteDefinitionsArgs,
   GetDefinitionArgs,
   GetDefinitionsArgs,
   HasDefinitionArgs,
   HasDefinitionsArgs,
-  NonPersistedPresentationDefinitionItem,
-  PresentationDefinitionItem,
-  PresentationDefinitionItemFilter,
-} from '../types'
-import { PresentationDefinitionItemEntity } from '../entities/presentationDefinition/PresentationDefinitionItemEntity'
-import { presentationDefinitionEntityItemFrom, presentationDefinitionItemFrom } from '../utils/presentationDefinition/MappingUtils'
+  NonPersistedDcqlQueryItem,
+} from '@sphereon/ssi-sdk.data-store-types'
+import { AbstractPDStore } from '@sphereon/ssi-sdk.data-store-types'
+import { type OrPromise } from '@sphereon/ssi-types'
+import Debug from 'debug'
+import { DataSource, In, Repository } from 'typeorm'
+import { DcqlQueryItemEntity } from '../entities/presentationDefinition/DcqlQueryItemEntity'
+import { dcqlQueryEntityItemFrom, dcqlQueryItemFrom } from '../utils/presentationDefinition/MappingUtils'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:pd-store')
 
@@ -26,22 +26,22 @@ export class PDStore extends AbstractPDStore {
     this.dbConnection = dbConnection
   }
 
-  getDefinition = async (args: GetDefinitionArgs): Promise<PresentationDefinitionItem> => {
+  getDefinition = async (args: GetDefinitionArgs): Promise<DcqlQueryItem> => {
     const { itemId } = args ?? {}
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
-    const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
+    const result: DcqlQueryItemEntity | null = await pdRepository.findOne({
       where: { id: itemId },
     })
     if (!result) {
       return Promise.reject(Error(`No presentation definition item found for id: ${itemId}`))
     }
 
-    return presentationDefinitionItemFrom(result)
+    return dcqlQueryItemFrom(result)
   }
 
   hasDefinition = async (args: HasDefinitionArgs): Promise<boolean> => {
     const { itemId } = args ?? {}
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
 
     const resultCount: number = await pdRepository.count({
       where: { id: itemId },
@@ -52,7 +52,7 @@ export class PDStore extends AbstractPDStore {
 
   hasDefinitions = async (args: HasDefinitionsArgs): Promise<boolean> => {
     const { filter } = args
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
 
     const resultCount: number = await pdRepository.count({
       ...(filter && { where: cleanFilter(filter) }),
@@ -60,67 +60,67 @@ export class PDStore extends AbstractPDStore {
     return resultCount > 0
   }
 
-  getDefinitions = async (args: GetDefinitionsArgs): Promise<Array<PresentationDefinitionItem>> => {
+  getDefinitions = async (args: GetDefinitionsArgs): Promise<Array<DcqlQueryItem>> => {
     const { filter } = args
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
     const initialResult = await this.findIds(pdRepository, filter)
-    const result: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
+    const result: Array<DcqlQueryItemEntity> = await pdRepository.find({
       where: {
-        id: In(initialResult.map((entity: PresentationDefinitionItemEntity) => entity.id)),
+        id: In(initialResult.map((entity: DcqlQueryItemEntity) => entity.id)),
       },
       order: {
         version: 'DESC',
       },
     })
 
-    return result.map((entity: PresentationDefinitionItemEntity) => presentationDefinitionItemFrom(entity))
+    return result.map((entity: DcqlQueryItemEntity) => dcqlQueryItemFrom(entity))
   }
 
-  addDefinition = async (item: NonPersistedPresentationDefinitionItem): Promise<PresentationDefinitionItem> => {
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+  addDefinition = async (item: NonPersistedDcqlQueryItem): Promise<DcqlQueryItem> => {
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
 
-    const entity: PresentationDefinitionItemEntity = presentationDefinitionEntityItemFrom(item)
+    const entity: DcqlQueryItemEntity = dcqlQueryEntityItemFrom(item)
     debug('Adding presentation definition entity', item)
-    const result: PresentationDefinitionItemEntity = await pdRepository.save(entity, {
+    const result: DcqlQueryItemEntity = await pdRepository.save(entity, {
       transaction: true,
     })
 
-    return presentationDefinitionItemFrom(result)
+    return dcqlQueryItemFrom(result)
   }
 
-  updateDefinition = async (item: PresentationDefinitionItem): Promise<PresentationDefinitionItem> => {
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+  updateDefinition = async (item: DcqlQueryItem): Promise<DcqlQueryItem> => {
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
 
-    const result: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
+    const result: DcqlQueryItemEntity | null = await pdRepository.findOne({
       where: { id: item.id },
     })
     if (!result) {
       return Promise.reject(Error(`No presentation definition entity found for id: ${item.id}`))
     }
 
-    const updatedEntity: Partial<PresentationDefinitionItemEntity> = {
+    const updatedEntity: Partial<DcqlQueryItemEntity> = {
       ...result,
     }
     updatedEntity.tenantId = item.tenantId
-    updatedEntity.definitionId = item.definitionId!
+    updatedEntity.queryId = item.queryId!
     updatedEntity.version = item.version
     updatedEntity.name = item.name
     updatedEntity.purpose = item.purpose
-    updatedEntity.definitionPayload = JSON.stringify(item.definitionPayload!)
+    updatedEntity.query = JSON.stringify(item.query)
 
     debug('Updating presentation definition entity', updatedEntity)
-    const updateResult: PresentationDefinitionItemEntity = await pdRepository.save(updatedEntity, {
+    const updateResult: DcqlQueryItemEntity = await pdRepository.save(updatedEntity, {
       transaction: true,
     })
 
-    return presentationDefinitionItemFrom(updateResult)
+    return dcqlQueryItemFrom(updateResult)
   }
 
   deleteDefinition = async (args: DeleteDefinitionArgs): Promise<void> => {
     const { itemId } = args
 
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
-    const entity: PresentationDefinitionItemEntity | null = await pdRepository.findOne({
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
+    const entity: DcqlQueryItemEntity | null = await pdRepository.findOne({
       where: { id: itemId },
     })
 
@@ -134,12 +134,12 @@ export class PDStore extends AbstractPDStore {
 
   deleteDefinitions = async (args: DeleteDefinitionsArgs): Promise<number> => {
     const { filter } = args
-    const pdRepository = (await this.dbConnection).getRepository(PresentationDefinitionItemEntity)
+    const pdRepository = (await this.dbConnection).getRepository(DcqlQueryItemEntity)
     const initialResult = await this.findIds(pdRepository, filter)
 
-    const result: Array<PresentationDefinitionItemEntity> = await pdRepository.find({
+    const result: Array<DcqlQueryItemEntity> = await pdRepository.find({
       where: {
-        id: In(initialResult.map((entity: PresentationDefinitionItemEntity) => entity.id)),
+        id: In(initialResult.map((entity: DcqlQueryItemEntity) => entity.id)),
       },
     })
 
@@ -151,9 +151,9 @@ export class PDStore extends AbstractPDStore {
   }
 
   findIds = async (
-    pdRepository: Repository<PresentationDefinitionItemEntity>,
-    filter: Array<PresentationDefinitionItemFilter> | undefined,
-  ): Promise<Array<PresentationDefinitionItemEntity>> => {
+    pdRepository: Repository<DcqlQueryItemEntity>,
+    filter: Array<DcqlQueryItemFilter> | undefined,
+  ): Promise<Array<DcqlQueryItemEntity>> => {
     const idFilters = filter?.map((f) => f.id).filter((id) => id !== undefined && id !== null)
     if (idFilters && idFilters.length > 0 && idFilters.length === filter?.length) {
       return await pdRepository.find({
@@ -167,15 +167,15 @@ export class PDStore extends AbstractPDStore {
   }
 }
 
-const cleanFilter = (filter: Array<PresentationDefinitionItemFilter> | undefined): Array<PresentationDefinitionItemFilter> | undefined => {
+const cleanFilter = (filter: Array<DcqlQueryItemFilter> | undefined): Array<DcqlQueryItemFilter> | undefined => {
   if (filter === undefined) {
     return undefined
   }
 
   return filter.map((item) => {
-    const cleanedItem: PresentationDefinitionItemFilter = {}
+    const cleanedItem: DcqlQueryItemFilter = {}
     for (const key in item) {
-      const value = item[key as keyof PresentationDefinitionItemFilter]
+      const value = item[key as keyof DcqlQueryItemFilter]
       if (value !== undefined) {
         ;(cleanedItem as any)[key] = value
       }

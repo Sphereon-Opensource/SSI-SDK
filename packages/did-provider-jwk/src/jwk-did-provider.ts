@@ -6,6 +6,8 @@ import Debug from 'debug'
 import { IAddKeyArgs, IAddServiceArgs, ICreateIdentifierArgs, IRemoveKeyArgs, IRequiredContext } from './types/jwk-provider-types'
 import { JsonWebKey } from '@sphereon/ssi-types'
 
+const PROVIDER_NAME = 'JWK DID Provider'
+
 const debug = Debug('sphereon:did-provider-jwk')
 
 /**
@@ -24,12 +26,13 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
   async createIdentifier(args: ICreateIdentifierArgs, context: IRequiredContext): Promise<Omit<IIdentifier, 'provider'>> {
     const key = await importProvidedOrGeneratedKey(
       {
+        providerName: PROVIDER_NAME,
         // @ts-ignore
         kms: args.kms ?? this.defaultKms,
         alias: args.alias,
         options: args.options,
       },
-      context
+      context,
     )
 
     const use = jwkDetermineUse(key.type, args?.options?.use)
@@ -50,7 +53,7 @@ export class JwkDIDProvider extends AbstractIdentifierProvider {
   /** {@inheritDoc @veramo/veramo-core#IDIDManager.didManagerUpdate} */
   async updateIdentifier?(
     args: { did: string; document: Partial<DIDDocument>; options?: { [x: string]: any } },
-    context: IAgentContext<IKeyManager>
+    context: IAgentContext<IKeyManager>,
   ): Promise<IIdentifier> {
     throw new Error('not implemented yet')
   }

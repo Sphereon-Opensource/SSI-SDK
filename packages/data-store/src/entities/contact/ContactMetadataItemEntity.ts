@@ -1,10 +1,9 @@
-import typeorm from 'typeorm'
-const { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, BeforeInsert, BeforeUpdate } = typeorm
-import { IMetadataEntity, ValidationConstraint } from '../../types'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { BaseContactEntity } from './BaseContactEntity'
+import { IMetadataEntity, ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { IsNotEmpty, validate, ValidationError } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { BaseContactEntity } from './BaseContactEntity'
 
 @Entity('ContactMetadata')
 export class ContactMetadataItemEntity extends BaseEntity implements IMetadataEntity {

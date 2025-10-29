@@ -1,3 +1,4 @@
+import { BitstringStatusListEntryEntity } from '../entities/statusList/BitstringStatusListEntryEntity'
 import { StatusListEntryEntity } from '../entities/statusList/StatusList2021EntryEntity'
 import type {
   IAddStatusListArgs,
@@ -14,7 +15,6 @@ import type {
   IUpdateStatusListIndexArgs,
 } from '../types'
 import { IStatusListEntity, IStatusListEntryEntity } from '../types'
-import { BitstringStatusListEntryEntity } from '../entities/statusList/BitstringStatusListEntryEntity'
 
 export interface IStatusListStore {
   getStatusList(args: IGetStatusListArgs): Promise<IStatusListEntity | IBitstringStatusListEntity>

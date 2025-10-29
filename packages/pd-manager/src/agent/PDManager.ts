@@ -1,22 +1,18 @@
 import { IAgentPlugin } from '@veramo/core'
 import {
-  DeleteDefinitionItemArgs,
-  DeleteDefinitionItemsArgs,
-  GetDefinitionItemArgs,
-  GetDefinitionItemsArgs,
+  DeleteDcqlQueryItemArgs,
+  DeleteDcqlQueryItemsArgs,
+  GetDcqlQueryItemArgs,
+  GetDcqlQueryItemsArgs,
   HasDefinitionItemArgs,
-  HasDefinitionItemsArgs,
+  HasDcqlQueryItemsArgs,
   IPDManager,
-  PersistDefinitionArgs,
+  PersistDcqlQueryArgs,
   schema,
 } from '../index'
-import {
-  AbstractPDStore,
-  isPresentationDefinitionEqual,
-  NonPersistedPresentationDefinitionItem,
-  PresentationDefinitionItem,
-} from '@sphereon/ssi-sdk.data-store'
-import semver from 'semver/preload'
+import { AbstractPDStore, NonPersistedDcqlQueryItem, DcqlQueryItem, AddDefinitionArgs } from '@sphereon/ssi-sdk.data-store-types'
+import { isPresentationDefinitionEqual } from '@sphereon/ssi-sdk.data-store'
+import semver from 'semver/preload.js'
 import { ReleaseType } from 'semver'
 
 // Exposing the methods here for any REST implementation
@@ -58,32 +54,32 @@ export class PDManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IPDManager.pdmHasDefinitions} */
-  private async pdmHasDefinitions(args: HasDefinitionItemsArgs): Promise<boolean> {
+  private async pdmHasDefinitions(args: HasDcqlQueryItemsArgs): Promise<boolean> {
     const { filter } = args
     return this.store.hasDefinitions({ filter })
   }
 
   /** {@inheritDoc IPDManager.pdmGetDefinition} */
-  private async pdmGetDefinition(args: GetDefinitionItemArgs): Promise<PresentationDefinitionItem> {
+  private async pdmGetDefinition(args: GetDcqlQueryItemArgs): Promise<DcqlQueryItem> {
     const { itemId } = args
     return this.store.getDefinition({ itemId })
   }
 
   /** {@inheritDoc IPDManager.pdmGetDefinitions} */
-  private async pdmGetDefinitions(args: GetDefinitionItemsArgs): Promise<Array<PresentationDefinitionItem>> {
+  private async pdmGetDefinitions(args: GetDcqlQueryItemsArgs): Promise<Array<DcqlQueryItem>> {
     const { filter, opts } = args
     const allDefinitions = await this.store.getDefinitions({ filter })
-    let definitions: PresentationDefinitionItem[] = []
+    let definitions: DcqlQueryItem[] = []
     if (opts == undefined || opts.showVersionHistory !== true) {
       const groupedByDefinitionId = allDefinitions.reduce(
         (acc, entity) => {
-          if (!acc[entity.definitionId]) {
-            acc[entity.definitionId] = []
+          if (!acc[entity.queryId]) {
+            acc[entity.queryId] = []
           }
-          acc[entity.definitionId].push(entity)
+          acc[entity.queryId].push(entity)
           return acc
         },
-        {} as Record<string, PresentationDefinitionItem[]>,
+        {} as Record<string, DcqlQueryItem[]>,
       )
       definitions = Object.values(groupedByDefinitionId).map((entities) =>
         entities.reduce((highestVersionItem, baseItem) => {
@@ -99,111 +95,123 @@ export class PDManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc IPDManager.pdmDeleteDefinition} */
-  private async pdmDeleteDefinition(args: DeleteDefinitionItemArgs): Promise<boolean> {
+  private async pdmDeleteDefinition(args: DeleteDcqlQueryItemArgs): Promise<boolean> {
     return this.store.deleteDefinition(args).then((value) => true)
   }
 
   /** {@inheritDoc IPDManager.pdmDeleteDefinitions} */
-  private async pdmDeleteDefinitions(args: DeleteDefinitionItemsArgs): Promise<number> {
+  private async pdmDeleteDefinitions(args: DeleteDcqlQueryItemsArgs): Promise<number> {
     return this.store.deleteDefinitions(args)
   }
 
   /** {@inheritDoc IPDManager.pdmPersistDefinition} */
-  private async pdmPersistDefinition(args: PersistDefinitionArgs): Promise<PresentationDefinitionItem> {
-    const { definitionItem, opts } = args
-    const { versionControlMode, versionIncrementReleaseType } = opts ?? { versionControlMode: 'AutoIncrement' }
-    const { version, tenantId } = definitionItem
-    const definitionId = definitionItem.definitionId ?? definitionItem.definitionPayload.id
+  private async pdmPersistDefinition(args: PersistDcqlQueryArgs): Promise<DcqlQueryItem> {
+    try {
+      const { definitionItem, opts } = args
+      const { versionControlMode, versionIncrementReleaseType } = opts ?? { versionControlMode: 'AutoIncrement' }
+      const { version, tenantId } = definitionItem
+      const definitionId = definitionItem.queryId
 
-    let { id } = definitionItem
-    if (id !== undefined && versionControlMode !== 'Overwrite') {
-      id = undefined
-    }
+      let { id } = definitionItem
+      if (id !== undefined && versionControlMode !== 'Overwrite') {
+        id = undefined
+      }
 
-    const nonPersistedDefinitionItem: NonPersistedPresentationDefinitionItem = {
-      ...definitionItem,
-      definitionId: definitionId,
-      version: version ?? '1',
-    }
+      const nonPersistedDefinitionItem: NonPersistedDcqlQueryItem = {
+        ...definitionItem,
+        version: version ?? '1',
+      }
 
-    const existing = await this.store.getDefinitions({ filter: [{ id, definitionId, tenantId, version }] })
-    const existingItem = existing[0]
+      const existing = await this.store.getDefinitions({ filter: [{ id, queryId: definitionId, tenantId, version }] })
+      const existingItem = existing[0]
 
-    // Always fetch all definitions for the definitionId/tenantId and determine the truly latest version
-    const allDefinitions = await this.store.getDefinitions({ filter: [{ definitionId, tenantId }] })
-    allDefinitions.sort((a, b) => semver.compare(this.normalizeToSemverVersionFormat(a.version), this.normalizeToSemverVersionFormat(b.version)))
-    const trulyLatestVersionItem = allDefinitions[allDefinitions.length - 1]
+      // Always fetch all definitions for the definitionId/tenantId and determine the truly latest version
+      const allDefinitions = await this.store.getDefinitions({ filter: [{ queryId: definitionId, tenantId }] })
+      allDefinitions.sort((a, b) => semver.compare(this.normalizeToSemverVersionFormat(a.version), this.normalizeToSemverVersionFormat(b.version)))
+      const trulyLatestVersionItem = allDefinitions[allDefinitions.length - 1]
 
-    let latestVersionItem: PresentationDefinitionItem | undefined = trulyLatestVersionItem
+      let latestVersionItem: DcqlQueryItem | undefined = trulyLatestVersionItem
 
-    // If a specific version exists and matches existingItem, we keep that as a base.
-    // Otherwise we use the trulyLatestVersionItem
-    if (existingItem && version) {
-      latestVersionItem = trulyLatestVersionItem ?? existingItem
-    }
+      // If a specific version exists and matches existingItem, we keep that as a base.
+      // Otherwise we use the trulyLatestVersionItem
+      if (existingItem && version) {
+        latestVersionItem = trulyLatestVersionItem ?? existingItem
+      }
 
-    const isPayloadModified = !existingItem || !isPresentationDefinitionEqual(existingItem, definitionItem)
-    if (!isPayloadModified) return existingItem
+      const isPayloadModified = !existingItem || !isPresentationDefinitionEqual(existingItem, definitionItem)
+      if (!isPayloadModified) return existingItem
 
-    switch (versionControlMode) {
-      case 'Overwrite':
-        return this.handleOverwriteMode(existingItem, nonPersistedDefinitionItem, version)
-      case 'OverwriteLatest':
-        return this.handleOverwriteLatestMode(latestVersionItem, nonPersistedDefinitionItem)
-      case 'Manual':
-        return this.handleManualMode(existingItem, nonPersistedDefinitionItem, tenantId, version)
-      case 'AutoIncrement':
-        return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, versionIncrementReleaseType ?? 'major')
-      default:
-        throw new Error(`Unknown version control mode: ${versionControlMode}`)
+      switch (versionControlMode) {
+        case 'Overwrite':
+          return this.handleOverwriteMode(existingItem, nonPersistedDefinitionItem, version)
+        case 'OverwriteLatest':
+          return this.handleOverwriteLatestMode(latestVersionItem, nonPersistedDefinitionItem)
+        case 'Manual':
+          return this.handleManualMode(existingItem, nonPersistedDefinitionItem, tenantId, version)
+        case 'AutoIncrement':
+          return this.handleAutoIncrementMode(latestVersionItem, nonPersistedDefinitionItem, versionIncrementReleaseType ?? 'major')
+        default:
+          throw new Error(`Unknown version control mode: ${versionControlMode}`)
+      }
+    } catch (e) {
+      console.log('pdmPersistDefinition failed', e)
+      throw e
     }
   }
 
   private async handleOverwriteMode(
-    existingItem: PresentationDefinitionItem | undefined,
-    definitionItem: NonPersistedPresentationDefinitionItem,
+    existingItem: DcqlQueryItem | undefined,
+    definitionItem: NonPersistedDcqlQueryItem,
     version: string | undefined,
-  ): Promise<PresentationDefinitionItem> {
+  ): Promise<DcqlQueryItem> {
     if (existingItem) {
-      existingItem.definitionId = definitionItem.definitionId
+      existingItem.queryId = definitionItem.queryId
       existingItem.version = version ?? existingItem.version ?? '1'
       existingItem.tenantId = definitionItem.tenantId
-      existingItem.name = definitionItem.definitionPayload.name ?? definitionItem.name
-      existingItem.purpose = definitionItem.definitionPayload.purpose ?? definitionItem.purpose
-      existingItem.definitionPayload = definitionItem.definitionPayload
+      existingItem.name = definitionItem.name
+      existingItem.purpose = definitionItem.purpose
+      existingItem.query = definitionItem.query
 
       return await this.store.updateDefinition(existingItem)
     } else {
-      return await this.store.addDefinition(definitionItem)
+      // Apply the same field extraction logic for new items
+      const newDefinitionItem = {
+        ...definitionItem,
+      } satisfies AddDefinitionArgs
+      return await this.store.addDefinition(newDefinitionItem)
     }
   }
 
   private async handleOverwriteLatestMode(
-    latestVersionItem: PresentationDefinitionItem | undefined,
-    definitionItem: NonPersistedPresentationDefinitionItem,
-  ): Promise<PresentationDefinitionItem> {
+    latestVersionItem: DcqlQueryItem | undefined,
+    definitionItem: NonPersistedDcqlQueryItem,
+  ): Promise<DcqlQueryItem> {
     if (latestVersionItem) {
-      latestVersionItem.definitionId = definitionItem.definitionId
+      latestVersionItem.queryId = definitionItem.queryId
       latestVersionItem.tenantId = definitionItem.tenantId
       latestVersionItem.name = definitionItem.name
       latestVersionItem.purpose = definitionItem.purpose
-      latestVersionItem.definitionPayload = definitionItem.definitionPayload
+      latestVersionItem.query = definitionItem.query
 
       return await this.store.updateDefinition(latestVersionItem)
     } else {
-      return await this.store.addDefinition(definitionItem)
+      // Apply the same field extraction logic for new items
+      const newDefinitionItem = {
+        ...definitionItem,
+      } satisfies AddDefinitionArgs
+      return await this.store.addDefinition(newDefinitionItem)
     }
   }
 
   private async handleManualMode(
-    existingItem: PresentationDefinitionItem | undefined,
-    definitionItem: NonPersistedPresentationDefinitionItem,
+    existingItem: DcqlQueryItem | undefined,
+    definitionItem: NonPersistedDcqlQueryItem,
     tenantId: string | undefined,
     version: string | undefined,
-  ): Promise<PresentationDefinitionItem> {
+  ): Promise<DcqlQueryItem> {
     if (existingItem && !isPresentationDefinitionEqual(existingItem, definitionItem)) {
       throw Error(
-        `Cannot update definition ${definitionItem.definitionId} for tenant ${tenantId} version ${version} because definition exists and manual version control is enabled.`,
+        `Cannot update definition ${definitionItem.queryId} for tenant ${tenantId} version ${version} because definition exists and manual version control is enabled.`,
       )
     } else {
       return await this.store.addDefinition(definitionItem)
@@ -211,10 +219,10 @@ export class PDManager implements IAgentPlugin {
   }
 
   private async handleAutoIncrementMode(
-    latestVersionItem: PresentationDefinitionItem | undefined,
-    definitionItem: NonPersistedPresentationDefinitionItem,
+    latestVersionItem: DcqlQueryItem | undefined,
+    definitionItem: NonPersistedDcqlQueryItem,
     releaseType: ReleaseType,
-  ): Promise<PresentationDefinitionItem> {
+  ): Promise<DcqlQueryItem> {
     const defaultVersion = '1'
     let currentVersion = latestVersionItem?.version ?? definitionItem.version ?? defaultVersion
     let resultVersion: string
@@ -230,7 +238,7 @@ export class PDManager implements IAgentPlugin {
       let fullVersionToIncrement = preReleaseIdentifier ? `${normalizedBaseVersion}-${preReleaseSuffix}` : normalizedBaseVersion
 
       // Use semver to increment the version
-      let incrementedVersion = semver.inc(fullVersionToIncrement, releaseType, preReleaseIdentifier)
+      let incrementedVersion = semver.inc(fullVersionToIncrement, releaseType, undefined, preReleaseIdentifier)
       if (!incrementedVersion) {
         throw new Error(`Could not increment ${releaseType} version on ${currentVersion} ${preReleaseSuffix}`)
       }
@@ -248,10 +256,20 @@ export class PDManager implements IAgentPlugin {
       }
     }
 
-    definitionItem.version = resultVersion
-    return await this.store.addDefinition(definitionItem)
-  }
+    // Apply field extraction logic before adding
+    const newDefinitionItem = {
+      ...definitionItem,
+      version: resultVersion,
+    } satisfies AddDefinitionArgs
 
+    try {
+      const dcqlQueryItem = await this.store.addDefinition(newDefinitionItem)
+      return dcqlQueryItem
+    } catch (e) {
+      console.log(e)
+      throw e
+    }
+  }
   private normalizeToSemverVersionFormat(version: string): string {
     const defaultVersion = '1.0.0'
     let [baseVersion, preReleaseSuffix] = version.split(/-(.+)/)

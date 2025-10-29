@@ -1,6 +1,6 @@
-import { ChildEntity, Column, JoinColumn, ManyToOne, Index, OneToMany } from 'typeorm'
-import { CredentialBrandingEntity } from './CredentialBrandingEntity'
+import { ChildEntity, Column, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
 import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
+import { CredentialBrandingEntity } from './CredentialBrandingEntity'
 import { CredentialClaimsEntity } from './CredentialClaimsEntity'
 
 @ChildEntity('CredentialLocaleBranding')

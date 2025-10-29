@@ -6,6 +6,8 @@ import { AbstractIdentifierProvider } from '@veramo/did-manager'
 import Debug from 'debug'
 import { ICreateIdentifierArgs, IKeyOpts } from './types'
 
+const PROVIDER_NAME = 'Web DID Provider'
+
 const debug = Debug('sphereon:web-did:identifier-provider')
 
 type IContext = IAgentContext<IKeyManager>
@@ -31,7 +33,16 @@ export class WebDIDProvider extends AbstractIdentifierProvider {
     }
     const keyOpts = Array.isArray(opts.keys) ? opts.keys : [opts.keys as IKeyOpts]
     const keys = await Promise.all(
-      keyOpts.map((keyOpt: IKeyOpts) => importProvidedOrGeneratedKey({ kms: kms ?? this.defaultKms, options: keyOpt }, context))
+      keyOpts.map((keyOpt: IKeyOpts) =>
+        importProvidedOrGeneratedKey(
+          {
+            providerName: PROVIDER_NAME,
+            kms: kms ?? this.defaultKms,
+            options: keyOpt,
+          },
+          context,
+        ),
+      ),
     )
 
     const controllerIdx = keyOpts.findIndex((opt) => opt.isController)
@@ -53,7 +64,7 @@ export class WebDIDProvider extends AbstractIdentifierProvider {
       alias?: string | undefined
       options?: any
     },
-    context: IAgentContext<IKeyManager>
+    context: IAgentContext<IKeyManager>,
   ): Promise<IIdentifier> {
     throw new Error('WebDIDProvider updateIdentifier not supported yet.')
   }
@@ -75,7 +86,7 @@ export class WebDIDProvider extends AbstractIdentifierProvider {
       key: IKey
       options?: any
     },
-    context: IContext
+    context: IContext,
   ): Promise<any> {
     return { success: true }
   }
@@ -90,7 +101,7 @@ export class WebDIDProvider extends AbstractIdentifierProvider {
       service: IService
       options?: any
     },
-    context: IContext
+    context: IContext,
   ): Promise<any> {
     return { success: true }
   }

@@ -1,6 +1,4 @@
-import { PresentationDefinitionLocation, PresentationDefinitionWithLocation, SupportedVersion } from '@sphereon/did-auth-siop'
 import { CreateRequestObjectMode } from '@sphereon/oid4vci-common'
-import { IPEXFilterResult } from '@sphereon/ssi-sdk.presentation-exchange'
 import { CredentialMapper, PresentationSubmission } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import fetch from 'cross-fetch'
@@ -29,7 +27,6 @@ import {
 } from '../types/IEbsiSupport'
 
 import { v4 } from 'uuid'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 export const ebsiSupportMethods: Array<string> = [
@@ -181,49 +178,54 @@ export class EbsiSupport implements IAgentPlugin {
       }
     }
 
-    const definition = {
-      definition: definitionResponse,
-      location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
-      version: SupportedVersion.SIOPv2_D11,
-    } satisfies PresentationDefinitionWithLocation
+    // FIXME SSISDK-40 should use DCQL
+    // const definition = {
+    //   definition: definitionResponse,
+    //   location: PresentationDefinitionLocation.TOPLEVEL_PRESENTATION_DEF,
+    //   version: SupportedVersion.SIOPv2_D11,
+    // } satisfies PresentationDefinitionWithLocation
 
-    const pexResult = hasInputDescriptors
-      ? await context.agent.pexDefinitionFilterCredentials({
-          presentationDefinition: definitionResponse,
-          credentialFilterOpts: { credentialRole: args.credentialRole, verifiableCredentials: [attestationCredential!] },
-        })
-      : ({
-          // LOL, let's see whether we can trick PEX to create a VP without VCs
-          filteredCredentials: [],
-          id: definitionResponse.id,
-          selectResults: { verifiableCredential: [], areRequiredCredentialsPresent: 'info' },
-        } satisfies IPEXFilterResult)
-    const opSession = await context.agent.siopRegisterOPSession({
-      requestJwtOrUri: '', // Siop assumes we use an auth request, which we don't have in this case
-      op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
-      providedPresentationDefinitions: [definition],
-    })
-    const oid4vp = await opSession.getOID4VP({ allIdentifiers: [identifier.did] })
-    const vp = await oid4vp.createVerifiablePresentation(
-      args.credentialRole,
-      { definition, credentials: pexResult.filteredCredentials },
-      {
-        proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },
-        holder: identifier.did,
-        idOpts: idOpts,
-        skipDidResolution,
-        forceNoCredentialsInVP: !hasInputDescriptors,
-      },
-    )
+    // const pexResult = hasInputDescriptors
+    //   ? await context.agent.pexDefinitionFilterCredentials({
+    //       presentationDefinition: definitionResponse,
+    //       credentialFilterOpts: { credentialRole: args.credentialRole, verifiableCredentials: [attestationCredential!] },
+    //     })
+    //   : ({
+    //       // LOL, let's see whether we can trick PEX to create a VP without VCs
+    //       filteredCredentials: [],
+    //       id: definitionResponse.id,
+    //       selectResults: { verifiableCredential: [], areRequiredCredentialsPresent: 'info' },
+    //     } satisfies IPEXFilterResult)
+    // const opSession = await context.agent.siopRegisterOPSession({
+    //   requestJwtOrUri: '', // Siop assumes we use an auth request, which we don't have in this case
+    //   op: { checkLinkedDomains: CheckLinkedDomain.NEVER },
+    //   //providedPresentationDefinitions: [definition],
+    // })
 
-    const presentationSubmission = hasInputDescriptors
-      ? vp.presentationSubmission
-      : ({ id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission)
+    //const oid4vp = await opSession.getOID4VP({ allIdentifiers: [identifier.did] })
+    // const vp = await oid4vp.createVerifiablePresentation(
+    //   args.credentialRole,
+    //   { dcqlQuery: definition, credentials: pexResult.filteredCredentials },
+    //   {
+    //     proofOpts: { domain: openIDMetadata.issuer, nonce: v4(), created: new Date(Date.now() - 120_000).toString() },
+    //     holder: identifier.did,
+    //     idOpts: idOpts,
+    //     skipDidResolution,
+    //     forceNoCredentialsInVP: !hasInputDescriptors,
+    //   },
+    // )
+
+    const presentationSubmission = { id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission
+    // FIXME SSISDK-40
+      //hasInputDescriptors
+      //? vp.presentationSubmission
+      //: ({ id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission)
 
     console.log(`Presentation submission`, presentationSubmission)
     const tokenRequestArgs = {
       grant_type: 'vp_token',
-      vp_token: CredentialMapper.toCompactJWT(vp.verifiablePresentations[0]), // FIXME How are we going to send multiple presentations in a vp_token?
+      // FIXME SSISDK-40
+      vp_token: '',//CredentialMapper.toCompactJWT(vp.verifiablePresentations[0]), // FIXME How are we going to send multiple presentations in a vp_token?
       scope,
       presentation_submission: presentationSubmission,
       apiOpts: { environment, version: 'v4' },
