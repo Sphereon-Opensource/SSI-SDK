@@ -1,7 +1,7 @@
 import sigpkg from '@digitalcredentials/jsonld-signatures'
 import * as vc from '@digitalcredentials/vc'
 import type { CredentialPayload, DIDDocument, IAgentContext, PresentationPayload, VerifiableCredential, VerifiablePresentation } from '@veramo/core'
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 import Debug from 'debug'
 
 import { LdContextLoader } from './ld-context-loader'

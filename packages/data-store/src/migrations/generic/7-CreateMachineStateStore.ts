@@ -1,5 +1,5 @@
-import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import Debug from 'debug'
+import { DatabaseType, MigrationInterface, QueryRunner } from 'typeorm'
 import { CreateMachineStateStore1708797018115 } from '../postgres/1708797018115-CreateMachineStateStore'
 import { CreateMachineStateStore1708796002272 } from '../sqlite/1708796002272-CreateMachineStateStore'
 

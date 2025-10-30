@@ -1,3 +1,4 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import {
   type CredentialProofFormat,
   type IIssuer,
@@ -9,12 +10,10 @@ import {
   type StatusPurpose2021,
 } from '@sphereon/ssi-types'
 
-import typeorm from 'typeorm'
-import { StatusListEntryEntity } from './StatusList2021EntryEntity'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } from 'typeorm'
 import { BitstringStatusListEntryEntity } from './BitstringStatusListEntryEntity'
 
-const { BaseEntity, ChildEntity, Column, Entity, OneToMany, PrimaryColumn, TableInheritance, Unique } = typeorm
+import { StatusListEntryEntity } from './StatusList2021EntryEntity'
 
 @Entity('StatusList')
 @Unique('UQ_correlationId', ['correlationId'])

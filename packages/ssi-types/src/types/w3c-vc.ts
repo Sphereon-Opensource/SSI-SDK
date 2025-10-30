@@ -1,29 +1,47 @@
 import { type PresentationSubmission } from './pex'
 import { OriginalType } from '../mapper'
 import { IProofPurpose, IProofType } from '../utils'
-import { OriginalVerifiableCredential } from './vc'
+import { type OriginalVerifiableCredential } from './vc'
 
 export type AdditionalClaims = Record<string, any>
 
 export type IIssuerId = string
 
-export interface ICredential {
-  '@context': ICredentialContextType | ICredentialContextType[]
+export type SingleOrArray<T> = T | T[]
+
+export interface IVcdmBaseCredential {
+  '@context': SingleOrArray<ICredentialContextType>
   type: string[]
-  credentialSchema?: undefined | ICredentialSchemaType | ICredentialSchemaType[]
+  credentialSchema?: undefined | SingleOrArray<ICredentialSchemaType>
   // If iss is present, the value MUST be used to set the issuer property of the new credential JSON object or the holderDID property of the new presentation JSON object.
   issuer: IIssuerId | IIssuer
-  // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
-  issuanceDate: string
   // If sub is present, the value MUST be used to set the value of the id property of credentialSubject of the new credential JSON object.
-  credentialSubject: (ICredentialSubject & AdditionalClaims) | (ICredentialSubject & AdditionalClaims)[]
-  // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
-  expirationDate?: string
+  credentialSubject: SingleOrArray<(ICredentialSubject & AdditionalClaims)>
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
-  credentialStatus?: ICredentialStatus // ArrayOr<ICredentialStatus>  TODO this is only true for VCDM v2.0  SSISDK-2
+  credentialStatus?: SingleOrArray<ICredentialStatus>
   description?: string
   name?: string
+}
+
+export interface IVcdm2Credential extends IVcdmBaseCredential {
+  // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
+  validFrom: string
+  // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
+  validUntil?: string
+  // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
+  credentialStatus?: SingleOrArray<ICredentialStatus>
+
+  [x: string]: any
+}
+
+export interface ICredential  extends IVcdmBaseCredential{
+
+  // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
+  issuanceDate: string
+  // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.
+  expirationDate?: string
+  credentialStatus?: ICredentialStatus // ArrayOr<ICredentialStatus>  TODO this is only true for VCDM v2.0  SSISDK-2
 
   [x: string]: any
 }
@@ -130,7 +148,7 @@ export interface WrappedW3CVerifiableCredential {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'jwt_vc' | 'ldp_vc' | 'ldp' | 'jwt'
+  format: 'dc+sd-jwt' | 'jwt_vc' | 'ldp_vc' | 'ldp' | 'jwt'
   /**
    * Internal stable representation of a Credential
    */
@@ -153,7 +171,7 @@ export interface WrappedW3CVerifiablePresentation {
   /**
    * The claim format, typically used during exchange transport protocols
    */
-  format: 'jwt_vp' | 'ldp_vp'
+  format: 'vp+sd-jwt' | 'jwt_vp' | 'ldp_vp'
   /**
    * Internal stable representation of a Presentation without proofs, created based on https://www.w3.org/TR/vc-data-model/#jwt-decoding
    */

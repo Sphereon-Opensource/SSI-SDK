@@ -1,16 +1,20 @@
 import { decodeSdJwt, decodeSdJwtSync, getClaims, getClaimsSync } from '@sd-jwt/decode'
 import type {
+  AdditionalClaims,
   CompactSdJwtVc,
   Hasher,
   HasherSync,
+  ICredentialSubject,
   IVerifiableCredential,
   SdJwtDecodedDisclosure,
   SdJwtDecodedVerifiableCredential,
   SdJwtDecodedVerifiableCredentialPayload,
   SdJwtDisclosure,
   SdJwtSignedVerifiableCredentialPayload,
+  SdJwtType,
   SdJwtVcKbJwtHeader,
   SdJwtVcKbJwtPayload,
+  SingleOrArray,
 } from '../types'
 import { IProofPurpose, IProofType } from './did'
 
@@ -25,11 +29,13 @@ export function decodeSdJwtVc(compactSdJwtVc: CompactSdJwtVc, hasher: HasherSync
   const { jwt, disclosures, kbJwt } = decodeSdJwtSync(compactSdJwtVc, hasher)
 
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
-  const decodedPayload = getClaimsSync(signedPayload, disclosures, hasher)
+  const decodedPayload = getClaimsSync<any>(signedPayload, disclosures, hasher)
   const compactKeyBindingJwt = kbJwt ? compactSdJwtVc.split('~').pop() : undefined
+  const type: SdJwtType = decodedPayload.vct ? 'dc+sd-jwt' : 'vc+sd-jwt'
 
   return {
     compactSdJwtVc,
+    type,
     decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
     disclosures: disclosures.map((d) => {
       const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
@@ -63,11 +69,13 @@ export async function decodeSdJwtVcAsync(compactSdJwtVc: CompactSdJwtVc, hasher:
   const { jwt, disclosures, kbJwt } = await decodeSdJwt(compactSdJwtVc, hasher)
 
   const signedPayload = jwt.payload as SdJwtSignedVerifiableCredentialPayload
-  const decodedPayload = await getClaims(signedPayload, disclosures, hasher)
+  const decodedPayload = await getClaims<any>(signedPayload, disclosures, hasher)
   const compactKeyBindingJwt = kbJwt ? compactSdJwtVc.split('~').pop() : undefined
 
+  const type: SdJwtType = decodedPayload.vct ? 'dc+sd-jwt' : 'vc+sd-jwt'
   return {
     compactSdJwtVc,
+    type,
     decodedPayload: decodedPayload as SdJwtDecodedVerifiableCredentialPayload,
     disclosures: disclosures.map((d) => {
       const decoded = d.key ? [d.salt, d.key, d.value] : [d.salt, d.value]
@@ -95,18 +103,25 @@ export const sdJwtDecodedCredentialToUniformCredential = (
   opts?: { maxTimeSkewInMS?: number },
 ): IVerifiableCredential => {
   const { decodedPayload } = decoded
-  const { exp, nbf, iss, iat, vct, cnf, status, sub, jti } = decodedPayload
+  const { exp, nbf, iss, iat, vct, cnf, status, jti, validUntil, validFrom } = decodedPayload
+  let credentialSubject: | SingleOrArray<ICredentialSubject & AdditionalClaims> | undefined = decodedPayload.credentialSubject as | SingleOrArray<ICredentialSubject & AdditionalClaims> | undefined
+
+  let issuer = iss ?? decodedPayload.issuer
+  if (typeof issuer === 'object' && 'id' in issuer && typeof issuer.id === 'string') {
+    issuer = issuer.id as string
+  }
+  const subId = decodedPayload.sub ?? (typeof credentialSubject == 'object' && 'id' in credentialSubject ? credentialSubject.id : undefined)
 
   const maxSkewInMS = opts?.maxTimeSkewInMS ?? 1500
 
-  const expirationDate = jwtDateToISOString({ jwtClaim: exp, claimName: 'exp' })
-  let issuanceDateStr = jwtDateToISOString({ jwtClaim: iat, claimName: 'iat' })
+  const expirationDate = (validUntil as string | undefined) ?? jwtDateToISOString({ jwtClaim: exp, claimName: 'exp' })
+  let issuanceDateStr = (validFrom as string | undefined) ?? jwtDateToISOString({ jwtClaim: iat, claimName: 'iat' })
 
   let nbfDateAsStr: string | undefined
   if (nbf) {
     nbfDateAsStr = jwtDateToISOString({ jwtClaim: nbf, claimName: 'nbf' })
     if (issuanceDateStr && nbfDateAsStr && issuanceDateStr !== nbfDateAsStr) {
-      const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(iss).getTime())
+      const diff = Math.abs(new Date(nbfDateAsStr).getTime() - new Date(issuanceDateStr).getTime())
       if (!maxSkewInMS || diff > maxSkewInMS) {
         throw Error(`Inconsistent issuance dates between JWT claim (${nbfDateAsStr}) and VC value (${iss})`)
       }
@@ -120,8 +135,8 @@ export const sdJwtDecodedCredentialToUniformCredential = (
 
   // Filter out the fields we don't want in credentialSubject
   const excludedFields = new Set(['vct', 'cnf', 'iss', 'iat', 'exp', 'nbf', 'jti', 'sub'])
-  const credentialSubject = Object.entries(decodedPayload).reduce(
-    (acc, [key, value]) => {
+  if (!credentialSubject) {
+    credentialSubject = Object.entries(decodedPayload).reduce((acc, [key, value]) => {
       if (
         !excludedFields.has(key) &&
         value !== undefined &&
@@ -131,20 +146,19 @@ export const sdJwtDecodedCredentialToUniformCredential = (
         acc[key] = value
       }
       return acc
-    },
-    {} as Record<string, any>,
-  )
-
+    }, {} as Record<string, any>)
+  }
+  const sdJwtVc = decodedPayload.vct && !decodedPayload.type
   const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
-    type: [vct], // SDJwt is not a W3C VC, so no VerifiableCredential
-    '@context': [], // SDJwt has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
+    ...{ type: sdJwtVc ? [vct] : decodedPayload.type },
+    ...{ '@context': sdJwtVc ? [] : decodedPayload['@context'] },
     credentialSubject: {
       ...credentialSubject,
-      id: credentialSubject.id ?? sub ?? jti,
+      id: subId ?? jti,
     },
-    issuanceDate,
-    expirationDate,
-    issuer: iss,
+    ...(issuanceDate && (sdJwtVc ? { issuanceDate } : { validFrom: issuanceDateStr })),
+    ...(expirationDate && (sdJwtVc ? { expirationDate } : { validUntil: expirationDate })),
+    issuer: issuer,
     ...(cnf && { cnf }),
     ...(status && { status }),
     proof: {

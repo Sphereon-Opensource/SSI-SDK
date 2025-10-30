@@ -1,10 +1,10 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
-import { PartyEntity } from './PartyEntity'
-import { PartyOrigin, PartyTypeType, ValidationConstraint } from '../../types'
+import { PartyOrigin, PartyTypeType, ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { IsNotEmpty, Validate, validate, ValidationError } from 'class-validator'
-import { IsNonEmptyStringConstraint } from '../validators'
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { getConstraint } from '../../utils/ValidatorUtils'
+import { IsNonEmptyStringConstraint } from '../validators'
+import { PartyEntity } from './PartyEntity'
 
 @Entity('PartyType')
 @Index('IDX_PartyType_type_tenant_id', ['type', 'tenantId'], { unique: true })

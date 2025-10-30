@@ -1,5 +1,5 @@
+import { type ValidationConstraint } from '@sphereon/ssi-sdk.data-store-types'
 import { ValidationError } from 'class-validator'
-import { type ValidationConstraint } from '../types'
 
 export const getConstraint = (validation: ValidationError): ValidationConstraint | undefined => {
   if (validation.children && validation.children.length > 0) {

@@ -14,7 +14,7 @@ import {
   QRCodeOpts,
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
-import { CredentialDataSupplier } from '@sphereon/oid4vci-issuer'
+import { CredentialDataSupplier, IssuerCorrelation } from '@sphereon/oid4vci-issuer'
 import { IDIDOptions, ResolveOpts } from '@sphereon/ssi-sdk-ext.did-utils'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
@@ -62,6 +62,7 @@ export interface ICreateOfferArgs extends IIssuerInstanceArgs {
 
 export interface IIssueCredentialArgs extends IIssuerInstanceArgs {
   credentialRequest: CredentialRequest
+  issuerCorrelation: IssuerCorrelation
   credential?: ICredential
   credentialDataSupplier?: CredentialDataSupplier
   credentialDataSupplierInput?: CredentialDataSupplierInput
@@ -96,6 +97,7 @@ export interface IIssuerOptions {
    */
   didOpts?: IDIDOptions
   userPinRequired?: boolean
+  nonceEndpoint?: string
   cNonceExpiresIn?: number
 
   /**

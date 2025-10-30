@@ -1,8 +1,6 @@
-import { HasherSync } from '@sphereon/ssi-types'
-import { FindOptionsOrder } from 'typeorm'
-import { DigitalCredentialEntity } from '../../entities/digitalCredential/DigitalCredentialEntity'
-import { DigitalCredential } from './types'
-import { CredentialCorrelationType, CredentialRole, CredentialStateType, RegulationType } from './enums'
+import { CredentialRole, type HasherSync } from '@sphereon/ssi-types'
+import type { CredentialCorrelationType, CredentialStateType, RegulationType } from './enums'
+import type { DigitalCredential } from './types'
 
 export type GetCredentialArgs = { id: string } | { hash: string }
 
@@ -12,7 +10,7 @@ export type GetCredentialsArgs = {
   filter?: FindDigitalCredentialArgs
   offset?: number
   limit?: number
-  order?: string | FindOptionsOrder<DigitalCredentialEntity>
+  order?: string //| FindOptionsOrder<DigitalCredentialEntity>
 }
 
 export type GetCredentialsResponse = {

@@ -1,4 +1,4 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
@@ -10,7 +10,7 @@ import {
 } from '@sphereon/ssi-types'
 import { IAgentPlugin, IVerifyCredentialArgs, W3CVerifiableCredential as VeramoW3CVerifiableCredential } from '@veramo/core'
 import addFormats from 'ajv-formats'
-import Ajv2020 from 'ajv/dist/2020'
+import Ajv2020 from 'ajv/dist/2020.js'
 import fetch from 'cross-fetch'
 import {
   CredentialVerificationError,
@@ -25,9 +25,9 @@ import {
   VerifyMdocCredentialArgs,
   VerifySDJWTCredentialArgs,
 } from '../index'
-import IVerifySignatureResult = com.sphereon.crypto.generic.IVerifySignatureResult
-import decodeFrom = com.sphereon.kmp.decodeFrom
-import IssuerSignedCbor = com.sphereon.mdoc.data.device.IssuerSignedCbor
+import IVerifySignatureResult = mdocPkg.com.sphereon.crypto.generic.IVerifySignatureResult
+import decodeFrom = mdocPkg.com.sphereon.kmp.decodeFrom
+import IssuerSignedCbor = mdocPkg.com.sphereon.mdoc.data.device.IssuerSignedCbor
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 
 // Exposing the methods here for any REST implementation
@@ -176,7 +176,7 @@ export class CredentialValidation implements IAgentPlugin {
   private async cvVerifyMdoc(args: VerifyMdocCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
     const { credential } = args
 
-    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, com.sphereon.kmp.Encoding.BASE64URL))
+    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, mdocPkg.com.sphereon.kmp.Encoding.BASE64URL))
 
     const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
       console.error(error)

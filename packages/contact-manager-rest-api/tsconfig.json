@@ -8,6 +8,9 @@
       "path": "../kv-store"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

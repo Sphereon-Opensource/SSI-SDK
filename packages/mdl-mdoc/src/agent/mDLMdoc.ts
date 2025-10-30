@@ -1,4 +1,5 @@
-import { com } from '@sphereon/kmp-mdoc-core'
+import mdocPkg from '@sphereon/kmp-mdoc-core'
+const { com } = mdocPkg
 import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
 import { CertificateInfo, getCertificateInfo, pemOrDerToX509Certificate, X509ValidationResult } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JWK } from '@sphereon/ssi-types'
@@ -121,7 +122,7 @@ export class MDLMdoc implements IAgentPlugin {
       presentationDefinition as IOid4VPPresentationDefinition,
     )
     const docsAndDescriptors: DocumentDescriptorMatchResult[] = []
-    let lastError: com.sphereon.crypto.generic.IVerifyResults<com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
+    let lastError: mdocPkg.com.sphereon.crypto.generic.IVerifyResults<mdocPkg.com.sphereon.crypto.cose.ICoseKeyCbor> | undefined = undefined
     for (let match of allMatches) {
       if (match.document) {
         const result = await validate(match.document)

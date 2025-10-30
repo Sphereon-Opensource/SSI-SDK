@@ -1,6 +1,6 @@
 import { describe } from 'vitest'
 import * as fs from 'fs'
-import 'cross-fetch/polyfill'
+import fetch from 'cross-fetch'
 // @ts-ignore
 import express from 'express'
 import { createAgent, IAgent, IAgentOptions } from '@veramo/core'
@@ -15,8 +15,6 @@ import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { getUniResolver } from '@sphereon/did-uni-client'
 import didAuthSiopOpAuthenticatorAgentLogic from './shared/didAuthSiopOpAuthenticatorAgentLogic'
 import { PresentationSignCallback } from '@sphereon/did-auth-siop'
-
-//jest.setTimeout(60000)
 
 function getFile(path: string) {
   return fs.readFileSync(path, 'utf-8')

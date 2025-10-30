@@ -1,4 +1,4 @@
-import { fetch } from 'cross-fetch'
+import fetch from 'cross-fetch'
 import {
   IOID4VCIRestClient,
   IOID4VCIClientCreateOfferUriRequest,

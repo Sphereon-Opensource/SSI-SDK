@@ -1,25 +1,21 @@
 import {
   DcqlResponseOpts,
-  PresentationDefinitionWithLocation,
   PresentationSignCallback,
   ResponseMode,
   SupportedVersion,
   URI,
-  VerifiablePresentationTypeFormat,
   VerifiedAuthorizationRequest,
   VerifyJwtCallback,
-  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
 import { CheckLinkedDomain, ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { DIDDocument } from '@sphereon/did-uni-client'
-import { VerifiablePresentationResult } from '@sphereon/pex'
 import { IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { ICredentialStore, UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
-import { Party } from '@sphereon/ssi-sdk.data-store'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { Party } from '@sphereon/ssi-sdk.data-store-types'
 import { IPDManager } from '@sphereon/ssi-sdk.pd-manager'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { HasherSync, OriginalVerifiableCredential, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
+import { HasherSync, PresentationSubmission, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { VerifyCallback } from '@sphereon/wellknown-dids-client'
 import {
   IAgentContext,
@@ -49,6 +45,7 @@ import {
   Siopv2AuthorizationResponseData,
 } from './siop-service'
 import { ICredentialValidation } from '@sphereon/ssi-sdk.credential-validation'
+import { DcqlPresentation, DcqlQuery } from 'dcql'
 
 export const LOGGER_NAMESPACE = 'sphereon:siopv2-oid4vp:op-auth'
 
@@ -81,7 +78,7 @@ export interface IDidAuthSiopOpAuthenticator extends IPluginMethodMap {
 export interface IOpSessionArgs {
   sessionId?: string
   requestJwtOrUri: string | URI
-  providedPresentationDefinitions?: Array<PresentationDefinitionWithLocation>
+  dcqlQuery?: DcqlQuery
   identifierOptions?: ManagedIdentifierOptsOrResult
   context: IRequiredContext
   op?: IOPOptions
@@ -90,15 +87,8 @@ export interface IOpSessionArgs {
 export interface IAuthRequestDetails {
   rpDIDDocument?: DIDDocument
   id: string
-  verifiablePresentationMatches: IPresentationWithDefinition[]
+  verifiablePresentationMatches: DcqlPresentation[]
   alsoKnownAs?: string[]
-}
-
-export interface IPresentationWithDefinition {
-  location: VPTokenLocation
-  definition: PresentationDefinitionWithLocation
-  format: VerifiablePresentationTypeFormat
-  presentation: W3CVerifiablePresentation
 }
 
 export interface IGetSiopSessionArgs {
@@ -120,16 +110,11 @@ export interface IRemoveCustomApprovalForSiopArgs {
 
 export interface IOpsSendSiopAuthorizationResponseArgs {
   responseSignerOpts: ManagedIdentifierOptsOrResult
-  // verifiedAuthorizationRequest: VerifiedAuthorizationRequest
   presentationSubmission?: PresentationSubmission
   verifiablePresentations?: W3CVerifiablePresentation[]
   dcqlResponse?: DcqlResponseOpts
   hasher?: HasherSync
   isFirstParty?: boolean
-}
-
-export enum events {
-  DID_SIOP_AUTHENTICATED = 'didSiopAuthenticated',
 }
 
 export type IRequiredContext = IAgentContext<
@@ -155,32 +140,11 @@ export interface IOPOptions {
   skipDidResolution?: boolean
   eventEmitter?: EventEmitter
   supportedDIDMethods?: string[]
-
   verifyJwtCallback?: VerifyJwtCallback
   wellknownDIDVerifyCallback?: VerifyCallback
-
   presentationSignCallback?: PresentationSignCallback
-
   resolveOpts?: ResolveOpts
   hasher?: HasherSync
-}
-
-/*
-export interface IIdentifierOpts {
-  identifier: IIdentifier
-  verificationMethodSection?: DIDDocumentSection
-  kid?: string
-}*/
-
-export interface VerifiableCredentialsWithDefinition {
-  definition: PresentationDefinitionWithLocation
-  credentials: (UniqueDigitalCredential | OriginalVerifiableCredential)[]
-}
-
-export interface VerifiablePresentationWithDefinition extends VerifiablePresentationResult {
-  definition: PresentationDefinitionWithLocation
-  verifiableCredentials: OriginalVerifiableCredential[]
-  idOpts: ManagedIdentifierOptsOrResult
 }
 
 export interface IOpSessionGetOID4VPArgs {
@@ -193,22 +157,5 @@ export interface IOID4VPArgs {
   allIdentifiers?: string[]
   hasher?: HasherSync
 }
-
-export interface IGetPresentationExchangeArgs {
-  verifiableCredentials: OriginalVerifiableCredential[]
-  allIdentifiers?: string[]
-  hasher?: HasherSync
-}
-
-// It was added here because it's not exported from DCQL anymore
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | {
-      [key: string]: Json
-    }
-  | Json[]
 
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'

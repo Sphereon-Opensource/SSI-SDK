@@ -12,7 +12,8 @@ import {
 import { IPresentation, Optional, SdJwtDecodedVerifiableCredential, W3CVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types'
 import { IPresentationDefinition, PEVersion, SelectResults } from '@sphereon/pex'
 import { Format, InputDescriptorV1, InputDescriptorV2 } from '@sphereon/pex-models'
-import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store'
+import { FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 
 export interface IPresentationExchange extends IPluginMethodMap {

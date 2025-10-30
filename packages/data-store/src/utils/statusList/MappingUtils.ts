@@ -1,11 +1,11 @@
 import { IBitstringStatusListEntity, IOAuthStatusListEntity, IStatusList2021Entity, IStatusListEntity } from '../../types'
+import { StatusListType } from '@sphereon/ssi-types'
 import {
   BitstringStatusListEntity,
   OAuthStatusListEntity,
   StatusList2021Entity,
   StatusListEntity,
 } from '../../entities/statusList/StatusListEntities'
-import { StatusListType } from '@sphereon/ssi-types'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const statusListEntityFrom = (args: IStatusListEntity): StatusListEntity => {

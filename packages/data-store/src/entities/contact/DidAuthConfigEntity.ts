@@ -1,5 +1,4 @@
-import typeorm from 'typeorm'
-const { ChildEntity, Column } = typeorm
+import { ChildEntity, Column } from 'typeorm'
 import { BaseConfigEntity } from './BaseConfigEntity'
 
 @ChildEntity('DidAuthConfig')

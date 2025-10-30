@@ -1,9 +1,11 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
-import { IVerifiablePresentation } from '@sphereon/ssi-types'
+import { defaultHasher } from '@sphereon/ssi-sdk.core'
+import { CredentialRole, IVerifiablePresentation } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
-import { DataStoreDigitalCredentialMigrations } from '../migrations'
-import { CredentialRole, DataStoreDigitalCredentialEntities } from '../index'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
+import { DataStoreDigitalCredentialEntities } from '../index'
+import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import {
   AddCredentialArgs,
   CredentialCorrelationType,
@@ -13,9 +15,7 @@ import {
   DocumentType,
   GetCredentialsArgs,
   GetCredentialsResponse,
-} from '../types'
-import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+} from '@sphereon/ssi-sdk.data-store-types'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource

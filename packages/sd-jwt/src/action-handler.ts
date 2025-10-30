@@ -1,16 +1,16 @@
-import { Jwt, SDJwt } from '@sd-jwt/core'
-import { SDJwtVcInstance, SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { DisclosureFrame, Hasher, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
+import { Jwt, SDJwt, type SdJwtPayload, type VerifierOptions } from '@sd-jwt/core'
+import { SDJwtVcInstance, type SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import type { DisclosureFrame, HashAlgorithm, Hasher, JwtPayload, KbVerifier, PresentationFrame, Signer, Verifier } from '@sd-jwt/types'
 import { calculateJwkThumbprint, signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
-import { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
-import { HasherSync, JsonWebKey, JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
-import { IAgentPlugin } from '@veramo/core'
-import { decodeBase64url } from '@veramo/utils'
+import type { X509CertificateChainValidationOpts } from '@sphereon/ssi-sdk-ext.x509-utils'
+import type { HasherSync, JsonWebKey, JWK, SdJwtTypeMetadata } from '@sphereon/ssi-types'
+import type { IAgentPlugin } from '@veramo/core'
+// import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import { assertValidTypeMetadata, fetchUrlWithErrorHandling, validateIntegrity } from './utils'
-import {
+import { assertValidTypeMetadata, fetchUrlWithErrorHandling, getIssuerFromSdJwt, isSdjwtVcPayload, isVcdm2SdJwtPayload, validateIntegrity } from './utils'
+import type {
   Claims,
   FetchSdJwtTypeMetadataFromVctUrlArgs,
   GetSignerForIdentifierArgs,
@@ -30,6 +30,10 @@ import {
   SignKeyArgs,
   SignKeyResult,
 } from './types'
+import { SDJwtVcdm2Instance, SDJwtVcdmInstanceFactory } from './sdJwtVcdm2Instance'
+
+// @ts-ignore
+import * as u8a from 'uint8arrays'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
@@ -101,27 +105,47 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns A signed SD-JWT credential.
    */
   async createSdJwtVc(args: ICreateSdJwtVcArgs, context: IRequiredContext): Promise<ICreateSdJwtVcResult> {
-    const issuer = args.credentialPayload.iss
+    const payload = args.credentialPayload
+    const isVcdm2 = isVcdm2SdJwtPayload(payload)
+    const isSdJwtVc = isSdjwtVcPayload(payload)
+    const type = args.type ?? (isVcdm2 ? 'vc+sd-jwt' : 'dc+sd-jwt')
+
+    const issuer = getIssuerFromSdJwt(args.credentialPayload)
     if (!issuer) {
       throw new Error('credential.issuer must not be empty')
     }
     const { alg, signer, signingKey } = await this.getSignerForIdentifier({ identifier: issuer, resolution: args.resolution }, context)
-    const sdjwt = new SDJwtVcInstance({
+    const signAlg = alg ?? signingKey?.alg ?? 'ES256'
+    const hashAlg: HashAlgorithm = /(\d{3})$/.test(signAlg) ? (`sha-${signAlg.slice(-3)}` as HashAlgorithm) : 'sha-256'
+    const sdjwt = SDJwtVcdmInstanceFactory.create(type, {
+      omitTyp: true,
       signer,
       hasher: this.registeredImplementations.hasher,
       saltGenerator: this.registeredImplementations.saltGenerator,
-      signAlg: alg ?? 'ES256',
-      hashAlg: 'sha-256',
+      signAlg,
+      hashAlg,
     })
 
-    const credential = await sdjwt.issue(args.credentialPayload, args.disclosureFrame as DisclosureFrame<typeof args.credentialPayload>, {
-      header: {
-        ...(signingKey?.key.kid !== undefined && { kid: signingKey.key.kid }),
-        ...(signingKey?.key.x5c !== undefined && { x5c: signingKey.key.x5c }),
-      },
-    })
+    const header = {
+      ...(signingKey?.key.kid !== undefined && { kid: signingKey.key.kid }),
+      ...(signingKey?.key.x5c !== undefined && { x5c: signingKey.key.x5c }),
+      ...(type && { typ: type }),
+    }
+    let credential: string
+    if (isVcdm2) {
+      credential = await (sdjwt as SDJwtVcdm2Instance).issue(
+        payload,
+        // @ts-ignore
+        args.disclosureFrame as DisclosureFrame<typeof payload>,
+        { header },
+      )
+    } else if (isSdJwtVc) {
+      credential = await (sdjwt as SDJwtVcInstance).issue(payload, args.disclosureFrame as DisclosureFrame<typeof payload>, { header })
+    } else {
+      return Promise.reject(new Error(`invalid_argument: credential '${type}' type is not supported`))
+    }
 
-    return { credential }
+    return { type, credential }
   }
 
   /**
@@ -183,10 +207,13 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @returns A signed SD-JWT presentation.
    */
   async createSdJwtPresentation(args: ICreateSdJwtPresentationArgs, context: IRequiredContext): Promise<ICreateSdJwtPresentationResult> {
+    const type = args.type ?? 'dc+sd-jwt'
+
     const cred = await SDJwt.fromEncode(args.presentation, this.registeredImplementations.hasher!)
+
     const claims = await cred.getClaims<Claims>(this.registeredImplementations.hasher!)
     let holder: string
-    // we primarly look for a cnf field, if it's not there we look for a sub field. If this is also not given, we throw an error since we can not sign it.
+    // we primarily look for a cnf field, if it's not there, we look for a sub field. If this is also not given, we throw an error since we can not sign it.
     if (args.holder) {
       holder = args.holder
     } else if (claims.cnf?.jwk) {
@@ -201,15 +228,17 @@ export class SDJwtPlugin implements IAgentPlugin {
     }
     const { alg, signer } = await this.getSignerForIdentifier({ identifier: holder }, context)
 
-    const sdjwt = new SDJwtVcInstance({
-      hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest,
+    const sdjwt = SDJwtVcdmInstanceFactory.create(type, {
+      omitTyp: true,
+      hasher: this.registeredImplementations.hasher,
       saltGenerator: this.registeredImplementations.saltGenerator,
       kbSigner: signer,
       kbSignAlg: alg ?? 'ES256',
     })
+
     const presentation = await sdjwt.present(args.presentation, args.presentationFrame as PresentationFrame<SdJwtVcPayload>, { kb: args.kb })
 
-    return { presentation }
+    return { type, presentation }
   }
 
   /**
@@ -220,11 +249,19 @@ export class SDJwtPlugin implements IAgentPlugin {
    */
   async verifySdJwtVc(args: IVerifySdJwtVcArgs, context: IRequiredContext): Promise<IVerifySdJwtVcResult> {
     // callback
-    const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
-    const sdjwt = new SDJwtVcInstance({ verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
-    const { header = {}, payload, kb } = await sdjwt.verify(args.credential)
+    const verifier: Verifier = async (data: string, signature: string) => this.verifyCallbackImpl(sdjwt, context, data, signature)
 
-    return { header, payload: payload as SdJwtVcPayload, kb }
+    const cred = await SDJwt.fromEncode(args.credential, this.registeredImplementations.hasher!)
+    const type = isVcdm2SdJwtPayload(cred.jwt?.payload as SdJwtPayload) ? 'vc+sd-jwt' : 'dc+sd-jwt'
+
+
+    const sdjwt = SDJwtVcdmInstanceFactory.create(type, {verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
+    // FIXME: Findynet. Issuer returns expired status lists, and low level lib throws errors on these. We need to fix this in our implementation by wrapping the verification function
+    // For now a workaround is to ad 5 days of skew seconds, yuck
+    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, {skewSeconds: 60*60*24*5})
+
+
+    return { type, header, payload, kb }
   }
 
   /**
@@ -236,10 +273,14 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param payload - The payload of the SD-JWT
    * @returns
    */
-  private verifyKb(sdjwt: SDJwtVcInstance, context: IRequiredContext, data: string, signature: string, payload: JwtPayload): Promise<boolean> {
+  private verifyKb(context: IRequiredContext, data: string, signature: string, payload: JwtPayload): Promise<boolean> {
     if (!payload.cnf) {
       throw Error('other method than cnf is not supported yet')
     }
+
+    // TODO add aud verification
+
+
     return this.verifySignatureCallback(context)(data, signature, this.getJwk(payload))
   }
 
@@ -251,15 +292,16 @@ export class SDJwtPlugin implements IAgentPlugin {
    * @param signature - The signature
    * @returns
    */
-  async verify(
-    sdjwt: SDJwtVcInstance,
+  async verifyCallbackImpl(
+    sdjwt: SDJwtVcInstance | SDJwtVcdm2Instance,
     context: IRequiredContext,
     data: string,
     signature: string,
     opts?: { x5cValidation?: X509CertificateChainValidationOpts },
   ): Promise<boolean> {
     const decodedVC = await sdjwt.decode(`${data}.${signature}`)
-    const issuer: string = ((decodedVC.jwt as Jwt).payload as Record<string, unknown>).iss as string
+    const payload: SdJwtPayload = (decodedVC.jwt as Jwt).payload as SdJwtPayload
+    const issuer: string = getIssuerFromSdJwt(payload)
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = header.jwk
@@ -329,16 +371,21 @@ export class SDJwtPlugin implements IAgentPlugin {
    */
   async verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult> {
     let sdjwt: SDJwtVcInstance
-    const verifier: Verifier = async (data: string, signature: string) => this.verify(sdjwt, context, data, signature)
+    const verifier: Verifier = async (data: string, signature: string) => this.verifyCallbackImpl(sdjwt, context, data, signature)
     const verifierKb: KbVerifier = async (data: string, signature: string, payload: JwtPayload) =>
-      this.verifyKb(sdjwt, context, data, signature, payload)
+      this.verifyKb(context, data, signature, payload)
     sdjwt = new SDJwtVcInstance({
       verifier,
       hasher: this.registeredImplementations.hasher,
       kbVerifier: verifierKb,
     })
 
-    return sdjwt.verify(args.presentation, args.requiredClaimKeys, args.kb)
+    const verifierOpts: VerifierOptions = {
+      requiredClaimKeys: args.requiredClaimKeys,
+      keyBindingNonce: args.keyBindingNonce,
+    }
+
+    return sdjwt.verify(args.presentation, verifierOpts)
   }
 
   /**
@@ -411,7 +458,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
       // FIXME this is a quick-fix to make verification but we need a real solution
       const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
-      const decoded = decodeBase64url(encoded)
+      const decoded =  u8a.toString(u8a.fromString(encoded, 'base64url'), 'utf-8')
       const jwt = JSON.parse(decoded)
       return jwt as JsonWebKey
     }

@@ -4,7 +4,7 @@ import type {
   IssueStatusResponse,
   CredentialDataSupplierInput,
   CreateCredentialOfferURIResult,
-  CredentialOfferPayloadV1_0_13,
+  CredentialOfferPayloadV1_0_15,
 } from '@sphereon/oid4vci-common'
 
 export interface IOID4VCIRestClient extends IPluginMethodMap {
@@ -28,7 +28,7 @@ export interface IOID4VCIClientGetIssueStatusArgs {
 
 export type IOID4VCIClientCreateOfferUriResponse = Omit<CreateCredentialOfferURIResult, 'session'>
 
-export interface IOID4VCIClientCreateOfferUriRequest extends CredentialOfferPayloadV1_0_13 {
+export interface IOID4VCIClientCreateOfferUriRequest extends CredentialOfferPayloadV1_0_15 {
   credentialDataSupplierInput?: CredentialDataSupplierInput
 }
 

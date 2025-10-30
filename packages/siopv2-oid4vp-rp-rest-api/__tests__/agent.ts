@@ -1,14 +1,4 @@
 import { createAgent, ICredentialVerifier, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
-import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
-import { getUniResolver } from '@sphereon/did-uni-client'
-import {
-  CredentialProviderJsonld,
-  ICredentialHandlerLDLocal,
-  LdDefaultContexts,
-  MethodNames,
-  SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020,
-} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { CredentialPlugin } from '@veramo/credential-w3c'
 import { DataStore, DataStoreORM, DIDStore, KeyStore, PrivateKeyStore } from '@veramo/data-store'
 import { DIDManager } from '@veramo/did-manager'
@@ -18,16 +8,32 @@ import { getDidKeyResolver, KeyDIDProvider } from '@veramo/did-provider-key'
 import { DIDResolverPlugin } from '@veramo/did-resolver'
 import { KeyManager } from '@veramo/key-manager'
 import { KeyManagementSystem, SecretBox } from '@veramo/kms-local'
-import { Resolver } from 'did-resolver'
-import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
-import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
-import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
-import Debug from 'debug'
-
+import { IonPublicKeyPurpose } from '@decentralized-identity/ion-sdk'
+import { getUniResolver } from '@sphereon/did-uni-client'
+import { IPDManager, PDManager } from '@sphereon/ssi-sdk.pd-manager'
+import { PDStore } from '@sphereon/ssi-sdk.data-store'
+import {
+  CredentialProviderJsonld,
+  LdDefaultContexts,
+  SphereonEd25519Signature2018,
+  SphereonEd25519Signature2020
+} from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { defaultHasher } from '@sphereon/ssi-types'
+import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
+import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { type IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import {
+  IdentifierResolution,
+  IIdentifierResolution
+} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
+import Debug from 'debug'
+import { Resolver } from 'did-resolver'
+import { DB_CONNECTION_NAME, DB_ENCRYPTION_KEY, getDbConnection } from './database'
+import { entraAndSphereonCompatibleDef, entraVerifiedIdPresentation } from './presentationDefinitions'
+import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 
 const debug = Debug('ssi-sdk-siopv2-oid4vp-rp-rest-api')
 
@@ -101,8 +107,23 @@ export const didProviders = {
 const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
+const jsonld = new CredentialProviderJsonld({
+    contextMaps: [LdDefaultContexts],
+    suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+    keyStore: privateKeyStore,
+  })
+
 const agent = createAgent<
-  IDIDManager & IKeyManager & IResolver & IPresentationExchange & ISIOPv2RP & ICredentialVerifier & ICredentialHandlerLDLocal
+  IDIDManager &
+  IKeyManager &
+  IResolver &
+  IPresentationExchange &
+  ISIOPv2RP &
+  ICredentialVerifier &
+  IVcdmCredentialPlugin &
+  IPDManager &
+  IIdentifierResolution &
+  IJwtService
 >({
   plugins: [
     new DataStore(dbConnection),
@@ -134,8 +155,8 @@ const agent = createAgent<
       },
       instanceOpts: [
         {
-          definitionId: entraAndSphereonCompatibleDef.id,
-          definition: entraAndSphereonCompatibleDef,
+          queryId: entraAndSphereonCompatibleDef.id,
+          //definition: entraAndSphereonCompatibleDef,
           rpOpts: {
             identifierOpts: {
               checkLinkedDomains: CheckLinkedDomain.IF_PRESENT,
@@ -153,20 +174,15 @@ const agent = createAgent<
           },
         },
         {
-          definitionId: entraVerifiedIdPresentation.id,
+          queryId: entraVerifiedIdPresentation.id,
         },
       ],
     }),
     new CredentialPlugin(),
-    new CredentialProviderJsonld({
-      contextMaps: [LdDefaultContexts],
-      suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
-      bindingOverrides: new Map([
-        ['createVerifiableCredentialLD', MethodNames.createVerifiableCredential],
-        ['createVerifiablePresentationLD', MethodNames.createVerifiablePresentation],
-      ]),
-      keyStore: privateKeyStore,
-    }),
+    new VcdmCredentialPlugin({ issuers: [jsonld] }),
+    new PDManager({ store: new PDStore(dbConnection) }),
+    new IdentifierResolution(),
+    new JwtService()
   ],
 })
 
@@ -207,4 +223,5 @@ agent
   .catch((reason) => {
     debug(`error on creation:  ${reason}`)
   })
+
 export default agent

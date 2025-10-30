@@ -12,7 +12,7 @@ import {
   ILocaleBranding,
   IUpdateCredentialLocaleBrandingArgs,
   IUpdateIssuerLocaleBrandingArgs,
-} from '@sphereon/ssi-sdk.data-store'
+} from '@sphereon/ssi-sdk.data-store-types'
 import { afterAll, beforeAll, describe, expect, it, vitest } from 'vitest'
 
 type ConfiguredAgent = TAgent<IIssuanceBranding>

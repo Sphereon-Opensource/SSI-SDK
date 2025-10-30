@@ -1,3 +1,5 @@
+import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
 import {
   type ActionSubType,
   ActionType,
@@ -8,8 +10,6 @@ import {
   System,
   SystemCorrelationIdType,
 } from '@sphereon/ssi-types'
-import { CredentialType, PartyCorrelationType } from '@sphereon/ssi-sdk.core'
-import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 //TODO this entity, also contains some optional fields that are related to another event type (Activity) later we might want to refactor and reorganize this.

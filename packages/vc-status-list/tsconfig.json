@@ -7,6 +7,9 @@
       "path": "../credential-vcdm"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

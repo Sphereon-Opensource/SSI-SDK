@@ -19,6 +19,9 @@
       "path": "../credential-vcdm-jsonld-provider"
     },
     {
+      "path": "../data-store-types"
+    },
+    {
       "path": "../data-store"
     },
     {

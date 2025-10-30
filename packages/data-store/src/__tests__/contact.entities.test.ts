@@ -1,6 +1,8 @@
 import { getDID } from '@sphereon/ssi-sdk-ext.did-utils'
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
+import { CredentialRole } from '@sphereon/ssi-types'
 import { DataSource, FindOptionsWhere } from 'typeorm'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { BaseContactEntity } from '../entities/contact/BaseContactEntity'
 import { ConnectionEntity } from '../entities/contact/ConnectionEntity'
 import { ContactMetadataItemEntity } from '../entities/contact/ContactMetadataItemEntity'
@@ -16,18 +18,11 @@ import { PartyEntity } from '../entities/contact/PartyEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
+import { contactMetadataItemEntityFrom, DataStoreContactEntities, DataStoreMigrations, identityMetadataItemEntityFrom, partyTypeFrom } from '../index'
 import {
-  contactMetadataItemEntityFrom,
-  CredentialRole,
-  DataStoreContactEntities,
-  DataStoreMigrations,
-  identityMetadataItemEntityFrom,
   IdentityOrigin,
   MetadataTypes,
   PartyOrigin,
-  partyTypeFrom,
-} from '../index'
-import {
   ConnectionType,
   CorrelationIdentifierType,
   NaturalPerson,
@@ -43,7 +38,7 @@ import {
   NonPersistedPhysicalAddress,
   Organization,
   PartyTypeType,
-} from '../types'
+} from '@sphereon/ssi-sdk.data-store-types'
 import {
   connectionEntityFrom,
   didAuthConfigEntityFrom,
@@ -57,7 +52,6 @@ import {
   partyTypeEntityFrom,
   physicalAddressEntityFrom,
 } from '../utils/contact/MappingUtils'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 // TODO write test adding two contacts reusing the same contactType
 
 describe('Database entities tests', (): void => {

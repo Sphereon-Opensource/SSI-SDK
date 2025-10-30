@@ -29,7 +29,7 @@ import {
   IWellKnownDidIssuerOptionsArgs,
   RequiredContext,
 } from '../types/IWellKnownDidIssuer'
-import { RegulationType } from '@sphereon/ssi-sdk.data-store'
+import { RegulationType } from '@sphereon/ssi-sdk.data-store-types'
 
 /**
  * {@inheritDoc IWellKnownDidIssuer}

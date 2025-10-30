@@ -1,12 +1,13 @@
-import { AzureKeyVaultCryptoProvider, com } from '@sphereon/kmp-crypto-kms-azure'
+import { AzureKeyVaultCryptoProvider } from '@sphereon/kmp-crypto-kms-azure'
+import * as kmsAzure from '@sphereon/kmp-crypto-kms-azure'
 import { IKey, ManagedKeyInfo, MinimalImportableKey, TKeyType } from '@veramo/core'
 import { AbstractKeyManagementSystem } from '@veramo/key-manager'
 import { KeyMetadata } from './index'
 import { calculateJwkThumbprint } from '@sphereon/ssi-sdk-ext.key-utils'
 import { JoseCurve, JWK } from '@sphereon/ssi-types'
-import SignatureAlgorithm = com.sphereon.crypto.generic.SignatureAlgorithm
-import KeyOperations = com.sphereon.crypto.generic.KeyOperations
-import JwkUse = com.sphereon.crypto.jose.JwkUse
+import SignatureAlgorithm = kmsAzure.com.sphereon.crypto.generic.SignatureAlgorithm
+import KeyOperations = kmsAzure.com.sphereon.crypto.generic.KeyOperations
+import JwkUse = kmsAzure.com.sphereon.crypto.jose.JwkUse
 
 interface AbstractKeyManagementSystemOptions {
   applicationId: string
@@ -23,16 +24,16 @@ export class AzureKeyVaultKeyManagementSystem extends AbstractKeyManagementSyste
   constructor(options: AbstractKeyManagementSystemOptions) {
     super()
 
-    const credentialOptions = new com.sphereon.crypto.kms.azure.CredentialOpts(
-      com.sphereon.crypto.kms.azure.CredentialMode.SERVICE_CLIENT_SECRET,
-      new com.sphereon.crypto.kms.azure.SecretCredentialOpts(options.keyVaultClientId, options.keyVaultClientSecret)
+    const credentialOptions = new kmsAzure.com.sphereon.crypto.kms.azure.CredentialOpts(
+      kmsAzure.com.sphereon.crypto.kms.azure.CredentialMode.SERVICE_CLIENT_SECRET,
+      new kmsAzure.com.sphereon.crypto.kms.azure.SecretCredentialOpts(options.keyVaultClientId, options.keyVaultClientSecret),
     )
 
-    const azureKeyVaultClientConfig = new com.sphereon.crypto.kms.azure.AzureKeyVaultClientConfig(
+    const azureKeyVaultClientConfig = new kmsAzure.com.sphereon.crypto.kms.azure.AzureKeyVaultClientConfig(
       options.applicationId,
       options.keyVaultUrl,
       options.keyVaultClientIdTenantId,
-      credentialOptions
+      credentialOptions,
     )
 
     this.id = options.applicationId
@@ -48,7 +49,7 @@ export class AzureKeyVaultKeyManagementSystem extends AbstractKeyManagementSyste
       meta?.keyAlias || `key-${crypto.randomUUID()}`,
       meta && 'keyUsage' in meta ? this.mapKeyUsage(meta.keyUsage) : JwkUse.sig,
       meta && 'keyOperations' in meta ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.SIGN],
-      signatureAlgorithm
+      signatureAlgorithm,
     )
     const key = await this.client.generateKeyAsync(options)
 

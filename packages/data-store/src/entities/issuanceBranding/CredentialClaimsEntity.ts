@@ -1,7 +1,7 @@
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { CredentialLocaleBrandingEntity } from './CredentialLocaleBrandingEntity'
 import { validate, Validate, ValidationError } from 'class-validator'
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { IsNonEmptyStringConstraint } from '../validators'
+import { CredentialLocaleBrandingEntity } from './CredentialLocaleBrandingEntity'
 
 @Entity('CredentialClaims')
 @Index('IDX_CredentialClaimsEntity_credentialLocaleBranding_locale', ['credentialLocaleBranding', 'key'], { unique: true })

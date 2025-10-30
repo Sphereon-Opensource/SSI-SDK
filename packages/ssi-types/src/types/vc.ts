@@ -28,7 +28,7 @@ export type CredentialFormat =
   | 'ldp_vc'
   | 'vc+jwt'
   // SD-JWT
-  | 'vc+sd-jwt'
+  | 'dc+sd-jwt'
   // Remaining
   | 'jwt'
   | 'ldp'
@@ -42,6 +42,7 @@ export type PresentationFormat =
   | 'vp+jwt'
   // SD-JWT
   | 'vp+sd-jwt'
+  | 'dc+sd-jwt'
   // Remaining
   | 'jwt'
   | 'ldp'
@@ -63,3 +64,43 @@ export type OriginalVerifiablePresentation =
   | MdocOid4vpMdocVpToken
   | MdocDeviceResponse
 export type Original = OriginalVerifiablePresentation | OriginalVerifiableCredential
+
+export type JwtObject = {
+  alg_values: Array<string>
+}
+
+export type LdpObject = {
+  proof_type_values: Array<string>
+}
+
+export type DiObject = {
+  proof_type_values: Array<string>
+  cryptosuite: Array<string>
+}
+
+export type SdJwtObject = {
+  ['sd-jwt_alg_values']?: Array<string>
+  ['kb-jwt_alg_values']?: Array<string>
+}
+
+export type MsoMdocObject = {
+  ['issuerauth_alg_values']?: Array<number>
+  ['deviceauth_alg_values']?: Array<number>
+}
+
+export type Format = {
+  jwt?: JwtObject
+  jwt_vc?: JwtObject
+  jwt_vc_json?: JwtObject
+  jwt_vp?: JwtObject
+  jwt_vp_json?: JwtObject
+  ldp?: LdpObject
+  ldp_vc?: LdpObject
+  ldp_vp?: LdpObject
+  di?: DiObject
+  di_vc?: DiObject
+  di_vp?: DiObject
+  ['vc+sd-jwt']?: SdJwtObject
+  ['dc+sd-jwt']?: SdJwtObject
+  mso_mdoc?: MsoMdocObject
+}

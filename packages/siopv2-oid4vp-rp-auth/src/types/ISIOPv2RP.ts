@@ -2,46 +2,38 @@ import {
   AuthorizationRequestPayload,
   AuthorizationRequestState,
   AuthorizationResponsePayload,
-  AuthorizationResponseState,
+  AuthorizationResponseStateWithVerifiedData,
+  CallbackOpts,
   ClaimPayloadCommonOpts,
   ClientMetadataOpts,
   IRPSessionManager,
-  PresentationDefinitionWithLocation,
   PresentationVerificationCallback,
   RequestObjectPayload,
   ResponseMode,
   ResponseURIType,
   SupportedVersion,
-  VerifiablePresentationTypeFormat,
   VerifiedAuthorizationResponse,
   VerifyJwtCallback,
-  VPTokenLocation,
 } from '@sphereon/did-auth-siop'
-import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { AdditionalClaims, DcqlQueryREST, HasherSync, W3CVerifiablePresentation } from '@sphereon/ssi-types'
-
-import { Resolvable } from 'did-resolver'
+import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
 import { DIDDocument } from '@sphereon/did-uni-client'
-import { EventEmitter } from 'events'
+import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { IPresentationDefinition } from '@sphereon/pex'
 import { IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
-import { VerifyCallback } from '@sphereon/wellknown-dids-client'
-import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
-import { IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
-import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
-import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { ExternalIdentifierOIDFEntityIdOpts, IIdentifierResolution, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
-import { JwtIssuer } from '@sphereon/oid4vc-common'
-import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
-
-export enum VerifiedDataMode {
-  NONE = 'none',
-  VERIFIED_PRESENTATION = 'vp',
-  CREDENTIAL_SUBJECT_FLATTENED = 'cs-flat',
-}
+import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
+import { ImportDcqlQueryItem, IPDManager, VersionControlMode } from '@sphereon/ssi-sdk.pd-manager'
+import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { AuthorizationRequestStateStatus } from '@sphereon/ssi-sdk.siopv2-oid4vp-common'
+import { HasherSync } from '@sphereon/ssi-types'
+import { VerifyCallback } from '@sphereon/wellknown-dids-client'
+import { IAgentContext, ICredentialVerifier, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
+import { DcqlQuery } from 'dcql'
+import { Resolvable } from 'did-resolver'
+import { EventEmitter } from 'events'
 
 export interface ISIOPv2RP extends IPluginMethodMap {
   siopCreateAuthRequestURI(createArgs: ICreateAuthRequestArgs, context: IRequiredContext): Promise<string>
@@ -55,7 +47,6 @@ export interface ISIOPv2RP extends IPluginMethodMap {
   siopDeleteAuthState(args: IDeleteAuthStateArgs, context: IRequiredContext): Promise<boolean>
   siopVerifyAuthResponse(args: IVerifyAuthResponseStateArgs, context: IRequiredContext): Promise<VerifiedAuthorizationResponse>
   siopImportDefinitions(args: ImportDefinitionsArgs, context: IRequiredContext): Promise<void>
-
   siopGetRedirectURI(args: IGetRedirectUriArgs, context: IRequiredContext): Promise<string | undefined>
 }
 
@@ -67,8 +58,9 @@ export interface ISiopv2RPOpts {
 export interface IRPDefaultOpts extends IRPOptions {}
 
 export interface ICreateAuthRequestArgs {
-  definitionId: string
+  queryId: string
   correlationId: string
+  useQueryIdInstance?: boolean
   responseURIType: ResponseURIType
   responseURI: string
   responseRedirectURI?: string
@@ -77,24 +69,24 @@ export interface ICreateAuthRequestArgs {
   nonce?: string
   state?: string
   claims?: ClaimPayloadCommonOpts
+  callback?: CallbackOpts
 }
 
 export interface IGetAuthRequestStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
   errorOnNotFound?: boolean
 }
 
 export interface IGetAuthResponseStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
   errorOnNotFound?: boolean
   progressRequestStateTo?: AuthorizationRequestStateStatus
-  includeVerifiedData?: VerifiedDataMode
 }
 
 export interface IUpdateRequestStateArgs {
-  definitionId: string
+  queryId?: string
   correlationId: string
   state: AuthorizationRequestStateStatus
   error?: string
@@ -102,25 +94,18 @@ export interface IUpdateRequestStateArgs {
 
 export interface IDeleteAuthStateArgs {
   correlationId: string
-  definitionId: string
+  queryId?: string
 }
 
 export interface IVerifyAuthResponseStateArgs {
   authorizationResponse: string | AuthorizationResponsePayload
-  definitionId?: string
+  queryId?: string
   correlationId: string
   audience?: string
-  presentationDefinitions?: PresentationDefinitionWithLocation | PresentationDefinitionWithLocation[]
-  dcqlQuery?: DcqlQueryREST
+  dcqlQuery?: DcqlQuery
 }
-
-export interface IDefinitionPair {
-  definitionPayload: IPresentationDefinition
-  dcqlPayload?: DcqlQueryREST
-}
-
 export interface ImportDefinitionsArgs {
-  definitions: Array<IDefinitionPair>
+  importItems: Array<ImportDcqlQueryItem>
   tenantId?: string
   version?: string
   versionControlMode?: VersionControlMode
@@ -128,7 +113,7 @@ export interface ImportDefinitionsArgs {
 
 export interface IGetRedirectUriArgs {
   correlationId: string
-  definitionId?: string
+  queryId?: string
   state?: string
 }
 
@@ -144,11 +129,12 @@ export interface IPEXDefinitionPersistArgs extends IPEXInstanceOptions {
 }
 
 export interface ISiopRPInstanceArgs {
-  definitionId?: string
+  createWhenNotPresent: boolean
+  queryId?: string
   responseRedirectURI?: string
 }
 
-export interface IPEXInstanceOptions extends IPEXOptions {
+export interface IPEXInstanceOptions extends IPresentationOptions {
   rpOpts?: IRPOptions
 }
 
@@ -166,12 +152,9 @@ export interface IRPOptions {
   responseRedirectUri?: string
 }
 
-export interface IPEXOptions {
+export interface IPresentationOptions {
+  queryId: string
   presentationVerifyCallback?: PresentationVerificationCallback
-  // definition?: IPresentationDefinition
-  definitionId: string
-  version?: string
-  tenantId?: string
 }
 
 export type VerificationPolicies = {
@@ -186,15 +169,7 @@ export interface PerDidResolver {
 export interface IAuthRequestDetails {
   rpDIDDocument?: DIDDocument
   id: string
-  verifiablePresentationMatches: IPresentationWithDefinition[]
   alsoKnownAs?: string[]
-}
-
-export interface IPresentationWithDefinition {
-  location: VPTokenLocation
-  definition: PresentationDefinitionWithLocation
-  format: VerifiablePresentationTypeFormat
-  presentation: W3CVerifiablePresentation
 }
 
 export interface ISIOPIdentifierOptions extends Omit<IDIDOptions, 'idOpts'> {
@@ -210,16 +185,11 @@ export type CredentialOpts = {
   hasher?: HasherSync
 }
 
-export interface AuthorizationResponseStateWithVerifiedData extends AuthorizationResponseState {
-  verifiedData?: AdditionalClaims
-}
-
 export type IRequiredContext = IAgentContext<
   IResolver &
     IDIDManager &
     IKeyManager &
     IIdentifierResolution &
-    ICredentialIssuer &
     ICredentialValidation &
     ICredentialVerifier &
     IPresentationExchange &
