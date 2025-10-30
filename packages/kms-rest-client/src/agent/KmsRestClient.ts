@@ -31,8 +31,6 @@ import type {
   ListKeyProvidersResponse,
   ListKeysResponse,
   ListResolversResponse,
-  ManagedKeyInfo,
-  ManagedKeyPair,
   ResolvedKeyInfo,
   ResolvePublicKey,
   Resolver,
@@ -40,22 +38,26 @@ import type {
   StoreKey,
   VerifyRawSignature,
   KeyProviderResponse,
+  GenerateKeyResponse,
+  StoreKeyResponse,
+  GetKeyResponse
 } from '../models'
 import {
   CreateRawSignatureResponseFromJSONTyped,
   CreateRawSignatureToJSONTyped,
   GenerateKeyGlobalToJSONTyped,
   GenerateKeyToJSONTyped,
+  GenerateKeyResponseFromJSONTyped,
+  GetKeyResponseFromJSONTyped,
   KeyProviderResponseFromJSONTyped,
   ListKeyProvidersResponseFromJSONTyped,
   ListKeysResponseFromJSONTyped,
   ListResolversResponseFromJSONTyped,
-  ManagedKeyInfoFromJSONTyped,
-  ManagedKeyPairFromJSONTyped,
   ResolvePublicKeyToJSONTyped,
   ResolvedKeyInfoFromJSONTyped,
   ResolverFromJSONTyped,
   StoreKeyToJSONTyped,
+  StoreKeyResponseFromJSONTyped,
   VerifyRawSignatureResponseFromJSONTyped,
   VerifyRawSignatureToJSONTyped
 } from '../models'
@@ -121,8 +123,8 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListResolvers} */
-  private async kmsClientListResolvers(args: KmsClientListResolversArgs): Promise<ListResolversResponse> {
-    const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
+  private async kmsClientListResolvers(args?: KmsClientListResolversArgs): Promise<ListResolversResponse> {
+    const baseUrl = this.assertedAgentBaseUrl(args?.baseUrl)
     const url = KmsRestClient.urlWithBase('/resolvers', baseUrl)
 
     const response = await fetch(url, {
@@ -210,7 +212,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetKey} */
-  private async kmsClientGetKey(args: KmsClientGetKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientGetKey(args: KmsClientGetKeyArgs): Promise<GetKeyResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys/${args.aliasOrKid}`, baseUrl)
 
@@ -220,31 +222,30 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`get key response: ${response}`)
 
     try {
-      return ManagedKeyInfoFromJSONTyped(await response.json(), false)
+      return GetKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListKeys} */
-  private async kmsClientListKeys(args: KmsClientListKeysArgs): Promise<ListKeysResponse> {
-    const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
-    const url = this.addSearchParams(KmsRestClient.urlWithBase('/keys', baseUrl), { ...(args.providerId && { providerId: args.providerId }) })
+  private async kmsClientListKeys(args?: KmsClientListKeysArgs): Promise<ListKeysResponse> {
+    const baseUrl = this.assertedAgentBaseUrl(args?.baseUrl)
+    const url = this.addSearchParams(KmsRestClient.urlWithBase('/keys', baseUrl), { ...(args?.providerId && { providerId: args.providerId }) })
     const response = await fetch(url, {
       method: 'GET',
     })
     logger.debug(`list keys response: ${response}`)
 
     try {
-      const xx = await response.json()
-      return ListKeysResponseFromJSONTyped(xx, false)
+      return ListKeysResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
   }
 
   /** {@inheritDoc IKmsRestClient.kmsStoreKey} */
-  private async kmsClientStoreKey(args: KmsClientStoreKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientStoreKey(args: KmsClientStoreKeyArgs): Promise<StoreKeyResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys`, baseUrl)
 
@@ -260,14 +261,14 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`store key response: ${response}`)
 
     try {
-      return ManagedKeyInfoFromJSONTyped(await response.json(), false)
+      return StoreKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGenerateKey} */
-  private async kmsClientGenerateKey(args: KmsClientGenerateKeyArgs): Promise<ManagedKeyPair> {
+  private async kmsClientGenerateKey(args: KmsClientGenerateKeyArgs): Promise<GenerateKeyResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/keys/generate`, baseUrl)
 
@@ -285,7 +286,7 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`generate key response: ${response}`)
 
     try {
-      return ManagedKeyPairFromJSONTyped(await response.json(), false)
+      return GenerateKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
@@ -321,8 +322,8 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListKeyProviders} */
-  private async kmsClientListKeyProviders(args: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse> {
-    const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
+  private async kmsClientListKeyProviders(args?: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse> {
+    const baseUrl = this.assertedAgentBaseUrl(args?.baseUrl)
     const url = KmsRestClient.urlWithBase('/providers', baseUrl)
 
     const response = await fetch(url, {
@@ -355,7 +356,7 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderStoreKey} */
-  private async kmsClientProviderStoreKey(args: KmsClientProviderStoreKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientProviderStoreKey(args: KmsClientProviderStoreKeyArgs): Promise<StoreKeyResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys`, baseUrl)
 
@@ -371,14 +372,14 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`provider store key response: ${response}`)
 
     try {
-      return ManagedKeyInfoFromJSONTyped(await response.json(), false)
+      return StoreKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGenerateKey} */
-  private async kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKeyArgs): Promise<ManagedKeyPair> {
+  private async kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKeyArgs): Promise<GenerateKeyResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys/generate`, baseUrl)
 
@@ -395,14 +396,14 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`provider generate key response: ${response}`)
 
     try {
-      return ManagedKeyPairFromJSONTyped(await response.json(), false)
+      return GenerateKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGetKey} */
-  private async kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<ManagedKeyInfo> {
+  private async kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<GetKeyResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/providers/${args.providerId}/keys/${args.aliasOrKid}`, baseUrl)
 
@@ -412,7 +413,7 @@ export class KmsRestClient implements IAgentPlugin {
     logger.debug(`get provider key response: ${response}`)
 
     try {
-      return ManagedKeyInfoFromJSONTyped(await response.json(), false)
+      return GetKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
     }

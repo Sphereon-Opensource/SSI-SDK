@@ -5,37 +5,38 @@ import {
   CreateRawSignatureResponse,
   GenerateKey,
   GenerateKeyGlobal,
+  GenerateKeyResponse,
+  GetKeyResponse,
   KeyProviderResponse,
   ListKeyProvidersResponse,
   ListKeysResponse,
   ListResolversResponse,
-  ManagedKeyInfo,
-  ManagedKeyPair,
   ResolvedKeyInfo,
   ResolvePublicKey,
   Resolver,
   StoreKey,
+  StoreKeyResponse,
   VerifyRawSignature,
-  VerifyRawSignatureResponse,
+  VerifyRawSignatureResponse
 } from '../models'
 
 export interface IKmsRestClient extends IPluginMethodMap {
   kmsClientGetResolver(args: kmsClientGetResolverArgs): Promise<Resolver>
-  kmsClientListResolvers(args: KmsClientListResolversArgs): Promise<ListResolversResponse>
+  kmsClientListResolvers(args?: KmsClientListResolversArgs): Promise<ListResolversResponse>
   kmsClientResolveKey(args: KmsClientResolveKeyArgs): Promise<ResolvedKeyInfo>
   kmsClientCreateRawSignature(args: KmsClientCreateRawSignatureArgs): Promise<CreateRawSignatureResponse>
   kmsClientIsValidRawSignature(args: KmsClientIsValidRawSignatureArgs): Promise<VerifyRawSignatureResponse>
-  kmsClientGetKey(args: KmsClientGetKeyArgs): Promise<ManagedKeyInfo>
-  kmsClientListKeys(args: KmsClientListKeysArgs): Promise<ListKeysResponse>
-  kmsClientStoreKey(args: KmsClientStoreKeyArgs): Promise<ManagedKeyInfo>
-  kmsClientGenerateKey(args: KmsClientGenerateKeyArgs): Promise<ManagedKeyPair>
+  kmsClientGetKey(args: KmsClientGetKeyArgs): Promise<GetKeyResponse>
+  kmsClientListKeys(args?: KmsClientListKeysArgs): Promise<ListKeysResponse>
+  kmsClientStoreKey(args: KmsClientStoreKeyArgs): Promise<StoreKeyResponse>
+  kmsClientGenerateKey(args: KmsClientGenerateKeyArgs): Promise<GenerateKeyResponse>
   kmsClientDeleteKey(args: KmsClientDeleteKeyArgs): Promise<boolean>
   kmsClientGetKeyProvider(args: KmsClientGetKeyProviderArgs): Promise<KeyProviderResponse>
-  kmsClientListKeyProviders(args: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse>
+  kmsClientListKeyProviders(args?: KmsClientListKeyProvidersArgs): Promise<ListKeyProvidersResponse>
   kmsClientProviderListKeys(args: KmsClientProviderListKeysArgs): Promise<ListKeysResponse>
-  kmsClientProviderStoreKey(args: KmsClientProviderStoreKeyArgs): Promise<ManagedKeyInfo>
-  kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKeyArgs): Promise<ManagedKeyPair>
-  kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<ManagedKeyInfo>
+  kmsClientProviderStoreKey(args: KmsClientProviderStoreKeyArgs): Promise<StoreKeyResponse>
+  kmsClientProviderGenerateKey(args: KmsClientProviderGenerateKeyArgs): Promise<GenerateKeyResponse>
+  kmsClientProviderGetKey(args: KmsClientProviderGetKeyArgs): Promise<GetKeyResponse>
   kmsClientProviderDeleteKey(args: KmsClientProviderDeleteKeyArgs): Promise<boolean>
 }
 
@@ -81,12 +82,12 @@ export type KmsClientGenerateKeyArgs = {
 
 export type KmsClientDeleteKeyArgs = {
   baseUrl?: string
-  aliasOrKid?: string
+  aliasOrKid: string
 }
 
 export type KmsClientGetKeyProviderArgs = {
   baseUrl?: string
-  providerId?: string
+  providerId: string
 }
 
 export type KmsClientListKeyProvidersArgs = {

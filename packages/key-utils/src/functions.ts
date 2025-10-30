@@ -1,7 +1,7 @@
 import { randomBytes } from '@ethersproject/random'
 // Do not change these require statements to imports before we change to ESM. Breaks external CJS packages depending on this module
 import { bls12_381 } from '@noble/curves/bls12-381'
-import { ed25519 } from '@noble/curves/ed25519'
+import { ed25519, x25519 } from '@noble/curves/ed25519'
 import { p256 } from '@noble/curves/p256'
 import { p384 } from '@noble/curves/p384'
 import { p521 } from '@noble/curves/p521'
@@ -367,7 +367,7 @@ export function rsaJwkToRawHexKey(jwk: JsonWebKey): string {
     // We are converting from base64 to base64url to be sure. The spec uses base64url, but in the wild we sometimes encounter a base64 string
     const modulus = fromString(jwk.n.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), 'base64url') // 'n' is the modulus
     const exponent = fromString(jwk.e.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), 'base64url') // 'e' is the exponent
-  
+
     return toString(modulus, 'hex') + toString(exponent, 'hex')*/
 }
 
@@ -421,6 +421,17 @@ function octJwkToRawHexKey(jwk: JsonWebKey): string {
   const key = fromString(jwk.k.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), 'base64url')
 
   return toString(key, 'hex')
+}
+
+export function x25519PublicHexFromPrivateHex(privateKeyHex: string): string {
+  if (!/^[0-9a-fA-F]{64}$/.test(privateKeyHex)) {
+    throw new Error('Private key must be 32-byte hex (64 chars)')
+  }
+
+  const priv = Uint8Array.from(Buffer.from(privateKeyHex, 'hex'))
+  const pub = x25519.getPublicKey(priv)
+
+  return Buffer.from(pub).toString('hex')
 }
 
 /**

@@ -166,21 +166,21 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(storeResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientGetKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        aliasOrKid: storeResult.alias,
+        aliasOrKid: storeResult.keyInfo.alias,
       })
 
-      expect(result.key).toBeDefined()
-      expect(result.alias).toBeDefined()
-      expect(result.providerId).toBeDefined()
-      expect(result.kid).toBeDefined()
-      expect(result.signatureAlgorithm).toBeDefined() // TODO this seems to be null?
-      expect(result.keyVisibility).toBeDefined() // TODO this seems to be null?
-      expect(result.keyType).toBeDefined()
-      expect(result.keyEncoding).toBeDefined()
+      expect(result.keyInfo.key).toBeDefined()
+      expect(result.keyInfo.alias).toBeDefined()
+      expect(result.keyInfo.providerId).toBeDefined()
+      expect(result.keyInfo.kid).toBeDefined()
+      expect(result.keyInfo.signatureAlgorithm).toBeDefined() // TODO this seems to be null?
+      expect(result.keyInfo.keyVisibility).toBeDefined() // TODO this seems to be null?
+      expect(result.keyInfo.keyType).toBeDefined()
+      expect(result.keyInfo.keyEncoding).toBeDefined()
     })
 
     it('should list keys', async (): Promise<void> => {
@@ -215,7 +215,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(storeResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
@@ -256,7 +256,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(storeResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
@@ -298,14 +298,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(result.key).toBeDefined()
-      expect(result.alias).toBeDefined()
-      expect(result.providerId).toBeDefined()
-      expect(result.kid).toBeDefined()
-      expect(result.x5c).toBeDefined()
-      expect(result.keyType).toBeDefined()
-      expect(result.keyEncoding).toBeDefined()
-      expect(result.opts).toBeDefined()
+      expect(result.keyInfo.key).toBeDefined()
+      expect(result.keyInfo.alias).toBeDefined()
+      expect(result.keyInfo.providerId).toBeDefined()
+      expect(result.keyInfo.kid).toBeDefined()
+      expect(result.keyInfo.x5c).toBeDefined()
+      expect(result.keyInfo.keyType).toBeDefined()
+      expect(result.keyInfo.keyEncoding).toBeDefined()
+      expect(result.keyInfo.opts).toBeDefined()
     })
 
     it('should generate key', async (): Promise<void> => {
@@ -316,11 +316,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         keyOperations: ['sign'],
       })
 
-      expect(result.providerId).toBeDefined()
-      expect(result.alias).toBeDefined()
-      expect(result.cose).toBeDefined()
-      expect(result.jose).toBeDefined()
-      expect(result.kid).toBeDefined()
+      expect(result.keyPair.providerId).toBeDefined()
+      expect(result.keyPair.alias).toBeDefined()
+      expect(result.keyPair.cose).toBeDefined()
+      expect(result.keyPair.jose).toBeDefined()
+      expect(result.keyPair.kid).toBeDefined()
     })
 
     it('should delete key', async (): Promise<void> => {
@@ -355,11 +355,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(storeResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientDeleteKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
-        aliasOrKid: storeResult.alias,
+        aliasOrKid: storeResult.keyInfo.alias,
       })
 
       expect(result).toBeTruthy()
@@ -384,7 +384,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
     })
 
     it('should list provider keys', async () => {
-      const generateResult = await agent.kmsClientProviderStoreKey({
+      const storeResult = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -416,7 +416,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(generateResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientProviderListKeys({
         baseUrl: 'https://ssi-backend.sphereon.com',
@@ -459,14 +459,14 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(result.key).toBeDefined()
-      expect(result.alias).toBeDefined()
-      expect(result.providerId).toBeDefined()
-      expect(result.kid).toBeDefined()
-      expect(result.x5c).toBeDefined()
-      expect(result.keyType).toBeDefined()
-      expect(result.keyEncoding).toBeDefined()
-      expect(result.opts).toBeDefined()
+      expect(result.keyInfo.key).toBeDefined()
+      expect(result.keyInfo.alias).toBeDefined()
+      expect(result.keyInfo.providerId).toBeDefined()
+      expect(result.keyInfo.kid).toBeDefined()
+      expect(result.keyInfo.x5c).toBeDefined()
+      expect(result.keyInfo.keyType).toBeDefined()
+      expect(result.keyInfo.keyEncoding).toBeDefined()
+      expect(result.keyInfo.opts).toBeDefined()
     })
 
     it('should generate provider key', async (): Promise<void> => {
@@ -478,15 +478,15 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         keyOperations: ['sign'],
       })
 
-      expect(result.providerId).toBeDefined()
-      expect(result.alias).toBeDefined()
-      expect(result.cose).toBeDefined()
-      expect(result.jose).toBeDefined()
-      expect(result.kid).toBeDefined()
+      expect(result.keyPair.providerId).toBeDefined()
+      expect(result.keyPair.alias).toBeDefined()
+      expect(result.keyPair.cose).toBeDefined()
+      expect(result.keyPair.jose).toBeDefined()
+      expect(result.keyPair.kid).toBeDefined()
     })
 
     it('should get provider key by alias or kid', async (): Promise<void> => {
-      const generateResult = await agent.kmsClientProviderStoreKey({
+      const storeResult = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -518,26 +518,26 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(generateResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientProviderGetKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
-        aliasOrKid: generateResult.alias,
+        aliasOrKid: storeResult.keyInfo.alias,
       })
 
-      expect(result.key).toBeDefined()
-      expect(result.alias).toBeDefined()
-      expect(result.providerId).toBeDefined()
-      expect(result.kid).toBeDefined()
-      expect(result.signatureAlgorithm).toBeDefined()
-      expect(result.keyVisibility).toBeDefined()
-      expect(result.keyType).toBeDefined()
-      expect(result.keyEncoding).toBeDefined()
+      expect(result.keyInfo.key).toBeDefined()
+      expect(result.keyInfo.alias).toBeDefined()
+      expect(result.keyInfo.providerId).toBeDefined()
+      expect(result.keyInfo.kid).toBeDefined()
+      expect(result.keyInfo.signatureAlgorithm).toBeDefined()
+      expect(result.keyInfo.keyVisibility).toBeDefined()
+      expect(result.keyInfo.keyType).toBeDefined()
+      expect(result.keyInfo.keyEncoding).toBeDefined()
     })
 
     it('should delete provider key', async (): Promise<void> => {
-      const generateResult = await agent.kmsClientProviderStoreKey({
+      const storeResult = await agent.kmsClientProviderStoreKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
         keyInfo: {
@@ -569,12 +569,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         ],
       })
 
-      expect(generateResult.alias).toBeDefined()
+      expect(storeResult.keyInfo).toBeDefined()
 
       const result = await agent.kmsClientProviderDeleteKey({
         baseUrl: 'https://ssi-backend.sphereon.com',
         providerId: 'test-software',
-        aliasOrKid: generateResult.alias,
+        aliasOrKid: storeResult.keyInfo.alias,
       })
 
       expect(result).toBeTruthy()

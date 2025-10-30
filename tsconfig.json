@@ -223,6 +223,9 @@
     },
     {
       "path": "./packages/kms-rest-client"
+    },
+    {
+      "path": "./packages/kms-rest"
     }
   ],
   "compilerOptions": {
