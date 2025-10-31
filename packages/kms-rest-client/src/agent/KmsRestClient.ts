@@ -115,11 +115,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get resolver response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return ResolverFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -136,11 +136,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list resolvers response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return ListResolversResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -165,11 +165,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`resolve key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return ResolvedKeyInfoFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -192,11 +192,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`create raw signature response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return CreateRawSignatureResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -220,11 +220,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`verify raw signature response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return VerifyRawSignatureResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -241,11 +241,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return GetKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -261,11 +261,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list keys response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return ListKeysResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -288,11 +288,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`store key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return StoreKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -317,11 +317,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`generate key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return GenerateKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -336,9 +336,14 @@ export class KmsRestClient implements IAgentPlugin {
     const response = await fetch(url, {
       method: 'DELETE',
     })
+    logger.debug(`delete key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
+    try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+    } catch (error) {
+      return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
 
     return true
@@ -354,11 +359,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get provider response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return KeyProviderResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -375,11 +380,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list providers response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return ListKeyProvidersResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -396,11 +401,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list provider keys response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return ListKeysResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -423,11 +428,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`provider store key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return StoreKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -451,11 +456,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`provider generate key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return GenerateKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -472,11 +477,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get provider key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
-    }
-
     try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+
       return GetKeyResponseFromJSONTyped(await response.json(), false)
     } catch (error) {
       return Promise.reject(Error(`request to ${url} returned ${error}`))
@@ -491,9 +496,14 @@ export class KmsRestClient implements IAgentPlugin {
     const response = await fetch(url, {
       method: 'DELETE',
     })
+    logger.debug(`delete key response: ${response}`)
 
-    if (!response.ok) {
-      return Promise.reject(await response.json())
+    try {
+      if (!response.ok) {
+        return Promise.reject(await response.json())
+      }
+    } catch (error) {
+      return Promise.reject(Error(`request to ${url} returned ${error}`))
     }
 
     return true
