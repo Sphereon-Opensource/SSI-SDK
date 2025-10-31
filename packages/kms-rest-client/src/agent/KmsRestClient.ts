@@ -115,15 +115,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get resolver response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return ResolverFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return ResolverFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListResolvers} */
@@ -136,15 +132,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list resolvers response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return ListResolversResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return ListResolversResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsResolveKey} */
@@ -165,15 +157,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`resolve key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return ResolvedKeyInfoFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return ResolvedKeyInfoFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsCreateRawSignature} */
@@ -192,15 +180,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`create raw signature response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return CreateRawSignatureResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return CreateRawSignatureResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsIsValidRawSignature} */
@@ -220,15 +204,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`verify raw signature response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return VerifyRawSignatureResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return VerifyRawSignatureResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetKey} */
@@ -241,15 +221,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return GetKeyResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return GetKeyResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListKeys} */
@@ -261,15 +237,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list keys response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return ListKeysResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url.toString(), response)
     }
+
+    return ListKeysResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsStoreKey} */
@@ -288,15 +260,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`store key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return StoreKeyResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return StoreKeyResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGenerateKey} */
@@ -317,15 +285,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`generate key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return GenerateKeyResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return GenerateKeyResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsDeleteKey} */
@@ -338,12 +302,8 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`delete key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
 
     return true
@@ -359,15 +319,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get provider response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return KeyProviderResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return KeyProviderResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsListKeyProviders} */
@@ -380,15 +336,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list providers response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return ListKeyProvidersResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return ListKeyProvidersResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderListKeys} */
@@ -401,15 +353,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`list provider keys response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return ListKeysResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return ListKeysResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderStoreKey} */
@@ -428,15 +376,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`provider store key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return StoreKeyResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return StoreKeyResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGenerateKey} */
@@ -456,15 +400,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`provider generate key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return GenerateKeyResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return GenerateKeyResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderGetKey} */
@@ -477,15 +417,11 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`get provider key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-
-      return GetKeyResponseFromJSONTyped(await response.json(), false)
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
+
+    return GetKeyResponseFromJSONTyped(await response.json(), false)
   }
 
   /** {@inheritDoc IKmsRestClient.kmsProviderDeleteKey} */
@@ -498,12 +434,8 @@ export class KmsRestClient implements IAgentPlugin {
     })
     logger.debug(`delete key response: ${response}`)
 
-    try {
-      if (!response.ok) {
-        return Promise.reject(await response.json())
-      }
-    } catch (error) {
-      return Promise.reject(Error(`request to ${url} returned ${error}`))
+    if (!response.ok) {
+      return this.handleHttpError(url, response)
     }
 
     return true
@@ -542,5 +474,15 @@ export class KmsRestClient implements IAgentPlugin {
     }
 
     return url
+  }
+
+  private async handleHttpError(url: string, response: Response): Promise<never> {
+    const contentType = response.headers.get("content-type")
+    const isJson = contentType?.includes("application/json")
+    const responseBody = isJson
+      ? JSON.stringify(await response.json())
+      : await response.text()
+
+    return Promise.reject(Error(`request to ${url} returned http error ${response.status} - ${responseBody}`))
   }
 }
