@@ -91,7 +91,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       kms: this.id,
       type,
       meta: {
-        alias: key.keyPair.kid,
+        alias: key.keyPair.alias,
         algorithms: [key.keyPair.jose.publicJwk.alg ?? 'PS256'],
         jwkThumbprint: calculateJwkThumbprint({
           jwk,
@@ -114,7 +114,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       kms: this.id,
       type,
       meta: {
-        alias: importKey.kid,
+        alias: importKey.key.keyInfo.alias,
         algorithms: [result.keyInfo.key.alg ?? 'PS256'],
         jwkThumbprint: calculateJwkThumbprint({
           jwk: importKey.publicKeyJwk,
