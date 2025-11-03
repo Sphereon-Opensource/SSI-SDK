@@ -79,6 +79,7 @@ export interface IOID4VCIHolder extends IPluginMethodMap {
     context: RequiredContext,
   ): Promise<Array<CredentialToSelectFromResult>>
 
+  oid4vciHolderPrepareAuthorizationRequest(args: PrepareAuthorizationRequestArgs, context: RequiredContext): Promise<PrepareAuthorizationResult>
   oid4vciHolderGetContact(args: GetContactArgs, context: RequiredContext): Promise<Party | undefined>
 
   oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>>
@@ -148,6 +149,7 @@ export type PrepareStartArgs = Pick<
   OID4VCIMachineContext,
   'requestData' | 'authorizationRequestOpts' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
 >
+export type PrepareAuthorizationRequestArgs = Pick<OID4VCIMachineContext, 'openID4VCIClientState' | 'contact'>
 export type CreateCredentialsToSelectFromArgs = Pick<
   OID4VCIMachineContext,
   'credentialsSupported' | 'credentialBranding' | 'selectedCredentials' | 'locale' | 'openID4VCIClientState'
@@ -256,6 +258,7 @@ export enum OID4VCIMachineStates {
   selectCredentials = 'selectCredentials',
   transitionFromSelectingCredentials = 'transitionFromSelectingCredentials',
   verifyPin = 'verifyPin',
+  prepareAuthorizationRequest = 'prepareAuthorizationRequest',
   initiateAuthorizationRequest = 'initiateAuthorizationRequest',
   waitForAuthorizationResponse = 'waitForAuthorizationResponse',
   getCredentials = 'getCredentials',
@@ -395,6 +398,7 @@ export enum OID4VCIMachineServices {
   getFederationTrust = 'getFederationTrust',
   addContactIdentity = 'addContactIdentity',
   createCredentialsToSelectFrom = 'createCredentialsToSelectFrom',
+  prepareAuthorizationRequest = 'prepareAuthorizationRequest',
   getIssuerBranding = 'getIssuerBranding',
   storeIssuerBranding = 'storeIssuerBranding',
   getCredentials = 'getCredentials',
@@ -460,11 +464,14 @@ export type OID4VCIMachine = {
 }
 
 export type StartResult = {
-  authorizationCodeURL?: string
   credentialBranding?: Record<string, Array<IBasicCredentialLocaleBranding>>
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
   oid4vciClientState: OpenID4VCIClientState
+}
+
+export type PrepareAuthorizationResult = {
+  authorizationCodeURL?: string
 }
 
 export type SelectAppLocaleBrandingArgs = {

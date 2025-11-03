@@ -28,6 +28,7 @@ import {
   SelectCredentialsEvent,
   SetAuthorizationCodeURLEvent,
   VerificationCodeEvent,
+  PrepareAuthorizationResult,
 } from '../types/IOID4VCIHolder'
 import { FirstPartyMachineStateTypes } from '../types/FirstPartyMachine'
 
@@ -98,9 +99,7 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
     throw Error('Missing openID4VCI client state in context')
   }
 
-  if (!openID4VCIClientState.authorizationURL) {
-    return false
-  } else if (openID4VCIClientState.authorizationRequestOpts) {
+  if (openID4VCIClientState.authorizationRequestOpts) {
     // We have authz options or there is not credential offer to begin with.
     // We require authz as long as we do not have the authz code response
     return !ctx.openID4VCIClientState?.authorizationCodeResponse
@@ -164,6 +163,9 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
         [OID4VCIMachineServices.start]: {
           data: StartResult
         }
+        [OID4VCIMachineServices.prepareAuthorizationRequest]: {
+          data: PrepareAuthorizationResult
+        }
         [OID4VCIMachineServices.createCredentialsToSelectFrom]: {
           data: Array<CredentialToSelectFromResult>
         }
@@ -208,7 +210,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           onDone: {
             target: OID4VCIMachineStates.createCredentialsToSelectFrom,
             actions: assign({
-              authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartResult>) => _event.data.authorizationCodeURL,
               credentialBranding: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartResult>) => _event.data.credentialBranding ?? {},
               credentialsSupported: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartResult>) => _event.data.credentialsSupported,
               serverMetadata: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<StartResult>) => _event.data.serverMetadata,
@@ -516,13 +517,36 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
           {
-            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            target: OID4VCIMachineStates.prepareAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
             target: OID4VCIMachineStates.getCredentials,
           },
         ],
+      },
+      [OID4VCIMachineStates.prepareAuthorizationRequest]: {
+        id: OID4VCIMachineStates.prepareAuthorizationRequest,
+        invoke: {
+          src: OID4VCIMachineServices.prepareAuthorizationRequest,
+          onDone: {
+            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            actions: assign({
+              authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<PrepareAuthorizationResult>) =>
+                _event.data.authorizationCodeURL,
+            }),
+          },
+          onError: {
+            target: OID4VCIMachineStates.handleError,
+            actions: assign({
+              error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
+                title: translate('oid4vci_machine_prepare_authorization_error_title'),
+                message: _event.data.message,
+                stack: _event.data.stack,
+              }),
+            }),
+          },
+        },
       },
       [OID4VCIMachineStates.initiateAuthorizationRequest]: {
         id: OID4VCIMachineStates.initiateAuthorizationRequest,
