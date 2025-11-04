@@ -99,7 +99,7 @@ const oid4vciRequireAuthorizationGuard = (ctx: OID4VCIMachineContext, _event: OI
     throw Error('Missing openID4VCI client state in context')
   }
 
-  if (openID4VCIClientState.authorizationRequestOpts) {
+  if (openID4VCIClientState.authorizationURL && openID4VCIClientState.authorizationRequestOpts) {
     // We have authz options or there is not credential offer to begin with.
     // We require authz as long as we do not have the authz code response
     return !ctx.openID4VCIClientState?.authorizationCodeResponse
@@ -441,6 +441,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.isFirstPartyApplication,
           },
           {
+            target: OID4VCIMachineStates.prepareAuthorizationRequest,
+            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
+          },
+          {
             target: OID4VCIMachineStates.initiateAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
@@ -511,6 +515,10 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           {
             target: OID4VCIMachineStates.startFirstPartApplicationFlow,
             cond: OID4VCIMachineGuards.isFirstPartyApplication,
+          },
+          {
+            target: OID4VCIMachineStates.prepareAuthorizationRequest,
+            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
             target: OID4VCIMachineStates.verifyPin,
