@@ -226,6 +226,12 @@
     },
     {
       "path": "./packages/xstate-persistence"
+    },
+    {
+      "path": "./packages/kms-rest-client"
+    },
+    {
+      "path": "./packages/kms-rest"
     }
   ],
   "compilerOptions": {

@@ -2259,6 +2259,71 @@ importers:
         specifier: 0.0.39
         version: 0.0.39
 
+  packages/kms-rest:
+    dependencies:
+      '@sphereon/ssi-sdk-ext.key-utils':
+        specifier: workspace:*
+        version: link:../key-utils
+      '@sphereon/ssi-sdk-ext.x509-utils':
+        specifier: workspace:*
+        version: link:../x509-utils
+      '@sphereon/ssi-sdk.kms-rest-client':
+        specifier: workspace:*
+        version: link:../kms-rest-client
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/core':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      elliptic:
+        specifier: ^6.5.4
+        version: 6.5.4
+      uint8arrays:
+        specifier: 3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@types/elliptic':
+        specifier: 6.4.14
+        version: 6.4.14
+      '@types/text-encoding':
+        specifier: 0.0.39
+        version: 0.0.39
+      nock:
+        specifier: ^13.5.4
+        version: 13.5.6
+
+  packages/kms-rest-client:
+    dependencies:
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      cross-fetch:
+        specifier: ^3.1.8
+        version: 3.2.0(encoding@0.1.13)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.17.1
+        version: 20.19.13
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.21.2)
+      nock:
+        specifier: ^13.5.4
+        version: 13.5.6
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.13.5(@swc/helpers@0.5.17))(@types/node@20.19.13)(typescript@5.8.3)
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   packages/kv-store:
     dependencies:
       '@veramo/utils':
