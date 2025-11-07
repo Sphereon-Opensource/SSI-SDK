@@ -209,9 +209,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
   )
   let uniformVerifiableCredential: IVerifiableCredential
   if (CredentialMapper.isSdJwtDecodedCredential(wrappedVerifiableCredential.credential)) {
-    uniformVerifiableCredential = await sdJwtDecodedCredentialToUniformCredential(
-      <SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential,
-    )
+    uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>wrappedVerifiableCredential.credential)
   } else if (CredentialMapper.isSdJwtEncoded(wrappedVerifiableCredential.credential)) {
     if (!hasher) {
       return Promise.reject('a hasher is required for encoded SD-JWT credentials')
