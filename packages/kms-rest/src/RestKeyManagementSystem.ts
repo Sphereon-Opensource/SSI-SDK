@@ -1,6 +1,6 @@
-import type { ManagedKeyInfo, TKeyType } from '@veramo/core'
-import { AbstractKeyManagementSystem } from '@veramo/key-manager'
 import { calculateJwkThumbprint, toJwk, x25519PublicHexFromPrivateHex, type X509Opts } from '@sphereon/ssi-sdk-ext.key-utils'
+import { hexToPEM, jwkToPEM, pemCertChainTox5c, PEMToHex, PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
+import type { ManagedKeyInfo as RestManagedKeyInfo } from '@sphereon/ssi-sdk.kms-rest-client'
 import {
   CurveFromJSONTyped,
   JwkKeyTypeFromJSONTyped,
@@ -13,8 +13,9 @@ import {
   SignatureAlgorithm,
   type StoreKey,
 } from '@sphereon/ssi-sdk.kms-rest-client'
-import { hexToPEM, jwkToPEM, pemCertChainTox5c, PEMToHex, PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JoseSignatureAlgorithm, type JWK } from '@sphereon/ssi-types'
+import type { ManagedKeyInfo, TKeyType } from '@veramo/core'
+import { AbstractKeyManagementSystem } from '@veramo/key-manager'
 import elliptic from 'elliptic'
 // @ts-ignore
 import * as u8a from 'uint8arrays'
@@ -134,7 +135,62 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ? await this.client.methods.kmsClientProviderListKeys({ providerId: this.providerId })
       : await this.client.methods.kmsClientListKeys()
 
-    return ListKeysResponseToJSONTyped(keys, false).keyInfos //ListKeysResponseFromJSONTyped
+    const restKeys = ListKeysResponseToJSONTyped(keys, false).keyInfos
+
+    return restKeys.map((restKey: RestManagedKeyInfo) => {
+      const jwk = restKey.key
+      let publicKeyHex = ''
+
+      // Derive publicKeyHex from JWK based on key type
+      if (jwk.kty === 'EC') {
+        publicKeyHex = jwk.x || ''
+      } else if (jwk.kty === 'RSA') {
+        publicKeyHex = jwk.n || ''
+      } else if (jwk.kty === 'OKP') {
+        publicKeyHex = jwk.x || ''
+      }
+
+      const keyType = this.mapRestKeyTypeToTKeyType(restKey.keyType)
+
+      return {
+        kid: restKey.kid || restKey.alias,
+        kms: this.id,
+        type: keyType,
+        publicKeyHex,
+        meta: {
+          algorithms: restKey.signatureAlgorithm ? [restKey.signatureAlgorithm] : undefined,
+          jwk,
+          jwkThumbprint: calculateJwkThumbprint({
+            jwk: jwk as JWK,
+            digestAlgorithm: restKey.signatureAlgorithm ? this.signatureAlgorithmToDigestAlgorithm(restKey.signatureAlgorithm) : 'sha256',
+          }),
+          alias: restKey.alias,
+          providerId: restKey.providerId,
+          x5c: restKey.x5c,
+          keyVisibility: restKey.keyVisibility,
+          keyEncoding: restKey.keyEncoding,
+          ...restKey.opts,
+        },
+      } satisfies ManagedKeyInfo
+    })
+  }
+
+  private mapRestKeyTypeToTKeyType(keyType: string | undefined): TKeyType {
+    switch (keyType) {
+      case 'RSA':
+        return 'RSA'
+      case 'EC':
+      case 'P256':
+        return 'Secp256r1'
+      case 'X25519':
+        return 'X25519'
+      case 'Ed25519':
+        return 'Ed25519'
+      case 'secp256k1':
+        return 'Secp256k1'
+      default:
+        throw new Error(`Unknown key type: ${keyType}`)
+    }
   }
 
   async sign(args: SignArgs): Promise<string> {

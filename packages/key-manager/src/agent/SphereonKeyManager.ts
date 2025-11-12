@@ -46,6 +46,55 @@ export class SphereonKeyManager extends VeramoKeyManager {
     methods.keyManagerListKeys = this.keyManagerListKeys.bind(this)
     methods.keyManagerGetDefaultKeyManagementSystem = this.keyManagerGetDefaultKeyManagementSystem.bind(this)
     this.kmsMethods = <ISphereonKeyManager>(<unknown>methods)
+
+    this.syncPreProvisionedKeys()
+  }
+
+  private syncPreProvisionedKeys() {
+    Object.keys(this.availableKmses).forEach((kmsId) => {
+      const kms = this.availableKmses[kmsId]
+      if (kms.constructor.name === 'RestKeyManagementSystem') {
+        this.syncPreProvisionedKeysForKms(kmsId, kms)
+      }
+    })
+  }
+
+  private syncPreProvisionedKeysForKms(kmsId: string, kms: AbstractKeyManagementSystem) {
+    kms
+      .listKeys()
+      .then(async (remoteKeys: ManagedKeyInfo[]) => {
+        try {
+          const storedKeys: ManagedKeyInfo[] = await this.keyManagerListKeys()
+
+          await Promise.all(
+            remoteKeys.map(async (remoteKey) => {
+              const storedKey = storedKeys.find((k) => k.kid === remoteKey.kid)
+
+              const needsUpdate =
+                !storedKey ||
+                storedKey.publicKeyHex !== remoteKey.publicKeyHex ||
+                storedKey.type !== remoteKey.type ||
+                storedKey.kms !== remoteKey.kms ||
+                (remoteKey.meta && 'alias' in remoteKey.meta && storedKey.meta && storedKey.meta.alias !== remoteKey.meta.alias)
+              if (needsUpdate) {
+                try {
+                  if (storedKey) {
+                    await this.kmsStore.delete({ kid: remoteKey.kid })
+                  }
+                  await this.kmsStore.import(remoteKey as IKey)
+                } catch (error) {
+                  console.error(`Failed to sync key ${remoteKey.kid} from kms ${kmsId}:`, error)
+                }
+              }
+            }),
+          )
+        } catch (error) {
+          console.error(`Failed to sync keys for kms ${kmsId}:`, error)
+        }
+      })
+      .catch((error) => {
+        console.error(`Failed to list remote keys for kms ${kmsId}:`, error)
+      })
   }
 
   keyManagerGetDefaultKeyManagementSystem(): Promise<string> {
@@ -142,7 +191,7 @@ export class SphereonKeyManager extends VeramoKeyManager {
         (key) =>
           key.publicKeyHex === kid ||
           key.meta?.jwkThumbprint === kid ||
-          (key.meta?.jwkThumbprint == null && calculateJwkThumbprintForKey({ key }) === kid)
+          (key.meta?.jwkThumbprint == null && calculateJwkThumbprintForKey({ key }) === kid),
       )
       if (foundKey) {
         return foundKey as IKey
@@ -165,5 +214,9 @@ export class SphereonKeyManager extends VeramoKeyManager {
 
   setKms(name: string, kms: AbstractKeyManagementSystem): void {
     this.availableKmses[name] = kms
+
+    if (kms.constructor.name === 'RestKeyManagementSystem') {
+      this.syncPreProvisionedKeysForKms(name, kms)
+    }
   }
 }
