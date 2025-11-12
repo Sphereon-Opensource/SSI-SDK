@@ -1,11 +1,6 @@
 import type { ManagedKeyInfo, TKeyType } from '@veramo/core'
 import { AbstractKeyManagementSystem } from '@veramo/key-manager'
-import {
-  calculateJwkThumbprint,
-  toJwk,
-  x25519PublicHexFromPrivateHex,
-  type X509Opts
-} from '@sphereon/ssi-sdk-ext.key-utils'
+import { calculateJwkThumbprint, toJwk, x25519PublicHexFromPrivateHex, type X509Opts } from '@sphereon/ssi-sdk-ext.key-utils'
 import {
   CurveFromJSONTyped,
   JwkKeyTypeFromJSONTyped,
@@ -16,51 +11,39 @@ import {
   ListKeysResponseToJSONTyped,
   type RestClientAuthenticationOpts,
   SignatureAlgorithm,
-  type StoreKey
+  type StoreKey,
 } from '@sphereon/ssi-sdk.kms-rest-client'
-import {
-  hexToPEM,
-  jwkToPEM,
-  pemCertChainTox5c,
-  PEMToHex,
-  PEMToJwk
-} from '@sphereon/ssi-sdk-ext.x509-utils'
+import { hexToPEM, jwkToPEM, pemCertChainTox5c, PEMToHex, PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { JoseSignatureAlgorithm, type JWK } from '@sphereon/ssi-types'
 import elliptic from 'elliptic'
 // @ts-ignore
 import * as u8a from 'uint8arrays'
-import type {
-  CreateKeyArgs,
-  DeleteKeyArgs,
-  ImportKeyArgs,
-  MapImportKeyArgs,
-  MappedImportKey,
-  SharedSecretArgs,
-  SignArgs,
-  VerifyArgs
-} from './types'
+import type { CreateKeyArgs, DeleteKeyArgs, ImportKeyArgs, MapImportKeyArgs, MappedImportKey, SharedSecretArgs, SignArgs, VerifyArgs } from './types'
 
 const { fromString, toString } = u8a
 
-interface AbstractKeyManagementSystemOptions {
+interface KeyManagementSystemOptions {
   applicationId: string
   baseUrl: string
+  providerId?: string
   authOpts?: RestClientAuthenticationOpts
 }
 
 export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   private client: KmsRestClient
   private readonly id: string
+  private providerId: string | undefined
 
-  constructor(options: AbstractKeyManagementSystemOptions) {
+  constructor(options: KeyManagementSystemOptions) {
     super()
 
     const config = {
       baseUrl: options.baseUrl,
-      authOpts: options.authOpts
+      authOpts: options.authOpts,
     }
 
     this.id = options.applicationId
+    this.providerId = options.providerId
     this.client = new KmsRestClient(config)
   }
 
@@ -68,13 +51,18 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     const { type, meta } = args
 
     const signatureAlgorithm = this.mapKeyTypeToSignatureAlgorithm(type)
-    const options  = {
+    const options = {
       use: meta && 'keyUsage' in meta ? this.mapKeyUsage(meta.keyUsage) : JwkUse.Sig,
       alg: signatureAlgorithm,
-      keyOperations: meta ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.Sign]
+      keyOperations: meta ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.Sign],
     }
 
-    const key = await this.client.methods.kmsClientGenerateKey(options)
+    const key = this.providerId
+      ? await this.client.methods.kmsClientProviderGenerateKey({
+          ...options,
+          providerId: this.providerId,
+        })
+      : await this.client.methods.kmsClientGenerateKey(options)
 
     const jwk = {
       ...key.keyPair.jose.publicJwk,
@@ -107,7 +95,12 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     const signatureAlgorithm = this.mapKeyTypeToSignatureAlgorithm(type)
     const importKey = this.mapImportKey(args)
 
-    const result = await this.client.methods.kmsClientStoreKey(importKey.key)
+    const result = this.providerId
+      ? await this.client.methods.kmsClientProviderStoreKey({
+          ...importKey.key,
+          providerId: this.providerId,
+        })
+      : await this.client.methods.kmsClientStoreKey(importKey.key)
 
     return {
       kid: importKey.kid,
@@ -128,21 +121,34 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   async deleteKey(args: DeleteKeyArgs): Promise<boolean> {
     const { kid } = args
 
-    return await this.client.methods.kmsClientDeleteKey({ aliasOrKid: kid })
+    return this.providerId
+      ? await this.client.methods.kmsClientProviderDeleteKey({
+          aliasOrKid: kid,
+          providerId: this.providerId,
+        })
+      : await this.client.methods.kmsClientDeleteKey({ aliasOrKid: kid })
   }
 
   async listKeys(): Promise<ManagedKeyInfo[]> {
-    const keys = await this.client.methods.kmsClientListKeys()
+    const keys = this.providerId
+      ? await this.client.methods.kmsClientProviderListKeys({ providerId: this.providerId })
+      : await this.client.methods.kmsClientListKeys()
 
     return ListKeysResponseToJSONTyped(keys, false).keyInfos //ListKeysResponseFromJSONTyped
   }
 
   async sign(args: SignArgs): Promise<string> {
     const { keyRef, data } = args
-    const key = await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+    const key = this.providerId
+      ? await this.client.methods.kmsClientProviderGetKey({
+          aliasOrKid: keyRef.kid,
+          providerId: this.providerId,
+        })
+      : await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
       keyInfo: key.keyInfo,
-      input: toString(data, 'base64')
+      input: toString(data, 'base64'),
     })
 
     return signingResult.signature
@@ -150,11 +156,17 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   async verify(args: VerifyArgs): Promise<boolean> {
     const { keyRef, data, signature } = args
-    const key = await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+    const key = this.providerId
+      ? await this.client.methods.kmsClientProviderGetKey({
+          aliasOrKid: keyRef.kid,
+          providerId: this.providerId,
+        })
+      : await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+
     const verification = await this.client.methods.kmsClientIsValidRawSignature({
       keyInfo: key.keyInfo,
       input: toString(data, 'base64'),
-      signature
+      signature,
     })
 
     return verification.isValid
@@ -207,21 +219,36 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   private mapJoseAlgorithm = (alg: string): JoseSignatureAlgorithm => {
     switch (alg) {
-      case 'RS256': return JoseSignatureAlgorithm.RS256;
-      case 'RS384': return JoseSignatureAlgorithm.RS384;
-      case 'RS512': return JoseSignatureAlgorithm.RS512;
-      case 'ES256': return JoseSignatureAlgorithm.ES256;
-      case 'ES256K': return JoseSignatureAlgorithm.ES256K;
-      case 'ES384': return JoseSignatureAlgorithm.ES384;
-      case 'ES512': return JoseSignatureAlgorithm.ES512;
-      case 'EdDSA': return JoseSignatureAlgorithm.EdDSA;
-      case 'HS256': return JoseSignatureAlgorithm.HS256;
-      case 'HS384': return JoseSignatureAlgorithm.HS384;
-      case 'HS512': return JoseSignatureAlgorithm.HS512;
-      case 'PS256': return JoseSignatureAlgorithm.PS256;
-      case 'PS384': return JoseSignatureAlgorithm.PS384;
-      case 'PS512': return JoseSignatureAlgorithm.PS512;
-      case 'none':  return JoseSignatureAlgorithm.none;
+      case 'RS256':
+        return JoseSignatureAlgorithm.RS256
+      case 'RS384':
+        return JoseSignatureAlgorithm.RS384
+      case 'RS512':
+        return JoseSignatureAlgorithm.RS512
+      case 'ES256':
+        return JoseSignatureAlgorithm.ES256
+      case 'ES256K':
+        return JoseSignatureAlgorithm.ES256K
+      case 'ES384':
+        return JoseSignatureAlgorithm.ES384
+      case 'ES512':
+        return JoseSignatureAlgorithm.ES512
+      case 'EdDSA':
+        return JoseSignatureAlgorithm.EdDSA
+      case 'HS256':
+        return JoseSignatureAlgorithm.HS256
+      case 'HS384':
+        return JoseSignatureAlgorithm.HS384
+      case 'HS512':
+        return JoseSignatureAlgorithm.HS512
+      case 'PS256':
+        return JoseSignatureAlgorithm.PS256
+      case 'PS384':
+        return JoseSignatureAlgorithm.PS384
+      case 'PS512':
+        return JoseSignatureAlgorithm.PS512
+      case 'none':
+        return JoseSignatureAlgorithm.none
       default:
         throw new Error(`Signature algorithm ${alg} is not supported by REST KMS`)
     }
@@ -256,10 +283,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   private mapImportRsaKey = (args: MapImportKeyArgs): MappedImportKey => {
     const x509 = args.meta?.x509 as X509Opts
-    const privateKeyPEM = x509?.privateKeyPEM ?? (args.privateKeyHex.includes('---')
-      ? args.privateKeyHex
-      : hexToPEM(args.privateKeyHex, 'private')
-    ) // In case we have x509 opts, the private key hex really was a PEM already (yuck)
+    const privateKeyPEM = x509?.privateKeyPEM ?? (args.privateKeyHex.includes('---') ? args.privateKeyHex : hexToPEM(args.privateKeyHex, 'private')) // In case we have x509 opts, the private key hex really was a PEM already (yuck)
     const publicKeyJwk = PEMToJwk(privateKeyPEM, 'public')
     const privateKeyJwk = PEMToJwk(privateKeyPEM)
     const publicKeyPEM = jwkToPEM(publicKeyJwk, 'public')
@@ -307,8 +331,8 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
             crv: CurveFromJSONTyped(privateKeyJwk.crv, false),
           },
         },
-        certChain: meta.x509.x5c
-      } satisfies StoreKey
+        certChain: meta.x509.x5c,
+      } satisfies StoreKey,
     }
   }
 
@@ -333,9 +357,9 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
             kty: JwkKeyTypeFromJSONTyped(privateKeyJwk.kty, false),
             use: JwkUseFromJSONTyped(privateKeyJwk.use, false),
             crv: CurveFromJSONTyped(privateKeyJwk.crv, false),
-          }
-        }
-      } satisfies StoreKey
+          },
+        },
+      } satisfies StoreKey,
     }
   }
 
@@ -357,9 +381,9 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
             kty: JwkKeyTypeFromJSONTyped(privateKeyJwk.kty, false),
             use: JwkUseFromJSONTyped(privateKeyJwk.use, false),
             crv: CurveFromJSONTyped(privateKeyJwk.crv, false),
-          }
-        }
-      } satisfies StoreKey
+          },
+        },
+      } satisfies StoreKey,
     }
   }
 
@@ -378,5 +402,4 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         throw new Error(`Key type ${args.type} is not supported by REST KMS`)
     }
   }
-
 }
