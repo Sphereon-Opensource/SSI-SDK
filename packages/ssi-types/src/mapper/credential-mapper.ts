@@ -57,7 +57,7 @@ export class CredentialMapper {
    * Decodes a compact SD-JWT vc to it's decoded variant. This method can be used when the hasher implementation used is Async, and therefore not suitable for usage
    * with the other decode methods.
    */
-  static decodeSdJwtVcAsync(compactSdJwtVc: string, hasher: Hasher) {
+  static decodeSdJwtVcAsync(compactSdJwtVc: string, hasher: Hasher): Promise<SdJwtDecodedVerifiableCredential> {
     return decodeSdJwtVcAsyncFunc(compactSdJwtVc, hasher ?? sha256)
   }
 
