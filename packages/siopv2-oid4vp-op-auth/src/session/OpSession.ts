@@ -7,26 +7,18 @@ import {
   SupportedVersion,
   URI,
   Verification,
-  VerifiedAuthorizationRequest
+  VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'
 import { ResolveOpts } from '@sphereon/did-auth-siop-adapter'
 import { JwtIssuer } from '@sphereon/oid4vc-common'
 import { getAgentDIDMethods, getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
 import { JweAlg, JweEnc } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { encodeBase64url } from '@sphereon/ssi-sdk.core'
-import { parseDid } from '@sphereon/ssi-types'
+import { Loggers, parseDid } from '@sphereon/ssi-types'
 import { IIdentifier, TKeyType } from '@veramo/core'
 import { v4 } from 'uuid'
-import {
-  IOPOptions,
-  IOpSessionArgs,
-  IOpSessionGetOID4VPArgs,
-  IOpsSendSiopAuthorizationResponseArgs,
-  IRequiredContext
-} from '../types'
+import { IOPOptions, IOpSessionArgs, IOpsSendSiopAuthorizationResponseArgs, IRequiredContext } from '../types'
 import { createOP } from './functions'
-import { OID4VP } from './OID4VP'
-import { Loggers } from '@sphereon/ssi-types'
 
 const logger = Loggers.DEFAULT.get('sphereon:oid4vp:OpSession')
 
@@ -213,10 +205,6 @@ export class OpSession {
     return Promise.resolve(this.verifiedAuthorizationRequest!.responseURI!)
   }
 
-  public async getOID4VP(args: IOpSessionGetOID4VPArgs): Promise<OID4VP> {
-    return await OID4VP.init(this, args.allIdentifiers ?? [], args.hasher)
-  }
-
   private async createJarmResponseCallback({
     responseOpts,
   }: {
@@ -259,11 +247,7 @@ export class OpSession {
   }
 
   public async sendAuthorizationResponse(args: IOpsSendSiopAuthorizationResponseArgs): Promise<Response> {
-    const {
-      responseSignerOpts,
-      dcqlResponse,
-      isFirstParty,
-    } = args
+    const { responseSignerOpts, dcqlResponse, isFirstParty } = args
 
     const resolveOpts: ResolveOpts = this.options.resolveOpts ?? {
       resolver: getAgentResolver(this.context, {

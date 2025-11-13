@@ -89,12 +89,15 @@ function detectCredentialFormat(credential: OriginalVerifiableCredential): strin
  * Gets the issuer/holder identifier from ManagedIdentifierOptsOrResult
  */
 function getIdentifierString(identifier: ManagedIdentifierOptsOrResult): string {
-  // Prefer the DID result if the identifier resolution returned one
-  if (isManagedIdentifierDidResult(identifier as any)) {
-    return (identifier as any).did
+  // Check if it's a result type (has 'method' and 'opts' properties)
+  if ('opts' in identifier && 'method' in identifier) {
+    // It's a ManagedIdentifierResult
+    if (isManagedIdentifierDidResult(identifier)) {
+      return identifier.did
+    }
   }
-  // For opts types or other result types, fall back to issuer or kid if available
-  return (identifier as any).issuer ?? (identifier as any).kid ?? ''
+  // For opts types or other result types, use issuer if available, otherwise kid
+  return identifier.issuer ?? identifier.kid ?? ''
 }
 
 /**
@@ -128,7 +131,7 @@ export async function createVerifiablePresentationForFormat(
       const kbJwtPayload: PartialSdJwtKbJwt['payload'] = {
         iat: Math.floor(Date.now() / 1000 - clockSkew),
         sd_hash: sdHash,
-        nonce: nonce, // Always use the Authorization Request nonce
+        nonce, // Always use the Authorization Request nonce
         aud: audience, // Always use the Client Identifier or Origin
       }
 
@@ -156,6 +159,7 @@ export async function createVerifiablePresentationForFormat(
         vp: {
           '@context': ['https://www.w3.org/2018/credentials/v1'],
           type: ['VerifiablePresentation'],
+          holder: identifierString,
           verifiableCredential: [vcJwt],
         },
         iat: Math.floor(Date.now() / 1000 - clockSkew),

@@ -382,7 +382,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
-    const allSupported = client.getCredentialsSupported(format)
+    const allSupported = client.getCredentialsSupported(undefined, format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
         ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
