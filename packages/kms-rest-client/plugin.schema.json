@@ -2,7 +2,7 @@
   "IKmsRestClient": {
     "components": {
       "schemas": {
-        "KmsCreateRawSignatureArgs": {
+        "KmsClientCreateRawSignatureArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -16,7 +16,10 @@
               "type": "string"
             }
           },
-          "required": ["input", "keyInfo"]
+          "required": [
+            "input",
+            "keyInfo"
+          ]
         },
         "KeyInfo": {
           "type": "object",
@@ -157,28 +160,56 @@
               "description": "X.509 certificate SHA-256 thumbprint (base64url-encoded)."
             }
           },
-          "required": ["kty"],
+          "required": [
+            "kty"
+          ],
           "additionalProperties": false,
           "description": "Represents a JSON Web Key (JWK) as defined by the JSON Web Key specification."
         },
         "JwkKeyType": {
           "type": "string",
-          "enum": ["EC", "RSA", "OKP", "oct"],
+          "enum": [
+            "EC",
+            "RSA",
+            "OKP",
+            "oct"
+          ],
           "description": "JSON Web Key (JWK) key type parameter identifying the cryptographic algorithm family."
         },
         "JwkUse": {
           "type": "string",
-          "enum": ["sig", "enc"],
+          "enum": [
+            "sig",
+            "enc"
+          ],
           "description": "Intended use of the key (signing or encryption)."
         },
         "KeyOperations": {
           "type": "string",
-          "enum": ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey", "deriveBits"],
+          "enum": [
+            "sign",
+            "verify",
+            "encrypt",
+            "decrypt",
+            "wrapKey",
+            "unwrapKey",
+            "deriveKey",
+            "deriveBits"
+          ],
           "description": "Specific operations the key is intended for."
         },
         "Curve": {
           "type": "string",
-          "enum": ["P-256", "P-384", "P-521", "secp256k1", "Ed25519", "Ed448", "X25519", "X448"],
+          "enum": [
+            "P-256",
+            "P-384",
+            "P-521",
+            "secp256k1",
+            "Ed25519",
+            "Ed448",
+            "X25519",
+            "X448"
+          ],
           "description": "Elliptic curve identifier."
         },
         "SignatureAlgorithm": {
@@ -201,17 +232,27 @@
         },
         "KeyVisibility": {
           "type": "string",
-          "enum": ["PUBLIC", "PRIVATE"],
+          "enum": [
+            "PUBLIC",
+            "PRIVATE"
+          ],
           "description": "Indicates the visibility status of a cryptographic key."
         },
         "KeyType": {
           "type": "string",
-          "enum": ["OKP", "EC", "RSA"],
+          "enum": [
+            "OKP",
+            "EC",
+            "RSA"
+          ],
           "description": "Cryptographic key type identifier."
         },
         "KeyEncoding": {
           "type": "string",
-          "enum": ["COSE", "JOSE"],
+          "enum": [
+            "COSE",
+            "JOSE"
+          ],
           "description": "The encoding format of the cryptographic key."
         },
         "CreateRawSignatureResponse": {
@@ -222,11 +263,13 @@
               "description": "The created signature encoded as a base64 string."
             }
           },
-          "required": ["signature"],
+          "required": [
+            "signature"
+          ],
           "additionalProperties": false,
           "description": "Response body containing the created signature."
         },
-        "KmsDeleteKeyArgs": {
+        "KmsClientDeleteKeyArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -236,9 +279,12 @@
               "type": "string"
             }
           },
+          "required": [
+            "aliasOrKid"
+          ],
           "additionalProperties": false
         },
-        "KmsGenerateKeyArgs": {
+        "KmsClientGenerateKeyArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -267,6 +313,19 @@
             }
           }
         },
+        "GenerateKeyResponse": {
+          "type": "object",
+          "properties": {
+            "keyPair": {
+              "$ref": "#/components/schemas/ManagedKeyPair"
+            }
+          },
+          "required": [
+            "keyPair"
+          ],
+          "additionalProperties": false,
+          "description": "Response body containing a generated key pair."
+        },
         "ManagedKeyPair": {
           "type": "object",
           "properties": {
@@ -289,7 +348,12 @@
               "$ref": "#/components/schemas/JoseKeyPair"
             }
           },
-          "required": ["providerId", "alias", "cose", "jose"],
+          "required": [
+            "providerId",
+            "alias",
+            "cose",
+            "jose"
+          ],
           "additionalProperties": false,
           "description": "Represents a key pair used by a crypto provider, encapsulating both JOSE and COSE key pairs."
         },
@@ -303,7 +367,9 @@
               "$ref": "#/components/schemas/CoseKey"
             }
           },
-          "required": ["publicCoseKey"],
+          "required": [
+            "publicCoseKey"
+          ],
           "additionalProperties": false,
           "description": "Represents a cryptographic key pair for COSE (CBOR Object Signing and Encryption) operations."
         },
@@ -356,13 +422,20 @@
               "description": "X.509 certificate chain as base64-encoded certificates."
             }
           },
-          "required": ["kty"],
+          "required": [
+            "kty"
+          ],
           "additionalProperties": false,
           "description": "Represents a COSE (CBOR Object Signing and Encryption) key in JSON format."
         },
         "CoseKeyType": {
           "type": "number",
-          "enum": [1, 2, 3, 4],
+          "enum": [
+            1,
+            2,
+            3,
+            4
+          ],
           "description": "COSE key type parameter. 1=OKP (Octet Key Pair), 2=EC2 (Elliptic Curve), 3=RSA, 4=Symmetric."
         },
         "JoseKeyPair": {
@@ -375,11 +448,13 @@
               "$ref": "#/components/schemas/Jwk"
             }
           },
-          "required": ["publicJwk"],
+          "required": [
+            "publicJwk"
+          ],
           "additionalProperties": false,
           "description": "Data class representing a cryptographic key pair used with JOSE (JSON Object Signing and Encryption)."
         },
-        "KmsGetKeyArgs": {
+        "KmsClientGetKeyArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -389,8 +464,23 @@
               "type": "string"
             }
           },
-          "required": ["aliasOrKid"],
+          "required": [
+            "aliasOrKid"
+          ],
           "additionalProperties": false
+        },
+        "GetKeyResponse": {
+          "type": "object",
+          "properties": {
+            "keyInfo": {
+              "$ref": "#/components/schemas/ManagedKeyInfo"
+            }
+          },
+          "required": [
+            "keyInfo"
+          ],
+          "additionalProperties": false,
+          "description": "Response body containing a managed key."
         },
         "ManagedKeyInfo": {
           "type": "object",
@@ -437,11 +527,15 @@
               "description": "Additional configuration options as key-value pairs."
             }
           },
-          "required": ["key", "alias", "providerId"],
+          "required": [
+            "key",
+            "alias",
+            "providerId"
+          ],
           "additionalProperties": false,
           "description": "Represents a managed cryptographic key information that is guaranteed to be present and resolved, part of a KMS providing concrete access to the key."
         },
-        "KmsGetKeyProviderArgs": {
+        "KmsClientGetKeyProviderArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -451,6 +545,9 @@
               "type": "string"
             }
           },
+          "required": [
+            "providerId"
+          ],
           "additionalProperties": false
         },
         "KeyProviderResponse": {
@@ -464,16 +561,23 @@
               "$ref": "#/components/schemas/KeyProviderType"
             }
           },
-          "required": ["providerId", "type"],
+          "required": [
+            "providerId",
+            "type"
+          ],
           "additionalProperties": false,
           "description": "Response body containing the details of a Key Provider instance."
         },
         "KeyProviderType": {
           "type": "string",
-          "enum": ["SOFTWARE", "AZURE_KEYVAULT", "AWS_KMS"],
+          "enum": [
+            "SOFTWARE",
+            "AZURE_KEYVAULT",
+            "AWS_KMS"
+          ],
           "description": "The type of Key Provider. Determines the required configuration settings. - AZURE_KEYVAULT: Microsoft Azure Key Vault or Managed HSM. - AWS_KMS: Amazon Web Services Key Management Service."
         },
-        "kmsGetResolverArgs": {
+        "kmsClientGetResolverArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -483,7 +587,9 @@
               "type": "string"
             }
           },
-          "required": ["resolverId"],
+          "required": [
+            "resolverId"
+          ],
           "additionalProperties": false
         },
         "Resolver": {
@@ -508,16 +614,24 @@
               "description": "List of key types supported by this resolver."
             }
           },
-          "required": ["resolverId"],
+          "required": [
+            "resolverId"
+          ],
           "additionalProperties": false,
           "description": "Represents a key resolver configuration."
         },
         "IdentifierMethod": {
           "type": "string",
-          "enum": ["JWK", "KID", "COSE_KEY", "X5C", "DID"],
+          "enum": [
+            "JWK",
+            "KID",
+            "COSE_KEY",
+            "X5C",
+            "DID"
+          ],
           "description": "Method used to identify cryptographic keys."
         },
-        "KmsIsValidRawSignatureArgs": {
+        "KmsClientIsValidRawSignatureArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -534,7 +648,11 @@
               "type": "string"
             }
           },
-          "required": ["input", "keyInfo", "signature"]
+          "required": [
+            "input",
+            "keyInfo",
+            "signature"
+          ]
         },
         "VerifyRawSignatureResponse": {
           "type": "object",
@@ -544,11 +662,13 @@
               "description": "Indicates whether the signature is valid or not."
             }
           },
-          "required": ["isValid"],
+          "required": [
+            "isValid"
+          ],
           "additionalProperties": false,
           "description": "Response body containing the details of the signature verification."
         },
-        "KmsListKeyProvidersArgs": {
+        "KmsClientListKeyProvidersArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -567,7 +687,9 @@
               }
             }
           },
-          "required": ["providers"],
+          "required": [
+            "providers"
+          ],
           "additionalProperties": false,
           "description": "Response body containing the details of a Key Provider instance."
         },
@@ -582,11 +704,14 @@
               "$ref": "#/components/schemas/KeyProviderType"
             }
           },
-          "required": ["providerId", "type"],
+          "required": [
+            "providerId",
+            "type"
+          ],
           "additionalProperties": false,
           "description": "Response body containing the details of a Key Provider instance."
         },
-        "KmsListKeysArgs": {
+        "KmsClientListKeysArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -608,11 +733,13 @@
               }
             }
           },
-          "required": ["keyInfos"],
+          "required": [
+            "keyInfos"
+          ],
           "additionalProperties": false,
           "description": "Response body containing all the managed keys."
         },
-        "KmsListResolversArgs": {
+        "KmsClientListResolversArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -631,11 +758,13 @@
               }
             }
           },
-          "required": ["resolvers"],
+          "required": [
+            "resolvers"
+          ],
           "additionalProperties": false,
           "description": "Response body containing all the resolvers."
         },
-        "KmsProviderDeleteKeyArgs": {
+        "KmsClientProviderDeleteKeyArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -648,10 +777,13 @@
               "type": "string"
             }
           },
-          "required": ["providerId", "aliasOrKid"],
+          "required": [
+            "providerId",
+            "aliasOrKid"
+          ],
           "additionalProperties": false
         },
-        "KmsProviderGenerateKey": {
+        "KmsClientProviderGenerateKeyArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -678,9 +810,11 @@
               "type": "string"
             }
           },
-          "required": ["providerId"]
+          "required": [
+            "providerId"
+          ]
         },
-        "KmsProviderGetKeyArgs": {
+        "KmsClientProviderGetKeyArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -693,10 +827,13 @@
               "type": "string"
             }
           },
-          "required": ["providerId", "aliasOrKid"],
+          "required": [
+            "providerId",
+            "aliasOrKid"
+          ],
           "additionalProperties": false
         },
-        "KmsProviderListKeysArgs": {
+        "KmsClientProviderListKeysArgs": {
           "type": "object",
           "properties": {
             "baseUrl": {
@@ -706,10 +843,12 @@
               "type": "string"
             }
           },
-          "required": ["providerId"],
+          "required": [
+            "providerId"
+          ],
           "additionalProperties": false
         },
-        "KmsProviderStoreKey": {
+        "KmsClientProviderStoreKeyArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -730,7 +869,10 @@
               "type": "string"
             }
           },
-          "required": ["keyInfo", "providerId"]
+          "required": [
+            "keyInfo",
+            "providerId"
+          ]
         },
         "ResolvedKeyInfo": {
           "type": "object",
@@ -777,11 +919,26 @@
               "description": "Additional configuration options as key-value pairs."
             }
           },
-          "required": ["key"],
+          "required": [
+            "key"
+          ],
           "additionalProperties": false,
           "description": "Represents a resolved cryptographic key information where the key is guaranteed to be present and resolved, providing concrete access to the key."
         },
-        "KmsResolveKeyArgs": {
+        "StoreKeyResponse": {
+          "type": "object",
+          "properties": {
+            "keyInfo": {
+              "$ref": "#/components/schemas/ManagedKeyInfo"
+            }
+          },
+          "required": [
+            "keyInfo"
+          ],
+          "additionalProperties": false,
+          "description": "Response body containing a stored key."
+        },
+        "KmsClientResolveKeyArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -809,7 +966,10 @@
               "$ref": "#/components/schemas/String"
             }
           },
-          "required": ["keyInfo", "resolverId"]
+          "required": [
+            "keyInfo",
+            "resolverId"
+          ]
         },
         "String": {
           "type": "object",
@@ -818,12 +978,14 @@
               "type": "number"
             }
           },
-          "required": ["length"],
+          "required": [
+            "length"
+          ],
           "additionalProperties": {
             "type": "string"
           }
         },
-        "KmsStoreKeyArgs": {
+        "KmsClientStoreKeyArgs": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -841,161 +1003,163 @@
               "type": "string"
             }
           },
-          "required": ["keyInfo"]
+          "required": [
+            "keyInfo"
+          ]
         }
       },
       "methods": {
-        "kmsCreateRawSignature": {
+        "kmsClientCreateRawSignature": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsCreateRawSignatureArgs"
+            "$ref": "#/components/schemas/KmsClientCreateRawSignatureArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/CreateRawSignatureResponse"
           }
         },
-        "kmsDeleteKey": {
+        "kmsClientDeleteKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsDeleteKeyArgs"
+            "$ref": "#/components/schemas/KmsClientDeleteKeyArgs"
           },
           "returnType": {
             "type": "boolean"
           }
         },
-        "kmsGenerateKey": {
+        "kmsClientGenerateKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsGenerateKeyArgs"
+            "$ref": "#/components/schemas/KmsClientGenerateKeyArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/ManagedKeyPair"
+            "$ref": "#/components/schemas/GenerateKeyResponse"
           }
         },
-        "kmsGetKey": {
+        "kmsClientGetKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsGetKeyArgs"
+            "$ref": "#/components/schemas/KmsClientGetKeyArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/ManagedKeyInfo"
+            "$ref": "#/components/schemas/GetKeyResponse"
           }
         },
-        "kmsGetKeyProvider": {
+        "kmsClientGetKeyProvider": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsGetKeyProviderArgs"
+            "$ref": "#/components/schemas/KmsClientGetKeyProviderArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/KeyProviderResponse"
           }
         },
-        "kmsGetResolver": {
+        "kmsClientGetResolver": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/kmsGetResolverArgs"
+            "$ref": "#/components/schemas/kmsClientGetResolverArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/Resolver"
           }
         },
-        "kmsIsValidRawSignature": {
+        "kmsClientIsValidRawSignature": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsIsValidRawSignatureArgs"
+            "$ref": "#/components/schemas/KmsClientIsValidRawSignatureArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/VerifyRawSignatureResponse"
           }
         },
-        "kmsListKeyProviders": {
+        "kmsClientListKeyProviders": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsListKeyProvidersArgs"
+            "$ref": "#/components/schemas/KmsClientListKeyProvidersArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/ListKeyProvidersResponse"
           }
         },
-        "kmsListKeys": {
+        "kmsClientListKeys": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsListKeysArgs"
+            "$ref": "#/components/schemas/KmsClientListKeysArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/ListKeysResponse"
           }
         },
-        "kmsListResolvers": {
+        "kmsClientListResolvers": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsListResolversArgs"
+            "$ref": "#/components/schemas/KmsClientListResolversArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/ListResolversResponse"
           }
         },
-        "kmsProviderDeleteKey": {
+        "kmsClientProviderDeleteKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsProviderDeleteKeyArgs"
+            "$ref": "#/components/schemas/KmsClientProviderDeleteKeyArgs"
           },
           "returnType": {
             "type": "boolean"
           }
         },
-        "kmsProviderGenerateKey": {
+        "kmsClientProviderGenerateKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsProviderGenerateKey"
+            "$ref": "#/components/schemas/KmsClientProviderGenerateKeyArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/ManagedKeyPair"
+            "$ref": "#/components/schemas/GenerateKeyResponse"
           }
         },
-        "kmsProviderGetKey": {
+        "kmsClientProviderGetKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsProviderGetKeyArgs"
+            "$ref": "#/components/schemas/KmsClientProviderGetKeyArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/ManagedKeyInfo"
+            "$ref": "#/components/schemas/GetKeyResponse"
           }
         },
-        "kmsProviderListKeys": {
+        "kmsClientProviderListKeys": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsProviderListKeysArgs"
+            "$ref": "#/components/schemas/KmsClientProviderListKeysArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/ListKeysResponse"
           }
         },
-        "kmsProviderStoreKey": {
+        "kmsClientProviderStoreKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsProviderStoreKey"
+            "$ref": "#/components/schemas/KmsClientProviderStoreKeyArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/ManagedKeyInfo"
+            "$ref": "#/components/schemas/StoreKeyResponse"
           }
         },
-        "kmsResolveKey": {
+        "kmsClientResolveKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsResolveKeyArgs"
+            "$ref": "#/components/schemas/KmsClientResolveKeyArgs"
           },
           "returnType": {
             "$ref": "#/components/schemas/ResolvedKeyInfo"
           }
         },
-        "kmsStoreKey": {
+        "kmsClientStoreKey": {
           "description": "",
           "arguments": {
-            "$ref": "#/components/schemas/KmsStoreKeyArgs"
+            "$ref": "#/components/schemas/KmsClientStoreKeyArgs"
           },
           "returnType": {
-            "$ref": "#/components/schemas/ManagedKeyInfo"
+            "$ref": "#/components/schemas/StoreKeyResponse"
           }
         }
       }
