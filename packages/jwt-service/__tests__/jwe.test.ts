@@ -27,7 +27,7 @@ describe('JWE test', () => {
         namedCurve: 'P-256',
       },
       true,
-      []
+      [],
     )
     const encrypter = new CompactJwtEncrypter({
       alg: 'ECDH-ES',
@@ -47,13 +47,14 @@ describe('JWE test', () => {
         namedCurve: 'P-256',
       },
       true,
-      ['deriveKey', 'deriveBits']
+      ['deriveKey', 'deriveBits'],
     )
     const decrypted = await CompactJwtEncrypter.decryptCompactJWT(encrypted, secKey)
     console.log(JSON.stringify(decrypted, null, 2))
   })
 
-  it('should decrypt agent example', async () => {
+  it.skip('should decrypt agent example', async () => {
+    // FIXME expired October 2025
     const jwe =
       'eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImVwayI6eyJ4IjoiYkIza0VMaWFtOTBEWExKVU8zQXFCa3RSMmd3TVFWSFBEWUJWUkJ3NEpWWSIsImNydiI6IlAtMjU2Iiwia3R5IjoiRUMiLCJ5IjoiMXVNRTFlWHJQVjR2VVhiZHNYRGpBNno2NGMyYmQ3M0stWWtBVHlRRzNrTSJ9LCJhcHUiOiJZWEIxIiwiYXB2IjoiWVhCMiJ9..gT7grdO892xezIiy.mzWRiE0ajMnqVqVRs3medXCtH4knMBLGWWaPTap8CwCw_TpkVSV2azzz7MsTz6pjGo5iDHWa_AMxuGRCTZVBew.S5WfGjVhFnFwgqPtYdBJzQ'
     const secKey = await crypto.subtle.importKey(
@@ -64,7 +65,7 @@ describe('JWE test', () => {
         namedCurve: 'P-256',
       },
       true,
-      ['deriveKey', 'deriveBits']
+      ['deriveKey', 'deriveBits'],
     )
     const decrypted = await CompactJwtEncrypter.decryptCompactJWT(jwe, secKey)
     console.log(JSON.stringify(decrypted, null, 2))
