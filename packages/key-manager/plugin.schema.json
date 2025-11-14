@@ -22,12 +22,23 @@
               "description": "Optional. Key meta data"
             }
           },
-          "required": ["type"],
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
           "description": "Input arguments for  {@link ISphereonKeyManager.keyManagerCreate | keyManagerCreate }"
         },
         "TKeyType": {
           "type": "string",
-          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
+          "enum": [
+            "Ed25519",
+            "Secp256k1",
+            "Secp256r1",
+            "X25519",
+            "Bls12381G1",
+            "Bls12381G2",
+            "RSA"
+          ],
           "description": "Cryptographic key type."
         },
         "IkeyOptions": {
@@ -49,9 +60,11 @@
                   "format": "date-time"
                 }
               },
+              "additionalProperties": false,
               "description": "Expiration and remove the key"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "KeyMetadata": {
           "type": "object",
@@ -67,6 +80,7 @@
         },
         "PartialKey": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "privateKeyHex": {
               "type": "string"
@@ -99,7 +113,13 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": ["kid", "kms", "privateKeyHex", "publicKeyHex", "type"]
+          "required": [
+            "kid",
+            "kms",
+            "privateKeyHex",
+            "publicKeyHex",
+            "type"
+          ]
         },
         "ISphereonKeyManagerHandleExpirationsArgs": {
           "type": "object",
@@ -107,9 +127,17 @@
             "skipRemovals": {
               "type": "boolean"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "ManagedKeyInfo": {
+          "$ref": "#/components/schemas/Omit<IKey,\"privateKeyHex\">",
+          "description": "Represents information about a managed key. Private or secret key material is NOT present."
+        },
+        "Omit<IKey,\"privateKeyHex\">": {
+          "$ref": "#/components/schemas/Pick<IKey,Exclude<(\"kid\"|\"kms\"|\"type\"|\"publicKeyHex\"|\"privateKeyHex\"|\"meta\"),\"privateKeyHex\">>"
+        },
+        "Pick<IKey,Exclude<(\"kid\"|\"kms\"|\"type\"|\"publicKeyHex\"|\"privateKeyHex\"|\"meta\"),\"privateKeyHex\">>": {
           "type": "object",
           "properties": {
             "kid": {
@@ -140,8 +168,13 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": ["kid", "kms", "type", "publicKeyHex"],
-          "description": "Represents information about a managed key. Private or secret key material is NOT present."
+          "required": [
+            "kid",
+            "kms",
+            "type",
+            "publicKeyHex"
+          ],
+          "additionalProperties": false
         },
         "MinimalImportableKey": {
           "$ref": "#/components/schemas/RequireOnly<IKey,(\"privateKeyHex\"|\"type\"|\"kms\")>",
@@ -149,6 +182,7 @@
         },
         "RequireOnly<IKey,(\"privateKeyHex\"|\"type\"|\"kms\")>": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "kid": {
               "type": "string",
@@ -201,51 +235,72 @@
                   "type": "string"
                 },
                 {
-                  "type": "object",
-                  "properties": {
-                    "BYTES_PER_ELEMENT": {
-                      "type": "number"
-                    },
-                    "buffer": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "byteLength": {
-                              "type": "number"
-                            }
-                          },
-                          "required": ["byteLength"]
-                        },
-                        {}
-                      ]
-                    },
-                    "byteLength": {
-                      "type": "number"
-                    },
-                    "byteOffset": {
-                      "type": "number"
-                    },
-                    "length": {
-                      "type": "number"
-                    }
-                  },
-                  "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
-                  "additionalProperties": {
-                    "type": "number"
-                  }
+                  "$ref": "#/components/schemas/Uint8Array"
                 }
               ],
               "description": "Data to sign"
             },
             "encoding": {
               "type": "string",
-              "enum": ["utf-8", "base16", "base64", "hex"],
+              "enum": [
+                "utf-8",
+                "base16",
+                "base64",
+                "hex"
+              ],
               "description": "If the data is a \"string\" then you can specify which encoding is used. Default is \"utf-8\""
             }
           },
-          "required": ["data", "keyRef"],
+          "required": [
+            "data",
+            "keyRef"
+          ],
           "description": "Input arguments for  {@link ISphereonKeyManagerSignArgs.keyManagerSign | keyManagerSign }"
+        },
+        "Uint8Array": {
+          "type": "object",
+          "properties": {
+            "BYTES_PER_ELEMENT": {
+              "type": "number"
+            },
+            "buffer": {
+              "$ref": "#/components/schemas/ArrayBufferLike"
+            },
+            "byteLength": {
+              "type": "number"
+            },
+            "byteOffset": {
+              "type": "number"
+            },
+            "length": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "BYTES_PER_ELEMENT",
+            "buffer",
+            "byteLength",
+            "byteOffset",
+            "length"
+          ],
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "ArrayBufferLike": {
+          "$ref": "#/components/schemas/ArrayBuffer"
+        },
+        "ArrayBuffer": {
+          "type": "object",
+          "properties": {
+            "byteLength": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "byteLength"
+          ],
+          "additionalProperties": false
         },
         "ISphereonKeyManagerVerifyArgs": {
           "type": "object",
@@ -263,45 +318,19 @@
               "type": "string"
             },
             "data": {
-              "type": "object",
-              "properties": {
-                "BYTES_PER_ELEMENT": {
-                  "type": "number"
-                },
-                "buffer": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "byteLength": {
-                          "type": "number"
-                        }
-                      },
-                      "required": ["byteLength"]
-                    },
-                    {}
-                  ]
-                },
-                "byteLength": {
-                  "type": "number"
-                },
-                "byteOffset": {
-                  "type": "number"
-                },
-                "length": {
-                  "type": "number"
-                }
-              },
-              "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
-              "additionalProperties": {
-                "type": "number"
-              }
+              "$ref": "#/components/schemas/Uint8Array"
             },
             "signature": {
               "type": "string"
             }
           },
-          "required": ["publicKeyHex", "type", "data", "signature"]
+          "required": [
+            "publicKeyHex",
+            "type",
+            "data",
+            "signature"
+          ],
+          "additionalProperties": false
         }
       },
       "methods": {
