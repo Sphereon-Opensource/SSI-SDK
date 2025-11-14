@@ -35,6 +35,7 @@ export class CreateBitstringStatusListPG1741895823000 implements MigrationInterf
 
     // Add BitstringStatusListEntry specific columns to StatusListEntry table
     await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusPurpose" character varying`)
+    await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "bitsPerStatus" integer DEFAULT 1`)
     await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusMessage" text`)
     await queryRunner.query(`ALTER TABLE "StatusListEntry" ADD COLUMN "statusReference" text`)
 

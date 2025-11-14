@@ -29,11 +29,11 @@ import {
 import { IJwtService, JwsHeader } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { signatureAlgorithmFromKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import { ensureRawDocument } from '@sphereon/ssi-sdk.data-store-types'
 import {
   ConnectionType,
   CorrelationIdentifierType,
   CredentialCorrelationType,
+  ensureRawDocument,
   FindPartyArgs,
   IBasicCredentialLocaleBranding,
   IBasicIssuerLocaleBranding,
@@ -109,6 +109,8 @@ import {
   OnContactIdentityCreatedArgs,
   OnCredentialStoredArgs,
   OnIdentifierCreatedArgs,
+  PrepareAuthorizationRequestArgs,
+  PrepareAuthorizationResult,
   PrepareStartArgs,
   RequestType,
   RequiredContext,
@@ -214,6 +216,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     oid4vciHolderStart: this.oid4vciHolderStart.bind(this),
     oid4vciHolderGetIssuerMetadata: this.oid4vciHolderGetIssuerMetadata.bind(this),
     oid4vciHolderGetMachineInterpreter: this.oid4vciHolderGetMachineInterpreter.bind(this),
+    oid4vciHolderPrepareAuthorizationRequest: this.oid4vciHolderPrepareAuthorizationRequest.bind(this),
     oid4vciHolderCreateCredentialsToSelectFrom: this.oid4vciHolderCreateCredentialsToSelectFrom.bind(this),
     oid4vciHolderGetContact: this.oid4vciHolderGetContact.bind(this),
     oid4vciHolderGetCredentials: this.oid4vciHolderGetCredentials.bind(this),
@@ -324,6 +327,8 @@ export class OID4VCIHolder implements IAgentPlugin {
         startFirstPartApplicationMachine({ ...args, stateNavigationListener: opts.firstPartyStateNavigationListener }, context),
       [OID4VCIMachineServices.createCredentialsToSelectFrom]: (args: CreateCredentialsToSelectFromArgs) =>
         this.oid4vciHolderCreateCredentialsToSelectFrom(args, context),
+      [OID4VCIMachineServices.prepareAuthorizationRequest]: (args: PrepareAuthorizationRequestArgs) =>
+        this.oid4vciHolderPrepareAuthorizationRequest(args, context),
       [OID4VCIMachineServices.getContact]: (args: GetContactArgs) => this.oid4vciHolderGetContact(args, context),
       [OID4VCIMachineServices.getCredentials]: (args: GetCredentialsArgs) =>
         this.oid4vciHolderGetCredentials({ accessTokenOpts: args.accessTokenOpts ?? opts.accessTokenOpts, ...args }, context),
@@ -426,7 +431,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           credentialIssuer: uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
-          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true,
+          createAuthorizationRequestURL: false, // requestData.createAuthorizationRequestURL ?? true,
         })
       } else {
         logger.log(`Credential offer received: ${uri}`)
@@ -434,7 +439,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
-          createAuthorizationRequestURL: requestData.createAuthorizationRequestURL ?? true,
+          createAuthorizationRequestURL: false, // requestData.createAuthorizationRequestURL ?? true,
         })
       }
     }
@@ -457,18 +462,49 @@ export class OID4VCIHolder implements IAgentPlugin {
 
     const serverMetadata = await oid4vciClient.retrieveServerMetadata()
     const credentialBranding = await getCredentialBranding({ credentialsSupported, context })
-    const authorizationCodeURL = oid4vciClient.authorizationURL
-    if (authorizationCodeURL) {
-      logger.log(`authorization code URL ${authorizationCodeURL}`)
-    }
     const oid4vciClientState = JSON.parse(await oid4vciClient.exportState())
 
     return {
-      authorizationCodeURL,
       credentialBranding,
       credentialsSupported,
       serverMetadata,
       oid4vciClientState,
+    }
+  }
+
+  private async oid4vciHolderPrepareAuthorizationRequest(
+    args: PrepareAuthorizationRequestArgs,
+    context: RequiredContext,
+  ): Promise<PrepareAuthorizationResult> {
+    const { openID4VCIClientState, contact } = args
+    if (!openID4VCIClientState) {
+      return Promise.reject(Error('Missing openID4VCI client state in context'))
+    }
+
+    const clientId = contact?.identities
+      .map((identity) => {
+        const connectionConfig = identity.connection?.config
+        if (connectionConfig && 'clientId' in connectionConfig) {
+          return connectionConfig.clientId
+        }
+        return undefined
+      })
+      .find((clientId) => clientId)
+
+    if (!clientId) {
+      return Promise.reject(Error(`Missing client id in contact's connectionConfig`))
+    }
+    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    const authorizationCodeURL = await client.createAuthorizationRequestUrl({
+      authorizationRequest: {
+        clientId: clientId,
+      } satisfies AuthorizationRequestOpts,
+    })
+    if (authorizationCodeURL) {
+      logger.log(`authorization code URL ${authorizationCodeURL}`)
+    }
+    return {
+      authorizationCodeURL,
     }
   }
 

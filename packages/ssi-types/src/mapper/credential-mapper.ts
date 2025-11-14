@@ -959,7 +959,7 @@ export enum OriginalType {
 
 export const JWT_PROOF_TYPE_2020 = 'JwtProof2020'
 
-export const enum DocumentFormat {
+export enum DocumentFormat {
   // W3C
   JWT,
   JSONLD,

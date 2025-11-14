@@ -15,7 +15,10 @@
               }
             }
           },
-          "required": ["entityIdentifier", "trustAnchors"],
+          "required": [
+            "entityIdentifier",
+            "trustAnchors"
+          ],
           "additionalProperties": false
         },
         "TrustChainResolveResponse": {
