@@ -75,13 +75,22 @@ export class SphereonKeyManager extends VeramoKeyManager {
                 storedKey.publicKeyHex !== remoteKey.publicKeyHex ||
                 storedKey.type !== remoteKey.type ||
                 storedKey.kms !== remoteKey.kms ||
-                (remoteKey.meta && 'alias' in remoteKey.meta && storedKey.meta && storedKey.meta.alias !== remoteKey.meta.alias)
+                (remoteKey.meta && 'alias' in remoteKey.meta && storedKey.meta && storedKey.meta.keyAlias !== remoteKey.meta.alias)
               if (needsUpdate) {
                 try {
                   if (storedKey) {
                     await this.kmsStore.delete({ kid: remoteKey.kid })
                   }
-                  await this.kmsStore.import(remoteKey as IKey)
+                  const keyToImport: IKey = {
+                    ...remoteKey,
+                    meta: remoteKey.meta && 'alias' in remoteKey.meta ? { ...remoteKey.meta, keyAlias: remoteKey.meta.alias } : remoteKey.meta,
+                  } as IKey
+
+                  if (keyToImport.meta && 'alias' in keyToImport.meta) {
+                    delete keyToImport.meta.alias
+                  }
+
+                  await this.kmsStore.import(keyToImport)
                 } catch (error) {
                   console.error(`Failed to sync key ${remoteKey.kid} from kms ${kmsId}:`, error)
                 }

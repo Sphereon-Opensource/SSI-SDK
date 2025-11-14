@@ -40,7 +40,7 @@ import type {
   KeyProviderResponse,
   GenerateKeyResponse,
   StoreKeyResponse,
-  GetKeyResponse
+  GetKeyResponse,
 } from '../models'
 import {
   CreateRawSignatureResponseFromJSONTyped,
@@ -59,7 +59,7 @@ import {
   StoreKeyToJSONTyped,
   StoreKeyResponseFromJSONTyped,
   VerifyRawSignatureResponseFromJSONTyped,
-  VerifyRawSignatureToJSONTyped
+  VerifyRawSignatureToJSONTyped,
 } from '../models'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:kms:rest-client')
@@ -392,6 +392,7 @@ export class KmsRestClient implements IAgentPlugin {
       alg: args.alg,
       keyOperations: args.keyOperations,
       use: args.use,
+      alias: args.alias,
     } satisfies GenerateKey
     const response = await fetch(url, {
       method: 'POST',
@@ -477,11 +478,9 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   private async handleHttpError(url: string, response: Response): Promise<never> {
-    const contentType = response.headers.get("content-type")
-    const isJson = contentType?.includes("application/json")
-    const responseBody = isJson
-      ? JSON.stringify(await response.json())
-      : await response.text()
+    const contentType = response.headers.get('content-type')
+    const isJson = contentType?.includes('application/json')
+    const responseBody = isJson ? JSON.stringify(await response.json()) : await response.text()
 
     return Promise.reject(Error(`request to ${url} returned http error ${response.status} - ${responseBody}`))
   }
