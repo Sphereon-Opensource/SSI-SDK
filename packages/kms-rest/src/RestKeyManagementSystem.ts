@@ -55,7 +55,8 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     const options = {
       use: meta && 'keyUsage' in meta ? this.mapKeyUsage(meta.keyUsage) : JwkUse.Sig,
       alg: signatureAlgorithm,
-      keyOperations: meta ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.Sign],
+      keyOperations: meta && meta.keyOperations ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.Sign],
+      ...(meta && 'keyAlias' in meta && meta.keyAlias ? { alias: meta.keyAlias } : {}),
     }
 
     const key = this.providerId
