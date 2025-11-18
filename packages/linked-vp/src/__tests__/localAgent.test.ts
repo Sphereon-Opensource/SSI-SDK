@@ -19,9 +19,6 @@ import linkedVPManagerAgentLogic from './shared/linkedVPManagerAgentLogic'
 let agent: any
 
 const setup = async () => {
-  // ------------------------------------------------------------
-  // 1. In-memory sqlite database
-  // ------------------------------------------------------------
   const db = new DataSource({
     type: 'sqlite',
     database: ':memory:',
@@ -65,9 +62,6 @@ const setup = async () => {
     new VcdmCredentialPlugin({ issuers: [jwt] }),
   ]
 
-  // ------------------------------------------------------------
-  // 4. Construct Agent
-  // ------------------------------------------------------------
   agent = new Agent({
     plugins,
   })
