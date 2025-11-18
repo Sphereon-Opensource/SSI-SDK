@@ -4753,6 +4753,9 @@ importers:
       '@sphereon/ssi-sdk.core':
         specifier: workspace:*
         version: link:../ssi-sdk-core
+      '@sphereon/ssi-sdk.linked-vp':
+        specifier: workspace:*
+        version: link:../linked-vp
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types

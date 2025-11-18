@@ -2,8 +2,10 @@ import { DIDResolutionResult } from '@sphereon/did-uni-client'
 import { getAgentDIDMethods, toDidDocument, toDidResolutionResult } from '@sphereon/ssi-sdk-ext.did-utils'
 import { JwkKeyUse } from '@sphereon/ssi-sdk-ext.key-utils'
 import { checkAuth, ISingleEndpointOpts, sendErrorResponse } from '@sphereon/ssi-express-support'
+import { LinkedVPServiceEntry } from '@sphereon/ssi-sdk.linked-vp'
 import { parseDid } from '@sphereon/ssi-types'
 import { IIdentifier } from '@veramo/core'
+import { Service } from 'did-resolver'
 import { Request, Response, Router } from 'express'
 import { v4 } from 'uuid'
 import {
@@ -158,6 +160,10 @@ export function resolveDidEndpoint(router: Router, context: IRequiredContext, op
       }
       if (mode !== 'local' && !resolutionResult?.didDocument) {
         resolutionResult = await context.agent.resolveDid({ didUrl: did })
+      }
+      const serviceEntries: Array<LinkedVPServiceEntry> = await context.agent.lvpGetServiceEntries()
+      if (resolutionResult?.didDocument && serviceEntries) {
+        resolutionResult.didDocument.service = serviceEntries as Array<Service>
       }
 
       response.statusCode = 200
