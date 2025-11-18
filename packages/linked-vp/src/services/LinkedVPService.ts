@@ -1,5 +1,7 @@
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { Loggers, OriginalVerifiableCredential, WrappedVerifiableCredential } from '@sphereon/ssi-types'
+import type { PresentationPayload } from '@veramo/core'
+import { W3CVerifiableCredential } from '@veramo/core/src/types/vc-data-model'
 import { LOGGER_NAMESPACE, RequiredContext } from '../types'
 
 const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
@@ -55,11 +57,11 @@ export async function createLinkedVPPresentation(
   })
 
   // Create VP structure
-  const vpObject = {
+  const vpObject: PresentationPayload = {
     '@context': ['https://www.w3.org/2018/credentials/v1'],
     type: ['VerifiablePresentation'],
     holder: holderDid,
-    verifiableCredential: verifiableCredentials,
+    verifiableCredential: verifiableCredentials as W3CVerifiableCredential[],
   }
 
   // Create and sign the VP as JWT
@@ -74,8 +76,8 @@ export async function createLinkedVPPresentation(
     return result
   }
 
-  if (result.proof?.jwt) {
-    return result.proof.jwt
+  if (result.proof && 'jws' in result.proof) {
+    return result.proof.jws
   }
 
   return Promise.reject(Error('Failed to create JWT VP - no JWT in result'))
