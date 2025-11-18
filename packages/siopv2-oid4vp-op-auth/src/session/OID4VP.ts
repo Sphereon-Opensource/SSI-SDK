@@ -5,6 +5,7 @@ import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { defaultGenerateDigest } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
+  DocumentFormat,
   HasherSync,
   Loggers,
   OriginalVerifiableCredential,
@@ -53,39 +54,6 @@ function extractOriginalCredential(
 }
 
 /**
- * Determines the format of a credential
- */
-function detectCredentialFormat(credential: OriginalVerifiableCredential): string {
-  if (typeof credential === 'string') {
-    // Could be JWT or SD-JWT
-    if (credential.includes('~')) {
-      return 'dc+sd-jwt'
-    }
-    // Check if it's a compact JWT format (3 parts)
-    const parts = credential.split('.')
-    if (parts.length === 3) {
-      return 'jwt_vc_json'
-    }
-  } else if (typeof credential === 'object') {
-    // Check for SD-JWT decoded format
-    if ('compactSdJwtVc' in credential) {
-      return 'dc+sd-jwt'
-    }
-    // Check for JSON-LD
-    if ('@context' in credential || 'proof' in credential) {
-      return 'ldp_vc'
-    }
-    // Check for mdoc
-    if ('doctype' in credential || 'namespaces' in credential) {
-      return 'mso_mdoc'
-    }
-  }
-
-  // Default to JWT
-  return 'jwt_vc_json'
-}
-
-/**
  * Gets the issuer/holder identifier from ManagedIdentifierOptsOrResult
  */
 function getIdentifierString(identifier: ManagedIdentifierOptsOrResult): string {
@@ -113,12 +81,12 @@ export async function createVerifiablePresentationForFormat(
   const { nonce, audience, agent, clockSkew = CLOCK_SKEW } = context
 
   const originalCredential = extractOriginalCredential(credential)
-  const format = detectCredentialFormat(originalCredential)
+  const documentFormat = CredentialMapper.detectDocumentType(originalCredential)
 
-  logger.debug(`Creating VP for format: ${format}`)
+  logger.debug(`Creating VP for format: ${documentFormat}`)
 
-  switch (format) {
-    case 'dc+sd-jwt': {
+  switch (documentFormat) {
+    case DocumentFormat.SD_JWT_VC: {
       // SD-JWT with KB-JWT
       const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(
         typeof originalCredential === 'string' ? originalCredential : (originalCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc,
@@ -145,40 +113,7 @@ export async function createVerifiablePresentationForFormat(
       return presentationResult.presentation
     }
 
-    case 'jwt_vc_json': {
-      // JWT VC - create JWT VP with nonce and aud in payload
-      const vcJwt = typeof originalCredential === 'string' ? originalCredential : JSON.stringify(originalCredential)
-
-      const identifierString = getIdentifierString(identifier)
-
-      // Create VP JWT using agent method
-      const vpPayload = {
-        iss: identifierString,
-        aud: audience, // Client Identifier or Origin
-        nonce, // Authorization Request nonce
-        vp: {
-          '@context': ['https://www.w3.org/2018/credentials/v1'],
-          type: ['VerifiablePresentation'],
-          holder: identifierString,
-          verifiableCredential: [vcJwt],
-        },
-        iat: Math.floor(Date.now() / 1000 - clockSkew),
-        exp: Math.floor(Date.now() / 1000 + 600), // 10 minutes
-      }
-
-      // Use the agent's JWT creation capability
-      const vpJwt = await agent.createVerifiablePresentation({
-        presentation: vpPayload.vp,
-        proofFormat: 'jwt',
-        domain: audience,
-        challenge: nonce,
-        keyRef: identifier.kmsKeyRef || identifier.kid,
-      })
-
-      return vpJwt.proof?.jwt || vpJwt
-    }
-
-    case 'ldp_vc': {
+    case DocumentFormat.JSONLD: {
       // JSON-LD VC - create JSON-LD VP with challenge and domain in proof
       const vcObject = typeof originalCredential === 'string' ? JSON.parse(originalCredential) : originalCredential
 
@@ -198,7 +133,7 @@ export async function createVerifiablePresentationForFormat(
       })
     }
 
-    case 'mso_mdoc': {
+    case DocumentFormat.MSO_MDOC: {
       // ISO mdoc - create mdoc VP token
       // This is a placeholder implementation
       // Full implementation would require:
@@ -210,7 +145,37 @@ export async function createVerifiablePresentationForFormat(
       return originalCredential
     }
 
-    default:
-      return Promise.reject(Error(`Unsupported credential format: ${format}`))
+    default: {
+      // JWT VC - create JWT VP with nonce and aud in payload
+      const vcJwt = typeof originalCredential === 'string' ? originalCredential : JSON.stringify(originalCredential)
+
+      const identifierString = getIdentifierString(identifier)
+
+      // Create VP JWT using agent method
+      const vpPayload = {
+        iss: identifierString,
+        aud: audience, // Client Identifier or Origin
+        nonce, // Authorization Request nonce
+        vp: {
+          '@context': ['https://www.w3.org/2018/credentials/v1'],
+          type: ['VerifiablePresentation'],
+          holder: identifierString,
+          verifiableCredential: [vcJwt],
+        },
+        iat: Math.floor(Date.now() / 1000 - clockSkew),
+        exp: Math.floor(Date.now() / 1000 + 600 + clockSkew), // 10 minutes
+      }
+
+      // Use the agent's JWT creation capability
+      const vpJwt = await agent.createVerifiablePresentation({
+        presentation: vpPayload.vp,
+        proofFormat: 'jwt',
+        domain: audience,
+        challenge: nonce,
+        keyRef: identifier.kmsKeyRef || identifier.kid,
+      })
+
+      return vpJwt.proof?.jwt || vpJwt
+    }
   }
 }
