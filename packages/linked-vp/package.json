@@ -33,6 +33,7 @@
     "@sphereon/ssi-sdk.credential-store": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk.credential-vcdm": "workspace:*",
+    "@sphereon/ssi-sdk.sd-jwt": "workspace:*",
     "@veramo/utils": "4.2.0",
     "uint8arrays": "3.1.1",
     "dcql": "1.0.1",

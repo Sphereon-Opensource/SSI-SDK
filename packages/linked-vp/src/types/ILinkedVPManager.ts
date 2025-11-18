@@ -1,6 +1,7 @@
 import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { IKeyManager } from '@veramo/core/src/types/IKeyManager'
 
@@ -82,4 +83,4 @@ export type LinkedVPServiceEntry = {
   serviceEndpoint: string
 }
 
-export type RequiredContext = IAgentContext<IIdentifierResolution & ICredentialStore & IKeyManager & VcdmCredentialPlugin>
+export type RequiredContext = IAgentContext<IIdentifierResolution & ICredentialStore & IKeyManager & VcdmCredentialPlugin & ISDJwtPlugin>

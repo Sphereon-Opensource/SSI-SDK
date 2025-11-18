@@ -2405,6 +2405,9 @@ importers:
       '@sphereon/ssi-sdk.data-store-types':
         specifier: workspace:*
         version: link:../data-store-types
+      '@sphereon/ssi-sdk.sd-jwt':
+        specifier: workspace:*
+        version: link:../sd-jwt
       '@sphereon/ssi-types':
         specifier: workspace:*
         version: link:../ssi-types
@@ -4104,9 +4107,6 @@ importers:
       '@sphereon/oid4vc-common':
         specifier: 0.19.1-next.226
         version: 0.19.1-next.226
-      '@sphereon/pex':
-        specifier: 5.0.0-unstable.28
-        version: 5.0.0-unstable.28
       '@sphereon/pex-models':
         specifier: ^2.3.2
         version: 2.3.2

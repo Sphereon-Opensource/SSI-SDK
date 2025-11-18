@@ -12,7 +12,7 @@ import {
 } from './api-functions'
 import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express-support'
 
-type LinkedVPManagerApiServerArgs = {
+export type LinkedVPManagerApiServerArgs = {
   agent: TAgent<IRequiredPlugins>
   expressSupport: ExpressSupport
   opts?: ILinkedVPManagerAPIEndpointOpts

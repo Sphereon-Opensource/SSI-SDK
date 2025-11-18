@@ -161,10 +161,6 @@ export function resolveDidEndpoint(router: Router, context: IRequiredContext, op
       if (mode !== 'local' && !resolutionResult?.didDocument) {
         resolutionResult = await context.agent.resolveDid({ didUrl: did })
       }
-      const serviceEntries: Array<LinkedVPServiceEntry> = await context.agent.lvpGetServiceEntries()
-      if (resolutionResult?.didDocument && serviceEntries) {
-        resolutionResult.didDocument.service = serviceEntries as Array<Service>
-      }
 
       response.statusCode = 200
       return response.send(resolutionResult)
@@ -283,6 +279,12 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
       if (!resolutionResult || !resolutionResult.didDocument || resolutionResult?.didResolutionMetadata?.error === 'notFound') {
         return sendErrorResponse(response, 404, 'Not found')
       }
+
+      const serviceEntries: Array<LinkedVPServiceEntry> = await context.agent.lvpGetServiceEntries()
+      if (resolutionResult?.didDocument && serviceEntries) {
+        resolutionResult.didDocument.service = serviceEntries as Array<Service>
+      }
+
       response.statusCode = 200
       return response.send(resolutionResult.didDocument)
     } catch (e) {

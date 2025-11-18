@@ -144,9 +144,12 @@ export class LinkedVPManager implements IAgentPlugin {
     if (uniqueCredentials.length === 0) {
       return Promise.reject(Error(`No published credentials found for linkedVpId ${linkedVpId}`))
     }
+    if (uniqueCredentials.length > 1) {
+      return Promise.reject(Error(`Multiple credentials found for linkedVpId ${linkedVpId}`))
+    }
 
     // Generate the Verifiable Presentation with all published credentials
-    return createLinkedVPPresentation(holderDid, uniqueCredentials, context.agent)
+    return createLinkedVPPresentation(holderDid, uniqueCredentials[0], context.agent)
   }
 
   private getHolderDid(tenantId: string | undefined) {
