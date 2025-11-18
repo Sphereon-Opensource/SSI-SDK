@@ -2388,6 +2388,88 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
 
+  packages/linked-vp:
+    dependencies:
+      '@sphereon/ssi-sdk-ext.identifier-resolution':
+        specifier: workspace:*
+        version: link:../identifier-resolution
+      '@sphereon/ssi-sdk.credential-store':
+        specifier: workspace:*
+        version: link:../credential-store
+      '@sphereon/ssi-sdk.credential-vcdm':
+        specifier: workspace:*
+        version: link:../credential-vcdm
+      '@sphereon/ssi-sdk.data-store':
+        specifier: workspace:*
+        version: link:../data-store
+      '@sphereon/ssi-sdk.data-store-types':
+        specifier: workspace:*
+        version: link:../data-store-types
+      '@sphereon/ssi-types':
+        specifier: workspace:*
+        version: link:../ssi-types
+      '@veramo/utils':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      cross-fetch:
+        specifier: ^4.1.0
+        version: 4.1.0(encoding@0.1.13)
+      dcql:
+        specifier: 1.0.1
+        version: 1.0.1(typescript@5.8.3)
+      pkijs:
+        specifier: ^3.2.4
+        version: 3.2.5
+      typeorm:
+        specifier: 0.3.20
+        version: 0.3.20(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.13.5(@swc/helpers@0.5.17))(@types/node@20.19.13)(typescript@5.8.3))
+      uint8arrays:
+        specifier: 3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@sphereon/ssi-sdk-ext.did-provider-web':
+        specifier: workspace:*
+        version: link:../did-provider-web
+      '@sphereon/ssi-sdk-ext.key-manager':
+        specifier: workspace:*
+        version: link:../key-manager
+      '@sphereon/ssi-sdk-ext.kms-local':
+        specifier: workspace:*
+        version: link:../kms-local
+      '@sphereon/ssi-sdk.agent-config':
+        specifier: workspace:*
+        version: link:../agent-config
+      '@sphereon/ssi-sdk.credential-vcdm1-jwt-provider':
+        specifier: workspace:*
+        version: link:../credential-vcdm1-jwt-provider
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.13.5(@swc/helpers@0.5.17))(@types/node@20.19.13)(typescript@5.8.3))
+      '@veramo/did-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-provider-web':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/did-resolver':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/key-manager':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@veramo/remote-client':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
+      '@veramo/remote-server':
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)(express@4.21.2)
+      did-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      web-did-resolver:
+        specifier: ^2.0.30
+        version: 2.0.30(encoding@0.1.13)
+
   packages/mdl-mdoc:
     dependencies:
       '@sphereon/did-auth-siop-adapter':
@@ -11315,6 +11397,7 @@ packages:
 
   glob@6.0.4:
     resolution: {integrity: sha512-MKZeRNyYZAVVVG1oZeLaWie1uweH40m9AZwIwxyPbTSX4hHrVYSzLg0Ro5Z5R7XKkIX+Cc6oD1rqeDJnwsB8/A==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
@@ -11322,6 +11405,7 @@ packages:
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
@@ -20961,7 +21045,7 @@ snapshots:
       did-jwt: 6.11.6(patch_hash=3961df37be133a0b6a1493ec792a42d2fe4867acca16bde99554597fd98139af)
       did-jwt-vc: 3.1.3
       did-resolver: 4.1.0
-      elliptic: 6.6.1
+      elliptic: 6.5.4
       multiformats: 9.7.1
       uint8arrays: 3.1.1
     transitivePeerDependencies:

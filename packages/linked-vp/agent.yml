@@ -1,0 +1,83 @@
+version: 3.0
+
+constants:
+  baseUrl: http://localhost:3535
+  port: 3535
+  methods:
+    - lvpPublishCredential
+    - lvpUnpublishCredential
+    - lvpHasEntry
+    - lvpGetServiceEntries
+    - lvpGeneratePresentation
+    - crsAddCredential
+    - crsGetCredential
+    - crsGetCredentials
+    - crsGetUniqueCredentials
+    - crsUpdateCredentialState
+    - crsDeleteCredential
+    - identifierManagedGet
+    - createVerifiablePresentation
+
+# Database
+dbConnection:
+  $require: typeorm?t=function#createConnection
+  $args:
+    - type: sqlite
+      database: ':memory:'
+      synchronize: false
+      migrationsRun: true
+      migrations:
+        $require: './packages/data-store/dist?t=object#DataStoreDigitalCredentialMigrations'
+      entities:
+        $require: './packages/data-store/dist?t=object#DataStoreDigitalCredentialEntities'
+
+# Digital Credential Store
+digitalCredentialStore:
+  $require: './packages/data-store/dist#DigitalCredentialStore'
+  $args:
+    - $ref: /dbConnection
+
+# Credential Store Plugin
+credentialStore:
+  $require: ./packages/credential-store/dist#CredentialStore
+  $args:
+    - store:
+        $ref: /digitalCredentialStore
+
+# DID Resolvers
+webDidResolver:
+  $require: 'web-did-resolver?t=function#getResolver'
+
+
+identifierResolution:
+  $require: '@sphereon/ssi-sdk-ext.identifier-resolution#IdentifierResolution'
+  $args:
+    - resolvers:
+        - $ref: /webDidResolver
+
+identifierStore:
+  $require: '@veramo/data-store#IdentifierStore'
+  $args:
+    - $ref: /dbConnection
+
+
+
+# Agent
+agent:
+  $require: '@veramo/core#Agent'
+  $args:
+    - schemaValidation: false
+      plugins:
+        - $ref: /credentialStore
+        - $ref: /identifierResolution
+        - $require: '@veramo/did-manager#DIDManager'
+          $args:
+            - store: '$ref:/identifierStore'
+              defaultProvider: 'did:web'
+        - $require: ./packages/linked-vp/dist#LinkedVPManager
+          $args:
+            - holderDids:
+                default: 'did:web:example.com'
+                tenant1: 'did:web:example.com:tenants:tenant1'
+              store:
+                $ref: /credentialStore

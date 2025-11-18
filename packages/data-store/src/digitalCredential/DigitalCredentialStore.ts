@@ -8,6 +8,7 @@ import {
   GetCredentialsResponse,
   NonPersistedDigitalCredential,
   RemoveCredentialArgs,
+  UpdateCredentialArgs,
   UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole, OrPromise } from '@sphereon/ssi-types'
@@ -70,6 +71,43 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       data: digitalCredentialsFrom(result),
       total,
     }
+  }
+
+  updateCredential = async (args: UpdateCredentialArgs): Promise<DigitalCredential> => {
+    const dcRepo = await this.getRepository()
+    const whereClause: Record<string, any> = {}
+
+    if ('id' in args) {
+      whereClause.id = args.id
+    } else if ('hash' in args) {
+      whereClause.hash = args.hash
+    } else {
+      return Promise.reject(Error('No id or hash param is provided.'))
+    }
+
+    const credential: DigitalCredentialEntity | null = await dcRepo.findOne({
+      where: whereClause,
+    })
+
+    if (!credential) {
+      return Promise.reject(Error(`No credential found for args: ${JSON.stringify(whereClause)}`))
+    }
+
+    // Separate identifier from updates
+    const { id, hash, ...updates } = args as any
+
+    const updatedCredential: DigitalCredential = {
+      ...credential,
+      ...updates,
+      id: credential.id,
+      hash: credential.hash,
+      createdAt: credential.createdAt,
+      lastUpdatedAt: new Date(),
+    }
+
+    debug('Updating credential', updatedCredential)
+    const updatedResult: DigitalCredentialEntity = await dcRepo.save(updatedCredential, { transaction: true })
+    return digitalCredentialFrom(updatedResult)
   }
 
   removeCredential = async (args: RemoveCredentialArgs): Promise<boolean> => {

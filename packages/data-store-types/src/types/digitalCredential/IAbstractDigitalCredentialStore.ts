@@ -29,7 +29,9 @@ export type AddCredentialArgs = {
   issuerCorrelationId: string
   subjectCorrelationId?: string
   credentialRole: CredentialRole
+  linkedVpId?: string
   tenantId?: string
+  linkedVpFrom?: Date
   state?: CredentialStateType
   verifiedAt?: Date
   revokedAt?: Date
@@ -37,5 +39,7 @@ export type AddCredentialArgs = {
 }
 
 export type UpdateCredentialStateArgs = GetCredentialArgs & { verifiedState: CredentialStateType; verifiedAt?: Date; revokedAt?: Date }
+
+export type UpdateCredentialArgs = GetCredentialArgs & Partial<Omit<DigitalCredential, 'id' | 'hash' | 'createdAt' | 'lastUpdatedAt'>>
 
 export type RemoveCredentialArgs = GetCredentialArgs

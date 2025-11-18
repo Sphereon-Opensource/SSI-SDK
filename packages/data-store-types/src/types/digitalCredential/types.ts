@@ -1,5 +1,5 @@
-import { CredentialCorrelationType, CredentialDocumentFormat, CredentialStateType, DocumentType, RegulationType } from './enums'
 import { CredentialRole } from '@sphereon/ssi-types'
+import { CredentialCorrelationType, CredentialDocumentFormat, CredentialStateType, DocumentType, RegulationType } from './enums'
 
 /**
  * DigitalCredential
@@ -28,6 +28,8 @@ export type DigitalCredential = {
   rpCorrelationId?: string
   verifiedState?: CredentialStateType
   tenantId?: string
+  linkedVpId?: string
+  linkedVpFrom?: Date
   createdAt: Date
   presentedAt?: Date
   lastUpdatedAt: Date
