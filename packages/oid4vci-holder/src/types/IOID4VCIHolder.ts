@@ -1,4 +1,5 @@
-import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
+import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
+import { OpenID4VCIClientState, OpenID4VCIClientV1_0_15 } from '@sphereon/oid4vci-client'
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
@@ -15,7 +16,6 @@ import {
   MetadataDisplay,
   NotificationRequest,
 } from '@sphereon/oid4vci-common'
-import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
 import { CreateOrGetIdentifierOpts, IdentifierProviderOpts, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
@@ -26,6 +26,7 @@ import {
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IContactManager } from '@sphereon/ssi-sdk.contact-manager'
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
+import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import {
   DigitalCredential,
   IBasicCredentialClaim,
@@ -38,7 +39,6 @@ import {
 import { IIssuanceBranding } from '@sphereon/ssi-sdk.issuance-branding'
 import { ImDLMdoc } from '@sphereon/ssi-sdk.mdl-mdoc'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
-import { ICredentialValidation, SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import {
   HasherSync,
@@ -514,7 +514,7 @@ export type CredentialToAccept = {
 }
 
 export type GetCredentialConfigsSupportedArgs = {
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
   vcFormatPreferences: Array<string>
   format?: Array<string>
   types?: Array<Array<string>>
@@ -526,7 +526,7 @@ export type GetCredentialConfigsSupportedArgs = {
  * It can potentially return multiple results mainly because of different formats.
  */
 export type GetCredentialConfigsSupportedBySingleTypeOrIdArgs = {
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
   vcFormatPreferences: Array<string>
   format?: string[]
   types?: string[]
@@ -561,7 +561,7 @@ export type GetDefaultIssuanceOptsArgs = {
 }
 
 export type DefaultIssuanceOpts = {
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
 }
 
 export type GetIdentifierArgs = {
@@ -598,7 +598,7 @@ export type CreateIdentifierCreateOpts = {
 }
 
 export type GetIssuanceOptsArgs = {
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
@@ -610,13 +610,13 @@ export type GetIssuanceOptsArgs = {
 
 export type GetIssuanceDidMethodArgs = {
   credentialSupported: CredentialConfigurationSupported
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
   didMethodPreferences: Array<SupportedDidMethodEnum>
 }
 
 export type GetIssuanceCryptoSuiteArgs = {
   credentialSupported: CredentialConfigurationSupported
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
   jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
 }
@@ -624,7 +624,7 @@ export type GetIssuanceCryptoSuiteArgs = {
 export type GetCredentialArgs = {
   pin?: string
   issuanceOpt: IssuanceOpts
-  client: OpenID4VCIClient
+  client: OpenID4VCIClientV1_0_15
   accessTokenOpts?: AccessTokenOpts
 }
 

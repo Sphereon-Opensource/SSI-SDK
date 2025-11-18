@@ -1,332 +1,181 @@
-// import { PresentationDefinitionWithLocation, PresentationExchange } from '@sphereon/did-auth-siop'
-// import { SelectResults, Status, SubmissionRequirementMatch } from '@sphereon/pex'
-//import { Format } from '@sphereon/pex-models'
-// import {
-//   //isManagedIdentifierDidResult,
-//   isOID4VCIssuerIdentifier,
-//   ManagedIdentifierOptsOrResult,
-//   ManagedIdentifierResult,
-// } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-// import { defaultHasher,
-//  // ProofOptions
-// } from '@sphereon/ssi-sdk.core'
-//import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
-//import { CredentialRole, FindDigitalCredentialArgs } from '@sphereon/ssi-sdk.data-store-types'
+import type { PartialSdJwtKbJwt } from '@sphereon/pex/dist/main/lib/index.js'
+import { calculateSdHash } from '@sphereon/pex/dist/main/lib/utils/index.js'
+import { isManagedIdentifierDidResult, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
+import { defaultGenerateDigest } from '@sphereon/ssi-sdk.sd-jwt'
 import {
-  //CompactJWT,
+  CredentialMapper,
+  DocumentFormat,
   HasherSync,
-  //IProof, OriginalVerifiableCredential
+  Loggers,
+  OriginalVerifiableCredential,
+  SdJwtDecodedVerifiableCredential,
+  WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import {
-  //DEFAULT_JWT_PROOF_TYPE,
-  //IGetPresentationExchangeArgs,
-  IOID4VPArgs,
-  //VerifiableCredentialsWithDefinition,
-  //VerifiablePresentationWithDefinition,
-} from '../types'
-//import { createOID4VPPresentationSignCallback } from './functions'
-import { OpSession } from './OpSession'
+import { LOGGER_NAMESPACE, RequiredContext } from '../types'
 
-// FIXME SSISDK-44 add support for DCQL presentations
+const CLOCK_SKEW = 120
+const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 
-export class OID4VP {
-  //private readonly session: OpSession
-  // private readonly allIdentifiers: string[]
-  // private readonly hasher?: HasherSync
+export interface PresentationBuilderContext {
+  nonce: string
+  audience: string // clientId or origin
+  agent: RequiredContext['agent']
+  clockSkew?: number
+  hasher?: HasherSync
+}
 
-  private constructor(args: IOID4VPArgs) {
-    // const { session,
-    //   // allIdentifiers, hasher = defaultHasher
-    // } = args
-    //this.session = session
-    // this.allIdentifiers = allIdentifiers ?? []
-    // this.hasher = hasher
+/**
+ * Extracts the original credential from a UniqueDigitalCredential or WrappedVerifiableCredential
+ */
+function extractOriginalCredential(
+  credential: UniqueDigitalCredential | WrappedVerifiableCredential | OriginalVerifiableCredential,
+): OriginalVerifiableCredential {
+  if (typeof credential === 'string') {
+    return credential
   }
 
-  public static async init(session: OpSession, allIdentifiers: string[], hasher?: HasherSync): Promise<OID4VP> {
-    return new OID4VP({ session, allIdentifiers: allIdentifiers ?? (await session.getSupportedDIDs()), hasher })
+  if ('digitalCredential' in credential) {
+    // UniqueDigitalCredential
+    const udc = credential as UniqueDigitalCredential
+    if (udc.originalVerifiableCredential) {
+      return udc.originalVerifiableCredential
+    }
+    return udc.uniformVerifiableCredential as OriginalVerifiableCredential
   }
 
-  // public async getPresentationDefinitions(): Promise<PresentationDefinitionWithLocation[] | undefined> {
-  //   const definitions = await this.session.getPresentationDefinitions()
-  //   if (definitions) {
-  //     PresentationExchange.assertValidPresentationDefinitionWithLocations(definitions)
-  //   }
-  //   return definitions
-  // }
+  if ('original' in credential) {
+    // WrappedVerifiableCredential
+    return credential.original
+  }
 
-  // private getPresentationExchange(args: IGetPresentationExchangeArgs): PresentationExchange {
-  //   const { verifiableCredentials, allIdentifiers, hasher } = args
-  //
-  //   return new PresentationExchange({
-  //     allDIDs: allIdentifiers ?? this.allIdentifiers,
-  //     allVerifiableCredentials: verifiableCredentials,
-  //     hasher: hasher ?? this.hasher,
-  //   })
-  // }
+  // Already an OriginalVerifiableCredential
+  return credential as OriginalVerifiableCredential
+}
 
-  // public async createVerifiablePresentations(
-  //   credentialRole: CredentialRole,
-  //   credentialsWithDefinitions: VerifiableCredentialsWithDefinition[],
-  //   opts?: {
-  //     forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
-  //     restrictToFormats?: Format
-  //     restrictToDIDMethods?: string[]
-  //     proofOpts?: ProofOptions
-  //     idOpts?: ManagedIdentifierOptsOrResult
-  //     skipDidResolution?: boolean
-  //     holderDID?: string
-  //     subjectIsHolder?: boolean
-  //     hasher?: HasherSync
-  //     applyFilter?: boolean
-  //   },
-  // ): Promise<VerifiablePresentationWithDefinition[]> {
-  //   return await Promise.all(credentialsWithDefinitions.map((cred) => this.createVerifiablePresentation(credentialRole, cred, opts)))
-  // }
+/**
+ * Gets the issuer/holder identifier from ManagedIdentifierOptsOrResult
+ */
+function getIdentifierString(identifier: ManagedIdentifierOptsOrResult): string {
+  // Check if it's a result type (has 'method' and 'opts' properties)
+  if ('opts' in identifier && 'method' in identifier) {
+    // It's a ManagedIdentifierResult
+    if (isManagedIdentifierDidResult(identifier)) {
+      return identifier.did
+    }
+  }
+  // For opts types or other result types, use issuer if available, otherwise kid
+  return identifier.issuer ?? identifier.kid ?? ''
+}
 
-  //   public async createVerifiablePresentation(
-  //     credentialRole: CredentialRole,
-  //     selectedVerifiableCredentials: VerifiableCredentialsWithDefinition,
-  //     opts?: {
-  //       forceNoCredentialsInVP?: boolean // Allow to create a VP without credentials, like EBSI is using it. Defaults to false
-  //       restrictToFormats?: Format
-  //       restrictToDIDMethods?: string[]
-  //       proofOpts?: ProofOptions
-  //       idOpts?: ManagedIdentifierOptsOrResult
-  //       skipDidResolution?: boolean
-  //       holder?: string
-  //       subjectIsHolder?: boolean
-  //       applyFilter?: boolean
-  //       hasher?: HasherSync
-  //     },
-  //   ): Promise<VerifiablePresentationWithDefinition> {
-  //     const { subjectIsHolder, holder, forceNoCredentialsInVP = false } = { ...opts }
-  //     if (subjectIsHolder && holder) {
-  //       throw Error('Cannot both have subject is holder and a holderDID value at the same time (programming error)')
-  //     }
-  //     if (forceNoCredentialsInVP) {
-  //       selectedVerifiableCredentials.credentials = []
-  //     } else if (!selectedVerifiableCredentials?.credentials || selectedVerifiableCredentials.credentials.length === 0) {
-  //       throw Error('No verifiable verifiableCredentials provided for presentation definition')
-  //     }
-  //
-  //     // const proofOptions: ProofOptions = {
-  //     //   ...opts?.proofOpts,
-  //     //   challenge: opts?.proofOpts?.nonce ?? opts?.proofOpts?.challenge ?? this.session.nonce,
-  //     //   domain: opts?.proofOpts?.domain ?? (await this.session.getRedirectUri()),
-  //     // }
-  //
-  //     let idOpts = opts?.idOpts
-  //     if (!idOpts) {
-  //       if (opts?.subjectIsHolder) {
-  //         if (forceNoCredentialsInVP) {
-  //           return Promise.reject(
-  //             Error(
-  //               `Cannot have subject is holder, when force no credentials is being used, as we could never determine the holder then. Please provide holderDID`,
-  //             ),
-  //           )
-  //         }
-  //         const firstUniqueDC = selectedVerifiableCredentials.credentials[0]
-  //         //        const firstVC = firstUniqueDC.uniformVerifiableCredential!
-  //         if (typeof firstUniqueDC !== 'object' || !('digitalCredential' in firstUniqueDC)) {
-  //           return Promise.reject(Error('If no opts provided, credentials should be of type UniqueDigitalCredential'))
-  //         }
-  //
-  //         idOpts = isOID4VCIssuerIdentifier(firstUniqueDC.digitalCredential.kmsKeyRef)
-  //           ? await this.session.context.agent.identifierManagedGetByIssuer({
-  //               identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
-  //             })
-  //           : await this.session.context.agent.identifierManagedGetByKid({
-  //               identifier: firstUniqueDC.digitalCredential.kmsKeyRef,
-  //               kmsKeyRef: firstUniqueDC.digitalCredential.kmsKeyRef,
-  //             })
-  //
-  //         /*
-  //         const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
-  //           ? firstVC.decodedPayload.cnf?.jwk
-  //             ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
-  //               //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
-  //               `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
-  //             : firstVC.decodedPayload.sub
-  //           : Array.isArray(firstVC.credentialSubject)
-  //             ? firstVC.credentialSubject[0].id
-  //             : firstVC.credentialSubject.id
-  //         if (holder) {
-  //           idOpts = { identifier: holder }
-  //         }
-  // */
-  //       } else if (opts?.holder) {
-  //         idOpts = { identifier: opts.holder }
-  //       }
-  //     }
-  //
-  //     // We are making sure to filter, in case the user submitted all verifiableCredentials in the wallet/agent. We also make sure to get original formats back
-  //     const vcs = forceNoCredentialsInVP
-  //       ? selectedVerifiableCredentials
-  //       : opts?.applyFilter
-  //         ? await this.filterCredentials(credentialRole, selectedVerifiableCredentials.dcqlQuery, {
-  //             restrictToFormats: opts?.restrictToFormats,
-  //             restrictToDIDMethods: opts?.restrictToDIDMethods,
-  //             filterOpts: {
-  //               verifiableCredentials: selectedVerifiableCredentials.credentials,
-  //             },
-  //           })
-  //         : {
-  //             definition: selectedVerifiableCredentials.dcqlQuery,
-  //             credentials: selectedVerifiableCredentials.credentials,
-  //           }
-  //
-  //     if (!idOpts) {
-  //       return Promise.reject(Error(`No identifier options present at this point`))
-  //     }
-  //
-  //     // const signCallback = await createOID4VPPresentationSignCallback({
-  //     //   presentationSignCallback: this.session.options.presentationSignCallback,
-  //     //   idOpts,
-  //     //   context: this.session.context,
-  //     //   domain: proofOptions.domain,
-  //     //   challenge: proofOptions.challenge,
-  //     //   format: opts?.restrictToFormats ?? selectedVerifiableCredentials.dcqlQuery.dcqlQuery.format,
-  //     //   skipDidResolution: opts?.skipDidResolution ?? false,
-  //     // })
-  //     const identifier: ManagedIdentifierResult = await this.session.context.agent.identifierManagedGet(idOpts)
-  //     const verifiableCredentials = vcs.credentials.map((credential) =>
-  //       typeof credential === 'object' && 'digitalCredential' in credential ? credential.originalVerifiableCredential! : credential,
-  //     )
-  //     // const presentationResult = await this.getPresentationExchange({
-  //     //   verifiableCredentials: verifiableCredentials,
-  //     //   allIdentifiers: this.allIdentifiers,
-  //     //   hasher: opts?.hasher,
-  //     // }).createVerifiablePresentation(vcs.dcqlQuery.dcqlQuery, verifiableCredentials, signCallback, {
-  //     //   proofOptions,
-  //     //   // fixme: Update to newer siop-vp to not require dids here. But when Veramo is creating the VP it's still looking at this field to pass into didManagerGet
-  //     //   ...(identifier && isManagedIdentifierDidResult(identifier) && { holderDID: identifier.did }),
-  //     // })
-  //
-  //     const verifiablePresentations = presentationResult.verifiablePresentations.map((verifiablePresentation) =>
-  //       typeof verifiablePresentation !== 'string' &&
-  //       'proof' in verifiablePresentation &&
-  //       'jwt' in verifiablePresentation.proof &&
-  //       verifiablePresentation.proof.jwt
-  //         ? verifiablePresentation.proof.jwt
-  //         : verifiablePresentation,
-  //     )
-  //
-  //     return {
-  //       ...presentationResult,
-  //       verifiablePresentations,
-  //       verifiableCredentials: verifiableCredentials,
-  //       dcqlQuery: selectedVerifiableCredentials.dcqlQuery,
-  //       idOpts,
-  //     }
-  //   }
+/**
+ * Creates a Verifiable Presentation for a given credential in the appropriate format
+ * Ensures nonce/aud (or challenge/domain) are set according to OID4VP draft 28
+ */
+export async function createVerifiablePresentationForFormat(
+  credential: UniqueDigitalCredential | WrappedVerifiableCredential | OriginalVerifiableCredential,
+  identifier: ManagedIdentifierOptsOrResult,
+  context: PresentationBuilderContext,
+): Promise<string | object> {
+  // FIXME find proper types
+  const { nonce, audience, agent, clockSkew = CLOCK_SKEW } = context
 
-  // public async filterCredentialsAgainstAllDefinitions(
-  //   credentialRole: CredentialRole,
-  //   opts?: {
-  //     filterOpts?: {
-  //       verifiableCredentials?: UniqueDigitalCredential[]
-  //       filter?: FindDigitalCredentialArgs
-  //     }
-  //     holderDIDs?: string[]
-  //     restrictToFormats?: Format
-  //     restrictToDIDMethods?: string[]
-  //   },
-  // ): Promise<VerifiableCredentialsWithDefinition[]> {
-  //   const defs = await this.getPresentationDefinitions()
-  //   const result: VerifiableCredentialsWithDefinition[] = []
-  //   if (defs) {
-  //     for (const definition of defs) {
-  //       result.push(await this.filterCredentials(credentialRole, definition, opts))
-  //     }
-  //   }
-  //   return result
-  // }
+  const originalCredential = extractOriginalCredential(credential)
+  const documentFormat = CredentialMapper.detectDocumentType(originalCredential)
 
-  // public async filterCredentials(
-  //   credentialRole: CredentialRole,
-  //   presentationDefinition: PresentationDefinitionWithLocation,
-  //   opts?: {
-  //     filterOpts?: { verifiableCredentials?: (UniqueDigitalCredential | OriginalVerifiableCredential)[]; filter?: FindDigitalCredentialArgs }
-  //     holderDIDs?: string[]
-  //     restrictToFormats?: Format
-  //     restrictToDIDMethods?: string[]
-  //   },
-  // ): Promise<VerifiableCredentialsWithDefinition> {
-  //   const udcMap = new Map<OriginalVerifiableCredential, UniqueDigitalCredential | OriginalVerifiableCredential>()
-  //   opts?.filterOpts?.verifiableCredentials?.forEach((credential) => {
-  //     if (typeof credential === 'object' && 'digitalCredential' in credential) {
-  //       udcMap.set(credential.originalVerifiableCredential!, credential)
-  //     } else {
-  //       udcMap.set(credential, credential)
-  //     }
-  //   })
-  //
-  //   const credentials = (
-  //     await this.filterCredentialsWithSelectionStatus(credentialRole, presentationDefinition, {
-  //       ...opts,
-  //       filterOpts: {
-  //         verifiableCredentials: opts?.filterOpts?.verifiableCredentials?.map((credential) => {
-  //           if (typeof credential === 'object' && 'digitalCredential' in credential) {
-  //             return credential.originalVerifiableCredential!
-  //           } else {
-  //             return credential
-  //           }
-  //         }),
-  //       },
-  //     })
-  //   ).verifiableCredential
-  //
-  //   return {
-  //     dcqlQuery: presentationDefinition,
-  //     credentials: credentials?.map((vc) => udcMap.get(vc)!) ?? [],
-  //   }
-  // }
+  logger.debug(`Creating VP for format: ${documentFormat}`)
 
-  //   public async filterCredentialsWithSelectionStatus(
-  //     credentialRole: CredentialRole,
-  //     presentationDefinition: PresentationDefinitionWithLocation,
-  //     opts?: {
-  //       filterOpts?: { verifiableCredentials?: OriginalVerifiableCredential[]; filter?: FindDigitalCredentialArgs }
-  //       holderDIDs?: string[]
-  //       restrictToFormats?: Format
-  //       restrictToDIDMethods?: string[]
-  //     },
-  //   ): Promise<SelectResults> {
-  //     const selectionResults: SelectResults = await this.getPresentationExchange({
-  //       verifiableCredentials: await this.getCredentials(credentialRole, opts?.filterOpts),
-  //     }).selectVerifiableCredentialsForSubmission(presentationDefinition.definition, opts)
-  //     if (selectionResults.errors && selectionResults.errors.length > 0) {
-  //       throw Error(JSON.stringify(selectionResults.errors))
-  //     } else if (selectionResults.areRequiredCredentialsPresent === Status.ERROR) {
-  //       throw Error(`Not all required credentials are available to satisfy the relying party's request`)
-  //     }
-  //
-  //     const matches: SubmissionRequirementMatch[] | undefined = selectionResults.matches
-  //     if (!matches || matches.length === 0 || !selectionResults.verifiableCredential || selectionResults.verifiableCredential.length === 0) {
-  //       throw Error(JSON.stringify(selectionResults.errors))
-  //     }
-  //     return selectionResults
-  //   }
-  //
-  //   private async getCredentials(
-  //     credentialRole: CredentialRole,
-  //     filterOpts?: {
-  //       verifiableCredentials?: OriginalVerifiableCredential[]
-  //       filter?: FindDigitalCredentialArgs
-  //     },
-  //   ): Promise<OriginalVerifiableCredential[]> {
-  //     if (filterOpts?.verifiableCredentials && filterOpts.verifiableCredentials.length > 0) {
-  //       return filterOpts.verifiableCredentials
-  //     }
-  //
-  //     const filter = verifiableCredentialForRoleFilter(credentialRole, filterOpts?.filter)
-  //     const uniqueCredentials = await this.session.context.agent.crsGetUniqueCredentials({ filter })
-  //     return uniqueCredentials.map((uniqueVC: UniqueDigitalCredential) => {
-  //       const vc = uniqueVC.uniformVerifiableCredential!
-  //       const proof = Array.isArray(vc.proof) ? vc.proof : [vc.proof]
-  //       const jwtProof = proof.find((p: IProof) => p?.type === DEFAULT_JWT_PROOF_TYPE)
-  //       return jwtProof ? (jwtProof.jwt as CompactJWT) : vc
-  //     })
-  //   }
+  switch (documentFormat) {
+    case DocumentFormat.SD_JWT_VC: {
+      // SD-JWT with KB-JWT
+      const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(
+        typeof originalCredential === 'string' ? originalCredential : (originalCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc,
+        defaultGenerateDigest,
+      )
+
+      const hashAlg = decodedSdJwt.signedPayload._sd_alg ?? 'sha-256'
+      const sdHash = calculateSdHash(decodedSdJwt.compactSdJwtVc, hashAlg, defaultGenerateDigest)
+
+      const kbJwtPayload: PartialSdJwtKbJwt['payload'] = {
+        iat: Math.floor(Date.now() / 1000 - clockSkew),
+        sd_hash: sdHash,
+        nonce, // Always use the Authorization Request nonce
+        aud: audience, // Always use the Client Identifier or Origin
+      }
+
+      const presentationResult = await agent.createSdJwtPresentation({
+        presentation: decodedSdJwt.compactSdJwtVc,
+        kb: {
+          payload: kbJwtPayload as any, // FIXME
+        },
+      })
+
+      return presentationResult.presentation
+    }
+
+    case DocumentFormat.JSONLD: {
+      // JSON-LD VC - create JSON-LD VP with challenge and domain in proof
+      const vcObject = typeof originalCredential === 'string' ? JSON.parse(originalCredential) : originalCredential
+
+      const vpObject = {
+        '@context': ['https://www.w3.org/2018/credentials/v1'],
+        type: ['VerifiablePresentation'],
+        verifiableCredential: [vcObject],
+      }
+
+      // Create JSON-LD VP with proof
+      return await agent.createVerifiablePresentation({
+        presentation: vpObject,
+        proofFormat: 'lds',
+        challenge: nonce, // Authorization Request nonce as challenge
+        domain: audience, // Client Identifier or Origin as domain
+        keyRef: identifier.kmsKeyRef || identifier.kid,
+      })
+    }
+
+    case DocumentFormat.MSO_MDOC: {
+      // ISO mdoc - create mdoc VP token
+      // This is a placeholder implementation
+      // Full implementation would require:
+      // 1. Decode the mdoc using CredentialMapper or mdoc utilities
+      // 2. Build proper mdoc VP token with session transcript
+      // 3. Include nonce/audience in the session transcript
+      logger.warning('mso_mdoc format has basic support - production use requires proper mdoc VP token implementation')
+
+      return originalCredential
+    }
+
+    default: {
+      // JWT VC - create JWT VP with nonce and aud in payload
+      const vcJwt = typeof originalCredential === 'string' ? originalCredential : JSON.stringify(originalCredential)
+
+      const identifierString = getIdentifierString(identifier)
+
+      // Create VP JWT using agent method
+      const vpPayload = {
+        iss: identifierString,
+        aud: audience, // Client Identifier or Origin
+        nonce, // Authorization Request nonce
+        vp: {
+          '@context': ['https://www.w3.org/2018/credentials/v1'],
+          type: ['VerifiablePresentation'],
+          holder: identifierString,
+          verifiableCredential: [vcJwt],
+        },
+        iat: Math.floor(Date.now() / 1000 - clockSkew),
+        exp: Math.floor(Date.now() / 1000 + 600 + clockSkew), // 10 minutes
+      }
+
+      // Use the agent's JWT creation capability
+      const vpJwt = await agent.createVerifiablePresentation({
+        presentation: vpPayload.vp,
+        proofFormat: 'jwt',
+        domain: audience,
+        challenge: nonce,
+        keyRef: identifier.kmsKeyRef || identifier.kid,
+      })
+
+      return vpJwt.proof?.jwt || vpJwt
+    }
+  }
 }

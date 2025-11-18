@@ -1,4 +1,4 @@
-import { CredentialOfferClient, MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
+import { CredentialOfferClient, MetadataClient, OpenID4VCIClient, OpenID4VCIClientV1_0_15 } from '@sphereon/oid4vci-client'
 import {
   AuthorizationDetails,
   AuthorizationRequestOpts,
@@ -402,10 +402,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (authFormats && authFormats.length > 0) {
       formats = Array.from(new Set(authFormats))
     }
-    let oid4vciClient: OpenID4VCIClient
+    let oid4vciClient: OpenID4VCIClientV1_0_15
     let offer: CredentialOfferRequestWithBaseUrl | undefined
     if (requestData.existingClientState) {
-      oid4vciClient = await OpenID4VCIClient.fromState({ state: requestData.existingClientState })
+      oid4vciClient = await OpenID4VCIClientV1_0_15.fromState({ state: requestData.existingClientState })
       offer = oid4vciClient.credentialOffer
     } else {
       offer = requestData.credentialOffer
@@ -427,7 +427,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!offer) {
         // else no offer, meaning we have an issuer URL
         logger.log(`Issuer url received (no credential offer): ${uri}`)
-        oid4vciClient = await OpenID4VCIClient.fromCredentialIssuer({
+        oid4vciClient = await OpenID4VCIClientV1_0_15.fromCredentialIssuer({
           credentialIssuer: uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
@@ -435,7 +435,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         })
       } else {
         logger.log(`Credential offer received: ${uri}`)
-        oid4vciClient = await OpenID4VCIClient.fromURI({
+        oid4vciClient = await OpenID4VCIClientV1_0_15.fromURI({
           uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
@@ -623,7 +623,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing openID4VCI client state in context'))
     }
 
-    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client,
       vcFormatPreferences: this.vcFormatPreferences,
