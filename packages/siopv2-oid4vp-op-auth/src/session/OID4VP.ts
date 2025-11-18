@@ -163,6 +163,7 @@ export async function createVerifiablePresentationForFormat(
           verifiableCredential: [vcJwt],
         },
         iat: Math.floor(Date.now() / 1000 - clockSkew),
+        exp: Math.floor(Date.now() / 1000 + 600 + clockSkew), // 10 minutes
       }
 
       // Use the agent's JWT creation capability
