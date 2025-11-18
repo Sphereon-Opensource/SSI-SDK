@@ -2,12 +2,16 @@ import { IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resoluti
 import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 import { VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
 import { ISDJwtPlugin } from '@sphereon/ssi-sdk.sd-jwt'
+import { DocumentFormat } from '@sphereon/ssi-types'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import { IKeyManager } from '@veramo/core/src/types/IKeyManager'
 
 export const LOGGER_NAMESPACE = 'sphereon:linked-vp'
 
-export type LinkedVPPresentation = string | Record<string, any>
+export type LinkedVPPresentation = {
+  documentFormat: DocumentFormat
+  presentationPayload: string | Record<string, any>
+}
 
 export interface ILinkedVPManager extends IPluginMethodMap {
   /**

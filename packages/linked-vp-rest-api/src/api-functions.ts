@@ -6,6 +6,7 @@ import {
   PublishCredentialArgs,
   UnpublishCredentialArgs,
 } from '@sphereon/ssi-sdk.linked-vp'
+import { DocumentFormat } from '@sphereon/ssi-types'
 import { Request, Response, Router } from 'express'
 import { IRequiredContext } from './types'
 
@@ -96,11 +97,55 @@ export function generatePresentationEndpoint(router: Router, context: IRequiredC
   router.get(`${path}/:linkedVpId`, checkAuth(opts?.endpoint), async (request: Request, response: Response) => {
     try {
       const linkedVpId = request.params.linkedVpId
-      const presentation = await context.agent.lvpGeneratePresentation({ linkedVpId } as GeneratePresentationArgs)
+      const linkedVPPresentation = await context.agent.lvpGeneratePresentation({ linkedVpId } as GeneratePresentationArgs)
       response.statusCode = 200
-      return response.json(presentation)
+      response.contentType(contentTypeFromDocumentFormat(linkedVPPresentation.documentFormat))
+      response.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${linkedVpId}${extensionFromDocumentFormat(linkedVPPresentation.documentFormat)}"`,
+      )
+      if (typeof linkedVPPresentation.presentationPayload === 'string') {
+        return response.send(linkedVPPresentation.presentationPayload)
+      }
+      return response.json(linkedVPPresentation.presentationPayload)
     } catch (error) {
       return sendErrorResponse(response, 500, error.message as string, error)
     }
   })
+}
+
+const contentTypeFromDocumentFormat = (documentFormat: DocumentFormat): string => {
+  switch (documentFormat) {
+    case DocumentFormat.JSONLD:
+      return 'application/vp+ld+json'
+
+    case DocumentFormat.EIP712:
+      return 'application/eip712+json'
+
+    case DocumentFormat.SD_JWT_VC:
+      return 'application/sd-jwt'
+
+    case DocumentFormat.MSO_MDOC:
+      return 'application/mso+cbor'
+
+    case DocumentFormat.JWT:
+      return 'application/jwt'
+  }
+}
+
+const extensionFromDocumentFormat = (format: DocumentFormat): string => {
+  switch (format) {
+    case DocumentFormat.JSONLD:
+      return '.jsonld'
+    case DocumentFormat.EIP712:
+      return '.eip712.json'
+    case DocumentFormat.SD_JWT_VC:
+      return '.sd-jwt'
+    case DocumentFormat.MSO_MDOC:
+      return '.cbor'
+    case DocumentFormat.JWT:
+      return '.jwt'
+    default:
+      return ''
+  }
 }

@@ -9,7 +9,7 @@ import {
   SdJwtDecodedVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
-import { LOGGER_NAMESPACE, RequiredContext } from '../types'
+import { LinkedVPPresentation, LOGGER_NAMESPACE, RequiredContext } from '../types'
 
 const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 const CLOCK_SKEW = 120 // TODO make adjustable?
@@ -48,7 +48,7 @@ export async function createLinkedVPPresentation(
   holderDid: string,
   credential: UniqueDigitalCredential,
   agent: RequiredContext['agent'],
-): Promise<string | Record<string, any>> {
+): Promise<LinkedVPPresentation> {
   logger.debug(`Creating LinkedVP presentation for ${holderDid} of credential ${credential.id}`)
 
   const identifier = await agent.identifierManagedGet({ identifier: holderDid })
@@ -76,7 +76,10 @@ export async function createLinkedVPPresentation(
         },
       })
 
-      return presentationResult.presentation
+      return {
+        documentFormat,
+        presentationPayload: presentationResult.presentation,
+      }
     }
     case DocumentFormat.JSONLD: {
       // JSON-LD VC - create JSON-LD VP with challenge and domain in proof
@@ -90,11 +93,15 @@ export async function createLinkedVPPresentation(
       }
 
       // Create JSON-LD VP with proof
-      return await agent.createVerifiablePresentation({
+      const verifiablePresentationSP = await agent.createVerifiablePresentation({
         presentation: vpObject,
         proofFormat: 'lds',
         keyRef: identifier.kmsKeyRef || identifier.kid,
       })
+      return {
+        documentFormat,
+        presentationPayload: verifiablePresentationSP,
+      }
     }
     case DocumentFormat.MSO_MDOC: {
       // ISO mdoc - create mdoc VP token
@@ -105,7 +112,10 @@ export async function createLinkedVPPresentation(
       // 3. Include nonce/audience in the session transcript
       logger.warning('mso_mdoc format has basic support - production use requires proper mdoc VP token implementation')
 
-      return originalCredential
+      return {
+        documentFormat,
+        presentationPayload: originalCredential,
+      }
     }
     default: {
       // JWT VC - create JWT VP with nonce and aud in payload
@@ -131,7 +141,10 @@ export async function createLinkedVPPresentation(
         keyRef: identifier.kmsKeyRef || identifier.kid,
       })
 
-      return (vpJwt.proof && 'jwt' in vpJwt.proof && vpJwt.proof.jwt) || vpJwt
+      return {
+        documentFormat,
+        presentationPayload: (vpJwt.proof && 'jwt' in vpJwt.proof && vpJwt.proof.jwt) || vpJwt,
+      }
     }
   }
 }
