@@ -5,6 +5,7 @@ import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import { defaultGenerateDigest } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
+  DocumentFormat,
   HasherSync,
   Loggers,
   OriginalVerifiableCredential,
@@ -53,36 +54,27 @@ function extractOriginalCredential(
 }
 
 /**
- * Determines the format of a credential
+ * Determines the format of a credential using CredentialMapper
  */
 function detectCredentialFormat(credential: OriginalVerifiableCredential): string {
-  if (typeof credential === 'string') {
-    // Could be JWT or SD-JWT
-    if (credential.includes('~')) {
-      return 'dc+sd-jwt'
-    }
-    // Check if it's a compact JWT format (3 parts)
-    const parts = credential.split('.')
-    if (parts.length === 3) {
-      return 'jwt_vc_json'
-    }
-  } else if (typeof credential === 'object') {
-    // Check for SD-JWT decoded format
-    if ('compactSdJwtVc' in credential) {
-      return 'dc+sd-jwt'
-    }
-    // Check for JSON-LD
-    if ('@context' in credential || 'proof' in credential) {
-      return 'ldp_vc'
-    }
-    // Check for mdoc
-    if ('doctype' in credential || 'namespaces' in credential) {
-      return 'mso_mdoc'
-    }
-  }
+  const documentFormat = CredentialMapper.detectDocumentType(credential)
 
-  // Default to JWT
-  return 'jwt_vc_json'
+  switch (documentFormat) {
+    case DocumentFormat.JWT:
+      return 'jwt_vc_json'
+    case DocumentFormat.SD_JWT_VC:
+      return 'dc+sd-jwt'
+    case DocumentFormat.JSONLD:
+      return 'ldp_vc'
+    case DocumentFormat.MSO_MDOC:
+      return 'mso_mdoc'
+    case DocumentFormat.EIP712:
+      // EIP712 is a type of JSON-LD proof
+      return 'ldp_vc'
+    default:
+      // Default to JWT for unknown formats
+      return 'jwt_vc_json'
+  }
 }
 
 /**
