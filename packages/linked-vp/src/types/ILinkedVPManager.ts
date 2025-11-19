@@ -76,8 +76,8 @@ export type GeneratePresentationArgs = {
 export type LinkedVPEntry = {
   id: string
   linkedVpId: string
-  tenantId?: string
   linkedVpFrom?: Date
+  tenantId?: string
   createdAt: Date
 }
 

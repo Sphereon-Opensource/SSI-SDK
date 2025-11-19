@@ -63,7 +63,7 @@ export default (testContext: {
         digitalCredentialId: credentialId,
       })
 
-      expect(result.linkedVpId).toMatch(/^lvp-\d+-[a-z0-9]+@tenant1$/)
+      expect(result.linkedVpId).toMatch(/^lvp-[a-z0-9]+@tenant1$/)
     })
 
     it('should publish credential with custom linkedVpId AND append tenantId', async () => {
@@ -127,6 +127,15 @@ export default (testContext: {
     })
 
     it('should get service entries for default tenant (no tenantId param)', async () => {
+      // Clean up any existing published credentials first
+      const existingEntries = await agent.lvpGetServiceEntries({})
+      for (const entry of existingEntries) {
+        const linkedVpId = entry.id.split('#')[1]
+        await agent.lvpUnpublishCredential({ linkedVpId }).catch(() => {
+          // Ignore errors if already unpublished
+        })
+      }
+
       const id1 = await createTestCredential(agent, tenantId)
       const id2 = await createTestCredential(agent, tenantId)
 
@@ -135,17 +144,18 @@ export default (testContext: {
 
       const entries = await agent.lvpGetServiceEntries({})
 
+      expect(entries).toHaveLength(2)
       expect(entries).toEqual(
         expect.arrayContaining([
           {
-            id: `${holderDidWithTenant}#service1@tenant1`,
+            id: `${holderDid}#service1@tenant1`,
             type: 'LinkedVerifiablePresentation',
-            serviceEndpoint: `https://example.com/tenants/tenant1/linked-vp/service1@tenant1`,
+            serviceEndpoint: `https://example.com/linked-vp/service1@tenant1`,
           },
           {
-            id: `${holderDidWithTenant}#service2@tenant1`,
+            id: `${holderDid}#service2@tenant1`,
             type: 'LinkedVerifiablePresentation',
-            serviceEndpoint: `https://example.com/tenants/tenant1/linked-vp/service2@tenant1`,
+            serviceEndpoint: `https://example.com/linked-vp/service2@tenant1`,
           },
         ]),
       )

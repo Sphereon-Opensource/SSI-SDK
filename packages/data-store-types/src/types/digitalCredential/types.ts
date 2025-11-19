@@ -28,8 +28,8 @@ export type DigitalCredential = {
   rpCorrelationId?: string
   verifiedState?: CredentialStateType
   tenantId?: string
-  linkedVpId?: string
-  linkedVpFrom?: Date
+  linkedVpId?: string | null
+  linkedVpFrom?: Date | null
   createdAt: Date
   presentedAt?: Date
   lastUpdatedAt: Date

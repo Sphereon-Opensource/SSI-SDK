@@ -30,8 +30,8 @@ export type AddCredentialArgs = {
   subjectCorrelationId?: string
   credentialRole: CredentialRole
   linkedVpId?: string
-  tenantId?: string
   linkedVpFrom?: Date
+  tenantId?: string
   state?: CredentialStateType
   verifiedAt?: Date
   revokedAt?: Date
