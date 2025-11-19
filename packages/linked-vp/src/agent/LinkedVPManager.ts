@@ -1,4 +1,5 @@
 import { DigitalCredential } from '@sphereon/ssi-sdk.data-store-types'
+import { type IVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentPlugin } from '@veramo/core'
 import { IsNull, Not } from 'typeorm'
 import { schema } from '../index'
@@ -36,12 +37,6 @@ export class LinkedVPManager implements IAgentPlugin {
     lvpHasEntry: this.lvpHasEntry.bind(this),
     lvpGetServiceEntries: this.lvpGetServiceEntries.bind(this),
     lvpGeneratePresentation: this.lvpGeneratePresentation.bind(this),
-  }
-
-  private readonly holderDids: Record<string, string>
-
-  constructor(options: { holderDids: Record<string, string> }) {
-    this.holderDids = options.holderDids
   }
 
   private async lvpPublishCredential(args: PublishCredentialArgs, context: RequiredContext): Promise<LinkedVPEntry> {
@@ -122,16 +117,16 @@ export class LinkedVPManager implements IAgentPlugin {
 
     return credentials
       .filter((cred) => cred.linkedVpId !== undefined && cred.linkedVpId !== null)
-      .map((cred) => {
-        const holderDidForEntry = this.getHolderDid(cred.tenantId)
-        return this.credentialToServiceEntry(cred, holderDidForEntry)
+      .flatMap((cred) => {
+        const uniformDocument = JSON.parse(cred.uniformDocument) as IVerifiableCredential
+        const holderDidForEntry = this.getHolderDid(uniformDocument)
+        return holderDidForEntry && holderDidForEntry.startsWith('did:web') ? [this.credentialToServiceEntry(cred, holderDidForEntry)] : []
       })
   }
 
   private async lvpGeneratePresentation(args: GeneratePresentationArgs, context: RequiredContext): Promise<LinkedVPPresentation> {
     const { linkedVpId } = args
     const tenantId = this.parseTenantFromLinkedVpId(linkedVpId)
-    const holderDid = this.getHolderDid(tenantId)
 
     const uniqueCredentials = await context.agent.crsGetUniqueCredentials({
       filter: [
@@ -148,16 +143,37 @@ export class LinkedVPManager implements IAgentPlugin {
       return Promise.reject(Error(`Multiple credentials found for linkedVpId ${linkedVpId}`))
     }
 
+    const uniqueDigitalCredential = uniqueCredentials[0]
+    if (!uniqueDigitalCredential.uniformVerifiableCredential) {
+      return Promise.reject(Error(`uniformVerifiableCredential could not be found for credential ${uniqueDigitalCredential.digitalCredential.id}`))
+    }
+    const holderDid = this.getHolderDid(uniqueDigitalCredential.uniformVerifiableCredential)
+    if (!holderDid) {
+      return Promise.reject(Error(`Could not extract the holder did:web from cnf nor the credentialSubject id`))
+    }
+
     // Generate the Verifiable Presentation with all published credentials
-    return createLinkedVPPresentation(holderDid, uniqueCredentials[0], context.agent)
+    return createLinkedVPPresentation(holderDid, uniqueDigitalCredential, context.agent)
   }
 
-  private getHolderDid(tenantId: string | undefined) {
-    const holderDid = this.holderDids[tenantId ?? 'default']
-    if (!holderDid) {
-      throw Error(`No holder did supplied for tenant ${tenantId ?? 'default'}`)
+  private getHolderDid(uniformDocument: IVerifiableCredential): string | undefined {
+    // Determine holder DID for identifier resolution
+    if ('cnf' in uniformDocument && 'jwk' in uniformDocument.cnf && 'kid' in uniformDocument.cnf.jwk) {
+      return uniformDocument.cnf.jwk.kid.split('#')[0]
     }
-    return holderDid
+
+    if ('credentialSubject' in uniformDocument) {
+      const credentialSubject = Array.isArray(uniformDocument.credentialSubject)
+        ? uniformDocument.credentialSubject[0]
+        : uniformDocument.credentialSubject
+      if ('id' in credentialSubject && credentialSubject.id) {
+        if (credentialSubject.id.startsWith('did:web')) {
+          return credentialSubject.id
+        }
+      }
+    }
+
+    return undefined
   }
 
   private parseTenantFromLinkedVpId(linkedVpId: string): string | undefined {
