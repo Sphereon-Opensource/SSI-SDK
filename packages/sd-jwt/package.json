@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.sd-jwt",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -26,10 +26,10 @@
     }
   },
   "dependencies": {
-    "@sd-jwt/decode": "^0.15.0",
-    "@sd-jwt/types": "^0.15.0",
     "@sd-jwt/core": "^0.15.0",
+    "@sd-jwt/decode": "^0.15.0",
     "@sd-jwt/sd-jwt-vc": "^0.15.1",
+    "@sd-jwt/types": "^0.15.0",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
