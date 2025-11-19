@@ -8,13 +8,20 @@ import {
   GetCredentialsResponse,
   NonPersistedDigitalCredential,
   RemoveCredentialArgs,
+  UpdateCredentialArgs,
   UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole, OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, type FindOptionsOrder, type FindOptionsWhere, Repository } from 'typeorm'
 
-import { digitalCredentialFrom, digitalCredentialsFrom, nonPersistedDigitalCredentialEntityFromAddArgs } from '../../src'
+import {
+  digitalCredentialFrom,
+  digitalCredentialsFrom,
+  nonPersistedDigitalCredentialEntityFromAddArgs,
+  persistedDigitalCredentialEntityFromStateArgs,
+  persistedDigitalCredentialEntityFromUpdateArgs,
+} from '../../src'
 import { DigitalCredentialEntity } from '../entities/digitalCredential/DigitalCredentialEntity'
 import { parseAndValidateOrderOptions } from '../utils/SortingUtils'
 
@@ -37,7 +44,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       return Promise.reject(validationError)
     }
     const dcRepo = await this.getRepository()
-    const createdResult: DigitalCredentialEntity = await dcRepo.save(credentialEntity)
+    const createdResult: DigitalCredentialEntity = await dcRepo.save(credentialEntity as any)
     return Promise.resolve(digitalCredentialFrom(createdResult))
   }
 
@@ -70,6 +77,41 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       data: digitalCredentialsFrom(result),
       total,
     }
+  }
+
+  updateCredential = async (args: UpdateCredentialArgs): Promise<DigitalCredential> => {
+    const dcRepo = await this.getRepository()
+    const whereClause: Record<string, any> = {}
+
+    if ('id' in args) {
+      whereClause.id = args.id
+    } else if ('hash' in args) {
+      whereClause.hash = args.hash
+    } else {
+      return Promise.reject(Error('No id or hash param is provided.'))
+    }
+
+    const credential: DigitalCredentialEntity | null = await dcRepo.findOne({
+      where: whereClause,
+    })
+
+    if (!credential) {
+      return Promise.reject(Error(`No credential found for args: ${JSON.stringify(whereClause)}`))
+    }
+
+    // Extract updates by removing the identifier fields
+    const updates = Object.fromEntries(Object.entries(args).filter(([key]) => key !== 'id' && key !== 'hash')) as Partial<DigitalCredential>
+
+    const entityToSave = persistedDigitalCredentialEntityFromUpdateArgs(credential, updates)
+
+    const validationError = this.assertValidDigitalCredential(entityToSave)
+    if (validationError) {
+      return Promise.reject(validationError)
+    }
+
+    debug('Updating credential', entityToSave)
+    const updatedResult = await dcRepo.save(entityToSave as any, { transaction: true })
+    return digitalCredentialFrom(updatedResult)
   }
 
   removeCredential = async (args: RemoveCredentialArgs): Promise<boolean> => {
@@ -147,20 +189,16 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
     if (!credential) {
       return Promise.reject(Error(`No credential found for args: ${JSON.stringify(whereClause)}`))
     }
-    const updatedCredential: DigitalCredential = {
-      ...credential,
-      ...(args.verifiedState !== CredentialStateType.REVOKED && { verifiedAt: args.verifiedAt }),
-      ...(args.verifiedState === CredentialStateType.REVOKED && { revokedAt: args.revokedAt }),
-      identifierMethod: credential.identifierMethod,
-      lastUpdatedAt: new Date(),
-      verifiedState: args.verifiedState,
-    }
-    debug('Updating credential', credential)
-    const updatedResult: DigitalCredentialEntity = await credentialRepository.save(updatedCredential, { transaction: true })
+
+    // Create entity with state updates applied
+    const entityToSave = persistedDigitalCredentialEntityFromStateArgs(credential, args)
+
+    debug('Updating credential state', entityToSave)
+    const updatedResult: DigitalCredentialEntity = await credentialRepository.save(entityToSave as any, { transaction: true })
     return digitalCredentialFrom(updatedResult)
   }
 
-  private assertValidDigitalCredential(credentialEntity: NonPersistedDigitalCredential): Error | undefined {
+  private assertValidDigitalCredential(credentialEntity: NonPersistedDigitalCredential | DigitalCredentialEntity): Error | undefined {
     const { kmsKeyRef, identifierMethod, credentialRole, isIssuerSigned } = credentialEntity
 
     const isRoleInvalid = credentialRole === CredentialRole.ISSUER || (credentialRole === CredentialRole.HOLDER && !isIssuerSigned)

@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../linked-vp"
+    },
+    {
+      "path": "../data-store-types"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-express-support"
+    }
+  ]
+}

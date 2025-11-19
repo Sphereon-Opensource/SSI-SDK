@@ -1,10 +1,11 @@
 import { DIDDocument } from '@sphereon/did-uni-client'
 import { GenericAuthArgs, ISingleEndpointOpts } from '@sphereon/ssi-express-support'
+import { ILinkedVPManager } from '@sphereon/ssi-sdk.linked-vp'
 import { JsonWebKey } from '@sphereon/ssi-types'
 import { IAgentContext, IDataStoreORM, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { VerificationMethod } from 'did-resolver'
 
-export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & IResolver
+export type IRequiredPlugins = IDataStoreORM & IDIDManager & IKeyManager & IResolver & ILinkedVPManager
 export type IRequiredContext = IAgentContext<IRequiredPlugins>
 
 export interface DidRegistrationCreateRequest {

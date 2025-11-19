@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../data-store-types"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../credential-store"
+    },
+    {
+      "path": "../sd-jwt"
+    }
+  ]
+}

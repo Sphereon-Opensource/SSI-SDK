@@ -126,6 +126,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
     accessTokenOpts: opts?.accessTokenOpts,
     requestData: opts?.requestData,
+    walletType: opts?.walletType ?? 'NATURAL_PERSON',
     trustAnchors: opts?.trustAnchors ?? [],
     issuanceOpt: opts?.issuanceOpt,
     didMethodPreferences: opts?.didMethodPreferences,
