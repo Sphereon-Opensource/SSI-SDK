@@ -1,7 +1,7 @@
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
   Alg,
-  AuthorizationDetails,
+  AuthorizationDetailsV1_0_15,
   AuthorizationRequestOpts,
   AuthzFlowType,
   CredentialConfigurationSupported,
@@ -119,11 +119,15 @@ export const ebsiCreateAttestationAuthRequestURL = async (
     throw Error(`Could not find '${credentialType}' with format(s) '${formats.join(',')}' in list of supported types for issuer: ${credentialIssuer}`)
   }
   const authorizationDetails = supportedConfigurations.map((supported) => {
+    const credential_configuration_id = supported.id as string
+    if (!credential_configuration_id) {
+      throw Error(`Credential configuration id missing for credential type: ${credentialType}`)
+    }
     return {
       type: 'openid_credential',
-      format: supported.format,
-      types: getTypesFromCredentialSupported(supported),
-    } as AuthorizationDetails
+      credential_configuration_id,
+      credential_identifiers: getTypesFromCredentialSupported(supported),
+    } satisfies AuthorizationDetailsV1_0_15
   })
 
   const signCallbacks: ProofOfPossessionCallbacks = requestObjectOpts.signCallbacks ?? {
