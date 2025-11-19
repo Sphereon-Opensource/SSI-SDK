@@ -57,7 +57,7 @@ export const signAlgorithmToSchemeAndHashAlg = (signingAlg: string) => {
 export const cryptoSubtleImportRSAKey = async (
   jwk: JsonWebKey,
   scheme: RSAEncryptionSchemes | RSASignatureSchemes,
-  hashAlgorithm?: HashAlgorithm
+  hashAlgorithm?: HashAlgorithm,
 ): Promise<CryptoKey> => {
   const hashName = hashAlgorithm ? hashAlgorithm : jwk.alg ? `SHA-${jwk.alg.substring(2)}` : 'SHA-256'
 
@@ -68,7 +68,7 @@ export const cryptoSubtleImportRSAKey = async (
 export const generateRSAKeyAsPEM = async (
   scheme: RSAEncryptionSchemes | RSASignatureSchemes,
   hashAlgorithm?: HashAlgorithm,
-  modulusLength?: number
+  modulusLength?: number,
 ): Promise<string> => {
   const hashName = hashAlgorithm ? hashAlgorithm : 'SHA-256'
 

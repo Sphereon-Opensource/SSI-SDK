@@ -80,12 +80,12 @@ export interface IIdentifierResolution extends IPluginMethodMap {
 
   identifierManagedGetByCoseKey(
     args: ManagedIdentifierCoseKeyOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierCoseKeyResult>
 
   identifierManagedGetByOID4VCIssuer(
     args: ManagedIdentifierOID4VCIssuerOpts,
-    context: IAgentContext<any>
+    context: IAgentContext<any>,
   ): Promise<ManagedIdentifierOID4VCIssuerResult>
 
   // TODO: We can create a custom managed identifier method allowing developers to register a callback function to get their implementation hooked up. Needs more investigation as it would also impact the KMS
@@ -108,6 +108,6 @@ export interface IIdentifierResolution extends IPluginMethodMap {
 
   identifierExternalResolveByOIDFEntityId(
     args: ExternalIdentifierOIDFEntityIdOpts,
-    context: IAgentContext<any>
+    context: IAgentContext<any>,
   ): Promise<ExternalIdentifierOIDFEntityIdResult>
 }

@@ -126,7 +126,7 @@ describe('@sphereon/did-provider-jwk comparison ES256k', () => {
       ],
       ...toAbsolute(
         await method.resolve(did),
-        'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ'
+        'did:jwk:eyJhbGciOiJFUzI1NksiLCJ1c2UiOiJzaWciLCJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJmYjY5SEE2M244ZENKd0RmaVJONGxacUtVVU1odHYyZE5BemdjUjJNY0ZBIiwieSI6Ikd3amFWNHpuSm1EZDBOdFlSWGdJeW5aOFlyWDRqN0lzLXFselFuekppclEifQ',
       ),
     })
   })
@@ -336,7 +336,7 @@ describe('@sphereon/did-provider-jwk comparison ES256', () => {
       ],
       ...toAbsolute(
         await method.resolve(did),
-        'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOWdnczRDbTRWWGNLT2VQcGprTDlpU3lNQ2EyMnlPamJvLW9VWHB5LWF3MCIsInkiOiJsRVhXN2JfSjdsY2VpVkV0cmZwdHZ1UGVFTnNPSmwtZmh6bXU2NTRHUFI4In0'
+        'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOWdnczRDbTRWWGNLT2VQcGprTDlpU3lNQ2EyMnlPamJvLW9VWHB5LWF3MCIsInkiOiJsRVhXN2JfSjdsY2VpVkV0cmZwdHZ1UGVFTnNPSmwtZmh6bXU2NTRHUFI4In0',
       ),
     })
   })

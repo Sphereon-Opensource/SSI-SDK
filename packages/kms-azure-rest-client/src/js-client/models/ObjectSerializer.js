@@ -47,7 +47,7 @@ const mimeTypeSimplePredicateFactory = (type, subtype) =>
 const isTextLikeMimeType = mimeTypeSimplePredicateFactory('text')
 const isJsonMimeType = mimeTypeSimplePredicateFactory('application', 'json')
 const isJsonLikeMimeType = mimeTypePredicateFactory(
-  (descriptor) => descriptor.type === 'application' && descriptor.subtypeTokens.some((item) => item === 'json')
+  (descriptor) => descriptor.type === 'application' && descriptor.subtypeTokens.some((item) => item === 'json'),
 )
 const isOctetStreamMimeType = mimeTypeSimplePredicateFactory('application', 'octet-stream')
 const isFormUrlencodedMimeType = mimeTypeSimplePredicateFactory('application', 'x-www-form-urlencoded')

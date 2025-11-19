@@ -30,7 +30,7 @@ const { fromString, toString } = u8a
  */
 export async function resolveExternalOIDFEntityIdIdentifier(
   opts: ExternalIdentifierOIDFEntityIdOpts,
-  context: IAgentContext<IOIDFClient>
+  context: IAgentContext<IOIDFClient>,
 ): Promise<ExternalIdentifierOIDFEntityIdResult> {
   let { trustAnchors, identifier } = opts
 

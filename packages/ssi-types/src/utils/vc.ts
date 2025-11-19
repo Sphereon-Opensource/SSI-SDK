@@ -24,7 +24,7 @@ export enum StatusListType {
 
 function isVcdmCredential(
   credential: CredentialPayload | IVerifiableCredential | ICredential | VerifiableCredential | unknown,
-  vcdmType: string
+  vcdmType: string,
 ): boolean {
   if (!credential || typeof credential !== 'object') {
     return false

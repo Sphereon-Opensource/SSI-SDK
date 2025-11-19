@@ -12,19 +12,11 @@ import {
   IVerifyCredentialVcdmArgs,
   IVerifyPresentationLDArgs,
   preProcessCredentialPayload,
-  preProcessPresentation
+  preProcessPresentation,
 } from '@sphereon/ssi-sdk.credential-vcdm'
 import { vcLibCheckStatusFunction } from '@sphereon/ssi-sdk.vc-status-list'
 import { IVerifyResult } from '@sphereon/ssi-types'
-import type {
-  DIDDocument,
-  IAgentContext,
-  IDIDManager,
-  IIdentifier,
-  IKey,
-  IResolver,
-  VerifiableCredential
-} from '@veramo/core'
+import type { DIDDocument, IAgentContext, IDIDManager, IIdentifier, IKey, IResolver, VerifiableCredential } from '@veramo/core'
 import { AbstractPrivateKeyStore } from '@veramo/key-manager'
 import { type _ExtendedIKey, type OrPromise, type RecordLike } from '@veramo/utils'
 import Debug from 'debug'
@@ -203,7 +195,13 @@ export class CredentialProviderJsonld implements IVcdmCredentialProvider {
         verifyStatusListCredential: false /*todo: enable. Needs calling this method first and not rely on @digiticalcredentials*/,
       }) // todo: Probably should be moved to the module to have access to the loaders
     }
-    return this.ldCredentialModule.verifyCredential(credential as VerifiableCredentialSP, context, args.fetchRemoteContexts, args.purpose, checkStatus)
+    return this.ldCredentialModule.verifyCredential(
+      credential as VerifiableCredentialSP,
+      context,
+      args.fetchRemoteContexts,
+      args.purpose,
+      checkStatus,
+    )
   }
 
   /** {@inheritdoc ICredentialHandlerLDLocal.verifyPresentation} */

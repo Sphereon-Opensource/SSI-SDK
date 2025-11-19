@@ -17,7 +17,7 @@ import {
   StoreKey,
   StoreKeyResponse,
   VerifyRawSignature,
-  VerifyRawSignatureResponse
+  VerifyRawSignatureResponse,
 } from '../models'
 
 export interface IKmsRestClient extends IPluginMethodMap {

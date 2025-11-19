@@ -41,7 +41,10 @@ export class MnemonicSeedManager implements IAgentPlugin {
     generateKeysFromMnemonic: this.generateKeysFromMnemonic.bind(this),
   }
 
-  constructor(private dbConnection: OrPromise<DataSource>, private secretBox?: AbstractSecretBox) {
+  constructor(
+    private dbConnection: OrPromise<DataSource>,
+    private secretBox?: AbstractSecretBox,
+  ) {
     if (!secretBox) {
       console.warn('Please provide SecretBox to the KeyStore')
     }

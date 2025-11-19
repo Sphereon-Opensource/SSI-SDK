@@ -256,7 +256,7 @@ describe('Agent plugin', () => {
     })
     const presentation = await agent.createSdJwtPresentation({
       presentation: credential.credential,
-      presentationFrame: { credentialSubject: {given_name: true} },
+      presentationFrame: { credentialSubject: { given_name: true } },
       kb: {
         payload: {
           aud: '1',
@@ -294,7 +294,7 @@ describe('Agent plugin', () => {
     })
     const presentation = await agent.createSdJwtPresentation({
       presentation: credential.credential,
-      presentationFrame: { credentialSubject: {given_name: true} },
+      presentationFrame: { credentialSubject: { given_name: true } },
       kb: {
         payload: {
           aud: '1',

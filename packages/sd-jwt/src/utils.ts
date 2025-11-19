@@ -86,7 +86,7 @@ export function getIssuerFromSdJwt(payload: SdJwtPayload): string {
   let issuer: string | undefined
   if (isSdjwtVcPayload(payload) || 'iss' in payload) {
     issuer = payload.iss as string
-  } else if (isVcdm2SdJwtPayload(payload) || 'issuer' in payload && payload.issuer) {
+  } else if (isVcdm2SdJwtPayload(payload) || ('issuer' in payload && payload.issuer)) {
     issuer = typeof payload.issuer === 'string' ? payload.issuer : (payload.issuer as any)?.id
   }
 

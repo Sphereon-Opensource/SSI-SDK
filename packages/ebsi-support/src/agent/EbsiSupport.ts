@@ -217,15 +217,15 @@ export class EbsiSupport implements IAgentPlugin {
 
     const presentationSubmission = { id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission
     // FIXME SSISDK-40
-      //hasInputDescriptors
-      //? vp.presentationSubmission
-      //: ({ id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission)
+    //hasInputDescriptors
+    //? vp.presentationSubmission
+    //: ({ id: v4(), definition_id: definitionResponse.id, descriptor_map: [] } satisfies PresentationSubmission)
 
     console.log(`Presentation submission`, presentationSubmission)
     const tokenRequestArgs = {
       grant_type: 'vp_token',
       // FIXME SSISDK-40
-      vp_token: '',//CredentialMapper.toCompactJWT(vp.verifiablePresentations[0]), // FIXME How are we going to send multiple presentations in a vp_token?
+      vp_token: '', //CredentialMapper.toCompactJWT(vp.verifiablePresentations[0]), // FIXME How are we going to send multiple presentations in a vp_token?
       scope,
       presentation_submission: presentationSubmission,
       apiOpts: { environment, version: 'v4' },

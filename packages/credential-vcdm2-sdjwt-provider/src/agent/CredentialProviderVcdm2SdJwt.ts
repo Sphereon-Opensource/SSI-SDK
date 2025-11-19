@@ -349,8 +349,6 @@ export async function verifierSignature(
   const agent = context.agent
   const { payload, header /*signature, data*/ } = decodeJWT(jwt)
 
-
-
   if (!payload.issuer) {
     throw new Error(`${JWT_ERROR.INVALID_JWT}: JWT iss or client_id are required`)
   }

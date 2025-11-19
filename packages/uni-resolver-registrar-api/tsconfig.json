@@ -22,10 +22,10 @@
       "path": "../key-manager"
     },
     {
-      "path": "../did-utils",
+      "path": "../did-utils"
     },
     {
-      "path": "../key-utils",
+      "path": "../key-utils"
     }
   ],
   "extends": "../../tsconfig.base.json"
