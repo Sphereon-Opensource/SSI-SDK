@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.credential-vcdm",
   "description": "Plugin for working with W3C Verifiable Credentials DataModel 1 and 2 Credentials & Presentations.",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -54,8 +54,8 @@
     "@veramo/did-provider-ethr": "4.2.0",
     "@veramo/did-resolver": "4.2.0",
     "@veramo/key-manager": "4.2.0",
-    "typeorm": "0.3.20",
     "ethr-did-resolver": "^11.0.3",
+    "typeorm": "0.3.20",
     "typescript": "5.8.3"
   },
   "files": [

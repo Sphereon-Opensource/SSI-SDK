@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.34.0...v0.36.0) (2025-11-19)
+
+### Bug Fixes
+
+- linkhandler error handling when a link handling returns an error it was not properly cascaded ([34a84d7](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/34a84d731d3c2185e5b392d48dea9574d2674781))
+
+### Features
+
+- Merge crypto extension modules now the build process is faster and we have turbo. Means we will have consistent versions between SDK and crypto extension modules ([6a366b9](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/6a366b905f34e154bba90d4ab20d9b1736336d01))
+
 # [0.34.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.33.0...v0.34.0) (2025-05-22)
 
 ### Features

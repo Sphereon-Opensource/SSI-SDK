@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
+
+### Bug Fixes
+
+- add verified data to the auth status response ([1342ce4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1342ce46e16e2afe641f6f483ace0e318e48a6ec))
+- allow ""; charset=UTF-8" in content types (OID4VP/SIOP) ([655b5b3](https://github.com/Sphereon-Opensource/SSI-SDK/commit/655b5b3cc8ae8051dfda622aa9787fefda3d8a45))
+- builder fixes ([ee98a3e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ee98a3e17c1241de776e164fcfe1e73d162c5902))
+- class-validator has changed behavior, so fixating to the older version ([0f35c70](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0f35c70cda2b8763fdbe0bb68f73a7854ad63dc4))
+- export datastore types ([c2ed6fe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c2ed6fea0f85b627c2d9729700b188209542d637))
+- fix dcql presentation check ([663555b](https://github.com/Sphereon-Opensource/SSI-SDK/commit/663555b236defd6dd41c316274baee44683c6935))
+- fixed dcql query payload assignment ([ea643e4](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ea643e42804501f2a323a73971465d527981123d))
+- linkhandler error handling when a link handling returns an error it was not properly cascaded ([34a84d7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/34a84d731d3c2185e5b392d48dea9574d2674781))
+- merge issues ([693d8f0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/693d8f0b0c6566650a31647fda630a0715f960c7))
+- removed unused interface from type ([3635ad5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3635ad55be66f28d32cca2b510300442ca9d66bc))
+- semver fix ([1c8e8a9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1c8e8a9ed464c8a78c263998f3a0342738c812d5))
+- We only mapped on configurationId values, whilst the branding was indexed by types, leading to branding not loading or being stored in some cases ([abc1dfe](https://github.com/Sphereon-Opensource/SSI-SDK/commit/abc1dfebd9a53c49235573ad0a337abb248bf2f3))
+
+### Features
+
+- Add support for VCDM2 SDJWT ([322c421](https://github.com/Sphereon-Opensource/SSI-SDK/commit/322c4218f587203523e0620fe42ec96486724f79))
+- added dcql presentation validation check ([668150e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/668150e41a23897fd89a05a1971eaeb345f71737))
+- added module kms-rest-client ([ddb3f69](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ddb3f6947d24985b80bfc58bd96f1b3635aa9b70))
+- added support for callbacks when creating auth requests ([117ad37](https://github.com/Sphereon-Opensource/SSI-SDK/commit/117ad37d1397fe6c2f99f499761323dd8158699e))
+- implemented Universal OID4VP API spec ([f633961](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f633961166543652ec09e4e194ed2bacbcb92602))
+- Merge crypto extension modules now the build process is faster and we have turbo. Means we will have consistent versions between SDK and crypto extension modules ([6a366b9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6a366b905f34e154bba90d4ab20d9b1736336d01))
+- updated siopv2-oid4vp-op-auth plugin to use OID4VP v1 ([c1721a5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c1721a5d7f5727216bacceaddada3463bbcb9a81))
+
 # [0.34.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.33.0...v0.34.0) (2025-05-22)
 
 ### Bug Fixes

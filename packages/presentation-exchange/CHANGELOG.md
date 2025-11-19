@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
+
+### Features
+
+- Add support for VCDM2 SDJWT ([322c421](https://github.com/Sphereon-Opensource/SSI-SDK/commit/322c4218f587203523e0620fe42ec96486724f79))
+- Merge crypto extension modules now the build process is faster and we have turbo. Means we will have consistent versions between SDK and crypto extension modules ([6a366b9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6a366b905f34e154bba90d4ab20d9b1736336d01))
+
 # [0.34.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.33.0...v0.34.0) (2025-05-22)
 
 ### Features
