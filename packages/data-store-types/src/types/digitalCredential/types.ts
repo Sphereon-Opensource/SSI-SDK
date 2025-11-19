@@ -1,5 +1,6 @@
 import { CredentialRole } from '@sphereon/ssi-types'
 import { CredentialCorrelationType, CredentialDocumentFormat, CredentialStateType, DocumentType, RegulationType } from './enums'
+import { UpdateCredentialArgs } from './IAbstractDigitalCredentialStore'
 
 /**
  * DigitalCredential
@@ -40,3 +41,5 @@ export type DigitalCredential = {
 }
 
 export type NonPersistedDigitalCredential = Omit<DigitalCredential, 'id' | 'regulationType'> & { regulationType?: RegulationType }
+
+export type UpdateCredentialArgsWithoutIdentifier = Omit<UpdateCredentialArgs, 'id' | 'hash'>
