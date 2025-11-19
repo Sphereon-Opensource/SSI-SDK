@@ -166,7 +166,7 @@ export class LinkedVPManager implements IAgentPlugin {
   }
 
   private generateLinkedVpId(): string {
-    return `lvp-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
+    return `lvp-${Math.random().toString(36).substring(2, 15)}`
   }
 
   private async ensureLinkedVpIdUnique(linkedVpId: string, context: RequiredContext, tenantId?: string): Promise<void> {
