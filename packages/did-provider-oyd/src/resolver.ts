@@ -5,7 +5,7 @@ const resolveDidOyd: DIDResolver = async (
   didUrl: string,
   _parsed: ParsedDID,
   _resolver: Resolvable,
-  options: DIDResolutionOptions
+  options: DIDResolutionOptions,
 ): Promise<DIDResolutionResult> => {
   try {
     const baseUrl: string = 'https://oydid-resolver.data-container.net'

@@ -16,7 +16,7 @@ import {
   CredentialProviderJsonld,
   LdDefaultContexts,
   SphereonEd25519Signature2018,
-  SphereonEd25519Signature2020
+  SphereonEd25519Signature2020,
 } from '@sphereon/ssi-sdk.credential-vcdm-jsonld-provider'
 import { SchemaValidation } from '@sphereon/ssi-sdk.credential-validation'
 import { CheckLinkedDomain } from '@sphereon/did-auth-siop-adapter'
@@ -24,10 +24,7 @@ import { defaultHasher } from '@sphereon/ssi-types'
 import { ISIOPv2RP, SIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { IPresentationExchange, PresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { type IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
-import {
-  IdentifierResolution,
-  IIdentifierResolution
-} from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { IdentifierResolution, IIdentifierResolution } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService, JwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import Debug from 'debug'
 import { Resolver } from 'did-resolver'
@@ -108,22 +105,22 @@ const dbConnection = getDbConnection(DB_CONNECTION_NAME)
 const privateKeyStore: PrivateKeyStore = new PrivateKeyStore(dbConnection, new SecretBox(DB_ENCRYPTION_KEY))
 
 const jsonld = new CredentialProviderJsonld({
-    contextMaps: [LdDefaultContexts],
-    suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
-    keyStore: privateKeyStore,
-  })
+  contextMaps: [LdDefaultContexts],
+  suites: [new SphereonEd25519Signature2018(), new SphereonEd25519Signature2020()],
+  keyStore: privateKeyStore,
+})
 
 const agent = createAgent<
   IDIDManager &
-  IKeyManager &
-  IResolver &
-  IPresentationExchange &
-  ISIOPv2RP &
-  ICredentialVerifier &
-  IVcdmCredentialPlugin &
-  IPDManager &
-  IIdentifierResolution &
-  IJwtService
+    IKeyManager &
+    IResolver &
+    IPresentationExchange &
+    ISIOPv2RP &
+    ICredentialVerifier &
+    IVcdmCredentialPlugin &
+    IPDManager &
+    IIdentifierResolution &
+    IJwtService
 >({
   plugins: [
     new DataStore(dbConnection),
@@ -182,7 +179,7 @@ const agent = createAgent<
     new VcdmCredentialPlugin({ issuers: [jsonld] }),
     new PDManager({ store: new PDStore(dbConnection) }),
     new IdentifierResolution(),
-    new JwtService()
+    new JwtService(),
   ],
 })
 

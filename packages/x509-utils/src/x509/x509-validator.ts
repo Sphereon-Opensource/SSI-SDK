@@ -56,7 +56,7 @@ export const getCertificateInfo = async (
   certificate: Certificate,
   opts?: {
     sanTypeFilter: SubjectAlternativeGeneralName | SubjectAlternativeGeneralName[]
-  }
+  },
 ): Promise<CertificateInfo> => {
   let publicKeyJWK: JWK | undefined
   try {
@@ -173,7 +173,7 @@ const validateX509CertificateChainImpl = async ({
             console.log(`Failed to parse blindly trusted certificate ${raw}. Error: ${e.message}`)
             return undefined
           }
-        })
+        }),
       )
     ).filter((cert): cert is ParsedCertificate => cert !== undefined) ?? []
   const leafCert = x5cOrdereredChain[0]
@@ -224,7 +224,7 @@ const validateX509CertificateChainImpl = async ({
         date: verificationTime,
         publicKey: previousCert?.x509Certificate?.publicKey,
       },
-      getCrypto()?.crypto ?? crypto ?? global.crypto
+      getCrypto()?.crypto ?? crypto ?? global.crypto,
     )
     if (!result) {
       // First cert needs to be self signed
@@ -521,8 +521,8 @@ export const getCertificateSubjectPublicKeyJWK = async (pemOrDerCert: string | U
     typeof pemOrDerCert === 'string'
       ? toString(fromString(pemOrDerCert, 'base64pad'), 'base64pad')
       : pemOrDerCert instanceof Uint8Array
-      ? toString(pemOrDerCert, 'base64pad')
-      : toString(fromString(pemOrDerCert.toString('base64'), 'base64pad'), 'base64pad')
+        ? toString(pemOrDerCert, 'base64pad')
+        : toString(fromString(pemOrDerCert.toString('base64'), 'base64pad'), 'base64pad')
   const pem = derToPEM(pemOrDerStr)
   const certificate = pemOrDerToX509Certificate(pem)
   var jwk: JWK | undefined
@@ -578,7 +578,7 @@ export const assertCertificateMatchesClientIdScheme = (certificate: Certificate,
     throw Error(
       `Client id scheme ${clientIdScheme} used had no matching subject alternative names in certificate with DN ${
         getSubjectDN(certificate).DN
-      }. SANS: ${sans.map((san) => san.value).join(',')}`
+      }. SANS: ${sans.map((san) => san.value).join(',')}`,
     )
   }
 }
@@ -586,7 +586,7 @@ export const assertCertificateMatchesClientIdScheme = (certificate: Certificate,
 export const validateCertificateChainMatchesClientIdScheme = async (
   certificate: Certificate,
   clientId: string,
-  clientIdScheme: ClientIdScheme
+  clientIdScheme: ClientIdScheme,
 ): Promise<X509ValidationResult> => {
   const result = {
     error: true,
@@ -615,7 +615,7 @@ export const getSubjectAlternativeNames = (
     typeFilter?: SubjectAlternativeGeneralName | SubjectAlternativeGeneralName[]
     // When a clientIdchemeFilter is passed in it will always override the above type filter
     clientIdSchemeFilter?: ClientIdScheme
-  }
+  },
 ): SubjectAlternativeName[] => {
   let typeFilter: SubjectAlternativeGeneralName[]
   if (opts?.clientIdSchemeFilter) {

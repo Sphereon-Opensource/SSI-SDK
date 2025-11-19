@@ -43,20 +43,20 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm build
-#      - name: run CI tests
-#        env:
-#          SPHEREON_SSI_MSAL_TENANT_ID: ${{ secrets.SPHEREON_SSI_MSAL_TENANT_ID }}
-#          SPHEREON_SSI_MSAL_CLIENT_ID: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_ID }}
-#          SPHEREON_SSI_MSAL_CLIENT_SECRET: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_SECRET }}
-#          SPHEREON_SSI_MSAL_USERNAME: ${{ secrets.SPHEREON_SSI_MSAL_USERNAME }}
-#          SPHEREON_SSI_MSAL_PASSWORD: ${{ secrets.SPHEREON_SSI_MSAL_PASSWORD }}
-#          GEO_IP_DB_PATH: ${{ secrets.GEO_IP_DB_PATH || 'packages/anomaly-detection/__tests__/shared/GeoLite2-Country.mmdb' }}
-#          INCLUDE_POSTGRES_TESTS: true
-#          POSTGRES_HOST: localhost
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: test123
-#          POSTGRES_PORT: 5432
-#        run: pnpm test:ci
+      - name: run CI tests
+        env:
+          SPHEREON_SSI_MSAL_TENANT_ID: ${{ secrets.SPHEREON_SSI_MSAL_TENANT_ID }}
+          SPHEREON_SSI_MSAL_CLIENT_ID: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_ID }}
+          SPHEREON_SSI_MSAL_CLIENT_SECRET: ${{ secrets.SPHEREON_SSI_MSAL_CLIENT_SECRET }}
+          SPHEREON_SSI_MSAL_USERNAME: ${{ secrets.SPHEREON_SSI_MSAL_USERNAME }}
+          SPHEREON_SSI_MSAL_PASSWORD: ${{ secrets.SPHEREON_SSI_MSAL_PASSWORD }}
+          GEO_IP_DB_PATH: ${{ secrets.GEO_IP_DB_PATH || 'packages/anomaly-detection/__tests__/shared/GeoLite2-Country.mmdb' }}
+          INCLUDE_POSTGRES_TESTS: true
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test123
+          POSTGRES_PORT: 5432
+        run: pnpm test
 
       - name: setup git coordinates
         run: |

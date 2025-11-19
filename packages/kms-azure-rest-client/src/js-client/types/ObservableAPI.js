@@ -20,7 +20,7 @@ export class ObservableKeyVaultControllerApi {
           middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp) => middleware.post(rsp)))
         }
         return middlewarePostObservable.pipe(map((rsp) => this.responseProcessor.createEcKeyWithHttpInfo(rsp)))
-      })
+      }),
     )
   }
   createEcKey(createEcKeyRequest, _options) {
@@ -39,7 +39,7 @@ export class ObservableKeyVaultControllerApi {
           middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp) => middleware.post(rsp)))
         }
         return middlewarePostObservable.pipe(map((rsp) => this.responseProcessor.getKeyWithHttpInfo(rsp)))
-      })
+      }),
     )
   }
   getKey(keyName, _options) {
@@ -58,7 +58,7 @@ export class ObservableKeyVaultControllerApi {
           middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp) => middleware.post(rsp)))
         }
         return middlewarePostObservable.pipe(map((rsp) => this.responseProcessor.signPayloadWithHttpInfo(rsp)))
-      })
+      }),
     )
   }
   signPayload(signPayloadDTO, _options) {
@@ -77,7 +77,7 @@ export class ObservableKeyVaultControllerApi {
           middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp) => middleware.post(rsp)))
         }
         return middlewarePostObservable.pipe(map((rsp) => this.responseProcessor.verifyPayloadWithHttpInfo(rsp)))
-      })
+      }),
     )
   }
   verifyPayload(verifyPayloadDTO, _options) {

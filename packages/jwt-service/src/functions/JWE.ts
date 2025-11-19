@@ -268,7 +268,7 @@ export async function createJwe(
   cleartext: Uint8Array,
   encrypters: JweEncrypter[],
   protectedHeader: JweProtectedHeader,
-  aad?: Uint8Array
+  aad?: Uint8Array,
 ): Promise<JweJsonGeneral> {
   if (encrypters.length === 0) {
     throw Error('JWE needs at least 1 encryptor')

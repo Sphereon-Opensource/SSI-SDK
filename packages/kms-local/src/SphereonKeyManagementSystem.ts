@@ -69,7 +69,7 @@ export class SphereonKeyManagementSystem extends KeyManagementSystem {
     switch (type) {
       case KeyType.Bls12381G2: {
         throw Error(
-          'BLS support not available because upstream is not really providing Windows and React-Native support; giving too much headache. We soon will move to @digitalbazaar/bbs-signatures'
+          'BLS support not available because upstream is not really providing Windows and React-Native support; giving too much headache. We soon will move to @digitalbazaar/bbs-signatures',
         )
         /*// @ts-ignore
         const bbs = await import('@digitalbazaar/bbs-signatures')
@@ -112,7 +112,7 @@ export class SphereonKeyManagementSystem extends KeyManagementSystem {
 
     if (privateKey.type === KeyType.Bls12381G2) {
       throw Error(
-        'BLS support not available because upstream is not really providing Windows and React-Native support; giving too much headache. We soon will move to @digitalbazaar/bbs-signatures'
+        'BLS support not available because upstream is not really providing Windows and React-Native support; giving too much headache. We soon will move to @digitalbazaar/bbs-signatures',
       )
       /*// @ts-ignore
       const bbs = await import('@digitalbazaar/bbs-signatures')
@@ -136,7 +136,7 @@ export class SphereonKeyManagementSystem extends KeyManagementSystem {
         return await this.signRSA(privateKey, data, algorithm ?? 'PS256')
       }
       return Promise.reject(
-        new Error(`not_supported: Cannot sign using key of type RSA and alg: ${algorithm}. Only RS and PS algorithms are supported.`)
+        new Error(`not_supported: Cannot sign using key of type RSA and alg: ${algorithm}. Only RS and PS algorithms are supported.`),
       )
     } else {
       return await super.sign({ keyRef, algorithm, data })

@@ -318,7 +318,7 @@ describe('functions: validateX5cCertificateChain', () => {
 
   it('should validate with client id scheme x509_san_dns and san_uri', async () => {
     expect(() =>
-      assertCertificateMatchesClientIdScheme(pemOrDerToX509Certificate(sphereonTest), 'funke.demo.sphereon.com', 'x509_san_dns')
+      assertCertificateMatchesClientIdScheme(pemOrDerToX509Certificate(sphereonTest), 'funke.demo.sphereon.com', 'x509_san_dns'),
     ).not.toThrow()
     expect(() => assertCertificateMatchesClientIdScheme(pemOrDerToX509Certificate(sphereonTest), 'nope.test.sphereon.com', 'x509_san_dns')).toThrow()
 

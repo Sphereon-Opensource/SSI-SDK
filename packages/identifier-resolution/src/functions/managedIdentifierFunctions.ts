@@ -41,7 +41,7 @@ import {
 
 export async function getManagedKidIdentifier(
   opts: ManagedIdentifierKidOpts,
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierKidResult> {
   const method = 'kid'
   let key: IKey | undefined = undefined
@@ -85,7 +85,7 @@ export async function getManagedKidIdentifier(
 export function isManagedIdentifierResult(
   identifier: ManagedIdentifierOptsOrResult & {
     crypto?: webcrypto.Crypto
-  }
+  },
 ): identifier is ManagedIdentifierResult {
   return 'key' in identifier && 'kmsKeyRef' in identifier && 'method' in identifier && 'opts' in identifier && 'jwkThumbprint' in identifier
 }
@@ -99,7 +99,7 @@ export async function ensureManagedIdentifierResult(
   identifier: ManagedIdentifierOptsOrResult & {
     crypto?: webcrypto.Crypto
   },
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierResult> {
   const { lazyDisabled = false } = identifier
   return !lazyDisabled && isManagedIdentifierResult(identifier) ? identifier : await getManagedIdentifier(identifier, context)
@@ -142,7 +142,7 @@ export async function getManagedKeyIdentifier(opts: ManagedIdentifierKeyOpts, _c
  */
 export async function getManagedCoseKeyIdentifier(
   opts: ManagedIdentifierCoseKeyOpts,
-  context: IAgentContext<any>
+  context: IAgentContext<any>,
 ): Promise<ManagedIdentifierCoseKeyResult> {
   const method = 'cose_key'
   const coseKey: ICoseKeyJson = opts.identifier
@@ -192,7 +192,7 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
       identifier,
       vmRelationship: opts.vmRelationship ?? 'verificationMethod',
     },
-    context
+    context,
   )
   const key = extendedKey
   const controllerKeyId = identifier.controllerKeyId
@@ -225,7 +225,7 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
 
 export async function getManagedJwkIdentifier(
   opts: ManagedIdentifierJwkOpts,
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierJwkResult> {
   const method = 'jwk'
   const { kid, issuer } = opts
@@ -255,7 +255,7 @@ export async function getManagedX5cIdentifier(
   opts: ManagedIdentifierX5cOpts & {
     crypto?: webcrypto.Crypto
   },
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierX5cResult> {
   const { kid, issuer } = opts
   const method = 'x5c'
@@ -294,7 +294,7 @@ export async function getManagedX5cIdentifier(
 
 export async function getManagedOID4VCIssuerIdentifier(
   opts: ManagedIdentifierOID4VCIssuerOpts,
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierOID4VCIssuerResult> {
   const { identifier } = opts
   const method = 'oid4vci-issuer'
@@ -339,7 +339,7 @@ export async function getManagedIdentifier(
   opts: ManagedIdentifierOptsOrResult & {
     crypto?: webcrypto.Crypto
   },
-  context: IAgentContext<IKeyManager>
+  context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierResult> {
   let resolutionResult: ManagedIdentifierResult
   if (isManagedIdentifierResult(opts)) {
@@ -375,7 +375,7 @@ export async function getManagedIdentifier(
 
 export async function managedIdentifierToKeyResult(
   identifier: ManagedIdentifierOptsOrResult,
-  context: IAgentContext<IIdentifierResolution & IKeyManager>
+  context: IAgentContext<IIdentifierResolution & IKeyManager>,
 ): Promise<ManagedIdentifierKeyResult> {
   const resolved = await ensureManagedIdentifierResult(identifier, context)
   if (isManagedIdentifierKeyResult(resolved)) {
@@ -391,7 +391,7 @@ export async function managedIdentifierToKeyResult(
 
 export async function managedIdentifierToJwk(
   identifier: ManagedIdentifierOptsOrResult,
-  context: IAgentContext<IIdentifierResolution & IKeyManager>
+  context: IAgentContext<IIdentifierResolution & IKeyManager>,
 ): Promise<ManagedIdentifierJwkResult> {
   const resolved = await ensureManagedIdentifierResult(identifier, context)
   if (isManagedIdentifierJwkResult(resolved)) {

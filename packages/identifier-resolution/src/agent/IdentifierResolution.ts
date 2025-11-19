@@ -78,63 +78,63 @@ export class IdentifierResolution implements IAgentPlugin {
    */
   private async identifierManagedGet(
     args: ManagedIdentifierOptsOrResult,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierResult> {
     return await ensureManagedIdentifierResult({ ...args, crypto: this._crypto }, context)
   }
 
   private async identifierManagedGetByDid(
     args: ManagedIdentifierDidOpts,
-    context: IAgentContext<IKeyManager & IDIDManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IDIDManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierDidResult> {
     return (await this.identifierManagedGet({ ...args, method: 'did' }, context)) as ManagedIdentifierDidResult
   }
 
   private async identifierManagedGetByKid(
     args: ManagedIdentifierKidOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierKidResult> {
     return (await this.identifierManagedGet({ ...args, method: 'kid' }, context)) as ManagedIdentifierKidResult
   }
 
   private async identifierManagedGetByKey(
     args: ManagedIdentifierKeyOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierKeyResult> {
     return (await this.identifierManagedGet({ ...args, method: 'key' }, context)) as ManagedIdentifierKeyResult
   }
 
   private async identifierManagedGetByCoseKey(
     args: ManagedIdentifierCoseKeyOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierCoseKeyResult> {
     return (await this.identifierManagedGet({ ...args, method: 'cose_key' }, context)) as ManagedIdentifierCoseKeyResult
   }
 
   private async identifierManagedGetByOID4VCIssuer(
     args: ManagedIdentifierOID4VCIssuerOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierOID4VCIssuerResult> {
     return (await this.identifierManagedGet({ ...args, method: 'oid4vci-issuer' }, context)) as ManagedIdentifierOID4VCIssuerResult
   }
 
   private async identifierManagedGetByJwk(
     args: ManagedIdentifierJwkOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierJwkResult> {
     return (await this.identifierManagedGet({ ...args, method: 'jwk' }, context)) as ManagedIdentifierJwkResult
   }
 
   private async identifierManagedGetByX5c(
     args: ManagedIdentifierX5cOpts,
-    context: IAgentContext<IKeyManager & IIdentifierResolution>
+    context: IAgentContext<IKeyManager & IIdentifierResolution>,
   ): Promise<ManagedIdentifierX5cResult> {
     return (await this.identifierManagedGet({ ...args, method: 'x5c' }, context)) as ManagedIdentifierX5cResult
   }
 
   private async identifierExternalResolve(
     args: ExternalIdentifierOpts,
-    context: IAgentContext<IKeyManager | IOIDFClient>
+    context: IAgentContext<IKeyManager | IOIDFClient>,
   ): Promise<ExternalIdentifierResult> {
     return await resolveExternalIdentifier({ ...args, crypto: this._crypto }, context)
   }
@@ -149,7 +149,7 @@ export class IdentifierResolution implements IAgentPlugin {
 
   private async identifierExternalResolveByCoseKey(
     args: ExternalIdentifierCoseKeyOpts,
-    context: IAgentContext<any>
+    context: IAgentContext<any>,
   ): Promise<ExternalIdentifierCoseKeyResult> {
     return (await this.identifierExternalResolve({ ...args, method: 'cose_key' }, context)) as ExternalIdentifierCoseKeyResult
   }
@@ -160,7 +160,7 @@ export class IdentifierResolution implements IAgentPlugin {
 
   private async identifierExternalResolveByOIDFEntityId(
     args: ExternalIdentifierOIDFEntityIdOpts,
-    context: IAgentContext<any>
+    context: IAgentContext<any>,
   ): Promise<ExternalIdentifierOIDFEntityIdResult> {
     return (await this.identifierExternalResolve({ ...args, method: 'entity_id' }, context)) as ExternalIdentifierOIDFEntityIdResult
   }

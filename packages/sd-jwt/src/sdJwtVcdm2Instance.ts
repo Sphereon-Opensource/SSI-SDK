@@ -122,11 +122,11 @@ export class SDJwtVcdm2Instance extends SDJwtInstance<SdJwtVcdm2Payload> {
     payload: Payload,
     disclosureFrame?: DisclosureFrame<Payload>,
     options?: {
-      header?: object; // This is for customizing the header of the jwt
+      header?: object // This is for customizing the header of the jwt
     },
   ): Promise<SDJWTCompact> {
     if (payload.iss && !payload.issuer) {
-      payload.issuer = {id: payload.iss}
+      payload.issuer = { id: payload.iss }
       delete payload.iss
     }
     if (payload.nbf && !payload.validFrom) {

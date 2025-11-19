@@ -19,7 +19,7 @@
       "path": "../did-provider-key"
     },
     {
-      "path": "../jwt-service",
+      "path": "../jwt-service"
     },
     {
       "path": "../identifier-resolution"
@@ -28,7 +28,7 @@
       "path": "../key-manager"
     },
     {
-      "path": "../kms-local",
+      "path": "../kms-local"
     }
   ],
   "extends": "../../tsconfig.base.json"

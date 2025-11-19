@@ -39,7 +39,7 @@ const keyVaultUrl = 'https://example.vault.azure.net/'
 const tenantId = '70f978d7-0acc-4f0f-9c07-4284863dc678'
 const credentialOptions = new com.sphereon.crypto.kms.azure.CredentialOpts(
   com.sphereon.crypto.kms.azure.CredentialMode.SERVICE_CLIENT_SECRET,
-  new com.sphereon.crypto.kms.azure.SecretCredentialOpts('19bfd54e-e3e6-4fbe-9f41-b26af93017ca', '4xpCwvGr0xTd2wrarCM2CrQnt1ceFSsr.JgdYbgq')
+  new com.sphereon.crypto.kms.azure.SecretCredentialOpts('19bfd54e-e3e6-4fbe-9f41-b26af93017ca', '4xpCwvGr0xTd2wrarCM2CrQnt1ceFSsr.JgdYbgq'),
 )
 
 const config = new AzureKeyVaultClientConfig(id, keyVaultUrl, tenantId, credentialOptions)

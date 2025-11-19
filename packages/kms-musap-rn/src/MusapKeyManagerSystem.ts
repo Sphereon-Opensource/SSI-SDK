@@ -50,7 +50,7 @@ export class MusapKeyManagementSystem extends AbstractKeyManagementSystem {
       externalSscdSettings?: ExternalSscdSettings
       defaultKeyAttributes?: Record<string, string>
       defaultSignAttributes?: Record<string, string>
-    }
+    },
   ) {
     super()
     try {

@@ -37,7 +37,7 @@ describe('@sphereon/ssi-sdk-ext.did-resolver-ebsi', () => {
         registry: 'http://127.0.0.1:9993',
         noFallbackRegistries: true,
         noEnvVarRegistry: true,
-      })
+      }),
     ).resolves.toEqual({
       didDocument: null,
       didDocumentMetadata: {},

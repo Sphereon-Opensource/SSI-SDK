@@ -49,7 +49,7 @@ describe('@sphereon/did-provider-jwk', () => {
 
     expect(identifier).toBeDefined()
     expect(identifier.did).toBe(
-      'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiaTlBdmpJMFdjUXo5NF9aVkVDazVrS21kSEFEU2RWNGRKZ1RNN0ROYkNJayIsInkiOiJJZGtyWktUcWdmNE1ZY3hUbHlIM3ZJMkdHYjJXYWM1Z0V1Y0lQaTFfRmtnIn0'
+      'did:jwk:eyJhbGciOiJFUzI1NiIsInVzZSI6InNpZyIsImt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiaTlBdmpJMFdjUXo5NF9aVkVDazVrS21kSEFEU2RWNGRKZ1RNN0ROYkNJayIsInkiOiJJZGtyWktUcWdmNE1ZY3hUbHlIM3ZJMkdHYjJXYWM1Z0V1Y0lQaTFfRmtnIn0',
     )
   })
 
