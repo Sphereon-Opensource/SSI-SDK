@@ -472,6 +472,7 @@ export type StartResult = {
 
 export type PrepareAuthorizationResult = {
   authorizationCodeURL?: string
+  oid4vciClientState: OpenID4VCIClientState
 }
 
 export type SelectAppLocaleBrandingArgs = {

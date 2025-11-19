@@ -504,6 +504,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
     return {
       authorizationCodeURL,
+      // Needed, because the above createAuthorizationRequestUrl manipulates the state, adding pkce opts to the state
+      oid4vciClientState: JSON.parse(await client.exportState())
     }
   }
 
