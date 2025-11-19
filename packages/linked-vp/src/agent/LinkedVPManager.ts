@@ -82,8 +82,8 @@ export class LinkedVPManager implements IAgentPlugin {
     const credential = credentials[0]
     await context.agent.crsUpdateCredential({
       id: credential.id,
-      linkedVpId: null,
-      linkedVpFrom: null,
+      linkedVpId: undefined,
+      linkedVpFrom: undefined,
     })
 
     return true
