@@ -27,6 +27,8 @@ interface KeyManagementSystemOptions {
   applicationId: string
   baseUrl: string
   providerId?: string
+  tenantId?: string
+  userId?: string
   authOpts?: RestClientAuthenticationOpts
 }
 
@@ -34,6 +36,8 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   private client: KmsRestClient
   private readonly id: string
   private providerId: string | undefined
+  private tenantId: string | undefined
+  private userId: string | undefined
 
   constructor(options: KeyManagementSystemOptions) {
     super()
@@ -45,6 +49,8 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
     this.id = options.applicationId
     this.providerId = options.providerId
+    this.tenantId = options.tenantId
+    this.userId = options.userId
     this.client = new KmsRestClient(config)
   }
 
@@ -57,6 +63,8 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       alg: signatureAlgorithm,
       keyOperations: meta && meta.keyOperations ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.Sign],
       ...(meta && 'keyAlias' in meta && meta.keyAlias ? { alias: meta.keyAlias } : {}),
+      ...(this.tenantId && { tenantId: this.tenantId }),
+      ...(this.userId && { userId: this.userId }),
     }
 
     const key = this.providerId
@@ -101,8 +109,14 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ? await this.client.methods.kmsClientProviderStoreKey({
           ...importKey.key,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientStoreKey(importKey.key)
+      : await this.client.methods.kmsClientStoreKey({
+          ...importKey.key,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
 
     return {
       kid: importKey.kid,
@@ -127,14 +141,27 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ? await this.client.methods.kmsClientProviderDeleteKey({
           aliasOrKid: kid,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientDeleteKey({ aliasOrKid: kid })
+      : await this.client.methods.kmsClientDeleteKey({
+          aliasOrKid: kid,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
   }
 
   async listKeys(): Promise<ManagedKeyInfo[]> {
     const keys = this.providerId
-      ? await this.client.methods.kmsClientProviderListKeys({ providerId: this.providerId })
-      : await this.client.methods.kmsClientListKeys()
+      ? await this.client.methods.kmsClientProviderListKeys({
+          providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
+      : await this.client.methods.kmsClientListKeys({
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
 
     const restKeys = ListKeysResponseToJSONTyped(keys, false).keyInfos
 
@@ -200,12 +227,20 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ? await this.client.methods.kmsClientProviderGetKey({
           aliasOrKid: keyRef.kid,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+      : await this.client.methods.kmsClientGetKey({
+          aliasOrKid: keyRef.kid,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
 
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
       keyInfo: key.keyInfo,
       input: toString(data, 'base64'),
+      ...(this.tenantId && { tenantId: this.tenantId }),
+      ...(this.userId && { userId: this.userId }),
     })
 
     return signingResult.signature
@@ -217,13 +252,21 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ? await this.client.methods.kmsClientProviderGetKey({
           aliasOrKid: keyRef.kid,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+      : await this.client.methods.kmsClientGetKey({
+          aliasOrKid: keyRef.kid,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
 
     const verification = await this.client.methods.kmsClientIsValidRawSignature({
       keyInfo: key.keyInfo,
       input: toString(data, 'base64'),
       signature,
+      ...(this.tenantId && { tenantId: this.tenantId }),
+      ...(this.userId && { userId: this.userId }),
     })
 
     return verification.isValid
