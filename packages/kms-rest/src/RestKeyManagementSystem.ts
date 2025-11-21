@@ -244,10 +244,12 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         })
 
     // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash
-    const dataToBeSigned: string = isHashString(data) ? data : toString(shaHasher(data.buffer, algorithm))
+    const dataToBeSigned: Uint8Array = isHashString(data)
+      ? data
+      : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
       keyInfo: key.keyInfo,
-      input: dataToBeSigned,
+      input: toString(dataToBeSigned, 'base64'),
       ...(this.tenantId && { tenantId: this.tenantId }),
       ...(this.userId && { userId: this.userId }),
     })
@@ -271,10 +273,12 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         })
 
     // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash
-    const dataToBeVerified: string = isHashString(data) ? data : toString(shaHasher(data.buffer, algorithm))
+    const dataToBeVerified: Uint8Array = isHashString(data)
+      ? data
+      : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
     const verification = await this.client.methods.kmsClientIsValidRawSignature({
       keyInfo: key.keyInfo,
-      input: dataToBeVerified,
+      input: toString(dataToBeVerified, 'base64'),
       signature,
       ...(this.tenantId && { tenantId: this.tenantId }),
       ...(this.userId && { userId: this.userId }),

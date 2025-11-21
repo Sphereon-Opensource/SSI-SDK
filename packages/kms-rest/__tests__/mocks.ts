@@ -360,7 +360,7 @@ export const createMocks = (): void => {
           alias: "test",
           providerId: "test-software"
         },
-        input: 'test',
+        input: 'n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg',
       })
     .times(2)
     .reply(201, {
@@ -382,7 +382,7 @@ export const createMocks = (): void => {
           alias: "test",
           providerId: "test-software"
         },
-        input: 'test',
+        input: 'n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg',
         signature: 'DEnlZ+Ci41YL6WOt+mGipruejMxG/bN0dBbGZvWzUUB2u1813UWAt7G7Ee0q+MReUbp8aRa3qTehcdyHHthN7g==',
       })
     .times(1)
