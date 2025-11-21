@@ -214,7 +214,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     if (!hasher) {
       return Promise.reject('a hasher is required for encoded SD-JWT credentials')
     }
-    const asyncHasher: Hasher = (data: string | ArrayBuffer, algorithm: string) => Promise.resolve(hasher(data, algorithm))
+    const asyncHasher: Hasher = (data: string | ArrayBuffer | SharedArrayBuffer, algorithm: string) => Promise.resolve(hasher(data, algorithm))
     const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedVerifiableCredential.credential, asyncHasher)
     uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>decodedSdJwt)
   } else if (CredentialMapper.isMsoMdocDecodedCredential(wrappedVerifiableCredential.credential)) {
