@@ -5,7 +5,7 @@ import { v4 } from 'uuid'
 import { fromString } from 'uint8arrays/from-string'
 import { IRequiredContext, SdJwtVerifySignature } from './types'
 
-export const defaultGenerateDigest: HasherSync = (data: string | ArrayBuffer, alg: string): Uint8Array => {
+export const defaultGenerateDigest: HasherSync = (data: string | ArrayBuffer | SharedArrayBuffer, alg: string): Uint8Array => {
   return digestMethodParams(alg.includes('256') ? 'SHA-256' : 'SHA-512').hash(
     typeof data === 'string' ? fromString(data, 'utf-8') : new Uint8Array(data),
   )

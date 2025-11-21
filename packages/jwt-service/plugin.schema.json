@@ -4563,9 +4563,9 @@
           "description": "Represents an endpoint of a Service entry in a DID document."
         },
         "DidDocumentJwks": {
-          "$ref": "#/components/schemas/Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-st_index.d.ts-36154-36879-st_index.d.ts-0-63878[]>"
+          "$ref": "#/components/schemas/Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-st_index.d.ts-36172-36897-st_index.d.ts-0-63936[]>"
         },
-        "Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-st_index.d.ts-36154-36879-st_index.d.ts-0-63878[]>": {
+        "Record<Exclude<DIDDocumentSection,(\"publicKey\"|\"service\")>,def-interface-st_index.d.ts-36172-36897-st_index.d.ts-0-63936[]>": {
           "type": "object",
           "properties": {
             "verificationMethod": {
