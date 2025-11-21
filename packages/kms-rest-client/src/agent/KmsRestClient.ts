@@ -169,7 +169,7 @@ export class KmsRestClient implements IAgentPlugin {
   /** {@inheritDoc IKmsRestClient.kmsCreateRawSignature} */
   private async kmsClientCreateRawSignature(args: KmsClientCreateRawSignatureArgs): Promise<CreateRawSignatureResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
-    const url = KmsRestClient.urlWithBase(`/signatures/raw`, baseUrl)
+    const url = KmsRestClient.urlWithBase(`/signatures/raw/create`, baseUrl)
 
     const body = {
       keyInfo: args.keyInfo,
