@@ -70,7 +70,7 @@ export const createMocks = (): void => {
 
   nock('https://ssi-backend.sphereon.com')
     .post(
-      '/signatures/raw',
+      '/signatures/raw/create',
       CreateRawSignatureToJSONTyped({
         keyInfo: {
           key: {

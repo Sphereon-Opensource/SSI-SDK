@@ -346,7 +346,7 @@ export const createMocks = (): void => {
     })
 
   nock('https://ssi-backend.sphereon.com')
-    .post('/signatures/raw', {
+    .post('/signatures/raw/create', {
         keyInfo: {
           key: {
             kty: "EC",
