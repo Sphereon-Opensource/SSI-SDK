@@ -21,6 +21,24 @@ import {
 
 import { IOID4VCIStore } from '../types/IOID4VCIStore'
 
+export const oid4vciStoreMethods: Array<string> = [
+  'oid4vciStoreDefaultMetadata',
+  'oid4vciStoreDefaultIssuerOptions',
+  'oid4vciStoreDefaultStoreId',
+  'oid4vciStoreDefaultNamespace',
+  'oid4vciStoreGetIssuerOpts',
+  'oid4vciStoreHasIssuerOpts',
+  'oid4vciStorePersistIssuerOpts',
+  'oid4vciStoreRemoveIssuerOpts',
+  'oid4vciStoreClearAllIssuerOpts',
+  'oid4vciStoreGetMetadata',
+  'oid4vciStoreListMetadata',
+  'oid4vciStoreHasMetadata',
+  'oid4vciStorePersistMetadata',
+  'oid4vciStoreRemoveMetadata',
+  'oid4vciStoreClearAllMetadata'
+]
+
 export class OID4VCIStore implements IAgentPlugin {
   get defaultOpts(): IIssuerDefaultOpts | undefined {
     return this._defaultOpts
