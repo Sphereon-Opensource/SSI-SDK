@@ -15,13 +15,15 @@ export type CreateKeyArgs = {
 export type SignArgs = {
   keyRef: Pick<IKey, 'kid'>
   data: Uint8Array
+  algorithm?: string
   [x: string]: any
 }
 
 export type VerifyArgs = {
   keyRef: Pick<IKey, 'kid'>
   data: Uint8Array
-  signature: string;
+  signature: string
+  algorithm?: string
   [x: string]: any
 }
 

@@ -3,25 +3,27 @@ import { sha384, sha512 } from '@noble/hashes/sha512'
 import type { HasherSync } from '@sphereon/ssi-types'
 // @ts-ignore
 import * as u8a from 'uint8arrays'
+import { normalizeHashAlgorithm } from './functions'
+import { DigestAlgorithm } from './types'
 const { fromString, toString, SupportedEncodings } = u8a
 
-export type HashAlgorithm = 'SHA-256' | 'SHA-384' | 'SHA-512'
 export type TDigestMethod = (input: string, encoding?: typeof SupportedEncodings) => string
 
 export const digestMethodParams = (
-  hashAlgorithm: HashAlgorithm
-): { hashAlgorithm: HashAlgorithm; digestMethod: TDigestMethod; hash: (data: Uint8Array) => Uint8Array } => {
-  if (hashAlgorithm === 'SHA-256') {
-    return { hashAlgorithm: 'SHA-256', digestMethod: sha256DigestMethod, hash: sha256 }
-  } else if (hashAlgorithm === 'SHA-384') {
-    return { hashAlgorithm: 'SHA-384', digestMethod: sha384DigestMethod, hash: sha384 }
-  } else {
-    return { hashAlgorithm: 'SHA-512', digestMethod: sha512DigestMethod, hash: sha512 }
+  hashAlgorithm: DigestAlgorithm,
+): { hashAlgorithm: DigestAlgorithm; digestMethod: TDigestMethod; hash: (data: Uint8Array) => Uint8Array } => {
+  switch (normalizeHashAlgorithm(hashAlgorithm)) {
+    case 'SHA-256':
+      return { hashAlgorithm: 'SHA-256', digestMethod: sha256DigestMethod, hash: sha256 }
+    case 'SHA-384':
+      return { hashAlgorithm: 'SHA-384', digestMethod: sha384DigestMethod, hash: sha384 }
+    case 'SHA-512':
+      return { hashAlgorithm: 'SHA-512', digestMethod: sha512DigestMethod, hash: sha512 }
   }
 }
 
-export const shaHasher: HasherSync = (input: string | ArrayBuffer, alg: string): Uint8Array => {
-  const hashAlgorithm: HashAlgorithm = alg.includes('384') ? 'SHA-384' : alg.includes('512') ? 'SHA-512' : 'SHA-256'
+export const shaHasher: HasherSync = (input: string | ArrayBuffer | SharedArrayBuffer, alg: string): Uint8Array => {
+  const hashAlgorithm: DigestAlgorithm = alg.includes('384') ? 'SHA-384' : alg.includes('512') ? 'SHA-512' : 'SHA-256'
   return digestMethodParams(hashAlgorithm).hash(typeof input === 'string' ? fromString(input, 'utf-8') : new Uint8Array(input))
 }
 

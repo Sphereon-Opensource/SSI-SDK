@@ -3,6 +3,7 @@ import { CredentialMapper, ObjectUtils } from '@sphereon/ssi-types'
 function isHex(input: string) {
   return input.match(/^([0-9A-Fa-f])+$/g) !== null
 }
+
 export function ensureRawDocument(input: string | object): string {
   if (typeof input === 'string') {
     if (isHex(input) || ObjectUtils.isBase64(input)) {
