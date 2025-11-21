@@ -1,4 +1,12 @@
-import { calculateJwkThumbprint, toJwk, x25519PublicHexFromPrivateHex, type X509Opts } from '@sphereon/ssi-sdk-ext.key-utils'
+import {
+  calculateJwkThumbprint,
+  isHashString,
+  joseAlgorithmToDigest,
+  shaHasher,
+  toJwk,
+  x25519PublicHexFromPrivateHex,
+  type X509Opts,
+} from '@sphereon/ssi-sdk-ext.key-utils'
 import { hexToPEM, jwkToPEM, pemCertChainTox5c, PEMToHex, PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
 import type { ManagedKeyInfo as RestManagedKeyInfo } from '@sphereon/ssi-sdk.kms-rest-client'
 import {
@@ -93,7 +101,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         algorithms: [key.keyPair.jose.publicJwk.alg ?? 'PS256'],
         jwkThumbprint: calculateJwkThumbprint({
           jwk,
-          digestAlgorithm: this.signatureAlgorithmToDigestAlgorithm(signatureAlgorithm),
+          digestAlgorithm: jwk.alg ? joseAlgorithmToDigest(jwk.alg) : 'sha256',
         }),
       },
       publicKeyHex: Buffer.from(key.keyPair.jose.publicJwk.toString(), 'utf8').toString('base64'),
@@ -102,7 +110,6 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   async importKey(args: ImportKeyArgs): Promise<ManagedKeyInfo> {
     const { type } = args
-    const signatureAlgorithm = this.mapKeyTypeToSignatureAlgorithm(type)
     const importKey = this.mapImportKey(args)
 
     const result = this.providerId
@@ -127,7 +134,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         algorithms: [result.keyInfo.key.alg ?? 'PS256'],
         jwkThumbprint: calculateJwkThumbprint({
           jwk: importKey.publicKeyJwk,
-          digestAlgorithm: this.signatureAlgorithmToDigestAlgorithm(signatureAlgorithm),
+          digestAlgorithm: importKey.publicKeyJwk.alg ? joseAlgorithmToDigest(importKey.publicKeyJwk.alg) : 'sha256',
         }),
       },
       publicKeyHex: Buffer.from(result.keyInfo.key.toString(), 'utf8').toString('base64'),
@@ -190,7 +197,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
           jwk,
           jwkThumbprint: calculateJwkThumbprint({
             jwk: jwk as JWK,
-            digestAlgorithm: restKey.signatureAlgorithm ? this.signatureAlgorithmToDigestAlgorithm(restKey.signatureAlgorithm) : 'sha256',
+            digestAlgorithm: restKey.key.alg ? joseAlgorithmToDigest(restKey.key.alg) : 'sha256',
           }),
           alias: restKey.alias,
           providerId: restKey.providerId,
@@ -222,7 +229,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   }
 
   async sign(args: SignArgs): Promise<string> {
-    const { keyRef, data } = args
+    const { keyRef, data, algorithm = 'SHA-256' } = args
     const key = this.providerId
       ? await this.client.methods.kmsClientProviderGetKey({
           aliasOrKid: keyRef.kid,
@@ -236,9 +243,11 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
           ...(this.userId && { userId: this.userId }),
         })
 
+    // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash
+    const dataToBeSigned: string = isHashString(data) ? data : toString(shaHasher(data.buffer, algorithm))
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
       keyInfo: key.keyInfo,
-      input: toString(data, 'base64'),
+      input: dataToBeSigned,
       ...(this.tenantId && { tenantId: this.tenantId }),
       ...(this.userId && { userId: this.userId }),
     })
@@ -247,7 +256,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   }
 
   async verify(args: VerifyArgs): Promise<boolean> {
-    const { keyRef, data, signature } = args
+    const { keyRef, data, signature, algorithm = 'SHA-256' } = args
     const key = this.providerId
       ? await this.client.methods.kmsClientProviderGetKey({
           aliasOrKid: keyRef.kid,
@@ -261,9 +270,11 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
           ...(this.userId && { userId: this.userId }),
         })
 
+    // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash
+    const dataToBeVerified: string = isHashString(data) ? data : toString(shaHasher(data.buffer, algorithm))
     const verification = await this.client.methods.kmsClientIsValidRawSignature({
       keyInfo: key.keyInfo,
-      input: toString(data, 'base64'),
+      input: dataToBeVerified,
       signature,
       ...(this.tenantId && { tenantId: this.tenantId }),
       ...(this.userId && { userId: this.userId }),
@@ -274,23 +285,6 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   async sharedSecret(args: SharedSecretArgs): Promise<string> {
     throw new Error('sharedSecret is not implemented for REST KMS.')
-  }
-
-  private signatureAlgorithmToDigestAlgorithm = (signatureAlgorithm: SignatureAlgorithm): 'sha256' | 'sha512' => {
-    switch (signatureAlgorithm) {
-      case SignatureAlgorithm.EcdsaSha256:
-      case SignatureAlgorithm.RsaSsaPssSha256Mgf1:
-      case SignatureAlgorithm.EckaDhSha256:
-      case SignatureAlgorithm.HmacSha256:
-      case SignatureAlgorithm.Es256K:
-        return 'sha256'
-      case SignatureAlgorithm.EcdsaSha512:
-      case SignatureAlgorithm.HmacSha512:
-      case SignatureAlgorithm.RsaSsaPssSha512Mgf1:
-        return 'sha512'
-      default:
-        throw new Error(`Signature algorithm ${signatureAlgorithm} is not supported by REST KMS`)
-    }
   }
 
   private mapKeyUsage = (usage: string): JwkUse => {

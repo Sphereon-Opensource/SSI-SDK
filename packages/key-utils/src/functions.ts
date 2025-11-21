@@ -31,6 +31,7 @@ import * as u8a from 'uint8arrays'
 import { digestMethodParams } from './digest-methods'
 import { validateJwk } from './jwk-jcs'
 import {
+  DigestAlgorithm,
   ENC_KEY_ALGS,
   type IImportProvidedOrGeneratedKeyArgs,
   JwkKeyUse,
@@ -198,8 +199,8 @@ export const toBase64url = (input: string): string => toString(fromString(input)
  * Calculate the JWK thumbprint
  * @param args
  */
-export const calculateJwkThumbprint = (args: { jwk: JWK; digestAlgorithm?: 'sha256' | 'sha512' }): string => {
-  const { digestAlgorithm = 'sha256' } = args
+export const calculateJwkThumbprint = (args: { jwk: JWK; digestAlgorithm?: DigestAlgorithm }): string => {
+  const digestAlgorithm = normalizeHashAlgorithm(args.digestAlgorithm ?? 'SHA-256')
   const jwk = sanitizedJwk(args.jwk)
   let components
   switch (jwk.kty) {
@@ -227,10 +228,7 @@ export const calculateJwkThumbprint = (args: { jwk: JWK; digestAlgorithm?: 'sha2
       throw new Error('"kty" (Key Type) Parameter missing or unsupported')
   }
   const data = JSON.stringify(components)
-
-  return digestAlgorithm === 'sha512'
-    ? digestMethodParams('SHA-512').digestMethod(data, 'base64url')
-    : digestMethodParams('SHA-256').digestMethod(data, 'base64url')
+  return digestMethodParams(digestAlgorithm).digestMethod(data, 'base64url')
 }
 
 export const toJwkFromKey = (
@@ -1121,4 +1119,74 @@ export function toPkcs1(derBytes: Uint8Array): Uint8Array {
 export function toPkcs1FromHex(publicKeyHex: string) {
   const pkcs1 = toPkcs1(fromString(publicKeyHex, 'hex'))
   return toString(pkcs1, 'hex')
+}
+
+export function joseAlgorithmToDigest(alg: string): DigestAlgorithm {
+  switch (alg.toUpperCase().replace('-', '')) {
+    case 'RS256':
+    case 'ES256':
+    case 'ES256K':
+    case 'PS256':
+    case 'HS256':
+      return 'SHA-256'
+    case 'RS384':
+    case 'ES384':
+    case 'PS384':
+    case 'HS384':
+      return 'SHA-384'
+    case 'RS512':
+    case 'ES512':
+    case 'PS512':
+    case 'HS512':
+      return 'SHA-512'
+    case 'EdDSA':
+      return 'SHA-512'
+    default:
+      return 'SHA-256'
+  }
+}
+
+export function isHash(input: string): boolean {
+  const length = input.length
+  // SHA-256: 64 hex chars, SHA-384: 96 hex chars, SHA-512: 128 hex chars
+  if (length !== 64 && length !== 96 && length !== 128) {
+    return false
+  }
+  return input.match(/^([0-9A-Fa-f])+$/g) !== null
+}
+
+export function isHashString(input: Uint8Array): boolean {
+  const length = input.length
+  // SHA-256: 32 bytes, SHA-384: 48 bytes, SHA-512: 64 bytes
+  if (length !== 32 && length !== 48 && length !== 64) {
+    return false
+  }
+  for (let i = 0; i < length; i++) {
+    const byte = input[i]
+    if (byte === undefined) {
+      return false
+    }
+    // 0-9: 48-57, A-F: 65-70, a-f: 97-102
+    if (!((byte >= 48 && byte <= 57) || (byte >= 65 && byte <= 70) || (byte >= 97 && byte <= 102))) {
+      return false
+    }
+  }
+  return true
+}
+
+export type HashAlgorithm = 'SHA-256' | 'sha256' | 'SHA-384' | 'sha384' | 'SHA-512' | 'sha512'
+
+export function normalizeHashAlgorithm(alg?: HashAlgorithm): 'SHA-256' | 'SHA-384' | 'SHA-512' {
+  if (!alg) {
+    return 'SHA-256'
+  }
+  const upper = alg.toUpperCase()
+  if (upper.includes('256')) return 'SHA-256'
+  if (upper.includes('384')) return 'SHA-384'
+  if (upper.includes('512')) return 'SHA-512'
+  throw new Error(`Invalid hash algorithm: ${alg}`)
+}
+
+export function isSameHash(left: HashAlgorithm, right: HashAlgorithm): boolean {
+  return normalizeHashAlgorithm(left) === normalizeHashAlgorithm(right)
 }
