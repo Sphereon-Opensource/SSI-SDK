@@ -280,7 +280,7 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
         return sendErrorResponse(response, 404, 'Not found')
       }
 
-      const serviceEntries: Array<LinkedVPServiceEntry> = await context.agent.lvpGetServiceEntries()
+      const serviceEntries: Array<LinkedVPServiceEntry> = await context.agent.lvpGetServiceEntries({ subjectDid: did })
       if (resolutionResult?.didDocument && serviceEntries) {
         resolutionResult.didDocument.service = serviceEntries as Array<Service>
       }

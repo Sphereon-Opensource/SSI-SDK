@@ -103,12 +103,15 @@ export class LinkedVPManager implements IAgentPlugin {
   }
 
   private async lvpGetServiceEntries(args: GetServiceEntriesArgs, context: RequiredContext): Promise<Array<LinkedVPServiceEntry>> {
-    const { tenantId } = args
+    const { tenantId, subjectDid } = args
 
     // Get all published credentials (credentials with linkedVpId set)
     const filter: any = { linkedVpId: Not(IsNull()) }
     if (tenantId) {
       filter.tenantId = tenantId
+    }
+    if (subjectDid) {
+      filter.subjectCorrelationId = subjectDid
     }
 
     const credentials = await context.agent.crsGetCredentials({
@@ -132,6 +135,7 @@ export class LinkedVPManager implements IAgentPlugin {
       filter: [
         {
           linkedVpId: args.linkedVpId,
+          linkedVpUntil: args.linkedVpUntil,
           ...(tenantId && { tenantId }),
         },
       ],

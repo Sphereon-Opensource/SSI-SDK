@@ -13,9 +13,19 @@ export class AddLinkedVpFields1763387280001 implements MigrationInterface {
       ALTER TABLE "DigitalCredential" 
       ADD COLUMN "linked_vp_from" TIMESTAMP
     `)
+
+    await queryRunner.query(`
+      ALTER TABLE "DigitalCredential" 
+      ADD COLUMN "linked_vp_until" TIMESTAMP
+    `)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      ALTER TABLE "DigitalCredential"
+        DROP COLUMN "linked_vp_until"
+    `)
+
     await queryRunner.query(`
       ALTER TABLE "DigitalCredential" 
       DROP COLUMN "linked_vp_from"

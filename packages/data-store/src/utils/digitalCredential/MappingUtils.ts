@@ -156,7 +156,7 @@ export const persistedDigitalCredentialEntityFromUpdateArgs = (
   Object.assign(entity, existingCredential)
 
   // Normalize nullable fields before applying updates
-  const normalizedUpdates = normalizeNullableFields(updates, ['linkedVpId', 'linkedVpFrom'])
+  const normalizedUpdates = normalizeNullableFields(updates, ['linkedVpId', 'linkedVpFrom', 'linkedVpUntil'])
 
   // Apply updates
   Object.assign(entity, normalizedUpdates)

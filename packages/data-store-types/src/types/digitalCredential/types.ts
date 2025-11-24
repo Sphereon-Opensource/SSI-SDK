@@ -31,6 +31,7 @@ export type DigitalCredential = {
   tenantId?: string
   linkedVpId?: string
   linkedVpFrom?: Date
+  linkedVpUntil?: Date
   createdAt: Date
   presentedAt?: Date
   lastUpdatedAt: Date

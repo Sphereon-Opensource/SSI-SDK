@@ -13,7 +13,7 @@ import {
 } from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole, OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
-import { DataSource, type FindOptionsOrder, type FindOptionsWhere, Repository } from 'typeorm'
+import { DataSource, type FindOptionsOrder, type FindOptionsWhere, LessThanOrEqual, Repository } from 'typeorm'
 
 import {
   digitalCredentialFrom,
@@ -67,8 +67,28 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
         ? parseAndValidateOrderOptions<DigitalCredentialEntity>(order)
         : <FindOptionsOrder<DigitalCredentialEntity>>order
     const dcRepo = await this.getRepository()
+
+    // Process filter to convert linkedVpUntil dates into LessThanOrEqual operators
+    const processLinkedVpUntil = (filterItem: Partial<DigitalCredential>): FindOptionsWhere<DigitalCredentialEntity> => {
+      const processed = { ...filterItem } as FindOptionsWhere<DigitalCredentialEntity>
+      if (filterItem.linkedVpUntil) {
+        processed.linkedVpUntil = LessThanOrEqual(filterItem.linkedVpUntil)
+      }
+      return processed
+    }
+
+    let whereClause: FindOptionsWhere<DigitalCredentialEntity> | FindOptionsWhere<DigitalCredentialEntity>[]
+
+    if (Array.isArray(filter) && filter.length > 0) {
+      whereClause = filter.map(processLinkedVpUntil)
+    } else if (Object.keys(filter).length > 0) {
+      whereClause = processLinkedVpUntil(filter as Partial<DigitalCredential>)
+    } else {
+      whereClause = filter as FindOptionsWhere<DigitalCredentialEntity>
+    }
+
     const [result, total] = await dcRepo.findAndCount({
-      where: filter,
+      where: whereClause,
       skip: offset,
       take: limit,
       order: sortOptions,

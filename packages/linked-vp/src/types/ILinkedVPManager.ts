@@ -55,6 +55,7 @@ export interface ILinkedVPManager extends IPluginMethodMap {
 export type PublishCredentialArgs = {
   digitalCredentialId: string
   linkedVpId?: string // Optional: if not provided, will be auto-generated
+  linkedVpUntil?: Date
 }
 
 export type UnpublishCredentialArgs = {
@@ -66,17 +67,20 @@ export type HasLinkedVPEntryArgs = {
 }
 
 export type GetServiceEntriesArgs = {
+  subjectDid?: string
   tenantId?: string
 }
 
 export type GeneratePresentationArgs = {
   linkedVpId: string
+  linkedVpUntil?: Date
 }
 
 export type LinkedVPEntry = {
   id: string
   linkedVpId: string
   linkedVpFrom?: Date
+  linkedVpUntil?: Date
   tenantId?: string
   createdAt: Date
 }
