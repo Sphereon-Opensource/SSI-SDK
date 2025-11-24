@@ -55,6 +55,7 @@ export interface ILinkedVPManager extends IPluginMethodMap {
 export type PublishCredentialArgs = {
   digitalCredentialId: string
   linkedVpId?: string // Optional: if not provided, will be auto-generated
+  linkedVpFrom?: Date
   linkedVpUntil?: Date
 }
 

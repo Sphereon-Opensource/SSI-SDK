@@ -52,18 +52,20 @@ export class LinkedVPManager implements IAgentPlugin {
 
     await this.ensureLinkedVpIdUnique(linkedVpId, context, credential.tenantId)
 
-    const publishedAt = new Date()
+    const publishAt = args.linkedVpFrom ?? new Date()
     await context.agent.crsUpdateCredential({
       id: digitalCredentialId,
       linkedVpId,
-      linkedVpFrom: publishedAt,
+      linkedVpFrom: publishAt,
+      linkedVpUntil: args.linkedVpUntil,
     })
 
     return {
       id: credential.id,
       linkedVpId,
       tenantId: credential.tenantId,
-      linkedVpFrom: publishedAt,
+      linkedVpFrom: publishAt,
+      linkedVpUntil: args.linkedVpUntil,
       createdAt: credential.createdAt,
     }
   }
