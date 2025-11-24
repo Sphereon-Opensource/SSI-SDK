@@ -208,7 +208,23 @@ export class OID4VCIIssuer implements IAgentPlugin {
     if (!metadata) {
       throw Error(`Issuer metadata not found for issuer ${opts.credentialIssuer}, namespace ${opts.namespace} and store ${opts.storeId}`)
     }
-    return metadata
+    //return metadata
+
+    const credentialConfiguration = {
+      format: 'dc+sd-jwt',
+      cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+      cryptographic_suites_supported: ['ES256'],
+      vct: 'test-bram-v1'
+    }
+
+    return {
+      ...metadata,
+      credential_configurations_supported: {
+        ...metadata.credential_configurations_supported,
+        // @ts-ignore
+        'bram-test-v1': credentialConfiguration
+      }
+    }
   }
 
   private async getAuthorizationServerMetadataFromStore(
