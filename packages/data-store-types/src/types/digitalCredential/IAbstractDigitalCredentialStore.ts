@@ -31,6 +31,7 @@ export type AddCredentialArgs = {
   credentialRole: CredentialRole
   linkedVpId?: string
   linkedVpFrom?: Date
+  linkedVpUntil?: Date
   tenantId?: string
   state?: CredentialStateType
   verifiedAt?: Date
