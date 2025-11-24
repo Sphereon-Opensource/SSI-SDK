@@ -56,6 +56,13 @@ export class IssuerInstance {
   }
 
   set issuerMetadata(value: IssuerMetadata) {
+    if (this._issuer?.issuerMetadata) {
+      this._issuer.issuerMetadata = {
+        ...this._issuer?.issuerMetadata,
+        credential_configurations_supported: value.credential_configurations_supported
+      }
+    }
+
     this._issuerMetadata = value
   }
 
