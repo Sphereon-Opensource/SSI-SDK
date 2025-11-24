@@ -865,13 +865,18 @@ export function toDidDocument(
       '@context': 'https://www.w3.org/ns/did/v1',
       id: did,
       verificationMethod: identifier.keys.map((key) => {
+        // Use existing JWK from meta if available, otherwise convert from publicKeyHex
+        const publicKeyJwk = key.meta?.jwk
+          ? sanitizedJwk(key.meta.jwk as JWK)
+          : toJwk(key.publicKeyHex, key.type, {
+              use: ENC_KEY_ALGS.includes(key.type) ? JwkKeyUse.Encryption : JwkKeyUse.Signature,
+              key,
+            })
+
         const vm: VerificationMethod = {
           controller: did,
           id: key.kid.startsWith(did) && key.kid.includes('#') ? key.kid : `${did}#${key.kid}`,
-          publicKeyJwk: toJwk(key.publicKeyHex, key.type, {
-            use: ENC_KEY_ALGS.includes(key.type) ? JwkKeyUse.Encryption : JwkKeyUse.Signature,
-            key,
-          }) as JsonWebKey,
+          publicKeyJwk: publicKeyJwk as JsonWebKey,
           type: 'JsonWebKey2020',
         }
         return vm

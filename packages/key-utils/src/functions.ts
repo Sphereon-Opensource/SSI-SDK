@@ -908,7 +908,7 @@ export const sanitizedJwk = (input: JWK | JsonWebKey): JWK => {
   return removeNulls(jwk)
 }
 
-const base64ToBase64Url = (input: string): string => {
+export const base64ToBase64Url = (input: string): string => {
   return input.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 

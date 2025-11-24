@@ -1,7 +1,9 @@
 import {
+  base64ToBase64Url,
   calculateJwkThumbprint,
   isHashString,
   joseAlgorithmToDigest,
+  jwkToRawHexKey,
   shaHasher,
   toJwk,
   x25519PublicHexFromPrivateHex,
@@ -172,42 +174,34 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
     const restKeys = ListKeysResponseToJSONTyped(keys, false).keyInfos
 
-    return restKeys.map((restKey: RestManagedKeyInfo) => {
-      const jwk = restKey.key
-      let publicKeyHex = ''
+    return Promise.all(
+      restKeys.map(async (restKey: RestManagedKeyInfo) => {
+        const jwk = restKey.key
+        const publicKeyHex = await jwkToRawHexKey(jwk as JWK)
+        const keyType = this.mapRestKeyTypeToTKeyType(restKey.keyType)
 
-      // Derive publicKeyHex from JWK based on key type
-      if (jwk.kty === 'EC') {
-        publicKeyHex = jwk.x || ''
-      } else if (jwk.kty === 'RSA') {
-        publicKeyHex = jwk.n || ''
-      } else if (jwk.kty === 'OKP') {
-        publicKeyHex = jwk.x || ''
-      }
-
-      const keyType = this.mapRestKeyTypeToTKeyType(restKey.keyType)
-
-      return {
-        kid: restKey.kid || restKey.alias,
-        kms: this.id,
-        type: keyType,
-        publicKeyHex,
-        meta: {
-          algorithms: restKey.signatureAlgorithm ? [restKey.signatureAlgorithm] : undefined,
-          jwk,
-          jwkThumbprint: calculateJwkThumbprint({
-            jwk: jwk as JWK,
-            digestAlgorithm: restKey.key.alg ? joseAlgorithmToDigest(restKey.key.alg) : 'sha256',
-          }),
-          alias: restKey.alias,
-          providerId: restKey.providerId,
-          x5c: restKey.x5c,
-          keyVisibility: restKey.keyVisibility,
-          keyEncoding: restKey.keyEncoding,
-          ...restKey.opts,
-        },
-      } satisfies ManagedKeyInfo
-    })
+        return {
+          kid: restKey.kid || restKey.alias,
+          kms: this.id,
+          type: keyType,
+          publicKeyHex,
+          meta: {
+            algorithms: restKey.signatureAlgorithm ? [restKey.signatureAlgorithm] : undefined,
+            jwk,
+            jwkThumbprint: calculateJwkThumbprint({
+              jwk: jwk as JWK,
+              digestAlgorithm: restKey.key.alg ? joseAlgorithmToDigest(restKey.key.alg) : 'sha256',
+            }),
+            alias: restKey.alias,
+            providerId: restKey.providerId,
+            x5c: restKey.x5c,
+            keyVisibility: restKey.keyVisibility,
+            keyEncoding: restKey.keyEncoding,
+            ...restKey.opts,
+          },
+        } satisfies ManagedKeyInfo
+      }),
+    )
   }
 
   private mapRestKeyTypeToTKeyType(keyType: string | undefined): TKeyType {
@@ -254,7 +248,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ...(this.userId && { userId: this.userId }),
     })
 
-    return signingResult.signature
+    return base64ToBase64Url(signingResult.signature)
   }
 
   async verify(args: VerifyArgs): Promise<boolean> {
