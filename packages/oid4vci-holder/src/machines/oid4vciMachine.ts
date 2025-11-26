@@ -348,7 +348,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.isFirstPartyApplication,
           },
           {
-            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            target: OID4VCIMachineStates.prepareAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
@@ -446,10 +446,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
-            target: OID4VCIMachineStates.initiateAuthorizationRequest,
-            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
-          },
-          {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
@@ -524,10 +520,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
-          },
-          {
-            target: OID4VCIMachineStates.prepareAuthorizationRequest,
-            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
             target: OID4VCIMachineStates.getCredentials,
