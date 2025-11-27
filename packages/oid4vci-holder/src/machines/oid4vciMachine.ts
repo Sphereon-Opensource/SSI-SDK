@@ -535,6 +535,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             actions: assign({
               authorizationCodeURL: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<PrepareAuthorizationResult>) =>
                 _event.data.authorizationCodeURL,
+              openID4VCIClientState: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<PrepareAuthorizationResult>) => _event.data.oid4vciClientState,
             }),
           },
           onError: {
