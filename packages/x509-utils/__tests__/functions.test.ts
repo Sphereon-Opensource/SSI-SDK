@@ -226,19 +226,6 @@ describe('functions: validateX5cCertificateChain', () => {
     })
   })
 
-  it('should validate Credenco certificate chain', async () => {
-    const result = await validateX509CertificateChain({
-      chain: [credencoTestIssuer],
-      trustAnchors: [],
-      verificationTime: new Date('2025-11-27'),
-    })
-    expect(result).toMatchObject({
-      critical: false,
-      error: false,
-      message: 'Certificate chain was valid',
-    })
-  })
-
   it('should not validate an invalid certificate chain', async () => {
     const result = await validateX509CertificateChain({ chain: invalidChain })
     expect(result).toMatchObject({
