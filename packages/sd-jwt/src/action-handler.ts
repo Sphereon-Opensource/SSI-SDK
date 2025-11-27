@@ -309,7 +309,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = header.jwk
-    if (x5c) {
+    if (x5c?.length) {
       const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
