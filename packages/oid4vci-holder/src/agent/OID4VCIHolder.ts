@@ -494,7 +494,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (!clientId) {
       return Promise.reject(Error(`Missing client id in contact's connectionConfig`))
     }
-    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
     const authorizationCodeURL = await client.createAuthorizationRequestUrl({
       authorizationRequest: {
         clientId: clientId,
