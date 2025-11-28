@@ -30,6 +30,7 @@ import { IOID4VCIIssuer } from '../types/IOID4VCIIssuer'
 export class OID4VCIIssuer implements IAgentPlugin {
   private static readonly _DEFAULT_OPTS_KEY = '_default'
   private readonly instances: Map<string, IssuerInstance> = new Map()
+  //private readonly instanceIntervals = new Map<string, NodeJS.Timeout>();
   readonly schema = schema.IDidAuthSiopOpAuthenticator
 
   readonly methods: IOID4VCIIssuer = {
@@ -132,6 +133,16 @@ export class OID4VCIIssuer implements IAgentPlugin {
     if (!issuerOpts.resolveOpts?.resolver) {
       issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
+
+    // const instance = new IssuerInstance({
+    //   issuerOpts,
+    //   metadataOpts,
+    //   issuerMetadata,
+    //   authorizationServerMetadata,
+    // })
+    // this.instances.set(credentialIssuer, instance)
+    // this.startIssuerMetadataRefreshInterval({ ...args, credentialIssuer, instance }, context)
+
     this.instances.set(
       credentialIssuer,
       new IssuerInstance({
@@ -141,6 +152,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
         authorizationServerMetadata,
       }),
     )
+
     return this.oid4vciGetInstance(args, context)
   }
 
@@ -209,6 +221,22 @@ export class OID4VCIIssuer implements IAgentPlugin {
       throw Error(`Issuer metadata not found for issuer ${opts.credentialIssuer}, namespace ${opts.namespace} and store ${opts.storeId}`)
     }
     return metadata
+
+    // const credentialConfiguration = {
+    //   format: 'dc+sd-jwt',
+    //   cryptographic_binding_methods_supported: ['did:web', 'did:jwk'],
+    //   cryptographic_suites_supported: ['ES256'],
+    //   vct: 'test-bram-v1'
+    // }
+    //
+    // return {
+    //   ...metadata,
+    //   credential_configurations_supported: {
+    //     ...metadata.credential_configurations_supported,
+    //     // @ts-ignore
+    //     'bram-test-v1': credentialConfiguration
+    //   }
+    // }
   }
 
   private async getAuthorizationServerMetadataFromStore(
@@ -249,4 +277,32 @@ export class OID4VCIIssuer implements IAgentPlugin {
     }
     return namespace
   }
+
+  // private startIssuerMetadataRefreshInterval(
+  //   args: IIssuerInstanceArgs & { instance: IssuerInstance },
+  //   context: IRequiredContext
+  // ): void {
+  //   const { credentialIssuer, instance } = args
+  //
+  //   if (this.instanceIntervals.has(credentialIssuer)) {
+  //     clearInterval(this.instanceIntervals.get(credentialIssuer))
+  //   }
+  //
+  //   const intervalId = setInterval((): void => {
+  //     this.getIssuerMetadata({ ...args }, context)
+  //       .then((issuerMetadata) => {
+  //         console.log(`SETTING INSTANCE: ${credentialIssuer}, metadata: ${JSON.stringify(issuerMetadata)}`)
+  //
+  //         instance.issuerMetadata = issuerMetadata
+  //       })
+  //   }, 60_000) // TODO create option for this
+  //
+  //   this.instanceIntervals.set(args.credentialIssuer, intervalId)
+  // }
+
+  // private stopIssuerMetadataRefreshInterval(credentialIssuer: string): void {
+  //   if (this.instanceIntervals.has(credentialIssuer)) {
+  //     clearInterval(this.instanceIntervals.get(credentialIssuer))
+  //   }
+  // }
 }

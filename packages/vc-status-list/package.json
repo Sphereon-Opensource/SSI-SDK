@@ -27,7 +27,7 @@
     "@sd-jwt/jwt-status-list": "^0.15.0",
     "@sd-jwt/sd-jwt-vc": "^0.15.1",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
-    "@sphereon/oid4vci-common": "0.20.0",
+    "@sphereon/oid4vci-common": "0.20.1-feat.SSISDK.83.1",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*",
     "@sphereon/ssi-sdk-ext.jwt-service": "workspace:*",
