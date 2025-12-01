@@ -62,7 +62,7 @@ export const getAuthenticationKey = async (
     noVerificationMethodFallback?: boolean
     controllerKey?: boolean
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<_ExtendedIKey> => {
   return await getFirstKeyWithRelation(
     {
@@ -73,7 +73,7 @@ export const getAuthenticationKey = async (
       controllerKey,
       vmRelationship: 'authentication',
     },
-    context
+    context,
   )
 }
 export const getFirstKeyWithRelation = async (
@@ -92,7 +92,7 @@ export const getFirstKeyWithRelation = async (
     controllerKey?: boolean
     vmRelationship: DIDDocumentSection
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<_ExtendedIKey> => {
   let key: _ExtendedIKey | undefined = undefined
   try {
@@ -105,7 +105,7 @@ export const getFirstKeyWithRelation = async (
           keyType,
           controllerKey,
         },
-        context
+        context,
       )) ??
       (noVerificationMethodFallback || vmRelationship === 'verificationMethod' // let's not fallback to the same value again
         ? undefined
@@ -117,7 +117,7 @@ export const getFirstKeyWithRelation = async (
               keyType,
               controllerKey,
             },
-            context
+            context,
           ))
   } catch (e) {
     if (e instanceof Error) {
@@ -140,7 +140,7 @@ export const getFirstKeyWithRelation = async (
           keyType,
           controllerKey,
         },
-        context
+        context,
       )) ??
       (noVerificationMethodFallback || vmRelationship === 'verificationMethod' // let's not fallback to the same value again
         ? undefined
@@ -153,7 +153,7 @@ export const getFirstKeyWithRelation = async (
               keyType,
               controllerKey,
             },
-            context
+            context,
           ))
     if (!key) {
       key = identifier.keys
@@ -170,7 +170,7 @@ export const getFirstKeyWithRelation = async (
 
 export const getOrCreatePrimaryIdentifier = async (
   context: IAgentContext<IDIDManager>,
-  opts?: CreateOrGetIdentifierOpts
+  opts?: CreateOrGetIdentifierOpts,
 ): Promise<GetOrCreateResult<IIdentifier>> => {
   const primaryIdentifier = await getPrimaryIdentifier(context, { ...opts?.createOpts?.options, ...(opts?.method && { method: opts.method }) })
   if (primaryIdentifier !== undefined) {
@@ -194,7 +194,7 @@ export const getOrCreatePrimaryIdentifier = async (
 
 export const getPrimaryIdentifier = async (context: IAgentContext<IDIDManager>, opts?: IdentifierProviderOpts): Promise<IIdentifier | undefined> => {
   const identifiers = (await context.agent.didManagerFind(opts?.method ? { provider: `${DID_PREFIX}${opts?.method}` } : {})).filter(
-    (identifier: IIdentifier) => opts?.type === undefined || identifier.keys.some((key: IKey) => key.type === opts?.type)
+    (identifier: IIdentifier) => opts?.type === undefined || identifier.keys.some((key: IKey) => key.type === opts?.type),
   )
 
   return identifiers && identifiers.length > 0 ? identifiers[0] : undefined
@@ -225,12 +225,12 @@ export const getFirstKeyWithRelationFromDIDDoc = async (
     errorOnNotFound?: boolean
     didDocument?: DIDDocument
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<_ExtendedIKey | undefined> => {
   const matchedKeys = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship, didDocument }, context)
   if (Array.isArray(matchedKeys) && matchedKeys.length > 0) {
     const result = matchedKeys.find(
-      (key) => keyType === undefined || key.type === keyType || (controllerKey && key.kid === identifier.controllerKeyId)
+      (key) => keyType === undefined || key.type === keyType || (controllerKey && key.kid === identifier.controllerKeyId),
     )
     if (result) {
       return result
@@ -238,7 +238,7 @@ export const getFirstKeyWithRelationFromDIDDoc = async (
   }
   if (errorOnNotFound) {
     throw new Error(
-      `Could not find key with relationship ${vmRelationship} in DID document for ${identifier.did}${keyType ? ' and key type: ' + keyType : ''}`
+      `Could not find key with relationship ${vmRelationship} in DID document for ${identifier.did}${keyType ? ' and key type: ' + keyType : ''}`,
     )
   }
   return undefined
@@ -300,7 +300,7 @@ export const getKeys = ({
 export async function dereferenceDidKeysWithJwkSupport(
   didDocument: DIDDocument,
   section: DIDDocumentSection = 'keyAgreement',
-  context: IAgentContext<IResolver>
+  context: IAgentContext<IResolver>,
 ): Promise<_NormalizedVerificationMethod[]> {
   const convert = section === 'keyAgreement'
   if (section === 'service') {
@@ -322,7 +322,7 @@ export async function dereferenceDidKeysWithJwkSupport(
         } else {
           return key as _ExtendedVerificationMethod
         }
-      })
+      }),
     )
   )
     .filter(isDefined)
@@ -465,14 +465,14 @@ export function verificationMethodToJwk(vm: VerificationMethod, errorOnNotFound 
 function didDocumentSectionToJwks(
   didDocumentSection: DIDDocumentSection,
   searchForVerificationMethods?: (VerificationMethod | string)[],
-  verificationMethods?: VerificationMethod[]
+  verificationMethods?: VerificationMethod[],
 ) {
   const jwks = new Set(
     (searchForVerificationMethods ?? [])
       .map((vmOrId) => (typeof vmOrId === 'object' ? vmOrId : verificationMethods?.find((vm) => vm.id === vmOrId)))
       .filter(isDefined)
       .map((vm) => verificationMethodToJwk(vm, false))
-      .filter(isDefined)
+      .filter(isDefined),
   )
   return { didDocumentSection, jwks: Array.from(jwks) }
 }
@@ -522,7 +522,7 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
     didDocument?: DIDDocument
     kmsKeyRef?: string
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<_ExtendedIKey[]> {
   const didDoc =
     didDocument ??
@@ -564,7 +564,7 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
           localKey.publicKeyHex === vmKey ||
           (localKey.type === 'RSA' && vmKey?.startsWith('30') && toPkcs1FromHex(localKey.publicKeyHex) === vmKey) ||
           vmKey?.startsWith(localKey.publicKeyHex) ||
-          compareBlockchainAccountId(localKey, verificationMethod)
+          compareBlockchainAccountId(localKey, verificationMethod),
       )
       if (localKey) {
         const { meta, ...localProps } = localKey
@@ -645,7 +645,7 @@ export async function getKey(
     vmRelationship?: DIDDocumentSection
     kmsKeyRef?: string
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<_ExtendedIKey> {
   if (!identifier) {
     return Promise.reject(new Error(`No identifier provided to getKey method!`))
@@ -663,12 +663,12 @@ export async function getKey(
   }
   if (kmsKeyRef) {
     identifierKey = keys.find(
-      (key: _ExtendedIKey) => key.meta.verificationMethod?.id === kmsKeyRef || (kid && key.meta.verificationMethod?.id?.includes(kid))
+      (key: _ExtendedIKey) => key.meta.verificationMethod?.id === kmsKeyRef || (kid && key.meta.verificationMethod?.id?.includes(kid)),
     )
   }
   if (!identifierKey) {
     identifierKey = keys.find(
-      (key: _ExtendedIKey) => key.meta.verificationMethod?.type === vmRelationship || key.meta.purposes?.includes(vmRelationship)
+      (key: _ExtendedIKey) => key.meta.verificationMethod?.type === vmRelationship || key.meta.purposes?.includes(vmRelationship),
     )
   }
   if (!identifierKey) {
@@ -677,7 +677,7 @@ export async function getKey(
 
   if (!identifierKey) {
     throw new Error(
-      `No matching verificationMethodSection key found for keyId: ${kmsKeyRef} and vmSection: ${vmRelationship} for id ${identifier.did}`
+      `No matching verificationMethodSection key found for keyId: ${kmsKeyRef} and vmSection: ${vmRelationship} for id ${identifier.did}`,
     )
   }
 
@@ -697,7 +697,7 @@ async function legacyGetIdentifier(
   }: {
     identifier: string | IIdentifier
   },
-  context: IAgentContext<IDIDManager>
+  context: IAgentContext<IDIDManager>,
 ): Promise<IIdentifier> {
   if (typeof identifier === 'string') {
     return await context.agent.didManagerGet({ did: identifier })
@@ -719,7 +719,7 @@ export async function determineKid(
     key: IKey
     idOpts: { identifier: IIdentifier | string; kmsKeyRef?: string }
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<string> {
   if (key.meta?.verificationMethod?.id) {
     return key.meta?.verificationMethod?.id
@@ -730,7 +730,7 @@ export async function determineKid(
       identifier,
       vmRelationship: 'verificationMethod',
     },
-    context
+    context,
   )
   const vmKey = mappedKeys.find((extendedKey) => extendedKey.kid === key.kid)
   if (vmKey) {
@@ -750,7 +750,7 @@ export function getAgentResolver(
     localResolution?: boolean // Resolve identifiers hosted by the agent
     uniresolverResolution?: boolean // Resolve identifiers using universal resolver
     resolverResolution?: boolean // Use registered drivers
-  }
+  },
 ): Resolvable {
   return new AgentDIDResolver(context, opts)
 }
@@ -763,7 +763,7 @@ export class AgentDIDResolver implements Resolvable {
 
   constructor(
     context: IAgentContext<IResolver & IDIDManager>,
-    opts?: { uniresolverResolution?: boolean; localResolution?: boolean; resolverResolution?: boolean }
+    opts?: { uniresolverResolution?: boolean; localResolution?: boolean; resolverResolution?: boolean },
   ) {
     this.context = context
     this.resolverResolution = opts?.resolverResolution !== false
@@ -855,7 +855,7 @@ export function toDidDocument(
   opts?: {
     did?: string
     use?: JwkKeyUse[]
-  }
+  },
 ): DIDDocument | undefined {
   let didDocument: DIDDocument | undefined = undefined
   // TODO: Introduce jwk thumbprints here
@@ -881,7 +881,7 @@ export function toDidDocument(
           assertionMethod: identifier.keys
             .filter(
               (key) =>
-                key?.meta?.purpose === undefined || key?.meta?.purpose === 'assertionMethod' || key?.meta?.purposes?.includes('assertionMethod')
+                key?.meta?.purpose === undefined || key?.meta?.purpose === 'assertionMethod' || key?.meta?.purposes?.includes('assertionMethod'),
             )
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
@@ -894,7 +894,7 @@ export function toDidDocument(
         identifier.keys && {
           authentication: identifier.keys
             .filter(
-              (key) => key?.meta?.purpose === undefined || key?.meta?.purpose === 'authentication' || key?.meta?.purposes?.includes('authentication')
+              (key) => key?.meta?.purpose === undefined || key?.meta?.purpose === 'authentication' || key?.meta?.purposes?.includes('authentication'),
             )
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
@@ -918,7 +918,8 @@ export function toDidDocument(
         identifier.keys && {
           capabilityInvocation: identifier.keys
             .filter(
-              (key) => key.type === 'X25519' || key?.meta?.purpose === 'capabilityInvocation' || key?.meta?.purposes?.includes('capabilityInvocation')
+              (key) =>
+                key.type === 'X25519' || key?.meta?.purpose === 'capabilityInvocation' || key?.meta?.purposes?.includes('capabilityInvocation'),
             )
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
@@ -931,7 +932,8 @@ export function toDidDocument(
         identifier.keys && {
           capabilityDelegation: identifier.keys
             .filter(
-              (key) => key.type === 'X25519' || key?.meta?.purpose === 'capabilityDelegation' || key?.meta?.purposes?.includes('capabilityDelegation')
+              (key) =>
+                key.type === 'X25519' || key?.meta?.purpose === 'capabilityDelegation' || key?.meta?.purposes?.includes('capabilityDelegation'),
             )
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
@@ -951,7 +953,7 @@ export function toDidResolutionResult(
   opts?: {
     did?: string
     supportedMethods?: string[]
-  }
+  },
 ): DIDResolutionResult {
   const didDocument = toDidDocument(identifier, opts) ?? null // null is used in case of errors and required by the did resolution spec
 
@@ -1014,7 +1016,7 @@ export const getDidSigner = async (
        */
       kmsKeyRef?: string
     }
-  }
+  },
 ): Promise<Signer> => {
   const { idOpts, context } = args
 
@@ -1025,7 +1027,7 @@ export const getDidSigner = async (
       vmRelationship: idOpts.verificationMethodSection,
       kmsKeyRef: idOpts.kmsKeyRef,
     },
-    context
+    context,
   )
   const algorithm = await signatureAlgorithmFromKey({ key })
 

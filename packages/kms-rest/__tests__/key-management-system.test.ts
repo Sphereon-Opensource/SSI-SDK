@@ -8,12 +8,12 @@ import { PEM_CERT, PEM_CHAIN, PEM_PRIV_KEY } from './certs'
 import { createMocks } from './mocks'
 
 describe('Key creation', () => {
-  let kms: RestKeyManagementSystem;
+  let kms: RestKeyManagementSystem
 
   beforeAll(async (): Promise<void> => {
     kms = new RestKeyManagementSystem({
-      applicationId: "rest-kms",
-      baseUrl: "https://ssi-backend.sphereon.com"
+      applicationId: 'rest-kms',
+      baseUrl: 'https://ssi-backend.sphereon.com',
     })
     createMocks()
   })
@@ -59,7 +59,7 @@ describe('Key creation', () => {
 
   it('should import Secp256r1 key', async () => {
     const privateKeyHex = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
-    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1'})
+    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1' })
 
     expect(key).toBeDefined()
   })
@@ -82,7 +82,7 @@ describe('Key creation', () => {
 
   it('should delete key', async () => {
     const privateKeyHex = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
-    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1'})
+    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1' })
 
     const result = await kms.deleteKey({ kid: key.kid })
 
@@ -91,12 +91,12 @@ describe('Key creation', () => {
 
   it('should create signature', async () => {
     const privateKeyHex = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
-    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1'})
+    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1' })
     expect(key.type).toEqual('Secp256r1')
 
     const signature = await kms.sign({
       keyRef: { kid: key.kid },
-      data: u8a.fromString('test', 'utf-8')
+      data: u8a.fromString('test', 'utf-8'),
     })
 
     expect(signature).toBeDefined()
@@ -105,13 +105,13 @@ describe('Key creation', () => {
   it('should verify signature', async () => {
     const data = u8a.fromString('test', 'utf-8')
     const privateKeyHex = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
-    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1'})
+    const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1' })
     expect(key.type).toEqual('Secp256r1')
     const keyRef = { kid: key.kid }
 
     const signature = await kms.sign({
       keyRef,
-      data
+      data,
     })
 
     const verification = await kms.verify({
@@ -122,6 +122,4 @@ describe('Key creation', () => {
 
     expect(verification).toBeTruthy()
   })
-
 })
-

@@ -16,7 +16,7 @@
       "path": "../jwt-service"
     },
     {
-      "path": "../did-utils",
+      "path": "../did-utils"
     },
     {
       "path": "../identifier-resolution"

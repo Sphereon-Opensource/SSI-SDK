@@ -166,6 +166,7 @@ export async function importProvidedOrGeneratedKey(
     meta: {
       ...key?.meta,
       algorithms: keyMetaAlgorithmsFromKeyType(type),
+      ...(key?.meta?.keyAlias ? {} : { keyAlias: args.alias }),
     },
   })
 }

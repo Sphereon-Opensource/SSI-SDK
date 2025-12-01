@@ -5,7 +5,7 @@ import {
   IVerifySingleResultItem,
   OriginalVerifiableCredential,
   W3CVerifiableCredential,
-  W3CVerifiablePresentation
+  W3CVerifiablePresentation,
 } from '@sphereon/ssi-types'
 import type { IAgentPlugin, IIdentifier, VerifiableCredential } from '@veramo/core'
 import { schema } from '@veramo/core'
@@ -20,7 +20,7 @@ import type {
   IVcdmIssuerAgentContext,
   IVcdmVerifierAgentContext,
   IVerifyCredentialVcdmArgs,
-  IVerifyPresentationLDArgs
+  IVerifyPresentationLDArgs,
 } from './types'
 
 const debug = Debug('sphereon:ssi-sdk:vcdm')
@@ -36,13 +36,13 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
     components: {
       schemas: {
         ...schema.ICredentialIssuer.components.schemas,
-        ...schema.ICredentialVerifier.components.schemas
+        ...schema.ICredentialVerifier.components.schemas,
       },
       methods: {
         ...schema.ICredentialIssuer.components.methods,
-        ...schema.ICredentialVerifier.components.methods
-      }
-    }
+        ...schema.ICredentialVerifier.components.methods,
+      },
+    },
   }
   private issuers: IVcdmCredentialProvider[]
 
@@ -53,7 +53,7 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
       createVerifiableCredential: this.createVerifiableCredential.bind(this),
       verifyCredential: this.verifyCredential.bind(this),
       createVerifiablePresentation: this.createVerifiablePresentation.bind(this),
-      verifyPresentation: this.verifyPresentation.bind(this)
+      verifyPresentation: this.verifyPresentation.bind(this),
     }
   }
 
@@ -88,7 +88,7 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
           }
         }
         throw new Error(
-          `invalid_setup: No issuer found for the requested proof format: ${proofFormat}, supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`
+          `invalid_setup: No issuer found for the requested proof format: ${proofFormat}, supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`,
         )
       }
 
@@ -106,7 +106,6 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
     let verifiedCredential: VerifiableCredential
     let verificationResult: IVerifyResult
 
-
     async function findAndVerifyCredential(issuers: IVcdmCredentialProvider[]): Promise<IVerifyResult> {
       for (const issuer of issuers) {
         if (issuer.canVerifyDocumentType({ document: credential as W3CVerifiableCredential })) {
@@ -118,8 +117,8 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
         Error(
           `invalid_setup: No verifier found for the provided credential credential
            type: ${JSON.stringify(uniform.type)} proof type 
-           ${asArray(uniform.proof)?.[0]?.type} supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`
-        )
+           ${asArray(uniform.proof)?.[0]?.type} supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`,
+        ),
       )
     }
 
@@ -128,28 +127,28 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
 
     if (policies?.credentialStatus !== false && (await isRevoked(verifiedCredential, context as any))) {
       const results = verificationResult.results
-      const partialSingleResult: Partial<IVerifySingleResultItem> = (Array.isArray(results) ? results[0] : {
-        credential: credential as OriginalVerifiableCredential,
-        verified: false,
-        log: []
-      })
+      const partialSingleResult: Partial<IVerifySingleResultItem> = Array.isArray(results)
+        ? results[0]
+        : {
+            credential: credential as OriginalVerifiableCredential,
+            verified: false,
+            log: [],
+          }
       const result: IVerifySingleResultItem = {
         ...partialSingleResult,
         credential: credential as OriginalVerifiableCredential,
         verified: false,
         error: {
           message: 'revoked: The credential was revoked by the issuer',
-          errorCode: 'revoked'
+          errorCode: 'revoked',
         },
-        log: [...partialSingleResult.log ?? [], { id: 'revocation_status', valid: false }]
+        log: [...(partialSingleResult.log ?? []), { id: 'revocation_status', valid: false }],
       }
       verificationResult = {
         ...verificationResult,
         verified: false,
         error: result.error,
-        results: [
-          result
-        ]
+        results: [result],
       }
     }
 
@@ -170,7 +169,7 @@ export class VcdmCredentialPlugin implements IAgentPlugin {
         }
       }
       throw new Error(
-        `invalid_setup: No issuer found for the requested proof format: ${proofFormat}, supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`
+        `invalid_setup: No issuer found for the requested proof format: ${proofFormat}, supported: ${issuers.map((i) => i.getTypeProofFormat()).join(',')}`,
       )
     }
 

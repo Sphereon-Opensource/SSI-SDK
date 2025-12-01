@@ -382,7 +382,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
-    const allSupported = client.getCredentialsSupported(format)
+    const allSupported = client.getCredentialsSupported(undefined, format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
         ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
@@ -578,7 +578,7 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
     case 'jwt':
     case 'jwt_vc_json':
     case 'jwt_vc':
-    //case 'vc+sd-jwt': // TODO see SSISDK-52 concerning vc+sd-jwt
+    case 'vc+sd-jwt':
     case 'dc+sd-jwt':
     case 'mso_mdoc': {
       const supportedPreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString> = jwtCryptographicSuitePreferences.filter(

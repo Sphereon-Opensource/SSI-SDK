@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "./src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -23,14 +23,14 @@
   },
   "dependencies": {
     "@noble/hashes": "1.6.1",
-    "@sd-jwt/types": "^0.15.0",
     "@sd-jwt/decode": "^0.15.0",
+    "@sd-jwt/types": "^0.15.0",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
+    "dcql": "1.0.1",
     "debug": "^4.3.5",
     "events": "^3.3.0",
     "jwt-decode": "^4.0.0",
-    "uint8arrays": "^3.1.1",
-    "dcql": "1.0.1"
+    "uint8arrays": "^3.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.17.1",

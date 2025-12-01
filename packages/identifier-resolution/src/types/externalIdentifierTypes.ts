@@ -202,7 +202,6 @@ export interface JwtPayload {
   [key: string]: unknown
 }
 
-
 export type IJwsValidationResult = IValidationResult & {
-   jws: any
+  jws: any
 }

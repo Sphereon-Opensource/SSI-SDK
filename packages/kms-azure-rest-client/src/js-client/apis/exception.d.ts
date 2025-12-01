@@ -10,6 +10,6 @@ export declare class ApiException<T> extends Error {
     body: T,
     headers: {
       [key: string]: string
-    }
+    },
   )
 }

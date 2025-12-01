@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk-ext.kms-azure",
   "description": "Sphereon SSI-SDK plugin for Azure KeyVault Key Management System.",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "./src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",

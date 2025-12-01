@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/decentralized-identity/veramo/compare/v0.34.0...v0.36.0) (2025-11-19)
+
+### Bug Fixes
+
+- merge issues ([693d8f0](https://github.com/decentralized-identity/veramo/commit/693d8f0b0c6566650a31647fda630a0715f960c7))
+
+### Features
+
+- Add support for VCDM2 SDJWT ([322c421](https://github.com/decentralized-identity/veramo/commit/322c4218f587203523e0620fe42ec96486724f79))
+
 # [0.34.0](https://github.com/decentralized-identity/veramo/compare/v0.33.0...v0.34.0) (2025-05-22)
 
 ### Bug Fixes

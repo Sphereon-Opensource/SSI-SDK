@@ -11,7 +11,7 @@ export declare class PromiseKeyVaultControllerApi {
   constructor(
     configuration: Configuration,
     requestFactory?: KeyVaultControllerApiRequestFactory,
-    responseProcessor?: KeyVaultControllerApiResponseProcessor
+    responseProcessor?: KeyVaultControllerApiResponseProcessor,
   )
   createEcKeyWithHttpInfo(createEcKeyRequest: CreateEcKeyRequest, _options?: Configuration): Promise<HttpInfo<KeyVaultKey>>
   createEcKey(createEcKeyRequest: CreateEcKeyRequest, _options?: Configuration): Promise<KeyVaultKey>

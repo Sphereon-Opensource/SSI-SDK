@@ -9,7 +9,14 @@ import type { IAgentPlugin } from '@veramo/core'
 import Debug from 'debug'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import { assertValidTypeMetadata, fetchUrlWithErrorHandling, getIssuerFromSdJwt, isSdjwtVcPayload, isVcdm2SdJwtPayload, validateIntegrity } from './utils'
+import {
+  assertValidTypeMetadata,
+  fetchUrlWithErrorHandling,
+  getIssuerFromSdJwt,
+  isSdjwtVcPayload,
+  isVcdm2SdJwtPayload,
+  validateIntegrity,
+} from './utils'
 import type {
   Claims,
   FetchSdJwtTypeMetadataFromVctUrlArgs,
@@ -254,12 +261,10 @@ export class SDJwtPlugin implements IAgentPlugin {
     const cred = await SDJwt.fromEncode(args.credential, this.registeredImplementations.hasher!)
     const type = isVcdm2SdJwtPayload(cred.jwt?.payload as SdJwtPayload) ? 'vc+sd-jwt' : 'dc+sd-jwt'
 
-
-    const sdjwt = SDJwtVcdmInstanceFactory.create(type, {verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
+    const sdjwt = SDJwtVcdmInstanceFactory.create(type, { verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
     // FIXME: Findynet. Issuer returns expired status lists, and low level lib throws errors on these. We need to fix this in our implementation by wrapping the verification function
     // For now a workaround is to ad 5 days of skew seconds, yuck
-    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, {skewSeconds: 60*60*24*5})
-
+    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, { skewSeconds: 60 * 60 * 24 * 5 })
 
     return { type, header, payload, kb }
   }
@@ -279,7 +284,6 @@ export class SDJwtPlugin implements IAgentPlugin {
     }
 
     // TODO add aud verification
-
 
     return this.verifySignatureCallback(context)(data, signature, this.getJwk(payload))
   }
@@ -372,8 +376,7 @@ export class SDJwtPlugin implements IAgentPlugin {
   async verifySdJwtPresentation(args: IVerifySdJwtPresentationArgs, context: IRequiredContext): Promise<IVerifySdJwtPresentationResult> {
     let sdjwt: SDJwtVcInstance
     const verifier: Verifier = async (data: string, signature: string) => this.verifyCallbackImpl(sdjwt, context, data, signature)
-    const verifierKb: KbVerifier = async (data: string, signature: string, payload: JwtPayload) =>
-      this.verifyKb(context, data, signature, payload)
+    const verifierKb: KbVerifier = async (data: string, signature: string, payload: JwtPayload) => this.verifyKb(context, data, signature, payload)
     sdjwt = new SDJwtVcInstance({
       verifier,
       hasher: this.registeredImplementations.hasher,
@@ -458,7 +461,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       // extract JWK from kid FIXME isn't there a did function for this already? Otherwise create one
       // FIXME this is a quick-fix to make verification but we need a real solution
       const encoded = this.extractBase64FromDIDJwk(payload.cnf.kid)
-      const decoded =  u8a.toString(u8a.fromString(encoded, 'base64url'), 'utf-8')
+      const decoded = u8a.toString(u8a.fromString(encoded, 'base64url'), 'utf-8')
       const jwt = JSON.parse(decoded)
       return jwt as JsonWebKey
     }

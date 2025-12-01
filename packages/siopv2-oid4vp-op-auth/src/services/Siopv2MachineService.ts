@@ -1,23 +1,13 @@
 import { AuthorizationRequest } from '@sphereon/did-auth-siop'
-import type { PartialSdJwtDecodedVerifiableCredential, PartialSdJwtKbJwt } from '@sphereon/pex/dist/main/lib/index.js'
-import { calculateSdHash } from '@sphereon/pex/dist/main/lib/utils/index.js'
 import { getOrCreatePrimaryIdentifier, SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import { isOID4VCIssuerIdentifier, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { encodeJoseBlob } from '@sphereon/ssi-sdk.core'
 import { UniqueDigitalCredential, verifiableCredentialForRoleFilter } from '@sphereon/ssi-sdk.credential-store'
 import { ConnectionType } from '@sphereon/ssi-sdk.data-store-types'
-import { defaultGenerateDigest } from '@sphereon/ssi-sdk.sd-jwt'
-import {
-  CredentialMapper,
-  CredentialRole,
-  HasherSync,
-  Loggers,
-  OriginalVerifiableCredential,
-  SdJwtDecodedVerifiableCredential,
-} from '@sphereon/ssi-types'
+import { CredentialMapper, CredentialRole, HasherSync, Loggers, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import { IAgentContext, IDIDManager } from '@veramo/core'
 import { DcqlPresentation, DcqlQuery } from 'dcql'
-import { OpSession } from '../session'
+import { createVerifiablePresentationForFormat, OpSession, PresentationBuilderContext } from '../session'
 import { LOGGER_NAMESPACE, RequiredContext, SelectableCredential, SelectableCredentialsMap, Siopv2HolderEvent } from '../types'
 import { convertToDcqlCredentials } from '../utils/dcql'
 
@@ -81,15 +71,18 @@ export const siopSendAuthorizationResponse = async (
   let identifier: ManagedIdentifierOptsOrResult
   const digitalCredential = firstUniqueDC.digitalCredential
   const firstVC = firstUniqueDC.uniformVerifiableCredential
-  const holder = CredentialMapper.isSdJwtDecodedCredential(firstVC)
-    ? firstVC.decodedPayload.cnf?.jwk
-      ? //TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
-        //doesn't apply to did:jwk only, as you can represent any DID key as a JWK. So whenever you encounter a JWK it doesn't mean it had to come from a did:jwk in the system. It just can always be represented as a did:jwk
-        `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0`
-      : firstVC.decodedPayload.sub
-    : Array.isArray(firstVC.credentialSubject)
-      ? firstVC.credentialSubject[0].id
-      : firstVC.credentialSubject.id
+
+  // Determine holder DID for identifier resolution
+  let holder: string | undefined
+  if (CredentialMapper.isSdJwtDecodedCredential(firstVC)) {
+    //  TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+    //  doesn't apply to did:jwk only, as you can represent any DID key as a
+    holder = firstVC.decodedPayload.cnf?.jwk ? `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0` : firstVC.decodedPayload.sub
+  } else {
+    holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
+  }
+
+  // Resolve identifier
   if (!digitalCredential.kmsKeyRef) {
     // In case the store does not have the kmsKeyRef lets search for the holder
 
@@ -132,39 +125,34 @@ export const siopSendAuthorizationResponse = async (
     return Promise.reject(Error('Credentials do not match required query request'))
   }
 
+  // Build presentation context for format-aware VP creation
+  const presentationContext: PresentationBuilderContext = {
+    nonce: request.requestObject?.getPayload()?.nonce ?? session.nonce,
+    audience: domain,
+    agent: context.agent,
+    clockSkew: CLOCK_SKEW,
+    hasher: args.hasher,
+  }
+
+  // Build DCQL presentation with format-aware VPs
   const presentation: DcqlPresentation.Output = {}
   const uniqueCredentials = Array.from(dcqlCredentialsWithCredentials.values())
   for (const [key, value] of Object.entries(queryResult.credential_matches)) {
     if (value.success) {
       const matchedCredentials = value.valid_credentials.map((cred) => uniqueCredentials[cred.input_credential_index])
-      const vc = matchedCredentials[0] // taking the first match for now //uniqueCredentials[value.input_credential_index]
+      const vc = matchedCredentials[0] // taking the first match for now
+
       if (!vc) {
         continue
       }
-      const originalVc = retrieveEncodedCredential(vc as UniqueDigitalCredential) // TODO this is not nice // also always a UniqueDigitalCredential
-      if (!originalVc) {
-        continue
-      }
-      // FIXME SSISDK-44
-      const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(originalVc as string, defaultGenerateDigest)
-      const updatedSdJwt = updateSdJwtCredential(decodedSdJwt, request.requestObject?.getPayload()?.nonce, domain)
 
-      const presentationResult = await context.agent.createSdJwtPresentation({
-        presentation: updatedSdJwt.compactSdJwtVc,
-        kb: {
-          payload: {
-            ...updatedSdJwt.kbJwt?.payload,
-            // FIXME SSISDK-44
-            nonce: updatedSdJwt.kbJwt?.payload.nonce ?? request.requestObject!.getPayload()!.nonce,
-            // FIXME SSISDK-44
-            aud: updatedSdJwt.kbJwt?.payload.aud ?? domain,
-            iat: updatedSdJwt.kbJwt?.payload?.iat ?? Math.floor(Date.now() / 1000 - CLOCK_SKEW),
-          },
-        },
-      })
-
-      if (originalVc) {
-        presentation[key] = presentationResult.presentation
+      try {
+        // Use format-aware presentation builder
+        const vp = await createVerifiablePresentationForFormat(vc, identifier, presentationContext)
+        presentation[key] = vp as any
+      } catch (error) {
+        logger.error(`Failed to create VP for credential ${key}:`, error)
+        throw error
       }
     }
   }
@@ -180,15 +168,6 @@ export const siopSendAuthorizationResponse = async (
 
   logger.debug(`Response: `, response)
   return response
-}
-
-const retrieveEncodedCredential = (credential: UniqueDigitalCredential): OriginalVerifiableCredential | undefined => {
-  return credential.originalVerifiableCredential !== undefined &&
-    credential.originalVerifiableCredential !== null &&
-    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== undefined &&
-    (credential?.originalVerifiableCredential as SdJwtDecodedVerifiableCredential)?.compactSdJwtVc !== null
-    ? (credential.originalVerifiableCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc
-    : credential.originalVerifiableCredential
 }
 
 export const getSelectableCredentials = async (dcqlQuery: DcqlQuery, context: RequiredContext): Promise<SelectableCredentialsMap> => {
@@ -245,34 +224,4 @@ export const translateCorrelationIdToName = async (correlationId: string, contex
   }
 
   return contacts[0].contact.displayName
-}
-
-const updateSdJwtCredential = (
-  credential: SdJwtDecodedVerifiableCredential,
-  nonce?: string,
-  aud?: string,
-): PartialSdJwtDecodedVerifiableCredential => {
-  const sdJwtCredential = credential as SdJwtDecodedVerifiableCredential
-
-  // extract sd_alg or default to sha-256
-  const hashAlg = sdJwtCredential.signedPayload._sd_alg ?? 'sha-256'
-  const sdHash = calculateSdHash(sdJwtCredential.compactSdJwtVc, hashAlg, defaultGenerateDigest)
-
-  const kbJwt = {
-    // alg MUST be set by the signer
-    header: {
-      typ: 'kb+jwt',
-    },
-    payload: {
-      iat: Math.floor(new Date().getTime() / 1000),
-      sd_hash: sdHash,
-      ...(nonce && { nonce }),
-      ...(aud && { aud }),
-    },
-  } satisfies PartialSdJwtKbJwt
-
-  return {
-    ...sdJwtCredential,
-    kbJwt,
-  } satisfies PartialSdJwtDecodedVerifiableCredential
 }

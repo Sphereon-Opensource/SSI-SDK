@@ -10,7 +10,7 @@ describe('@sphereon/ssi-sdk-ext-key-did-resolver', () => {
     const resolver = new Resolver({ ...getResolver() })
     const doc = await resolver.resolve(
       'did:key:zUC7Gc59EawPuAbe1gcbmpTtYeyRvRLUsCfkmHwmNaiQyQtQp9f4G4KHurpHaa6QUvm1mL1rZvKXQWpfRcTBfLsstL2kmMN3rkFSzYuzbxwD4LespdY8NKdsghxeiRNtNSbzKic',
-      { accept: DID_JSON }
+      { accept: DID_JSON },
     )
     expect(doc).toEqual(JSON.parse(fs.readFileSync(`${__dirname}/fixtures/bls_did_doc.json`, { encoding: 'utf-8' })))
   })
@@ -38,7 +38,7 @@ describe('@sphereon/ssi-sdk-ext-key-did-resolver', () => {
     const resolver = new Resolver({ ...getResolver() })
     const doc = await resolver.resolve(
       'did:key:z2dmzD81cgPx8Vki7JbuuMmFYrWPgYoytykUZ3eyqht1j9KbsEYvdrjxMjQ4tpnje9BDBTzuNDP3knn6qLZErzd4bJ5go2CChoPjd5GAH3zpFJP5fuwSk66U5Pq6EhF4nKnHzDnznEP8fX99nZGgwbAh1o7Gj1X52Tdhf7U4KTk66xsA5r',
-      { accept: DID_LD_JSON }
+      { accept: DID_LD_JSON },
     )
     expect(doc).toEqual(JSON.parse(fs.readFileSync(`${__dirname}/fixtures/jwk_jcs_did_doc.json`, { encoding: 'utf-8' })))
   })

@@ -46,7 +46,7 @@ export type MapImportKeyArgs = {
 }
 
 export type MappedImportKey = {
-  key: StoreKey,
-  kid: string,
+  key: StoreKey
+  kid: string
   publicKeyJwk: JWK
 }

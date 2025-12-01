@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
+
+### Bug Fixes
+
+- class-validator has changed behavior, so fixating to the older version ([0f35c70](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0f35c70cda2b8763fdbe0bb68f73a7854ad63dc4))
+
+### Features
+
+- added support for callbacks when creating auth requests ([117ad37](https://github.com/Sphereon-Opensource/SSI-SDK/commit/117ad37d1397fe6c2f99f499761323dd8158699e))
+- implemented Universal OID4VP API spec ([f633961](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f633961166543652ec09e4e194ed2bacbcb92602))
+- Merge crypto extension modules now the build process is faster and we have turbo. Means we will have consistent versions between SDK and crypto extension modules ([6a366b9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6a366b905f34e154bba90d4ab20d9b1736336d01))
+
 # [0.34.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.33.0...v0.34.0) (2025-05-22)
 
 ### Features

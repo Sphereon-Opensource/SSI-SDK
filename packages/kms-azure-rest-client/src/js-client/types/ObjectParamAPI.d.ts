@@ -23,7 +23,7 @@ export declare class ObjectKeyVaultControllerApi {
   constructor(
     configuration: Configuration,
     requestFactory?: KeyVaultControllerApiRequestFactory,
-    responseProcessor?: KeyVaultControllerApiResponseProcessor
+    responseProcessor?: KeyVaultControllerApiResponseProcessor,
   )
   createEcKeyWithHttpInfo(param: KeyVaultControllerApiCreateEcKeyRequest, options?: Configuration): Promise<HttpInfo<KeyVaultKey>>
   createEcKey(param: KeyVaultControllerApiCreateEcKeyRequest, options?: Configuration): Promise<KeyVaultKey>

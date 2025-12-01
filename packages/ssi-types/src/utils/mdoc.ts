@@ -41,7 +41,7 @@ export function getMdocDecodedPayload(mdoc: MdocDocument): MdocDecodedPayload {
         ...acc,
         [item.key]: item.value.value,
       }),
-      {}
+      {},
     )
   }
 
@@ -56,7 +56,7 @@ export function getMdocDecodedPayload(mdoc: MdocDocument): MdocDecodedPayload {
 export function decodeMdocIssuerSigned(oid4vpIssuerSigned: MdocOid4vpIssuerSigned): MdocDocument {
   // Issuer signed according to 18013-7 in base64url
   const issuerSigned: MdocIssuerSigned = com.sphereon.mdoc.data.device.IssuerSignedCbor.Static.cborDecode(
-    com.sphereon.kmp.decodeFrom(oid4vpIssuerSigned, com.sphereon.kmp.Encoding.BASE64URL)
+    com.sphereon.kmp.decodeFrom(oid4vpIssuerSigned, com.sphereon.kmp.Encoding.BASE64URL),
   )
   // Create an mdoc from it. // Validations need to be performed by the caller after this!
   const holderMdoc: MdocDocument = issuerSigned.toDocument()
@@ -74,7 +74,7 @@ export function encodeMdocIssuerSigned(issuerSigned: MdocIssuerSigned, encoding:
  */
 export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDeviceResponse {
   const deviceResponse = com.sphereon.mdoc.data.device.DeviceResponseCbor.Static.cborDecode(
-    com.sphereon.kmp.decodeFrom(vpToken, com.sphereon.kmp.Encoding.BASE64URL)
+    com.sphereon.kmp.decodeFrom(vpToken, com.sphereon.kmp.Encoding.BASE64URL),
   )
   return deviceResponse
 }
@@ -83,7 +83,7 @@ export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDe
 export const mdocDecodedCredentialToUniformCredential = (
   decoded: MdocDocument,
   // @ts-ignore
-  opts?: { maxTimeSkewInMS?: number }
+  opts?: { maxTimeSkewInMS?: number },
 ): IVerifiableCredential => {
   const document = decoded.toJson()
   const json = document.toJsonDTO<DocumentJson>()

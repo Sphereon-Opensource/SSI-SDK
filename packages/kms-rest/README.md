@@ -45,13 +45,13 @@ const key = await kms.createKey({ type: 'Secp256r1' })
 
 ```typescript
 const privateKeyHex = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
-const key = await kms.importKey({ kid: 'kid', privateKeyHex, type: 'Secp256r1'})
+const key = await kms.importKey({ kid: 'kid', privateKeyHex, type: 'Secp256r1' })
 ```
 
 ### Delete key
 
 ```typescript
-const result = await kms.deleteKey({ kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE'})
+const result = await kms.deleteKey({ kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE' })
 ```
 
 ### List keys
@@ -65,7 +65,7 @@ const keys = await kms.listKeys()
 ```typescript
 const signature = await kms.sign({
   keyRef: { kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE' },
-  data: u8a.fromString('input', 'base64')
+  data: u8a.fromString('input', 'base64'),
 })
 ```
 
@@ -75,7 +75,7 @@ const signature = await kms.sign({
 const verification = await kms.verify({
   keyRef: { kid: '00-qTBov6GxjPSuMNxnk876cMP0JKjbwl4ZyN_sY2tE' },
   data: u8a.fromString('input', 'base64'),
-  signature: "jSgVmRcmWwxHtAohgYHUNk9uKdaRj4gi04pjdxgwRaQyXJJJ6bMH50VyWMFvN9a6ZKjpdOahE2nJ+BWjr85nhQ=="
+  signature: 'jSgVmRcmWwxHtAohgYHUNk9uKdaRj4gi04pjdxgwRaQyXJJJ6bMH50VyWMFvN9a6ZKjpdOahE2nJ+BWjr85nhQ==',
 })
 ```
 

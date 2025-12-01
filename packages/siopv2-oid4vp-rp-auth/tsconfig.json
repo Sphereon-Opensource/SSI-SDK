@@ -32,7 +32,7 @@
       "path": "../identifier-resolution"
     },
     {
-      "path": "../did-utils",
+      "path": "../did-utils"
     },
     {
       "path": "../jwt-service"

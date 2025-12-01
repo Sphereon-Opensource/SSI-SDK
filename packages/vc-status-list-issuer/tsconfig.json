@@ -25,7 +25,7 @@
       "path": "../agent-config"
     },
     {
-      "path": "../did-utils",
+      "path": "../did-utils"
     },
     {
       "path": "../identifier-resolution"

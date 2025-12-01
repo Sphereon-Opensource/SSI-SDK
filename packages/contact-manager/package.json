@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.contact-manager",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@sphereon/ssi-sdk.data-store": "workspace:*",
     "@sphereon/ssi-sdk.data-store-types": "workspace:*",
-    "@sphereon/ssi-types":  "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
     "cross-fetch": "^4.1.0",
     "debug": "^4.3.5",
     "typeorm": "0.3.20"

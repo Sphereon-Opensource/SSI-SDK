@@ -5,7 +5,7 @@ const resolveDidKey: DIDResolver = async (
   didUrl: string,
   _parsed: ParsedDID,
   _resolver: Resolvable,
-  options: DIDResolutionOptions
+  options: DIDResolutionOptions,
 ): Promise<DIDResolutionResult> => {
   const resolver = new Resolver({ ...getResolver() })
   return resolver.resolve(didUrl, options)

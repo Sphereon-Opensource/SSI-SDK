@@ -16,7 +16,7 @@ export interface IVcdmBaseCredential {
   // If iss is present, the value MUST be used to set the issuer property of the new credential JSON object or the holderDID property of the new presentation JSON object.
   issuer: IIssuerId | IIssuer
   // If sub is present, the value MUST be used to set the value of the id property of credentialSubject of the new credential JSON object.
-  credentialSubject: SingleOrArray<(ICredentialSubject & AdditionalClaims)>
+  credentialSubject: SingleOrArray<ICredentialSubject & AdditionalClaims>
   // If jti is present, the value MUST be used to set the value of the id property of the new JSON object.
   id?: string
   credentialStatus?: SingleOrArray<ICredentialStatus>
@@ -35,8 +35,7 @@ export interface IVcdm2Credential extends IVcdmBaseCredential {
   [x: string]: any
 }
 
-export interface ICredential  extends IVcdmBaseCredential{
-
+export interface ICredential extends IVcdmBaseCredential {
   // If nbf is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the issuanceDate property of the new JSON object.
   issuanceDate: string
   // If exp is present, the UNIX timestamp MUST be converted to an [XMLSCHEMA11-2] date-time, and MUST be used to set the value of the expirationDate property of credentialSubject of the new JSON object.

@@ -200,8 +200,6 @@ export interface WrappedSdJwtVerifiablePresentation {
   vcs: [WrappedSdJwtVerifiableCredential]
 }
 
-
-
 export type SdJwtVcType = 'dc+sd-jwt' | 'vc+sd-jwt'
 export type SdJwtVpType = 'dc+sd-jwt' | 'vp+sd-jwt'
 export type SdJwtType = SdJwtVcType | SdJwtVpType

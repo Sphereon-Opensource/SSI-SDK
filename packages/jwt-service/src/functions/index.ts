@@ -112,7 +112,7 @@ export const createJwsJsonGeneral = async (args: CreateJwsJsonArgs, context: IRe
       issuer,
       mode,
     },
-    context
+    context,
   )
 
   const alg: string | undefined = protectedHeader.alg ?? signatureAlgorithmFromKeyType({ type: identifier.key.type })
@@ -156,7 +156,7 @@ export const checkAndUpdateJwsHeader = async (
     noIdentifierInHeader?: boolean
     header: JwsHeader
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) => {
   // Make sure we have an alg in the header (https://datatracker.ietf.org/doc/html/rfc7515#section-4.1.1)
   header.alg = header.alg ?? signatureAlgorithmFromKeyType({ type: identifier.key.type })
@@ -191,7 +191,7 @@ const checkAndUpdateX5cHeader = async (
     identifier: ManagedIdentifierResult
     noIdentifierInHeader?: boolean
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) => {
   const { x5c } = header
   if (x5c) {
@@ -220,7 +220,7 @@ const checkAndUpdateDidHeader = async (
     identifier: ManagedIdentifierResult
     noIdentifierInHeader?: boolean
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) => {
   const { kid } = header
   if (kid) {
@@ -249,7 +249,7 @@ const checkAndUpdateJwkHeader = async (
     identifier: ManagedIdentifierResult
     noIdentifierInHeader?: boolean
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) => {
   const { jwk } = header
   if (jwk) {
@@ -277,7 +277,7 @@ const checkAndUpdateKidHeader = async (
     identifier: ManagedIdentifierResult
     noIdentifierInHeader?: boolean
   },
-  context: IRequiredContext
+  context: IRequiredContext,
 ) => {
   const { kid } = header
   if (kid) {
@@ -350,7 +350,7 @@ export const verifyJws = async (args: VerifyJwsArgs, context: IAgentContext<IIde
         sigWithId,
         valid,
       }
-    })
+    }),
   )
   const error = errorMessages.length !== 0
   const result = {
@@ -400,7 +400,7 @@ async function resolveExternalIdentifierFromJwsHeader(
   args: {
     jws: Jws
     opts?: { x5c?: Omit<ExternalIdentifierX5cOpts, 'identifier'>; did?: Omit<ExternalIdentifierDidOpts, 'identifier'> }
-  }
+  },
 ) {
   if (protectedHeader.x5c) {
     const x5c = protectedHeader.x5c
@@ -452,7 +452,7 @@ export const toJwsJsonGeneralWithIdentifiers = async (
     jwk?: JWK
     opts?: { x5c?: Omit<ExternalIdentifierX5cOpts, 'identifier'>; did?: Omit<ExternalIdentifierDidOpts, 'identifier'> }
   },
-  context: IAgentContext<IIdentifierResolution>
+  context: IAgentContext<IIdentifierResolution>,
 ): Promise<JwsJsonGeneralWithIdentifiers> => {
   const jws = await toJwsJsonGeneral(args, context)
   const signatures = (await Promise.all(
@@ -466,7 +466,7 @@ export const toJwsJsonGeneralWithIdentifiers = async (
         return { ...signature, identifier }
       }
       return undefined
-    })
+    }),
   )) as Array<JwsJsonSignatureWithIdentifier>
 
   return { payload: jws.payload, signatures }
