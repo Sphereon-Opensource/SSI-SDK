@@ -56,6 +56,7 @@ export class IssuerInstance {
   }
 
   set issuerMetadata(value: IssuerMetadata) {
+    // TODO SSISDK-87 create proper solution to update issuer metadata
     if (this._issuer?.issuerMetadata) {
       this._issuer.issuerMetadata = {
         ...this._issuer?.issuerMetadata,
