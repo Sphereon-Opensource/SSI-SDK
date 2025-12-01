@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.linked-vp",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -54,7 +54,8 @@
     "@veramo/data-store": "4.2.0",
     "@veramo/key-manager": "4.2.0",
     "did-resolver": "^4.1.0",
-    "web-did-resolver": "^2.0.30"
+    "web-did-resolver": "^2.0.30",
+    "@sd-jwt/types": "^0.15.0"
   },
   "files": [
     "dist",
@@ -74,7 +75,6 @@
     "Sphereon",
     "SSI",
     "Veramo",
-    "Presentation Defintion Manager",
-    "PD Manager"
+    "Linked VP Manager"
   ]
 }

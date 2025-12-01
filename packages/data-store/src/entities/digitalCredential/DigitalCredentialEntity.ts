@@ -79,10 +79,10 @@ export class DigitalCredentialEntity extends BaseEntity implements DigitalCreden
   @Column('text', { name: 'linked_vp_id', nullable: true })
   linkedVpId?: string
 
-  @CreateDateColumn({ name: 'linked_vp_from', nullable: true, type: typeOrmDateTime() })
+  @Column({ name: 'linked_vp_from', nullable: true, type: typeOrmDateTime() })
   linkedVpFrom?: Date
 
-  @CreateDateColumn({ name: 'linked_vp_until', nullable: true, type: typeOrmDateTime() })
+  @Column({ name: 'linked_vp_until', nullable: true, type: typeOrmDateTime() })
   linkedVpUntil?: Date
 
   @CreateDateColumn({ name: 'created_at', nullable: false, type: typeOrmDateTime() })

@@ -282,7 +282,12 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
 
       const serviceEntries: Array<LinkedVPServiceEntry> = await context.agent.lvpGetServiceEntries({ subjectDid: did })
       if (resolutionResult?.didDocument && serviceEntries) {
-        resolutionResult.didDocument.service = serviceEntries as Array<Service>
+        // Preserve existing services that are not LinkedVerifiablePresentation type
+        const existingServices = resolutionResult.didDocument.service || []
+        const nonLVPServices = existingServices.filter((service) => service.type !== 'LinkedVerifiablePresentation')
+
+        // Combine non-LVP services with the new LVP service entries
+        resolutionResult.didDocument.service = [...nonLVPServices, ...serviceEntries] as Array<Service>
       }
 
       response.statusCode = 200
