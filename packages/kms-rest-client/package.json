@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-sdk.kms-rest-client",
   "description": "contains the client side to call REST endpoints of a KMS server",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
