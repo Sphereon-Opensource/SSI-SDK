@@ -4,38 +4,37 @@ import { pemOrDerToX509Certificate } from '@sphereon/ssi-sdk-ext.x509-utils'
 import { contextHasDidManager, contextHasKeyManager } from '@sphereon/ssi-sdk.agent-config'
 import type { ICoseKeyJson, JWK } from '@sphereon/ssi-types'
 import type { IAgentContext, IIdentifier, IKey, IKeyManager } from '@veramo/core'
-import { CryptoEngine, setEngine } from 'pkijs'
 import { webcrypto } from 'node:crypto'
+import { CryptoEngine, setEngine } from 'pkijs'
 import type {
   IIdentifierResolution,
   ManagedIdentifierCoseKeyOpts,
   ManagedIdentifierCoseKeyResult,
   ManagedIdentifierDidOpts,
   ManagedIdentifierDidResult,
-  ManagedIdentifierOID4VCIssuerOpts,
-  ManagedIdentifierOID4VCIssuerResult,
   ManagedIdentifierJwkOpts,
   ManagedIdentifierJwkResult,
   ManagedIdentifierKeyOpts,
   ManagedIdentifierKeyResult,
   ManagedIdentifierKidOpts,
   ManagedIdentifierKidResult,
+  ManagedIdentifierOID4VCIssuerOpts,
+  ManagedIdentifierOID4VCIssuerResult,
   ManagedIdentifierOptsOrResult,
   ManagedIdentifierResult,
   ManagedIdentifierX5cOpts,
   ManagedIdentifierX5cResult,
 } from '../types'
-
 import {
   isManagedIdentifierCoseKeyOpts,
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
-  isManagedIdentifierOID4VCIssuerOpts,
   isManagedIdentifierJwkOpts,
   isManagedIdentifierJwkResult,
   isManagedIdentifierKeyOpts,
   isManagedIdentifierKeyResult,
   isManagedIdentifierKidOpts,
+  isManagedIdentifierOID4VCIssuerOpts,
   isManagedIdentifierX5cOpts,
 } from '../types'
 
@@ -183,7 +182,6 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
   }
 
   const did = identifier.did
-  const keys = identifier?.keys // fixme: We really want to return the vmRelationship keys here actually
   const extendedKey = await getFirstKeyWithRelation(
     {
       ...opts,
@@ -195,7 +193,6 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
     context,
   )
   const key = extendedKey
-  const controllerKeyId = identifier.controllerKeyId
   const jwk = toJwk(key.publicKeyHex, key.type, { key })
   const jwkThumbprint = key.meta?.jwkThumbprint ?? calculateJwkThumbprint({ jwk })
   let kid = opts.kid ?? extendedKey.meta?.verificationMethod?.id
@@ -205,6 +202,57 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
     kid = `${did}${hash}${kid}`
   }
   const issuer = opts.issuer ?? did
+
+  // filter keys based on the criteria
+  let filteredKeys = identifier?.keys ?? []
+
+  // first try to filter by kmsKeyRef if supplied
+  if (opts.kmsKeyRef) {
+    const keysByKmsKeyRef = filteredKeys.filter((k) => k.kid === opts.kmsKeyRef)
+    if (keysByKmsKeyRef.length > 0) {
+      filteredKeys = keysByKmsKeyRef
+    }
+  }
+
+  // no match or kmsKeyRef not supplied, try vmRelationship
+  if (filteredKeys.length === identifier?.keys?.length && opts.vmRelationship) {
+    const keysByVmRelationship = filteredKeys.filter((k) => {
+      const purposes = k.meta?.purposes
+      if (!purposes || purposes.length === 0) {
+        return opts.vmRelationship === 'verificationMethod'
+      }
+      return purposes.includes(opts.vmRelationship!)
+    })
+    if (keysByVmRelationship.length > 0) {
+      filteredKeys = keysByVmRelationship
+    }
+  }
+
+  //no match, try to filter by fragment from opts.identifier (if it's a string with fragment)
+  if (filteredKeys.length === identifier?.keys?.length && typeof opts.identifier === 'string' && opts.identifier.includes('#')) {
+    const fragment = opts.identifier.split('#')[1]
+    const keysByFragment = filteredKeys.filter((k) => {
+      const vmId = k.meta?.verificationMethod?.id
+      return vmId === `${did}#${fragment}` || vmId === fragment || k.kid === fragment
+    })
+    if (keysByFragment.length > 0) {
+      filteredKeys = keysByFragment
+    }
+  }
+
+  // fall back to original keys if no filtering occurred
+  const keys = filteredKeys
+
+  // Update controllerKeyId to match the selected key
+  const controllerKeyId = key.kid
+
+  // update the identifier object with filtered keys and updated controllerKeyId
+  const filteredIdentifier: IIdentifier = {
+    ...identifier,
+    keys: filteredKeys,
+    controllerKeyId,
+  }
+
   return {
     method,
     key,
@@ -216,7 +264,7 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
     kid,
     keys,
     issuer,
-    identifier,
+    identifier: filteredIdentifier,
     clientId: opts.clientId,
     clientIdScheme: opts.clientIdScheme,
     opts,
