@@ -229,9 +229,11 @@ export const getFirstKeyWithRelationFromDIDDoc = async (
 ): Promise<_ExtendedIKey | undefined> => {
   const matchedKeys = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship, didDocument }, context)
   if (Array.isArray(matchedKeys) && matchedKeys.length > 0) {
-    const result = matchedKeys.find(
-      (key) => keyType === undefined || key.type === keyType || (controllerKey && key.kid === identifier.controllerKeyId),
-    )
+    const controllerKeyMatch = identifier.controllerKeyId
+      ? matchedKeys.find((key) => key.kid === identifier.controllerKeyId && (keyType === undefined || key.type === keyType))
+      : undefined
+
+    const result = controllerKeyMatch ?? matchedKeys.find((key) => keyType === undefined || key.type === keyType)
     if (result) {
       return result
     }
@@ -575,7 +577,20 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
     })
     .filter(isDefined)
 
-  return Array.from(new Set(keys.concat(extendedKeys)))
+  const allKeys = Array.from(new Set(keys.concat(extendedKeys)))
+
+  // Filter based on key metadata purposes, except when requesting all verificationMethods
+  if (vmRelationship === 'verificationMethod') {
+    return allKeys
+  }
+
+  return allKeys.filter((key) => {
+    const purposes = key.meta?.purposes
+    if (!purposes || purposes.length === 0) {
+      return true
+    }
+    return purposes.includes(vmRelationship)
+  })
 }
 
 /**
