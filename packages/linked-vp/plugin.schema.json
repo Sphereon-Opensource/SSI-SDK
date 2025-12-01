@@ -1,0 +1,183 @@
+{
+  "ILinkedVPManager": {
+    "components": {
+      "schemas": {
+        "GeneratePresentationArgs": {
+          "type": "object",
+          "properties": {
+            "linkedVpId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "linkedVpId"
+          ],
+          "additionalProperties": false
+        },
+        "LinkedVPPresentation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/components/schemas/Record<string,any>"
+            }
+          ]
+        },
+        "Record<string,any>": {
+          "type": "object"
+        },
+        "GetServiceEntriesArgs": {
+          "type": "object",
+          "properties": {
+            "tenantId": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "LinkedVPServiceEntry": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "LinkedVerifiablePresentation"
+            },
+            "serviceEndpoint": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "serviceEndpoint"
+          ],
+          "additionalProperties": false
+        },
+        "HasLinkedVPEntryArgs": {
+          "type": "object",
+          "properties": {
+            "linkedVpId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "linkedVpId"
+          ],
+          "additionalProperties": false
+        },
+        "PublishCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "digitalCredentialId": {
+              "type": "string"
+            },
+            "linkedVpId": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "digitalCredentialId"
+          ],
+          "additionalProperties": false
+        },
+        "LinkedVPEntry": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "linkedVpId": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "linkedVpFrom": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "linkedVpId",
+            "createdAt"
+          ],
+          "additionalProperties": false
+        },
+        "UnpublishCredentialArgs": {
+          "type": "object",
+          "properties": {
+            "linkedVpId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "linkedVpId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "methods": {
+        "lvpGeneratePresentation": {
+          "description": "Generate and return a Verifiable Presentation for a published LinkedVP This is the main endpoint handler for GET /linked-vp/",
+          "arguments": {
+            "$ref": "#/components/schemas/GeneratePresentationArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/LinkedVPPresentation"
+          }
+        },
+        "lvpGetServiceEntries": {
+          "description": "Get LinkedVP service entries for a DID to be added to a DID Document This is useful when generating DID Documents with toDidDocument",
+          "arguments": {
+            "$ref": "#/components/schemas/GetServiceEntriesArgs"
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkedVPServiceEntry"
+            }
+          }
+        },
+        "lvpHasEntry": {
+          "description": "Check if a LinkedVP entry exists by linkedVpId",
+          "arguments": {
+            "$ref": "#/components/schemas/HasLinkedVPEntryArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        },
+        "lvpPublishCredential": {
+          "description": "Publish a credential as a LinkedVP by adding it to the holder's DID Document",
+          "arguments": {
+            "$ref": "#/components/schemas/PublishCredentialArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/LinkedVPEntry"
+          }
+        },
+        "lvpUnpublishCredential": {
+          "description": "Unpublish a credential by removing its LinkedVP entry from the DID Document",
+          "arguments": {
+            "$ref": "#/components/schemas/UnpublishCredentialArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

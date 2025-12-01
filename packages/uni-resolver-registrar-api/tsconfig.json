@@ -26,6 +26,9 @@
     },
     {
       "path": "../key-utils"
+    },
+    {
+      "path": "../linked-vp"
     }
   ],
   "extends": "../../tsconfig.base.json"

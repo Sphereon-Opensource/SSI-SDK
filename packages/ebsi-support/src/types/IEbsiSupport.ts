@@ -5,7 +5,7 @@ import { IIdentifierResolution, ManagedIdentifierDidOpts, ManagedIdentifierDidRe
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IBasicCredentialLocaleBranding, Party } from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialRole } from '@sphereon/ssi-types'
-import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept } from '@sphereon/ssi-sdk.oid4vci-holder'
+import { ErrorDetails, IOID4VCIHolder, MappedCredentialToAccept, WalletType } from '@sphereon/ssi-sdk.oid4vci-holder'
 import { IPresentationExchange } from '@sphereon/ssi-sdk.presentation-exchange'
 import { IDidAuthSiopOpAuthenticator } from '@sphereon/ssi-sdk.siopv2-oid4vp-op-auth'
 import { PresentationSubmission, W3CVerifiableCredential } from '@sphereon/ssi-types'
@@ -121,6 +121,7 @@ export type CreateAttestationAuthRequestURLArgs = {
 export type GetAttestationArgs = {
   clientId: string
   authReqResult: AttestationAuthRequestUrlResult
+  walletType?: WalletType
   opts?: {
     timeout: number
   }
