@@ -28,7 +28,7 @@
     "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/oid4vci-common": "0.20.1-feat.SSISDK.83.1",
+    "@sphereon/oid4vci-common": "0.20.1-next.3",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
     "cross-fetch": "^4.1.0"
