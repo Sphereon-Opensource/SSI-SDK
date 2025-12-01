@@ -72,7 +72,7 @@ export async function createLinkedVPPresentation(
       const presentationResult = await agent.createSdJwtPresentation({
         presentation: decodedSdJwt.compactSdJwtVc,
         kb: {
-          payload: kbJwtPayload as any, // FIXME?
+          payload: kbJwtPayload as any, // FIXME? (typescript seems impossible)
         },
       })
 

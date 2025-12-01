@@ -2430,6 +2430,9 @@ importers:
         specifier: 3.1.1
         version: 3.1.1
     devDependencies:
+      '@sd-jwt/types':
+        specifier: ^0.15.0
+        version: 0.15.0
       '@sphereon/ssi-sdk-ext.key-manager':
         specifier: workspace:*
         version: link:../key-manager

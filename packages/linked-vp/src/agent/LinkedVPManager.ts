@@ -121,7 +121,6 @@ export class LinkedVPManager implements IAgentPlugin {
     })
 
     return credentials
-      .filter((cred) => cred.linkedVpId !== undefined && cred.linkedVpId !== null)
       .flatMap((cred) => {
         const uniformDocument = JSON.parse(cred.uniformDocument) as IVerifiableCredential
         const holderDidForEntry = this.getHolderDid(uniformDocument)
@@ -204,8 +203,13 @@ export class LinkedVPManager implements IAgentPlugin {
   private buildLinkedVpId(linkedVpId: string | undefined, tenantId: string | undefined) {
     let finalLinkedVpId = linkedVpId || this.generateLinkedVpId()
 
-    // Append tenantId if provided and not already present
-    if (tenantId && tenantId !== '' && !finalLinkedVpId.includes('@')) {
+    // Validate that user-provided ID doesn't contain @ char reserved for tenant id separator
+    if (linkedVpId && linkedVpId.includes('@')) {
+      throw new Error(`LinkedVP ID cannot contain '@' character as it is reserved for tenant separation`)
+    }
+
+    // Append tenantId if provided
+    if (tenantId && tenantId !== '') {
       finalLinkedVpId = `${finalLinkedVpId}@${tenantId}`
     }
     return finalLinkedVpId
