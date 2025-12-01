@@ -15,6 +15,37 @@ const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
 const CLOCK_SKEW = 120 // TODO make adjustable?
 
 /**
+ * Creates a Verifiable Presentation for LinkedVP publishing
+ * Contains multiple credentials in a single JWT VP
+ * No nonce or audience since this is for publishing, not responding to verification
+ */
+export async function createLinkedVPPresentation(
+  holderDid: string,
+  credential: UniqueDigitalCredential,
+  agent: RequiredContext['agent'],
+): Promise<LinkedVPPresentation> {
+  logger.debug(`Creating LinkedVP presentation for ${holderDid} of credential ${credential.id}`)
+
+  const originalCredential = extractOriginalCredential(credential)
+  const documentFormat = CredentialMapper.detectDocumentType(originalCredential)
+
+  switch (documentFormat) {
+    case DocumentFormat.SD_JWT_VC: {
+      return createSdJwtPresentation(originalCredential, agent)
+    }
+    case DocumentFormat.JSONLD: {
+      return createJsonLdPresentation(holderDid, originalCredential, agent)
+    }
+    case DocumentFormat.MSO_MDOC: {
+      return createMdocPresentation(originalCredential)
+    }
+    default: {
+      return createJwtPresentation(holderDid, originalCredential, agent)
+    }
+  }
+}
+
+/**
  * Extracts the original credential from various wrapper types
  */
 function extractOriginalCredential(
@@ -40,111 +71,123 @@ function extractOriginalCredential(
 }
 
 /**
- * Creates a Verifiable Presentation for LinkedVP publishing
- * Contains multiple credentials in a single JWT VP
- * No nonce or audience since this is for publishing, not responding to verification
+ * Creates an SD-JWT presentation with KB-JWT
  */
-export async function createLinkedVPPresentation(
-  holderDid: string,
-  credential: UniqueDigitalCredential,
+async function createSdJwtPresentation(
+  originalCredential: OriginalVerifiableCredential,
   agent: RequiredContext['agent'],
 ): Promise<LinkedVPPresentation> {
-  logger.debug(`Creating LinkedVP presentation for ${holderDid} of credential ${credential.id}`)
+  // SD-JWT with KB-JWT
+  const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(
+    typeof originalCredential === 'string' ? originalCredential : (originalCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc,
+    defaultGenerateDigest,
+  )
+
+  const hashAlg = decodedSdJwt.signedPayload._sd_alg ?? 'sha-256'
+  const sdHash = calculateSdHash(decodedSdJwt.compactSdJwtVc, hashAlg, defaultGenerateDigest)
+  const kbJwtPayload: PartialSdJwtKbJwt['payload'] = {
+    iat: Math.floor(Date.now() / 1000 - CLOCK_SKEW),
+    sd_hash: sdHash,
+  }
+
+  const presentationResult = await agent.createSdJwtPresentation({
+    presentation: decodedSdJwt.compactSdJwtVc,
+    kb: {
+      payload: kbJwtPayload as any, // FIXME? (typescript seems impossible)
+    },
+  })
+
+  return {
+    documentFormat: DocumentFormat.SD_JWT_VC,
+    presentationPayload: presentationResult.presentation,
+  }
+}
+
+/**
+ * Creates a JSON-LD presentation with proof
+ */
+async function createJsonLdPresentation(
+  holderDid: string,
+  originalCredential: OriginalVerifiableCredential,
+  agent: RequiredContext['agent'],
+): Promise<LinkedVPPresentation> {
+  // JSON-LD VC - create JSON-LD VP with challenge and domain in proof
+  const vcObject = typeof originalCredential === 'string' ? JSON.parse(originalCredential) : originalCredential
+
+  const vpObject = {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiablePresentation'],
+    verifiableCredential: [vcObject],
+    holder: holderDid,
+  }
 
   const identifier = await agent.identifierManagedGet({ identifier: holderDid })
-  const originalCredential = extractOriginalCredential(credential)
-  const documentFormat = CredentialMapper.detectDocumentType(originalCredential)
-  switch (documentFormat) {
-    case DocumentFormat.SD_JWT_VC: {
-      // SD-JWT with KB-JWT
-      const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(
-        typeof originalCredential === 'string' ? originalCredential : (originalCredential as SdJwtDecodedVerifiableCredential).compactSdJwtVc,
-        defaultGenerateDigest,
-      )
 
-      const hashAlg = decodedSdJwt.signedPayload._sd_alg ?? 'sha-256'
-      const sdHash = calculateSdHash(decodedSdJwt.compactSdJwtVc, hashAlg, defaultGenerateDigest)
-      const kbJwtPayload: PartialSdJwtKbJwt['payload'] = {
-        iat: Math.floor(Date.now() / 1000 - CLOCK_SKEW),
-        sd_hash: sdHash,
-      }
+  // Create JSON-LD VP with proof
+  const verifiablePresentationSP = await agent.createVerifiablePresentation({
+    presentation: vpObject,
+    proofFormat: 'lds',
+    keyRef: identifier.kmsKeyRef || identifier.kid,
+  })
+  return {
+    documentFormat: DocumentFormat.JSONLD,
+    presentationPayload: verifiablePresentationSP,
+  }
+}
 
-      const presentationResult = await agent.createSdJwtPresentation({
-        presentation: decodedSdJwt.compactSdJwtVc,
-        kb: {
-          payload: kbJwtPayload as any, // FIXME? (typescript seems impossible)
-        },
-      })
+/**
+ * Creates an ISO mdoc presentation (basic support)
+ */
+async function createMdocPresentation(originalCredential: OriginalVerifiableCredential): Promise<LinkedVPPresentation> {
+  // ISO mdoc - create mdoc VP token
+  // This is a placeholder implementation
+  // Full implementation would require:
+  // 1. Decode the mdoc using CredentialMapper or mdoc utilities
+  // 2. Build proper mdoc VP token with session transcript
+  // 3. Include nonce/audience in the session transcript
+  logger.warning('mso_mdoc format has basic support - production use requires proper mdoc VP token implementation')
 
-      return {
-        documentFormat,
-        presentationPayload: presentationResult.presentation,
-      }
-    }
-    case DocumentFormat.JSONLD: {
-      // JSON-LD VC - create JSON-LD VP with challenge and domain in proof
-      const vcObject = typeof originalCredential === 'string' ? JSON.parse(originalCredential) : originalCredential
+  return {
+    documentFormat: DocumentFormat.MSO_MDOC,
+    presentationPayload: originalCredential,
+  }
+}
 
-      const vpObject = {
-        '@context': ['https://www.w3.org/2018/credentials/v1'],
-        type: ['VerifiablePresentation'],
-        verifiableCredential: [vcObject],
-        holder: holderDid,
-      }
+/**
+ * Creates a JWT presentation
+ */
+async function createJwtPresentation(
+  holderDid: string,
+  originalCredential: OriginalVerifiableCredential,
+  agent: RequiredContext['agent'],
+): Promise<LinkedVPPresentation> {
+  // JWT VC - create JWT VP with nonce and aud in payload
+  const vcJwt = typeof originalCredential === 'string' ? originalCredential : JSON.stringify(originalCredential)
 
-      // Create JSON-LD VP with proof
-      const verifiablePresentationSP = await agent.createVerifiablePresentation({
-        presentation: vpObject,
-        proofFormat: 'lds',
-        keyRef: identifier.kmsKeyRef || identifier.kid,
-      })
-      return {
-        documentFormat,
-        presentationPayload: verifiablePresentationSP,
-      }
-    }
-    case DocumentFormat.MSO_MDOC: {
-      // ISO mdoc - create mdoc VP token
-      // This is a placeholder implementation
-      // Full implementation would require:
-      // 1. Decode the mdoc using CredentialMapper or mdoc utilities
-      // 2. Build proper mdoc VP token with session transcript
-      // 3. Include nonce/audience in the session transcript
-      logger.warning('mso_mdoc format has basic support - production use requires proper mdoc VP token implementation')
+  const identifier = await agent.identifierManagedGet({ identifier: holderDid })
 
-      return {
-        documentFormat,
-        presentationPayload: originalCredential,
-      }
-    }
-    default: {
-      // JWT VC - create JWT VP with nonce and aud in payload
-      const vcJwt = typeof originalCredential === 'string' ? originalCredential : JSON.stringify(originalCredential)
+  // Create VP JWT using agent method
+  const vpPayload = {
+    iss: holderDid,
+    vp: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiablePresentation'],
+      holder: holderDid,
+      verifiableCredential: [vcJwt],
+    },
+    iat: Math.floor(Date.now() / 1000 - CLOCK_SKEW),
+    exp: Math.floor(Date.now() / 1000 + 600 + CLOCK_SKEW), // 10 minutes
+  }
 
-      // Create VP JWT using agent method
-      const vpPayload = {
-        iss: holderDid,
-        vp: {
-          '@context': ['https://www.w3.org/2018/credentials/v1'],
-          type: ['VerifiablePresentation'],
-          holder: holderDid,
-          verifiableCredential: [vcJwt],
-        },
-        iat: Math.floor(Date.now() / 1000 - CLOCK_SKEW),
-        exp: Math.floor(Date.now() / 1000 + 600 + CLOCK_SKEW), // 10 minutes
-      }
+  // Use the agent's JWT creation capability
+  const vpJwt = await agent.createVerifiablePresentation({
+    presentation: vpPayload.vp,
+    proofFormat: 'jwt',
+    keyRef: identifier.kmsKeyRef || identifier.kid,
+  })
 
-      // Use the agent's JWT creation capability
-      const vpJwt = await agent.createVerifiablePresentation({
-        presentation: vpPayload.vp,
-        proofFormat: 'jwt',
-        keyRef: identifier.kmsKeyRef || identifier.kid,
-      })
-
-      return {
-        documentFormat,
-        presentationPayload: (vpJwt.proof && 'jwt' in vpJwt.proof && vpJwt.proof.jwt) || vpJwt,
-      }
-    }
+  return {
+    documentFormat: DocumentFormat.JWT,
+    presentationPayload: (vpJwt.proof && 'jwt' in vpJwt.proof && vpJwt.proof.jwt) || vpJwt,
   }
 }

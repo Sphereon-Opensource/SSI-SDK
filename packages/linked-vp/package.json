@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.linked-vp",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -75,7 +75,6 @@
     "Sphereon",
     "SSI",
     "Veramo",
-    "Presentation Defintion Manager",
-    "PD Manager"
+    "Linked VP Manager"
   ]
 }

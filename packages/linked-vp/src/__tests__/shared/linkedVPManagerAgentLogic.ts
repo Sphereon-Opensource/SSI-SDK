@@ -29,7 +29,7 @@ async function createTestCredential(agent: ConfiguredAgent, tenantId: string) {
     credential: {
       credentialRole: CredentialRole.HOLDER,
       rawDocument: JSON.stringify(mockVC),
-      issuerCorrelationType: 'DID' as any,
+      issuerCorrelationType: 'DID',
       issuerCorrelationId: 'did:web:issuer.com',
       kmsKeyRef: 'mock-key-ref',
       identifierMethod: 'did:web',

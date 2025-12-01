@@ -44,7 +44,7 @@ export class DigitalCredentialStore extends AbstractDigitalCredentialStore {
       return Promise.reject(validationError)
     }
     const dcRepo = await this.getRepository()
-    const createdResult: DigitalCredentialEntity = await dcRepo.save(credentialEntity as any)
+    const createdResult: DigitalCredentialEntity = await dcRepo.save(credentialEntity)
     return Promise.resolve(digitalCredentialFrom(createdResult))
   }
 
