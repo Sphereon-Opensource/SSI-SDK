@@ -4,6 +4,7 @@ import {
   AbstractDigitalCredentialStore,
   type DigitalCredential,
   DocumentType,
+  UpdateCredentialArgs,
   type UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store-types'
 import { type IVerifiableCredential } from '@sphereon/ssi-types'
@@ -27,6 +28,7 @@ import { credentialIdOrHashFilter } from '../utils/filters'
 // Exposing the methods here for any REST implementation
 export const credentialStoreMethods: Array<string> = [
   'crsAddCredential',
+  'crsUpdateCredential',
   'crsUpdateCredentialState',
   'crsGetCredential',
   'crsGetCredentials',
@@ -45,6 +47,7 @@ export class CredentialStore implements IAgentPlugin {
   readonly schema = schema.ICredentialStore
   readonly methods: ICredentialStore = {
     crsAddCredential: this.crsAddCredential.bind(this),
+    crsUpdateCredential: this.crsUpdateCredential.bind(this),
     crsUpdateCredentialState: this.crsUpdateCredentialState.bind(this),
     crsGetCredential: this.crsGetCredential.bind(this),
     crsGetCredentials: this.crsGetCredentials.bind(this),
@@ -65,6 +68,11 @@ export class CredentialStore implements IAgentPlugin {
   /** {@inheritDoc ICredentialStore.crsAddCredential} */
   private async crsAddCredential(args: AddCredentialArgs): Promise<DigitalCredential> {
     return await this.store.addCredential({ ...args.credential, opts: { ...args.opts, hasher: args.opts?.hasher ?? defaultHasher } })
+  }
+
+  /** {@inheritDoc ICredentialStore.crsUpdateCredential} */
+  private async crsUpdateCredential(args: UpdateCredentialArgs): Promise<DigitalCredential> {
+    return await this.store.updateCredential(args)
   }
 
   /** {@inheritDoc ICredentialStore.crsUpdateCredentialState} */
