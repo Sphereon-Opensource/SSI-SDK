@@ -20,12 +20,20 @@ import {
   IIssuerInstanceArgs,
   IIssuerOptions,
   IOID4VCIIssuerOpts,
+  IRefreshInstanceMetadata,
   IRequiredContext,
-  schema,
+  schema
 } from '../index'
 import { IssuerInstance } from '../IssuerInstance'
-
 import { IOID4VCIIssuer } from '../types/IOID4VCIIssuer'
+
+export const oid4vciIssuerMethods: Array<string> = [
+  'oid4vciCreateOfferURI',
+  'oid4vciIssueCredential',
+  'oid4vciCreateAccessTokenResponse',
+  'oid4vciGetInstance',
+  'oid4vciRefreshInstanceMetadata'
+]
 
 export class OID4VCIIssuer implements IAgentPlugin {
   private static readonly _DEFAULT_OPTS_KEY = '_default'
@@ -38,6 +46,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     oid4vciIssueCredential: this.oid4vciIssueCredential.bind(this),
     oid4vciCreateAccessTokenResponse: this.oid4vciCreateAccessTokenResponse.bind(this),
     oid4vciGetInstance: this.oid4vciGetInstance.bind(this),
+    oid4vciRefreshInstanceMetadata: this.oid4vciRefreshInstanceMetadata.bind(this),
   }
   private _opts: IOID4VCIIssuerOpts
 
@@ -134,16 +143,6 @@ export class OID4VCIIssuer implements IAgentPlugin {
       issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
 
-    // this.instances.set(
-    //   credentialIssuer,
-    //   new IssuerInstance({
-    //     issuerOpts,
-    //     metadataOpts,
-    //     issuerMetadata,
-    //     authorizationServerMetadata,
-    //   }),
-    // )
-
     const instance = new IssuerInstance({
       issuerOpts,
       metadataOpts,
@@ -168,14 +167,18 @@ export class OID4VCIIssuer implements IAgentPlugin {
 
     const intervalId = setInterval((): void => {
       this.getIssuerMetadata({ ...args }, context)
-      .then((issuerMetadata) => {
-        console.log(`SETTING INSTANCE: ${credentialIssuer}, metadata: ${JSON.stringify(issuerMetadata)}`)
-
-        instance.issuerMetadata = issuerMetadata
-      })
-    }, 10_000)
+      .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
+    }, 60_000)
 
     this.instanceIntervals.set(args.credentialIssuer, intervalId)
+  }
+
+  public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<void> {
+    const instance = this.instances.get(args.credentialIssuer)
+    if (instance) {
+      this.getIssuerMetadata({ ...args }, context)
+        .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
+    }
   }
 
   public async oid4vciGetInstance(args: IIssuerInstanceArgs, context: IRequiredContext): Promise<IssuerInstance> {

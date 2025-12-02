@@ -83,6 +83,10 @@ export interface IIssuerInstanceArgs {
   namespace?: string
 }
 
+export interface IRefreshInstanceMetadata {
+  credentialIssuer: string
+}
+
 export interface IIssuerInstanceOptions extends IMetadataOptions {
   issuerOpts?: IIssuerOptions
   metadataOpts?: CredentialIssuerMetadataOpts
