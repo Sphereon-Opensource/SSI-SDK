@@ -5,34 +5,34 @@ export const createMocks = (): void => {
   nock('https://ssi-backend.sphereon.com')
     .post('/keys/generate', {
       use: 'sig',
-      alg: 'RSA_SSA_PSS_SHA256_MGF1',
+      alg: 'RSA_SHA256',
       keyOperations: ['sign'],
     })
     .times(1)
     .reply(201, {
       keyPair: {
         providerId: 'test-software',
-        alias: '0yRvXRmowvtRKA-HucNhLJH5lQTgS9_PAQsmrdx2TTo',
+        alias: 'RSA_SHA256_TEST_KEY_ALIAS',
         cose: {
           publicCoseKey: {
             kty: '3',
-            kid: '0yRvXRmowvtRKA-HucNhLJH5lQTgS9_PAQsmrdx2TTo',
-            alg: -37,
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: -257,
             key_ops: [1],
           },
           privateCoseKey: {
             kty: '3',
-            kid: '0yRvXRmowvtRKA-HucNhLJH5lQTgS9_PAQsmrdx2TTo',
-            alg: -37,
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: -257,
             key_ops: [1],
-            d: 'Ylzyxpjnx8EI0sYiKF9lBEreh5O6BupsSXqHWeU6p5kt-crbSSoKT87y6IvxUVlTQoqWkAvoW0WSNn4nJfD7u7zeS1DubJiiaETW89jdekB2Abl-yFcQVgaLqxgW0tj7XxRzOT_aLXDrIReI5xirWK2BSS4erJiQSAX9NGXSUTVrG3wpZTXapMFNlpr8ThAe4BMEzt_B0zypRTDY_X9tewciSb673pp5pcUFVHHpo_os9FWGR0UG82S93nUwfcT1FUxnTzs_PpZaahJWZbNOZgfyoBTxCa-iH7SadnkMVMID44kr9Z53XQjxbb9tpaUIMk5_T7WZ_V7USRBjTe9xdQ',
+            d: 'mock_private_key_data',
           },
         },
         jose: {
           publicJwk: {
             kty: 'RSA',
-            kid: '0yRvXRmowvtRKA-HucNhLJH5lQTgS9_PAQsmrdx2TTo',
-            alg: 'PS256',
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: 'RS256',
             use: 'sig',
             key_ops: ['sign'],
             n: 'xgQtOlp3S9XS-K--T7O73f8wS0G-nHlIOf4ijloK79rNP31QsFAMJ-z1v-8Xl9f2mBTExLREyNIIejwjWwW64m3_GuEuMe0yuDUGrn4AUsWdXDp6UzowLlrmpxmUZtK3FMg5y5LpUtoQAqnCeuOjsRZjLmoMLbKE0jJSMYyBPSDx6jFZO84poZB6RGjVQFcv9rlPjTltD3pjvDkQL1sL6fgJVKzCgv0p94K9ojlXNjKnBf8dmrluH_BxHZV9yV8UoQZw4H2Ruk0cJwjWSAS4QP5-1xbjZ8Q-xAq_eEvZv4He3GuFL67A0R965WpwXdxvldVaofyH_n8LuLk17BAV_Q',
@@ -40,8 +40,8 @@ export const createMocks = (): void => {
           },
           privateJwk: {
             kty: 'RSA',
-            kid: '0yRvXRmowvtRKA-HucNhLJH5lQTgS9_PAQsmrdx2TTo',
-            alg: 'PS256',
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: 'RS256',
             use: 'sig',
             key_ops: ['sign'],
             d: 'Ylzyxpjnx8EI0sYiKF9lBEreh5O6BupsSXqHWeU6p5kt-crbSSoKT87y6IvxUVlTQoqWkAvoW0WSNn4nJfD7u7zeS1DubJiiaETW89jdekB2Abl-yFcQVgaLqxgW0tj7XxRzOT_aLXDrIReI5xirWK2BSS4erJiQSAX9NGXSUTVrG3wpZTXapMFNlpr8ThAe4BMEzt_B0zypRTDY_X9tewciSb673pp5pcUFVHHpo_os9FWGR0UG82S93nUwfcT1FUxnTzs_PpZaahJWZbNOZgfyoBTxCa-iH7SadnkMVMID44kr9Z53XQjxbb9tpaUIMk5_T7WZ_V7USRBjTe9xdQ',
@@ -54,6 +54,117 @@ export const createMocks = (): void => {
           },
         },
         kid: '0yRvXRmowvtRKA-HucNhLJH5lQTgS9_PAQsmrdx2TTo',
+      },
+    })
+
+  nock('https://ssi-backend.sphereon.com')
+    .post('/keys/generate', {
+      use: 'sig',
+      alg: 'RSA_SHA256',
+      keyOperations: ['sign'],
+    })
+    .times(1)
+    .reply(201, {
+      keyPair: {
+        providerId: 'test-software',
+        alias: 'RSA_SHA256_TEST_KEY_ALIAS',
+        cose: {
+          publicCoseKey: {
+            kty: '3',
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: -257,
+            key_ops: [1],
+          },
+          privateCoseKey: {
+            kty: '3',
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: -257,
+            key_ops: [1],
+            d: 'mock_private_key_data',
+          },
+        },
+        jose: {
+          publicJwk: {
+            kty: 'RSA',
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: 'RS256',
+            use: 'sig',
+            key_ops: ['sign'],
+            n: 'xgQtOlp3S9XS-K--T7O73f8wS0G-nHlIOf4ijloK79rNP31QsFAMJ-z1v-8Xl9f2mBTExLREyNIIejwjWwW64m3_GuEuMe0yuDUGrn4AUsWdXDp6UzowLlrmpxmUZtK3FMg5y5LpUtoQAqnCeuOjsRZjLmoMLbKE0jJSMYyBPSDx6jFZO84poZB6RGjVQFcv9rlPjTltD3pjvDkQL1sL6fgJVKzCgv0p94K9ojlXNjKnBf8dmrluH_BxHZV9yV8UoQZw4H2Ruk0cJwjWSAS4QP5-1xbjZ8Q-xAq_eEvZv4He3GuFL67A0R965WpwXdxvldVaofyH_n8LuLk17BAV_Q',
+            e: 'AQAB',
+          },
+          privateJwk: {
+            kty: 'RSA',
+            kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+            alg: 'RS256',
+            use: 'sig',
+            key_ops: ['sign'],
+            d: 'mock_private_key_data',
+            n: 'xgQtOlp3S9XS-K--T7O73f8wS0G-nHlIOf4ijloK79rNP31QsFAMJ-z1v-8Xl9f2mBTExLREyNIIejwjWwW64m3_GuEuMe0yuDUGrn4AUsWdXDp6UzowLlrmpxmUZtK3FMg5y5LpUtoQAqnCeuOjsRZjLmoMLbKE0jJSMYyBPSDx6jFZO84poZB6RGjVQFcv9rlPjTltD3pjvDkQL1sL6fgJVKzCgv0p94K9ojlXNjKnBf8dmrluH_BxHZV9yV8UoQZw4H2Ruk0cJwjWSAS4QP5-1xbjZ8Q-xAq_eEvZv4He3GuFL67A0R965WpwXdxvldVaofyH_n8LuLk17BAV_Q',
+            e: 'AQAB',
+            p: '8WpLEifhACmoG7MAYnGbFmafXnCnKGRGCwInopQmVTOkUB52VkWEH7MZQlG-SqSvBWrqwnW0oXhoIvfIk1T-BbP3jJtdbl18SSsgifhc6P6BrI3-TKDNGWmq84MpqcxzoQaxbQ_W6F-RdEPDcxdDdtinoS892_kNGYN_6-lvXOs',
+            q: '0fquDcHL_pFMuuM3b20CoQ0sR90lmG6ah8CeF1DsRDLbuOPrcDtw-FYVjXO7OS_7s4vqKbUqDjXHoP9ErdmcnlUvMM01eesuiOvQAvWEaCY7G58ShnKJTvTth3kEoSfTXI_BiYT1QWs85rUlt14ewa7ijR6QxDvKvqmptFbrfrc',
+            dp: 'Tlj1thW1Is1iHmMwa8J8139El2yuAyDPzoDLhirYaexRliLcutDiuTrxpqFKxYS-vF5fg-6ZSZH_EeIieRYrPoSSgVJmtwul60UQ0VYGKSN3yB1o-0twZJ_zeAYIPm_40riOWlu6nj1twjK_uplBLs_PTzM6uyoPg0k2-cQPfTM',
+            dq: 'mock_dq_value',
+            qi: 'Iz-PnYZsQo3bn4lv_QDcJtFF42isfNiyCAKPe9tX6ogoTjJY1-DdLwop-VsOzLG4-0xKB0trONPiABKCLvZ_51g703oeS_VfK4dyzQFxg22Hj0x0ZTQshUE5C4JaGZqpeJwmGJtmplP9CthqOga-tj-Z_GP4R_KtKUTcYqrtpHw',
+          },
+        },
+        kid: 'RSA_SHA256_TEST_KEY_ALIAS',
+      },
+    })
+
+  nock('https://ssi-backend.sphereon.com')
+    .post('/keys/generate', {
+      use: 'sig',
+      alg: 'ED25519',
+      keyOperations: ['sign'],
+    })
+    .times(1)
+    .reply(201, {
+      keyPair: {
+        providerId: 'test-software',
+        alias: 'ED25519_TEST_KEY_ALIAS',
+        cose: {
+          publicCoseKey: {
+            kty: '1',
+            kid: 'ED25519_TEST_KEY_ALIAS',
+            alg: -8,
+            key_ops: [1],
+            crv: 6,
+            x: '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+          },
+          privateCoseKey: {
+            kty: '1',
+            kid: 'ED25519_TEST_KEY_ALIAS',
+            alg: -8,
+            key_ops: [1],
+            crv: 6,
+            x: '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+            d: 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+          },
+        },
+        jose: {
+          publicJwk: {
+            kty: 'OKP',
+            kid: 'ED25519_TEST_KEY_ALIAS',
+            alg: 'EdDSA',
+            use: 'sig',
+            key_ops: ['sign'],
+            crv: 'Ed25519',
+            x: '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+          },
+          privateJwk: {
+            kty: 'OKP',
+            kid: 'ED25519_TEST_KEY_ALIAS',
+            alg: 'EdDSA',
+            use: 'sig',
+            key_ops: ['sign'],
+            crv: 'Ed25519',
+            x: '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+            d: 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+          },
+        },
+        kid: 'ED25519_TEST_KEY_ALIAS',
       },
     })
 
