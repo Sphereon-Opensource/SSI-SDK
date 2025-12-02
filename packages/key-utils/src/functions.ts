@@ -1160,7 +1160,10 @@ export function toPkcs1FromHex(publicKeyHex: string) {
 }
 
 export function joseAlgorithmToDigest(alg: string): DigestAlgorithm {
-  switch (alg.toUpperCase().replace('-', '')) {
+  // Normalize the algorithm string by converting to uppercase and removing hyphens
+  const normalized = alg.toUpperCase().replace(/-/g, '')
+
+  switch (normalized) {
     case 'RS256':
     case 'ES256':
     case 'ES256K':
@@ -1177,10 +1180,11 @@ export function joseAlgorithmToDigest(alg: string): DigestAlgorithm {
     case 'PS512':
     case 'HS512':
       return 'SHA-512'
-    case 'EdDSA':
+    case 'EDDSA':
+    case 'ED25519':
       return 'SHA-512'
     default:
-      return 'SHA-256'
+      throw new Error(`Unsupported JOSE algorithm: ${alg}. Cannot determine digest algorithm.`)
   }
 }
 
@@ -1199,17 +1203,31 @@ export function isHashString(input: Uint8Array): boolean {
   if (length !== 32 && length !== 48 && length !== 64) {
     return false
   }
+
+  // A hash digest is raw binary data (any byte values 0x00-0xFF are valid).
+  // We should NOT check if bytes are ASCII hex characters, as that would only detect
+  // hex-encoded strings, not actual binary hash digests.
+  // Instead, we use a heuristic: if the data looks like it has high entropy
+  // and is the right length, we assume it's already a hash.
+
+  // Simple heuristic: Check if data is all printable ASCII (which would indicate it's NOT a hash)
+  // Printable ASCII is roughly 0x20-0x7E
+  let printableCount = 0
   for (let i = 0; i < length; i++) {
     const byte = input[i]
     if (byte === undefined) {
       return false
     }
-    // 0-9: 48-57, A-F: 65-70, a-f: 97-102
-    if (!((byte >= 48 && byte <= 57) || (byte >= 65 && byte <= 70) || (byte >= 97 && byte <= 102))) {
-      return false
+    // Count printable ASCII characters
+    if (byte >= 0x20 && byte <= 0x7e) {
+      printableCount++
     }
   }
-  return true
+
+  // If more than 90% of bytes are printable ASCII, it's likely NOT a raw binary hash
+  // Raw binary hashes should have a more uniform distribution across all byte values
+  const printableRatio = printableCount / length
+  return printableRatio < 0.9
 }
 
 export type HashAlgorithm = 'SHA-256' | 'sha256' | 'SHA-384' | 'sha384' | 'SHA-512' | 'sha512'

@@ -249,10 +249,23 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
           ...(this.userId && { userId: this.userId }),
         })
 
-    // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash
-    const dataToBeSigned: Uint8Array = isHashString(data)
-      ? data
-      : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+    // Check if this is an EdDSA/Ed25519 key - these algorithms MUST sign the raw message, not a hash
+    const keyAlg = key.keyInfo.key.alg
+    const isEdDSA = keyAlg === 'EdDSA' || keyAlg === 'ED25519' || key.keyInfo.key.crv === 'Ed25519'
+
+    let dataToBeSigned: Uint8Array
+    if (isEdDSA) {
+      // EdDSA signatures are computed over the raw message (PureEdDSA)
+      // The algorithm internally handles hashing with SHA-512
+      dataToBeSigned = data
+    } else {
+      // For other algorithms (RSA, ECDSA), hash the data before signing
+      // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash)
+      dataToBeSigned = isHashString(data)
+        ? data
+        : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+    }
+
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
       keyInfo: key.keyInfo,
       input: toString(dataToBeSigned, 'base64'),
@@ -278,10 +291,22 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
           ...(this.userId && { userId: this.userId }),
         })
 
-    // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash
-    const dataToBeVerified: Uint8Array = isHashString(data)
-      ? data
-      : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+    // Check if this is an EdDSA/Ed25519 key - these algorithms MUST verify the raw message, not a hash
+    const keyAlg = key.keyInfo.key.alg
+    const isEdDSA = keyAlg === 'EdDSA' || keyAlg === 'ED25519' || key.keyInfo.key.crv === 'Ed25519'
+
+    let dataToBeVerified: Uint8Array
+    if (isEdDSA) {
+      // EdDSA signatures are verified over the raw message (PureEdDSA)
+      dataToBeVerified = data
+    } else {
+      // For other algorithms (RSA, ECDSA), hash the data before verifying
+      // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash)
+      dataToBeVerified = isHashString(data)
+        ? data
+        : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+    }
+
     const verification = await this.client.methods.kmsClientIsValidRawSignature({
       keyInfo: key.keyInfo,
       input: toString(dataToBeVerified, 'base64'),
