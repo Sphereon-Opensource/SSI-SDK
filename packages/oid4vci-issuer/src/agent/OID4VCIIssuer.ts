@@ -162,9 +162,6 @@ export class OID4VCIIssuer implements IAgentPlugin {
       const metadata = await this.getIssuerMetadata({ ...args }, context);
       instance.issuerMetadata = metadata;
     }
-      this.getIssuerMetadata({ ...args }, context)
-        .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
-    }
   }
 
   public async oid4vciGetInstance(args: IIssuerInstanceArgs, context: IRequiredContext): Promise<IssuerInstance> {
