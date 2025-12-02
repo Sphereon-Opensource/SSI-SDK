@@ -20,12 +20,20 @@ import {
   IIssuerInstanceArgs,
   IIssuerOptions,
   IOID4VCIIssuerOpts,
+  IRefreshInstanceMetadata,
   IRequiredContext,
-  schema,
+  schema
 } from '../index'
 import { IssuerInstance } from '../IssuerInstance'
-
 import { IOID4VCIIssuer } from '../types/IOID4VCIIssuer'
+
+export const oid4vciIssuerMethods: Array<string> = [
+  'oid4vciCreateOfferURI',
+  'oid4vciIssueCredential',
+  'oid4vciCreateAccessTokenResponse',
+  'oid4vciGetInstance',
+  'oid4vciRefreshInstanceMetadata'
+]
 
 export class OID4VCIIssuer implements IAgentPlugin {
   private static readonly _DEFAULT_OPTS_KEY = '_default'
@@ -37,6 +45,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     oid4vciIssueCredential: this.oid4vciIssueCredential.bind(this),
     oid4vciCreateAccessTokenResponse: this.oid4vciCreateAccessTokenResponse.bind(this),
     oid4vciGetInstance: this.oid4vciGetInstance.bind(this),
+    oid4vciRefreshInstanceMetadata: this.oid4vciRefreshInstanceMetadata.bind(this),
   }
   private _opts: IOID4VCIIssuerOpts
 
@@ -144,6 +153,18 @@ export class OID4VCIIssuer implements IAgentPlugin {
     )
 
     return this.oid4vciGetInstance(args, context)
+  }
+
+  // TODO SSISDK-87 create proper solution to update issuer metadata
+  public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<void> {
+    const instance = this.instances.get(args.credentialIssuer)
+    if (instance) {
+      const metadata = await this.getIssuerMetadata({ ...args }, context);
+      instance.issuerMetadata = metadata;
+    }
+      this.getIssuerMetadata({ ...args }, context)
+        .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
+    }
   }
 
   public async oid4vciGetInstance(args: IIssuerInstanceArgs, context: IRequiredContext): Promise<IssuerInstance> {
