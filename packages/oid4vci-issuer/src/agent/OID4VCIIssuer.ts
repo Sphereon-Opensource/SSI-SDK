@@ -38,7 +38,6 @@ export const oid4vciIssuerMethods: Array<string> = [
 export class OID4VCIIssuer implements IAgentPlugin {
   private static readonly _DEFAULT_OPTS_KEY = '_default'
   private readonly instances: Map<string, IssuerInstance> = new Map()
-  private readonly instanceIntervals = new Map<string, NodeJS.Timeout>()
   readonly schema = schema.IDidAuthSiopOpAuthenticator
 
   readonly methods: IOID4VCIIssuer = {
@@ -143,35 +142,17 @@ export class OID4VCIIssuer implements IAgentPlugin {
       issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
 
-    const instance = new IssuerInstance({
-      issuerOpts,
-      metadataOpts,
-      issuerMetadata,
-      authorizationServerMetadata,
-    })
-    this.instances.set(credentialIssuer, instance)
-    this.startIssuerMetadataRefreshInterval({ ...args, credentialIssuer, instance }, context)
+    this.instances.set(
+      credentialIssuer,
+      new IssuerInstance({
+        issuerOpts,
+        metadataOpts,
+        issuerMetadata,
+        authorizationServerMetadata,
+      }),
+    )
 
     return this.oid4vciGetInstance(args, context)
-  }
-
-  // TODO SSISDK-87 create proper solution to update issuer metadata
-  private startIssuerMetadataRefreshInterval(
-    args: IIssuerInstanceArgs & { instance: IssuerInstance },
-    context: IRequiredContext
-  ): void {
-    const { credentialIssuer, instance } = args
-
-    if (this.instanceIntervals.has(credentialIssuer)) {
-      clearInterval(this.instanceIntervals.get(credentialIssuer))
-    }
-
-    const intervalId = setInterval((): void => {
-      this.getIssuerMetadata({ ...args }, context)
-      .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
-    }, 60_000)
-
-    this.instanceIntervals.set(args.credentialIssuer, intervalId)
   }
 
   // TODO SSISDK-87 create proper solution to update issuer metadata
