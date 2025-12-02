@@ -155,6 +155,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     return this.oid4vciGetInstance(args, context)
   }
 
+  // TODO SSISDK-87 create proper solution to update issuer metadata
   private startIssuerMetadataRefreshInterval(
     args: IIssuerInstanceArgs & { instance: IssuerInstance },
     context: IRequiredContext
@@ -173,6 +174,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     this.instanceIntervals.set(args.credentialIssuer, intervalId)
   }
 
+  // TODO SSISDK-87 create proper solution to update issuer metadata
   public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<void> {
     const instance = this.instances.get(args.credentialIssuer)
     if (instance) {
