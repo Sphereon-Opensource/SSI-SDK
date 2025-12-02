@@ -156,12 +156,16 @@ export class OID4VCIIssuer implements IAgentPlugin {
   }
 
   // TODO SSISDK-87 create proper solution to update issuer metadata
-  public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<void> {
+  public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<boolean> {
     const instance = this.instances.get(args.credentialIssuer)
     if (instance) {
       const metadata = await this.getIssuerMetadata({ ...args }, context);
       instance.issuerMetadata = metadata;
+
+      return true
     }
+
+    return false
   }
 
   public async oid4vciGetInstance(args: IIssuerInstanceArgs, context: IRequiredContext): Promise<IssuerInstance> {
