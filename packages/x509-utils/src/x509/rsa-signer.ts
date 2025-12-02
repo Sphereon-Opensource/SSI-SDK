@@ -22,7 +22,7 @@ export class RSASigner {
    */
   constructor(
     key: string | JsonWebKey,
-    opts?: { hashAlgorithm?: HashAlgorithm; scheme?: RSAEncryptionSchemes | RSASignatureSchemes; visibility?: KeyVisibility }
+    opts?: { hashAlgorithm?: HashAlgorithm; scheme?: RSAEncryptionSchemes | RSASignatureSchemes; visibility?: KeyVisibility },
   ) {
     if (typeof key === 'string') {
       this.jwk = PEMToJwk(key, opts?.visibility)

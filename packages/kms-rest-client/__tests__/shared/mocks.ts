@@ -193,8 +193,8 @@ export const createMocks = (): void => {
         keyEncoding: 'JOSE',
         opts: {
           test: 'test',
-        }
-      }
+        },
+      },
     })
 
   nock('https://ssi-backend.sphereon.com')
@@ -223,7 +223,7 @@ export const createMocks = (): void => {
         opts: {
           test: 'test',
         },
-      }
+      },
     })
 
   nock('https://ssi-backend.sphereon.com')
@@ -344,7 +344,7 @@ export const createMocks = (): void => {
           },
         },
         kid: '-IXw08HBMMyp8PhQ4GYjh1nqKSr04W5pj75u7A2sWuc',
-      }
+      },
     })
 
   nock('https://ssi-backend.sphereon.com').delete('/keys/Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4').times(1).reply(204)
@@ -420,8 +420,8 @@ export const createMocks = (): void => {
         keyEncoding: 'JOSE',
         opts: {
           test: 'test',
-        }
-      }
+        },
+      },
     })
 
   nock('https://ssi-backend.sphereon.com')
@@ -509,7 +509,7 @@ export const createMocks = (): void => {
           },
         },
         kid: '-IXw08HBMMyp8PhQ4GYjh1nqKSr04W5pj75u7A2sWuc',
-      }
+      },
     })
 
   nock('https://ssi-backend.sphereon.com')
@@ -538,7 +538,7 @@ export const createMocks = (): void => {
         opts: {
           test: 'test',
         },
-      }
+      },
     })
 
   nock('https://ssi-backend.sphereon.com').delete('/providers/test-software/keys/Gxq2tXSNl_kp8tKHNzIlO7jQDM-aYcgn1aewGW8Yby4').times(1).reply(204)

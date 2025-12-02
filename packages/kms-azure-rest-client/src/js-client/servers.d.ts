@@ -5,7 +5,7 @@ export interface BaseServerConfiguration {
 export declare class ServerConfiguration<
   T extends {
     [key: string]: string
-  }
+  },
 > implements BaseServerConfiguration
 {
   private url

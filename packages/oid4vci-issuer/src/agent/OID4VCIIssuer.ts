@@ -132,6 +132,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
     if (!issuerOpts.resolveOpts?.resolver) {
       issuerOpts.resolveOpts.resolver = getAgentResolver(context)
     }
+
     this.instances.set(
       credentialIssuer,
       new IssuerInstance({
@@ -141,6 +142,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
         authorizationServerMetadata,
       }),
     )
+
     return this.oid4vciGetInstance(args, context)
   }
 

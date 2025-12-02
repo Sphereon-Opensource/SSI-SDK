@@ -25,8 +25,6 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
   const publicKeyHex = '037fcdce2770f6c45d4183cbee6fdb4b7b580733357be9ef13bacf6e3c7bd15445'
   const kid = publicKeyHex
 
-
-
   beforeAll(async () => {
     await testContext.setup().then(() => (agent = testContext.getAgent()))
     await agent.keyManagerImport({ kid: 'test', type: 'Secp256r1', kms: 'local', privateKeyHex })

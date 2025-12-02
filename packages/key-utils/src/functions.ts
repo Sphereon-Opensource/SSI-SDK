@@ -122,6 +122,7 @@ export async function importProvidedOrGeneratedKey(
   const key = args?.options?.key
   if (key) {
     key.meta = {
+      ...key.meta,
       providerName: args.providerName,
     }
 
@@ -164,7 +165,7 @@ export async function importProvidedOrGeneratedKey(
     meta: {
       ...key?.meta,
       algorithms: keyMetaAlgorithmsFromKeyType(type),
-      keyAlias: args.alias,
+      ...(key?.meta?.keyAlias ? {} : { keyAlias: args.alias }),
     },
   })
 }

@@ -82,7 +82,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         agent.verifyMnemonic({
           hash: mnemonicObj.hash,
           wordList: [...mnemonic],
-        })
+        }),
       ).resolves.toEqual({ succeeded: true })
     })
 
@@ -93,7 +93,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         agent.verifyMnemonic({
           hash: mnemonicObj.hash,
           wordList: [...mnemonic],
-        })
+        }),
       ).resolves.toEqual({ succeeded: false })
     })
 
@@ -103,7 +103,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         agent.verifyMnemonic({
           hash: 'non-existent',
           wordList: [mnemonic[1], mnemonic[3], mnemonic[0], mnemonic[9], mnemonic[11]],
-        })
+        }),
       ).rejects.toThrowError('Mnemonic not found')
     })
 
@@ -120,7 +120,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         agent.verifyPartialMnemonic({
           hash: mnemonicObj.hash,
           indexedWordList,
-        })
+        }),
       ).resolves.toEqual({ succeeded: true })
     })
 
@@ -137,7 +137,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         agent.verifyPartialMnemonic({
           hash: mnemonicObj.hash,
           indexedWordList,
-        })
+        }),
       ).resolves.toEqual({ succeeded: false })
     })
 
@@ -154,7 +154,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         agent.verifyPartialMnemonic({
           hash: 'non-existent',
           indexedWordList,
-        })
+        }),
       ).rejects.toThrowError('Mnemonic not found')
     })
 
@@ -166,7 +166,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
 
     it('should throw an error if type is different from Ed25519', async () => {
       await expect(agent.generateMasterKey({ hash: mnemonicObj.hash, type: 'Secp256k1' })).rejects.toThrowError(
-        'Secp256k1 keys are not supported yet'
+        'Secp256k1 keys are not supported yet',
       )
     })
 
@@ -176,7 +176,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
           hash: mnemonicObj.hash,
           path: "m/0'",
           kms: 'local',
-        })
+        }),
       ).resolves.toEqual(
         expect.objectContaining({
           kms: 'local',
@@ -184,7 +184,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             algorithms: ['Ed25519', 'EdDSA'],
           },
           type: 'Ed25519',
-        })
+        }),
       )
     })
   })

@@ -46,7 +46,7 @@ describe('@sphereon/jwk-did-resolver', () => {
     expect(didResolutionResult.didDocument!.verificationMethod).toBeDefined()
     expect(didResolutionResult.didDocument!.verificationMethod!.length).toEqual(1)
     expect(didResolutionResult.didDocument!.verificationMethod![0].id).toEqual(
-      'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ#0'
+      'did:jwk:eyJrdHkiOiJFQyIsImNydiI6InNlY3AyNTZrMSIsIngiOiJCS2NlRjMwbHBTNkptT1RsS09LQVdudGtKdVRCSzNGX1JoaXlEcTRtdm9jIiwieSI6Im9WY1phQnpiSFJ2UW5iSXhwRWRXbVlRMGtSRm42ajVDRkVQcGxvX09ON1UifQ#0',
     )
     expect(didResolutionResult.didDocument!.verificationMethod![0].type).toEqual(VerificationType.JsonWebKey2020)
     expect(didResolutionResult.didDocument!.verificationMethod![0].controller).toEqual(did)

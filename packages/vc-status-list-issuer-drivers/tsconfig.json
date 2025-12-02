@@ -28,7 +28,7 @@
       "path": "../credential-vcdm2-jose-provider"
     },
     {
-      "path": "../did-utils",
+      "path": "../did-utils"
     },
     {
       "path": "../identifier-resolution"

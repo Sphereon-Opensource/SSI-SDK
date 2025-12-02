@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.siopv2-oid4vp-common",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "description": "Common SIOPv2 and OID4VP types between modules",
   "source": "src/index.ts",
   "type": "module",
@@ -25,7 +25,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@sphereon/did-auth-siop": "0.19.1-next.220",
+    "@sphereon/did-auth-siop": "0.20.1-next.3",
     "@sphereon/ssi-sdk.core": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "uint8arrays": "^3.1.1"

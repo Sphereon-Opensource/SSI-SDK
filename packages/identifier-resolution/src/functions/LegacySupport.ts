@@ -13,7 +13,7 @@ export function legacyKeyRefsToIdentifierOpts(opts: {
 }): ManagedIdentifierOptsOrResult {
   if (!opts.idOpts) {
     console.warn(
-      `Legacy idOpts being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`
+      `Legacy idOpts being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
     )
     // legacy way
     let kmsKeyRef =
@@ -37,14 +37,14 @@ export function legacyKeyRefsToIdentifierOpts(opts: {
     if (opts.keyRef && !idOpts.kmsKeyRef) {
       // legacy way
       console.warn(
-        `Legacy keyRef being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`
+        `Legacy keyRef being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
       )
       idOpts.kmsKeyRef = opts.keyRef
     }
     if (opts.iss && !idOpts.issuer) {
       // legacy way
       console.warn(
-        `Legacy iss being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`
+        `Legacy iss being used. Support will be dropped in the future. Consider switching to the idOpts, to have support for DIDs, JWKS, x5c etc. See https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/tree/feature/multi_identifier_support/packages/identifier-resolution`,
       )
       idOpts.issuer = opts.iss
     }

@@ -14,7 +14,7 @@ export declare class ObservableKeyVaultControllerApi {
   constructor(
     configuration: Configuration,
     requestFactory?: KeyVaultControllerApiRequestFactory,
-    responseProcessor?: KeyVaultControllerApiResponseProcessor
+    responseProcessor?: KeyVaultControllerApiResponseProcessor,
   )
   createEcKeyWithHttpInfo(createEcKeyRequest: CreateEcKeyRequest, _options?: Configuration): Observable<HttpInfo<KeyVaultKey>>
   createEcKey(createEcKeyRequest: CreateEcKeyRequest, _options?: Configuration): Observable<KeyVaultKey>

@@ -21,7 +21,7 @@ export type SignArgs = {
 export type VerifyArgs = {
   keyRef: Pick<IKey, 'kid'>
   data: Uint8Array
-  signature: string;
+  signature: string
   [x: string]: any
 }
 
@@ -44,7 +44,7 @@ export type MapImportKeyArgs = {
 }
 
 export type MappedImportKey = {
-  key: StoreKey,
-  kid: string,
+  key: StoreKey
+  kid: string
   publicKeyJwk: JWK
 }

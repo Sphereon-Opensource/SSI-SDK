@@ -93,7 +93,7 @@ describe('functions: verifySignature', () => {
         data: u8a.fromString(message, 'hex'),
         signature: u8a.fromString(signatureHex, 'hex'),
         key: toJwk(publicKeyHex, 'Secp256k1'),
-      })
+      }),
     ).resolves.toEqual(true)
   })
 
@@ -108,7 +108,7 @@ describe('functions: verifySignature', () => {
         data: u8a.fromString(message, 'hex'),
         signature: u8a.fromString(signatureHex, 'hex'),
         key: toJwk(publicKeyHex, 'Secp256r1'),
-      })
+      }),
     ).resolves.toEqual(true)
   })
 
@@ -122,7 +122,7 @@ describe('functions: verifySignature', () => {
         data: u8a.fromString(message, 'hex'),
         signature: u8a.fromString(signatureHex, 'hex'),
         key: toJwk(publicKeyHex, 'Ed25519'),
-      })
+      }),
     ).resolves.toEqual(true)
   })
 
@@ -133,9 +133,9 @@ describe('functions: verifySignature', () => {
       n: u8a.toString(
         u8a.fromString(
           '00a2b451a07d0aa5f96e455671513550514a8a5b462ebef717094fa1fee82224e637f9746d3f7cafd31878d80325b6ef5a1700f65903b469429e89d6eac8845097b5ab393189db92512ed8a7711a1253facd20f79c15e8247f3d3e42e46e48c98e254a2fe9765313a03eff8f17e1a029397a1fa26a8dce26f490ed81299615d9814c22da610428e09c7d9658594266f5c021d0fceca08d945a12be82de4d1ece6b4c03145b5d3495d4ed5411eb878daf05fd7afc3e09ada0f1126422f590975a1969816f48698bcbba1b4d9cae79d460d8f9f85e7975005d9bc22c4e5ac0f7c1a45d12569a62807d3b9a02e5a530e773066f453d1f5b4c2e9cf7820283f742b9d5',
-          'hex'
+          'hex',
         ),
-        'base64url'
+        'base64url',
       ),
     })
     const message = '313233343030'
@@ -147,7 +147,7 @@ describe('functions: verifySignature', () => {
         signature: u8a.fromString(signatureHex, 'hex'),
         key: toJwk(publicKeyHex, 'RSA'),
         opts: { signatureAlg: JoseSignatureAlgorithm.PS256 },
-      })
+      }),
     ).resolves.toEqual(true)
   })
 

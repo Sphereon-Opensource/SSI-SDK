@@ -1,6 +1,6 @@
-import { CredentialOfferClient, MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
+import { CredentialOfferClient, MetadataClient, OpenID4VCIClient, OpenID4VCIClientV1_0_15 } from '@sphereon/oid4vci-client'
 import {
-  AuthorizationDetails,
+  AuthorizationDetailsV1_0_15,
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
@@ -123,6 +123,7 @@ import {
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
   VerifyEBSICredentialIssuerResult,
+  WalletType,
 } from '../types/IOID4VCIHolder'
 
 /**
@@ -378,11 +379,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
 
     const authorizationRequestOpts = { ...this.defaultAuthorizationRequestOpts, ...args.authorizationRequestOpts } satisfies AuthorizationRequestOpts
-    // We filter the details first against our vcformat prefs
+    // TODO: Previously we filtered the details first against our vcformat prefs. However auth details does not have the notion of formats anymore
     authorizationRequestOpts.authorizationDetails = authorizationRequestOpts?.authorizationDetails
-      ? asArray(authorizationRequestOpts.authorizationDetails).filter(
-          (detail) => typeof detail === 'string' || this.vcFormatPreferences.includes(detail.format),
-        )
+      ? asArray(authorizationRequestOpts.authorizationDetails)
       : undefined
 
     if (!authorizationRequestOpts.redirectUri) {
@@ -394,18 +393,19 @@ export class OID4VCIHolder implements IAgentPlugin {
       authorizationRequestOpts.clientId = authorizationRequestOpts.redirectUri
     }
 
+    // TODO: This entire filter and formats population should not work anymore, as the auth details no longer have the format property.
     let formats: string[] = this.vcFormatPreferences
     const authFormats = authorizationRequestOpts?.authorizationDetails
-      ?.map((detail: AuthorizationDetails) => (typeof detail === 'object' && 'format' in detail && detail.format ? detail.format : undefined))
+      ?.map((detail: AuthorizationDetailsV1_0_15) => (typeof detail === 'object' && 'format' in detail && detail.format ? detail.format : undefined))
       .filter((format) => !!format)
       .map((format) => format as string)
     if (authFormats && authFormats.length > 0) {
       formats = Array.from(new Set(authFormats))
     }
-    let oid4vciClient: OpenID4VCIClient
+    let oid4vciClient: OpenID4VCIClientV1_0_15
     let offer: CredentialOfferRequestWithBaseUrl | undefined
     if (requestData.existingClientState) {
-      oid4vciClient = await OpenID4VCIClient.fromState({ state: requestData.existingClientState })
+      oid4vciClient = await OpenID4VCIClientV1_0_15.fromState({ state: requestData.existingClientState })
       offer = oid4vciClient.credentialOffer
     } else {
       offer = requestData.credentialOffer
@@ -427,7 +427,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!offer) {
         // else no offer, meaning we have an issuer URL
         logger.log(`Issuer url received (no credential offer): ${uri}`)
-        oid4vciClient = await OpenID4VCIClient.fromCredentialIssuer({
+        oid4vciClient = await OpenID4VCIClientV1_0_15.fromCredentialIssuer({
           credentialIssuer: uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
@@ -435,7 +435,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         })
       } else {
         logger.log(`Credential offer received: ${uri}`)
-        oid4vciClient = await OpenID4VCIClient.fromURI({
+        oid4vciClient = await OpenID4VCIClientV1_0_15.fromURI({
           uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
@@ -449,7 +449,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       configurationIds = offer.original_credential_offer.credential_configuration_ids
     } else {
       configurationIds = asArray(authorizationRequestOpts.authorizationDetails)
-        .filter((authDetails): authDetails is Exclude<AuthorizationDetails, string> => typeof authDetails !== 'string')
+        // .filter((authDetails): authDetails is Exclude<AuthorizationDetailsV1_0_15, string> => typeof authDetails !== 'string')
         .map((authReqOpts) => authReqOpts.credential_configuration_id)
         .filter((id): id is string => !!id)
     }
@@ -505,6 +505,8 @@ export class OID4VCIHolder implements IAgentPlugin {
     }
     return {
       authorizationCodeURL,
+      // Needed, because the above createAuthorizationRequestUrl manipulates the state, adding pkce opts to the state
+      oid4vciClientState: JSON.parse(await client.exportState())
     }
   }
 
@@ -616,14 +618,14 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
-    const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
+    const { verificationCode, openID4VCIClientState, didMethodPreferences, issuanceOpt, accessTokenOpts, walletType } = args
     logger.debug(`Getting credentials`, issuanceOpt, accessTokenOpts)
 
     if (!openID4VCIClientState) {
       return Promise.reject(Error('Missing openID4VCI client state in context'))
     }
 
-    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client,
       vcFormatPreferences: this.vcFormatPreferences,
@@ -635,7 +637,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsSupported,
       serverMetadata,
       context,
-      didMethodPreferences: Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences,
+      didMethodPreferences: this.selectDidMethodPreferences(didMethodPreferences, walletType),
       jwtCryptographicSuitePreferences: this.jwtCryptographicSuitePreferences,
       jsonldCryptographicSuitePreferences: this.jsonldCryptographicSuitePreferences,
       ...(issuanceOpt && { forceIssuanceOpt: issuanceOpt }),
@@ -658,6 +660,15 @@ export class OID4VCIHolder implements IAgentPlugin {
     logger.log(`Credentials received`, allCredentials)
 
     return allCredentials
+  }
+
+  private selectDidMethodPreferences(didMethodPreferences: Array<SupportedDidMethodEnum> | undefined, walletType: WalletType) {
+    const supportedDidMethodEnums =
+      Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences
+    if (walletType === 'ORGANIZATIONAL') {
+      return [SupportedDidMethodEnum.DID_WEB, ...supportedDidMethodEnums]
+    }
+    return supportedDidMethodEnums
   }
 
   private async oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept> {

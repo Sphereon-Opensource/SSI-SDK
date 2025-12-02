@@ -43,7 +43,7 @@ export async function resolveExternalIdentifier(
   opts: ExternalIdentifierOpts & {
     crypto?: webcrypto.Crypto
   },
-  context: IAgentContext<any>
+  context: IAgentContext<any>,
 ): Promise<ExternalIdentifierResult> {
   let method: ExternalIdentifierMethod | undefined
   if (isExternalIdentifierDidOpts(opts)) {
@@ -70,7 +70,7 @@ export async function resolveExternalX5cIdentifier(
   opts: ExternalIdentifierX5cOpts & {
     crypto?: webcrypto.Crypto
   },
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<ExternalIdentifierX5cResult> {
   if (!isExternalIdentifierX5cOpts(opts)) {
     return Promise.reject('External x5c Identifier args need to be provided')
@@ -129,7 +129,7 @@ export async function resolveExternalX5cIdentifier(
           jwkThumbprint: calculateJwkThumbprint({ jwk }),
           publicKeyHex: jwkTtoPublicKeyHex(jwk),
         } satisfies ExternalJwkInfo
-      })
+      }),
     )
   }
   if (jwks.length === 0) {
@@ -158,7 +158,7 @@ export async function resolveExternalJwkIdentifier(
   opts: ExternalIdentifierJwkOpts & {
     x5c?: ExternalIdentifierX5cOpts
   },
-  context: IAgentContext<any>
+  context: IAgentContext<any>,
 ): Promise<ExternalIdentifierJwkResult> {
   if (!isExternalIdentifierJwkOpts(opts)) {
     return Promise.reject('External JWK Identifier args need to be provided')
@@ -193,7 +193,7 @@ export async function resolveExternalCoseKeyIdentifier(
   opts: ExternalIdentifierCoseKeyOpts & {
     x5c?: ExternalIdentifierX5cOpts
   },
-  context: IAgentContext<any>
+  context: IAgentContext<any>,
 ): Promise<ExternalIdentifierCoseKeyResult> {
   if (!isExternalIdentifierCoseKeyOpts(opts)) {
     return Promise.reject('External Cose Key args need to be provided')
@@ -223,7 +223,7 @@ export async function resolveExternalCoseKeyIdentifier(
 
 export async function resolveExternalDidIdentifier(
   opts: ExternalIdentifierDidOpts,
-  context: IAgentContext<IResolver & IDIDManager>
+  context: IAgentContext<IResolver & IDIDManager>,
 ): Promise<ExternalIdentifierDidResult> {
   if (!isExternalIdentifierDidOpts(opts)) {
     return Promise.reject('External DID Identifier args need to be provided')
@@ -253,7 +253,7 @@ export async function resolveExternalDidIdentifier(
           Array.from(
             Object.values(didJwks)
               .filter((jwks) => isDefined(jwks) && jwks.length > 0)
-              .flatMap((jwks) => jwks)
+              .flatMap((jwks) => jwks),
           )
             .flatMap((jwk) => {
               return {
@@ -263,8 +263,8 @@ export async function resolveExternalDidIdentifier(
                 publicKeyHex: jwkTtoPublicKeyHex(jwk),
               }
             })
-            .map((jwk) => JSON.stringify(jwk))
-        )
+            .map((jwk) => JSON.stringify(jwk)),
+        ),
       ).map((jwks) => JSON.parse(jwks))
     : []
 

@@ -3,6 +3,7 @@ import {
   type DigitalCredential,
   type FindDigitalCredentialArgs,
   type NonPersistedDigitalCredential,
+  UpdateCredentialArgs,
   type UpdateCredentialStateArgs,
 } from '@sphereon/ssi-sdk.data-store-types'
 import type {
@@ -68,6 +69,12 @@ export interface ICredentialStore extends IPluginMethodMap {
    * @param args
    */
   crsGetCredentialsByClaimsCount(args: GetCredentialsByClaimsArgs): Promise<number>
+
+  /**
+   * Update an existing credential
+   * @param args
+   */
+  crsUpdateCredential(args: UpdateCredentialArgs): Promise<DigitalCredential>
 
   /**
    * Delete a single credentials by primary key

@@ -19,33 +19,33 @@ paths:
         Returns URIs needed to initiate the auth flow and check its status. The queryId passed in needs to be known to the agent. This endpoint is protected using OAuth2/OIDC normally with a confidential client.  Do not call from the frontend!
       operationId: create-authorization-request
       requestBody:
-        $ref: "#/components/requestBodies/CreateAuthorizationRequestBody"
+        $ref: '#/components/requestBodies/CreateAuthorizationRequestBody'
       responses:
-        "201":
+        '201':
           description: Authorization request created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CreateAuthorizationRequestResponse"
-        "401":
+                $ref: '#/components/schemas/CreateAuthorizationRequestResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-        "404":
+                $ref: '#/components/schemas/Error'
+        '404':
           description: Query Id or other param not configured/found on the RP agent
             side
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-        "500":
+                $ref: '#/components/schemas/Error'
+        '500':
           description: Error creating authorization request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
       callbacks:
         authorizationStatusCallback:
           '{$request.body#/callback.url}':
@@ -57,10 +57,10 @@ paths:
                 content:
                   application/json:
                     schema:
-                      $ref: "#/components/schemas/AuthorizationStatusResponse"
+                      $ref: '#/components/schemas/AuthorizationStatusResponse'
                 required: true
               responses:
-                "200":
+                '200':
                   description: Notification received by the external service.
 
   /oid4vp/backend/auth/requests/{correlation_id}:
@@ -393,7 +393,7 @@ components:
       properties:
         size:
           type: number
-          description: "Size of the QR code in pixels."
+          description: 'Size of the QR code in pixels.'
           default: 400
         color_dark:
           type: string
@@ -401,14 +401,14 @@ components:
             Color of the blocks on the QR code.
             Accepts a CSS <color>.
             For more information about CSS <color>, please refer to [https://developer.mozilla.org/en-US/docs/Web/CSS/color_value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
-          default: "#000000"
+          default: '#000000'
         color_light:
           type: string
           description: >-
             Color of the empty areas on the QR code.
             Accepts a CSS <color>.
             For more information about CSS <color>, please refer to [https://developer.mozilla.org/en-US/docs/Web/CSS/color_value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
-          default: "#ffffff"
+          default: '#ffffff'
 
   requestBodies:
     CreateAuthorizationRequestBody:

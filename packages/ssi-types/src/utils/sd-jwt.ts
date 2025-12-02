@@ -104,7 +104,9 @@ export const sdJwtDecodedCredentialToUniformCredential = (
 ): IVerifiableCredential => {
   const { decodedPayload } = decoded
   const { exp, nbf, iss, iat, vct, cnf, status, jti, validUntil, validFrom } = decodedPayload
-  let credentialSubject: | SingleOrArray<ICredentialSubject & AdditionalClaims> | undefined = decodedPayload.credentialSubject as | SingleOrArray<ICredentialSubject & AdditionalClaims> | undefined
+  let credentialSubject: SingleOrArray<ICredentialSubject & AdditionalClaims> | undefined = decodedPayload.credentialSubject as
+    | SingleOrArray<ICredentialSubject & AdditionalClaims>
+    | undefined
 
   let issuer = iss ?? decodedPayload.issuer
   if (typeof issuer === 'object' && 'id' in issuer && typeof issuer.id === 'string') {
@@ -136,17 +138,20 @@ export const sdJwtDecodedCredentialToUniformCredential = (
   // Filter out the fields we don't want in credentialSubject
   const excludedFields = new Set(['vct', 'cnf', 'iss', 'iat', 'exp', 'nbf', 'jti', 'sub'])
   if (!credentialSubject) {
-    credentialSubject = Object.entries(decodedPayload).reduce((acc, [key, value]) => {
-      if (
-        !excludedFields.has(key) &&
-        value !== undefined &&
-        value !== '' &&
-        !(typeof value === 'object' && value !== null && Object.keys(value).length === 0)
-      ) {
-        acc[key] = value
-      }
-      return acc
-    }, {} as Record<string, any>)
+    credentialSubject = Object.entries(decodedPayload).reduce(
+      (acc, [key, value]) => {
+        if (
+          !excludedFields.has(key) &&
+          value !== undefined &&
+          value !== '' &&
+          !(typeof value === 'object' && value !== null && Object.keys(value).length === 0)
+        ) {
+          acc[key] = value
+        }
+        return acc
+      },
+      {} as Record<string, any>,
+    )
   }
   const sdJwtVc = decodedPayload.vct && !decodedPayload.type
   const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {

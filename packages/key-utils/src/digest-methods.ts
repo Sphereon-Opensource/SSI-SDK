@@ -9,7 +9,7 @@ export type HashAlgorithm = 'SHA-256' | 'SHA-384' | 'SHA-512'
 export type TDigestMethod = (input: string, encoding?: typeof SupportedEncodings) => string
 
 export const digestMethodParams = (
-  hashAlgorithm: HashAlgorithm
+  hashAlgorithm: HashAlgorithm,
 ): { hashAlgorithm: HashAlgorithm; digestMethod: TDigestMethod; hash: (data: Uint8Array) => Uint8Array } => {
   if (hashAlgorithm === 'SHA-256') {
     return { hashAlgorithm: 'SHA-256', digestMethod: sha256DigestMethod, hash: sha256 }

@@ -227,7 +227,6 @@ export async function getCredentialSignerCallback(
         const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusLists })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
-          // TODO update statusLists somehow?
         }
       }
 
