@@ -334,8 +334,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       if (!didDoc) {
         throw new Error('invalid_issuer: issuer did not resolve to a did document')
       }
-      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
-      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id === header.kid)
       if (!didDocumentKey) {
         throw new Error('invalid_issuer: issuer did document does not include referenced key')
       }
@@ -351,7 +350,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         throw new Error('invalid_issuer: issuer did not resolve to a did document')
       }
       //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
-      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id === header.kid)
       if (!didDocumentKey) {
         throw new Error('invalid_issuer: issuer did document does not include referenced key')
       }
