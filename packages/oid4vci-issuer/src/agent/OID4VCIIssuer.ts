@@ -22,7 +22,7 @@ import {
   IOID4VCIIssuerOpts,
   IRefreshInstanceMetadata,
   IRequiredContext,
-  schema
+  schema,
 } from '../index'
 import { IssuerInstance } from '../IssuerInstance'
 import { IOID4VCIIssuer } from '../types/IOID4VCIIssuer'
@@ -32,7 +32,7 @@ export const oid4vciIssuerMethods: Array<string> = [
   'oid4vciIssueCredential',
   'oid4vciCreateAccessTokenResponse',
   'oid4vciGetInstance',
-  'oid4vciRefreshInstanceMetadata'
+  'oid4vciRefreshInstanceMetadata',
 ]
 
 export class OID4VCIIssuer implements IAgentPlugin {
@@ -159,11 +159,7 @@ export class OID4VCIIssuer implements IAgentPlugin {
   public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<void> {
     const instance = this.instances.get(args.credentialIssuer)
     if (instance) {
-      const metadata = await this.getIssuerMetadata({ ...args }, context);
-      instance.issuerMetadata = metadata;
-    }
-      this.getIssuerMetadata({ ...args }, context)
-        .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
+      instance.issuerMetadata = await this.getIssuerMetadata({ ...args }, context)
     }
   }
 
