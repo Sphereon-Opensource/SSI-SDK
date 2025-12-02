@@ -159,6 +159,9 @@ export class OID4VCIIssuer implements IAgentPlugin {
   public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<void> {
     const instance = this.instances.get(args.credentialIssuer)
     if (instance) {
+      const metadata = await this.getIssuerMetadata({ ...args }, context);
+      instance.issuerMetadata = metadata;
+    }
       this.getIssuerMetadata({ ...args }, context)
         .then((issuerMetadata) => instance.issuerMetadata = issuerMetadata)
     }
