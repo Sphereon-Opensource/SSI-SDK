@@ -7,16 +7,12 @@ import type { HasherSync, JsonWebKey, JWK, SdJwtTypeMetadata } from '@sphereon/s
 import type { IAgentPlugin } from '@veramo/core'
 // import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
+
+// @ts-ignore
+import * as u8a from 'uint8arrays'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
+import { SDJwtVcdm2Instance, SDJwtVcdmInstanceFactory } from './sdJwtVcdm2Instance'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import {
-  assertValidTypeMetadata,
-  fetchUrlWithErrorHandling,
-  getIssuerFromSdJwt,
-  isSdjwtVcPayload,
-  isVcdm2SdJwtPayload,
-  validateIntegrity,
-} from './utils'
 import type {
   Claims,
   FetchSdJwtTypeMetadataFromVctUrlArgs,
@@ -37,10 +33,14 @@ import type {
   SignKeyArgs,
   SignKeyResult,
 } from './types'
-import { SDJwtVcdm2Instance, SDJwtVcdmInstanceFactory } from './sdJwtVcdm2Instance'
-
-// @ts-ignore
-import * as u8a from 'uint8arrays'
+import {
+  assertValidTypeMetadata,
+  fetchUrlWithErrorHandling,
+  getIssuerFromSdJwt,
+  isSdjwtVcPayload,
+  isVcdm2SdJwtPayload,
+  validateIntegrity,
+} from './utils'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
 
@@ -66,15 +66,17 @@ const matchVerificationMethodByKid = (verificationMethod: { id: string }, kid: s
   if (!kid) return false
 
   // Exact match
-  if (verificationMethod.id === kid) return true
+  if (verificationMethod.id === kid) {
+    return true
+  }
 
   // Check if key.id ends with the kid (handles relative fragment references like "#key-1")
-  if (verificationMethod.id.endsWith(kid)) return true
+  if (verificationMethod.id.endsWith(kid)) {
+    return true
+  }
 
   // Check if key.id ends with #kid (handles kid without # prefix like "key-1")
-  if (verificationMethod.id.endsWith(`#${kid}`)) return true
-
-  return false
+  return verificationMethod.id.endsWith(`#${kid}`)
 }
 
 /**
