@@ -840,6 +840,9 @@ export class AgentDIDResolver implements Resolvable {
   }
 }
 
+const hasPurpose = (key: IKey, purpose: string) =>
+  (key?.meta?.purpose === undefined && key?.meta?.purposes === undefined) || key?.meta?.purpose === purpose || key?.meta?.purposes?.includes(purpose)
+
 /**
  * Please note that this is not an exact representation of the actual DID Document.
  *
@@ -879,10 +882,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Signature)) &&
         identifier.keys && {
           assertionMethod: identifier.keys
-            .filter(
-              (key) =>
-                key?.meta?.purpose === undefined || key?.meta?.purpose === 'assertionMethod' || key?.meta?.purposes?.includes('assertionMethod'),
-            )
+            .filter((key) => hasPurpose(key, 'assertionMethod'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -893,9 +893,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Signature)) &&
         identifier.keys && {
           authentication: identifier.keys
-            .filter(
-              (key) => key?.meta?.purpose === undefined || key?.meta?.purpose === 'authentication' || key?.meta?.purposes?.includes('authentication'),
-            )
+            .filter((key) => hasPurpose(key, 'authentication'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -906,7 +904,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Encryption)) &&
         identifier.keys && {
           keyAgreement: identifier.keys
-            .filter((key) => key.type === 'X25519' || key?.meta?.purpose === 'keyAgreement' || key?.meta?.purposes?.includes('keyAgreement'))
+            .filter((key) => key.type === 'X25519' || hasPurpose(key, 'keyAgreement'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -917,10 +915,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Encryption)) &&
         identifier.keys && {
           capabilityInvocation: identifier.keys
-            .filter(
-              (key) =>
-                key.type === 'X25519' || key?.meta?.purpose === 'capabilityInvocation' || key?.meta?.purposes?.includes('capabilityInvocation'),
-            )
+            .filter((key) => key.type === 'X25519' || hasPurpose(key, 'capabilityInvocation'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -931,10 +926,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Encryption)) &&
         identifier.keys && {
           capabilityDelegation: identifier.keys
-            .filter(
-              (key) =>
-                key.type === 'X25519' || key?.meta?.purpose === 'capabilityDelegation' || key?.meta?.purposes?.includes('capabilityDelegation'),
-            )
+            .filter((key) => key.type === 'X25519' || hasPurpose(key, 'capabilityDelegation'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
