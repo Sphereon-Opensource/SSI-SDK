@@ -3,6 +3,8 @@ import {
   isHashString,
   joseAlgorithmToDigest,
   shaHasher,
+  signatureAlgorithmFromKeyType,
+  signatureAlgorithmToJoseAlgorithm,
   toJwk,
   x25519PublicHexFromPrivateHex,
   type X509Opts,
@@ -43,9 +45,9 @@ interface KeyManagementSystemOptions {
 export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   private client: KmsRestClient
   private readonly id: string
-  private providerId: string | undefined
-  private tenantId: string | undefined
-  private userId: string | undefined
+  private readonly providerId: string | undefined
+  private readonly tenantId: string | undefined
+  private readonly userId: string | undefined
 
   constructor(options: KeyManagementSystemOptions) {
     super()
@@ -65,7 +67,11 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   async createKey(args: CreateKeyArgs): Promise<ManagedKeyInfo> {
     const { type, meta } = args
 
-    const signatureAlgorithm = this.mapKeyTypeToSignatureAlgorithm(type)
+    const joseAlg = signatureAlgorithmFromKeyType({
+      type,
+      algorithms: meta?.algorithms as string[] | undefined,
+    })
+    const signatureAlgorithm = this.mapJoseToRestSignatureAlgorithm(joseAlg)
     const options = {
       use: meta && 'keyUsage' in meta ? this.mapKeyUsage(meta.keyUsage) : JwkUse.Sig,
       alg: signatureAlgorithm,
@@ -84,7 +90,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
     const jwk = {
       ...key.keyPair.jose.publicJwk,
-      alg: key.keyPair.jose.publicJwk.alg ? this.mapJoseAlgorithm(key.keyPair.jose.publicJwk.alg) : undefined,
+      alg: key.keyPair.jose.publicJwk.alg ? signatureAlgorithmToJoseAlgorithm(key.keyPair.jose.publicJwk.alg) : undefined,
     } satisfies JWK
 
     const kid = key.keyPair.kid ?? key.keyPair.jose.publicJwk.kid
@@ -302,53 +308,32 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     }
   }
 
-  private mapKeyTypeToSignatureAlgorithm = (type: TKeyType): SignatureAlgorithm => {
-    switch (type) {
-      case 'Secp256r1':
-        return SignatureAlgorithm.EcdsaSha256
-      case 'RSA':
-        return SignatureAlgorithm.RsaSsaPssSha256Mgf1
-      case 'X25519':
-        return SignatureAlgorithm.EckaDhSha256
-      default:
-        throw new Error(`Key type ${type} is not supported by REST KMS`)
-    }
-  }
-
-  private mapJoseAlgorithm = (alg: string): JoseSignatureAlgorithm => {
+  private mapJoseToRestSignatureAlgorithm = (alg: JoseSignatureAlgorithm): SignatureAlgorithm => {
     switch (alg) {
-      case 'RS256':
-        return JoseSignatureAlgorithm.RS256
-      case 'RS384':
-        return JoseSignatureAlgorithm.RS384
-      case 'RS512':
-        return JoseSignatureAlgorithm.RS512
-      case 'ES256':
-        return JoseSignatureAlgorithm.ES256
-      case 'ES256K':
-        return JoseSignatureAlgorithm.ES256K
-      case 'ES384':
-        return JoseSignatureAlgorithm.ES384
-      case 'ES512':
-        return JoseSignatureAlgorithm.ES512
-      case 'EdDSA':
-        return JoseSignatureAlgorithm.EdDSA
-      case 'HS256':
-        return JoseSignatureAlgorithm.HS256
-      case 'HS384':
-        return JoseSignatureAlgorithm.HS384
-      case 'HS512':
-        return JoseSignatureAlgorithm.HS512
-      case 'PS256':
-        return JoseSignatureAlgorithm.PS256
-      case 'PS384':
-        return JoseSignatureAlgorithm.PS384
-      case 'PS512':
-        return JoseSignatureAlgorithm.PS512
-      case 'none':
-        return JoseSignatureAlgorithm.none
+      case JoseSignatureAlgorithm.RS256:
+        return SignatureAlgorithm.RsaSha256
+      case JoseSignatureAlgorithm.RS384:
+        return SignatureAlgorithm.RsaSha384
+      case JoseSignatureAlgorithm.RS512:
+        return SignatureAlgorithm.RsaSha512
+      case JoseSignatureAlgorithm.PS256:
+        return SignatureAlgorithm.RsaSsaPssSha256Mgf1
+      case JoseSignatureAlgorithm.PS384:
+        return SignatureAlgorithm.RsaSsaPssSha384Mgf1
+      case JoseSignatureAlgorithm.PS512:
+        return SignatureAlgorithm.RsaSsaPssSha512Mgf1
+      case JoseSignatureAlgorithm.ES256:
+        return SignatureAlgorithm.EcdsaSha256
+      case JoseSignatureAlgorithm.ES384:
+        return SignatureAlgorithm.EcdsaSha384
+      case JoseSignatureAlgorithm.ES512:
+        return SignatureAlgorithm.EcdsaSha512
+      case JoseSignatureAlgorithm.ES256K:
+        return SignatureAlgorithm.Es256K
+      case JoseSignatureAlgorithm.EdDSA:
+        return SignatureAlgorithm.Ed25519
       default:
-        throw new Error(`Signature algorithm ${alg} is not supported by REST KMS`)
+        throw new Error(`JOSE algorithm ${alg} not supported by REST KMS`)
     }
   }
 

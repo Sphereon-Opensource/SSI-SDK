@@ -789,11 +789,49 @@ export const hexStringFromUint8Array = (value: Uint8Array): string => toString(v
 
 export const signatureAlgorithmFromKey = async (args: SignatureAlgorithmFromKeyArgs): Promise<JoseSignatureAlgorithm> => {
   const { key } = args
-  return signatureAlgorithmFromKeyType({ type: key.type })
+  return signatureAlgorithmFromKeyType({ type: key.type, algorithms: key.meta?.algorithms })
+}
+
+export function signatureAlgorithmToJoseAlgorithm(alg: string): JoseSignatureAlgorithm {
+  switch (alg) {
+    case 'RSA_SHA256':
+      return JoseSignatureAlgorithm.RS256
+    case 'RSA_SHA384':
+      return JoseSignatureAlgorithm.RS384
+    case 'RSA_SHA512':
+      return JoseSignatureAlgorithm.RS512
+    case 'RSA_SSA_PSS_SHA256_MGF1':
+      return JoseSignatureAlgorithm.PS256
+    case 'RSA_SSA_PSS_SHA384_MGF1':
+      return JoseSignatureAlgorithm.PS384
+    case 'RSA_SSA_PSS_SHA512_MGF1':
+      return JoseSignatureAlgorithm.PS512
+    case 'ECDSA_SHA256':
+      return JoseSignatureAlgorithm.ES256
+    case 'ECDSA_SHA384':
+      return JoseSignatureAlgorithm.ES384
+    case 'ECDSA_SHA512':
+      return JoseSignatureAlgorithm.ES512
+    case 'ES256K':
+      return JoseSignatureAlgorithm.ES256K
+    case 'ED25519':
+    case 'EdDSA':
+      return JoseSignatureAlgorithm.EdDSA
+    default:
+      // If already in JOSE format, return as-is
+      return alg as JoseSignatureAlgorithm
+  }
 }
 
 export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTypeArgs): JoseSignatureAlgorithm => {
-  const { type } = args
+  const { type, algorithms } = args
+
+  // If algorithms metadata is provided, use the first one
+  if (algorithms && algorithms.length > 0) {
+    return signatureAlgorithmToJoseAlgorithm(algorithms[0])
+  }
+
+  // Fallback to type-based defaults
   switch (type) {
     case 'Ed25519':
     case 'X25519':
@@ -807,7 +845,7 @@ export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTyp
     case 'Secp256k1':
       return JoseSignatureAlgorithm.ES256K
     case 'RSA':
-      return JoseSignatureAlgorithm.PS256
+      return JoseSignatureAlgorithm.RS256 // Default to RS256 instead of PS256
     default:
       throw new Error(`Key type '${type}' not supported`)
   }

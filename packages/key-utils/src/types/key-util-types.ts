@@ -55,6 +55,7 @@ export type SignatureAlgorithmFromKeyArgs = {
 
 export type SignatureAlgorithmFromKeyTypeArgs = {
   type: TKeyType
+  algorithms?: string[]
 }
 
 export type KeyTypeFromCryptographicSuiteArgs = {
