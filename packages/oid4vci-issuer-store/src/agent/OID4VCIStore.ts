@@ -39,6 +39,9 @@ export const oid4vciStoreMethods: Array<string> = [
   'oid4vciStoreClearAllMetadata',
 ]
 
+// Type guard to check if value is a plain object (and not an array or null)
+const isPlainObject = (value: unknown): value is Record<string, any> => typeof value === 'object' && value !== null && !Array.isArray(value)
+
 export class OID4VCIStore implements IAgentPlugin {
   get defaultOpts(): IIssuerDefaultOpts | undefined {
     return this._defaultOpts
@@ -210,7 +213,7 @@ export class OID4VCIStore implements IAgentPlugin {
       const incomingValue = incoming[key]
       const existingValue = existing[key]
 
-      if (this.isPlainObject(incomingValue) && this.isPlainObject(existingValue)) {
+      if (isPlainObject(incomingValue) && isPlainObject(existingValue)) {
         // Recursively merge objects
         merged[key] = this.deepMerge(existingValue, incomingValue) as T[Extract<keyof T, string>]
       } else if (incomingValue !== undefined) {
@@ -220,11 +223,6 @@ export class OID4VCIStore implements IAgentPlugin {
     }
 
     return merged
-  }
-
-  // Type guard to check if value is a plain object (and not an array or null)
-  private isPlainObject(value: unknown): value is Record<string, any> {
-    return typeof value === 'object' && value !== null && !Array.isArray(value)
   }
 
   private async oid4vciStoreHasIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
