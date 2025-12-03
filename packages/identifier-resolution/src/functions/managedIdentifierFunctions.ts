@@ -195,8 +195,8 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
   const key = extendedKey
   const jwk = toJwk(key.publicKeyHex, key.type, { key })
   const jwkThumbprint = key.meta?.jwkThumbprint ?? calculateJwkThumbprint({ jwk })
-  let kid = opts.kid ?? extendedKey.meta?.verificationMethod?.id
-  if (!kid.startsWith(did)) {
+  let kid = opts.kid ?? extendedKey.meta?.verificationMethod?.id ?? extendedKey.kid
+  if (kid && !kid.startsWith(did)) {
     // Make sure we create a fully qualified kid
     const hash = kid.startsWith('#') ? '' : '#'
     kid = `${did}${hash}${kid}`
@@ -206,16 +206,20 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
   // filter keys based on the criteria
   let filteredKeys = identifier?.keys ?? []
 
+  // Use a flag to track if we have successfully applied a specific filter
+  let isFiltered = false
+
   // first try to filter by kmsKeyRef if supplied
   if (opts.kmsKeyRef) {
     const keysByKmsKeyRef = filteredKeys.filter((k) => k.kid === opts.kmsKeyRef)
     if (keysByKmsKeyRef.length > 0) {
       filteredKeys = keysByKmsKeyRef
+      isFiltered = true
     }
   }
 
   // no match or kmsKeyRef not supplied, try vmRelationship
-  if (filteredKeys.length === identifier?.keys?.length && opts.vmRelationship) {
+  if (!isFiltered && opts.vmRelationship) {
     const keysByVmRelationship = filteredKeys.filter((k) => {
       const purposes = k.meta?.purposes
       if (!purposes || purposes.length === 0) {
@@ -225,11 +229,12 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
     })
     if (keysByVmRelationship.length > 0) {
       filteredKeys = keysByVmRelationship
+      isFiltered = true
     }
   }
 
   //no match, try to filter by fragment from opts.identifier (if it's a string with fragment)
-  if (filteredKeys.length === identifier?.keys?.length && typeof opts.identifier === 'string' && opts.identifier.includes('#')) {
+  if (!isFiltered && typeof opts.identifier === 'string' && opts.identifier.includes('#')) {
     const fragment = opts.identifier.split('#')[1]
     const keysByFragment = filteredKeys.filter((k) => {
       const vmId = k.meta?.verificationMethod?.id
@@ -240,7 +245,7 @@ export async function getManagedDidIdentifier(opts: ManagedIdentifierDidOpts, co
     }
   }
 
-  // fall back to original keys if no filtering occurred
+  // Use the filtered keys (or original keys if no filtering occurred)
   const keys = filteredKeys
 
   // Update controllerKeyId to match the selected key
@@ -389,10 +394,10 @@ export async function getManagedIdentifier(
   },
   context: IAgentContext<IKeyManager>,
 ): Promise<ManagedIdentifierResult> {
-  let resolutionResult: ManagedIdentifierResult
   if (isManagedIdentifierResult(opts)) {
-    opts
+    return opts
   }
+  let resolutionResult: ManagedIdentifierResult
   if (isManagedIdentifierKidOpts(opts)) {
     resolutionResult = await getManagedKidIdentifier(opts, context)
   } else if (isManagedIdentifierDidOpts(opts)) {
