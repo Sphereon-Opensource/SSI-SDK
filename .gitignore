@@ -73,3 +73,5 @@ packages/*/.turbo
 
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
+
+Claude.md

@@ -36,7 +36,7 @@ export const oid4vciStoreMethods: Array<string> = [
   'oid4vciStoreHasMetadata',
   'oid4vciStorePersistMetadata',
   'oid4vciStoreRemoveMetadata',
-  'oid4vciStoreClearAllMetadata'
+  'oid4vciStoreClearAllMetadata',
 ]
 
 export class OID4VCIStore implements IAgentPlugin {
@@ -110,17 +110,7 @@ export class OID4VCIStore implements IAgentPlugin {
     }
 
     if (opts && Array.isArray(opts?.importMetadatas)) {
-      opts.importMetadatas.forEach((metaImport: IMetadataImportArgs) => {
-        const meta = metaImport as IIssuerMetadataImportArgs
-        void this.oid4vciStorePersistMetadata({
-          metadataType: meta.metadataType,
-          metadata: meta.metadata,
-          storeId: meta.storeId ?? this.defaultStoreId,
-          correlationId: meta.correlationId,
-          namespace: meta.namespace ?? this.defaultNamespace,
-          overwriteExisting: meta.overwriteExisting === undefined ? true : meta.overwriteExisting,
-        })
-      })
+      void this.importMetadatas(opts.importMetadatas)
     }
 
     if (opts?.issuerOptsStores && opts.issuerOptsStores instanceof Map) {
@@ -154,6 +144,87 @@ export class OID4VCIStore implements IAgentPlugin {
 
   public importIssuerOpts(importOpts: IIssuerOptsImportArgs[]) {
     importOpts.forEach((opt) => this.oid4vciStorePersistIssuerOpts(opt))
+  }
+
+  private async importMetadatas(metadataImports: IMetadataImportArgs[]): Promise<void> {
+    for (const metaImport of metadataImports) {
+      const meta = metaImport as IIssuerMetadataImportArgs
+      const storeId = meta.storeId ?? this.defaultStoreId
+      const namespace = meta.namespace ?? this.defaultNamespace
+      const correlationId = meta.correlationId
+
+      const existingMetadata = await this.oid4vciStoreGetMetadata({
+        metadataType: meta.metadataType,
+        correlationId,
+        storeId,
+        namespace,
+      })
+
+      let metadataToPersist: IssuerMetadata | AuthorizationServerMetadata
+
+      if (existingMetadata) {
+        // If overwriteExisting is explicitly false, we skip this import if data exists
+        if (meta.overwriteExisting === false) {
+          continue
+        }
+        // Otherwise, we perform a deep merge.
+        metadataToPersist = this.deepMerge(existingMetadata, meta.metadata)
+      } else {
+        metadataToPersist = meta.metadata
+      }
+
+      await this.oid4vciStorePersistMetadata({
+        metadataType: meta.metadataType,
+        metadata: metadataToPersist,
+        storeId,
+        correlationId,
+        namespace,
+        // We set this to true because we have already handled the merge/overwrite logic above.
+        // We are now saving the final, combined object.
+        overwriteExisting: true,
+      })
+    }
+  }
+
+  /**
+   * Generic Deep Merge.
+   * - Recursively merges objects.
+   * - Overwrites primitives and arrays (Arrays are treated as values).
+   * - Naturally handles 'credential_configurations_supported' by merging the keys of the map.
+   */
+  private deepMerge<T extends Record<string, any>>(existing: T, incoming: T): T {
+    if (!incoming) {
+      return existing
+    }
+    if (!existing) {
+      return incoming
+    }
+
+    const merged = { ...existing }
+
+    for (const key in incoming) {
+      if (!Object.prototype.hasOwnProperty.call(incoming, key)) {
+        continue
+      }
+
+      const incomingValue = incoming[key]
+      const existingValue = existing[key]
+
+      if (this.isPlainObject(incomingValue) && this.isPlainObject(existingValue)) {
+        // Recursively merge objects
+        merged[key] = this.deepMerge(existingValue, incomingValue) as T[Extract<keyof T, string>]
+      } else if (incomingValue !== undefined) {
+        // Overwrite primitives, arrays, or if existing value was undefined
+        merged[key] = incomingValue
+      }
+    }
+
+    return merged
+  }
+
+  // Type guard to check if value is a plain object (and not an array or null)
+  private isPlainObject(value: unknown): value is Record<string, any> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value)
   }
 
   private async oid4vciStoreHasIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
