@@ -180,7 +180,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
     const restKeys = ListKeysResponseToJSONTyped(keys, false).keyInfos
 
-    return Promise.all(
+    const results = await Promise.allSettled(
       restKeys.map(async (restKey: RestManagedKeyInfo) => {
         const jwk = restKey.key
         const publicKeyHex = await jwkToRawHexKey(jwk as JWK)
@@ -208,6 +208,16 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         } satisfies ManagedKeyInfo
       }),
     )
+
+    return results
+      .filter((result): result is PromiseFulfilledResult<ManagedKeyInfo> => {
+        if (result.status === 'rejected') {
+          console.warn('Failed to process key in listKeys:', result.reason)
+          return false
+        }
+        return true
+      })
+      .map((result) => result.value)
   }
 
   private mapRestKeyTypeToTKeyType(keyType: string | undefined): TKeyType {

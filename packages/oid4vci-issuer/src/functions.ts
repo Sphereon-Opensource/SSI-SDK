@@ -174,7 +174,7 @@ export async function getAccessTokenSignerCallback(
     }
 
     let kidHeader: string | undefined = jwt?.header?.kid ?? kid
-    if (!kidHeader) {
+    if (!kidHeader && identifier.kid) {
       kidHeader = identifier.kid
     }
     if (!kidHeader) {
@@ -188,10 +188,15 @@ export async function getAccessTokenSignerCallback(
       }
     }
 
+    const alg = identifier.jwk?.alg
+    if (!alg) {
+      return Promise.reject(Error('No algorithm found in identifier JWK'))
+    }
+
     return await createJWT(
       jwt.payload,
       { signer, issuer },
-      { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT', alg: identifier.jwk.alg },
+      { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT', alg },
     )
   }
 
