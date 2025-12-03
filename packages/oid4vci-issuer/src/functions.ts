@@ -12,7 +12,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
@@ -141,14 +141,20 @@ export async function getAccessTokenSignerCallback(
   },
   context: IRequiredContext,
 ) {
+  const resolution = legacyKeyRefsToIdentifierOpts(opts)
+  const identifier = await context.agent.identifierManagedGet({
+    identifier: resolution.identifier as string,
+    vmRelationship: 'authentication',
+  })
+
+  const keyRef = identifier.kmsKeyRef
+  if (!keyRef) {
+    throw Error('Cannot sign access tokens without a key ref')
+  }
+
   const signer = async (data: string | Uint8Array) => {
     let dataString, encoding: 'base64' | undefined
 
-    const resolution = await legacyKeyRefsToIdentifierOpts(opts)
-    const keyRef = resolution.kmsKeyRef
-    if (!keyRef) {
-      throw Error('Cannot sign access tokens without a key ref')
-    }
     if (typeof data === 'string') {
       dataString = data
       encoding = undefined
@@ -168,6 +174,9 @@ export async function getAccessTokenSignerCallback(
     }
 
     let kidHeader: string | undefined = jwt?.header?.kid ?? kid
+    if (!kidHeader && identifier.kid) {
+      kidHeader = identifier.kid
+    }
     if (!kidHeader) {
       if (
         opts.idOpts?.method === 'did' ||
@@ -178,7 +187,17 @@ export async function getAccessTokenSignerCallback(
         kidHeader = opts.idOpts?.kid ?? opts.didOpts?.idOpts?.kid ?? opts?.didOpts?.identifierOpts?.kid
       }
     }
-    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT' })
+
+    const alg = identifier.jwk?.alg
+    if (!alg) {
+      return Promise.reject(Error('No algorithm found in identifier JWK'))
+    }
+
+    return await createJWT(
+      jwt.payload,
+      { signer, issuer },
+      { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT', alg },
+    )
   }
 
   return accessTokenSignerCallback
@@ -201,7 +220,15 @@ export async function getCredentialSignerCallback(
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
-    const resolution = await context.agent.identifierManagedGet(idOpts)
+    let resolution: ManagedIdentifierResult
+    if (typeof idOpts.identifier !== 'string') {
+      resolution = idOpts as ManagedIdentifierResult
+    } else {
+      resolution = await context.agent.identifierManagedGet({
+        identifier: idOpts.identifier,
+        vmRelationship: 'assertionMethod',
+      })
+    }
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
     const issuer = resolution.issuer ?? resolution.kmsKeyRef
 

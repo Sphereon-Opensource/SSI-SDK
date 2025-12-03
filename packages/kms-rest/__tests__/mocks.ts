@@ -464,7 +464,7 @@ export const createMocks = (): void => {
         providerId: 'test-software',
       },
       input: 'n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg',
-      signature: 'DEnlZ+Ci41YL6WOt+mGipruejMxG/bN0dBbGZvWzUUB2u1813UWAt7G7Ee0q+MReUbp8aRa3qTehcdyHHthN7g==',
+      signature: 'DEnlZ-Ci41YL6WOt-mGipruejMxG_bN0dBbGZvWzUUB2u1813UWAt7G7Ee0q-MReUbp8aRa3qTehcdyHHthN7g',
     })
     .times(1)
     .reply(201, {

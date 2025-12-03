@@ -1,38 +1,38 @@
+import {retrieveWellknown} from '@sphereon/oid4vci-client'
 import {
-  AccessTokenResponse,
-  AuthorizationServerMetadata,
-  CredentialResponse,
-  IssuerMetadata,
-  OpenIDResponse,
-  WellKnownEndpoints,
+    AccessTokenResponse,
+    AuthorizationServerMetadata,
+    CredentialResponse,
+    IssuerMetadata,
+    OpenIDResponse,
+    WellKnownEndpoints,
 } from '@sphereon/oid4vci-common'
-import { assertValidAccessTokenRequest, createAccessTokenResponse, VcIssuer } from '@sphereon/oid4vci-issuer'
-import { retrieveWellknown } from '@sphereon/oid4vci-client'
-import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
-import { IMetadataOptions } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
-import { IAgentPlugin } from '@veramo/core'
-import { getAccessTokenSignerCallback } from '../functions'
+import {assertValidAccessTokenRequest, createAccessTokenResponse, VcIssuer} from '@sphereon/oid4vci-issuer'
+import {getAgentResolver} from '@sphereon/ssi-sdk-ext.did-utils'
+import {IMetadataOptions} from '@sphereon/ssi-sdk.oid4vci-issuer-store'
+import {IAgentPlugin} from '@veramo/core'
+import {getAccessTokenSignerCallback} from '../functions'
 import {
-  IAssertValidAccessTokenArgs,
-  ICreateCredentialOfferURIResult,
-  ICreateOfferArgs,
-  IIssueCredentialArgs,
-  IIssuerInstanceArgs,
-  IIssuerOptions,
-  IOID4VCIIssuerOpts,
-  IRefreshInstanceMetadata,
-  IRequiredContext,
-  schema
+    IAssertValidAccessTokenArgs,
+    ICreateCredentialOfferURIResult,
+    ICreateOfferArgs,
+    IIssueCredentialArgs,
+    IIssuerInstanceArgs,
+    IIssuerOptions,
+    IOID4VCIIssuerOpts,
+    IRefreshInstanceMetadata,
+    IRequiredContext,
+    schema,
 } from '../index'
-import { IssuerInstance } from '../IssuerInstance'
-import { IOID4VCIIssuer } from '../types/IOID4VCIIssuer'
+import {IssuerInstance} from '../IssuerInstance'
+import {IOID4VCIIssuer} from '../types/IOID4VCIIssuer'
 
 export const oid4vciIssuerMethods: Array<string> = [
   'oid4vciCreateOfferURI',
   'oid4vciIssueCredential',
   'oid4vciCreateAccessTokenResponse',
   'oid4vciGetInstance',
-  'oid4vciRefreshInstanceMetadata'
+  'oid4vciRefreshInstanceMetadata',
 ]
 
 export class OID4VCIIssuer implements IAgentPlugin {
@@ -159,12 +159,9 @@ export class OID4VCIIssuer implements IAgentPlugin {
   public async oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<boolean> {
     const instance = this.instances.get(args.credentialIssuer)
     if (instance) {
-      const metadata = await this.getIssuerMetadata({ ...args }, context);
-      instance.issuerMetadata = metadata;
-
+      instance.issuerMetadata = await this.getIssuerMetadata({ ...args }, context)
       return true
     }
-
     return false
   }
 

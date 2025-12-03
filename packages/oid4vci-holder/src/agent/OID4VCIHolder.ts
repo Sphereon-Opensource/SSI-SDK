@@ -494,7 +494,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (!clientId) {
       return Promise.reject(Error(`Missing client id in contact's connectionConfig`))
     }
-    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
     const authorizationCodeURL = await client.createAuthorizationRequestUrl({
       authorizationRequest: {
         clientId: clientId,
@@ -506,7 +506,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     return {
       authorizationCodeURL,
       // Needed, because the above createAuthorizationRequestUrl manipulates the state, adding pkce opts to the state
-      oid4vciClientState: JSON.parse(await client.exportState())
+      oid4vciClientState: JSON.parse(await client.exportState()),
     }
   }
 
@@ -741,6 +741,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
         deferredCredentialAwait: true,
+        ...(issuanceOpt.id && typeof issuanceOpt.id === 'string' ? { credentialConfigurationId: issuanceOpt.id } : undefined),
         ...(!jwk && { kid }), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
         jwk,
         alg,

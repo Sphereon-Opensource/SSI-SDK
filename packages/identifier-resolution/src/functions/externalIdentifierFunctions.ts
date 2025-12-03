@@ -255,6 +255,13 @@ export async function resolveExternalDidIdentifier(
               .filter((jwks) => isDefined(jwks) && jwks.length > 0)
               .flatMap((jwks) => jwks),
           )
+            .filter((jwk) => {
+              if (!didParsed.fragment) {
+                return true
+              }
+              const fullKid = `${didParsed.did}#${didParsed.fragment}`
+              return jwk.kid === fullKid || jwk.kid === didParsed.fragment
+            })
             .flatMap((jwk) => {
               return {
                 jwk,
