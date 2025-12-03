@@ -18,7 +18,11 @@
               }
             }
           },
-          "required": ["issuerCorrelationId", "vcHash", "localeBranding"],
+          "required": [
+            "issuerCorrelationId",
+            "vcHash",
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "IBasicCredentialLocaleBranding": {
@@ -83,7 +87,10 @@
               "type": "number"
             }
           },
-          "required": ["height", "width"]
+          "required": [
+            "height",
+            "width"
+          ]
         },
         "IBasicBackgroundAttributes": {
           "type": "object",
@@ -117,7 +124,10 @@
               "type": "string"
             }
           },
-          "required": ["key", "name"]
+          "required": [
+            "key",
+            "name"
+          ]
         },
         "ICredentialBranding": {
           "type": "object",
@@ -146,7 +156,14 @@
               "format": "date-time"
             }
           },
-          "required": ["id", "issuerCorrelationId", "vcHash", "localeBranding", "createdAt", "lastUpdatedAt"],
+          "required": [
+            "id",
+            "issuerCorrelationId",
+            "vcHash",
+            "localeBranding",
+            "createdAt",
+            "lastUpdatedAt"
+          ],
           "additionalProperties": false
         },
         "ICredentialLocaleBranding": {
@@ -189,7 +206,11 @@
             }
           },
           "additionalProperties": false,
-          "required": ["createdAt", "id", "lastUpdatedAt"]
+          "required": [
+            "createdAt",
+            "id",
+            "lastUpdatedAt"
+          ]
         },
         "IImageAttributes": {
           "type": "object",
@@ -213,7 +234,9 @@
               "$ref": "#/components/schemas/IImageDimensions"
             }
           },
-          "required": ["id"],
+          "required": [
+            "id"
+          ],
           "additionalProperties": false
         },
         "IImageDimensions": {
@@ -229,7 +252,11 @@
               "type": "number"
             }
           },
-          "required": ["id", "width", "height"],
+          "required": [
+            "id",
+            "width",
+            "height"
+          ],
           "additionalProperties": false
         },
         "IBackgroundAttributes": {
@@ -245,7 +272,9 @@
               "$ref": "#/components/schemas/IImageAttributes"
             }
           },
-          "required": ["id"],
+          "required": [
+            "id"
+          ],
           "additionalProperties": false
         },
         "ITextAttributes": {
@@ -258,7 +287,9 @@
               "type": "string"
             }
           },
-          "required": ["id"],
+          "required": [
+            "id"
+          ],
           "additionalProperties": false
         },
         "ICredentialClaim": {
@@ -274,7 +305,11 @@
               "type": "string"
             }
           },
-          "required": ["id", "key", "name"],
+          "required": [
+            "id",
+            "key",
+            "name"
+          ],
           "additionalProperties": false
         },
         "IAddCredentialLocaleBrandingArgs": {
@@ -290,7 +325,10 @@
               }
             }
           },
-          "required": ["credentialBrandingId", "localeBranding"],
+          "required": [
+            "credentialBrandingId",
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "IAddIssuerBrandingArgs": {
@@ -306,7 +344,10 @@
               }
             }
           },
-          "required": ["issuerCorrelationId", "localeBranding"],
+          "required": [
+            "issuerCorrelationId",
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "IBasicIssuerLocaleBranding": {
@@ -372,7 +413,13 @@
               "format": "date-time"
             }
           },
-          "required": ["id", "issuerCorrelationId", "localeBranding", "createdAt", "lastUpdatedAt"],
+          "required": [
+            "id",
+            "issuerCorrelationId",
+            "localeBranding",
+            "createdAt",
+            "lastUpdatedAt"
+          ],
           "additionalProperties": false
         },
         "IIssuerLocaleBranding": {
@@ -424,7 +471,11 @@
             }
           },
           "additionalProperties": false,
-          "required": ["createdAt", "id", "lastUpdatedAt"]
+          "required": [
+            "createdAt",
+            "id",
+            "lastUpdatedAt"
+          ]
         },
         "IAddIssuerLocaleBrandingArgs": {
           "type": "object",
@@ -439,7 +490,10 @@
               }
             }
           },
-          "required": ["issuerBrandingId", "localeBranding"],
+          "required": [
+            "issuerBrandingId",
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "ICredentialBrandingFromArgs": {
@@ -449,7 +503,9 @@
               "$ref": "#/components/schemas/IBasicCredentialLocaleBranding"
             }
           },
-          "required": ["localeBranding"],
+          "required": [
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "IGetCredentialBrandingArgs": {
@@ -874,7 +930,9 @@
               "$ref": "#/components/schemas/IBasicIssuerLocaleBranding"
             }
           },
-          "required": ["localeBranding"],
+          "required": [
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "IRemoveCredentialBrandingArgs": {
@@ -884,7 +942,9 @@
               "$ref": "#/components/schemas/FindCredentialBrandingArgs"
             }
           },
-          "required": ["filter"],
+          "required": [
+            "filter"
+          ],
           "additionalProperties": false
         },
         "IDeletionResult": {
@@ -897,7 +957,9 @@
               "type": "string"
             }
           },
-          "required": ["result"],
+          "required": [
+            "result"
+          ],
           "additionalProperties": false
         },
         "IRemoveCredentialLocaleBrandingArgs": {
@@ -907,7 +969,9 @@
               "$ref": "#/components/schemas/FindCredentialLocaleBrandingArgs"
             }
           },
-          "required": ["filter"],
+          "required": [
+            "filter"
+          ],
           "additionalProperties": false
         },
         "IRemoveIssuerBrandingArgs": {
@@ -917,7 +981,9 @@
               "$ref": "#/components/schemas/FindIssuerBrandingArgs"
             }
           },
-          "required": ["filter"],
+          "required": [
+            "filter"
+          ],
           "additionalProperties": false
         },
         "IRemoveIssuerLocaleBrandingArgs": {
@@ -927,7 +993,9 @@
               "$ref": "#/components/schemas/FindIssuerLocaleBrandingArgs"
             }
           },
-          "required": ["filter"],
+          "required": [
+            "filter"
+          ],
           "additionalProperties": false
         },
         "IUpdateCredentialBrandingArgs": {
@@ -937,7 +1005,9 @@
               "$ref": "#/components/schemas/Omit<ICredentialBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["credentialBranding"],
+          "required": [
+            "credentialBranding"
+          ],
           "additionalProperties": false
         },
         "Omit<ICredentialBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>": {
@@ -956,7 +1026,11 @@
               "type": "string"
             }
           },
-          "required": ["id", "issuerCorrelationId", "vcHash"],
+          "required": [
+            "id",
+            "issuerCorrelationId",
+            "vcHash"
+          ],
           "additionalProperties": false
         },
         "IUpdateCredentialLocaleBrandingArgs": {
@@ -966,7 +1040,9 @@
               "$ref": "#/components/schemas/Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["localeBranding"],
+          "required": [
+            "localeBranding"
+          ],
           "additionalProperties": false
         },
         "Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>": {
@@ -997,7 +1073,9 @@
               "$ref": "#/components/schemas/ITextAttributes"
             }
           },
-          "required": ["id"],
+          "required": [
+            "id"
+          ],
           "additionalProperties": false
         },
         "IUpdateIssuerBrandingArgs": {
@@ -1007,7 +1085,9 @@
               "$ref": "#/components/schemas/Omit<IIssuerBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["issuerBranding"],
+          "required": [
+            "issuerBranding"
+          ],
           "additionalProperties": false
         },
         "Omit<IIssuerBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>": {
@@ -1023,7 +1103,10 @@
               "type": "string"
             }
           },
-          "required": ["id", "issuerCorrelationId"],
+          "required": [
+            "id",
+            "issuerCorrelationId"
+          ],
           "additionalProperties": false
         },
         "IUpdateIssuerLocaleBrandingArgs": {
@@ -1033,7 +1116,9 @@
               "$ref": "#/components/schemas/Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>"
             }
           },
-          "required": ["localeBranding"],
+          "required": [
+            "localeBranding"
+          ],
           "additionalProperties": false
         }
       },
