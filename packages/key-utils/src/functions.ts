@@ -31,6 +31,7 @@ import * as u8a from 'uint8arrays'
 import { digestMethodParams } from './digest-methods'
 import { validateJwk } from './jwk-jcs'
 import {
+  DigestAlgorithm,
   ENC_KEY_ALGS,
   type IImportProvidedOrGeneratedKeyArgs,
   JwkKeyUse,
@@ -198,8 +199,8 @@ export const toBase64url = (input: string): string => toString(fromString(input)
  * Calculate the JWK thumbprint
  * @param args
  */
-export const calculateJwkThumbprint = (args: { jwk: JWK; digestAlgorithm?: 'sha256' | 'sha512' }): string => {
-  const { digestAlgorithm = 'sha256' } = args
+export const calculateJwkThumbprint = (args: { jwk: JWK; digestAlgorithm?: DigestAlgorithm }): string => {
+  const digestAlgorithm = normalizeHashAlgorithm(args.digestAlgorithm ?? 'SHA-256')
   const jwk = sanitizedJwk(args.jwk)
   let components
   switch (jwk.kty) {
@@ -227,10 +228,7 @@ export const calculateJwkThumbprint = (args: { jwk: JWK; digestAlgorithm?: 'sha2
       throw new Error('"kty" (Key Type) Parameter missing or unsupported')
   }
   const data = JSON.stringify(components)
-
-  return digestAlgorithm === 'sha512'
-    ? digestMethodParams('SHA-512').digestMethod(data, 'base64url')
-    : digestMethodParams('SHA-256').digestMethod(data, 'base64url')
+  return digestMethodParams(digestAlgorithm).digestMethod(data, 'base64url')
 }
 
 export const toJwkFromKey = (
@@ -791,11 +789,49 @@ export const hexStringFromUint8Array = (value: Uint8Array): string => toString(v
 
 export const signatureAlgorithmFromKey = async (args: SignatureAlgorithmFromKeyArgs): Promise<JoseSignatureAlgorithm> => {
   const { key } = args
-  return signatureAlgorithmFromKeyType({ type: key.type })
+  return signatureAlgorithmFromKeyType({ type: key.type, algorithms: key.meta?.algorithms })
+}
+
+export function signatureAlgorithmToJoseAlgorithm(alg: string): JoseSignatureAlgorithm {
+  switch (alg) {
+    case 'RSA_SHA256':
+      return JoseSignatureAlgorithm.RS256
+    case 'RSA_SHA384':
+      return JoseSignatureAlgorithm.RS384
+    case 'RSA_SHA512':
+      return JoseSignatureAlgorithm.RS512
+    case 'RSA_SSA_PSS_SHA256_MGF1':
+      return JoseSignatureAlgorithm.PS256
+    case 'RSA_SSA_PSS_SHA384_MGF1':
+      return JoseSignatureAlgorithm.PS384
+    case 'RSA_SSA_PSS_SHA512_MGF1':
+      return JoseSignatureAlgorithm.PS512
+    case 'ECDSA_SHA256':
+      return JoseSignatureAlgorithm.ES256
+    case 'ECDSA_SHA384':
+      return JoseSignatureAlgorithm.ES384
+    case 'ECDSA_SHA512':
+      return JoseSignatureAlgorithm.ES512
+    case 'ES256K':
+      return JoseSignatureAlgorithm.ES256K
+    case 'ED25519':
+    case 'EdDSA':
+      return JoseSignatureAlgorithm.EdDSA
+    default:
+      // If already in JOSE format, return as-is
+      return alg as JoseSignatureAlgorithm
+  }
 }
 
 export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTypeArgs): JoseSignatureAlgorithm => {
-  const { type } = args
+  const { type, algorithms } = args
+
+  // If algorithms metadata is provided, use the first one
+  if (algorithms && algorithms.length > 0) {
+    return signatureAlgorithmToJoseAlgorithm(algorithms[0])
+  }
+
+  // Fallback to type-based defaults
   switch (type) {
     case 'Ed25519':
     case 'X25519':
@@ -809,7 +845,7 @@ export const signatureAlgorithmFromKeyType = (args: SignatureAlgorithmFromKeyTyp
     case 'Secp256k1':
       return JoseSignatureAlgorithm.ES256K
     case 'RSA':
-      return JoseSignatureAlgorithm.PS256
+      return JoseSignatureAlgorithm.RS256 // Default to RS256 instead of PS256
     default:
       throw new Error(`Key type '${type}' not supported`)
   }
@@ -910,7 +946,7 @@ export const sanitizedJwk = (input: JWK | JsonWebKey): JWK => {
   return removeNulls(jwk)
 }
 
-const base64ToBase64Url = (input: string): string => {
+export const base64ToBase64Url = (input: string): string => {
   return input.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
@@ -1121,4 +1157,92 @@ export function toPkcs1(derBytes: Uint8Array): Uint8Array {
 export function toPkcs1FromHex(publicKeyHex: string) {
   const pkcs1 = toPkcs1(fromString(publicKeyHex, 'hex'))
   return toString(pkcs1, 'hex')
+}
+
+export function joseAlgorithmToDigest(alg: string): DigestAlgorithm {
+  // Normalize the algorithm string by converting to uppercase and removing hyphens
+  const normalized = alg.toUpperCase().replace(/-/g, '')
+
+  switch (normalized) {
+    case 'RS256':
+    case 'ES256':
+    case 'ES256K':
+    case 'PS256':
+    case 'HS256':
+      return 'SHA-256'
+    case 'RS384':
+    case 'ES384':
+    case 'PS384':
+    case 'HS384':
+      return 'SHA-384'
+    case 'RS512':
+    case 'ES512':
+    case 'PS512':
+    case 'HS512':
+      return 'SHA-512'
+    case 'EDDSA':
+    case 'ED25519':
+      return 'SHA-512'
+    default:
+      throw new Error(`Unsupported JOSE algorithm: ${alg}. Cannot determine digest algorithm.`)
+  }
+}
+
+export function isHash(input: string): boolean {
+  const length = input.length
+  // SHA-256: 64 hex chars, SHA-384: 96 hex chars, SHA-512: 128 hex chars
+  if (length !== 64 && length !== 96 && length !== 128) {
+    return false
+  }
+  return input.match(/^([0-9A-Fa-f])+$/g) !== null
+}
+
+export function isHashString(input: Uint8Array): boolean {
+  const length = input.length
+  // SHA-256: 32 bytes, SHA-384: 48 bytes, SHA-512: 64 bytes
+  if (length !== 32 && length !== 48 && length !== 64) {
+    return false
+  }
+
+  // A hash digest is raw binary data (any byte values 0x00-0xFF are valid).
+  // We should NOT check if bytes are ASCII hex characters, as that would only detect
+  // hex-encoded strings, not actual binary hash digests.
+  // Instead, we use a heuristic: if the data looks like it has high entropy
+  // and is the right length, we assume it's already a hash.
+
+  // Simple heuristic: Check if data is all printable ASCII (which would indicate it's NOT a hash)
+  // Printable ASCII is roughly 0x20-0x7E
+  let printableCount = 0
+  for (let i = 0; i < length; i++) {
+    const byte = input[i]
+    if (byte === undefined) {
+      return false
+    }
+    // Count printable ASCII characters
+    if (byte >= 0x20 && byte <= 0x7e) {
+      printableCount++
+    }
+  }
+
+  // If more than 90% of bytes are printable ASCII, it's likely NOT a raw binary hash
+  // Raw binary hashes should have a more uniform distribution across all byte values
+  const printableRatio = printableCount / length
+  return printableRatio < 0.9
+}
+
+export type HashAlgorithm = 'SHA-256' | 'sha256' | 'SHA-384' | 'sha384' | 'SHA-512' | 'sha512'
+
+export function normalizeHashAlgorithm(alg?: HashAlgorithm): 'SHA-256' | 'SHA-384' | 'SHA-512' {
+  if (!alg) {
+    return 'SHA-256'
+  }
+  const upper = alg.toUpperCase()
+  if (upper.includes('256')) return 'SHA-256'
+  if (upper.includes('384')) return 'SHA-384'
+  if (upper.includes('512')) return 'SHA-512'
+  throw new Error(`Invalid hash algorithm: ${alg}`)
+}
+
+export function isSameHash(left: HashAlgorithm, right: HashAlgorithm): boolean {
+  return normalizeHashAlgorithm(left) === normalizeHashAlgorithm(right)
 }

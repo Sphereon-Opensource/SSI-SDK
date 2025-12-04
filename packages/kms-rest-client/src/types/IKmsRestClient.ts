@@ -1,5 +1,5 @@
-import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import type { BearerTokenArg } from '@sphereon/ssi-types'
+import { IAgentContext, IPluginMethodMap } from '@veramo/core'
 import {
   CreateRawSignature,
   CreateRawSignatureResponse,
@@ -21,7 +21,7 @@ import {
 } from '../models'
 
 export interface IKmsRestClient extends IPluginMethodMap {
-  kmsClientGetResolver(args: kmsClientGetResolverArgs): Promise<Resolver>
+  kmsClientGetResolver(args: KmsClientGetResolverArgs): Promise<Resolver>
   kmsClientListResolvers(args?: KmsClientListResolversArgs): Promise<ListResolversResponse>
   kmsClientResolveKey(args: KmsClientResolveKeyArgs): Promise<ResolvedKeyInfo>
   kmsClientCreateRawSignature(args: KmsClientCreateRawSignatureArgs): Promise<CreateRawSignatureResponse>
@@ -40,86 +40,69 @@ export interface IKmsRestClient extends IPluginMethodMap {
   kmsClientProviderDeleteKey(args: KmsClientProviderDeleteKeyArgs): Promise<boolean>
 }
 
-export type KmsClientListResolversArgs = {
+export type BaseArgs = {
   baseUrl?: string
+  tenantId?: string
+  userId?: string
 }
 
-export type kmsClientGetResolverArgs = {
-  baseUrl?: string
-  resolverId: string
-}
-
-export type KmsClientResolveKeyArgs = {
-  baseUrl?: string
-  resolverId: String
-} & ResolvePublicKey
-
-export type KmsClientCreateRawSignatureArgs = {
-  baseUrl?: string
-} & CreateRawSignature
-
-export type KmsClientIsValidRawSignatureArgs = {
-  baseUrl?: string
-} & VerifyRawSignature
-
-export type KmsClientGetKeyArgs = {
-  baseUrl?: string
-  aliasOrKid: string
-}
-
-export type KmsClientListKeysArgs = {
-  baseUrl?: string
+export type OptionalProviderContextArgs = BaseArgs & {
   providerId?: string
 }
 
-export type KmsClientStoreKeyArgs = {
-  baseUrl?: string
-} & StoreKey
-
-export type KmsClientGenerateKeyArgs = {
-  baseUrl?: string
-} & GenerateKeyGlobal
-
-export type KmsClientDeleteKeyArgs = {
-  baseUrl?: string
-  aliasOrKid: string
-}
-
-export type KmsClientGetKeyProviderArgs = {
-  baseUrl?: string
+export type ProviderContextArgs = BaseArgs & {
   providerId: string
 }
 
-export type KmsClientListKeyProvidersArgs = {
-  baseUrl?: string
+export type KmsClientListResolversArgs = BaseArgs
+
+export type KmsClientGetResolverArgs = BaseArgs & {
+  resolverId: string
 }
 
-export type KmsClientProviderListKeysArgs = {
-  baseUrl?: string
-  providerId: string
-}
+export type KmsClientResolveKeyArgs = BaseArgs & {
+  resolverId: String
+} & ResolvePublicKey
 
-export type KmsClientProviderStoreKeyArgs = {
-  baseUrl?: string
-  providerId: string
-} & StoreKey
+export type KmsClientCreateRawSignatureArgs = BaseArgs & CreateRawSignature
 
-export type KmsClientProviderGenerateKeyArgs = {
-  baseUrl?: string
-  providerId: string
-} & GenerateKey
+export type KmsClientIsValidRawSignatureArgs = BaseArgs & VerifyRawSignature
 
-export type KmsClientProviderGetKeyArgs = {
-  baseUrl?: string
-  providerId: string
-  aliasOrKid: string
-}
+export type KmsClientGetKeyArgs = BaseArgs &
+  OptionalProviderContextArgs & {
+    aliasOrKid: string
+  }
 
-export type KmsClientProviderDeleteKeyArgs = {
-  baseUrl?: string
-  providerId: string
-  aliasOrKid: string
-}
+export type KmsClientListKeysArgs = BaseArgs & OptionalProviderContextArgs
+
+export type KmsClientStoreKeyArgs = BaseArgs & StoreKey
+
+export type KmsClientGenerateKeyArgs = BaseArgs & OptionalProviderContextArgs & GenerateKeyGlobal
+
+export type KmsClientDeleteKeyArgs = BaseArgs &
+  OptionalProviderContextArgs & {
+    aliasOrKid: string
+  }
+
+export type KmsClientGetKeyProviderArgs = BaseArgs & ProviderContextArgs
+
+export type KmsClientListKeyProvidersArgs = BaseArgs
+
+export type KmsClientProviderListKeysArgs = BaseArgs & ProviderContextArgs
+
+export type KmsClientProviderStoreKeyArgs = BaseArgs & ProviderContextArgs & StoreKey
+
+export type KmsClientProviderGenerateKeyArgs = BaseArgs & ProviderContextArgs & GenerateKey
+
+export type KmsClientProviderGetKeyArgs = BaseArgs &
+  ProviderContextArgs & {
+    aliasOrKid: string
+  }
+
+export type KmsClientProviderDeleteKeyArgs = BaseArgs &
+  ProviderContextArgs & {
+    aliasOrKid: string
+  }
 
 export type RestClientAuthenticationOpts = {
   enabled?: boolean

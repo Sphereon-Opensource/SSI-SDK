@@ -3,7 +3,7 @@ import { AuthorizationRequestOpts, AuthorizationServerClientOpts, AuthzFlowType,
 import { DefaultLinkPriorities, LinkHandlerAdapter } from '@sphereon/ssi-sdk.core'
 import { IMachineStatePersistence, interpreterStartOrResume, SerializableState } from '@sphereon/ssi-sdk.xstate-machine-persistence'
 import { IAgentContext } from '@veramo/core'
-import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineStateNavigationListener } from '../types/IOID4VCIHolder'
+import { GetMachineArgs, IOID4VCIHolder, OID4VCIMachineEvents, OID4VCIMachineStateNavigationListener, WalletType } from '../types/IOID4VCIHolder'
 import { FirstPartyMachineStateNavigationListener } from '../types/FirstPartyMachine'
 
 /**
@@ -14,6 +14,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   private readonly stateNavigationListener?: OID4VCIMachineStateNavigationListener
   private readonly firstPartyStateNavigationListener?: FirstPartyMachineStateNavigationListener
   private readonly noStateMachinePersistence: boolean
+  private readonly walletType: WalletType
   private readonly authorizationRequestOpts?: AuthorizationRequestOpts
   private readonly clientOpts?: AuthorizationServerClientOpts
   private readonly trustAnchors?: Array<string>
@@ -21,7 +22,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
   constructor(
     args: Pick<
       GetMachineArgs,
-      'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'trustAnchors' | 'firstPartyStateNavigationListener'
+      'stateNavigationListener' | 'authorizationRequestOpts' | 'clientOpts' | 'trustAnchors' | 'firstPartyStateNavigationListener' | 'walletType'
     > & {
       priority?: number | DefaultLinkPriorities
       protocols?: Array<string | RegExp>
@@ -33,6 +34,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
     this.authorizationRequestOpts = args.authorizationRequestOpts
     this.clientOpts = args.clientOpts
     this.context = args.context
+    this.walletType = args.walletType ?? 'NATURAL_PERSON'
     this.noStateMachinePersistence = args.noStateMachinePersistence === true
     this.stateNavigationListener = args.stateNavigationListener
     this.firstPartyStateNavigationListener = args.firstPartyStateNavigationListener
@@ -68,6 +70,7 @@ export class OID4VCIHolderLinkHandler extends LinkHandlerAdapter {
       ...((clientOpts.clientId || clientOpts.clientAssertionType) && { clientOpts: clientOpts as AuthorizationServerClientOpts }),
       stateNavigationListener: this.stateNavigationListener,
       firstPartyStateNavigationListener: this.firstPartyStateNavigationListener,
+      walletType: this.walletType,
     })
 
     const interpreter = oid4vciMachine.interpreter

@@ -136,6 +136,7 @@ export type OnIdentifierCreatedArgs = {
 
 export type GetMachineArgs = {
   requestData: RequestData
+  walletType: WalletType
   trustAnchors?: Array<string>
   authorizationRequestOpts?: AuthorizationRequestOpts
   clientOpts?: AuthorizationServerClientOpts
@@ -157,7 +158,7 @@ export type CreateCredentialsToSelectFromArgs = Pick<
 export type GetContactArgs = Pick<OID4VCIMachineContext, 'serverMetadata'>
 export type GetCredentialsArgs = Pick<
   OID4VCIMachineContext,
-  'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts'
+  'verificationCode' | 'openID4VCIClientState' | 'selectedCredentials' | 'didMethodPreferences' | 'issuanceOpt' | 'accessTokenOpts' | 'walletType'
 >
 export type AddContactIdentityArgs = Pick<OID4VCIMachineContext, 'credentialsToAccept' | 'contact'>
 export type GetIssuerBrandingArgs = Pick<OID4VCIMachineContext, 'serverMetadata' | 'contact'>
@@ -233,6 +234,7 @@ export type OID4VCIMachineContext = {
   openID4VCIClientState?: OpenID4VCIClientState
   credentialToSelectFrom: Array<CredentialToSelectFromResult>
   contactAlias: string
+  walletType: WalletType
   contact?: Party
   selectedCredentials: Array<string>
   credentialsToAccept: Array<MappedCredentialToAccept>
@@ -316,6 +318,7 @@ export type OID4VCIStateMachine = StateMachine<
 
 export type CreateOID4VCIMachineOpts = {
   requestData: RequestData
+  walletType: WalletType
   machineName?: string
   locale?: string
   trustAnchors?: Array<string>
@@ -728,6 +731,8 @@ export type DynamicRegistrationClientMetadataDisplay = Pick<
   DynamicRegistrationClientMetadata,
   'client_name' | 'client_uri' | 'contacts' | 'tos_uri' | 'policy_uri' | 'logo_uri'
 >
+
+export type WalletType = 'NATURAL_PERSON' | 'ORGANIZATIONAL'
 
 export type DidAgents = TAgent<IResolver & IDIDManager>
 

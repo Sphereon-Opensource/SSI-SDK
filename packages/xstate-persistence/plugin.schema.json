@@ -16,7 +16,9 @@
               "type": "string"
             }
           },
-          "required": ["instanceId"],
+          "required": [
+            "instanceId"
+          ],
           "additionalProperties": false
         },
         "MachineStateGetArgs": {
@@ -73,7 +75,15 @@
               "type": "string"
             }
           },
-          "required": ["createdAt", "instanceId", "latestEventType", "machineName", "state", "updatedAt", "updatedCount"]
+          "required": [
+            "createdAt",
+            "instanceId",
+            "latestEventType",
+            "machineName",
+            "state",
+            "updatedAt",
+            "updatedCount"
+          ]
         },
         "SerializableState": {
           "$ref": "#/components/schemas/XStateConfig<any,AnyEventObject>"
@@ -89,7 +99,10 @@
               "$ref": "#/components/schemas/SCXML.Event<AnyEventObject>"
             },
             "_sessionid": {
-              "type": ["string", "null"]
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "historyValue": {
               "$ref": "#/components/schemas/HistoryValue"
@@ -126,7 +139,15 @@
             },
             "machine": {}
           },
-          "required": ["value", "context", "_event", "_sessionid", "configuration", "transitions", "children"],
+          "required": [
+            "value",
+            "context",
+            "_event",
+            "_sessionid",
+            "configuration",
+            "transitions",
+            "children"
+          ],
           "additionalProperties": false,
           "description": "The configuration for the XState machine state. Simplified StateConfig object from XState so we have a minimal typed structure"
         },
@@ -156,7 +177,11 @@
             },
             "type": {
               "type": "string",
-              "enum": ["platform", "internal", "external"],
+              "enum": [
+                "platform",
+                "internal",
+                "external"
+              ],
               "description": "This field describes the event type. The SCXML Processor must set it to: \"platform\" (for events raised by the platform itself, such as error events), \"internal\" (for events raised by <raise> and <send> with target '_internal') or \"external\" (for all other events)."
             },
             "sendid": {
@@ -184,7 +209,12 @@
               "const": "scxml"
             }
           },
-          "required": ["name", "type", "data", "$$type"],
+          "required": [
+            "name",
+            "type",
+            "data",
+            "$$type"
+          ],
           "additionalProperties": false
         },
         "AnyEventObject": {
@@ -195,7 +225,9 @@
               "description": "The type of event that is sent."
             }
           },
-          "required": ["type"]
+          "required": [
+            "type"
+          ]
         },
         "HistoryValue": {
           "type": "object",
@@ -207,7 +239,9 @@
               "$ref": "#/components/schemas/StateValue"
             }
           },
-          "required": ["states"],
+          "required": [
+            "states"
+          ],
           "additionalProperties": false
         },
         "Record<string,(interface-434048446-6094-6223-434048446-0-57488|undefined)>": {
@@ -233,7 +267,9 @@
               "type": "number"
             }
           },
-          "required": ["size"],
+          "required": [
+            "size"
+          ],
           "additionalProperties": false
         },
         "InitMachineStateArgs": {
@@ -271,11 +307,16 @@
               "$ref": "#/components/schemas/MachineStateInfo"
             }
           },
-          "required": ["machineName"]
+          "required": [
+            "machineName"
+          ]
         },
         "MachineStateInitType": {
           "type": "string",
-          "enum": ["new", "existing"]
+          "enum": [
+            "new",
+            "existing"
+          ]
         },
         "MachineStateInit": {
           "type": "object",
@@ -307,7 +348,12 @@
               "description": "Represents the expiration date"
             }
           },
-          "required": ["createdAt", "instanceId", "machineName", "stateType"]
+          "required": [
+            "createdAt",
+            "instanceId",
+            "machineName",
+            "stateType"
+          ]
         },
         "MachineStatePersistArgs": {
           "type": "object",
@@ -345,7 +391,12 @@
               "$ref": "#/components/schemas/MachineStateInfo"
             }
           },
-          "required": ["instanceId", "machineName", "state", "stateType"],
+          "required": [
+            "instanceId",
+            "machineName",
+            "state",
+            "stateType"
+          ],
           "description": "Represents the arguments required to persist the machine state."
         },
         "DeleteExpiredStatesArgs": {

@@ -96,14 +96,14 @@ describe('Key creation', () => {
 
     const signature = await kms.sign({
       keyRef: { kid: key.kid },
-      data: u8a.fromString('test', 'base64'),
+      data: u8a.fromString('test', 'utf-8'),
     })
 
     expect(signature).toBeDefined()
   })
 
   it('should verify signature', async () => {
-    const data = u8a.fromString('test', 'base64')
+    const data = u8a.fromString('test', 'utf-8')
     const privateKeyHex = '7dd923e40f4615ac496119f7e793cc2899e99b64b88ca8603db986700089532b'
     const key = await kms.importKey({ kid: 'test', privateKeyHex, type: 'Secp256r1' })
     expect(key.type).toEqual('Secp256r1')

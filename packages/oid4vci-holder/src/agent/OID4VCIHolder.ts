@@ -123,6 +123,7 @@ import {
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
   VerifyEBSICredentialIssuerResult,
+  WalletType,
 } from '../types/IOID4VCIHolder'
 
 /**
@@ -617,7 +618,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
-    const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
+    const { verificationCode, openID4VCIClientState, didMethodPreferences, issuanceOpt, accessTokenOpts, walletType } = args
     logger.debug(`Getting credentials`, issuanceOpt, accessTokenOpts)
 
     if (!openID4VCIClientState) {
@@ -636,7 +637,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsSupported,
       serverMetadata,
       context,
-      didMethodPreferences: Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences,
+      didMethodPreferences: this.selectDidMethodPreferences(didMethodPreferences, walletType),
       jwtCryptographicSuitePreferences: this.jwtCryptographicSuitePreferences,
       jsonldCryptographicSuitePreferences: this.jsonldCryptographicSuitePreferences,
       ...(issuanceOpt && { forceIssuanceOpt: issuanceOpt }),
@@ -659,6 +660,15 @@ export class OID4VCIHolder implements IAgentPlugin {
     logger.log(`Credentials received`, allCredentials)
 
     return allCredentials
+  }
+
+  private selectDidMethodPreferences(didMethodPreferences: Array<SupportedDidMethodEnum> | undefined, walletType: WalletType) {
+    const supportedDidMethodEnums =
+      Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences
+    if (walletType === 'ORGANIZATIONAL') {
+      return [SupportedDidMethodEnum.DID_WEB, ...supportedDidMethodEnums]
+    }
+    return supportedDidMethodEnums
   }
 
   private async oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept> {

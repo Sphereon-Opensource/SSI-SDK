@@ -1,3 +1,5 @@
+import { SdJwtPayload } from '@sd-jwt/core'
+import { SdJwtVcPayload as OrigSdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
 import { Hasher, kbHeader, KBOptions, kbPayload, SaltGenerator, Signer } from '@sd-jwt/types'
 import { IIdentifierResolution, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
@@ -11,12 +13,12 @@ import {
   SdJwtType,
   SdJwtTypeMetadata,
   SdJwtVcdm2Payload,
+  SdJwtVcKbJwtHeader,
+  SdJwtVcKbJwtPayload,
   SdJwtVcType,
   SdJwtVpType,
 } from '@sphereon/ssi-types'
 import { DIDDocumentSection, IAgentContext, IDIDManager, IKeyManager, IPluginMethodMap, IResolver } from '@veramo/core'
-import { SdJwtVcPayload as OrigSdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
-import { SdJwtPayload } from '@sd-jwt/core'
 
 export const sdJwtPluginContextMethods: Array<string> = ['createSdJwtVc', 'createSdJwtPresentation', 'verifySdJwtVc', 'verifySdJwtPresentation']
 
@@ -303,4 +305,9 @@ export type GetSignerResult = {
   signer: Signer
   alg?: string
   signingKey?: SignKeyResult
+}
+
+export type PartialSdJwtKbJwt = {
+  header: Partial<SdJwtVcKbJwtHeader>
+  payload: Partial<SdJwtVcKbJwtPayload>
 }

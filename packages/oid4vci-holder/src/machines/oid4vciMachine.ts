@@ -126,6 +126,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
     // TODO WAL-671 we need to store the data from OpenIdProvider here in the context and make sure we can restart the machine with it and init the OpenIdProvider
     accessTokenOpts: opts?.accessTokenOpts,
     requestData: opts?.requestData,
+    walletType: opts?.walletType ?? 'NATURAL_PERSON',
     trustAnchors: opts?.trustAnchors ?? [],
     issuanceOpt: opts?.issuanceOpt,
     didMethodPreferences: opts?.didMethodPreferences,
@@ -347,7 +348,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.isFirstPartyApplication,
           },
           {
-            target: OID4VCIMachineStates.initiateAuthorizationRequest,
+            target: OID4VCIMachineStates.prepareAuthorizationRequest,
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
@@ -445,10 +446,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
             cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
-            target: OID4VCIMachineStates.initiateAuthorizationRequest,
-            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
-          },
-          {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
           },
@@ -523,10 +520,6 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
           {
             target: OID4VCIMachineStates.verifyPin,
             cond: OID4VCIMachineGuards.requirePinGuard,
-          },
-          {
-            target: OID4VCIMachineStates.prepareAuthorizationRequest,
-            cond: OID4VCIMachineGuards.requireAuthorizationGuard,
           },
           {
             target: OID4VCIMachineStates.getCredentials,

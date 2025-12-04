@@ -11,6 +11,7 @@ constants:
     - getSiopAuthorizationRequestDetails
     - verifySiopAuthorizationRequestURI
     - sendSiopAuthorizationResponse
+    - oid4vciRefreshInstanceMetadata
 
 # Database
 dbConnection:
