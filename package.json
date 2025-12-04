@@ -5,7 +5,7 @@
   "description": "Sphereon SSI SDK (Workspace)",
   "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
   "author": "Sphereon <dev@sphereon.com>",
-  "packageManager": "pnpm@10.22.0",
+  "packageManager": "pnpm@10.24.0",
   "workspaces": [
     "packages/*"
   ],
