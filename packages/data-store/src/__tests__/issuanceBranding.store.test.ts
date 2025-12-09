@@ -1884,4 +1884,314 @@ describe('Issuance branding store tests', (): void => {
     expect(result?.localeBranding[0].background!.image!.alt).toBeUndefined()
     expect(result?.localeBranding[0].text!.color).toBeUndefined()
   })
+
+  // State-related tests
+
+  it('should populate state field when adding credential branding', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const result: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+
+    expect(result).toBeDefined()
+    expect(result.state).toBeDefined()
+    expect(typeof result.state).toBe('string')
+    expect(result.state.length).toBeGreaterThan(0)
+    expect(result.localeBranding[0].state).toBeDefined()
+    expect(typeof result.localeBranding[0].state).toBe('string')
+    expect(result.localeBranding[0].state.length).toBeGreaterThan(0)
+  })
+
+  it('should generate different states for different credential brandings', async (): Promise<void> => {
+    const credentialBranding1: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId1',
+      vcHash: 'vcHash1',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias1',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const credentialBranding2: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId2',
+      vcHash: 'vcHash2',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias2',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const result1: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding1)
+    const result2: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding2)
+
+    expect(result1.state).toBeDefined()
+    expect(result2.state).toBeDefined()
+    expect(result1.state).not.toEqual(result2.state)
+    expect(result1.localeBranding[0].state).not.toEqual(result2.localeBranding[0].state)
+  })
+
+  it('should keep same state when credential branding content does not change', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+          description: 'Description',
+        },
+      ],
+    }
+
+    const original: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+    const originalState: string = original.state
+    const originalLocaleState: string = original.localeBranding[0].state
+
+    const retrieved: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding({ filter: [{ id: original.id }] })
+
+    expect(retrieved).toBeDefined()
+    expect(retrieved.length).toEqual(1)
+    expect(retrieved[0].state).toEqual(originalState)
+    expect(retrieved[0].localeBranding[0].state).toEqual(originalLocaleState)
+  })
+
+  it('should filter credential branding by knownStates when all states match', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const saved: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+    const knownStates: Record<string, string> = {
+      [saved.id]: saved.state,
+    }
+
+    const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding({ knownStates })
+
+    expect(result.length).toEqual(0)
+  })
+
+  it('should return credential branding when knownStates differs', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const saved: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+    const knownStates: Record<string, string> = {
+      [saved.id]: 'differentState',
+    }
+
+    const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding({ knownStates })
+
+    expect(result.length).toEqual(1)
+    expect(result[0].id).toEqual(saved.id)
+  })
+
+  it('should return credential branding when not in knownStates map', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const saved: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+    const knownStates: Record<string, string> = {}
+
+    const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding({ knownStates })
+
+    expect(result.length).toEqual(1)
+    expect(result[0].id).toEqual(saved.id)
+  })
+
+  it('should filter multiple credential brandings correctly with knownStates', async (): Promise<void> => {
+    const credentialBranding1: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId1',
+      vcHash: 'vcHash1',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias1',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const credentialBranding2: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId2',
+      vcHash: 'vcHash2',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias2',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const credentialBranding3: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId3',
+      vcHash: 'vcHash3',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias3',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const saved1: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding1)
+    const saved2: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding2)
+    const saved3: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding3)
+
+    const knownStates: Record<string, string> = {
+      [saved1.id]: saved1.state,
+      [saved2.id]: 'differentState',
+    }
+
+    const result: Array<ICredentialBranding> = await issuanceBrandingStore.getCredentialBranding({ knownStates })
+
+    expect(result.length).toEqual(2)
+    const resultIds: Array<string> = result.map((r: ICredentialBranding) => r.id)
+    expect(resultIds).toContain(saved2.id)
+    expect(resultIds).toContain(saved3.id)
+    expect(resultIds).not.toContain(saved1.id)
+  })
+
+  it('should add new locale branding with state field populated', async (): Promise<void> => {
+    const credentialBranding: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+        },
+      ],
+    }
+
+    const saved: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding)
+
+    const addLocaleBrandingArgs: IAddCredentialLocaleBrandingArgs = {
+      credentialBrandingId: saved.id,
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-GB',
+        },
+      ],
+    }
+
+    const result: ICredentialBranding = await issuanceBrandingStore.addCredentialLocaleBranding(addLocaleBrandingArgs)
+
+    expect(result.localeBranding.length).toEqual(2)
+    expect(result.localeBranding[0].state).toBeDefined()
+    expect(result.localeBranding[1].state).toBeDefined()
+    expect(result.localeBranding[0].state).not.toEqual(result.localeBranding[1].state)
+  })
+
+  it('should compute state based on locale branding claims', async (): Promise<void> => {
+    const credentialBranding1: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash1',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+          claims: [
+            {
+              key: 'name',
+              name: 'Full Name',
+            },
+          ],
+        },
+      ],
+    }
+
+    const credentialBranding2: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash2',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+          claims: [
+            {
+              key: 'email',
+              name: 'Email Address',
+            },
+          ],
+        },
+      ],
+    }
+
+    const saved1: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding1)
+    const saved2: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding2)
+
+    expect(saved1.localeBranding[0].state).toBeDefined()
+    expect(saved2.localeBranding[0].state).toBeDefined()
+    expect(saved1.localeBranding[0].state).not.toEqual(saved2.localeBranding[0].state)
+  })
+
+  it('should compute deterministic state for same content', async (): Promise<void> => {
+    const credentialBranding1: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+          description: 'Test description',
+        },
+      ],
+    }
+
+    const saved1: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding1)
+
+    await issuanceBrandingStore.removeCredentialBranding({ filter: [{ id: saved1.id }] })
+
+    const credentialBranding2: IBasicCredentialBranding = {
+      issuerCorrelationId: 'issuerCorrelationId',
+      vcHash: 'vcHash',
+      localeBranding: [
+        {
+          alias: 'credentialTypeAlias',
+          locale: 'en-US',
+          description: 'Test description',
+        },
+      ],
+    }
+
+    const saved2: ICredentialBranding = await issuanceBrandingStore.addCredentialBranding(credentialBranding2)
+
+    expect(saved1.state).toEqual(saved2.state)
+    expect(saved1.localeBranding[0].state).toEqual(saved2.localeBranding[0].state)
+  })
 })

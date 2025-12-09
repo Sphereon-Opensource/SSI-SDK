@@ -44,6 +44,7 @@ import {
   credentialBrandingEntityFrom,
   credentialBrandingFrom,
   credentialLocaleBrandingEntityFrom,
+  credentialLocaleBrandingFromEntity,
   issuerBrandingEntityFrom,
   issuerBrandingFrom,
   issuerLocaleBrandingEntityFrom,
@@ -83,7 +84,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   }
 
   public getCredentialBranding = async (args?: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>> => {
-    const { filter } = args ?? {}
+    const { filter, knownStates } = args ?? {}
     if (filter) {
       filter.forEach((filter: IPartialCredentialBranding): void => {
         if (filter.localeBranding && 'locale' in filter.localeBranding && filter.localeBranding.locale === undefined) {
@@ -97,7 +98,16 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       ...(filter && { where: filter }),
     })
 
-    return result.map((credentialBranding: CredentialBrandingEntity) => credentialBrandingFrom(credentialBranding))
+    const credentialBranding: Array<ICredentialBranding> = result.map((branding: CredentialBrandingEntity) => credentialBrandingFrom(branding))
+
+    if (!knownStates) {
+      return credentialBranding
+    }
+
+    return credentialBranding.filter((branding: ICredentialBranding) => {
+      const knownState: string | undefined = knownStates[branding.id]
+      return !knownState || knownState !== branding.state
+    })
   }
 
   public removeCredentialBranding = async (args: IRemoveCredentialBrandingArgs): Promise<void> => {
@@ -133,7 +143,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No credential branding found for id: ${credentialBranding.id}`))
     }
 
-    const branding: Omit<ICredentialBranding, 'createdAt' | 'lastUpdatedAt'> = {
+    const branding: Omit<ICredentialBranding, 'createdAt' | 'lastUpdatedAt' | 'state'> = {
       ...credentialBranding,
       localeBranding: credentialBrandingEntity.localeBranding,
     }
@@ -218,7 +228,8 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return credentialBrandingLocale
       ? credentialBrandingLocale.map(
-          (credentialLocaleBranding: CredentialLocaleBrandingEntity) => localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
+          (credentialLocaleBranding: CredentialLocaleBrandingEntity) =>
+            credentialLocaleBrandingFromEntity(credentialLocaleBranding) as ICredentialLocaleBranding,
         )
       : []
   }
@@ -342,7 +353,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No issuer branding found for id: ${issuerBranding.id}`))
     }
 
-    const branding: Omit<IIssuerBranding, 'createdAt' | 'lastUpdatedAt'> = {
+    const branding: Omit<IIssuerBranding, 'createdAt' | 'lastUpdatedAt' | 'state'> = {
       ...issuerBranding,
       localeBranding: issuerBrandingEntity.localeBranding,
     }
