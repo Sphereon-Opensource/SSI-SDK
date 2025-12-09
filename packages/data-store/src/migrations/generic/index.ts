@@ -4,6 +4,7 @@ import { FixCredentialClaimsReferencesUuid1741895822987 } from './11-FixCredenti
 import { AddBitstringStatusListEnum1741895823000, CreateBitstringStatusList1741895823000 } from './12-CreateBitstringStatusList'
 import { CreateDcqlQueryItem1726617600000 } from './13-CreateDcqlQueryItem'
 import { AddLinkedVpFields1763387280000 } from './14-AddLinkedVpFields'
+import { AddBrandingState1766000000000 } from './15-AddBrandingState'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
@@ -28,7 +29,11 @@ export const DataStoreContactMigrations = [
   CreateContacts1708525189000,
   CreateContacts1715761125000,
 ]
-export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding1659463079429, FixCredentialClaimsReferencesUuid1741895822987]
+export const DataStoreIssuanceBrandingMigrations = [
+  CreateIssuanceBranding1659463079429,
+  FixCredentialClaimsReferencesUuid1741895822987,
+  AddBrandingState1766000000000,
+]
 export const DataStoreStatusListMigrations = [
   CreateStatusList1693866470000,
   AddBitstringStatusListEnum1741895823000,
