@@ -823,7 +823,7 @@ describe('Database entities tests', (): void => {
     }
 
     const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
-    const fromDb: IssuerLocaleBrandingEntity = await dbConnection.getRepository(CredentialLocaleBrandingEntity).save(issuerLocaleBrandingEntity)
+    const fromDb: IssuerLocaleBrandingEntity = await dbConnection.getRepository(IssuerLocaleBrandingEntity).save(issuerLocaleBrandingEntity)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.alias).toEqual(localeBranding.alias)

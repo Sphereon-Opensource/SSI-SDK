@@ -1,5 +1,6 @@
 import { Validate } from 'class-validator'
-import { ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
+import { BeforeInsert, BeforeUpdate, ChildEntity, Column, Index, JoinColumn, ManyToOne } from 'typeorm'
+import { computeCompactHash } from '../../utils/issuanceBranding/HashUtils'
 import { IsNonEmptyStringConstraint } from '../validators'
 import { BaseLocaleBrandingEntity } from './BaseLocaleBrandingEntity'
 import { IssuerBrandingEntity } from './IssuerBrandingEntity'
@@ -30,4 +31,65 @@ export class IssuerLocaleBrandingEntity extends BaseLocaleBrandingEntity {
 
   @Column('text', { name: 'issuerBrandingId', nullable: false })
   issuerBrandingId!: string
+
+  @Column('varchar', { name: 'state', length: 255, nullable: false })
+  state!: string
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  setState(): void {
+    this.state = this.computeState()
+  }
+
+  private computeState(): string {
+    const payload = {
+      alias: this.alias ?? null,
+      locale: this.locale ?? null,
+      description: this.description ?? null,
+      clientUri: this.clientUri ?? null,
+      tosUri: this.tosUri ?? null,
+      policyUri: this.policyUri ?? null,
+      contacts: this.contacts ?? null,
+      logo: this.logo
+        ? {
+            uri: this.logo.uri ?? null,
+            dataUri: this.logo.dataUri ?? null,
+            mediaType: this.logo.mediaType ?? null,
+            alt: this.logo.alt ?? null,
+            dimensions: this.logo.dimensions
+              ? {
+                  width: this.logo.dimensions.width,
+                  height: this.logo.dimensions.height,
+                }
+              : null,
+          }
+        : null,
+      background: this.background
+        ? {
+            color: this.background.color ?? null,
+            image: this.background.image
+              ? {
+                  uri: this.background.image.uri ?? null,
+                  dataUri: this.background.image.dataUri ?? null,
+                  mediaType: this.background.image.mediaType ?? null,
+                  alt: this.background.image.alt ?? null,
+                  dimensions: this.background.image.dimensions
+                    ? {
+                        width: this.background.image.dimensions.width,
+                        height: this.background.image.dimensions.height,
+                      }
+                    : null,
+                }
+              : null,
+          }
+        : null,
+      text: this.text
+        ? {
+            color: this.text.color ?? null,
+          }
+        : null,
+    }
+
+    return computeCompactHash(JSON.stringify(payload))
+  }
 }
