@@ -4,11 +4,17 @@ export class AddBrandingStateSqlite1766000000000 implements MigrationInterface {
   name = 'AddBrandingState1766000000000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Add state column with empty string default for existing records
+    // Note: Existing records will have state='', which won't match computed hashes.
+    // This makes the knownStates optimization ineffective until records are naturally updated.
     await queryRunner.query(`ALTER TABLE "CredentialBranding" ADD COLUMN "state" varchar(255) NOT NULL DEFAULT ''`)
     await queryRunner.query(`ALTER TABLE "BaseLocaleBranding" ADD COLUMN "state" varchar(255) NOT NULL DEFAULT ''`)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    // Disable foreign key constraints during migration to avoid issues with DROP TABLE operations
+    await queryRunner.query(`PRAGMA foreign_keys = OFF`)
+
     // Recreate CredentialBranding without the state column
     await queryRunner.query(`
             CREATE TABLE "CredentialBranding_old"
@@ -67,8 +73,15 @@ export class AddBrandingStateSqlite1766000000000 implements MigrationInterface {
         `)
     await queryRunner.query(`DROP TABLE "BaseLocaleBranding"`)
     await queryRunner.query(`ALTER TABLE "BaseLocaleBranding_old" RENAME TO "BaseLocaleBranding"`)
-    await queryRunner.query(`CREATE UNIQUE INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale" ON "BaseLocaleBranding" ("credentialBrandingId", "locale")`)
-    await queryRunner.query(`CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`)
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_CredentialLocaleBrandingEntity_credentialBranding_locale" ON "BaseLocaleBranding" ("credentialBrandingId", "locale")`,
+    )
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_IssuerLocaleBrandingEntity_issuerBranding_locale" ON "BaseLocaleBranding" ("issuerBrandingId", "locale")`,
+    )
     await queryRunner.query(`CREATE INDEX "IDX_BaseLocaleBranding_type" ON "BaseLocaleBranding" ("type")`)
+
+    // Re-enable foreign key constraints
+    await queryRunner.query(`PRAGMA foreign_keys = ON`)
   }
 }

@@ -62,7 +62,9 @@ export class CredentialBrandingEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   setState(): void {
-    this.state = this.computeState()
+    if (this.localeBranding && Array.isArray(this.localeBranding)) {
+      this.state = this.computeState()
+    }
   }
 
   @BeforeInsert()

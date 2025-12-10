@@ -109,7 +109,10 @@ export class ContactStore extends AbstractContactStore {
     const initialResult = await partyRepository.find({ select: ['id'], where: filterConditions })
 
     // Fetch the complete entities based on the initial result IDs
-    const result = await partyRepository.find({ where: { id: In(initialResult.map((party) => party.id)) } })
+    const result = await partyRepository.find({
+      where: { id: In(initialResult.map((party) => party.id)) },
+      relations: ['contact'], // Explicit load prevents eager loading issues
+    })
     debug(`getParties() resulted in ${result.length} parties`)
     return result
       .filter((party) => {
