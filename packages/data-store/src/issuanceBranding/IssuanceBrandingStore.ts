@@ -94,20 +94,48 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     }
 
     debug('Getting credential branding', args)
-    const result: Array<CredentialBrandingEntity> = await (await this.dbConnection).getRepository(CredentialBrandingEntity).find({
+    const repository: Repository<CredentialBrandingEntity> = (await this.dbConnection).getRepository(CredentialBrandingEntity)
+
+    if (knownStates && Object.keys(knownStates).length > 0) {
+      // First do a lightweight query selecting only id and state to determine which records are "dirty"
+      const stateQuery = repository
+        .createQueryBuilder('branding')
+        .select(['branding.id', 'branding.state'])
+      if (filter) {
+        stateQuery.where(filter)
+      }
+      const stateResults: Array<{ id: string; state: string }> = await stateQuery.getRawMany().then((rows) =>
+        rows.map((row) => ({
+          id: row.branding_id,
+          state: row.branding_state,
+        })),
+      )
+
+      // Filter to find dirty record ids (new or changed state)
+      const dirtyIds: Array<string> = stateResults
+        .filter((result) => {
+          const knownState: string | undefined = knownStates[result.id]
+          return !knownState || knownState !== result.state
+        })
+        .map((result) => result.id)
+
+      if (dirtyIds.length === 0) {
+        return []
+      }
+
+      // Only fetch full data for dirty records
+      const result: Array<CredentialBrandingEntity> = await repository.find({
+        where: { id: In(dirtyIds) },
+      })
+
+      return result.map((branding: CredentialBrandingEntity) => credentialBrandingFrom(branding))
+    }
+
+    const result: Array<CredentialBrandingEntity> = await repository.find({
       ...(filter && { where: filter }),
     })
 
-    const credentialBranding: Array<ICredentialBranding> = result.map((branding: CredentialBrandingEntity) => credentialBrandingFrom(branding))
-
-    if (!knownStates) {
-      return credentialBranding
-    }
-
-    return credentialBranding.filter((branding: ICredentialBranding) => {
-      const knownState: string | undefined = knownStates[branding.id]
-      return !knownState || knownState !== branding.state
-    })
+    return result.map((branding: CredentialBrandingEntity) => credentialBrandingFrom(branding))
   }
 
   public removeCredentialBranding = async (args: IRemoveCredentialBrandingArgs): Promise<void> => {
