@@ -113,6 +113,7 @@ export type OID4VCIHolderOptions = {
   didMethodPreferences?: Array<SupportedDidMethodEnum>
   jwtCryptographicSuitePreferences?: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   hasher?: HasherSync
+  defaultHolderIdentifier?: string
 }
 
 export type OnContactIdentityCreatedArgs = {
@@ -571,6 +572,7 @@ export type DefaultIssuanceOpts = {
 export type GetIdentifierArgs = {
   issuanceOpt: IssuanceOpts
   context: RequiredContext
+  defaultHolderIdentifier?: string
 }
 
 export type GetAuthenticationKeyArgs = {

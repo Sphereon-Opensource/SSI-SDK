@@ -207,6 +207,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
 
 export class OID4VCIHolder implements IAgentPlugin {
   private readonly hasher?: HasherSync
+  private readonly defaultHolderIdentifier?: string
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
     OID4VCIHolderEvent.CREDENTIAL_STORED,
@@ -270,9 +271,11 @@ export class OID4VCIHolder implements IAgentPlugin {
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
       hasher = defaultHasher,
+      defaultHolderIdentifier,
     } = { ...options }
 
     this.hasher = hasher
+    this.defaultHolderIdentifier = defaultHolderIdentifier
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
       this.vcFormatPreferences = vcFormatPreferences
     }
@@ -679,7 +682,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
 
-    const identifier = await getIdentifierOpts({ issuanceOpt, context })
+    const identifier = await getIdentifierOpts({ issuanceOpt, context, defaultHolderIdentifier: this.defaultHolderIdentifier })
     issuanceOpt.identifier = identifier
     logger.info(`ID opts`, identifier)
     const alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString = await signatureAlgorithmFromKey({ key: identifier.key })
