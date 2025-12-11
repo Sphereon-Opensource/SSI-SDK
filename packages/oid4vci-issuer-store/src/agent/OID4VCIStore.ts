@@ -36,7 +36,7 @@ export const oid4vciStoreMethods: Array<string> = [
   'oid4vciStoreHasMetadata',
   'oid4vciStorePersistMetadata',
   'oid4vciStoreRemoveMetadata',
-  'oid4vciStoreClearAllMetadata'
+  'oid4vciStoreClearAllMetadata',
 ]
 
 export class OID4VCIStore implements IAgentPlugin {
@@ -183,8 +183,12 @@ export class OID4VCIStore implements IAgentPlugin {
   }
 
   private deepMerge<T extends Record<string, any>>(existing: T, incoming: T): T {
-    if (!incoming) return existing
-    if (!existing) return incoming
+    if (!incoming) {
+      return existing
+    }
+    if (!existing) {
+      return incoming
+    }
 
     const merged = { ...existing }
 
