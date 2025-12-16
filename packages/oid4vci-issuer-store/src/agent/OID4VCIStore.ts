@@ -36,7 +36,7 @@ export const oid4vciStoreMethods: Array<string> = [
   'oid4vciStoreHasMetadata',
   'oid4vciStorePersistMetadata',
   'oid4vciStoreRemoveMetadata',
-  'oid4vciStoreClearAllMetadata'
+  'oid4vciStoreClearAllMetadata',
 ]
 
 export class OID4VCIStore implements IAgentPlugin {
@@ -109,20 +109,6 @@ export class OID4VCIStore implements IAgentPlugin {
       )
     }
 
-    if (opts && Array.isArray(opts?.importMetadatas)) {
-      opts.importMetadatas.forEach((metaImport: IMetadataImportArgs) => {
-        const meta = metaImport as IIssuerMetadataImportArgs
-        void this.oid4vciStorePersistMetadata({
-          metadataType: meta.metadataType,
-          metadata: meta.metadata,
-          storeId: meta.storeId ?? this.defaultStoreId,
-          correlationId: meta.correlationId,
-          namespace: meta.namespace ?? this.defaultNamespace,
-          overwriteExisting: meta.overwriteExisting === undefined ? true : meta.overwriteExisting,
-        })
-      })
-    }
-
     if (opts?.issuerOptsStores && opts.issuerOptsStores instanceof Map) {
       this._optionStores = opts.issuerOptsStores
     } else if (opts?.issuerOptsStores) {
@@ -139,6 +125,10 @@ export class OID4VCIStore implements IAgentPlugin {
     if (opts && Array.isArray(opts?.importIssuerOpts)) {
       opts.importIssuerOpts.forEach((opt) => this.oid4vciStorePersistIssuerOpts(opt))
     }
+
+    if (opts && Array.isArray(opts?.importMetadatas)) {
+      void this.importMetadatas(opts.importMetadatas)
+    }
   }
 
   private async oid4vciStoreGetIssuerOpts({ correlationId, storeId, namespace }: IOid4vciStoreGetArgs): Promise<IIssuerOptions | undefined> {
@@ -154,6 +144,74 @@ export class OID4VCIStore implements IAgentPlugin {
 
   public importIssuerOpts(importOpts: IIssuerOptsImportArgs[]) {
     importOpts.forEach((opt) => this.oid4vciStorePersistIssuerOpts(opt))
+  }
+
+  public async importMetadatas(metadataImports: IMetadataImportArgs[]): Promise<void> {
+    for (const metaImport of metadataImports) {
+      const meta = metaImport as IIssuerMetadataImportArgs
+      const storeId = meta.storeId ?? this.defaultStoreId
+      const namespace = meta.namespace ?? this.defaultNamespace
+      const correlationId = meta.correlationId
+
+      const existingMetadata = await this.oid4vciStoreGetMetadata({
+        metadataType: meta.metadataType,
+        correlationId,
+        storeId,
+        namespace,
+      })
+
+      let metadataToPersist: IssuerMetadata | AuthorizationServerMetadata
+
+      if (existingMetadata) {
+        if (meta.overwriteExisting === false) {
+          continue
+        }
+        metadataToPersist = this.deepMerge(existingMetadata, meta.metadata)
+      } else {
+        metadataToPersist = meta.metadata
+      }
+
+      await this.oid4vciStorePersistMetadata({
+        metadataType: meta.metadataType,
+        metadata: metadataToPersist,
+        storeId,
+        correlationId,
+        namespace,
+        overwriteExisting: true,
+      })
+    }
+  }
+
+  private deepMerge<T extends Record<string, any>>(existing: T, incoming: T): T {
+    if (!incoming) {
+      return existing
+    }
+    if (!existing) {
+      return incoming
+    }
+
+    const merged = { ...existing }
+
+    for (const key in incoming) {
+      if (!Object.prototype.hasOwnProperty.call(incoming, key)) {
+        continue
+      }
+
+      const incomingValue = incoming[key]
+      const existingValue = existing[key]
+
+      if (this.isPlainObject(incomingValue) && this.isPlainObject(existingValue)) {
+        merged[key] = this.deepMerge(existingValue, incomingValue) as T[Extract<keyof T, string>]
+      } else if (incomingValue !== undefined) {
+        merged[key] = incomingValue
+      }
+    }
+
+    return merged
+  }
+
+  private isPlainObject(value: any): boolean {
+    return value !== null && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype
   }
 
   private async oid4vciStoreHasIssuerOpts({ correlationId, storeId, namespace }: Ioid4vciStoreExistsArgs): Promise<boolean> {
