@@ -85,8 +85,8 @@ export const oid4vciCredentialLocaleBrandingFrom = async (args: Oid4vciCredentia
     }),
     ...(credentialDisplay.logo && {
       logo: {
-        ...((credentialDisplay.logo.url || <string>credentialDisplay.logo.uri) && {
-          uri: credentialDisplay.logo?.url ?? <string>credentialDisplay.logo.uri,
+        ...((credentialDisplay.logo.uri || <string>credentialDisplay.logo.uri) && {
+          uri: credentialDisplay.logo?.uri ?? <string>credentialDisplay.logo.uri,
         }),
         ...(credentialDisplay.logo.alt_text && {
           alt: credentialDisplay.logo?.alt_text,
@@ -106,8 +106,8 @@ export const oid4vciCredentialLocaleBrandingFrom = async (args: Oid4vciCredentia
       background: {
         ...(credentialDisplay.background_image && {
           image: {
-            ...((credentialDisplay.background_image.url || <string>credentialDisplay.background_image.uri) && {
-              uri: credentialDisplay.background_image?.url ?? <string>credentialDisplay.background_image.uri,
+            ...((credentialDisplay.background_image.uri || <string>credentialDisplay.background_image.uri) && {
+              uri: credentialDisplay.background_image?.uri ?? <string>credentialDisplay.background_image.uri,
             }),
             ...(credentialDisplay.background_image.alt_text && {
               alt: credentialDisplay.background_image?.alt_text,
@@ -261,8 +261,8 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
         ...(dynamicRegistrationClientMetadata?.logo_uri && {
           uri: dynamicRegistrationClientMetadata?.logo_uri,
         }),
-        ...((issuerDisplay.logo?.url || <string>issuerDisplay.logo?.uri) && {
-          uri: issuerDisplay.logo?.url ?? <string>issuerDisplay.logo?.uri,
+        ...((issuerDisplay.logo?.uri || <string>issuerDisplay.logo?.uri) && {
+          uri: issuerDisplay.logo?.uri ?? <string>issuerDisplay.logo?.uri,
         }),
         ...(issuerDisplay.logo?.alt_text && {
           alt: issuerDisplay.logo?.alt_text,
