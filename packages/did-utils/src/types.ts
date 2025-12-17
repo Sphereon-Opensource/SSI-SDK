@@ -39,6 +39,8 @@ export type IdentifierProviderOpts = {
   type?: TKeyType
   use?: string
   method?: SupportedDidMethodEnum
+  did?: string
+  alias?: string
   [x: string]: any
 }
 

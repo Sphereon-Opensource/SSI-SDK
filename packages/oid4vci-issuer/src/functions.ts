@@ -25,6 +25,8 @@ import { Resolvable } from 'did-resolver'
 import { jwtDecode } from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
+const CLOCK_SKEW_ISSUANCE = 2 // Clock drift on Android is typically up to 2000ms, so we issue 2 seconds in the past
+
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult> => {
     const resolver = getAgentResolver(_context, {
@@ -193,11 +195,7 @@ export async function getAccessTokenSignerCallback(
       return Promise.reject(Error('No algorithm found in identifier JWK'))
     }
 
-    return await createJWT(
-      jwt.payload,
-      { signer, issuer },
-      { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT', alg },
-    )
+    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT', alg })
   }
 
   return accessTokenSignerCallback
@@ -272,7 +270,7 @@ export async function getCredentialSignerCallback(
         sdJwtPayload.iss = issuer
       }
       if (sdJwtPayload.iat === undefined) {
-        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
+        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000) - CLOCK_SKEW_ISSUANCE
       }
 
       let disclosureFrame

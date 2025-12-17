@@ -197,7 +197,25 @@ export const getPrimaryIdentifier = async (context: IAgentContext<IDIDManager>, 
     (identifier: IIdentifier) => opts?.type === undefined || identifier.keys.some((key: IKey) => key.type === opts?.type),
   )
 
-  return identifiers && identifiers.length > 0 ? identifiers[0] : undefined
+  if (!identifiers || identifiers.length === 0) {
+    return undefined
+  }
+
+  if (opts?.did) {
+    const didMatch = identifiers.find((identifier: IIdentifier) => identifier.did === opts.did)
+    if (didMatch) {
+      return didMatch
+    }
+  }
+
+  if (opts?.alias) {
+    const aliasMatch = identifiers.find((identifier: IIdentifier) => identifier.alias === opts.alias)
+    if (aliasMatch) {
+      return aliasMatch
+    }
+  }
+
+  return identifiers[0]
 }
 
 export const createIdentifier = async (context: IAgentContext<IDIDManager>, opts?: CreateIdentifierOpts): Promise<IIdentifier> => {
