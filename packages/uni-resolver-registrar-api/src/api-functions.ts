@@ -290,6 +290,38 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
         resolutionResult.didDocument.service = [...nonLVPServices, ...serviceEntries] as Array<Service>
       }
 
+      // Enrich services with metadata from the database (for eInvoicing services)
+      // Also remove null/undefined values from service objects
+      const cleanService = (svc: Service): Service => {
+        return Object.fromEntries(
+          Object.entries(svc).filter(([_, v]) => v !== null && v !== undefined)
+        ) as Service
+      }
+
+      if (resolutionResult?.didDocument?.service && typeof context.agent.getServiceMetadata === 'function') {
+        const enrichedServices = await Promise.all(
+          resolutionResult.didDocument.service.map(async (service: Service) => {
+            try {
+              const metadata = await context.agent.getServiceMetadata({
+                serviceId: service.id as string,
+                did,
+              })
+              if (metadata?.einvoice) {
+                return cleanService({ ...service, einvoice: metadata.einvoice })
+              }
+            } catch (e) {
+              // Service metadata not available, continue with basic service
+              debug(`No metadata found for service ${service.id}`)
+            }
+            return cleanService(service)
+          })
+        )
+        resolutionResult.didDocument.service = enrichedServices as Array<Service>
+      } else if (resolutionResult?.didDocument?.service) {
+        // Clean services even without metadata enrichment
+        resolutionResult.didDocument.service = resolutionResult.didDocument.service.map(cleanService) as Array<Service>
+      }
+
       response.statusCode = 200
       return response.send(resolutionResult.didDocument)
     } catch (e) {

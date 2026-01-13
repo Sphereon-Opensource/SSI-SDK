@@ -1,3 +1,4 @@
+import { migrations as VeramoDataStoreMigrations, Entities as VeramoDataStoreEntities } from '@veramo/data-store'
 import { CreateContacts1659463079429 } from './1-CreateContacts'
 import { CreatePresentationDefinitions1716533767523 } from './10-CreatePresentationDefinitions'
 import { FixCredentialClaimsReferencesUuid1741895822987 } from './11-FixCredentialClaimsReferenceUuid'
@@ -54,3 +55,12 @@ export const DataStoreMigrations = [
 ]
 
 
+
+// All migrations combined with Veramo migrations first - use this when you need both
+export const DataStoreMigrationsWithVeramo = [
+  ...VeramoDataStoreMigrations,
+  ...DataStoreMigrations,
+]
+
+// Re-export Veramo migrations and entities for convenience
+export { VeramoDataStoreMigrations, VeramoDataStoreEntities }

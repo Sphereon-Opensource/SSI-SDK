@@ -26,6 +26,7 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
+    "@veramo/data-store": "4.2.0",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",

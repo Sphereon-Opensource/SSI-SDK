@@ -1,3 +1,4 @@
+import { Entities as VeramoDataStoreEntities } from '@veramo/data-store'
 import { BaseConfigEntity } from './entities/contact/BaseConfigEntity'
 import { BaseContactEntity } from './entities/contact/BaseContactEntity'
 import { ConnectionEntity } from './entities/contact/ConnectionEntity'
@@ -54,6 +55,9 @@ export {
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreServiceMigrations,
+  DataStoreMigrationsWithVeramo,
+  VeramoDataStoreMigrations,
+  VeramoDataStoreEntities,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'
@@ -122,6 +126,12 @@ export const DataStoreEntities = [
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
   // ...DataStoreOid4vcStateEntities,
+]
+
+// All entities combined with Veramo entities if a party wants to enable them all at once
+export const DataStoreEntitiesWithVeramo = [
+  ...VeramoDataStoreEntities,
+  ...DataStoreEntities,
 ]
 
 
