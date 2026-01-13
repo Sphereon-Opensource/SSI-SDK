@@ -20,7 +20,7 @@ dbConnection:
         $args:
           - migrations:
               - $require: '@veramo/data-store?t=object#migrations'
-              - $require: './packages/data-store/dist?t=object#DataStoreMigrations'
+              - $require: './packages/data-store/dist?t=object#DataStoreMigrationsWithVeramo'
       logging: ['info', 'warn']
       entities:
         $require: './packages/ssi-sdk-core/dist?t=function#flattenArray'

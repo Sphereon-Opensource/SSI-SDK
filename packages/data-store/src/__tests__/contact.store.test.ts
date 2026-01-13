@@ -31,7 +31,7 @@ import { CredentialRole } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { ContactStore } from '../contact/ContactStore'
-import { DataStoreContactEntities, DataStoreMigrations } from '../index'
+import { DataStoreContactEntities, DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo } from '../index'
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource
@@ -44,9 +44,9 @@ describe('Contact store tests', (): void => {
       database: ':memory:',
       logging: ['info'],
       migrationsRun: false,
-      migrations: DataStoreMigrations,
+      migrations: DataStoreMigrationsWithVeramo,
       synchronize: false,
-      entities: DataStoreContactEntities,
+      entities: DataStoreEntitiesWithVeramo,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()

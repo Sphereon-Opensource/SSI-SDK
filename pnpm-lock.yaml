@@ -1180,6 +1180,9 @@ importers:
       '@veramo/core':
         specifier: 4.2.0
         version: 4.2.0(patch_hash=002e69343dc4b4eb8372715652188a9baf2969c8cbb6d43cf21855eb1b95027c)
+      '@veramo/data-store':
+        specifier: 4.2.0
+        version: 4.2.0(patch_hash=25b55da53633b67af137c78afaf727c15cd0dd9f55a659a71d1a693193961a5d)(encoding@0.1.13)(pg@8.16.3)(sqlite3@5.1.7)(ts-node@10.9.2(@swc/core@1.15.2(@swc/helpers@0.5.17))(@types/node@20.19.25)(typescript@5.8.3))
       '@veramo/utils':
         specifier: 4.2.0
         version: 4.2.0(encoding@0.1.13)
