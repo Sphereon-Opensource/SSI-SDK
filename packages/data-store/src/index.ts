@@ -53,6 +53,7 @@ export {
   DataStoreStatusListMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
+  DataStoreServiceMigrations,
 } from './migrations'
 export * from './types'
 export * from './utils/contact/MappingUtils'

@@ -4,6 +4,7 @@ import { FixCredentialClaimsReferencesUuid1741895822987 } from './11-FixCredenti
 import { AddBitstringStatusListEnum1741895823000, CreateBitstringStatusList1741895823000 } from './12-CreateBitstringStatusList'
 import { CreateDcqlQueryItem1726617600000 } from './13-CreateDcqlQueryItem'
 import { AddLinkedVpFields1763387280000 } from './14-AddLinkedVpFields'
+import { AddServiceMetadata1764000000000 } from './15-AddServiceMetadata'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
@@ -38,6 +39,7 @@ export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
 export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000, AddLinkedVpFields1763387280000]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
 export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523, CreateDcqlQueryItem1726617600000]
+export const DataStoreServiceMigrations = [AddServiceMetadata1764000000000]
 
 // All migrations together
 export const DataStoreMigrations = [
@@ -48,4 +50,5 @@ export const DataStoreMigrations = [
   ...DataStoreDigitalCredentialMigrations,
   ...DataStoreMachineStateMigrations,
   ...DataStorePresentationDefinitionMigrations,
+  ...DataStoreServiceMigrations,
 ]

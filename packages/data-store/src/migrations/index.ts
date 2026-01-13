@@ -7,4 +7,5 @@ export {
   DataStoreDigitalCredentialMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
+  DataStoreServiceMigrations,
 } from './generic'
