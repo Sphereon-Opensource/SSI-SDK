@@ -23,10 +23,15 @@ export interface IAddCredentialBrandingArgs {
 
 export interface IGetCredentialBrandingArgs {
   filter?: FindCredentialBrandingArgs
+  /**
+   * Map of credential branding id to previously received state. When provided, only branding records whose state differs
+   * or are not present in this map will be returned.
+   */
+  knownStates?: Record<string, string>
 }
 
 export interface IUpdateCredentialBrandingArgs {
-  credentialBranding: Omit<ICredentialBranding, 'localeBranding' | 'createdAt' | 'lastUpdatedAt'>
+  credentialBranding: Omit<ICredentialBranding, 'localeBranding' | 'createdAt' | 'lastUpdatedAt' | 'state'>
 }
 
 export interface IRemoveCredentialBrandingArgs {
@@ -39,7 +44,7 @@ export interface IAddCredentialLocaleBrandingArgs {
 }
 
 export interface IUpdateCredentialLocaleBrandingArgs {
-  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'>
+  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt' | 'state'>
 }
 
 export interface IRemoveCredentialLocaleBrandingArgs {
@@ -73,7 +78,7 @@ export interface IAddIssuerLocaleBrandingArgs {
 }
 
 export interface IUpdateIssuerLocaleBrandingArgs {
-  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt'>
+  localeBranding: Omit<ILocaleBranding, 'createdAt' | 'lastUpdatedAt' | 'state'>
 }
 
 export interface IRemoveIssuerLocaleBrandingArgs {
