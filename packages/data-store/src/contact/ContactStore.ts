@@ -116,8 +116,10 @@ export class ContactStore extends AbstractContactStore {
     debug(`getParties() resulted in ${result.length} parties`)
     return result
       .filter((party) => {
+        // Do not crash fetching the entire contacts list over one missing contact relation
         if (!party.contact) {
           console.warn(`party ${party.id} does not have an associated contact`)
+          return false
         }
         return true
       })

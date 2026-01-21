@@ -44,6 +44,7 @@ import {
   credentialBrandingEntityFrom,
   credentialBrandingFrom,
   credentialLocaleBrandingEntityFrom,
+  credentialLocaleBrandingFromEntity,
   issuerBrandingEntityFrom,
   issuerBrandingFrom,
   issuerLocaleBrandingEntityFrom,
@@ -83,7 +84,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
   }
 
   public getCredentialBranding = async (args?: IGetCredentialBrandingArgs): Promise<Array<ICredentialBranding>> => {
-    const { filter } = args ?? {}
+    const { filter, knownStates } = args ?? {}
     if (filter) {
       filter.forEach((filter: IPartialCredentialBranding): void => {
         if (filter.localeBranding && 'locale' in filter.localeBranding && filter.localeBranding.locale === undefined) {
@@ -93,11 +94,48 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
     }
 
     debug('Getting credential branding', args)
-    const result: Array<CredentialBrandingEntity> = await (await this.dbConnection).getRepository(CredentialBrandingEntity).find({
+    const repository: Repository<CredentialBrandingEntity> = (await this.dbConnection).getRepository(CredentialBrandingEntity)
+
+    if (knownStates && Object.keys(knownStates).length > 0) {
+      // First do a lightweight query selecting only id and state to determine which records are "dirty"
+      const stateQuery = repository
+        .createQueryBuilder('branding')
+        .select(['branding.id', 'branding.state'])
+      if (filter) {
+        stateQuery.where(filter)
+      }
+      const stateResults: Array<{ id: string; state: string }> = await stateQuery.getRawMany().then((rows) =>
+        rows.map((row) => ({
+          id: row.branding_id,
+          state: row.branding_state,
+        })),
+      )
+
+      // Filter to find dirty record ids (new or changed state)
+      const dirtyIds: Array<string> = stateResults
+        .filter((result) => {
+          const knownState: string | undefined = knownStates[result.id]
+          return !knownState || knownState !== result.state
+        })
+        .map((result) => result.id)
+
+      if (dirtyIds.length === 0) {
+        return []
+      }
+
+      // Only fetch full data for dirty records
+      const result: Array<CredentialBrandingEntity> = await repository.find({
+        where: { id: In(dirtyIds) },
+      })
+
+      return result.map((branding: CredentialBrandingEntity) => credentialBrandingFrom(branding))
+    }
+
+    const result: Array<CredentialBrandingEntity> = await repository.find({
       ...(filter && { where: filter }),
     })
 
-    return result.map((credentialBranding: CredentialBrandingEntity) => credentialBrandingFrom(credentialBranding))
+    return result.map((branding: CredentialBrandingEntity) => credentialBrandingFrom(branding))
   }
 
   public removeCredentialBranding = async (args: IRemoveCredentialBrandingArgs): Promise<void> => {
@@ -133,7 +171,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No credential branding found for id: ${credentialBranding.id}`))
     }
 
-    const branding: Omit<ICredentialBranding, 'createdAt' | 'lastUpdatedAt'> = {
+    const branding: Omit<ICredentialBranding, 'createdAt' | 'lastUpdatedAt' | 'state'> = {
       ...credentialBranding,
       localeBranding: credentialBrandingEntity.localeBranding,
     }
@@ -218,7 +256,8 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     return credentialBrandingLocale
       ? credentialBrandingLocale.map(
-          (credentialLocaleBranding: CredentialLocaleBrandingEntity) => localeBrandingFrom(credentialLocaleBranding) as ICredentialLocaleBranding,
+          (credentialLocaleBranding: CredentialLocaleBrandingEntity) =>
+            credentialLocaleBrandingFromEntity(credentialLocaleBranding) as ICredentialLocaleBranding,
         )
       : []
   }
@@ -342,7 +381,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
       return Promise.reject(Error(`No issuer branding found for id: ${issuerBranding.id}`))
     }
 
-    const branding: Omit<IIssuerBranding, 'createdAt' | 'lastUpdatedAt'> = {
+    const branding: Omit<IIssuerBranding, 'createdAt' | 'lastUpdatedAt' | 'state'> = {
       ...issuerBranding,
       localeBranding: issuerBrandingEntity.localeBranding,
     }
