@@ -59,13 +59,13 @@ describe('@sphereon/ssi-sdk.credential-provider-vdcm2-jose full flow', () => {
         new VcdmCredentialPlugin({ issuers: [vcdm2SdJwt] }),
       ],
     })
-    didKeyIdentifier = await agent.didManagerCreate()
+    didKeyIdentifier = await agent.didManagerCreate({ provider: 'did:key', options: { type: 'Ed25519' } })
     didEthrIdentifier = await agent.didManagerCreate({ provider: 'did:ethr' })
   })
 
   it('issues and verifies VCDM2 SD-JWT credential', async () => {
     const credential: CredentialPayload = {
-      issuer: { id: didEthrIdentifier.did },
+      issuer: { id: didKeyIdentifier.did },
       '@context': [VCDM_CREDENTIAL_CONTEXT_V2, 'https://example.com/1/2/3'],
       type: ['VerifiableCredential', 'Custom'],
       validFrom: new Date().toISOString(),
