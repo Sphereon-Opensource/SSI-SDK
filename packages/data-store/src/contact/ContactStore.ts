@@ -249,10 +249,45 @@ export class ContactStore extends AbstractContactStore {
       }
     }
 
-    const identityEntity: IdentityEntity = identityEntityFrom(identity)
+    const identityRepository = (await this.dbConnection).getRepository(IdentityEntity)
+    const correlationIdentifierRepository = (await this.dbConnection).getRepository(CorrelationIdentifierEntity)
+
+    // First check if an identity with the same correlationId already exists
+    const existingCorrelationIdentifier = await correlationIdentifierRepository.findOne({
+      where: { correlationId: identity.identifier.correlationId },
+    })
+
+    if (existingCorrelationIdentifier) {
+      // The same identifier already exists, return the existing identity
+      const existingIdentity = await identityRepository.findOne({
+        where: { identifier: { id: existingCorrelationIdentifier.id } },
+      })
+      if (existingIdentity) {
+        debug('Identity with same correlationId already exists, returning existing identity', identity.identifier.correlationId)
+        return identityFrom(existingIdentity)
+      }
+    }
+
+    // Check if an identity with the same alias exists (but different correlationId)
+    const existingAlias = await identityRepository.findOne({
+      where: { alias: identity.alias },
+    })
+
+    let uniqueAlias = identity.alias
+    if (existingAlias) {
+      // Generate a unique alias by appending a counter
+      let counter = 1
+      while (await identityRepository.findOne({ where: { alias: `${identity.alias}_${counter}` } })) {
+        counter++
+      }
+      uniqueAlias = `${identity.alias}_${counter}`
+      debug('Alias collision detected, using unique alias', { original: identity.alias, unique: uniqueAlias })
+    }
+
+    const identityEntity: IdentityEntity = identityEntityFrom({ ...identity, alias: uniqueAlias })
     identityEntity.party = party
     debug('Adding identity', identity)
-    const result: IdentityEntity = await (await this.dbConnection).getRepository(IdentityEntity).save(identityEntity, {
+    const result: IdentityEntity = await identityRepository.save(identityEntity, {
       transaction: true,
     })
 
