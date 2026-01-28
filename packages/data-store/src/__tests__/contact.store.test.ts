@@ -31,7 +31,7 @@ import { CredentialRole } from '@sphereon/ssi-types'
 import { DataSource } from 'typeorm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { ContactStore } from '../contact/ContactStore'
-import { DataStoreContactEntities, DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo } from '../index'
+import { DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo } from '../index'
 
 describe('Contact store tests', (): void => {
   let dbConnection: DataSource

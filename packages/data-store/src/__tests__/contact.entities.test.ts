@@ -18,7 +18,7 @@ import { PartyEntity } from '../entities/contact/PartyEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
-import { contactMetadataItemEntityFrom, DataStoreContactEntities, DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo, identityMetadataItemEntityFrom, partyTypeFrom } from '../index'
+import { contactMetadataItemEntityFrom, DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo, identityMetadataItemEntityFrom, partyTypeFrom } from '../index'
 import {
   IdentityOrigin,
   MetadataTypes,
