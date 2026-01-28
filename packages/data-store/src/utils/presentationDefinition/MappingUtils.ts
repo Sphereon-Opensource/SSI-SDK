@@ -1,6 +1,6 @@
 import type { IPresentationDefinition } from '@sphereon/pex'
 import type { DcqlQueryItem, NonPersistedDcqlQueryItem, PartialDcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
-import blakejs from 'blakejs'
+import * as blakejs from 'blakejs'
 import { DcqlQuery } from 'dcql'
 
 // Handle CommonJS/ESM interop - blakejs may be wrapped in a default export
