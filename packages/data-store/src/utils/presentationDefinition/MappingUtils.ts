@@ -2,11 +2,11 @@ import type { IPresentationDefinition } from '@sphereon/pex'
 import type { DcqlQueryItem, NonPersistedDcqlQueryItem, PartialDcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
 import * as blakejs from 'blakejs'
 import { DcqlQuery } from 'dcql'
+import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQueryItemEntity'
+import { replaceNullWithUndefined } from '../FormattingUtils'
 
 // Handle CommonJS/ESM interop - blakejs may be wrapped in a default export
 const blake = (blakejs as any).default ?? blakejs
-import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQueryItemEntity'
-import { replaceNullWithUndefined } from '../FormattingUtils'
 
 export const dcqlQueryItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
   const result: DcqlQueryItem = {
