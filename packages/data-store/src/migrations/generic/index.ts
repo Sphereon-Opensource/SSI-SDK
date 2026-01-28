@@ -1,3 +1,4 @@
+import { migrations as VeramoDataStoreMigrations, Entities as VeramoDataStoreEntities } from '@veramo/data-store'
 import { CreateContacts1659463079429 } from './1-CreateContacts'
 import { CreatePresentationDefinitions1716533767523 } from './10-CreatePresentationDefinitions'
 import { FixCredentialClaimsReferencesUuid1741895822987 } from './11-FixCredentialClaimsReferenceUuid'
@@ -5,6 +6,7 @@ import { AddBitstringStatusListEnum1741895823000, CreateBitstringStatusList17418
 import { CreateDcqlQueryItem1726617600000 } from './13-CreateDcqlQueryItem'
 import { AddLinkedVpFields1763387280000 } from './14-AddLinkedVpFields'
 import { AddBrandingState1766000000000 } from './15-AddBrandingState'
+import { AddServiceMetadata1764000000000 } from './15-AddServiceMetadata'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
@@ -43,6 +45,7 @@ export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
 export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000, AddLinkedVpFields1763387280000]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
 export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523, CreateDcqlQueryItem1726617600000]
+export const DataStoreServiceMigrations = [AddServiceMetadata1764000000000]
 
 // All migrations together
 export const DataStoreMigrations = [
@@ -53,4 +56,16 @@ export const DataStoreMigrations = [
   ...DataStoreDigitalCredentialMigrations,
   ...DataStoreMachineStateMigrations,
   ...DataStorePresentationDefinitionMigrations,
+  ...DataStoreServiceMigrations,
 ]
+
+
+
+// All migrations combined with Veramo migrations first - use this when you need both
+export const DataStoreMigrationsWithVeramo = [
+  ...VeramoDataStoreMigrations,
+  ...DataStoreMigrations,
+]
+
+// Re-export Veramo migrations and entities for convenience
+export { VeramoDataStoreMigrations, VeramoDataStoreEntities }

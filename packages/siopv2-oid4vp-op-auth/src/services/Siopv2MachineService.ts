@@ -73,11 +73,23 @@ export const siopSendAuthorizationResponse = async (
   const firstVC = firstUniqueDC.uniformVerifiableCredential
 
   // Determine holder DID for identifier resolution
+  // For SD-JWT, check cnf claim first (key binding), then fall back to sub
   let holder: string | undefined
   if (CredentialMapper.isSdJwtDecodedCredential(firstVC)) {
-    //  TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
-    //  doesn't apply to did:jwk only, as you can represent any DID key as a
-    holder = firstVC.decodedPayload.cnf?.jwk ? `did:jwk:${encodeJoseBlob(firstVC.decodedPayload.cnf?.jwk)}#0` : firstVC.decodedPayload.sub
+    const cnf = firstVC.decodedPayload.cnf
+    if (cnf?.jwk) {
+      // cnf.jwk contains the raw JWK - compute did:jwk from it
+      // TODO SDK-19: convert the JWK to hex and search for the appropriate key and associated DID
+      holder = `did:jwk:${encodeJoseBlob(cnf.jwk)}#0`
+    } else if (cnf?.kid) {
+      // cnf.kid is a verification method reference (e.g., "did:web:example.com#key-1")
+      // Extract the DID part (everything before the fragment)
+      const kid = cnf.kid as string
+      holder = kid.includes('#') ? kid.split('#')[0] : kid
+    } else {
+      // Fall back to sub claim (credential subject)
+      holder = firstVC.decodedPayload.sub
+    }
   } else {
     holder = Array.isArray(firstVC.credentialSubject) ? firstVC.credentialSubject[0].id : firstVC.credentialSubject.id
   }

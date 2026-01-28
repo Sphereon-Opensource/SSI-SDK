@@ -815,6 +815,7 @@ export function signatureAlgorithmToJoseAlgorithm(alg: string): JoseSignatureAlg
     case 'ES256K':
       return JoseSignatureAlgorithm.ES256K
     case 'ED25519':
+    case 'Ed25519':
     case 'EdDSA':
       return JoseSignatureAlgorithm.EdDSA
     default:
@@ -871,8 +872,14 @@ export const keyTypeFromCryptographicSuite = (args: KeyTypeFromCryptographicSuit
     case 'Ed25519':
     case 'Ed25519Signature2018':
     case 'Ed25519Signature2020':
+    case 'Ed25519VerificationKey2018':
+    case 'Ed25519VerificationKey2020':
     case 'JcsEd25519Signature2020':
       return 'Ed25519'
+    case 'X25519':
+    case 'X25519KeyAgreementKey2019':
+    case 'X25519KeyAgreementKey2020':
+      return 'X25519'
     case 'JsonWebSignature2020':
     case 'ES256':
     case 'ECDSA':
@@ -889,6 +896,7 @@ export const keyTypeFromCryptographicSuite = (args: KeyTypeFromCryptographicSuit
     case 'ES256K':
     case 'EcdsaSecp256k1VerificationKey2019':
     case 'EcdsaSecp256k1RecoveryMethod2020':
+    case 'Secp256k1VerificationKey2018':
       return 'Secp256k1'
   }
   if (kty) {

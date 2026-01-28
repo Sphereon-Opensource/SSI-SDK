@@ -8,6 +8,21 @@
       "path": "../data-store-types"
     },
     {
+      "path": "../identifier-resolution"
+    },
+    {
+      "path": "../key-manager"
+    },
+    {
+      "path": "../kms-local"
+    },
+    {
+      "path": "../credential-vcdm-jsonld-provider"
+    },
+    {
+      "path": "../credential-vcdm"
+    },
+    {
       "path": "../agent-config"
     },
     {

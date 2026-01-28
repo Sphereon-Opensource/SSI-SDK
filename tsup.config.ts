@@ -18,7 +18,7 @@ export default defineConfig({
   outDir: 'dist',
   clean: true,
   skipNodeModulesBundle: true,
-  noExternal: ['@veramo/data-store'],
+  // noExternal: ['@veramo/data-store'], // Removed - let Veramo be external to avoid ESM/CJS issues
   /*external: [
     'module',
     'fs',

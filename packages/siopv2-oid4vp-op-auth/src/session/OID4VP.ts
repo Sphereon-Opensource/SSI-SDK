@@ -101,11 +101,17 @@ export async function createVerifiablePresentationForFormat(
         aud: audience, // Always use the Client Identifier or Origin
       }
 
+      // Get the holder DID from the identifier to pass to createSdJwtPresentation
+      // This is needed because the credential's cnf.jwk thumbprint may not be registered as a key ID
+      const holder = getIdentifierString(identifier)
+      logger.debug(`Creating SD-JWT presentation with holder: ${holder}`)
+
       const presentationResult = await agent.createSdJwtPresentation({
         presentation: decodedSdJwt.compactSdJwtVc,
         kb: {
           payload: kbJwtPayload as any, // FIXME
         },
+        holder: holder, // Pass the holder DID explicitly to avoid JWK thumbprint lookup issues
       })
 
       return presentationResult.presentation

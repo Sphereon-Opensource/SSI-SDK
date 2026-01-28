@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   BackgroundAttributesEntity,
   CredentialLocaleBrandingEntity,
-  DataStoreIssuanceBrandingEntities,
+  DataStoreIssuanceBrandingEntities, DataStoreEntitiesWithVeramo,
   IAddCredentialLocaleBrandingArgs,
   IAddIssuerLocaleBrandingArgs,
   IBasicCredentialBranding,
@@ -26,7 +26,7 @@ import {
   TextAttributesEntity,
 } from '../index'
 import { IssuanceBrandingStore } from '../issuanceBranding/IssuanceBrandingStore'
-import { DataStoreMigrations } from '../migrations'
+import { DataStoreMigrationsWithVeramo } from '../migrations'
 
 describe('Issuance branding store tests', (): void => {
   let dbConnection: DataSource
@@ -39,9 +39,9 @@ describe('Issuance branding store tests', (): void => {
       database: ':memory:',
       //logging: ['info'],
       migrationsRun: false,
-      migrations: DataStoreMigrations,
+      migrations: DataStoreMigrationsWithVeramo,
       synchronize: false,
-      entities: DataStoreIssuanceBrandingEntities,
+      entities: DataStoreEntitiesWithVeramo,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
