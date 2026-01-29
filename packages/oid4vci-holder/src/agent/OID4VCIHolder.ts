@@ -721,13 +721,16 @@ export class OID4VCIHolder implements IAgentPlugin {
         }
       }
 
-      await client.acquireAccessToken({
+      const acquireAccessTokenOpts = {
         clientId: client.clientId,
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
         additionalRequestParams: accessTokenOpts?.additionalRequestParams,
         ...(asOpts && { asOpts }),
-      })
+      }
+      logger.debug(`Acquiring access token with opts: ${JSON.stringify(acquireAccessTokenOpts, null, 2)}`)
+      const accessTokenResponse = await client.acquireAccessToken(acquireAccessTokenOpts)
+      logger.debug(`Access token response: ${JSON.stringify(accessTokenResponse, null, 2)}`)
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
       const types = getTypesFromObject(issuanceOpt)
@@ -738,7 +741,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
 
       const credentialDefinition = this.getCredentialDefinition(issuanceOpt)
-      const credentialResponse = await client.acquireCredentials({
+      const acquireCredentialOpts = {
         ...(credentialDefinition && { context: credentialDefinition['@context'] }),
         credentialTypes,
         proofCallbacks: callbacks,
@@ -750,7 +753,10 @@ export class OID4VCIHolder implements IAgentPlugin {
         jwk,
         alg,
         jti: uuidv4(),
-      })
+      }
+      logger.debug(`Acquiring credential with opts: ${JSON.stringify({...acquireCredentialOpts, proofCallbacks: '<<callbacks>>'}, null, 2)}`)
+      const credentialResponse = await client.acquireCredentials(acquireCredentialOpts)
+      logger.debug(`Credential response: ${JSON.stringify(credentialResponse, null, 2)}`)
 
       const credential = {
         id: issuanceOpt.credentialConfigurationId ?? id,
@@ -760,6 +766,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       } satisfies CredentialToAccept
       return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
     } catch (error) {
+      logger.error(`Error getting credential: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
       return Promise.reject(error)
     }
   }
