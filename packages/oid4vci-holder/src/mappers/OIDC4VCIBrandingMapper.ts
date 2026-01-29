@@ -44,6 +44,7 @@ export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
 ): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
   const { issuerCredentialSubject } = args
   const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
+  let claimIndex = 0
 
   const processClaimObject = (claim: any, parentKey: string = ''): void => {
     Object.entries(claim).forEach(([key, value]): void => {
@@ -52,16 +53,12 @@ export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
       }
 
       if (key === 'display' && Array.isArray(value)) {
+        const order = claimIndex++
         value.forEach(({ name, locale = '' }: NameAndLocale): void => {
-          if (!name) {
-            return
-          }
-
-          //const localeKey = locale || ''
           if (!localeClaims.has(locale)) {
             localeClaims.set(locale, [])
           }
-          localeClaims.get(locale)!.push({ key: parentKey, name })
+          localeClaims.get(locale)!.push({ key: parentKey, name: name || parentKey, order })
         })
       } else if (typeof value === 'object' && value !== null) {
         processClaimObject(value, parentKey ? `${parentKey}.${key}` : key)
@@ -172,15 +169,22 @@ export const sdJwtCredentialClaimLocalesFrom = async (
   const { claimsMetadata } = args
   const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
 
-  claimsMetadata.forEach((claim: SdJwtClaimMetadata): void => {
-    claim.display?.forEach((display: SdJwtClaimDisplayMetadata): void => {
-      const localeKey = display.locale || display.lang || ''
-      const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.')
-      if (!localeClaims.has(localeKey)) {
-        localeClaims.set(localeKey, [])
+  claimsMetadata.forEach((claim: SdJwtClaimMetadata, index: number): void => {
+    const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.')
+    if (claim.display && claim.display.length > 0) {
+      claim.display.forEach((display: SdJwtClaimDisplayMetadata): void => {
+        const localeKey = display.locale || display.lang || ''
+        if (!localeClaims.has(localeKey)) {
+          localeClaims.set(localeKey, [])
+        }
+        localeClaims.get(localeKey)!.push({ key, name: display.label || key, order: index })
+      })
+    } else {
+      if (!localeClaims.has('')) {
+        localeClaims.set('', [])
       }
-      localeClaims.get(localeKey)!.push({ key, name: display.label })
-    })
+      localeClaims.get('')!.push({ key, name: key, order: index })
+    }
   })
 
   return localeClaims

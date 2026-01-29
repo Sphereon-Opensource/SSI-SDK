@@ -53,6 +53,7 @@ import {
   JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
+  LogMethod,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
@@ -145,7 +146,9 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'verifyCredential',
 ]
 
-const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
+const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', {
+  methods: [LogMethod.CONSOLE, LogMethod.EVENT],
+}).get('sphereon:oid4vci:holder')
 
 export function signCallback(
   identifier: ManagedIdentifierOptsOrResult,

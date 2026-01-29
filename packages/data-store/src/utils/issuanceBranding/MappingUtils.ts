@@ -65,6 +65,7 @@ export const credentialLocaleBrandingFromEntity = (localeBranding: CredentialLoc
           id: claim.id,
           key: claim.key,
           name: claim.name,
+          ...(claim.order != null && { order: claim.order }),
         }))
       : undefined,
   } as ICredentialLocaleBranding
@@ -160,6 +161,7 @@ export const credentialClaimsEntityFrom = (args: IBasicCredentialClaim): Credent
   const credentialClaimsEntity: CredentialClaimsEntity = new CredentialClaimsEntity()
   credentialClaimsEntity.key = args.key
   credentialClaimsEntity.name = args.name
+  credentialClaimsEntity.order = args.order
 
   return credentialClaimsEntity
 }

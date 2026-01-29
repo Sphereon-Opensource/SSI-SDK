@@ -8,6 +8,7 @@ import { AddLinkedVpFields1763387280000 } from './14-AddLinkedVpFields'
 import { AddBrandingState1766000000000 } from './15-AddBrandingState'
 import { AddServiceMetadata1764000000000 } from './15-AddServiceMetadata'
 import { MakeOpenIdClientSecretNullable1767000000000 } from './16-MakeOpenIdClientSecretNullable'
+import { AddCredentialClaimOrder1768000000000 } from './17-AddCredentialClaimOrder'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
@@ -37,6 +38,7 @@ export const DataStoreIssuanceBrandingMigrations = [
   CreateIssuanceBranding1659463079429,
   FixCredentialClaimsReferencesUuid1741895822987,
   AddBrandingState1766000000000,
+  AddCredentialClaimOrder1768000000000,
 ]
 export const DataStoreStatusListMigrations = [
   CreateStatusList1693866470000,

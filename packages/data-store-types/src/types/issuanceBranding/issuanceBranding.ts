@@ -57,6 +57,7 @@ export interface ICredentialClaim {
   id: string
   key: string
   name: string
+  order?: number
 }
 export interface IBasicCredentialClaim extends Omit<ICredentialClaim, 'id'> {}
 export interface IPartialCredentialClaim extends Partial<ICredentialClaim> {}
