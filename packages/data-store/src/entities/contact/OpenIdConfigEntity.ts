@@ -6,8 +6,8 @@ export class OpenIdConfigEntity extends BaseConfigEntity {
   @Column('varchar', { name: 'client_id', length: 255, nullable: false })
   clientId!: string
 
-  @Column('varchar', { name: 'client_secret', length: 255, nullable: false })
-  clientSecret!: string
+  @Column('varchar', { name: 'client_secret', length: 255, nullable: true })
+  clientSecret?: string
 
   @Column('simple-array', { name: 'scopes', nullable: false })
   scopes!: Array<string>
