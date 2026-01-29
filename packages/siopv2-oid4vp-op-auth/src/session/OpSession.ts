@@ -233,7 +233,9 @@ export class OpSession {
           recipientKey,
           protectedHeader: {},
           alg: (requestObjectPayload.client_metadata.authorization_encrypted_response_alg as JweAlg | undefined) ?? 'ECDH-ES',
-          enc: (requestObjectPayload.client_metadata.authorization_encrypted_response_enc as JweEnc | undefined) ?? 'A256GCM',
+          enc: (requestObjectPayload.client_metadata.authorization_encrypted_response_enc as JweEnc | undefined)
+            ?? (requestObjectPayload.client_metadata.encrypted_response_enc_values_supported?.[0] as JweEnc | undefined)
+            ?? 'A256GCM',
           apv: encodeBase64url(opts.requestObjectPayload.nonce),
           apu: encodeBase64url(v4()),
           payload: authResponse,
