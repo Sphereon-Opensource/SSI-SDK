@@ -484,7 +484,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing openID4VCI client state in context'))
     }
 
-    const clientId = contact?.identities
+    const contactClientId = contact?.identities
       .map((identity) => {
         const connectionConfig = identity.connection?.config
         if (connectionConfig && 'clientId' in connectionConfig) {
@@ -494,8 +494,9 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
       .find((clientId) => clientId)
 
+    const clientId = this.defaultAuthorizationRequestOpts.clientId ?? contactClientId
     if (!clientId) {
-      return Promise.reject(Error(`Missing client id in contact's connectionConfig`))
+      return Promise.reject(Error(`Missing client id in contact's connectionConfig and no default authorization request clientId configured`))
     }
     const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
     const authorizationCodeURL = await client.createAuthorizationRequestUrl({

@@ -160,7 +160,7 @@ export const sdJwtCredentialDisplayLocalesFrom = async (
 ): Promise<Map<string, SdJwtTypeDisplayMetadata>> => {
   const { credentialDisplay } = args
   return credentialDisplay.reduce((localeDisplays, display) => {
-    const localeKey = display.lang || ''
+    const localeKey = display.locale || display.lang || ''
     localeDisplays.set(localeKey, display)
     return localeDisplays
   }, new Map<string, SdJwtTypeDisplayMetadata>())
@@ -174,12 +174,12 @@ export const sdJwtCredentialClaimLocalesFrom = async (
 
   claimsMetadata.forEach((claim: SdJwtClaimMetadata): void => {
     claim.display?.forEach((display: SdJwtClaimDisplayMetadata): void => {
-      const { lang = '', label } = display
+      const localeKey = display.locale || display.lang || ''
       const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.')
-      if (!localeClaims.has(lang)) {
-        localeClaims.set(lang, [])
+      if (!localeClaims.has(localeKey)) {
+        localeClaims.set(localeKey, [])
       }
-      localeClaims.get(lang)!.push({ key, name: label })
+      localeClaims.get(localeKey)!.push({ key, name: display.label })
     })
   })
 

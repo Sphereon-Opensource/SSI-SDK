@@ -143,10 +143,13 @@ export const selectCredentialLocaleBranding = async (
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
-  return localeBranding?.find(
+  const match = localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
       locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we have duplicate code
   )
+
+  // Fallback: return first available branding so we at least get visual branding
+  return match ?? localeBranding?.[0]
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {

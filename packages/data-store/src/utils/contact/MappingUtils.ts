@@ -526,7 +526,7 @@ export const didAuthConfigFrom = (config: DidAuthConfigEntity): DidAuthConfig =>
 }
 
 export const isOpenIdConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is OpenIdConfig | OpenIdConfigEntity =>
-  'clientSecret' in config && 'issuer' in config && 'redirectUrl' in config
+  'clientId' in config && 'issuer' in config && 'redirectUrl' in config
 
 export const isDidAuthConfig = (config: NonPersistedConnectionConfig | BaseConfigEntity): config is DidAuthConfig | DidAuthConfigEntity =>
   ('identifier' in config || ('idOpts' in config && 'identifier' in config.idOpts)) && 'redirectUrl' in config && 'sessionId' in config
