@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.data-store",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -26,7 +26,6 @@
     "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
   },
   "dependencies": {
-    "@veramo/data-store": "4.2.0",
     "@sphereon/kmp-mdoc-core": "0.2.0-SNAPSHOT.26",
     "@sphereon/pex": "5.0.0-unstable.28",
     "@sphereon/ssi-sdk-ext.did-utils": "workspace:*",
@@ -36,6 +35,7 @@
     "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",
     "@veramo/core": "4.2.0",
+    "@veramo/data-store": "4.2.0",
     "@veramo/utils": "4.2.0",
     "blakejs": "^1.2.1",
     "class-validator": "0.14.1",

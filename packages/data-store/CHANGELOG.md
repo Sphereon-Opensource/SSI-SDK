@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
+
+### Bug Fixes
+
+- change blakejs import to namespace import for better CommonJS/ESM interop ([84f9a21](https://github.com/Sphereon-Opensource/SSI-SDK/commit/84f9a217080e9b2dc4ff63a382f1d27db67172f9))
+- handle CommonJS/ESM interop for blakejs in MappingUtils ([9a2b1f0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a2b1f0998e426363aa123252298ce4af19aecb6))
+- improve locale fallback and clientId resolution logic in OID4VCI holder, update locale handling in SdJwt types and mappers ([0ce9cdf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0ce9cdff86eae2404c4725220ec89a1e24493ae8))
+- move imports to top of file for proper module syntax ([10ec0cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/10ec0cd49dbb80ced53dd88636aaff435f5a124a))
+- UQ constraint on discovering ID using existing alias ([ff40ab6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ff40ab64b07e77c8565ed97a027c74bb4d754f28))
+
+### Features
+
+- add credential claim order field and migration scripts to schema and mapping utils ([9a314a6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a314a62648fc48d7582e3c711f4a3a24e75e769))
+
 # [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
 
 ### Bug Fixes
