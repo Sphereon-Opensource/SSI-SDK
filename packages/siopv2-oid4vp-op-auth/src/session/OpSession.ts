@@ -224,6 +224,9 @@ export class OpSession {
       clientMetadata: JwksMetadataParams
     }): Promise<{ response: string }> {
       const { clientMetadata, requestObjectPayload, authorizationResponsePayload: authResponse } = opts
+      logger.debug(`JARM response - authorization response payload: ${JSON.stringify(authResponse)}`)
+      logger.debug(`JARM response - request object payload client_metadata: ${JSON.stringify(requestObjectPayload.client_metadata)}`)
+
       const jwk = await OP.extractEncJwksFromClientMetadata(clientMetadata)
       // @ts-ignore // FIXME: Fix jwk inference
       const recipientKey = await agent.identifierExternalResolveByJwk({ identifier: jwk })
@@ -286,6 +289,8 @@ export class OpSession {
     }
 
     const authResponse = await op.createAuthorizationResponse(request, responseOpts)
+    logger.debug(`Authorization response payload: ${JSON.stringify(authResponse.response?.payload)}`)
+    logger.debug(`Authorization response options: ${JSON.stringify({ responseMode: request.authorizationRequest?.payload?.response_mode, responseURI: this.verifiedAuthorizationRequest?.responseURI })}`)
     const response = await op.submitAuthorizationResponse(authResponse, await this.createJarmResponseCallback({ responseOpts }))
 
     if (response.status >= 400) {
