@@ -10,10 +10,17 @@ import {
   SdJwtDecodedVerifiableCredential,
   WrappedVerifiableCredential,
 } from '@sphereon/ssi-types'
+import { IPresentationFrame } from '@sphereon/ssi-sdk.sd-jwt'
 import { LOGGER_NAMESPACE, RequiredContext } from '../types'
 
 const CLOCK_SKEW = 120
 const logger = Loggers.DEFAULT.get(LOGGER_NAMESPACE)
+
+export interface DcqlClaimDescriptor {
+  path: Array<string | number | null>
+  id?: string
+  values?: Array<string | number | boolean>
+}
 
 export interface PresentationBuilderContext {
   nonce: string
@@ -21,6 +28,43 @@ export interface PresentationBuilderContext {
   agent: RequiredContext['agent']
   clockSkew?: number
   hasher?: HasherSync
+  dcqlClaims?: DcqlClaimDescriptor[]
+  dcqlValidClaimIndexes?: number[]
+}
+
+/**
+ * Converts DCQL claims path descriptors into an IPresentationFrame for SD-JWT selective disclosure.
+ * Only string path segments are used (numbers/null are array indices, not relevant for SD-JWT frames).
+ */
+export function buildPresentationFrameFromDcqlClaims(
+  claims: DcqlClaimDescriptor[],
+  validClaimIndexes?: number[],
+): IPresentationFrame {
+  const frame: IPresentationFrame = {}
+  const indexes = validClaimIndexes ?? claims.map((_, i) => i)
+
+  for (const idx of indexes) {
+    const claim = claims[idx]
+    if (!claim) continue
+
+    const stringSegments = claim.path.filter((seg): seg is string => typeof seg === 'string')
+    if (stringSegments.length === 0) continue
+
+    let current: IPresentationFrame = frame
+    for (let i = 0; i < stringSegments.length; i++) {
+      const seg = stringSegments[i]
+      if (i === stringSegments.length - 1) {
+        current[seg] = true
+      } else {
+        if (!current[seg] || current[seg] === true) {
+          current[seg] = {}
+        }
+        current = current[seg] as IPresentationFrame
+      }
+    }
+  }
+
+  return frame
 }
 
 /**
@@ -76,7 +120,7 @@ export async function createVerifiablePresentationForFormat(
   context: PresentationBuilderContext,
 ): Promise<string | object> {
   // FIXME find proper types
-  const { nonce, audience, agent, clockSkew = CLOCK_SKEW } = context
+  const { nonce, audience, agent, clockSkew = CLOCK_SKEW, dcqlClaims, dcqlValidClaimIndexes } = context
 
   const originalCredential = extractOriginalCredential(credential)
   const documentFormat = CredentialMapper.detectDocumentType(originalCredential)
@@ -106,8 +150,16 @@ export async function createVerifiablePresentationForFormat(
       const holder = getIdentifierString(identifier)
       logger.debug(`Creating SD-JWT presentation with holder: ${holder}`)
 
+      // Build presentation frame from DCQL claims for selective disclosure
+      let presentationFrame: IPresentationFrame | undefined
+      if (dcqlClaims && dcqlClaims.length > 0) {
+        presentationFrame = buildPresentationFrameFromDcqlClaims(dcqlClaims, dcqlValidClaimIndexes)
+        logger.debug(`SD-JWT presentation frame: ${JSON.stringify(presentationFrame)}`)
+      }
+
       const presentationResult = await agent.createSdJwtPresentation({
         presentation: decodedSdJwt.compactSdJwtVc,
+        presentationFrame,
         kb: {
           payload: kbJwtPayload as any, // FIXME
         },

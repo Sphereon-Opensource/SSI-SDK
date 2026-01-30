@@ -158,9 +158,24 @@ export const siopSendAuthorizationResponse = async (
         continue
       }
 
+      // Look up the credential query to extract DCQL claims for selective disclosure
+      const credentialQuery = request.dcqlQuery.credentials.find((c) => c.id === key)
+      const validCredential = value.valid_credentials[0]
+      const validClaimIndexes = validCredential?.claims?.valid_claim_sets?.[0]?.valid_claim_indexes
+
+      const perCredentialContext = {
+        ...presentationContext,
+        ...(credentialQuery?.claims
+          ? {
+              dcqlClaims: credentialQuery.claims as Array<{ path: Array<string | number | null>; id?: string; values?: Array<string | number | boolean> }>,
+              ...(validClaimIndexes ? { dcqlValidClaimIndexes: [...validClaimIndexes] } : {}),
+            }
+          : {}),
+      }
+
       try {
         // Use format-aware presentation builder
-        const vp = await createVerifiablePresentationForFormat(vc, identifier, presentationContext)
+        const vp = await createVerifiablePresentationForFormat(vc, identifier, perCredentialContext)
         presentation[key] = vp as any
       } catch (error) {
         logger.error(`Failed to create VP for credential ${key}:`, error)
@@ -199,6 +214,20 @@ export const getSelectableCredentials = async (dcqlQuery: DcqlQuery, context: Re
       continue
     }
 
+    // Determine which claims will be disclosed for this credential query
+    const credentialQuery = dcqlQuery.credentials.find((c) => c.id === key)
+    const validClaimIndexes = value.success ? value.valid_credentials[0]?.claims?.valid_claim_sets?.[0]?.valid_claim_indexes : undefined
+
+    let requestedClaims: Array<{ path: Array<string | number | null>; id?: string }> | undefined
+    if (credentialQuery?.claims) {
+      const allClaims = credentialQuery.claims as Array<{ path: Array<string | number | null>; id?: string }>
+      if (validClaimIndexes) {
+        requestedClaims = validClaimIndexes.map((idx) => allClaims[idx]).filter(Boolean)
+      } else {
+        requestedClaims = allClaims
+      }
+    }
+
     const mapSelectableCredentialPromises = value.valid_credentials.map(async (cred) => {
       const matchedCredential = uniqueCredentials[cred.input_credential_index]
       const credentialBranding = branding.filter((cb) => cb.vcHash === matchedCredential.hash)
@@ -214,6 +243,7 @@ export const getSelectableCredentials = async (dcqlQuery: DcqlQuery, context: Re
         credentialBranding: credentialBranding[0]?.localeBranding,
         issuerParty: issuerPartyIdentity?.[0],
         subjectParty: subjectPartyIdentity?.[0],
+        requestedClaims,
       }
     })
 
