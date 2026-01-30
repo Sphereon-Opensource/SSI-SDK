@@ -1,4 +1,16 @@
-import { calculateJwkThumbprint, toJwk, x25519PublicHexFromPrivateHex, type X509Opts } from '@sphereon/ssi-sdk-ext.key-utils'
+import {
+  base64ToBase64Url,
+  calculateJwkThumbprint,
+  isHashString,
+  joseAlgorithmToDigest,
+  jwkToRawHexKey,
+  shaHasher,
+  signatureAlgorithmFromKeyType,
+  signatureAlgorithmToJoseAlgorithm,
+  toJwk,
+  x25519PublicHexFromPrivateHex,
+  type X509Opts,
+} from '@sphereon/ssi-sdk-ext.key-utils'
 import { hexToPEM, jwkToPEM, pemCertChainTox5c, PEMToHex, PEMToJwk } from '@sphereon/ssi-sdk-ext.x509-utils'
 import type { ManagedKeyInfo as RestManagedKeyInfo } from '@sphereon/ssi-sdk.kms-rest-client'
 import {
@@ -27,13 +39,17 @@ interface KeyManagementSystemOptions {
   applicationId: string
   baseUrl: string
   providerId?: string
+  tenantId?: string
+  userId?: string
   authOpts?: RestClientAuthenticationOpts
 }
 
 export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   private client: KmsRestClient
   private readonly id: string
-  private providerId: string | undefined
+  private readonly providerId: string | undefined
+  private readonly tenantId: string | undefined
+  private readonly userId: string | undefined
 
   constructor(options: KeyManagementSystemOptions) {
     super()
@@ -45,18 +61,26 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
     this.id = options.applicationId
     this.providerId = options.providerId
+    this.tenantId = options.tenantId
+    this.userId = options.userId
     this.client = new KmsRestClient(config)
   }
 
   async createKey(args: CreateKeyArgs): Promise<ManagedKeyInfo> {
     const { type, meta } = args
 
-    const signatureAlgorithm = this.mapKeyTypeToSignatureAlgorithm(type)
+    const joseAlg = signatureAlgorithmFromKeyType({
+      type,
+      algorithms: meta?.algorithms as string[] | undefined,
+    })
+    const signatureAlgorithm = this.mapJoseToRestSignatureAlgorithm(joseAlg)
     const options = {
       use: meta && 'keyUsage' in meta ? this.mapKeyUsage(meta.keyUsage) : JwkUse.Sig,
       alg: signatureAlgorithm,
       keyOperations: meta && meta.keyOperations ? this.mapKeyOperations(meta.keyOperations as string[]) : [KeyOperations.Sign],
       ...(meta && 'keyAlias' in meta && meta.keyAlias ? { alias: meta.keyAlias } : {}),
+      ...(this.tenantId && { tenantId: this.tenantId }),
+      ...(this.userId && { userId: this.userId }),
     }
 
     const key = this.providerId
@@ -68,7 +92,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
     const jwk = {
       ...key.keyPair.jose.publicJwk,
-      alg: key.keyPair.jose.publicJwk.alg ? this.mapJoseAlgorithm(key.keyPair.jose.publicJwk.alg) : undefined,
+      alg: key.keyPair.jose.publicJwk.alg ? signatureAlgorithmToJoseAlgorithm(key.keyPair.jose.publicJwk.alg) : undefined,
     } satisfies JWK
 
     const kid = key.keyPair.kid ?? key.keyPair.jose.publicJwk.kid
@@ -85,7 +109,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         algorithms: [key.keyPair.jose.publicJwk.alg ?? 'PS256'],
         jwkThumbprint: calculateJwkThumbprint({
           jwk,
-          digestAlgorithm: this.signatureAlgorithmToDigestAlgorithm(signatureAlgorithm),
+          digestAlgorithm: jwk.alg ? joseAlgorithmToDigest(jwk.alg) : 'sha256',
         }),
       },
       publicKeyHex: Buffer.from(key.keyPair.jose.publicJwk.toString(), 'utf8').toString('base64'),
@@ -94,15 +118,20 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   async importKey(args: ImportKeyArgs): Promise<ManagedKeyInfo> {
     const { type } = args
-    const signatureAlgorithm = this.mapKeyTypeToSignatureAlgorithm(type)
     const importKey = this.mapImportKey(args)
 
     const result = this.providerId
       ? await this.client.methods.kmsClientProviderStoreKey({
           ...importKey.key,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientStoreKey(importKey.key)
+      : await this.client.methods.kmsClientStoreKey({
+          ...importKey.key,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
 
     return {
       kid: importKey.kid,
@@ -113,7 +142,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
         algorithms: [result.keyInfo.key.alg ?? 'PS256'],
         jwkThumbprint: calculateJwkThumbprint({
           jwk: importKey.publicKeyJwk,
-          digestAlgorithm: this.signatureAlgorithmToDigestAlgorithm(signatureAlgorithm),
+          digestAlgorithm: importKey.publicKeyJwk.alg ? joseAlgorithmToDigest(importKey.publicKeyJwk.alg) : 'sha256',
         }),
       },
       publicKeyHex: Buffer.from(result.keyInfo.key.toString(), 'utf8').toString('base64'),
@@ -127,53 +156,68 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
       ? await this.client.methods.kmsClientProviderDeleteKey({
           aliasOrKid: kid,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientDeleteKey({ aliasOrKid: kid })
+      : await this.client.methods.kmsClientDeleteKey({
+          aliasOrKid: kid,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
   }
 
   async listKeys(): Promise<ManagedKeyInfo[]> {
     const keys = this.providerId
-      ? await this.client.methods.kmsClientProviderListKeys({ providerId: this.providerId })
-      : await this.client.methods.kmsClientListKeys()
+      ? await this.client.methods.kmsClientProviderListKeys({
+          providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
+      : await this.client.methods.kmsClientListKeys({
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
 
     const restKeys = ListKeysResponseToJSONTyped(keys, false).keyInfos
 
-    return restKeys.map((restKey: RestManagedKeyInfo) => {
-      const jwk = restKey.key
-      let publicKeyHex = ''
+    const results = await Promise.allSettled(
+      restKeys.map(async (restKey: RestManagedKeyInfo) => {
+        const jwk = restKey.key
+        const publicKeyHex = await jwkToRawHexKey(jwk as JWK)
+        const keyType = this.mapRestKeyTypeToTKeyType(restKey.keyType)
 
-      // Derive publicKeyHex from JWK based on key type
-      if (jwk.kty === 'EC') {
-        publicKeyHex = jwk.x || ''
-      } else if (jwk.kty === 'RSA') {
-        publicKeyHex = jwk.n || ''
-      } else if (jwk.kty === 'OKP') {
-        publicKeyHex = jwk.x || ''
-      }
+        return {
+          kid: restKey.kid || restKey.alias,
+          kms: this.id,
+          type: keyType,
+          publicKeyHex,
+          meta: {
+            algorithms: restKey.signatureAlgorithm ? [restKey.signatureAlgorithm] : undefined,
+            jwk,
+            jwkThumbprint: calculateJwkThumbprint({
+              jwk: jwk as JWK,
+              digestAlgorithm: restKey.key.alg ? joseAlgorithmToDigest(restKey.key.alg) : 'sha256',
+            }),
+            alias: restKey.alias,
+            providerId: restKey.providerId,
+            x5c: restKey.x5c,
+            keyVisibility: restKey.keyVisibility,
+            keyEncoding: restKey.keyEncoding,
+            ...restKey.opts,
+          },
+        } satisfies ManagedKeyInfo
+      }),
+    )
 
-      const keyType = this.mapRestKeyTypeToTKeyType(restKey.keyType)
-
-      return {
-        kid: restKey.kid || restKey.alias,
-        kms: this.id,
-        type: keyType,
-        publicKeyHex,
-        meta: {
-          algorithms: restKey.signatureAlgorithm ? [restKey.signatureAlgorithm] : undefined,
-          jwk,
-          jwkThumbprint: calculateJwkThumbprint({
-            jwk: jwk as JWK,
-            digestAlgorithm: restKey.signatureAlgorithm ? this.signatureAlgorithmToDigestAlgorithm(restKey.signatureAlgorithm) : 'sha256',
-          }),
-          alias: restKey.alias,
-          providerId: restKey.providerId,
-          x5c: restKey.x5c,
-          keyVisibility: restKey.keyVisibility,
-          keyEncoding: restKey.keyEncoding,
-          ...restKey.opts,
-        },
-      } satisfies ManagedKeyInfo
-    })
+    return results
+      .filter((result): result is PromiseFulfilledResult<ManagedKeyInfo> => {
+        if (result.status === 'rejected') {
+          console.warn('Failed to process key in listKeys:', result.reason)
+          return false
+        }
+        return true
+      })
+      .map((result) => result.value)
   }
 
   private mapRestKeyTypeToTKeyType(keyType: string | undefined): TKeyType {
@@ -195,35 +239,84 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
   }
 
   async sign(args: SignArgs): Promise<string> {
-    const { keyRef, data } = args
+    const { keyRef, data, algorithm = 'SHA-256' } = args
     const key = this.providerId
       ? await this.client.methods.kmsClientProviderGetKey({
           aliasOrKid: keyRef.kid,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+      : await this.client.methods.kmsClientGetKey({
+          aliasOrKid: keyRef.kid,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
+
+    // Check if this is an EdDSA/Ed25519 key - these algorithms MUST sign the raw message, not a hash
+    const keyAlg = key.keyInfo.key.alg
+    const isEdDSA = keyAlg === 'EdDSA' || keyAlg === 'ED25519' || key.keyInfo.key.crv === 'Ed25519'
+
+    let dataToBeSigned: Uint8Array
+    if (isEdDSA) {
+      // EdDSA signatures are computed over the raw message (PureEdDSA)
+      // The algorithm internally handles hashing with SHA-512
+      dataToBeSigned = data
+    } else {
+      // For other algorithms (RSA, ECDSA), hash the data before signing
+      // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash)
+      dataToBeSigned = isHashString(data)
+        ? data
+        : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+    }
 
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
       keyInfo: key.keyInfo,
-      input: toString(data, 'base64'),
+      input: toString(dataToBeSigned, 'base64'),
+      ...(this.tenantId && { tenantId: this.tenantId }),
+      ...(this.userId && { userId: this.userId }),
     })
 
-    return signingResult.signature
+    return base64ToBase64Url(signingResult.signature)
   }
 
   async verify(args: VerifyArgs): Promise<boolean> {
-    const { keyRef, data, signature } = args
+    const { keyRef, data, signature, algorithm = 'SHA-256' } = args
     const key = this.providerId
       ? await this.client.methods.kmsClientProviderGetKey({
           aliasOrKid: keyRef.kid,
           providerId: this.providerId,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
         })
-      : await this.client.methods.kmsClientGetKey({ aliasOrKid: keyRef.kid })
+      : await this.client.methods.kmsClientGetKey({
+          aliasOrKid: keyRef.kid,
+          ...(this.tenantId && { tenantId: this.tenantId }),
+          ...(this.userId && { userId: this.userId }),
+        })
+
+    // Check if this is an EdDSA/Ed25519 key - these algorithms MUST verify the raw message, not a hash
+    const keyAlg = key.keyInfo.key.alg
+    const isEdDSA = keyAlg === 'EdDSA' || keyAlg === 'ED25519' || key.keyInfo.key.crv === 'Ed25519'
+
+    let dataToBeVerified: Uint8Array
+    if (isEdDSA) {
+      // EdDSA signatures are verified over the raw message (PureEdDSA)
+      dataToBeVerified = data
+    } else {
+      // For other algorithms (RSA, ECDSA), hash the data before verifying
+      // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash)
+      dataToBeVerified = isHashString(data)
+        ? data
+        : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+    }
 
     const verification = await this.client.methods.kmsClientIsValidRawSignature({
       keyInfo: key.keyInfo,
-      input: toString(data, 'base64'),
+      input: toString(dataToBeVerified, 'base64'),
       signature,
+      ...(this.tenantId && { tenantId: this.tenantId }),
+      ...(this.userId && { userId: this.userId }),
     })
 
     return verification.isValid
@@ -231,23 +324,6 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
 
   async sharedSecret(args: SharedSecretArgs): Promise<string> {
     throw new Error('sharedSecret is not implemented for REST KMS.')
-  }
-
-  private signatureAlgorithmToDigestAlgorithm = (signatureAlgorithm: SignatureAlgorithm): 'sha256' | 'sha512' => {
-    switch (signatureAlgorithm) {
-      case SignatureAlgorithm.EcdsaSha256:
-      case SignatureAlgorithm.RsaSsaPssSha256Mgf1:
-      case SignatureAlgorithm.EckaDhSha256:
-      case SignatureAlgorithm.HmacSha256:
-      case SignatureAlgorithm.Es256K:
-        return 'sha256'
-      case SignatureAlgorithm.EcdsaSha512:
-      case SignatureAlgorithm.HmacSha512:
-      case SignatureAlgorithm.RsaSsaPssSha512Mgf1:
-        return 'sha512'
-      default:
-        throw new Error(`Signature algorithm ${signatureAlgorithm} is not supported by REST KMS`)
-    }
   }
 
   private mapKeyUsage = (usage: string): JwkUse => {
@@ -261,53 +337,32 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     }
   }
 
-  private mapKeyTypeToSignatureAlgorithm = (type: TKeyType): SignatureAlgorithm => {
-    switch (type) {
-      case 'Secp256r1':
-        return SignatureAlgorithm.EcdsaSha256
-      case 'RSA':
-        return SignatureAlgorithm.RsaSsaPssSha256Mgf1
-      case 'X25519':
-        return SignatureAlgorithm.EckaDhSha256
-      default:
-        throw new Error(`Key type ${type} is not supported by REST KMS`)
-    }
-  }
-
-  private mapJoseAlgorithm = (alg: string): JoseSignatureAlgorithm => {
+  private mapJoseToRestSignatureAlgorithm = (alg: JoseSignatureAlgorithm): SignatureAlgorithm => {
     switch (alg) {
-      case 'RS256':
-        return JoseSignatureAlgorithm.RS256
-      case 'RS384':
-        return JoseSignatureAlgorithm.RS384
-      case 'RS512':
-        return JoseSignatureAlgorithm.RS512
-      case 'ES256':
-        return JoseSignatureAlgorithm.ES256
-      case 'ES256K':
-        return JoseSignatureAlgorithm.ES256K
-      case 'ES384':
-        return JoseSignatureAlgorithm.ES384
-      case 'ES512':
-        return JoseSignatureAlgorithm.ES512
-      case 'EdDSA':
-        return JoseSignatureAlgorithm.EdDSA
-      case 'HS256':
-        return JoseSignatureAlgorithm.HS256
-      case 'HS384':
-        return JoseSignatureAlgorithm.HS384
-      case 'HS512':
-        return JoseSignatureAlgorithm.HS512
-      case 'PS256':
-        return JoseSignatureAlgorithm.PS256
-      case 'PS384':
-        return JoseSignatureAlgorithm.PS384
-      case 'PS512':
-        return JoseSignatureAlgorithm.PS512
-      case 'none':
-        return JoseSignatureAlgorithm.none
+      case JoseSignatureAlgorithm.RS256:
+        return SignatureAlgorithm.RsaSha256
+      case JoseSignatureAlgorithm.RS384:
+        return SignatureAlgorithm.RsaSha384
+      case JoseSignatureAlgorithm.RS512:
+        return SignatureAlgorithm.RsaSha512
+      case JoseSignatureAlgorithm.PS256:
+        return SignatureAlgorithm.RsaSsaPssSha256Mgf1
+      case JoseSignatureAlgorithm.PS384:
+        return SignatureAlgorithm.RsaSsaPssSha384Mgf1
+      case JoseSignatureAlgorithm.PS512:
+        return SignatureAlgorithm.RsaSsaPssSha512Mgf1
+      case JoseSignatureAlgorithm.ES256:
+        return SignatureAlgorithm.EcdsaSha256
+      case JoseSignatureAlgorithm.ES384:
+        return SignatureAlgorithm.EcdsaSha384
+      case JoseSignatureAlgorithm.ES512:
+        return SignatureAlgorithm.EcdsaSha512
+      case JoseSignatureAlgorithm.ES256K:
+        return SignatureAlgorithm.Es256K
+      case JoseSignatureAlgorithm.EdDSA:
+        return SignatureAlgorithm.Ed25519
       default:
-        throw new Error(`Signature algorithm ${alg} is not supported by REST KMS`)
+        throw new Error(`JOSE algorithm ${alg} not supported by REST KMS`)
     }
   }
 

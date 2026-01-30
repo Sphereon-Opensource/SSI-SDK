@@ -17,7 +17,8 @@ import { IVcdmCredentialPlugin, VcdmCredentialPlugin } from '@sphereon/ssi-sdk.c
 
 //jest.setTimeout(100000)
 
-describe('Diwala issued VC', () => {
+// Disableed because of cert issue with json schema on openbadges v3. Can be reenabled once resolved
+describe.skip('Diwala issued VC', () => {
   let agent: TAgent<IResolver & IKeyManager & IDIDManager & IVcdmCredentialPlugin>
 
   const jsonld = new CredentialProviderJsonld({

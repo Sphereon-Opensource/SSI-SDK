@@ -1,5 +1,6 @@
 export {
   DataStoreMigrations,
+  DataStoreMigrationsWithVeramo,
   DataStoreEventLoggerMigrations,
   DataStoreContactMigrations,
   DataStoreIssuanceBrandingMigrations,
@@ -7,4 +8,7 @@ export {
   DataStoreDigitalCredentialMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
+  DataStoreServiceMigrations,
+  VeramoDataStoreMigrations,
+  VeramoDataStoreEntities,
 } from './generic'

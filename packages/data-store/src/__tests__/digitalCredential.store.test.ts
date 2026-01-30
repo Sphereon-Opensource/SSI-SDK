@@ -1,11 +1,5 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import { CredentialRole, IVerifiablePresentation } from '@sphereon/ssi-types'
-import { DataSource } from 'typeorm'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
-import { DataStoreDigitalCredentialEntities } from '../index'
-import { DataStoreDigitalCredentialMigrations } from '../migrations'
 import {
   AddCredentialArgs,
   CredentialCorrelationType,
@@ -16,6 +10,12 @@ import {
   GetCredentialsArgs,
   GetCredentialsResponse,
 } from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialRole, IVerifiablePresentation } from '@sphereon/ssi-types'
+import { DataSource } from 'typeorm'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { DigitalCredentialStore } from '../digitalCredential/DigitalCredentialStore'
+import { DataStoreDigitalCredentialEntities } from '../index'
+import { DataStoreDigitalCredentialMigrations } from '../migrations'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -334,7 +334,7 @@ describe('Database entities tests', (): void => {
     expect(result).toEqual(false)
   })
 
-  it('should update stored digital credential', async (): Promise<void> => {
+  it('should update stored digital credential state', async (): Promise<void> => {
     const rawCredential: string =
       'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
     const digitalCredential: AddCredentialArgs = {
@@ -357,6 +357,121 @@ describe('Database entities tests', (): void => {
       verifiedAt: new Date(),
     })
     expect(result.verifiedState).toEqual(CredentialStateType.VERIFIED)
+  })
+
+  // Add these test cases to digitalCredential.store.test.ts after the existing update tests
+
+  it('should update digital credential fields', async (): Promise<void> => {
+    const rawCredential: string =
+      'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
+    const digitalCredential: AddCredentialArgs = {
+      rawDocument: rawCredential,
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+    }
+
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
+
+    const result = await digitalCredentialStore.updateCredential({
+      id: savedDigitalCredential.id,
+      kmsKeyRef: 'newTestRef',
+      tenantId: 'urn:uuid:new-tenant-id',
+      linkedVpId: 'vp-123',
+    })
+
+    expect(result.kmsKeyRef).toEqual('newTestRef')
+    expect(result.tenantId).toEqual('urn:uuid:new-tenant-id')
+    expect(result.linkedVpId).toEqual('vp-123')
+    expect(result.id).toEqual(savedDigitalCredential.id)
+    expect(result.hash).toEqual(savedDigitalCredential.hash)
+    expect(result.createdAt).toEqual(savedDigitalCredential.createdAt)
+    expect(result.lastUpdatedAt.getTime()).toBeGreaterThan(savedDigitalCredential.lastUpdatedAt.getTime())
+  })
+
+  it('should update digital credential by hash', async (): Promise<void> => {
+    const rawCredential: string =
+      'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
+    const digitalCredential: AddCredentialArgs = {
+      rawDocument: rawCredential,
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+    }
+
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
+
+    const result = await digitalCredentialStore.updateCredential({
+      hash: savedDigitalCredential.hash,
+      rpCorrelationId: 'did:example:rp',
+      rpCorrelationType: CredentialCorrelationType.DID,
+    })
+
+    expect(result.rpCorrelationId).toEqual('did:example:rp')
+    expect(result.rpCorrelationType).toEqual(CredentialCorrelationType.DID)
+    expect(result.hash).toEqual(savedDigitalCredential.hash)
+  })
+
+  it('should throw error when updating credential without id or hash', async (): Promise<void> => {
+    await expect(
+      digitalCredentialStore.updateCredential({
+        kmsKeyRef: 'newRef',
+      } as any),
+    ).rejects.toThrowError('No id or hash param is provided.')
+  })
+
+  it('should throw error when updating non-existent credential', async (): Promise<void> => {
+    await expect(
+      digitalCredentialStore.updateCredential({
+        id: 'non-existent-id',
+        kmsKeyRef: 'newRef',
+      }),
+    ).rejects.toThrowError('No credential found for args: {"id":"non-existent-id"}')
+  })
+
+  it('should preserve immutable fields when updating credential', async (): Promise<void> => {
+    const rawCredential: string =
+      'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
+    const digitalCredential: AddCredentialArgs = {
+      rawDocument: rawCredential,
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+    }
+
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
+    const originalId = savedDigitalCredential.id
+    const originalHash = savedDigitalCredential.hash
+    const originalCreatedAt = savedDigitalCredential.createdAt
+
+    // Try to update with different id, hash, and createdAt - these should be ignored
+    const result = await digitalCredentialStore.updateCredential({
+      id: savedDigitalCredential.id,
+      kmsKeyRef: 'updatedRef',
+      hash: 'should-be-ignored' as any,
+    })
+
+    // Verify immutable fields remain unchanged
+    expect(result.id).toEqual(originalId)
+    expect(result.hash).toEqual(originalHash)
+    expect(result.createdAt).toEqual(originalCreatedAt)
+    // Verify mutable field was updated
+    expect(result.kmsKeyRef).toEqual('updatedRef')
   })
 
   it('should throw exception on updating stored digital credential to revoked', async (): Promise<void> => {
@@ -408,5 +523,232 @@ describe('Database entities tests', (): void => {
     })
     expect(result.verifiedState).toEqual(CredentialStateType.REVOKED)
     expect(result.revokedAt).toEqual(currentDate)
+  })
+
+  it('should filter credentials by linkedVpUntil date range', async (): Promise<void> => {
+    const baseCredential: AddCredentialArgs = {
+      rawDocument:
+        'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:nnag4b43-1e7a-98f8-a32c-a48dbc5b10mj',
+    }
+
+    // Create credentials with different linkedVpUntil dates
+    const credential1: DigitalCredential = await digitalCredentialStore.addCredential(baseCredential)
+    const date1 = new Date('2024-01-15')
+    await digitalCredentialStore.updateCredential({
+      id: credential1.id,
+      linkedVpId: 'vp-1',
+      linkedVpUntil: date1,
+    })
+
+    const credential2Args = {
+      ...baseCredential,
+      rawDocument: baseCredential.rawDocument + '1', // Slightly different to get different hash
+    }
+    const credential2: DigitalCredential = await digitalCredentialStore.addCredential(credential2Args)
+    const date2 = new Date('2024-06-15')
+    await digitalCredentialStore.updateCredential({
+      id: credential2.id,
+      linkedVpId: 'vp-2',
+      linkedVpUntil: date2,
+    })
+
+    const credential3Args = {
+      ...baseCredential,
+      rawDocument: baseCredential.rawDocument + '2', // Different again
+    }
+    const credential3: DigitalCredential = await digitalCredentialStore.addCredential(credential3Args)
+    const date3 = new Date('2024-12-31')
+    await digitalCredentialStore.updateCredential({
+      id: credential3.id,
+      linkedVpId: 'vp-3',
+      linkedVpUntil: date3,
+    })
+
+    // Credential without linkedVpUntil
+    const credential4Args = {
+      ...baseCredential,
+      rawDocument: baseCredential.rawDocument + '3',
+    }
+    await digitalCredentialStore.addCredential(credential4Args)
+
+    // Test: Get credentials expiring on or before mid-year (should get credential1 and credential2)
+    const filterDate1 = new Date('2024-06-15')
+    const result1: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [{ linkedVpUntil: filterDate1 }],
+    })
+    expect(result1.total).toEqual(2)
+    expect(result1.data.some((c) => c.linkedVpId === 'vp-1')).toBe(true)
+    expect(result1.data.some((c) => c.linkedVpId === 'vp-2')).toBe(true)
+
+    // Test: Get credentials expiring on or before end of January (should only get credential1)
+    const filterDate2 = new Date('2024-01-31')
+    const result2: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [{ linkedVpUntil: filterDate2 }],
+    })
+    expect(result2.total).toEqual(1)
+    expect(result2.data[0].linkedVpId).toEqual('vp-1')
+
+    // Test: Get credentials expiring on or before end of year (should get all 3 with linkedVpUntil)
+    const filterDate3 = new Date('2024-12-31')
+    const result3: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [{ linkedVpUntil: filterDate3 }],
+    })
+    expect(result3.total).toEqual(3)
+    expect(result3.data.some((c) => c.linkedVpId === 'vp-1')).toBe(true)
+    expect(result3.data.some((c) => c.linkedVpId === 'vp-2')).toBe(true)
+    expect(result3.data.some((c) => c.linkedVpId === 'vp-3')).toBe(true)
+
+    // Test: Get credentials expiring before the earliest date (should get none)
+    const filterDate4 = new Date('2024-01-01')
+    const result4: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [{ linkedVpUntil: filterDate4 }],
+    })
+    expect(result4.total).toEqual(0)
+  })
+
+  it('should filter credentials by linkedVpUntil combined with other filters', async (): Promise<void> => {
+    const tenant1 = 'urn:uuid:tenant-1'
+    const tenant2 = 'urn:uuid:tenant-2'
+
+    const baseCredential: AddCredentialArgs = {
+      rawDocument:
+        'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+    }
+
+    // Tenant 1 credentials
+    const credential1: DigitalCredential = await digitalCredentialStore.addCredential({ ...baseCredential, tenantId: tenant1 })
+    await digitalCredentialStore.updateCredential({
+      id: credential1.id,
+      linkedVpId: 'vp-1',
+      linkedVpUntil: new Date('2024-03-01'),
+    })
+
+    const credential2Args = { ...baseCredential, tenantId: tenant1, rawDocument: baseCredential.rawDocument + '1' }
+    const credential2: DigitalCredential = await digitalCredentialStore.addCredential(credential2Args)
+    await digitalCredentialStore.updateCredential({
+      id: credential2.id,
+      linkedVpId: 'vp-2',
+      linkedVpUntil: new Date('2024-08-01'),
+    })
+
+    // Tenant 2 credentials
+    const credential3Args = { ...baseCredential, tenantId: tenant2, rawDocument: baseCredential.rawDocument + '2' }
+    const credential3: DigitalCredential = await digitalCredentialStore.addCredential(credential3Args)
+    await digitalCredentialStore.updateCredential({
+      id: credential3.id,
+      linkedVpId: 'vp-3',
+      linkedVpUntil: new Date('2024-03-01'),
+    })
+
+    const credential4Args = { ...baseCredential, tenantId: tenant2, rawDocument: baseCredential.rawDocument + '3' }
+    const credential4: DigitalCredential = await digitalCredentialStore.addCredential(credential4Args)
+    await digitalCredentialStore.updateCredential({
+      id: credential4.id,
+      linkedVpId: 'vp-4',
+      linkedVpUntil: new Date('2024-08-01'),
+    })
+
+    // Test: Filter by tenant and linkedVpUntil
+    const filterDate = new Date('2024-06-01')
+    const result: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [
+        {
+          tenantId: tenant1,
+          linkedVpUntil: filterDate,
+        },
+      ],
+    })
+
+    // Should only get tenant1's credential that expires before June (credential1)
+    expect(result.total).toEqual(1)
+    expect(result.data[0].linkedVpId).toEqual('vp-1')
+    expect(result.data[0].tenantId).toEqual(tenant1)
+  })
+
+  it('should handle empty results when filtering by linkedVpUntil with no matches', async (): Promise<void> => {
+    const baseCredential: AddCredentialArgs = {
+      rawDocument:
+        'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:test-tenant',
+    }
+
+    // Create credential with linkedVpUntil in the future
+    const credential: DigitalCredential = await digitalCredentialStore.addCredential(baseCredential)
+    await digitalCredentialStore.updateCredential({
+      id: credential.id,
+      linkedVpId: 'vp-future',
+      linkedVpUntil: new Date('2025-12-31'),
+    })
+
+    // Filter by date in the past - should return no results
+    const filterDate = new Date('2024-01-01')
+    const result: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [{ linkedVpUntil: filterDate }],
+    })
+
+    expect(result.total).toEqual(0)
+    expect(result.data.length).toEqual(0)
+  })
+
+  it('should handle credentials with null linkedVpUntil when filtering', async (): Promise<void> => {
+    const baseCredential: AddCredentialArgs = {
+      rawDocument:
+        'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw',
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.VERIFIER,
+      tenantId: 'urn:uuid:test-tenant',
+    }
+
+    // Credential with linkedVpUntil
+    const credential1: DigitalCredential = await digitalCredentialStore.addCredential(baseCredential)
+    await digitalCredentialStore.updateCredential({
+      id: credential1.id,
+      linkedVpId: 'vp-with-expiry',
+      linkedVpUntil: new Date('2024-06-01'),
+    })
+
+    // Credential without linkedVpUntil (null)
+    const credential2Args = { ...baseCredential, rawDocument: baseCredential.rawDocument + '1' }
+    const credential2: DigitalCredential = await digitalCredentialStore.addCredential(credential2Args)
+    await digitalCredentialStore.updateCredential({
+      id: credential2.id,
+      linkedVpId: 'vp-no-expiry',
+    })
+
+    // Filter should only return the credential with linkedVpUntil
+    const filterDate = new Date('2024-12-31')
+    const result: GetCredentialsResponse = await digitalCredentialStore.getCredentials({
+      filter: [{ linkedVpUntil: filterDate }],
+    })
+
+    expect(result.total).toEqual(1)
+    expect(result.data[0].linkedVpId).toEqual('vp-with-expiry')
   })
 })

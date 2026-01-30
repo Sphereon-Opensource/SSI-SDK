@@ -18,7 +18,7 @@ import { PartyEntity } from '../entities/contact/PartyEntity'
 import { PartyRelationshipEntity } from '../entities/contact/PartyRelationshipEntity'
 import { PartyTypeEntity } from '../entities/contact/PartyTypeEntity'
 import { PhysicalAddressEntity } from '../entities/contact/PhysicalAddressEntity'
-import { contactMetadataItemEntityFrom, DataStoreContactEntities, DataStoreMigrations, identityMetadataItemEntityFrom, partyTypeFrom } from '../index'
+import { contactMetadataItemEntityFrom, DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo, identityMetadataItemEntityFrom, partyTypeFrom } from '../index'
 import {
   IdentityOrigin,
   MetadataTypes,
@@ -64,9 +64,9 @@ describe('Database entities tests', (): void => {
       database: ':memory:',
       logging: ['info'],
       migrationsRun: false,
-      migrations: DataStoreMigrations,
+      migrations: DataStoreMigrationsWithVeramo,
       synchronize: false,
-      entities: DataStoreContactEntities,
+      entities: DataStoreEntitiesWithVeramo,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()

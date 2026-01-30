@@ -75,6 +75,8 @@ export type SelectableCredential = {
   credentialBranding: Array<ICredentialLocaleBranding>
   issuerParty?: Party
   subjectParty?: Party
+  /** Claim paths requested by the verifier via DCQL. When present, only these claims will be selectively disclosed. */
+  requestedClaims?: Array<{ path: Array<string | number | null>; id?: string }>
 }
 
 export type OnContactIdentityCreatedArgs = {

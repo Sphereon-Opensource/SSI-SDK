@@ -83,6 +83,11 @@ export interface SdJwtClaimDisplayMetadata {
   lang: string
 
   /**
+   * OPTIONAL. Locale identifier for the display information.
+   */
+  locale?: string
+
+  /**
    * REQUIRED. A human-readable label for the claim, intended for end users.
    */
   label: string
@@ -101,6 +106,11 @@ export interface SdJwtTypeDisplayMetadata {
    * REQUIRED. Language tag for the display information.
    */
   lang: string
+
+  /**
+   * OPTIONAL. Locale identifier for the display information.
+   */
+  locale?: string
 
   /**
    * REQUIRED. Human-readable name for the type.

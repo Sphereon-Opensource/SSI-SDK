@@ -12,7 +12,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
 import { getAgentResolver, IDIDOptions } from '@sphereon/ssi-sdk-ext.did-utils'
-import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { legacyKeyRefsToIdentifierOpts, ManagedIdentifierOptsOrResult, ManagedIdentifierResult } from '@sphereon/ssi-sdk-ext.identifier-resolution'
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { SdJwtVcPayload } from '@sphereon/ssi-sdk.sd-jwt'
 import { IStatusListPlugin } from '@sphereon/ssi-sdk.vc-status-list'
@@ -24,6 +24,8 @@ import { createJWT, decodeJWT, JWTVerifyOptions, verifyJWT } from 'did-jwt'
 import { Resolvable } from 'did-resolver'
 import { jwtDecode } from 'jwt-decode'
 import { IIssuerOptions, IRequiredContext } from './types/IOID4VCIIssuer'
+
+const CLOCK_SKEW_ISSUANCE = 2 // Clock drift on Android is typically up to 2000ms, so we issue 2 seconds in the past
 
 export function getJwtVerifyCallback({ verifyOpts }: { verifyOpts?: JWTVerifyOptions }, _context: IRequiredContext) {
   return async (args: { jwt: string; kid?: string }): Promise<JwtVerifyResult> => {
@@ -141,14 +143,20 @@ export async function getAccessTokenSignerCallback(
   },
   context: IRequiredContext,
 ) {
+  const resolution = legacyKeyRefsToIdentifierOpts(opts)
+  const identifier = await context.agent.identifierManagedGet({
+    identifier: resolution.identifier as string,
+    vmRelationship: 'authentication',
+  })
+
+  const keyRef = identifier.kmsKeyRef
+  if (!keyRef) {
+    throw Error('Cannot sign access tokens without a key ref')
+  }
+
   const signer = async (data: string | Uint8Array) => {
     let dataString, encoding: 'base64' | undefined
 
-    const resolution = await legacyKeyRefsToIdentifierOpts(opts)
-    const keyRef = resolution.kmsKeyRef
-    if (!keyRef) {
-      throw Error('Cannot sign access tokens without a key ref')
-    }
     if (typeof data === 'string') {
       dataString = data
       encoding = undefined
@@ -168,6 +176,9 @@ export async function getAccessTokenSignerCallback(
     }
 
     let kidHeader: string | undefined = jwt?.header?.kid ?? kid
+    if (!kidHeader && identifier.kid) {
+      kidHeader = identifier.kid
+    }
     if (!kidHeader) {
       if (
         opts.idOpts?.method === 'did' ||
@@ -178,7 +189,13 @@ export async function getAccessTokenSignerCallback(
         kidHeader = opts.idOpts?.kid ?? opts.didOpts?.idOpts?.kid ?? opts?.didOpts?.identifierOpts?.kid
       }
     }
-    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT' })
+
+    const alg = identifier.jwk?.alg
+    if (!alg) {
+      return Promise.reject(Error('No algorithm found in identifier JWK'))
+    }
+
+    return await createJWT(jwt.payload, { signer, issuer }, { ...jwt.header, ...(kidHeader && { kid: kidHeader }), typ: 'JWT', alg })
   }
 
   return accessTokenSignerCallback
@@ -201,7 +218,15 @@ export async function getCredentialSignerCallback(
     const credential = args.credential as ICredential // TODO: SDJWT
     let proofFormat: ProofFormat
 
-    const resolution = await context.agent.identifierManagedGet(idOpts)
+    let resolution: ManagedIdentifierResult
+    if (typeof idOpts.identifier !== 'string') {
+      resolution = idOpts as ManagedIdentifierResult
+    } else {
+      resolution = await context.agent.identifierManagedGet({
+        identifier: idOpts.identifier,
+        vmRelationship: 'assertionMethod',
+      })
+    }
     proofFormat = format?.includes('ld') ? 'lds' : 'jwt'
     const issuer = resolution.issuer ?? resolution.kmsKeyRef
 
@@ -227,7 +252,6 @@ export async function getCredentialSignerCallback(
         const credentialStatusVC = await context.agent.slAddStatusToCredential({ credential, statusLists })
         if (credential.credentialStatus && !credential.credentialStatus.statusListCredential) {
           credential.credentialStatus = credentialStatusVC.credentialStatus
-          // TODO update statusLists somehow?
         }
       }
 
@@ -246,7 +270,7 @@ export async function getCredentialSignerCallback(
         sdJwtPayload.iss = issuer
       }
       if (sdJwtPayload.iat === undefined) {
-        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000)
+        sdJwtPayload.iat = Math.floor(new Date().getTime() / 1000) - CLOCK_SKEW_ISSUANCE
       }
 
       let disclosureFrame

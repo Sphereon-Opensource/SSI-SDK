@@ -5,7 +5,6 @@ import {
   AuthorizationResponseStateStatus,
   AuthorizationResponseStateWithVerifiedData,
   decodeUriAsJson,
-  EncodedDcqlPresentationVpToken,
   VerifiedAuthorizationResponse,
 } from '@sphereon/did-auth-siop'
 import { getAgentResolver } from '@sphereon/ssi-sdk-ext.did-utils'
@@ -142,8 +141,9 @@ export class SIOPv2RP implements IAgentPlugin {
         hasher = defaultHasher
       }
 
-      // FIXME SSISDK-64 currently assuming that all vp tokens are or type EncodedDcqlPresentationVpToken as we only work with DCQL now. But the types still indicate it can be another type of vp token
-      const vpToken = responseState.response.payload.vp_token && JSON.parse(responseState.response.payload.vp_token as EncodedDcqlPresentationVpToken)
+      // FIXME SSISDK-64 currently assuming that all vp tokens are of type EncodedDcqlPresentationVpToken as we only work with DCQL now. But the types still indicate it can be another type of vp token
+      const rawVpToken = responseState.response.payload.vp_token
+      const vpToken = rawVpToken && (typeof rawVpToken === 'string' ? JSON.parse(rawVpToken) : rawVpToken)
       const claims = []
       for (const [credentialQueryId, presentationValue] of Object.entries(vpToken)) {
         let singleVP: OriginalVerifiablePresentation

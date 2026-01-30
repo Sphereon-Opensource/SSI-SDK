@@ -1,66 +1,66 @@
-import { IAgentPlugin } from '@veramo/core'
 import { Loggers } from '@sphereon/ssi-types'
+import { IAgentPlugin } from '@veramo/core'
 import { fetch } from 'cross-fetch'
-import type {
-  kmsClientGetResolverArgs,
-  KmsClientListResolversArgs,
-  IKmsRestClient,
-  KmsClientResolveKeyArgs,
-  KmsClientCreateRawSignatureArgs,
-  KmsClientGetKeyArgs,
-  KmsClientListKeysArgs,
-  KmsClientStoreKeyArgs,
-  KmsClientGenerateKeyArgs,
-  KmsClientDeleteKeyArgs,
-  KmsClientGetKeyProviderArgs,
-  KmsClientListKeyProvidersArgs,
-  KmsClientProviderListKeysArgs,
-  KmsClientProviderStoreKeyArgs,
-  KmsClientProviderGenerateKeyArgs,
-  KmsClientProviderGetKeyArgs,
-  KmsClientProviderDeleteKeyArgs,
-  RestClientAuthenticationOpts,
-  KmsRestClientArgs,
-  KmsClientIsValidRawSignatureArgs,
-} from '../types/IKmsRestClient'
 import type {
   CreateRawSignature,
   CreateRawSignatureResponse,
   GenerateKey,
   GenerateKeyGlobal,
+  GenerateKeyResponse,
+  GetKeyResponse,
+  KeyProviderResponse,
   ListKeyProvidersResponse,
   ListKeysResponse,
   ListResolversResponse,
   ResolvedKeyInfo,
   ResolvePublicKey,
   Resolver,
-  VerifyRawSignatureResponse,
   StoreKey,
-  VerifyRawSignature,
-  KeyProviderResponse,
-  GenerateKeyResponse,
   StoreKeyResponse,
-  GetKeyResponse,
+  VerifyRawSignature,
+  VerifyRawSignatureResponse,
 } from '../models'
 import {
   CreateRawSignatureResponseFromJSONTyped,
   CreateRawSignatureToJSONTyped,
   GenerateKeyGlobalToJSONTyped,
-  GenerateKeyToJSONTyped,
   GenerateKeyResponseFromJSONTyped,
+  GenerateKeyToJSONTyped,
   GetKeyResponseFromJSONTyped,
   KeyProviderResponseFromJSONTyped,
   ListKeyProvidersResponseFromJSONTyped,
   ListKeysResponseFromJSONTyped,
   ListResolversResponseFromJSONTyped,
-  ResolvePublicKeyToJSONTyped,
   ResolvedKeyInfoFromJSONTyped,
+  ResolvePublicKeyToJSONTyped,
   ResolverFromJSONTyped,
-  StoreKeyToJSONTyped,
   StoreKeyResponseFromJSONTyped,
+  StoreKeyToJSONTyped,
   VerifyRawSignatureResponseFromJSONTyped,
   VerifyRawSignatureToJSONTyped,
 } from '../models'
+import {
+  IKmsRestClient,
+  KmsClientCreateRawSignatureArgs,
+  KmsClientDeleteKeyArgs,
+  KmsClientGenerateKeyArgs,
+  KmsClientGetKeyArgs,
+  KmsClientGetKeyProviderArgs,
+  KmsClientGetResolverArgs,
+  KmsClientIsValidRawSignatureArgs,
+  KmsClientListKeyProvidersArgs,
+  KmsClientListKeysArgs,
+  KmsClientListResolversArgs,
+  KmsClientProviderDeleteKeyArgs,
+  KmsClientProviderGenerateKeyArgs,
+  KmsClientProviderGetKeyArgs,
+  KmsClientProviderListKeysArgs,
+  KmsClientProviderStoreKeyArgs,
+  KmsClientResolveKeyArgs,
+  KmsClientStoreKeyArgs,
+  KmsRestClientArgs,
+  RestClientAuthenticationOpts,
+} from '../types/IKmsRestClient'
 
 const logger = Loggers.DEFAULT.get('sphereon:ssi-sdk:kms:rest-client')
 
@@ -106,12 +106,13 @@ export class KmsRestClient implements IAgentPlugin {
   }
 
   /** {@inheritDoc IKmsRestClient.kmsGetResolver} */
-  private async kmsClientGetResolver(args: kmsClientGetResolverArgs): Promise<Resolver> {
+  private async kmsClientGetResolver(args: KmsClientGetResolverArgs): Promise<Resolver> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
     const url = KmsRestClient.urlWithBase(`/resolvers/${args.resolverId}`, baseUrl)
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`get resolver response: ${response}`)
 
@@ -129,6 +130,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args?.tenantId, userId: args?.userId }),
     })
     logger.debug(`list resolvers response: ${response}`)
 
@@ -152,7 +154,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies ResolvePublicKey
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(ResolvePublicKeyToJSONTyped(body)),
     })
     logger.debug(`resolve key response: ${response}`)
@@ -167,7 +169,7 @@ export class KmsRestClient implements IAgentPlugin {
   /** {@inheritDoc IKmsRestClient.kmsCreateRawSignature} */
   private async kmsClientCreateRawSignature(args: KmsClientCreateRawSignatureArgs): Promise<CreateRawSignatureResponse> {
     const baseUrl = this.assertedAgentBaseUrl(args.baseUrl)
-    const url = KmsRestClient.urlWithBase(`/signatures/raw`, baseUrl)
+    const url = KmsRestClient.urlWithBase(`/signatures/raw/create`, baseUrl)
 
     const body = {
       keyInfo: args.keyInfo,
@@ -175,7 +177,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies CreateRawSignature
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(CreateRawSignatureToJSONTyped(body)),
     })
     logger.debug(`create raw signature response: ${response}`)
@@ -199,7 +201,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies VerifyRawSignature
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(VerifyRawSignatureToJSONTyped(body)),
     })
     logger.debug(`verify raw signature response: ${response}`)
@@ -218,6 +220,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`get key response: ${response}`)
 
@@ -234,6 +237,7 @@ export class KmsRestClient implements IAgentPlugin {
     const url = this.addSearchParams(KmsRestClient.urlWithBase('/keys', baseUrl), { ...(args?.providerId && { providerId: args.providerId }) })
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args?.tenantId, userId: args?.userId }),
     })
     logger.debug(`list keys response: ${response}`)
 
@@ -255,7 +259,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies StoreKey
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(StoreKeyToJSONTyped(body)),
     })
     logger.debug(`store key response: ${response}`)
@@ -280,7 +284,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies GenerateKeyGlobal
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(GenerateKeyGlobalToJSONTyped(body)),
     })
     logger.debug(`generate key response: ${response}`)
@@ -299,6 +303,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'DELETE',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`delete key response: ${response}`)
 
@@ -316,6 +321,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`get provider response: ${response}`)
 
@@ -333,6 +339,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args?.tenantId, userId: args?.userId }),
     })
     logger.debug(`list providers response: ${response}`)
 
@@ -350,6 +357,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`list provider keys response: ${response}`)
 
@@ -371,7 +379,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies StoreKey
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(StoreKeyToJSONTyped(body)),
     })
     logger.debug(`provider store key response: ${response}`)
@@ -396,7 +404,7 @@ export class KmsRestClient implements IAgentPlugin {
     } satisfies GenerateKey
     const response = await fetch(url, {
       method: 'POST',
-      headers: await this.createHeaders({ 'Content-Type': 'application/json' }),
+      headers: await this.createHeaders({ contentType: 'application/json', tenantId: args.tenantId, userId: args.userId }),
       body: JSON.stringify(GenerateKeyToJSONTyped(body)),
     })
     logger.debug(`provider generate key response: ${response}`)
@@ -415,6 +423,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`get provider key response: ${response}`)
 
@@ -432,6 +441,7 @@ export class KmsRestClient implements IAgentPlugin {
 
     const response = await fetch(url, {
       method: 'DELETE',
+      headers: await this.createHeaders({ tenantId: args.tenantId, userId: args.userId }),
     })
     logger.debug(`delete key response: ${response}`)
 
@@ -451,11 +461,14 @@ export class KmsRestClient implements IAgentPlugin {
     throw new Error('No base url has been provided')
   }
 
-  private async createHeaders(existing?: Record<string, any>): Promise<HeadersInit> {
+  private async createHeaders(args?: { contentType?: string; tenantId?: string; userId?: string }): Promise<HeadersInit> {
     const headers: HeadersInit = {
-      ...existing,
+      ...(args?.contentType ? { 'Content-Type': args.contentType } : {}),
+      ...(args?.tenantId ? { 'X-Tenant-ID': args.tenantId } : {}),
+      ...(args?.userId ? { 'X-User-ID': args.userId } : {}),
       Accept: 'application/json',
     }
+
     if (this.authOpts?.enabled === true) {
       if (!this.authOpts.bearerToken) {
         throw Error(`Cannot have authentication enabled, whilst not enabling static bearer tokens at this point`)

@@ -242,3 +242,56 @@ export function coseToJoseCurve(curve: ICoseCurve): JoseCurve {
       throw Error(`Curve ${curve} not supported in Jose`)
   }
 }
+
+export function joseSignatureAlgToWebCrypto(alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString): {
+  name: string
+  hash: string
+  saltLength?: number
+} {
+  switch (alg) {
+    case JoseSignatureAlgorithm.RS256:
+    case 'RS256':
+      return { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }
+    case JoseSignatureAlgorithm.RS384:
+    case 'RS384':
+      return { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-384' }
+    case JoseSignatureAlgorithm.RS512:
+    case 'RS512':
+      return { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-512' }
+    case JoseSignatureAlgorithm.PS256:
+    case 'PS256':
+      return { name: 'RSA-PSS', hash: 'SHA-256', saltLength: 32 }
+    case JoseSignatureAlgorithm.PS384:
+    case 'PS384':
+      return { name: 'RSA-PSS', hash: 'SHA-384', saltLength: 48 }
+    case JoseSignatureAlgorithm.PS512:
+    case 'PS512':
+      return { name: 'RSA-PSS', hash: 'SHA-512', saltLength: 64 }
+    case JoseSignatureAlgorithm.ES256:
+    case 'ES256':
+      return { name: 'ECDSA', hash: 'SHA-256' }
+    case JoseSignatureAlgorithm.ES384:
+    case 'ES384':
+      return { name: 'ECDSA', hash: 'SHA-384' }
+    case JoseSignatureAlgorithm.ES512:
+    case 'ES512':
+      return { name: 'ECDSA', hash: 'SHA-512' }
+    case JoseSignatureAlgorithm.ES256K:
+    case 'ES256K':
+      return { name: 'ECDSA', hash: 'SHA-256' }
+    case JoseSignatureAlgorithm.EdDSA:
+    case 'EdDSA':
+      return { name: 'Ed25519', hash: '' }
+    case JoseSignatureAlgorithm.HS256:
+    case 'HS256':
+      return { name: 'HMAC', hash: 'SHA-256' }
+    case JoseSignatureAlgorithm.HS384:
+    case 'HS384':
+      return { name: 'HMAC', hash: 'SHA-384' }
+    case JoseSignatureAlgorithm.HS512:
+    case 'HS512':
+      return { name: 'HMAC', hash: 'SHA-512' }
+    default:
+      throw Error(`Signature algorithm ${alg} not supported in Web Crypto API`)
+  }
+}

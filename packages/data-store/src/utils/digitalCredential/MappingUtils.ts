@@ -1,6 +1,11 @@
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
-import type { AddCredentialArgs, DigitalCredential, NonPersistedDigitalCredential } from '@sphereon/ssi-sdk.data-store-types'
-import { CredentialDocumentFormat, DocumentType, RegulationType } from '@sphereon/ssi-sdk.data-store-types'
+import type {
+  AddCredentialArgs,
+  DigitalCredential,
+  NonPersistedDigitalCredential,
+  UpdateCredentialStateArgs,
+} from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialDocumentFormat, CredentialStateType, DocumentType, RegulationType } from '@sphereon/ssi-sdk.data-store-types'
 import {
   CredentialMapper,
   DocumentFormat,
@@ -66,6 +71,20 @@ function determineCredentialDocumentFormat(documentFormat: DocumentFormat): Cred
   }
 }
 
+/**
+ * Normalizes nullable fields by converting undefined to null.
+ * This ensures TypeORM actually clears the database fields instead of ignoring them.
+ */
+export function normalizeNullableFields<T extends Record<string, any>>(obj: T, nullableKeys: Array<keyof T>): T {
+  const normalized = { ...obj }
+  for (const key of nullableKeys) {
+    if (normalized[key] === undefined) {
+      normalized[key] = null as any
+    }
+  }
+  return normalized
+}
+
 function getValidUntil(uniformDocument: IVerifiableCredential | IVerifiablePresentation | SdJwtDecodedVerifiableCredentialPayload): Date | undefined {
   if ('expirationDate' in uniformDocument && uniformDocument.expirationDate) {
     return new Date(uniformDocument.expirationDate)
@@ -125,6 +144,54 @@ export const nonPersistedDigitalCredentialEntityFromAddArgs = (addCredentialArgs
     ...(validUntil && { validUntil }),
     lastUpdatedAt: new Date(),
   }
+}
+
+export const persistedDigitalCredentialEntityFromUpdateArgs = (
+  existingCredential: DigitalCredentialEntity,
+  updates: Partial<DigitalCredential>,
+): DigitalCredentialEntity => {
+  const entity = new DigitalCredentialEntity()
+
+  // Copy all fields from existing credential
+  Object.assign(entity, existingCredential)
+
+  // Normalize nullable fields before applying updates
+  const normalizedUpdates = normalizeNullableFields(updates, ['linkedVpId', 'linkedVpFrom', 'linkedVpUntil'])
+
+  // Apply updates
+  Object.assign(entity, normalizedUpdates)
+
+  // Ensure these fields are never overwritten
+  entity.id = existingCredential.id
+  entity.hash = existingCredential.hash
+  entity.createdAt = existingCredential.createdAt
+  entity.lastUpdatedAt = new Date()
+
+  return entity
+}
+
+export const persistedDigitalCredentialEntityFromStateArgs = (
+  existingCredential: DigitalCredentialEntity,
+  args: UpdateCredentialStateArgs,
+): DigitalCredentialEntity => {
+  const entity = new DigitalCredentialEntity()
+
+  // Copy all fields from existing credential
+  Object.assign(entity, existingCredential)
+
+  // Apply state updates
+  entity.verifiedState = args.verifiedState
+  entity.lastUpdatedAt = new Date()
+
+  if (args.verifiedState === CredentialStateType.REVOKED && args.revokedAt) {
+    entity.revokedAt = args.revokedAt
+  }
+
+  if (args.verifiedState !== CredentialStateType.REVOKED && args.verifiedAt) {
+    entity.verifiedAt = args.verifiedAt
+  }
+
+  return entity
 }
 
 export const digitalCredentialFrom = (credentialEntity: DigitalCredentialEntity): DigitalCredential => {

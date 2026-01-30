@@ -17,6 +17,9 @@ export class CredentialClaimsEntity extends BaseEntity {
   @Validate(IsNonEmptyStringConstraint, { message: 'Blank claim names are not allowed' })
   name!: string
 
+  @Column('integer', { name: 'order', nullable: true })
+  order?: number
+
   @ManyToOne(() => CredentialLocaleBrandingEntity, (credentialLocaleBranding: CredentialLocaleBrandingEntity) => credentialLocaleBranding.claims, {
     cascade: ['insert', 'update'],
     onDelete: 'CASCADE',

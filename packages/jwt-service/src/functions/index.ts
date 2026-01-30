@@ -194,7 +194,7 @@ const checkAndUpdateX5cHeader = async (
   context: IRequiredContext,
 ) => {
   const { x5c } = header
-  if (x5c) {
+  if (x5c?.length) {
     // let's resolve the provided x5c to be sure
     const x5cIdentifier = await context.agent.identifierManagedGetByX5c({ identifier: x5c })
     if (x5cIdentifier.kmsKeyRef !== identifier.kmsKeyRef) {

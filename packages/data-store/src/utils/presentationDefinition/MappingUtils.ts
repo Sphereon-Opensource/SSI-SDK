@@ -1,9 +1,12 @@
 import type { IPresentationDefinition } from '@sphereon/pex'
 import type { DcqlQueryItem, NonPersistedDcqlQueryItem, PartialDcqlQueryItem } from '@sphereon/ssi-sdk.data-store-types'
-import * as blakepkg from 'blakejs'
+import * as blakejs from 'blakejs'
 import { DcqlQuery } from 'dcql'
 import { DcqlQueryItemEntity } from '../../entities/presentationDefinition/DcqlQueryItemEntity'
 import { replaceNullWithUndefined } from '../FormattingUtils'
+
+// Handle CommonJS/ESM interop - blakejs may be wrapped in a default export
+const blake = (blakejs as any).default ?? blakejs
 
 export const dcqlQueryItemFrom = (entity: DcqlQueryItemEntity): DcqlQueryItem => {
   const result: DcqlQueryItem = {
@@ -41,7 +44,7 @@ export const dcqlQueryEntityItemFrom = (item: NonPersistedDcqlQueryItem): DcqlQu
 }
 
 function hashPayload(payload: IPresentationDefinition | DcqlQuery): string {
-  return blakepkg.blake2bHex(JSON.stringify(payload))
+  return blake.blake2bHex(JSON.stringify(payload))
 }
 
 export function isPresentationDefinitionEqual(base: PartialDcqlQueryItem, compare: PartialDcqlQueryItem): boolean {

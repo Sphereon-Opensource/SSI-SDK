@@ -197,7 +197,25 @@ export const getPrimaryIdentifier = async (context: IAgentContext<IDIDManager>, 
     (identifier: IIdentifier) => opts?.type === undefined || identifier.keys.some((key: IKey) => key.type === opts?.type),
   )
 
-  return identifiers && identifiers.length > 0 ? identifiers[0] : undefined
+  if (!identifiers || identifiers.length === 0) {
+    return undefined
+  }
+
+  if (opts?.did) {
+    const didMatch = identifiers.find((identifier: IIdentifier) => identifier.did === opts.did)
+    if (didMatch) {
+      return didMatch
+    }
+  }
+
+  if (opts?.alias) {
+    const aliasMatch = identifiers.find((identifier: IIdentifier) => identifier.alias === opts.alias)
+    if (aliasMatch) {
+      return aliasMatch
+    }
+  }
+
+  return identifiers[0]
 }
 
 export const createIdentifier = async (context: IAgentContext<IDIDManager>, opts?: CreateIdentifierOpts): Promise<IIdentifier> => {
@@ -229,9 +247,11 @@ export const getFirstKeyWithRelationFromDIDDoc = async (
 ): Promise<_ExtendedIKey | undefined> => {
   const matchedKeys = await mapIdentifierKeysToDocWithJwkSupport({ identifier, vmRelationship, didDocument }, context)
   if (Array.isArray(matchedKeys) && matchedKeys.length > 0) {
-    const result = matchedKeys.find(
-      (key) => keyType === undefined || key.type === keyType || (controllerKey && key.kid === identifier.controllerKeyId),
-    )
+    const controllerKeyMatch = identifier.controllerKeyId
+      ? matchedKeys.find((key) => key.kid === identifier.controllerKeyId && (keyType === undefined || key.type === keyType))
+      : undefined
+
+    const result = controllerKeyMatch ?? matchedKeys.find((key) => keyType === undefined || key.type === keyType)
     if (result) {
       return result
     }
@@ -555,8 +575,16 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
     .map((verificationMethod) => {
       let vmKey = verificationMethod.publicKeyHex
       if (vmKey?.startsWith('30')) {
-        // DER encoded
-        vmKey = toPkcs1FromHex(vmKey)
+        // DER encoded - but only attempt PKCS#1 conversion for RSA/EC keys, not Ed25519/X25519
+        const vmType = verificationMethod.type
+        const isEdKey =
+          ['Ed25519', 'Ed25519VerificationKey2018', 'Ed25519VerificationKey2020', 'X25519', 'X25519KeyAgreementKey2019', 'X25519KeyAgreementKey2020'].includes(
+            vmType,
+          ) ||
+          (vmType === 'JsonWebKey2020' && ['Ed25519', 'X25519'].includes(verificationMethod.publicKeyJwk?.crv as string))
+        if (!isEdKey) {
+          vmKey = toPkcs1FromHex(vmKey)
+        }
       }
 
       const localKey = localKeys.find(
@@ -575,7 +603,20 @@ export async function mapIdentifierKeysToDocWithJwkSupport(
     })
     .filter(isDefined)
 
-  return Array.from(new Set(keys.concat(extendedKeys)))
+  const allKeys = Array.from(new Set(keys.concat(extendedKeys)))
+
+  // Filter based on key metadata purposes, except when requesting all verificationMethods
+  if (vmRelationship === 'verificationMethod') {
+    return allKeys
+  }
+
+  return allKeys.filter((key) => {
+    const purposes = key.meta?.purposes
+    if (!purposes || purposes.length === 0) {
+      return true
+    }
+    return purposes.includes(vmRelationship)
+  })
 }
 
 /**
@@ -840,6 +881,9 @@ export class AgentDIDResolver implements Resolvable {
   }
 }
 
+const hasPurpose = (key: IKey, purpose: string) =>
+  (key?.meta?.purpose === undefined && key?.meta?.purposes === undefined) || key?.meta?.purpose === purpose || key?.meta?.purposes?.includes(purpose)
+
 /**
  * Please note that this is not an exact representation of the actual DID Document.
  *
@@ -865,13 +909,18 @@ export function toDidDocument(
       '@context': 'https://www.w3.org/ns/did/v1',
       id: did,
       verificationMethod: identifier.keys.map((key) => {
+        // Use existing JWK from meta if available, otherwise convert from publicKeyHex
+        const publicKeyJwk = key.meta?.jwk
+          ? sanitizedJwk(key.meta.jwk as JWK)
+          : toJwk(key.publicKeyHex, key.type, {
+              use: ENC_KEY_ALGS.includes(key.type) ? JwkKeyUse.Encryption : JwkKeyUse.Signature,
+              key,
+            })
+
         const vm: VerificationMethod = {
           controller: did,
           id: key.kid.startsWith(did) && key.kid.includes('#') ? key.kid : `${did}#${key.kid}`,
-          publicKeyJwk: toJwk(key.publicKeyHex, key.type, {
-            use: ENC_KEY_ALGS.includes(key.type) ? JwkKeyUse.Encryption : JwkKeyUse.Signature,
-            key,
-          }) as JsonWebKey,
+          publicKeyJwk: publicKeyJwk as JsonWebKey,
           type: 'JsonWebKey2020',
         }
         return vm
@@ -879,10 +928,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Signature)) &&
         identifier.keys && {
           assertionMethod: identifier.keys
-            .filter(
-              (key) =>
-                key?.meta?.purpose === undefined || key?.meta?.purpose === 'assertionMethod' || key?.meta?.purposes?.includes('assertionMethod'),
-            )
+            .filter((key) => hasPurpose(key, 'assertionMethod'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -893,9 +939,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Signature)) &&
         identifier.keys && {
           authentication: identifier.keys
-            .filter(
-              (key) => key?.meta?.purpose === undefined || key?.meta?.purpose === 'authentication' || key?.meta?.purposes?.includes('authentication'),
-            )
+            .filter((key) => hasPurpose(key, 'authentication'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -906,7 +950,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Encryption)) &&
         identifier.keys && {
           keyAgreement: identifier.keys
-            .filter((key) => key.type === 'X25519' || key?.meta?.purpose === 'keyAgreement' || key?.meta?.purposes?.includes('keyAgreement'))
+            .filter((key) => key.type === 'X25519' || hasPurpose(key, 'keyAgreement'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -917,10 +961,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Encryption)) &&
         identifier.keys && {
           capabilityInvocation: identifier.keys
-            .filter(
-              (key) =>
-                key.type === 'X25519' || key?.meta?.purpose === 'capabilityInvocation' || key?.meta?.purposes?.includes('capabilityInvocation'),
-            )
+            .filter((key) => key.type === 'X25519' || hasPurpose(key, 'capabilityInvocation'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid
@@ -931,10 +972,7 @@ export function toDidDocument(
       ...((opts?.use === undefined || opts?.use?.includes(JwkKeyUse.Encryption)) &&
         identifier.keys && {
           capabilityDelegation: identifier.keys
-            .filter(
-              (key) =>
-                key.type === 'X25519' || key?.meta?.purpose === 'capabilityDelegation' || key?.meta?.purposes?.includes('capabilityDelegation'),
-            )
+            .filter((key) => key.type === 'X25519' || hasPurpose(key, 'capabilityDelegation'))
             .map((key) => {
               if (key.kid.startsWith(did) && key.kid.includes('#')) {
                 return key.kid

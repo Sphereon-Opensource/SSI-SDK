@@ -112,10 +112,10 @@ const kidMatcher = {
 }
 
 const didMatcher = {
-  controllerKeyId: expect.stringContaining('did:jwk:'),
+  controllerKeyId: expect.stringMatching(/^[0-9a-fA-F]+$/),
   did: expect.stringContaining('did:jwk:'),
   identifier: {
-    controllerKeyId: expect.stringContaining('did:jwk:'),
+    controllerKeyId: expect.stringMatching(/^[0-9a-fA-F]+$/),
     did: expect.stringContaining('did:jwk:'),
     keys: [
       {

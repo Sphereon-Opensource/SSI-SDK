@@ -11,6 +11,7 @@ export enum SupportedDidMethodEnum {
   DID_EBSI = 'ebsi',
   DID_JWK = 'jwk',
   DID_OYD = 'oyd',
+  DID_WEB = 'web',
 }
 
 export enum IdentifierAliasEnum {
@@ -38,6 +39,8 @@ export type IdentifierProviderOpts = {
   type?: TKeyType
   use?: string
   method?: SupportedDidMethodEnum
+  did?: string
+  alias?: string
   [x: string]: any
 }
 

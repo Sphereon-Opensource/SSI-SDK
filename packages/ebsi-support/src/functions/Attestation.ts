@@ -180,7 +180,7 @@ export const ebsiCreateAttestationAuthRequestURL = async (
 }
 
 export const ebsiGetAttestationInterpreter = async (
-  { clientId, authReqResult }: Omit<GetAttestationArgs, 'opts'>,
+  { clientId, authReqResult, walletType }: Omit<GetAttestationArgs, 'opts'>,
   context: IRequiredContext,
 ): Promise<OID4VCIMachineInterpreter> => {
   const identifier = authReqResult.identifier
@@ -201,6 +201,7 @@ export const ebsiGetAttestationInterpreter = async (
     },
     didMethodPreferences: [SupportedDidMethodEnum.DID_EBSI, SupportedDidMethodEnum.DID_KEY],
     stateNavigationListener: OID4VCICallbackStateListener(vciStateCallbacks),
+    walletType: walletType ?? 'NATURAL_PERSON',
   })
   const vpLinkHandler = new Siopv2OID4VPLinkHandler({
     protocols: ['openid:'],

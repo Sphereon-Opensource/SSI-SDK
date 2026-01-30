@@ -44,6 +44,7 @@ export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
 ): Promise<Map<string, Array<IBasicCredentialClaim>>> => {
   const { issuerCredentialSubject } = args
   const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
+  let claimIndex = 0
 
   const processClaimObject = (claim: any, parentKey: string = ''): void => {
     Object.entries(claim).forEach(([key, value]): void => {
@@ -52,16 +53,12 @@ export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
       }
 
       if (key === 'display' && Array.isArray(value)) {
+        const order = claimIndex++
         value.forEach(({ name, locale = '' }: NameAndLocale): void => {
-          if (!name) {
-            return
-          }
-
-          //const localeKey = locale || ''
           if (!localeClaims.has(locale)) {
             localeClaims.set(locale, [])
           }
-          localeClaims.get(locale)!.push({ key: parentKey, name })
+          localeClaims.get(locale)!.push({ key: parentKey, name: name || parentKey, order })
         })
       } else if (typeof value === 'object' && value !== null) {
         processClaimObject(value, parentKey ? `${parentKey}.${key}` : key)
@@ -85,8 +82,8 @@ export const oid4vciCredentialLocaleBrandingFrom = async (args: Oid4vciCredentia
     }),
     ...(credentialDisplay.logo && {
       logo: {
-        ...((credentialDisplay.logo.url || <string>credentialDisplay.logo.uri) && {
-          uri: credentialDisplay.logo?.url ?? <string>credentialDisplay.logo.uri,
+        ...((credentialDisplay.logo.uri || <string>credentialDisplay.logo.uri) && {
+          uri: credentialDisplay.logo?.uri ?? <string>credentialDisplay.logo.uri,
         }),
         ...(credentialDisplay.logo.alt_text && {
           alt: credentialDisplay.logo?.alt_text,
@@ -106,8 +103,8 @@ export const oid4vciCredentialLocaleBrandingFrom = async (args: Oid4vciCredentia
       background: {
         ...(credentialDisplay.background_image && {
           image: {
-            ...((credentialDisplay.background_image.url || <string>credentialDisplay.background_image.uri) && {
-              uri: credentialDisplay.background_image?.url ?? <string>credentialDisplay.background_image.uri,
+            ...((credentialDisplay.background_image.uri || <string>credentialDisplay.background_image.uri) && {
+              uri: credentialDisplay.background_image?.uri ?? <string>credentialDisplay.background_image.uri,
             }),
             ...(credentialDisplay.background_image.alt_text && {
               alt: credentialDisplay.background_image?.alt_text,
@@ -132,10 +129,23 @@ export const oid4vciCombineDisplayLocalesFrom = async (
 
   const locales: Array<string> = Array.from(new Set([...issuerCredentialSubjectLocales.keys(), ...credentialDisplayLocales.keys()]))
 
+  // Helper to find a fallback entry from the other map when locale keys differ by region
+  // suffix (e.g. "nl" vs "nl-NL"). Prefers the base language match over no match.
+  const findByPrefix = <V>(map: Map<string, V>, locale: string): V | undefined => {
+    if (!locale) return undefined
+    const lang = locale.split('-')[0]
+    for (const [key, value] of map) {
+      if (key !== locale && key.split('-')[0] === lang) {
+        return value
+      }
+    }
+    return undefined
+  }
+
   return Promise.all(
     locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-      const display = credentialDisplayLocales.get(locale)
-      const claims = issuerCredentialSubjectLocales.get(locale)
+      const display = credentialDisplayLocales.get(locale) ?? findByPrefix(credentialDisplayLocales, locale)
+      const claims = issuerCredentialSubjectLocales.get(locale) ?? findByPrefix(issuerCredentialSubjectLocales, locale)
 
       return {
         ...(display && (await oid4vciCredentialLocaleBrandingFrom({ credentialDisplay: display }))),
@@ -160,7 +170,7 @@ export const sdJwtCredentialDisplayLocalesFrom = async (
 ): Promise<Map<string, SdJwtTypeDisplayMetadata>> => {
   const { credentialDisplay } = args
   return credentialDisplay.reduce((localeDisplays, display) => {
-    const localeKey = display.lang || ''
+    const localeKey = display.locale || display.lang || ''
     localeDisplays.set(localeKey, display)
     return localeDisplays
   }, new Map<string, SdJwtTypeDisplayMetadata>())
@@ -172,15 +182,22 @@ export const sdJwtCredentialClaimLocalesFrom = async (
   const { claimsMetadata } = args
   const localeClaims = new Map<string, Array<IBasicCredentialClaim>>()
 
-  claimsMetadata.forEach((claim: SdJwtClaimMetadata): void => {
-    claim.display?.forEach((display: SdJwtClaimDisplayMetadata): void => {
-      const { lang = '', label } = display
-      const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.')
-      if (!localeClaims.has(lang)) {
-        localeClaims.set(lang, [])
+  claimsMetadata.forEach((claim: SdJwtClaimMetadata, index: number): void => {
+    const key = claim.path.map((value: SdJwtClaimPath) => String(value)).join('.')
+    if (claim.display && claim.display.length > 0) {
+      claim.display.forEach((display: SdJwtClaimDisplayMetadata): void => {
+        const localeKey = display.locale || display.lang || ''
+        if (!localeClaims.has(localeKey)) {
+          localeClaims.set(localeKey, [])
+        }
+        localeClaims.get(localeKey)!.push({ key, name: display.label || key, order: index })
+      })
+    } else {
+      if (!localeClaims.has('')) {
+        localeClaims.set('', [])
       }
-      localeClaims.get(lang)!.push({ key, name: label })
-    })
+      localeClaims.get('')!.push({ key, name: key, order: index })
+    }
   })
 
   return localeClaims
@@ -228,10 +245,24 @@ export const sdJwtCombineDisplayLocalesFrom = async (args: SdJwtCombineDisplayLo
 
   const locales: Array<string> = Array.from(new Set([...claimsMetadata.keys(), ...credentialDisplayLocales.keys()]))
 
+  // Helper to find a fallback entry from the other map when locale keys differ by region
+  // suffix (e.g. "nl" vs "nl-NL"). Prefers the base language match over no match.
+  const findByPrefix = <V>(map: Map<string, V>, locale: string): V | undefined => {
+    if (!locale) return undefined
+    const lang = locale.split('-')[0]
+    // Try exact regional variants first, then the bare language code
+    for (const [key, value] of map) {
+      if (key !== locale && key.split('-')[0] === lang) {
+        return value
+      }
+    }
+    return undefined
+  }
+
   return Promise.all(
     locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-      const display = credentialDisplayLocales.get(locale)
-      const claims = claimsMetadata.get(locale)
+      const display = credentialDisplayLocales.get(locale) ?? findByPrefix(credentialDisplayLocales, locale)
+      const claims = claimsMetadata.get(locale) ?? findByPrefix(claimsMetadata, locale)
 
       return {
         ...(display && (await sdJwtCredentialLocaleBrandingFrom({ credentialDisplay: display }))),
@@ -261,8 +292,8 @@ export const issuerLocaleBrandingFrom = async (args: IssuerLocaleBrandingFromArg
         ...(dynamicRegistrationClientMetadata?.logo_uri && {
           uri: dynamicRegistrationClientMetadata?.logo_uri,
         }),
-        ...((issuerDisplay.logo?.url || <string>issuerDisplay.logo?.uri) && {
-          uri: issuerDisplay.logo?.url ?? <string>issuerDisplay.logo?.uri,
+        ...((issuerDisplay.logo?.uri || <string>issuerDisplay.logo?.uri) && {
+          uri: issuerDisplay.logo?.uri ?? <string>issuerDisplay.logo?.uri,
         }),
         ...(issuerDisplay.logo?.alt_text && {
           alt: issuerDisplay.logo?.alt_text,

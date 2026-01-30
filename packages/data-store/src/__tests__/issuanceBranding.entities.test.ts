@@ -6,7 +6,7 @@ import {
   credentialBrandingEntityFrom,
   CredentialLocaleBrandingEntity,
   credentialLocaleBrandingEntityFrom,
-  DataStoreIssuanceBrandingEntities,
+  DataStoreIssuanceBrandingEntities, DataStoreEntitiesWithVeramo,
   IBasicCredentialBranding,
   IBasicCredentialLocaleBranding,
   IBasicIssuerBranding,
@@ -16,7 +16,7 @@ import {
   IssuerLocaleBrandingEntity,
   issuerLocaleBrandingEntityFrom,
 } from '../index'
-import { DataStoreMigrations } from '../migrations'
+import { DataStoreMigrationsWithVeramo } from '../migrations'
 
 describe('Database entities tests', (): void => {
   let dbConnection: DataSource
@@ -28,9 +28,9 @@ describe('Database entities tests', (): void => {
       database: ':memory:',
       //logging: ['info'],
       migrationsRun: false,
-      migrations: DataStoreMigrations,
+      migrations: DataStoreMigrationsWithVeramo,
       synchronize: false,
-      entities: DataStoreIssuanceBrandingEntities,
+      entities: DataStoreEntitiesWithVeramo,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()
@@ -823,7 +823,7 @@ describe('Database entities tests', (): void => {
     }
 
     const issuerLocaleBrandingEntity: IssuerLocaleBrandingEntity = issuerLocaleBrandingEntityFrom(localeBranding)
-    const fromDb: IssuerLocaleBrandingEntity = await dbConnection.getRepository(CredentialLocaleBrandingEntity).save(issuerLocaleBrandingEntity)
+    const fromDb: IssuerLocaleBrandingEntity = await dbConnection.getRepository(IssuerLocaleBrandingEntity).save(issuerLocaleBrandingEntity)
 
     expect(fromDb).toBeDefined()
     expect(fromDb?.alias).toEqual(localeBranding.alias)

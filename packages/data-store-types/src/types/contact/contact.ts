@@ -135,7 +135,7 @@ export type PartialConnection = Partial<Omit<Connection, 'config'>> & {
 export type OpenIdConfig = {
   id: string
   clientId: string
-  clientSecret: string
+  clientSecret?: string
   ownerId?: string
   tenantId?: string
   scopes: Array<string>

@@ -143,10 +143,13 @@ export const selectCredentialLocaleBranding = async (
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
-  return localeBranding?.find(
+  const match = localeBranding?.find(
     (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
       locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we have duplicate code
   )
+
+  // Fallback: return first available branding so we at least get visual branding
+  return match ?? localeBranding?.[0]
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
@@ -214,7 +217,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
     if (!hasher) {
       return Promise.reject('a hasher is required for encoded SD-JWT credentials')
     }
-    const asyncHasher: Hasher = (data: string | ArrayBuffer, algorithm: string) => Promise.resolve(hasher(data, algorithm))
+    const asyncHasher: Hasher = (data: string | ArrayBuffer | SharedArrayBuffer, algorithm: string) => Promise.resolve(hasher(data, algorithm))
     const decodedSdJwt = await CredentialMapper.decodeSdJwtVcAsync(wrappedVerifiableCredential.credential, asyncHasher)
     uniformVerifiableCredential = sdJwtDecodedCredentialToUniformCredential(<SdJwtDecodedVerifiableCredential>decodedSdJwt)
   } else if (CredentialMapper.isMsoMdocDecodedCredential(wrappedVerifiableCredential.credential)) {
@@ -263,7 +266,7 @@ export const extractCredentialFromResponse = (credentialResponse: CredentialResp
 }
 
 export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<ManagedIdentifierResult> => {
-  const { issuanceOpt, context } = args
+  const { issuanceOpt, context, defaultHolderIdentifier } = args
   const { identifier: identifierArg } = issuanceOpt
   if (identifierArg && isManagedIdentifierResult(identifierArg)) {
     return identifierArg
@@ -295,6 +298,11 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
   ) {
     // previous code for managing DIDs only
+    const identifierFilter = defaultHolderIdentifier
+      ? defaultHolderIdentifier.startsWith('did:')
+        ? { did: defaultHolderIdentifier }
+        : { alias: defaultHolderIdentifier }
+      : {}
     const { result, created } = await getOrCreatePrimaryIdentifier(agentContext, {
       method: supportedPreferredDidMethod,
       createOpts: {
@@ -303,6 +311,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
           use: KeyUse.Signature,
           codecName: issuanceOpt.codecName,
           kms: issuanceOpt.kms,
+          ...identifierFilter,
         },
       },
     })

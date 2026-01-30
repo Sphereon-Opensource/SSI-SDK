@@ -6,6 +6,7 @@ export interface ILocaleBranding {
   description?: string
   background?: IBackgroundAttributes
   text?: ITextAttributes
+  state?: string
   createdAt: Date
   lastUpdatedAt: Date
 }
@@ -56,15 +57,17 @@ export interface ICredentialClaim {
   id: string
   key: string
   name: string
+  order?: number
 }
 export interface IBasicCredentialClaim extends Omit<ICredentialClaim, 'id'> {}
 export interface IPartialCredentialClaim extends Partial<ICredentialClaim> {}
 
 export interface ICredentialLocaleBranding extends ILocaleBranding {
+  state: string
   claims?: Array<ICredentialClaim>
 }
 export interface IBasicCredentialLocaleBranding
-  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text' | 'claims'> {
+  extends Omit<ICredentialLocaleBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'logo' | 'background' | 'text' | 'claims' | 'state'> {
   logo?: IBasicImageAttributes
   background?: IBasicBackgroundAttributes
   text?: IBasicTextAttributes
@@ -82,10 +85,11 @@ export interface ICredentialBranding {
   issuerCorrelationId: string
   vcHash: string
   localeBranding: Array<ICredentialLocaleBranding>
+  state: string
   createdAt: Date
   lastUpdatedAt: Date
 }
-export interface IBasicCredentialBranding extends Omit<ICredentialBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding'> {
+export interface IBasicCredentialBranding extends Omit<ICredentialBranding, 'id' | 'createdAt' | 'lastUpdatedAt' | 'localeBranding' | 'state'> {
   localeBranding: Array<IBasicCredentialLocaleBranding>
 }
 export interface IPartialCredentialBranding extends Partial<Omit<ICredentialBranding, 'localeBranding'>> {

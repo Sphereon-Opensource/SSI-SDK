@@ -53,6 +53,7 @@ import {
   JoseSignatureAlgorithmString,
   JwtDecodedVerifiableCredential,
   Loggers,
+  LogMethod,
   parseDid,
   SdJwtDecodedVerifiableCredentialPayload,
   WrappedW3CVerifiableCredential,
@@ -123,6 +124,7 @@ import {
   VerificationResult,
   VerifyEBSICredentialIssuerArgs,
   VerifyEBSICredentialIssuerResult,
+  WalletType,
 } from '../types/IOID4VCIHolder'
 
 /**
@@ -144,7 +146,9 @@ export const oid4vciHolderContextMethods: Array<string> = [
   'verifyCredential',
 ]
 
-const logger = Loggers.DEFAULT.get('sphereon:oid4vci:holder')
+const logger = Loggers.DEFAULT.options('sphereon:oid4vci:holder', {
+  methods: [LogMethod.CONSOLE, LogMethod.EVENT],
+}).get('sphereon:oid4vci:holder')
 
 export function signCallback(
   identifier: ManagedIdentifierOptsOrResult,
@@ -206,6 +210,7 @@ export async function verifyEBSICredentialIssuer(args: VerifyEBSICredentialIssue
 
 export class OID4VCIHolder implements IAgentPlugin {
   private readonly hasher?: HasherSync
+  private readonly defaultHolderIdentifier?: string
   readonly eventTypes: Array<OID4VCIHolderEvent> = [
     OID4VCIHolderEvent.CONTACT_IDENTITY_CREATED,
     OID4VCIHolderEvent.CREDENTIAL_STORED,
@@ -269,9 +274,11 @@ export class OID4VCIHolder implements IAgentPlugin {
       jwtCryptographicSuitePreferences,
       defaultAuthorizationRequestOptions,
       hasher = defaultHasher,
+      defaultHolderIdentifier,
     } = { ...options }
 
     this.hasher = hasher
+    this.defaultHolderIdentifier = defaultHolderIdentifier
     if (vcFormatPreferences !== undefined && vcFormatPreferences.length > 0) {
       this.vcFormatPreferences = vcFormatPreferences
     }
@@ -480,7 +487,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing openID4VCI client state in context'))
     }
 
-    const clientId = contact?.identities
+    const contactClientId = contact?.identities
       .map((identity) => {
         const connectionConfig = identity.connection?.config
         if (connectionConfig && 'clientId' in connectionConfig) {
@@ -490,10 +497,11 @@ export class OID4VCIHolder implements IAgentPlugin {
       })
       .find((clientId) => clientId)
 
+    const clientId = this.defaultAuthorizationRequestOpts.clientId ?? contactClientId
     if (!clientId) {
-      return Promise.reject(Error(`Missing client id in contact's connectionConfig`))
+      return Promise.reject(Error(`Missing client id in contact's connectionConfig and no default authorization request clientId configured`))
     }
-    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
     const authorizationCodeURL = await client.createAuthorizationRequestUrl({
       authorizationRequest: {
         clientId: clientId,
@@ -505,7 +513,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     return {
       authorizationCodeURL,
       // Needed, because the above createAuthorizationRequestUrl manipulates the state, adding pkce opts to the state
-      oid4vciClientState: JSON.parse(await client.exportState())
+      oid4vciClientState: JSON.parse(await client.exportState()),
     }
   }
 
@@ -617,7 +625,7 @@ export class OID4VCIHolder implements IAgentPlugin {
   }
 
   private async oid4vciHolderGetCredentials(args: GetCredentialsArgs, context: RequiredContext): Promise<Array<MappedCredentialToAccept>> {
-    const { verificationCode, openID4VCIClientState, didMethodPreferences = this.didMethodPreferences, issuanceOpt, accessTokenOpts } = args
+    const { verificationCode, openID4VCIClientState, didMethodPreferences, issuanceOpt, accessTokenOpts, walletType } = args
     logger.debug(`Getting credentials`, issuanceOpt, accessTokenOpts)
 
     if (!openID4VCIClientState) {
@@ -636,7 +644,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       credentialsSupported,
       serverMetadata,
       context,
-      didMethodPreferences: Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences,
+      didMethodPreferences: this.selectDidMethodPreferences(didMethodPreferences, walletType),
       jwtCryptographicSuitePreferences: this.jwtCryptographicSuitePreferences,
       jsonldCryptographicSuitePreferences: this.jsonldCryptographicSuitePreferences,
       ...(issuanceOpt && { forceIssuanceOpt: issuanceOpt }),
@@ -661,6 +669,15 @@ export class OID4VCIHolder implements IAgentPlugin {
     return allCredentials
   }
 
+  private selectDidMethodPreferences(didMethodPreferences: Array<SupportedDidMethodEnum> | undefined, walletType: WalletType) {
+    const supportedDidMethodEnums =
+      Array.isArray(didMethodPreferences) && didMethodPreferences.length > 0 ? didMethodPreferences : this.didMethodPreferences
+    if (walletType === 'ORGANIZATIONAL') {
+      return [SupportedDidMethodEnum.DID_WEB, ...supportedDidMethodEnums]
+    }
+    return supportedDidMethodEnums
+  }
+
   private async oid4vciHolderGetCredential(args: GetCredentialArgs, context: RequiredContext): Promise<MappedCredentialToAccept> {
     const { issuanceOpt, pin, client, accessTokenOpts } = args
     logger.info(`Getting credential`, issuanceOpt)
@@ -669,7 +686,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
 
-    const identifier = await getIdentifierOpts({ issuanceOpt, context })
+    const identifier = await getIdentifierOpts({ issuanceOpt, context, defaultHolderIdentifier: this.defaultHolderIdentifier })
     issuanceOpt.identifier = identifier
     logger.info(`ID opts`, identifier)
     const alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString = await signatureAlgorithmFromKey({ key: identifier.key })
@@ -707,13 +724,16 @@ export class OID4VCIHolder implements IAgentPlugin {
         }
       }
 
-      await client.acquireAccessToken({
+      const acquireAccessTokenOpts = {
         clientId: client.clientId,
         pin,
         authorizationResponse: JSON.parse(await client.exportState()).authorizationCodeResponse,
         additionalRequestParams: accessTokenOpts?.additionalRequestParams,
         ...(asOpts && { asOpts }),
-      })
+      }
+      logger.debug(`Acquiring access token with opts: ${JSON.stringify(acquireAccessTokenOpts, null, 2)}`)
+      const accessTokenResponse = await client.acquireAccessToken(acquireAccessTokenOpts)
+      logger.debug(`Access token response: ${JSON.stringify(accessTokenResponse, null, 2)}`)
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
       const types = getTypesFromObject(issuanceOpt)
@@ -724,18 +744,22 @@ export class OID4VCIHolder implements IAgentPlugin {
       }
 
       const credentialDefinition = this.getCredentialDefinition(issuanceOpt)
-      const credentialResponse = await client.acquireCredentials({
+      const acquireCredentialOpts = {
         ...(credentialDefinition && { context: credentialDefinition['@context'] }),
         credentialTypes,
         proofCallbacks: callbacks,
         format: issuanceOpt.format,
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
         deferredCredentialAwait: true,
+        ...(issuanceOpt.id && typeof issuanceOpt.id === 'string' ? { credentialConfigurationId: issuanceOpt.id } : undefined),
         ...(!jwk && { kid }), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
         jwk,
         alg,
         jti: uuidv4(),
-      })
+      }
+      logger.debug(`Acquiring credential with opts: ${JSON.stringify({...acquireCredentialOpts, proofCallbacks: '<<callbacks>>'}, null, 2)}`)
+      const credentialResponse = await client.acquireCredentials(acquireCredentialOpts)
+      logger.debug(`Credential response: ${JSON.stringify(credentialResponse, null, 2)}`)
 
       const credential = {
         id: issuanceOpt.credentialConfigurationId ?? id,
@@ -745,6 +769,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       } satisfies CredentialToAccept
       return mapCredentialToAccept({ credentialToAccept: credential, hasher: this.hasher })
     } catch (error) {
+      logger.error(`Error getting credential: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
       return Promise.reject(error)
     }
   }
@@ -780,11 +805,10 @@ export class OID4VCIHolder implements IAgentPlugin {
         connection: {
           type: ConnectionType.OPENID_CONNECT,
           config: {
-            clientId: '138d7bf8-c930-4c6e-b928-97d3a4928b01',
-            clientSecret: '03b3955f-d020-4f2a-8a27-4e452d4e27a0',
+            clientId: this.defaultAuthorizationRequestOpts.clientId ?? '138d7bf8-c930-4c6e-b928-97d3a4928b01',
             scopes: ['auth'],
             issuer: 'https://example.com/app-test',
-            redirectUrl: 'app:/callback',
+            redirectUrl: this.defaultAuthorizationRequestOpts.redirectUri ?? 'app:/callback',
             dangerouslyAllowInsecureHttpRequests: true,
             clientAuthMethod: 'post' as const,
           },

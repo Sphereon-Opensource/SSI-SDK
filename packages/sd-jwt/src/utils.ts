@@ -1,9 +1,11 @@
-import type { SdJwtTypeMetadata, SdJwtVcdm2Payload } from '@sphereon/ssi-types'
-// @ts-ignore
-import { toString } from 'uint8arrays/to-string'
-import { Hasher, HasherSync } from '@sd-jwt/types'
 import type { SdJwtPayload } from '@sd-jwt/core'
 import type { SdJwtVcPayload } from '@sd-jwt/sd-jwt-vc'
+import { Hasher, HasherSync } from '@sd-jwt/types'
+import type { SdJwtTypeMetadata, SdJwtVcdm2Payload } from '@sphereon/ssi-types'
+// @ts-ignore
+import * as u8a from 'uint8arrays'
+// @ts-ignore
+import { toString } from 'uint8arrays/to-string'
 
 // Helper function to fetch API with error handling
 export async function fetchUrlWithErrorHandling(url: string): Promise<Response> {
@@ -94,4 +96,9 @@ export function getIssuerFromSdJwt(payload: SdJwtPayload): string {
     throw new Error('No issuer (iss or VCDM 2 issuer) found in SD-JWT or no VCDM2 SD-JWT or SD-JWT VC')
   }
   return issuer
+}
+
+export function calculateSdHash(compactSdJwtVc: string, alg: string, hasher: Hasher): string {
+  const digest = hasher(compactSdJwtVc, alg)
+  return u8a.toString(digest, 'base64url')
 }

@@ -7,16 +7,12 @@ import type { HasherSync, JsonWebKey, JWK, SdJwtTypeMetadata } from '@sphereon/s
 import type { IAgentPlugin } from '@veramo/core'
 // import { decodeBase64url } from '@veramo/utils'
 import Debug from 'debug'
+
+// @ts-ignore
+import * as u8a from 'uint8arrays'
 import { defaultGenerateDigest, defaultGenerateSalt, defaultVerifySignature } from './defaultCallbacks'
+import { SDJwtVcdm2Instance, SDJwtVcdmInstanceFactory } from './sdJwtVcdm2Instance'
 import { funkeTestCA, sphereonCA } from './trustAnchors'
-import {
-  assertValidTypeMetadata,
-  fetchUrlWithErrorHandling,
-  getIssuerFromSdJwt,
-  isSdjwtVcPayload,
-  isVcdm2SdJwtPayload,
-  validateIntegrity,
-} from './utils'
 import type {
   Claims,
   FetchSdJwtTypeMetadataFromVctUrlArgs,
@@ -37,12 +33,51 @@ import type {
   SignKeyArgs,
   SignKeyResult,
 } from './types'
-import { SDJwtVcdm2Instance, SDJwtVcdmInstanceFactory } from './sdJwtVcdm2Instance'
-
-// @ts-ignore
-import * as u8a from 'uint8arrays'
+import {
+  assertValidTypeMetadata,
+  fetchUrlWithErrorHandling,
+  getIssuerFromSdJwt,
+  isSdjwtVcPayload,
+  isVcdm2SdJwtPayload,
+  validateIntegrity,
+} from './utils'
 
 const debug = Debug('@sphereon/ssi-sdk.sd-jwt')
+
+/**
+ * Matches a verification method from a DID document by key ID.
+ * Supports both absolute and relative key ID references.
+ *
+ * @param verificationMethod - The verification method object from the DID document
+ * @param kid - The key ID to match (can be absolute like "did:example:123#key-1", relative like "#key-1", or plain like "key-1")
+ * @returns true if the verification method matches the kid, false otherwise
+ *
+ * @example
+ * // Absolute match
+ * matchVerificationMethodByKid({ id: "did:example:123#key-1" }, "did:example:123#key-1") // true
+ *
+ * // Relative fragment match
+ * matchVerificationMethodByKid({ id: "did:example:123#key-1" }, "#key-1") // true
+ *
+ * // Plain fragment match
+ * matchVerificationMethodByKid({ id: "did:example:123#key-1" }, "key-1") // true
+ */
+const matchVerificationMethodByKid = (verificationMethod: { id: string }, kid: string | undefined): boolean => {
+  if (!kid) return false
+
+  // Exact match
+  if (verificationMethod.id === kid) {
+    return true
+  }
+
+  // Check if key.id ends with the kid (handles relative fragment references like "#key-1")
+  if (verificationMethod.id.endsWith(kid)) {
+    return true
+  }
+
+  // Check if key.id ends with #kid (handles kid without # prefix like "key-1")
+  return verificationMethod.id.endsWith(`#${kid}`)
+}
 
 /**
  * @beta
@@ -309,7 +344,7 @@ export class SDJwtPlugin implements IAgentPlugin {
     const header = (decodedVC.jwt as Jwt).header as Record<string, any>
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = header.jwk
-    if (x5c) {
+    if (x5c?.length) {
       const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
@@ -334,8 +369,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       if (!didDoc) {
         throw new Error('invalid_issuer: issuer did not resolve to a did document')
       }
-      //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
-      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => matchVerificationMethodByKid(key, header.kid))
       if (!didDocumentKey) {
         throw new Error('invalid_issuer: issuer did document does not include referenced key')
       }
@@ -351,7 +385,7 @@ export class SDJwtPlugin implements IAgentPlugin {
         throw new Error('invalid_issuer: issuer did not resolve to a did document')
       }
       //TODO SDK-20: This should be checking for an assertionMethod and not just an verificationMethod with an id
-      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => key.id)
+      const didDocumentKey = didDoc.didDocument?.verificationMethod?.find((key) => matchVerificationMethodByKid(key, header.kid))
       if (!didDocumentKey) {
         throw new Error('invalid_issuer: issuer did document does not include referenced key')
       }

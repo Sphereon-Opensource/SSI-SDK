@@ -9,6 +9,7 @@ import type {
   IBasicIssuerLocaleBranding,
   IBasicTextAttributes,
   ICredentialBranding,
+  ICredentialLocaleBranding,
   IIssuerBranding,
   ILocaleBranding,
 } from '@sphereon/ssi-sdk.data-store-types'
@@ -28,7 +29,9 @@ import { replaceNullWithUndefined } from '../FormattingUtils'
 export const credentialBrandingFrom = (credentialBranding: CredentialBrandingEntity): ICredentialBranding => {
   const result: ICredentialBranding = {
     ...credentialBranding,
-    localeBranding: credentialBranding.localeBranding.map((localeBranding: BaseLocaleBrandingEntity) => localeBrandingFrom(localeBranding)),
+    localeBranding: credentialBranding.localeBranding.map((localeBranding: CredentialLocaleBrandingEntity) =>
+      credentialLocaleBrandingFromEntity(localeBranding),
+    ),
   }
 
   return replaceNullWithUndefined(result)
@@ -50,6 +53,24 @@ export const localeBrandingFrom = (localeBranding: BaseLocaleBrandingEntity): IL
   }
 
   return replaceNullWithUndefined(result)
+}
+
+export const credentialLocaleBrandingFromEntity = (localeBranding: CredentialLocaleBrandingEntity): ICredentialLocaleBranding => {
+  const base: ILocaleBranding = localeBrandingFrom(localeBranding)
+  const result: ICredentialLocaleBranding = {
+    ...(base as ILocaleBranding),
+    state: localeBranding.state,
+    claims: localeBranding.claims
+      ? localeBranding.claims.map((claim: CredentialClaimsEntity) => ({
+          id: claim.id,
+          key: claim.key,
+          name: claim.name,
+          ...(claim.order != null && { order: claim.order }),
+        }))
+      : undefined,
+  } as ICredentialLocaleBranding
+
+  return replaceNullWithUndefined(result) as ICredentialLocaleBranding
 }
 
 export const issuerLocaleBrandingEntityFrom = (args: IBasicIssuerLocaleBranding): IssuerLocaleBrandingEntity => {
@@ -140,6 +161,7 @@ export const credentialClaimsEntityFrom = (args: IBasicCredentialClaim): Credent
   const credentialClaimsEntity: CredentialClaimsEntity = new CredentialClaimsEntity()
   credentialClaimsEntity.key = args.key
   credentialClaimsEntity.name = args.name
+  credentialClaimsEntity.order = args.order
 
   return credentialClaimsEntity
 }

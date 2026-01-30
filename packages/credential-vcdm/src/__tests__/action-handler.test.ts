@@ -59,7 +59,7 @@ describe('@sphereon/ssi-sdk.credential-vcdm', () => {
   test('handles createVerifiableCredential', async () => {
     expect.assertions(1)
 
-    const issuerId = didEthrIdentifier.did
+    const issuerId = didKeyIdentifier.did
 
     const credential: CredentialPayload = {
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://www.w3.org/2020/demo/4342323'],
@@ -88,7 +88,7 @@ describe('@sphereon/ssi-sdk.credential-vcdm', () => {
   test('handles createVerifiablePresentation', async () => {
     expect.assertions(1)
 
-    const issuerId = didEthrIdentifier.did
+    const issuerId = didKeyIdentifier.did
 
     const credential = await agent.createVerifiableCredential({
       credential: {
@@ -113,7 +113,7 @@ describe('@sphereon/ssi-sdk.credential-vcdm', () => {
     const presentation: PresentationPayload = {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
       type: ['VerifiablePresentation'],
-      holder: didEthrIdentifier.did + '?versionTime=2023-01-01T00:00:00Z',
+      holder: didKeyIdentifier.did + '?versionTime=2023-01-01T00:00:00Z',
       issuanceDate: new Date().toISOString(),
       verifiableCredential: [credential],
     }

@@ -30,6 +30,7 @@ export interface IOID4VCIIssuer extends IPluginMethodMap {
   oid4vciIssueCredential(issueArgs: IIssueCredentialArgs, context: IRequiredContext): Promise<CredentialResponse>
   oid4vciCreateAccessTokenResponse(accessTokenArgs: IAssertValidAccessTokenArgs, context: IRequiredContext): Promise<AccessTokenResponse>
   oid4vciGetInstance(args: IIssuerInstanceArgs, context: IRequiredContext): Promise<IssuerInstance>
+  oid4vciRefreshInstanceMetadata(args: IRefreshInstanceMetadata, context: IRequiredContext): Promise<boolean>
 }
 
 export interface IOID4VCIIssuerOpts {
@@ -45,7 +46,6 @@ export interface ICreateOfferArgs extends IIssuerInstanceArgs {
   credentialDefinition?: IssuerCredentialDefinition
   credentialOfferUri?: string
   credentialDataSupplierInput?: CredentialDataSupplierInput // Optional storage that can help the credential Data Supplier. For instance to store credential input data during offer creation, if no additional data can be supplied later on
-
   redirectUri?: string
   // auth_session?: string; Would be a nice extension to support, to allow external systems to determine what the auth_session value should be
   // @Deprecated use tx_code in the grant object
@@ -81,6 +81,10 @@ export interface IIssuerInstanceArgs {
   credentialIssuer: string
   storeId?: string
   namespace?: string
+}
+
+export interface IRefreshInstanceMetadata {
+  credentialIssuer: string
 }
 
 export interface IIssuerInstanceOptions extends IMetadataOptions {

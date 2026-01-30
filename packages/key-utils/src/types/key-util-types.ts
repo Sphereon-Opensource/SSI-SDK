@@ -21,6 +21,8 @@ export const ENC_KEY_ALGS = ['X25519', 'ECDH_ES_A256KW', 'RSA_OAEP_256']
 
 export type KeyVisibility = 'public' | 'private'
 
+export type DigestAlgorithm = 'SHA-256' | 'sha256' | 'SHA-384' | 'sha384' | 'SHA-512' | 'sha512'
+
 export interface X509Opts {
   cn?: string // The certificate Common Name. Will be used as the KID for the private key. Uses alias if not provided.
   privateKeyPEM?: string // Optional as you also need to provide it in hex format, but advisable to use it
@@ -53,6 +55,7 @@ export type SignatureAlgorithmFromKeyArgs = {
 
 export type SignatureAlgorithmFromKeyTypeArgs = {
   type: TKeyType
+  algorithms?: string[]
 }
 
 export type KeyTypeFromCryptographicSuiteArgs = {

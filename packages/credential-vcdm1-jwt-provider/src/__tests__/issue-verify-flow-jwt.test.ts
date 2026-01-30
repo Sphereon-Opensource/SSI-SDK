@@ -57,7 +57,7 @@ describe('@sphereon/ssi-sdk.credential-vcdm1-jwt-provider full flow', () => {
 
   it('issues and verifies JWT credential', async () => {
     const credential: CredentialPayload = {
-      issuer: { id: didEthrIdentifier.did },
+      issuer: { id: didKeyIdentifier.did },
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://example.com/1/2/3'],
       type: ['VerifiableCredential', 'Custom'],
       issuanceDate: new Date().toISOString(),
@@ -82,7 +82,7 @@ describe('@sphereon/ssi-sdk.credential-vcdm1-jwt-provider full flow', () => {
 
   it('issues credential and verifies presentation', async () => {
     const credential: CredentialPayload = {
-      issuer: { id: didEthrIdentifier.did },
+      issuer: { id: didKeyIdentifier.did },
       '@context': ['https://www.w3.org/2018/credentials/v1', 'https://veramo.io/contexts/profile/v1'],
       type: ['VerifiableCredential', 'Profile'],
       issuanceDate: new Date().toISOString(),
@@ -100,7 +100,7 @@ describe('@sphereon/ssi-sdk.credential-vcdm1-jwt-provider full flow', () => {
       presentation: {
         // @ts-ignore
         verifiableCredential: [verifiableCredential1],
-        holder: didEthrIdentifier.did,
+        holder: didKeyIdentifier.did,
       },
       challenge: 'SUCCESS',
       proofFormat: 'jwt',

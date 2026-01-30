@@ -1,8 +1,14 @@
+import { migrations as VeramoDataStoreMigrations, Entities as VeramoDataStoreEntities } from '@veramo/data-store'
 import { CreateContacts1659463079429 } from './1-CreateContacts'
 import { CreatePresentationDefinitions1716533767523 } from './10-CreatePresentationDefinitions'
 import { FixCredentialClaimsReferencesUuid1741895822987 } from './11-FixCredentialClaimsReferenceUuid'
 import { AddBitstringStatusListEnum1741895823000, CreateBitstringStatusList1741895823000 } from './12-CreateBitstringStatusList'
 import { CreateDcqlQueryItem1726617600000 } from './13-CreateDcqlQueryItem'
+import { AddLinkedVpFields1763387280000 } from './14-AddLinkedVpFields'
+import { AddBrandingState1766000000000 } from './15-AddBrandingState'
+import { AddServiceMetadata1764000000000 } from './15-AddServiceMetadata'
+import { MakeOpenIdClientSecretNullable1767000000000 } from './16-MakeOpenIdClientSecretNullable'
+import { AddCredentialClaimOrder1768000000000 } from './17-AddCredentialClaimOrder'
 import { CreateIssuanceBranding1659463079429 } from './2-CreateIssuanceBranding'
 import { CreateContacts1690925872318 } from './3-CreateContacts'
 import { CreateStatusList1693866470000 } from './4-CreateStatusList'
@@ -26,17 +32,24 @@ export const DataStoreContactMigrations = [
   CreateContacts1690925872318,
   CreateContacts1708525189000,
   CreateContacts1715761125000,
+  MakeOpenIdClientSecretNullable1767000000000,
 ]
-export const DataStoreIssuanceBrandingMigrations = [CreateIssuanceBranding1659463079429, FixCredentialClaimsReferencesUuid1741895822987]
+export const DataStoreIssuanceBrandingMigrations = [
+  CreateIssuanceBranding1659463079429,
+  FixCredentialClaimsReferencesUuid1741895822987,
+  AddBrandingState1766000000000,
+  AddCredentialClaimOrder1768000000000,
+]
 export const DataStoreStatusListMigrations = [
   CreateStatusList1693866470000,
   AddBitstringStatusListEnum1741895823000,
   CreateBitstringStatusList1741895823000,
 ]
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
-export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000]
+export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000, AddLinkedVpFields1763387280000]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
 export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523, CreateDcqlQueryItem1726617600000]
+export const DataStoreServiceMigrations = [AddServiceMetadata1764000000000]
 
 // All migrations together
 export const DataStoreMigrations = [
@@ -47,4 +60,16 @@ export const DataStoreMigrations = [
   ...DataStoreDigitalCredentialMigrations,
   ...DataStoreMachineStateMigrations,
   ...DataStorePresentationDefinitionMigrations,
+  ...DataStoreServiceMigrations,
 ]
+
+
+
+// All migrations combined with Veramo migrations first - use this when you need both
+export const DataStoreMigrationsWithVeramo = [
+  ...VeramoDataStoreMigrations,
+  ...DataStoreMigrations,
+]
+
+// Re-export Veramo migrations and entities for convenience
+export { VeramoDataStoreMigrations, VeramoDataStoreEntities }
