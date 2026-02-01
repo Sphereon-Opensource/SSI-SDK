@@ -73,7 +73,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
       let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
       if (credentialsConfigSupported.format === 'dc+sd-jwt') {
         const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_15>credentialsConfigSupported).vct
-        if (vct.startsWith('http')) {
+        if (vct?.startsWith('http')) {
           try {
             sdJwtTypeMetadata = await context.agent.fetchSdJwtTypeMetadataFromVctUrl({ vct })
           } catch {

@@ -59,8 +59,8 @@ const oid4vciRequirePinGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMach
 
 const oid4vciHasNoContactIdentityGuard = (_ctx: OID4VCIMachineContext, _event: OID4VCIMachineEventTypes): boolean => {
   const { contact, credentialsToAccept } = _ctx
-  let toAcceptId = credentialsToAccept[0].correlationId
-  if (toAcceptId.match(/^https?:\/\/.*/)) {
+  let toAcceptId = credentialsToAccept[0]?.correlationId
+  if (toAcceptId?.match(/^https?:\/\/.*/)) {
     toAcceptId = new URL(toAcceptId).hostname
   }
   return !contact?.identities.some((identity: Identity): boolean => identity.identifier.correlationId === toAcceptId)
