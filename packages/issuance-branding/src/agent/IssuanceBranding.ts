@@ -341,12 +341,18 @@ export class IssuanceBranding implements IAgentPlugin {
 
     debug('Setting additional image properties for url', image.uri)
     const resource: IImageResource | undefined = !image.dataUri ? await downloadImage(image.uri) : undefined
-    const dimensions: IImageDimensions =
-      image.dimensions ?? (await getImageDimensions(resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))))
+
+    if (!resource?.base64Content && !image.dataUri) {
+      debug(`Could not download image from ${image.uri} and no dataUri available, returning empty attributes`)
+      return EMPTY_IMAGE_ATTRIBUTES
+    }
+
+    const base64Content: string = resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))
+    const dimensions: IImageDimensions = image.dimensions ?? (await getImageDimensions(base64Content))
     const mediaType: string | undefined =
       image.mediaType ??
       resource?.contentType ??
-      (resource?.base64Content ? await getImageMediaType(resource?.base64Content!) : await this.getDataTypeFromDataURI(image.uri))
+      (resource?.base64Content ? await getImageMediaType(resource.base64Content) : await this.getDataTypeFromDataURI(image.uri))
 
     return {
       mediaType,
