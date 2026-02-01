@@ -347,8 +347,8 @@ export class IssuanceBranding implements IAgentPlugin {
       return EMPTY_IMAGE_ATTRIBUTES
     }
 
-    const base64Content: string = resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))
-    const dimensions: IImageDimensions = image.dimensions ?? (await getImageDimensions(base64Content))
+    const dimensions: IImageDimensions =
+      image.dimensions ?? (await getImageDimensions(resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))))
     const mediaType: string | undefined =
       image.mediaType ??
       resource?.contentType ??
