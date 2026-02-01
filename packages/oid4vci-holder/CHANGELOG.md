@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
+
+### Bug Fixes
+
+- improve locale fallback and clientId resolution logic in OID4VCI holder, update locale handling in SdJwt types and mappers ([0ce9cdf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0ce9cdff86eae2404c4725220ec89a1e24493ae8))
+
+### Features
+
+- add credential claim order field and migration scripts to schema and mapping utils ([9a314a6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a314a62648fc48d7582e3c711f4a3a24e75e769))
+
 # [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
 
 ### Bug Fixes

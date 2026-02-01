@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
+
+### Bug Fixes
+
+- Issue 2 seconds in the past due to clock skew ([b238874](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b238874fbc33c1e4cffce8b060e6a06a5129f3cb))
+
 # [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
 
 ### Bug Fixes

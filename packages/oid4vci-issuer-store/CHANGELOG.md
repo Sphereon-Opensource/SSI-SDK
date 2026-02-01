@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
+
+### Features
+
+- expose oid4vciStore methods for rest implementation ([13f5b80](https://github.com/Sphereon-Opensource/SSI-SDK/commit/13f5b808065d4116f89c9698a41a299cc3c100f2))
+
 # [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
 
 ### Bug Fixes

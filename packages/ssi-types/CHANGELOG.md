@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.36.0...v0.37.0) (2026-01-30)
+
+### Bug Fixes
+
+- improve locale fallback and clientId resolution logic in OID4VCI holder, update locale handling in SdJwt types and mappers ([0ce9cdf](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/0ce9cdff86eae2404c4725220ec89a1e24493ae8))
+
 # [0.36.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.34.0...v0.36.0) (2025-11-19)
 
 ### Bug Fixes

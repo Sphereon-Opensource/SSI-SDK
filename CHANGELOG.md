@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
+
+### Bug Fixes
+
+- change blakejs import to namespace import for better CommonJS/ESM interop ([84f9a21](https://github.com/Sphereon-Opensource/SSI-SDK/commit/84f9a217080e9b2dc4ff63a382f1d27db67172f9))
+- contacts list was crashing without any message when encountering a party without a contact ([78caef9](https://github.com/Sphereon-Opensource/SSI-SDK/commit/78caef9d3c26915bff49b65f223eab3c5ef07804))
+- handle CommonJS/ESM interop for blakejs in MappingUtils ([9a2b1f0](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a2b1f0998e426363aa123252298ce4af19aecb6))
+- improve locale fallback and clientId resolution logic in OID4VCI holder, update locale handling in SdJwt types and mappers ([0ce9cdf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/0ce9cdff86eae2404c4725220ec89a1e24493ae8))
+- Issue 2 seconds in the past due to clock skew ([b238874](https://github.com/Sphereon-Opensource/SSI-SDK/commit/b238874fbc33c1e4cffce8b060e6a06a5129f3cb))
+- move imports to top of file for proper module syntax ([10ec0cd](https://github.com/Sphereon-Opensource/SSI-SDK/commit/10ec0cd49dbb80ced53dd88636aaff435f5a124a))
+- UQ constraint on discovering ID using existing alias ([ff40ab6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ff40ab64b07e77c8565ed97a027c74bb4d754f28))
+
+### Features
+
+- add credential claim order field and migration scripts to schema and mapping utils ([9a314a6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/9a314a62648fc48d7582e3c711f4a3a24e75e769))
+- enable selective disclosure with DCQL claims in verifiable presentations ([6f9e4b1](https://github.com/Sphereon-Opensource/SSI-SDK/commit/6f9e4b1b59660be9bc7a984493a4cb1bf03aec8a))
+- expose oid4vciStore methods for rest implementation ([13f5b80](https://github.com/Sphereon-Opensource/SSI-SDK/commit/13f5b808065d4116f89c9698a41a299cc3c100f2))
+
 # [0.36.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.34.0...v0.36.0) (2025-11-19)
 
 ### Bug Fixes
