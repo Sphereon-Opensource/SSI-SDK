@@ -1,4 +1,5 @@
 export * from './entra-id-auth'
+export * from './oidc-bearer-auth'
 export * from './static-bearer-auth'
 export * from './auth-utils'
 export * from './express-builders'
