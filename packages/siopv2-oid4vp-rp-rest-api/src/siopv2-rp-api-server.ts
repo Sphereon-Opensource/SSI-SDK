@@ -66,12 +66,63 @@ export class SIOPv2RPApiServer {
       const apiDocs = `${this._basePath}/api-docs`
       console.log(`[OID4VP] API docs available at ${apiDocs} (using remote spec: ${openApiSpec})`)
 
+      let cachedSpec: string | null = null
+      let fetchPromise: Promise<string> | null = null
+
+      // Helper function to fetch and cache the spec
+      const fetchSpec = async (): Promise<string> => {
+        if (cachedSpec) {
+          return cachedSpec
+        }
+
+        if (fetchPromise) {
+          return fetchPromise
+        }
+
+        fetchPromise = fetch(openApiSpec)
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(`Failed to fetch OpenAPI spec: HTTP ${res.status}`)
+            }
+            return res.text()
+          })
+          .then((text) => {
+            cachedSpec = text
+            fetchPromise = null
+            return text
+          })
+          .catch((err) => {
+            fetchPromise = null
+            throw err
+          })
+
+        return fetchPromise
+      }
+
+      // Start fetching in the background for faster first load
+      fetchSpec().catch((err) => {
+        console.log(`[OID4VP] Failed to pre-fetch remote OpenAPI spec: ${err}`)
+      })
+
+      // Serve the YAML/JSON at a proxied endpoint with on-demand fetching
+      this._router.get('/api-docs/openapi.yaml', async (_req: Request, res: Response) => {
+        try {
+          const spec = await fetchSpec()
+          res.setHeader('Content-Type', 'text/yaml')
+          res.send(spec)
+        } catch (err) {
+          console.error(`[OID4VP] Error serving OpenAPI spec: ${err}`)
+          res.status(502).send(`Failed to fetch OpenAPI spec: ${err}`)
+        }
+      })
+
+      // Set up Swagger UI with the proxied endpoint
       this._router.use(
         '/api-docs',
         swaggerUi.serve,
         swaggerUi.setup(undefined, {
           swaggerOptions: {
-            url: openApiSpec,
+            url: `${this._basePath}/api-docs/openapi.yaml`,
           },
         }),
       )
@@ -98,32 +149,60 @@ export class SIOPv2RPApiServer {
         }),
       )
     } else {
-      const setupSwaggerMiddleware = (swagger: any) => {
-        const apiDocs = `${this._basePath}/api-docs`
-        console.log(`[OID4VP] API docs available at ${apiDocs}`)
+      const apiDocs = `${this._basePath}/api-docs`
+      console.log(`[OID4VP] API docs available at ${apiDocs}`)
 
-        this._router.use(
-          '/api-docs',
-          (req: Request, res: Response, next: any) => {
-            const regex = `${apiDocs.replace(/\//, '\/')}`.replace('/oid4vp', '').replace(/\/api-docs.*/, '')
-            swagger.servers = [{ url: `${req.protocol}://${req.get('host')}${regex}`, description: 'This server' }]
+      let cachedSwagger: any = null
+      let fetchPromise: Promise<any> | null = null
+
+      // Helper function to fetch and cache the swagger doc
+      const fetchSwagger = async (): Promise<any> => {
+        if (cachedSwagger) {
+          return cachedSwagger
+        }
+
+        if (fetchPromise) {
+          return fetchPromise
+        }
+
+        fetchPromise = fetch(this.OID4VP_SWAGGER_URL)
+          .then((res) => res.json())
+          .then((swagger: any) => {
+            cachedSwagger = swagger
+            fetchPromise = null
+            return swagger
+          })
+          .catch((err) => {
+            fetchPromise = null
+            throw err
+          })
+
+        return fetchPromise
+      }
+
+      // Start fetching in the background for faster first load
+      fetchSwagger().catch((err) => {
+        console.log(`[OID4VP] Failed to pre-fetch swagger document: ${err}`)
+      })
+
+      // Set up Swagger UI with on-demand spec loading
+      this._router.use(
+        '/api-docs',
+        async (req: Request, res: Response, next: any) => {
+          try {
+            const swagger = await fetchSwagger()
+            swagger.servers = [{ url: `${req.protocol}://${req.get('host')}${this._basePath}`, description: 'This server' }]
             // @ts-ignore
             req.swaggerDoc = swagger
             next()
-          },
-          swaggerUi.serveFiles(swagger, {}),
-          swaggerUi.setup(),
-        )
-      }
-
-      fetch(this.OID4VP_SWAGGER_URL)
-        .then((res) => res.json())
-        .then((swagger: any) => {
-          setupSwaggerMiddleware(swagger)
-        })
-        .catch((err) => {
-          console.log(`[OID4VP] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
-        })
+          } catch (err) {
+            console.error(`[OID4VP] Error loading swagger document: ${err}`)
+            res.status(502).send(`Failed to load API documentation: ${err}`)
+          }
+        },
+        swaggerUi.serveFiles(undefined as any, {}),
+        swaggerUi.setup(),
+      )
     }
   }
   get express(): Express {
