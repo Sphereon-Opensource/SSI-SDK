@@ -4,7 +4,6 @@ import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
 import express, { Express, Request, Response, Router } from 'express'
 import fs from 'fs'
-import path from 'path'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import {
@@ -58,152 +57,122 @@ export class SIOPv2RPApiServer {
     this.setupSwaggerUi()
   }
 
+  /**
+   * Sets up Swagger UI for API documentation.
+   * Supports three modes via OID4VP_OPENAPI_SPEC environment variable:
+   * - Remote URL: Fetches spec from URL and serves via proxy endpoint
+   * - Local file: Serves spec from filesystem
+   * - Default: Uses built-in SwaggerHub spec
+   */
   private setupSwaggerUi() {
     const openApiSpec = process.env.OID4VP_OPENAPI_SPEC
-    const isUrl = openApiSpec?.startsWith('http://') || openApiSpec?.startsWith('https://')
+    const apiDocsPath = '/api-docs'
+    const specPath = '/api-docs/spec.yaml'
+    const fullApiDocsPath = `${this._basePath}${apiDocsPath}`
+    const fullSpecPath = `${this._basePath}${specPath}`
 
-    if (openApiSpec && isUrl) {
-      const apiDocs = `${this._basePath}/api-docs`
-      console.log(`[OID4VP] API docs available at ${apiDocs} (using remote spec: ${openApiSpec})`)
+    // Spec cache shared across all modes
+    let cachedSpec: any = null
 
-      let cachedSpec: string | null = null
-      let fetchPromise: Promise<string> | null = null
+    // Determine spec source
+    const isRemoteUrl = openApiSpec?.startsWith('http://') || openApiSpec?.startsWith('https://')
+    const isLocalFile = openApiSpec && !isRemoteUrl
 
-      // Helper function to fetch and cache the spec
-      const fetchSpec = async (): Promise<string> => {
-        if (cachedSpec) {
-          return cachedSpec
-        }
+    if (isLocalFile && !fs.existsSync(openApiSpec)) {
+      console.log(`[OID4VP] OpenAPI spec file not found at ${openApiSpec}. Swagger UI disabled.`)
+      return
+    }
 
-        if (fetchPromise) {
-          return fetchPromise
-        }
+    const specSource = isRemoteUrl ? openApiSpec : isLocalFile ? `file://${openApiSpec}` : this.OID4VP_SWAGGER_URL
+    console.log(`[OID4VP] API docs: ${fullApiDocsPath} (spec: ${specSource})`)
 
-        fetchPromise = fetch(openApiSpec)
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error(`Failed to fetch OpenAPI spec: HTTP ${res.status}`)
-            }
-            return res.text()
-          })
-          .then((text) => {
-            cachedSpec = text
-            fetchPromise = null
-            return text
-          })
-          .catch((err) => {
-            fetchPromise = null
-            throw err
-          })
-
-        return fetchPromise
+    // Unified spec fetcher
+    const getSpec = async (req?: Request): Promise<any> => {
+      if (cachedSpec) {
+        return cachedSpec
       }
 
-      // Start fetching in the background for faster first load
-      fetchSpec().catch((err) => {
-        console.log(`[OID4VP] Failed to pre-fetch remote OpenAPI spec: ${err}`)
-      })
-
-      // Serve the YAML/JSON at a proxied endpoint with on-demand fetching
-      this._router.get('/api-docs/openapi.yaml', async (_req: Request, res: Response) => {
+      if (isLocalFile) {
+        const content = fs.readFileSync(openApiSpec, 'utf-8')
         try {
-          const spec = await fetchSpec()
-          res.setHeader('Content-Type', 'text/yaml')
-          res.send(spec)
-        } catch (err) {
-          console.error(`[OID4VP] Error serving OpenAPI spec: ${err}`)
-          res.status(502).send(`Failed to fetch OpenAPI spec: ${err}`)
+          cachedSpec = JSON.parse(content)
+        } catch {
+          // YAML - return as string, swagger-ui will parse it
+          cachedSpec = content
         }
-      })
+      } else {
+        const url = isRemoteUrl ? openApiSpec! : this.OID4VP_SWAGGER_URL
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+        const text = await response.text()
+        try {
+          cachedSpec = JSON.parse(text)
+        } catch {
+          cachedSpec = text
+        }
+      }
 
-      // Set up Swagger UI with the proxied endpoint
-      this._router.use(
-        '/api-docs',
-        swaggerUi.serve,
-        swaggerUi.setup(undefined, {
-          swaggerOptions: {
-            url: `${this._basePath}/api-docs/openapi.yaml`,
-          },
-        }),
-      )
-    } else if (openApiSpec) {
-      if (!fs.existsSync(openApiSpec)) {
-        console.log(`[OID4VP] OpenAPI spec file not found at ${openApiSpec}. Will not host api-docs on this instance`)
+      // Set server URL if spec is JSON object
+      if (typeof cachedSpec === 'object' && cachedSpec !== null && req) {
+        cachedSpec.servers = [{ url: `${req.protocol}://${req.get('host')}${this._basePath}`, description: 'This server' }]
+      }
+
+      return cachedSpec
+    }
+
+    // Pre-fetch spec in background
+    getSpec().catch((err) => console.log(`[OID4VP] Spec pre-fetch failed: ${err.message}`))
+
+    // Serve spec at dedicated endpoint
+    this._router.get(specPath, async (req: Request, res: Response) => {
+      try {
+        const spec = await getSpec(req)
+        if (typeof spec === 'string') {
+          res.type('text/yaml').send(spec)
+        } else {
+          res.json(spec)
+        }
+      } catch (err: any) {
+        console.error(`[OID4VP] Spec fetch error: ${err.message}`)
+        res.status(502).json({ error: 'Failed to load OpenAPI spec', details: err.message })
+      }
+    })
+
+    // Swagger UI - custom index handler must come BEFORE static serve
+    const serveSwaggerIndex = (req: Request, res: Response, next: any): void => {
+      // Only handle exact /api-docs or /api-docs/ requests
+      if (req.path === '/' || req.path === '') {
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OID4VP API</title>
+  <link rel="stylesheet" type="text/css" href="${fullApiDocsPath}/swagger-ui.css">
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="${fullApiDocsPath}/swagger-ui-bundle.js"></script>
+  <script src="${fullApiDocsPath}/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      SwaggerUIBundle({
+        url: "${fullSpecPath}",
+        dom_id: '#swagger-ui',
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+        layout: "StandaloneLayout"
+      });
+    };
+  </script>
+</body>
+</html>`
+        res.type('html').send(html)
         return
       }
-      const apiDocs = `${this._basePath}/api-docs`
-      const specFileName = path.basename(openApiSpec)
-      console.log(`[OID4VP] API docs available at ${apiDocs} (using local spec: ${openApiSpec})`)
-
-      this._router.get(`/api-docs/${specFileName}`, (_req: Request, res: Response) => {
-        res.sendFile(openApiSpec)
-      })
-
-      this._router.use(
-        '/api-docs',
-        swaggerUi.serve,
-        swaggerUi.setup(undefined, {
-          swaggerOptions: {
-            url: `${this._basePath}/api-docs/${specFileName}`,
-          },
-        }),
-      )
-    } else {
-      const apiDocs = `${this._basePath}/api-docs`
-      console.log(`[OID4VP] API docs available at ${apiDocs}`)
-
-      let cachedSwagger: any = null
-      let fetchPromise: Promise<any> | null = null
-
-      // Helper function to fetch and cache the swagger doc
-      const fetchSwagger = async (): Promise<any> => {
-        if (cachedSwagger) {
-          return cachedSwagger
-        }
-
-        if (fetchPromise) {
-          return fetchPromise
-        }
-
-        fetchPromise = fetch(this.OID4VP_SWAGGER_URL)
-          .then((res) => res.json())
-          .then((swagger: any) => {
-            cachedSwagger = swagger
-            fetchPromise = null
-            return swagger
-          })
-          .catch((err) => {
-            fetchPromise = null
-            throw err
-          })
-
-        return fetchPromise
-      }
-
-      // Start fetching in the background for faster first load
-      fetchSwagger().catch((err) => {
-        console.log(`[OID4VP] Failed to pre-fetch swagger document: ${err}`)
-      })
-
-      // Set up Swagger UI with on-demand spec loading
-      this._router.use(
-        '/api-docs',
-        async (req: Request, res: Response, next: any) => {
-          try {
-            const swagger = await fetchSwagger()
-            swagger.servers = [{ url: `${req.protocol}://${req.get('host')}${this._basePath}`, description: 'This server' }]
-            // @ts-ignore
-            req.swaggerDoc = swagger
-            next()
-          } catch (err) {
-            console.error(`[OID4VP] Error loading swagger document: ${err}`)
-            res.status(502).send(`Failed to load API documentation: ${err}`)
-          }
-        },
-        swaggerUi.serveFiles(undefined as any, {}),
-        swaggerUi.setup(),
-      )
+      next()
     }
+    this._router.use(apiDocsPath, serveSwaggerIndex, swaggerUi.serve)
   }
   get express(): Express {
     return this._express
