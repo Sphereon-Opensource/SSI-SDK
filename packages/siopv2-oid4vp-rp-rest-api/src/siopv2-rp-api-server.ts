@@ -3,6 +3,8 @@ import { copyGlobalAuthToEndpoints, ExpressSupport } from '@sphereon/ssi-express
 import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
 import express, { Express, Request, Response, Router } from 'express'
+import fs from 'fs'
+import path from 'path'
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import {
@@ -24,7 +26,7 @@ export class SIOPv2RPApiServer {
   constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: ISIOPv2RPRestAPIOpts }) {
     const { agent, opts } = args
     this._agent = agent
-    copyGlobalAuthToEndpoints({ opts, keys: ['webappCreateAuthRequest', 'webappAuthStatus', 'webappDeleteAuthRequest'] })
+    copyGlobalAuthToEndpoints({ opts, keys: ['webappCreateAuthRequest', 'webappAuthStatus', 'webappDeleteAuthRequest', 'webappGetDefinitions'] })
     if (opts?.endpointOpts?.globalAuth?.secureSiopEndpoints) {
       copyGlobalAuthToEndpoints({ opts, keys: ['siopGetAuthRequest', 'siopVerifyAuthResponse'] })
     }
@@ -57,11 +59,48 @@ export class SIOPv2RPApiServer {
   }
 
   private setupSwaggerUi() {
-    fetch(this.OID4VP_SWAGGER_URL)
-      .then((res) => res.json())
-      .then((swagger: any) => {
+    const openApiSpec = process.env.OID4VP_OPENAPI_SPEC
+    const isUrl = openApiSpec?.startsWith('http://') || openApiSpec?.startsWith('https://')
+
+    if (openApiSpec && isUrl) {
+      const apiDocs = `${this._basePath}/api-docs`
+      console.log(`[OID4VP] API docs available at ${apiDocs} (using remote spec: ${openApiSpec})`)
+
+      this._router.use(
+        '/api-docs',
+        swaggerUi.serve,
+        swaggerUi.setup(undefined, {
+          swaggerOptions: {
+            url: openApiSpec,
+          },
+        }),
+      )
+    } else if (openApiSpec) {
+      if (!fs.existsSync(openApiSpec)) {
+        console.log(`[OID4VP] OpenAPI spec file not found at ${openApiSpec}. Will not host api-docs on this instance`)
+        return
+      }
+      const apiDocs = `${this._basePath}/api-docs`
+      const specFileName = path.basename(openApiSpec)
+      console.log(`[OID4VP] API docs available at ${apiDocs} (using local spec: ${openApiSpec})`)
+
+      this._router.get(`/api-docs/${specFileName}`, (_req: Request, res: Response) => {
+        res.sendFile(openApiSpec)
+      })
+
+      this._router.use(
+        '/api-docs',
+        swaggerUi.serve,
+        swaggerUi.setup(undefined, {
+          swaggerOptions: {
+            url: `${this._basePath}/api-docs/${specFileName}`,
+          },
+        }),
+      )
+    } else {
+      const setupSwaggerMiddleware = (swagger: any) => {
         const apiDocs = `${this._basePath}/api-docs`
-        console.log(`[OID4P] API docs available at ${apiDocs}`)
+        console.log(`[OID4VP] API docs available at ${apiDocs}`)
 
         this._router.use(
           '/api-docs',
@@ -72,15 +111,19 @@ export class SIOPv2RPApiServer {
             req.swaggerDoc = swagger
             next()
           },
-          swaggerUi.serveFiles(swagger, options),
+          swaggerUi.serveFiles(swagger, {}),
           swaggerUi.setup(),
         )
-      })
-      .catch((err) => {
-        console.log(`[OID4VP] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
-      })
-    const options = {
-      // customCss: '.swagger-ui .topbar { display: none }',
+      }
+
+      fetch(this.OID4VP_SWAGGER_URL)
+        .then((res) => res.json())
+        .then((swagger: any) => {
+          setupSwaggerMiddleware(swagger)
+        })
+        .catch((err) => {
+          console.log(`[OID4VP] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
+        })
     }
   }
   get express(): Express {
