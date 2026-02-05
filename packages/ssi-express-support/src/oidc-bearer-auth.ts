@@ -123,9 +123,7 @@ export class OIDCBearerAuth {
   }
 
   private async discoverJwksUri(issuer: string): Promise<string> {
-    const wellKnownUrl = issuer.endsWith('/')
-      ? `${issuer}.well-known/openid-configuration`
-      : `${issuer}/.well-known/openid-configuration`
+    const wellKnownUrl = `${issuer}${issuer.endsWith('/') ? '' : '/'}.well-known/openid-configuration`
 
     try {
       const response = await fetch(wellKnownUrl)
