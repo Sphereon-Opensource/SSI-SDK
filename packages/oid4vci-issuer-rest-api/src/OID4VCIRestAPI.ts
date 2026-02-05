@@ -139,59 +139,27 @@ export class OID4VCIRestAPI {
   private setupSwaggerUi() {
     const apiDocsPath = `/api-docs`
     const specPath = `/api-docs/spec.yaml`
-    const fullApiDocsPath = `${this._basePath}${apiDocsPath}`
     const fullSpecPath = `${this._basePath}${specPath}`
 
-    console.log(`[OID4VCI] API docs available at ${this._baseUrl.origin}${fullApiDocsPath}`)
+    if (!fs.existsSync(this.OID4VCI_OPENAPI_FILE)) {
+      console.log(`[OID4VCI] OpenAPI spec not found at ${this.OID4VCI_OPENAPI_FILE}. Swagger UI disabled.`)
+      return
+    }
 
+    console.log(`[OID4VCI] API docs available at ${this._baseUrl.origin}${this._basePath}${apiDocsPath}`)
     this.express.set('trust proxy', this.opts?.endpointOpts?.trustProxy ?? true)
 
     // Serve spec from local file
     this._router.get(specPath, (req: Request, res: Response): void => {
-      try {
-        if (!fs.existsSync(this.OID4VCI_OPENAPI_FILE)) {
-          res.status(404).json({ error: 'OpenAPI spec file not found' })
-          return
-        }
-        res.type('text/yaml').sendFile(this.OID4VCI_OPENAPI_FILE)
-      } catch (err: any) {
-        console.error(`[OID4VCI] Spec read error: ${err.message}`)
-        res.status(500).json({ error: 'Failed to load OpenAPI spec', details: err.message })
-      }
+      res.type('text/yaml').sendFile(this.OID4VCI_OPENAPI_FILE)
     })
 
-    // Swagger UI - custom index handler must come BEFORE static serve
-    const serveSwaggerIndex = (req: Request, res: Response, next: any): void => {
-      if (req.path === '/' || req.path === '') {
-        const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>OID4VCI API</title>
-  <link rel="stylesheet" type="text/css" href="${fullApiDocsPath}/swagger-ui.css">
-</head>
-<body>
-  <div id="swagger-ui"></div>
-  <script src="${fullApiDocsPath}/swagger-ui-bundle.js"></script>
-  <script src="${fullApiDocsPath}/swagger-ui-standalone-preset.js"></script>
-  <script>
-    window.onload = function() {
-      SwaggerUIBundle({
-        url: "${fullSpecPath}",
-        dom_id: '#swagger-ui',
-        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-        layout: "StandaloneLayout"
-      });
-    };
-  </script>
-</body>
-</html>`
-        res.type('html').send(html)
-        return
-      }
-      next()
-    }
-    this._router.use(apiDocsPath, serveSwaggerIndex, swaggerUi.serve)
+    // Swagger UI
+    this._router.use(
+      apiDocsPath,
+      swaggerUi.serve,
+      swaggerUi.setup(undefined, { swaggerOptions: { url: fullSpecPath } }),
+    )
   }
 
   get express(): Express {

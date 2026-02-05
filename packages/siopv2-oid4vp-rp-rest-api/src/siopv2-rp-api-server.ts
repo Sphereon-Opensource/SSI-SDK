@@ -4,6 +4,11 @@ import { ISIOPv2RP } from '@sphereon/ssi-sdk.siopv2-oid4vp-rp-auth'
 import { TAgent } from '@veramo/core'
 import express, { Express, Request, Response, Router } from 'express'
 import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 import { getAuthRequestSIOPv2Endpoint, verifyAuthResponseSIOPv2Endpoint } from './siop-api-functions'
 import { IRequiredPlugins, ISIOPv2RPRestAPIOpts } from './types'
 import {
@@ -21,6 +26,7 @@ export class SIOPv2RPApiServer {
   private readonly _opts?: ISIOPv2RPRestAPIOpts
   private readonly _basePath: string
 
+  private readonly OID4VP_OPENAPI_FILE = path.join(__dirname, '..', 'oid4vp-openapi.yml')
   private readonly OID4VP_SWAGGER_URL = 'https://api.swaggerhub.com/apis/SphereonInt/OID4VP/0.1.0'
   constructor(args: { agent: TAgent<IRequiredPlugins>; expressSupport: ExpressSupport; opts?: ISIOPv2RPRestAPIOpts }) {
     const { agent, opts } = args
@@ -59,13 +65,13 @@ export class SIOPv2RPApiServer {
 
   /**
    * Sets up Swagger UI for API documentation.
-   * Supports three modes via OID4VP_OPENAPI_SPEC environment variable:
-   * - Remote URL: Fetches spec from URL and serves via proxy endpoint
-   * - Local file: Serves spec from filesystem
-   * - Default: Uses built-in SwaggerHub spec
+   * Spec source priority:
+   * 1. OID4VP_OPENAPI_SPEC env var (URL or file path)
+   * 2. Bundled universal-OID4VP-openapi.yaml file
+   * 3. Fallback to SwaggerHub URL
    */
   private setupSwaggerUi() {
-    const openApiSpec = process.env.OID4VP_OPENAPI_SPEC
+    const envSpec = process.env.OID4VP_OPENAPI_SPEC
     const apiDocsPath = '/api-docs'
     const specPath = '/api-docs/spec.yaml'
     const fullApiDocsPath = `${this._basePath}${apiDocsPath}`
@@ -74,16 +80,21 @@ export class SIOPv2RPApiServer {
     // Spec cache shared across all modes
     let cachedSpec: any = null
 
-    // Determine spec source
-    const isRemoteUrl = openApiSpec?.startsWith('http://') || openApiSpec?.startsWith('https://')
-    const isLocalFile = openApiSpec && !isRemoteUrl
+    // Determine spec source: env var > bundled file > SwaggerHub URL
+    const isRemoteUrl = envSpec?.startsWith('http://') || envSpec?.startsWith('https://')
+    const isEnvLocalFile = envSpec && !isRemoteUrl
+    // Resolve relative paths from package root
+    const resolvedEnvFile = isEnvLocalFile && !path.isAbsolute(envSpec) ? path.join(__dirname, '..', envSpec) : envSpec
+    const hasBundledFile = fs.existsSync(this.OID4VP_OPENAPI_FILE)
+    const localFile = isEnvLocalFile ? resolvedEnvFile : hasBundledFile ? this.OID4VP_OPENAPI_FILE : undefined
+    const isLocalFile = !!localFile
 
-    if (isLocalFile && !fs.existsSync(openApiSpec)) {
-      console.log(`[OID4VP] OpenAPI spec file not found at ${openApiSpec}. Swagger UI disabled.`)
+    if (isEnvLocalFile && !fs.existsSync(resolvedEnvFile!)) {
+      console.log(`[OID4VP] OpenAPI spec file not found at ${resolvedEnvFile}. Swagger UI disabled.`)
       return
     }
 
-    const specSource = isRemoteUrl ? openApiSpec : isLocalFile ? `file://${openApiSpec}` : this.OID4VP_SWAGGER_URL
+    const specSource = isRemoteUrl ? envSpec : isLocalFile ? localFile : this.OID4VP_SWAGGER_URL
     console.log(`[OID4VP] API docs: ${fullApiDocsPath} (spec: ${specSource})`)
 
     // Unified spec fetcher
@@ -92,8 +103,8 @@ export class SIOPv2RPApiServer {
         return cachedSpec
       }
 
-      if (isLocalFile) {
-        const content = fs.readFileSync(openApiSpec, 'utf-8')
+      if (isLocalFile && localFile) {
+        const content = fs.readFileSync(localFile, 'utf-8')
         try {
           cachedSpec = JSON.parse(content)
         } catch {
@@ -101,7 +112,7 @@ export class SIOPv2RPApiServer {
           cachedSpec = content
         }
       } else {
-        const url = isRemoteUrl ? openApiSpec! : this.OID4VP_SWAGGER_URL
+        const url = isRemoteUrl ? envSpec! : this.OID4VP_SWAGGER_URL
         const response = await fetch(url)
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`)
@@ -140,39 +151,12 @@ export class SIOPv2RPApiServer {
       }
     })
 
-    // Swagger UI - custom index handler must come BEFORE static serve
-    const serveSwaggerIndex = (req: Request, res: Response, next: any): void => {
-      // Only handle exact /api-docs or /api-docs/ requests
-      if (req.path === '/' || req.path === '') {
-        const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>OID4VP API</title>
-  <link rel="stylesheet" type="text/css" href="${fullApiDocsPath}/swagger-ui.css">
-</head>
-<body>
-  <div id="swagger-ui"></div>
-  <script src="${fullApiDocsPath}/swagger-ui-bundle.js"></script>
-  <script src="${fullApiDocsPath}/swagger-ui-standalone-preset.js"></script>
-  <script>
-    window.onload = function() {
-      SwaggerUIBundle({
-        url: "${fullSpecPath}",
-        dom_id: '#swagger-ui',
-        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-        layout: "StandaloneLayout"
-      });
-    };
-  </script>
-</body>
-</html>`
-        res.type('html').send(html)
-        return
-      }
-      next()
-    }
-    this._router.use(apiDocsPath, serveSwaggerIndex, swaggerUi.serve)
+    // Swagger UI
+    this._router.use(
+      apiDocsPath,
+      swaggerUi.serve,
+      swaggerUi.setup(undefined, { swaggerOptions: { url: fullSpecPath } }),
+    )
   }
   get express(): Express {
     return this._express

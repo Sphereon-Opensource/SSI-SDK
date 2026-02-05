@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: Universal OID4VP
+  version: 0.1.0
+  description: |
+    This universal API enables standardized integration with OID4VP-capable Relying Party agents. 
+    It minimizes custom integration efforts by defining a baseline for software interoperability. 
+    Due to privacy concerns, it favors POST methods with payloads instead of query/path parameters 
+    to reduce log-leakage of sensitive values like query IDs or correlation identifiers.
+  contact:
+    name: Fides Community
+    url: https://github.com/FIDEScommunity/universal-oid4vp
+  license:
+    name: Apache2
+
+servers:
+  - description: Sphereon Businesss Wallet
+    url: https://agent.oribi.demo.sphereon.com
+  - description: Development server
+    url: http://localhost:8081
+
+security:
+  - oAuth2: []
+  - bearerAuth: []
+
+tags:
+  - name: Backend
+    description: The Backend integration endpoints
+
+paths:
+  /oid4vp/backend/auth/requests:
+    post:
+      summary: Create authorization request and session
+      description: |
+        Creates a new OID4VP Authorization Request that can be used to request Digital Credentials from a wallet.
+        Returns URIs needed to initiate the auth flow and check its status. The queryId passed in needs to be known to the agent. This endpoint is protected using OAuth2/OIDC normally with a confidential client.  Do not call from the frontend!
+      tags:
+        - Backend
+      operationId: create-authorization-request
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAuthorizationRequestBody'
+      responses:
+        '201':
+          description: Authorization request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAuthorizationRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Query Id or other param not configured/found on the RP agent side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error creating authorization request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      callbacks:
+        authorizationStatusCallback:
+          '{$request.body#/callback.url}':
+            post:
+              summary: Authorization status callback
+              description: Notify the registered URL with auth status changes for the statuses this callback was registered for.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/AuthorizationStatusResponse'
+              responses:
+                "200":
+                  description: Notification received by the external service.
+
+
+  /oid4vp/backend/auth/requests/{correlation_id}:
+    parameters:
+      - in: path
+        name: correlation_id
+        schema:
+          type: string
+        required: true
+        description: The correlation_id as returned from the CreateAuthorizationRequestResponse
+
+    get:
+      summary: Get authorization session status
+      operationId: get-authorization-status
+      description: |
+        Checks the current status of an Authorization Request session. Can optionally include verified credential data 
+        in the response when the status is 'verified'.
+      tags:
+        - Backend
+
+      responses:
+        '200':
+          description: Authorization status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationStatusResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Query Id or other param not configured/found on the RP agent side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error creating authorization request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove authorization request state
+      operationId: delete-authorization-request
+      description: Deletes all state associated with an authorization request. Use for cleanup after completion or timeout.
+      tags:
+        - Backend
+      responses:
+        '204':
+          description: Authorization request state removed successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Query Id or other param not configured/found on the RP agent side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error creating authorization request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication
+      bearerFormat: JWT
+    oAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://localhost:8082/realms/oid4vp/protocol/openid-connect/token
+          refreshUrl: http://localhost:8082/realms/oid4vp/protocol/openid-connect/token
+          scopes: {}
+
+  requestBodies:
+    CreateAuthorizationRequestBody:
+      description: Configuration for the authorization request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateAuthorizationRequest'
+          examples:
+            Create request without a QR code:
+              value:
+                correlation_id: my-business-key-or-uuid
+                query_id: example-dcql-id
+                client_id: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+            Create request with a QR code:
+              value:
+                correlation_id: my-business-key-or-uuid
+                query_id: example-dcql-id
+                client_id: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+                qr_code:
+                  size: 400
+            Create request with a callback and a QR code:
+              value:
+                correlation_id: my-business-key-or-uuid
+                query_id: example-dcql-id
+                client_id: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+                qr_code:
+                  size: 400
+                callback:
+                  url: https://example.com/callback/unique-value-here
+                  status:
+                    - authorization_request_retrieved
+                    - authorization_response_verified
+                    - error
+
+  schemas:
+    CreateAuthorizationRequest:
+      type: object
+      required: [query_id]
+      properties:
+        correlation_id:
+          type: string
+          description: Optional Id typically containing a business key that can be used to later query the status. If not provided a random UUID will be assigned to the correlationId and will be returned in the response.
+          example: my-business-key-or-uuid
+        query_id:
+          type: string
+          description: Identifier for the query (DCQL or PE)
+          example: example-dcql-id
+        request_uri_base:
+          type: string
+          description: The base URI to be used for request URIs. Defaults to "oidp4vp://". It is mainly useful for web/organizational wallets that have an https:// URI for OID4VP
+          example: https://example.wallet.com
+          default: oid4vp://
+        request_uri_method:
+          $ref: '#/components/schemas/RequestUriMethod'
+        client_id:
+          type: string
+          description: The client id and schema as defined in RFC6749 (client_id) and OID4VP (scheme)
+          example: redirect_uri%3Ahttps%3A%2F%2Fexample.com%2Fcb
+        response_type:
+          $ref: '#/components/schemas/ResponseType'
+        response_mode:
+          $ref: '#/components/schemas/ResponseMode'
+        transaction_data:
+          type: array
+          items:
+            type: string
+          description: Array of strings, where each string is a base64url encoded JSON object that contains a typed parameter set with details about the transaction that the Verifier is requesting the End-User to authorize.
+        qr_code:
+          $ref: '#/components/schemas/QRCodeOpts'
+        direct_post_response_redirect_uri:
+          type: string
+          description: Optional URI where the user agent on the wallet device should redirect when completing the interaction succesfully
+          example: 'https://example.com/callback/success/my-unique-vallue-here'
+        callback:
+          $ref: '#/components/schemas/CallbackOpts'
+
+    DeleteAuthorizationRequest:
+      type: object
+      required: [correlation_id, query_id]
+      properties:
+        correlation_id:
+          type: string
+          description: Unique identifier for the session
+          example: 2cc29d1c-7d00-46f8-b0ae-b4779d2ff143
+        query_id:
+          type: string
+          description: Identifier for the presentation definition that specifies which credentials are required
+          example: ExampleSdJwtId
+
+    AuthorizationStatusRequest:
+      type: object
+      required: [correlation_id, query_id]
+      properties:
+        correlation_id:
+          type: string
+          description: Unique identifier for the session
+          example: 2cc29d1c-7d00-46f8-b0ae-b4779d2ff143
+        query_id:
+          type: string
+          description: Identifier for the presentation definition that specifies which credentials are required
+          example: ExampleSdJwtId
+        verified_data:
+          $ref: '#/components/schemas/VerifiedDataOpts'
+
+    VerifiedDataOpts:
+      type: object
+      properties:
+        modes:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerifiedDataMode'
+      description: Controls what verified data to include in the response. Only applies when status is 'authorization_response_verified'. Either nothing (omit), or a combination of the vp_tokens and credential data deserialized (credentials_deserialized), depedning on the modes selected
+      example:
+        - vp_token
+        - credentials_deserialized
+
+    CreateAuthorizationRequestResponse:
+      type: object
+      required: [correlation_id, query_id, request_uri, status_uri]
+      properties:
+        correlation_id:
+          type: string
+          description: Unique identifier for the authentication session
+          example: 2cc29d1c-7d00-46f8-b0ae-b4779d2ff143
+        query_id:
+          type: string
+          description: Identifier for the DCQL/PE query that specifies the requested Digital Credentials
+          example: example-dcql-id
+        request_uri:
+          type: string
+          description: (Deep)link URI that initiates the authentication flow by redirect. The wallet will use this value. Should be part of a redirect, link or QR code. This API requires Auth Request be references only, meaning `request_uri` only and no `request`
+          example: 'openid-vc://?request_uri=https://example.com/siop/definitions/ExampleSdJwtId/auth-requests/b5cab09e-7c08-42c9-870b-c2b83a2c8acd'
+        status_uri:
+          type: string
+          description: Endpoint URL for checking the status of the authentication request, conforming to this OpenAPI specification
+          example: 'https://example.com/oid4vp/backend/auth/status'
+        qr_uri:
+          type: string
+          format: dataurl
+          description: The QR code image as generated by the RP in data Uri format. Only provided in case the request contained a qr_code object (can be an empty object). Should not be provided in case no qr_code property was present, or when it was null/undefined.
+          example: data:image/png;base64,iVBORw0<snip>ef=
+
+    AuthorizationStatusResponse:
+      type: object
+      required: [status, query_id, correlation_id, definition_id, last_updated]
+      properties:
+        status:
+          $ref: '#/components/schemas/AuthorizationStatus'
+        correlation_id:
+          type: string
+          description: Unique identifier for the authentication session
+          example: 2cc29d1c-7d00-46f8-b0ae-b4779d2ff143
+        error:
+          $ref: '#/components/schemas/Error'
+        query_id:
+          description: Identifier for the presentation definition that specifies which credentials are required
+          example: ExampleSdJwtId
+          type: string
+        last_updated:
+          type: integer
+          description: Unix timestamp in milliseconds representing when the status was last updated
+          example: 1706515200000
+        verified_data:
+          $ref: '#/components/schemas/VerifiedData'
+
+    RequestUriMethod:
+      type: string
+      description: Determines whether the request_uri should be access by a GET or by a POST by the wallet
+      enum: [get, post]
+      default: get
+
+    ResponseType:
+      type: string
+      enum: [vp_token, id_token]
+      default: vp_token
+      description: The OID4VP response type to use. FIXME Needs to be changed since response_type is a whitespace delimited strung and thus enums are not the correct approach
+
+    ResponseMode:
+      type: string
+      description: Whether to use regular authorization responses or encrypted (direct_post.jwt) authorization responses
+      enum: [direct_post, direct_post.jwt]
+      default: direct_post
+
+    AuthorizationStatus:
+      type: string
+      enum:
+        - authorization_request_created
+        - authorization_request_retrieved
+        - authorization_response_received
+        - authorization_response_verified
+        - error
+
+    VerifiedDataMode:
+      type: string
+      description: The way verified data will be represented. Either the full Authorization Response, vp_tokens, or claims from digital credentials deserialized into JSON objects. The latter is the most easy representation for external apps integrating with this API as thye do not have to perform additional actions, nor have knowledge about the internal of vp_tokens and auth responses.
+      enum:
+        - authorization_response
+        - vp_token
+        - credential_claims_deserialized
+
+    VerifiedData:
+      type: object
+      description: This object is only included in case the authorization status is 'authorization_response_verified'
+      properties:
+        authorization_response:
+          $ref: '#/components/schemas/AuthorizationResponsePayload'
+        credential_claims:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerifiedClaimsValue'
+
+    VerifiedClaimsValue:
+      type: object
+      description: Represents a single credential with its claims and type
+      required: [id, type]
+      properties:
+        id:
+          type: string
+          description: The id of the query. Can be a presentation exchange id, a DCQL query or query set Id. Used by the RP to match the credential against the query
+        type:
+          type: string
+          description: The digital credential type. Can be a vct value, or for instance a json-ld type
+        claims:
+          type: object
+          additionalProperties:
+            type: string
+          description: The claims returned and deserialized in the form of a map, where the keys represent the claim names
+
+    VpToken:
+      oneOf:
+        - $ref: '#/components/schemas/SingleObjectVpTokenPE'
+        - $ref: '#/components/schemas/SingleStringVpTokenPE'
+        - $ref: '#/components/schemas/MultipleVpTokens'
+        - $ref: '#/components/schemas/MultipleVpTokenDCQL'
+
+    SingleObjectVpTokenPE:
+      type: object
+
+    SingleStringVpTokenPE:
+      type: string
+
+    MultipleVpTokens:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/SingleObjectVpTokenPE'
+          - $ref: '#/components/schemas/SingleStringVpTokenPE'
+
+    MultipleVpTokenDCQL:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/MultipleVpTokens'
+
+    AuthorizationResponsePayload:
+      type: object
+      properties:
+        presentation_submission:
+          type: object
+          description: Object containing information about how the presented credentials fulfill the presentation definition requirements. Only if PE is used!
+        vp_token:
+          $ref: '#/components/schemas/VpToken'
+
+    Error:
+      type: object
+      description: Error details returned when an operation fails
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+          example: 500
+        message:
+          type: string
+          description: Human-readable error message
+          example: Could not verify auth status
+        error_details:
+          type: string
+          description: Additional error details or stack trace when available
+      required:
+        - status
+        - message
+
+    CallbackOpts:
+      type: object
+      properties:
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorizationStatus'
+          description: Limit the callbacks to certain statuses. If not provided or an empty array is provided, all statuses will be assumed
+        verified_data:
+          $ref: '#/components/schemas/VerifiedDataOpts'
+        url:
+          type: string
+          description: The callback url for status updates
+          example: https://example.com/callback/status
+      required:
+        - url
+
+    QRCodeOpts:
+      type: object
+      description: >
+        As soon as you include this object the OID4VP agent has to generate a QR code. Every RP implementation needs to support this, as we want to make it easy on the integration side. The integration side can choose whether they create their own QR codes, or whether they want to use the QR code from the RP. Thus every RP conforming to this spec should support generating a QR code in data-uri format. No property is mandatory, so a "qrCodeOpts": {} is already valid and generates a QR with the default properties applied. A RP implementation is free to implement additional properties like logo's etc. This API only mandates a few common properties to not make it too complex for RPs. If the integrating app wants to use their own QR codes they simply need to omit the qr_code param from the request. The agent should not generate a QT code in this case
+      properties:
+        size:
+          type: number
+          description: "Size of the QR code in pixels."
+          default: 400
+        color_dark:
+          type: string
+          description: >-
+            Color of the blocks on the QR code.
+            Accepts a CSS <color>.
+            For more information about CSS <color>, please refer to [https://developer.mozilla.org/en-US/docs/Web/CSS/color_value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+          default: "#000000"
+        color_light:
+          type: string
+          description: >-
+            Color of the empty areas on the QR code.
+            Accepts a CSS <color>.
+            For more information about CSS <color>, please refer to [https://developer.mozilla.org/en-US/docs/Web/CSS/color_value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value).
+          default: "#ffffff"
