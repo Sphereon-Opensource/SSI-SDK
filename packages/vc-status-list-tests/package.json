@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/vc-status-list-tests",
-  "version": "0.37.0",
+  "version": "0.37.1",
   "scripts": {
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },

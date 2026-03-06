@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.37.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.37.0...v0.37.1) (2026-03-06)
+
+### Bug Fixes
+
+- add null check for optional fields in OID4VCIHolder service and machine logic ([625d096](https://github.com/Sphereon-Opensource/SSI-SDK/commit/625d0968c160c66755e8d61d38ff3ce68ef9ad68))
+
 # [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
 
 ### Bug Fixes
