@@ -1,7 +1,7 @@
 {
   "name": "@sphereon/ssi-types",
   "description": "SSI Common Types",
-  "version": "0.37.0",
+  "version": "0.37.1",
   "source": "./src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",

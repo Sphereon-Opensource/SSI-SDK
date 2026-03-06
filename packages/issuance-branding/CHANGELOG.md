@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.37.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.37.0...v0.37.1) (2026-03-06)
+
+### Bug Fixes
+
+- improve image handling by adding checks for missing dataUri and handling failed downloads ([70393d8](https://github.com/Sphereon-Opensource/SSI-SDK/commit/70393d8df9b4f13932f6972d0b6fcf1b516cf439))
+- improve image handling by adding checks for missing dataUri and handling failed downloads ([36354c7](https://github.com/Sphereon-Opensource/SSI-SDK/commit/36354c773acea3d1c8308e6ae8226fbe8ec1901e))
+- improve image handling by adding checks for missing dataUri and handling failed downloads ([3632ea6](https://github.com/Sphereon-Opensource/SSI-SDK/commit/3632ea611df4a1b4853b9bd3aaa1ec84078c2439))
+
 # [0.37.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.36.0...v0.37.0) (2026-01-30)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.issuance-branding
