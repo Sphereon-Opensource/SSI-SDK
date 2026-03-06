@@ -10,8 +10,14 @@ import {
   createVerifyAuthResponseCallback,
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
 import express, { Express, Request, Response, Router } from 'express'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { IRequiredContext } from './types'
 import swaggerUi from 'swagger-ui-express'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {}
 
@@ -97,7 +103,7 @@ export class OID4VCIRestAPI {
     return new OID4VCIRestAPI({ context, issuerInstanceArgs, expressSupport, opts, instance, issuer })
   }
 
-  private readonly OID4VCI_SWAGGER_URL = 'https://api.swaggerhub.com/apis/SphereonInt/OID4VCI/0.1.1'
+  private readonly OID4VCI_OPENAPI_FILE = path.join(__dirname, '..', 'oid4vci-openapi.yml')
 
   private constructor(args: {
     issuer: VcIssuer
@@ -131,30 +137,29 @@ export class OID4VCIRestAPI {
   }
 
   private setupSwaggerUi() {
-    fetch(this.OID4VCI_SWAGGER_URL)
-      .then((res) => res.json())
-      .then((swagger: any) => {
-        const apiDocs = `/api-docs`
-        console.log(`[OID4VCI] API docs available at ${this._baseUrl.toString()}${this._basePath}${apiDocs}`)
-        swagger.servers = [{ url: this._baseUrl.toString(), description: 'This server' }]
-        this.express.set('trust proxy', this.opts?.endpointOpts?.trustProxy ?? true)
-        this._router.use(
-          apiDocs,
-          (req: Request, res: Response, next: any) => {
-            // @ts-ignore
-            req.swaggerDoc = swagger
-            next()
-          },
-          swaggerUi.serveFiles(swagger, options),
-          swaggerUi.setup(),
-        )
-      })
-      .catch((err) => {
-        console.log(`[OID4VCI] Unable to fetch swagger document: ${err}. Will not host api-docs on this instance`)
-      })
-    const options = {
-      // customCss: '.swagger-ui .topbar { display: none }',
+    const apiDocsPath = `/api-docs`
+    const specPath = `/api-docs/spec.yaml`
+    const fullSpecPath = `${this._basePath}${specPath}`
+
+    if (!fs.existsSync(this.OID4VCI_OPENAPI_FILE)) {
+      console.log(`[OID4VCI] OpenAPI spec not found at ${this.OID4VCI_OPENAPI_FILE}. Swagger UI disabled.`)
+      return
     }
+
+    console.log(`[OID4VCI] API docs available at ${this._baseUrl.origin}${this._basePath}${apiDocsPath}`)
+    this.express.set('trust proxy', this.opts?.endpointOpts?.trustProxy ?? true)
+
+    // Serve spec from local file
+    this._router.get(specPath, (req: Request, res: Response): void => {
+      res.type('text/yaml').sendFile(this.OID4VCI_OPENAPI_FILE)
+    })
+
+    // Swagger UI
+    this._router.use(
+      apiDocsPath,
+      swaggerUi.serve,
+      swaggerUi.setup(undefined, { swaggerOptions: { url: fullSpecPath } }),
+    )
   }
 
   get express(): Express {

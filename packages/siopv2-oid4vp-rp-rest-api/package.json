@@ -98,7 +98,9 @@
     "src",
     "README.md",
     "plugin.schema.json",
-    "LICENSE"
+    "LICENSE",
+    "oid4vp-openapi.yml",
+    "universal-OID4VP-openapi.yaml"
   ],
   "private": false,
   "publishConfig": {

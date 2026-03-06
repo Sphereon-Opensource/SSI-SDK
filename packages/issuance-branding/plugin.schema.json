@@ -147,6 +147,9 @@
                 "$ref": "#/components/schemas/ICredentialLocaleBranding"
               }
             },
+            "state": {
+              "type": "string"
+            },
             "createdAt": {
               "type": "string",
               "format": "date-time"
@@ -161,6 +164,7 @@
             "issuerCorrelationId",
             "vcHash",
             "localeBranding",
+            "state",
             "createdAt",
             "lastUpdatedAt"
           ],
@@ -190,6 +194,9 @@
             "text": {
               "$ref": "#/components/schemas/ITextAttributes"
             },
+            "state": {
+              "type": "string"
+            },
             "createdAt": {
               "type": "string",
               "format": "date-time"
@@ -205,12 +212,13 @@
               }
             }
           },
-          "additionalProperties": false,
           "required": [
             "createdAt",
             "id",
-            "lastUpdatedAt"
-          ]
+            "lastUpdatedAt",
+            "state"
+          ],
+          "additionalProperties": false
         },
         "IImageAttributes": {
           "type": "object",
@@ -377,6 +385,9 @@
             "description": {
               "type": "string"
             },
+            "state": {
+              "type": "string"
+            },
             "logo": {
               "$ref": "#/components/schemas/IBasicImageAttributes"
             },
@@ -445,6 +456,9 @@
             },
             "text": {
               "$ref": "#/components/schemas/ITextAttributes"
+            },
+            "state": {
+              "type": "string"
             },
             "createdAt": {
               "type": "string",
@@ -536,6 +550,9 @@
             "vcHash": {
               "type": "string"
             },
+            "state": {
+              "type": "string"
+            },
             "createdAt": {
               "type": "string",
               "format": "date-time"
@@ -552,6 +569,9 @@
         "IPartialCredentialLocaleBranding": {
           "type": "object",
           "properties": {
+            "state": {
+              "type": "string"
+            },
             "id": {
               "type": "string"
             },
@@ -686,6 +706,9 @@
         "ICredentialLocaleBrandingFilter": {
           "type": "object",
           "properties": {
+            "state": {
+              "type": "string"
+            },
             "id": {
               "type": "string"
             },
@@ -734,6 +757,9 @@
               "type": "string"
             },
             "vcHash": {
+              "type": "string"
+            },
+            "state": {
               "type": "string"
             },
             "createdAt": {
@@ -812,6 +838,9 @@
             "description": {
               "type": "string"
             },
+            "state": {
+              "type": "string"
+            },
             "createdAt": {
               "type": "string",
               "format": "date-time"
@@ -872,6 +901,9 @@
               "type": "string"
             },
             "description": {
+              "type": "string"
+            },
+            "state": {
               "type": "string"
             },
             "createdAt": {
@@ -1011,9 +1043,9 @@
           "additionalProperties": false
         },
         "Omit<ICredentialBranding,(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>": {
-          "$ref": "#/components/schemas/Pick<ICredentialBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"vcHash\"|\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>"
+          "$ref": "#/components/schemas/Pick<ICredentialBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"vcHash\"|\"localeBranding\"|\"state\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>"
         },
-        "Pick<ICredentialBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"vcHash\"|\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>": {
+        "Pick<ICredentialBranding,Exclude<(\"id\"|\"issuerCorrelationId\"|\"vcHash\"|\"localeBranding\"|\"state\"|\"createdAt\"|\"lastUpdatedAt\"),(\"localeBranding\"|\"createdAt\"|\"lastUpdatedAt\")>>": {
           "type": "object",
           "properties": {
             "id": {
@@ -1024,12 +1056,16 @@
             },
             "vcHash": {
               "type": "string"
+            },
+            "state": {
+              "type": "string"
             }
           },
           "required": [
             "id",
             "issuerCorrelationId",
-            "vcHash"
+            "vcHash",
+            "state"
           ],
           "additionalProperties": false
         },
@@ -1046,9 +1082,9 @@
           "additionalProperties": false
         },
         "Omit<ILocaleBranding,(\"createdAt\"|\"lastUpdatedAt\")>": {
-          "$ref": "#/components/schemas/Pick<ILocaleBranding,Exclude<(\"id\"|\"alias\"|\"locale\"|\"logo\"|\"description\"|\"background\"|\"text\"|\"createdAt\"|\"lastUpdatedAt\"),(\"createdAt\"|\"lastUpdatedAt\")>>"
+          "$ref": "#/components/schemas/Pick<ILocaleBranding,Exclude<(\"id\"|\"alias\"|\"locale\"|\"logo\"|\"description\"|\"background\"|\"text\"|\"state\"|\"createdAt\"|\"lastUpdatedAt\"),(\"createdAt\"|\"lastUpdatedAt\")>>"
         },
-        "Pick<ILocaleBranding,Exclude<(\"id\"|\"alias\"|\"locale\"|\"logo\"|\"description\"|\"background\"|\"text\"|\"createdAt\"|\"lastUpdatedAt\"),(\"createdAt\"|\"lastUpdatedAt\")>>": {
+        "Pick<ILocaleBranding,Exclude<(\"id\"|\"alias\"|\"locale\"|\"logo\"|\"description\"|\"background\"|\"text\"|\"state\"|\"createdAt\"|\"lastUpdatedAt\"),(\"createdAt\"|\"lastUpdatedAt\")>>": {
           "type": "object",
           "properties": {
             "id": {
@@ -1071,6 +1107,9 @@
             },
             "text": {
               "$ref": "#/components/schemas/ITextAttributes"
+            },
+            "state": {
+              "type": "string"
             }
           },
           "required": [
