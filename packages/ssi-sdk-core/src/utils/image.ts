@@ -56,7 +56,7 @@ const getSvgDimensions = (uint8Array: Uint8Array): SizeCalculationResult => {
  * @param value can be both (base64) string and Uint8Array
  */
 export const getImageMediaType = async (value: string | Uint8Array): Promise<string | undefined> => {
-  const uint8Array = typeof value === 'string' ? fromString(value, 'base64') : value
+  const uint8Array = typeof value === 'string' ? new Uint8Array(Buffer.from(value, 'base64')) : value
   if (isSvg(uint8Array)) {
     return `image/svg+xml`
   }
@@ -69,7 +69,7 @@ export const getImageMediaType = async (value: string | Uint8Array): Promise<str
  * @param value can be both (base64) string and Uint8Array
  */
 export const getImageDimensions = async (value: string | Uint8Array): Promise<IImageDimensions> => {
-  const uint8Array = typeof value === 'string' ? fromString(value, 'base64') : value
+  const uint8Array = typeof value === 'string' ? new Uint8Array(Buffer.from(value, 'base64')) : value
   const dimensions: SizeCalculationResult = isSvg(uint8Array) ? getSvgDimensions(uint8Array) : imageSize(uint8Array)
 
   if (!dimensions.width || !dimensions.height) {

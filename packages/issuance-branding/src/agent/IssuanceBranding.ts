@@ -326,38 +326,43 @@ export class IssuanceBranding implements IAgentPlugin {
       return EMPTY_IMAGE_ATTRIBUTES
     }
 
-    const data_uri_regex: RegExp = /^data:image\/[^;]+;base64,/
-    if (data_uri_regex.test(image.uri)) {
-      debug('Setting additional image properties for uri', image.uri)
-      const base64Content: string = await this.extractBase64FromDataURI(image.uri)
-      const dimensions: IImageDimensions = image.dimensions ?? (await getImageDimensions(base64Content))
-      const mediaType: string = image.mediaType ?? (await this.getDataTypeFromDataURI(image.uri))
+    try {
+      const data_uri_regex: RegExp = /^data:image\/[^;]+;base64,/
+      if (data_uri_regex.test(image.uri)) {
+        debug('Setting additional image properties for uri', image.uri)
+        const base64Content: string = await this.extractBase64FromDataURI(image.uri)
+        const dimensions: IImageDimensions = image.dimensions ?? (await getImageDimensions(base64Content))
+        const mediaType: string = image.mediaType ?? (await this.getDataTypeFromDataURI(image.uri))
+
+        return {
+          mediaType,
+          dimensions,
+        }
+      }
+
+      debug('Setting additional image properties for url', image.uri)
+      const resource: IImageResource | undefined = !image.dataUri ? await downloadImage(image.uri) : undefined
+
+      if (!resource?.base64Content && !image.dataUri) {
+        debug(`Could not download image from ${image.uri} and no dataUri available, returning empty attributes`)
+        return EMPTY_IMAGE_ATTRIBUTES
+      }
+
+      const dimensions: IImageDimensions =
+        image.dimensions ?? (await getImageDimensions(resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))))
+      const mediaType: string | undefined =
+        image.mediaType ??
+        resource?.contentType ??
+        (resource?.base64Content ? await getImageMediaType(resource.base64Content) : await this.getDataTypeFromDataURI(image.uri))
 
       return {
         mediaType,
+        dataUri: image.dataUri ?? `data:${mediaType};base64,${resource!.base64Content}`,
         dimensions,
       }
-    }
-
-    debug('Setting additional image properties for url', image.uri)
-    const resource: IImageResource | undefined = !image.dataUri ? await downloadImage(image.uri) : undefined
-
-    if (!resource?.base64Content && !image.dataUri) {
-      debug(`Could not download image from ${image.uri} and no dataUri available, returning empty attributes`)
+    } catch (e) {
+      debug(`Could not get additional image attributes for ${image.uri}`, e)
       return EMPTY_IMAGE_ATTRIBUTES
-    }
-
-    const dimensions: IImageDimensions =
-      image.dimensions ?? (await getImageDimensions(resource?.base64Content ?? (await this.extractBase64FromDataURI(image.dataUri!))))
-    const mediaType: string | undefined =
-      image.mediaType ??
-      resource?.contentType ??
-      (resource?.base64Content ? await getImageMediaType(resource.base64Content) : await this.getDataTypeFromDataURI(image.uri))
-
-    return {
-      mediaType,
-      dataUri: image.dataUri ?? `data:${mediaType};base64,${resource!.base64Content}`,
-      dimensions,
     }
   }
 
