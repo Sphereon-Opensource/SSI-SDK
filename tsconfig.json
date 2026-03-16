@@ -168,6 +168,9 @@
       "path": "./packages/contact-manager"
     },
     {
+      "path": "./packages/credential-design-manager"
+    },
+    {
       "path": "./packages/contact-manager-rest-api"
     },
     {

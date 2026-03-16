@@ -55,6 +55,7 @@ export {
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreServiceMigrations,
+  DataStoreCredentialDesignMigrations,
   DataStoreMigrationsWithVeramo,
   VeramoDataStoreMigrations,
   VeramoDataStoreEntities,
@@ -116,6 +117,9 @@ export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
 
 export const DataStoreMachineStateEntities = [MachineStateInfoEntity]
 
+// TODO: Add credential design entities once they are created
+export const DataStoreCredentialDesignEntities: any[] = []
+
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
   ...DataStoreContactEntities,
@@ -125,6 +129,7 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
+  ...DataStoreCredentialDesignEntities,
   // ...DataStoreOid4vcStateEntities,
 ]
 

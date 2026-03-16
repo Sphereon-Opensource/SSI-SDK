@@ -1,0 +1,77 @@
+{
+  "ICredentialDesignManager": {
+    "components": {
+      "schemas": {
+        "IGetCredentialDesignArgs": {
+          "type": "object",
+          "properties": {
+            "credentialDesignId": {
+              "type": "string"
+            }
+          },
+          "required": ["credentialDesignId"]
+        },
+        "IAddCredentialDesignArgs": {
+          "type": "object",
+          "properties": {}
+        },
+        "IUpdateCredentialDesignArgs": {
+          "type": "object",
+          "properties": {
+            "credentialDesignId": {
+              "type": "string"
+            }
+          },
+          "required": ["credentialDesignId"]
+        },
+        "IRemoveCredentialDesignArgs": {
+          "type": "object",
+          "properties": {
+            "credentialDesignId": {
+              "type": "string"
+            }
+          },
+          "required": ["credentialDesignId"]
+        }
+      },
+      "methods": {
+        "cdmGetCredentialDesign": {
+          "description": "Get a credential design by ID",
+          "arguments": {
+            "$ref": "#/components/schemas/IGetCredentialDesignArgs"
+          },
+          "returnType": {
+            "type": "object"
+          }
+        },
+        "cdmAddCredentialDesign": {
+          "description": "Add a new credential design",
+          "arguments": {
+            "$ref": "#/components/schemas/IAddCredentialDesignArgs"
+          },
+          "returnType": {
+            "type": "object"
+          }
+        },
+        "cdmUpdateCredentialDesign": {
+          "description": "Update an existing credential design",
+          "arguments": {
+            "$ref": "#/components/schemas/IUpdateCredentialDesignArgs"
+          },
+          "returnType": {
+            "type": "object"
+          }
+        },
+        "cdmRemoveCredentialDesign": {
+          "description": "Remove a credential design by ID",
+          "arguments": {
+            "$ref": "#/components/schemas/IRemoveCredentialDesignArgs"
+          },
+          "returnType": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

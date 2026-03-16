@@ -6,6 +6,7 @@ export { AbstractIssuanceBrandingStore } from './issuanceBranding/AbstractIssuan
 export { AbstractEventLoggerStore } from './eventLogger/AbstractEventLoggerStore'
 export { IAbstractMachineStateStore } from './machineState/IAbstractMachineStateStore'
 export { AbstractPDStore } from './presentationDefinition/AbstractPDStore'
+export { AbstractCredentialDesignStore } from './credentialDesign/AbstractCredentialDesignStore'
 
 export * from './types'
 export * from './utils/MappingUtils'
