@@ -1,13 +1,16 @@
 import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { MetaDataSetEntity } from '../entities/credentialDesign/MetaDataSetEntity'
-import { MetaDataKeyEntity, ValueType } from '../entities/credentialDesign/MetaDataKeyEntity'
-import { MetaDataValueEntity } from '../entities/credentialDesign/MetaDataValueEntity'
-import { FormStepEntity } from '../entities/credentialDesign/FormStepEntity'
-import { SchemaDefinitionEntity } from '../entities/credentialDesign/SchemaDefinitionEntity'
-import { CredentialDesignBrandingEntity } from '../entities/credentialDesign/CredentialDesignBrandingEntity'
-import { DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo } from '../index'
+import { MetaDataSetEntity } from '../entities/credentialDesign'
+import { MetaDataKeyEntity, ValueType } from '../entities/credentialDesign'
+import { MetaDataValueEntity } from '../entities/credentialDesign'
+import { FormStepEntity } from '../entities/credentialDesign'
+import { SchemaDefinitionEntity } from '../entities/credentialDesign'
+import { CredentialDesignBrandingEntity } from '../entities/credentialDesign'
+import {
+  DataStoreEntities,
+  DataStoreMigrations,
+} from '../index'
 
 describe('Credential Design entities tests', (): void => {
   let dbConnection: DataSource
@@ -19,9 +22,9 @@ describe('Credential Design entities tests', (): void => {
       database: ':memory:',
       logging: ['info'],
       migrationsRun: false,
-      migrations: DataStoreMigrationsWithVeramo,
+      migrations: DataStoreMigrations,
       synchronize: false,
-      entities: DataStoreEntitiesWithVeramo,
+      entities: DataStoreEntities,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()

@@ -2,7 +2,10 @@ import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { DataSource } from 'typeorm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { CredentialDesignStore } from '../credentialDesign/CredentialDesignStore'
-import { DataStoreEntitiesWithVeramo, DataStoreMigrationsWithVeramo } from '../index'
+import {
+  DataStoreEntities,
+  DataStoreMigrations,
+} from '../index'
 
 describe('Credential Design store tests', (): void => {
   let dbConnection: DataSource
@@ -15,9 +18,9 @@ describe('Credential Design store tests', (): void => {
       database: ':memory:',
       logging: ['info'],
       migrationsRun: false,
-      migrations: DataStoreMigrationsWithVeramo,
+      migrations: DataStoreMigrations,
       synchronize: false,
-      entities: DataStoreEntitiesWithVeramo,
+      entities: DataStoreEntities,
     }).initialize()
     await dbConnection.runMigrations()
     expect(await dbConnection.showMigrations()).toBeFalsy()

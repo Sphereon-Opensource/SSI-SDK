@@ -15,10 +15,10 @@ import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, Repository } from 'typeorm'
 import { MetaDataSetEntity } from '../entities/credentialDesign'
-import { CredentialDesignBrandingEntity } from '../entities/credentialDesign/CredentialDesignBrandingEntity'
-import { MetaDataKeyEntity } from '../entities/credentialDesign/MetaDataKeyEntity'
-import { MetaDataValueEntity } from '../entities/credentialDesign/MetaDataValueEntity'
-import { SchemaDefinitionEntity } from '../entities/credentialDesign/SchemaDefinitionEntity'
+import { CredentialDesignBrandingEntity } from '../entities/credentialDesign'
+import { MetaDataKeyEntity } from '../entities/credentialDesign'
+import { MetaDataValueEntity } from '../entities/credentialDesign'
+import { SchemaDefinitionEntity } from '../entities/credentialDesign'
 
 const debug: Debug.Debugger = Debug('sphereon:ssi-sdk:credential-design-store')
 
