@@ -1,6 +1,6 @@
 import { contextHasPlugin } from '@sphereon/ssi-sdk.agent-config'
 import { IAgentContext, IPluginMethodMap } from '@veramo/core'
-import { CredentialDesign } from '@sphereon/ssi-sdk.data-store-types'
+import { CredentialDesign, NonPersistedCredentialDesign } from '@sphereon/ssi-sdk.data-store-types'
 
 export interface ICredentialDesignManager extends IPluginMethodMap {
   cdmGetCredentialDesign(args: GetCredentialDesignArgs, context: RequiredContext): Promise<CredentialDesign>
@@ -19,18 +19,22 @@ export type GetCredentialDesignArgs = {
 }
 
 export type GetCredentialDesignsArgs = {
-// TODO
+  filter?: {
+    tenantId?: string
+  }
 }
 
 export type AddCredentialDesignArgs = {
-  // TODO: Define credential design properties
-  [key: string]: any
+  name: string
+  tenantId?: string
+  design?: NonPersistedCredentialDesign
 }
 
 export type UpdateCredentialDesignArgs = {
   credentialDesignId: string
-  // TODO: Define credential design properties
-  [key: string]: any
+  name?: string
+  tenantId?: string
+  design?: Partial<NonPersistedCredentialDesign>
 }
 
 export type RemoveCredentialDesignArgs = {

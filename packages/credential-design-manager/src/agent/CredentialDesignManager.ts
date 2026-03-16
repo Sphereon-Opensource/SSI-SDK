@@ -1,13 +1,10 @@
 import { IAgentPlugin } from '@veramo/core'
-import {
-  AbstractCredentialDesignStore,
-  CredentialDesign,
-  GetCredentialDesignsArgs
-} from '@sphereon/ssi-sdk.data-store-types'
+import { AbstractCredentialDesignStore, CredentialDesign } from '@sphereon/ssi-sdk.data-store-types'
 import { schema } from '../index'
 import {
   AddCredentialDesignArgs,
   GetCredentialDesignArgs,
+  GetCredentialDesignsArgs,
   ICredentialDesignManager,
   RemoveCredentialDesignArgs,
   RequiredContext,
