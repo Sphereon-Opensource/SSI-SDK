@@ -6,7 +6,7 @@ export {
   DataStoreIssuanceBrandingMigrations,
   DataStoreStatusListMigrations,
   DataStoreDigitalCredentialMigrations,
-  DataStoreCredentialDesignsMigrations,
+  DataStoreCredentialDesignMigrations,
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreServiceMigrations,

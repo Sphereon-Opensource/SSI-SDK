@@ -62,7 +62,7 @@ export {
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreServiceMigrations,
-  DataStoreCredentialDesignsMigrations,
+  DataStoreCredentialDesignMigrations,
   DataStoreMigrationsWithVeramo,
   VeramoDataStoreMigrations,
   VeramoDataStoreEntities,

@@ -41,7 +41,7 @@ export const DataStoreIssuanceBrandingMigrations = [
   AddBrandingState1766000000000,
   AddCredentialClaimOrder1768000000000,
 ]
-export const DataStoreCredentialDesignsMigrations = [
+export const DataStoreCredentialDesignMigrations = [
   AddCredentialDesigns1773657426000,
 ]
 export const DataStoreStatusListMigrations = [
@@ -65,7 +65,7 @@ export const DataStoreMigrations = [
   ...DataStoreMachineStateMigrations,
   ...DataStorePresentationDefinitionMigrations,
   ...DataStoreServiceMigrations,
-  ...DataStoreCredentialDesignsMigrations,
+  ...DataStoreCredentialDesignMigrations,
 ]
 
 // All migrations combined with Veramo migrations first - use this when you need both
