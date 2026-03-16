@@ -26,11 +26,11 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
+    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
     "@sphereon/ssi-sdk.agent-config": "workspace:*",
-    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "cross-fetch": "^4.1.0",

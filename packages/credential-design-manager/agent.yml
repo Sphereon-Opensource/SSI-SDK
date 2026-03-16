@@ -5,6 +5,7 @@ constants:
   port: 3335
   methods:
     - cdmGetCredentialDesign
+    - cdmGetCredentialDesigns
     - cdmAddCredentialDesign
     - cdmUpdateCredentialDesign
     - cdmRemoveCredentialDesign
@@ -16,8 +17,10 @@ dbConnection:
       database: ':memory:'
       synchronize: false
       migrationsRun: true
-      migrations: []
-      entities: []
+      migrations:
+        $require: './packages/data-store/dist?t=object#DataStoreMigrationsWithVeramo'
+      entities:
+        $require: './packages/data-store/dist?t=object#DataStoreEntitiesWithVeramo'
 
 server:
   baseUrl:
@@ -78,3 +81,8 @@ agent:
     - schemaValidation: false
       plugins:
         - $require: ./packages/credential-design-manager/dist#CredentialDesignManager
+          $args:
+            - store:
+                $require: './packages/data-store/dist#CredentialDesignStore'
+                $args:
+                  - $ref: /dbConnection

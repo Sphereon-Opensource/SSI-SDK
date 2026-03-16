@@ -35,6 +35,19 @@
         }
       },
       "methods": {
+        "cdmGetCredentialDesigns": {
+          "description": "Get all credential designs",
+          "arguments": {
+            "type": "object",
+            "properties": {}
+          },
+          "returnType": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
         "cdmGetCredentialDesign": {
           "description": "Get a credential design by ID",
           "arguments": {

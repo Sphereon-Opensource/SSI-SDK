@@ -17,6 +17,7 @@ import {
 // Exposing the methods here for any REST implementation
 export const credentialDesignManagerMethods: Array<string> = [
   'cdmGetCredentialDesign',
+  'cdmGetCredentialDesigns',
   'cdmAddCredentialDesign',
   'cdmUpdateCredentialDesign',
   'cdmRemoveCredentialDesign',
@@ -47,23 +48,24 @@ export class CredentialDesignManager implements IAgentPlugin {
     return this.store.getCredentialDesign({ credentialDesignId })
   }
 
+  /** {@inheritDoc ICredentialDesignManager.cdmGetCredentialDesigns} */
   private async cdmGetCredentialDesigns(args: GetCredentialDesignsArgs, context: RequiredContext): Promise<Array<CredentialDesign>> {
-
-    return this.store.getCredentialDesigns() // TODO
+    return this.store.getCredentialDesigns(args)
   }
 
   /** {@inheritDoc ICredentialDesignManager.cdmAddCredentialDesign} */
   private async cdmAddCredentialDesign(args: AddCredentialDesignArgs, context: RequiredContext): Promise<CredentialDesign> {
-    return this.store.addCredentialDesign() // TODO
+    return this.store.addCredentialDesign(args)
   }
 
   /** {@inheritDoc ICredentialDesignManager.cdmUpdateCredentialDesign} */
   private async cdmUpdateCredentialDesign(args: UpdateCredentialDesignArgs, context: RequiredContext): Promise<CredentialDesign> {
-    return this.store.updateCredentialDesign() // TODO
+    return this.store.updateCredentialDesign(args)
   }
 
   /** {@inheritDoc ICredentialDesignManager.cdmRemoveCredentialDesign} */
   private async cdmRemoveCredentialDesign(args: RemoveCredentialDesignArgs, context: RequiredContext): Promise<boolean> {
-    return this.store.removeCredentialDesign() // TODO
+    await this.store.removeCredentialDesign(args)
+    return true
   }
 }

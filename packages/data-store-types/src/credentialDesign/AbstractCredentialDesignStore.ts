@@ -8,7 +8,6 @@ import {
 } from '../types'
 
 export abstract class AbstractCredentialDesignStore {
-  abstract getOrCreateFormStepId(): Promise<string>
   abstract getCredentialDesign(args: GetCredentialDesignArgs): Promise<CredentialDesign>
   abstract getCredentialDesigns(args?: GetCredentialDesignsArgs): Promise<Array<CredentialDesign>>
   abstract addCredentialDesign(args: AddCredentialDesignArgs): Promise<CredentialDesign>

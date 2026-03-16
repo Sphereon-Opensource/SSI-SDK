@@ -55,9 +55,6 @@ export const DataStoreMachineStateMigrations = [CreateMachineStateStore170809804
 export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523, CreateDcqlQueryItem1726617600000]
 export const DataStoreServiceMigrations = [AddServiceMetadata1764000000000]
 
-// TODO: Add credential design migrations once entities are created
-export const DataStoreCredentialDesignMigrations: any[] = []
-
 // All migrations together
 export const DataStoreMigrations = [
   ...DataStoreContactMigrations,
@@ -68,11 +65,8 @@ export const DataStoreMigrations = [
   ...DataStoreMachineStateMigrations,
   ...DataStorePresentationDefinitionMigrations,
   ...DataStoreServiceMigrations,
-  ...DataStoreCredentialDesignMigrations,
-  ...DataStoreCredentialDesignsMigrations
+  ...DataStoreCredentialDesignsMigrations,
 ]
-
-
 
 // All migrations combined with Veramo migrations first - use this when you need both
 export const DataStoreMigrationsWithVeramo = [
