@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../data-store-types"
+    }
+  ]
+}

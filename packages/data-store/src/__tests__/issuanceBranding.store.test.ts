@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   BackgroundAttributesEntity,
   CredentialLocaleBrandingEntity,
-  DataStoreIssuanceBrandingEntities, DataStoreEntitiesWithVeramo,
+  DataStoreEntitiesWithVeramo,
   IAddCredentialLocaleBrandingArgs,
   IAddIssuerLocaleBrandingArgs,
   IBasicCredentialBranding,
