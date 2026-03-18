@@ -1,13 +1,8 @@
+export { ValueType } from '@sphereon/ssi-sdk.data-store-types'
+import { ValueType } from '@sphereon/ssi-sdk.data-store-types'
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { MetaDataSetEntity } from './MetaDataSetEntity'
 import { MetaDataValueEntity } from './MetaDataValueEntity'
-
-export enum ValueType {
-  Text = 'Text',
-  Number = 'Number',
-  Boolean = 'Boolean',
-  Date = 'Date',
-}
 
 @Entity('meta_data_keys')
 export class MetaDataKeyEntity extends BaseEntity {

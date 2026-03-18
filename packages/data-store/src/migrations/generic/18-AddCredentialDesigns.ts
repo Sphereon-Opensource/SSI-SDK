@@ -9,7 +9,7 @@ export class AddCredentialDesigns1773657426000 implements MigrationInterface {
   name = 'AddCredentialDesigns1773657426000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: adding credential claim order column')
+    debug('migration: adding credential designs')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
     switch (dbType) {
       case 'postgres': {
@@ -36,7 +36,7 @@ export class AddCredentialDesigns1773657426000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    debug('migration: removing credential claim order column')
+    debug('migration: removing credential designs')
     const dbType: DatabaseType = queryRunner.connection.driver.options.type
     switch (dbType) {
       case 'postgres': {

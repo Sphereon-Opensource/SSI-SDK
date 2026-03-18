@@ -6,7 +6,7 @@ import {
   credentialBrandingEntityFrom,
   CredentialLocaleBrandingEntity,
   credentialLocaleBrandingEntityFrom,
-  DataStoreIssuanceBrandingEntities, DataStoreEntitiesWithVeramo,
+  DataStoreEntitiesWithVeramo,
   IBasicCredentialBranding,
   IBasicCredentialLocaleBranding,
   IBasicIssuerBranding,
