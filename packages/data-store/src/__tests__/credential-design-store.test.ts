@@ -40,7 +40,7 @@ describe('Credential Design store tests', (): void => {
       identifier: 'GetByIdDesign',
       tenantId: 'tenant-get-by-id',
       design: {
-        label: 'GetByIdDesign',
+        identifier: 'GetByIdDesign',
         tenantId: 'tenant-get-by-id',
         metadataKeys: [
           {
@@ -67,7 +67,7 @@ describe('Credential Design store tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.id).toEqual(savedDesign.id)
-    expect(result.label).toEqual('GetByIdDesign')
+    expect(result.identifier).toEqual('GetByIdDesign')
     expect(result.tenantId).toEqual('tenant-get-by-id')
   })
 
@@ -84,7 +84,7 @@ describe('Credential Design store tests', (): void => {
       identifier: 'Design1',
       tenantId: 'tenant-1',
       design: {
-        label: 'Design1',
+        identifier: 'Design1',
         tenantId: 'tenant-1',
         metadataKeys: [
           {
@@ -110,7 +110,7 @@ describe('Credential Design store tests', (): void => {
       identifier: 'Design2',
       tenantId: 'tenant-2',
       design: {
-        label: 'Design2',
+        identifier: 'Design2',
         tenantId: 'tenant-2',
         metadataKeys: [
           {
@@ -150,7 +150,7 @@ describe('Credential Design store tests', (): void => {
     const result: Array<CredentialDesign> = await store.getCredentialDesigns(args)
 
     expect(result.length).toEqual(1)
-    expect(result[0].label).toEqual('FilterDesign1')
+    expect(result[0].identifier).toEqual('FilterDesign1')
   })
 
   it('should get whole credential design with all relations by filter', async (): Promise<void> => {
@@ -158,7 +158,7 @@ describe('Credential Design store tests', (): void => {
       identifier: 'WholeDesign',
       tenantId: 'tenant-whole',
       design: {
-        label: 'WholeDesign',
+        identifier: 'WholeDesign',
         tenantId: 'tenant-whole',
         metadataKeys: [
           {
@@ -207,7 +207,7 @@ describe('Credential Design store tests', (): void => {
       },
     }
     await store.addCredentialDesign(args)
-    await store.addCredentialDesign({ name: 'OtherDesign', tenantId: 'tenant-other' })
+    await store.addCredentialDesign({ identifier: 'OtherDesign', tenantId: 'tenant-other' })
 
     const result: Array<CredentialDesign> = await store.getCredentialDesigns({ filter: { tenantId: 'tenant-whole' } })
 
@@ -232,7 +232,7 @@ describe('Credential Design store tests', (): void => {
       identifier: 'AddDesign',
       tenantId: 'tenant-add',
       design: {
-        label: 'AddDesign',
+        identifier: 'AddDesign',
         tenantId: 'tenant-add',
         metadataKeys: [
           {
@@ -307,7 +307,7 @@ describe('Credential Design store tests', (): void => {
       identifier: 'OriginalDesign',
       tenantId: 'tenant-original',
       design: {
-        label: 'OriginalDesign',
+        identifier: 'OriginalDesign',
         tenantId: 'tenant-original',
         metadataKeys: [
           {
@@ -368,7 +368,7 @@ describe('Credential Design store tests', (): void => {
     const result: CredentialDesign = await store.getCredentialDesign({ credentialDesignId: created.id })
 
     expect(result).toBeDefined()
-    expect(result.label).toEqual('UpdatedDesign')
+    expect(result.identifier).toEqual('UpdatedDesign')
     expect(result.metadataKeys.length).toEqual(3)
 
     const credentialFormatKey = result.metadataKeys.find((k) => k.key === 'credentialFormat')
