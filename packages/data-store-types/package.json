@@ -21,12 +21,12 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.core": "workspace:*",
-    "@sphereon/ssi-types": "workspace:*",
+    "@sphereon/ssi-sdk.core": "0.37.1",
+    "@sphereon/ssi-types": "0.37.1",
     "dcql": "1.0.1"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk-ext.identifier-resolution": "workspace:*"
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.37.1"
   },
   "files": [
     "dist",

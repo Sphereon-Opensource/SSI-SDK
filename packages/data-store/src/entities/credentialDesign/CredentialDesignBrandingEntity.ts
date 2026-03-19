@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { ImageAttributesEntity } from '../issuanceBranding/ImageAttributesEntity'
-import { MetaDataSetEntity } from './MetaDataSetEntity'
+import { MetadataSetEntity } from './MetadataSetEntity'
 
 @Entity('credential_design_branding')
 export class CredentialDesignBrandingEntity extends BaseEntity {
@@ -31,9 +31,9 @@ export class CredentialDesignBrandingEntity extends BaseEntity {
   @JoinColumn({ name: 'background_image' })
   backgroundImage?: ImageAttributesEntity
 
-  @OneToOne(() => MetaDataSetEntity, (set: MetaDataSetEntity) => set.credentialDesignBranding, {
+  @OneToOne(() => MetadataSetEntity, (set: MetadataSetEntity) => set.credentialDesignBranding, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'meta_data_set_id' })
-  metaDataSet!: MetaDataSetEntity
+  metadataSet!: MetadataSetEntity
 }

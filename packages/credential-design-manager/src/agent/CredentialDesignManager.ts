@@ -1,6 +1,6 @@
 import { IAgentPlugin } from '@veramo/core'
 import { AbstractCredentialDesignStore, CredentialDesign } from '@sphereon/ssi-sdk.data-store-types'
-import { schema } from '../index'
+import { RemoveCredentialDesignResult, schema } from '../index'
 import {
   AddCredentialDesignArgs,
   GetCredentialDesignArgs,
@@ -61,8 +61,11 @@ export class CredentialDesignManager implements IAgentPlugin {
   }
 
   /** {@inheritDoc ICredentialDesignManager.cdmRemoveCredentialDesign} */
-  private async cdmRemoveCredentialDesign(args: RemoveCredentialDesignArgs, context: RequiredContext): Promise<boolean> {
-    await this.store.removeCredentialDesign(args)
-    return true
+  private async cdmRemoveCredentialDesign(args: RemoveCredentialDesignArgs, context: RequiredContext): Promise<RemoveCredentialDesignResult> {
+    return this.store.removeCredentialDesign(args).then(() => ({
+      result: true
+    })).catch(() => ({
+      result: false
+    }))
   }
 }

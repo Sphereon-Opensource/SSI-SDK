@@ -29,9 +29,9 @@ import { IssuerBrandingEntity } from './entities/issuanceBranding/IssuerBranding
 import { IssuerLocaleBrandingEntity } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributesEntity'
 import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
-import { MetaDataSetEntity } from './entities/credentialDesign/MetaDataSetEntity'
-import { MetaDataKeyEntity } from './entities/credentialDesign/MetaDataKeyEntity'
-import { MetaDataValueEntity } from './entities/credentialDesign/MetaDataValueEntity'
+import { MetadataSetEntity } from './entities/credentialDesign/MetadataSetEntity'
+import { MetadataKeyEntity } from './entities/credentialDesign/MetadataKeyEntity'
+import { MetadataValueEntity } from './entities/credentialDesign/MetadataValueEntity'
 import { FormStepEntity } from './entities/credentialDesign/FormStepEntity'
 import { SchemaDefinitionEntity } from './entities/credentialDesign/SchemaDefinitionEntity'
 import { CredentialDesignBrandingEntity } from './entities/credentialDesign/CredentialDesignBrandingEntity'
@@ -125,9 +125,9 @@ export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
 export const DataStoreMachineStateEntities = [MachineStateInfoEntity]
 
 export const DataStoreCredentialDesignEntities = [
-  MetaDataSetEntity,
-  MetaDataKeyEntity,
-  MetaDataValueEntity,
+  MetadataSetEntity,
+  MetadataKeyEntity,
+  MetadataValueEntity,
   FormStepEntity,
   SchemaDefinitionEntity,
   CredentialDesignBrandingEntity,
@@ -187,12 +187,12 @@ export {
   ContactMetadataItemEntity,
   CredentialClaimsEntity,
   Oid4vcStateEntity,
-  MetaDataSetEntity,
-  MetaDataKeyEntity,
-  MetaDataValueEntity,
+  MetadataSetEntity,
+  MetadataKeyEntity,
+  MetadataValueEntity,
   FormStepEntity,
   SchemaDefinitionEntity,
   CredentialDesignBrandingEntity,
 }
 
-export { ValueType } from './entities/credentialDesign/MetaDataKeyEntity'
+export { ValueType } from './entities/credentialDesign/MetadataKeyEntity'

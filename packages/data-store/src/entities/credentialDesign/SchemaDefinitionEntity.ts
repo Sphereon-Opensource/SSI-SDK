@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { MetaDataSetEntity } from './MetaDataSetEntity'
+import { MetadataSetEntity } from './MetadataSetEntity'
 import { FormStepEntity } from './FormStepEntity'
 
 @Entity('schema_definition')
@@ -25,11 +25,11 @@ export class SchemaDefinitionEntity extends BaseEntity {
   @Column('text', { name: 'schema', nullable: false })
   schema!: string
 
-  @ManyToOne(() => MetaDataSetEntity, (set: MetaDataSetEntity) => set.schemaDefinitions, {
+  @ManyToOne(() => MetadataSetEntity, (set: MetadataSetEntity) => set.schemaDefinitions, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'meta_data_set_id' })
-  metaDataSet!: MetaDataSetEntity
+  metadataSet!: MetadataSetEntity
 
   @ManyToMany(() => FormStepEntity, (formStep: FormStepEntity) => formStep.schemaDefinitions)
   formSteps!: Array<FormStepEntity>

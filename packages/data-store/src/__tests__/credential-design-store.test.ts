@@ -42,11 +42,11 @@ describe('Credential Design store tests', (): void => {
       design: {
         label: 'GetByIdDesign',
         tenantId: 'tenant-get-by-id',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
+            metadataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
           },
         ],
         schemaDefinitions: [
@@ -86,11 +86,11 @@ describe('Credential Design store tests', (): void => {
       design: {
         label: 'Design1',
         tenantId: 'tenant-1',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
+            metadataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
           },
         ],
         schemaDefinitions: [
@@ -112,11 +112,11 @@ describe('Credential Design store tests', (): void => {
       design: {
         label: 'Design2',
         tenantId: 'tenant-2',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'sd-jwt' }],
+            metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
           },
         ],
         schemaDefinitions: [
@@ -160,11 +160,11 @@ describe('Credential Design store tests', (): void => {
       design: {
         label: 'WholeDesign',
         tenantId: 'tenant-whole',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [
+            metadataValues: [
               { index: 0, textValue: 'VerifiableCredential' },
               { index: 1, textValue: 'WholeDesign' },
             ],
@@ -172,12 +172,12 @@ describe('Credential Design store tests', (): void => {
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+            metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
           },
           {
             key: 'advancedSchema',
             valueType: ValueType.Boolean,
-            metaDataValues: [{ index: 0, booleanValue: false }],
+            metadataValues: [{ index: 0, booleanValue: false }],
           },
         ],
         schemaDefinitions: [
@@ -212,7 +212,7 @@ describe('Credential Design store tests', (): void => {
     const result: Array<CredentialDesign> = await store.getCredentialDesigns({ filter: { tenantId: 'tenant-whole' } })
 
     expect(result.length).toEqual(1)
-    expect(result[0].metaDataKeys.length).toEqual(3)
+    expect(result[0].metadataKeys.length).toEqual(3)
     expect(result[0].schemaDefinitions.length).toEqual(2)
     expect(result[0].branding).toBeDefined()
     expect(result[0].branding!.logo).toBeDefined()
@@ -234,11 +234,11 @@ describe('Credential Design store tests', (): void => {
       design: {
         label: 'AddDesign',
         tenantId: 'tenant-add',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [
+            metadataValues: [
               { index: 0, textValue: 'VerifiableCredential' },
               { index: 1, textValue: 'AddDesign' },
             ],
@@ -246,7 +246,7 @@ describe('Credential Design store tests', (): void => {
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+            metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
           },
         ],
         schemaDefinitions: [
@@ -288,7 +288,7 @@ describe('Credential Design store tests', (): void => {
     expect(result.id).toBeDefined()
     expect(result.label).toEqual(args.name)
     expect(result.tenantId).toEqual(args.tenantId)
-    expect(result.metaDataKeys.length).toEqual(2)
+    expect(result.metadataKeys.length).toEqual(2)
     expect(result.schemaDefinitions.length).toEqual(2)
     expect(result.branding).toBeDefined()
     expect(result.branding!.textColor).toEqual('#FFFFFF')
@@ -309,16 +309,16 @@ describe('Credential Design store tests', (): void => {
       design: {
         label: 'OriginalDesign',
         tenantId: 'tenant-original',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
+            metadataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
           },
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+            metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
           },
         ],
         schemaDefinitions: [
@@ -341,11 +341,11 @@ describe('Credential Design store tests', (): void => {
       credentialDesignId: created.id,
       name: 'UpdatedDesign',
       design: {
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [
+            metadataValues: [
               { index: 0, textValue: 'VerifiableCredential' },
               { index: 1, textValue: 'UpdatedDesign' },
             ],
@@ -353,12 +353,12 @@ describe('Credential Design store tests', (): void => {
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'sd-jwt' }],
+            metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
           },
           {
             key: 'vct',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'https://example.com/vct' }],
+            metadataValues: [{ index: 0, textValue: 'https://example.com/vct' }],
           },
         ],
       },
@@ -369,17 +369,17 @@ describe('Credential Design store tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.label).toEqual('UpdatedDesign')
-    expect(result.metaDataKeys.length).toEqual(3)
+    expect(result.metadataKeys.length).toEqual(3)
 
-    const credentialFormatKey = result.metaDataKeys.find((k) => k.key === 'credentialFormat')
+    const credentialFormatKey = result.metadataKeys.find((k) => k.key === 'credentialFormat')
     expect(credentialFormatKey).toBeDefined()
-    expect(credentialFormatKey!.metaDataValues[0].textValue).toEqual('sd-jwt')
+    expect(credentialFormatKey!.metadataValues[0].textValue).toEqual('sd-jwt')
 
-    const vctKey = result.metaDataKeys.find((k) => k.key === 'vct')
+    const vctKey = result.metadataKeys.find((k) => k.key === 'vct')
     expect(vctKey).toBeDefined()
-    expect(vctKey!.metaDataValues[0].textValue).toEqual('https://example.com/vct')
+    expect(vctKey!.metadataValues[0].textValue).toEqual('https://example.com/vct')
 
-    // Branding should remain untouched since we only updated metaDataKeys
+    // Branding should remain untouched since we only updated metadataKeys
     expect(result.branding).toBeDefined()
     expect(result.branding!.textColor).toEqual('#000000')
   })

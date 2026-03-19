@@ -82,11 +82,11 @@ const result = await agent.cdmAddCredentialDesign({
   tenantId: 'your-tenant-id',
   design: {
     label: 'MyCredentialDesign',
-    metaDataKeys: [
+    metadataKeys: [
       {
         key: 'credentialType',
         valueType: ValueType.Text,
-        metaDataValues: [
+        metadataValues: [
           { index: 0, textValue: 'VerifiableCredential' },
           { index: 1, textValue: 'MyCredentialDesign' },
         ],
@@ -122,11 +122,11 @@ const result = await agent.cdmUpdateCredentialDesign({
   credentialDesignId,
   name: 'UpdatedDesignName',
   design: {
-    metaDataKeys: [
+    metadataKeys: [
       {
         key: 'credentialFormat',
         valueType: ValueType.Text,
-        metaDataValues: [{ index: 0, textValue: 'sd-jwt' }],
+        metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
       },
     ],
   },

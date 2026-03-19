@@ -21,11 +21,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         design: {
           label: 'DefaultDesign',
           tenantId: 'tenant-default',
-          metaDataKeys: [
+          metadataKeys: [
             {
               key: 'credentialType',
               valueType: ValueType.Text,
-              metaDataValues: [
+              metadataValues: [
                 { index: 0, textValue: 'VerifiableCredential' },
                 { index: 1, textValue: 'DefaultDesign' },
               ],
@@ -33,7 +33,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             {
               key: 'credentialFormat',
               valueType: ValueType.Text,
-              metaDataValues: [{ index: 0, textValue: 'sd-jwt' }],
+              metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
             },
           ],
           schemaDefinitions: [
@@ -68,11 +68,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         design: {
           label: 'TestDesign',
           tenantId: 'tenant-123',
-          metaDataKeys: [
+          metadataKeys: [
             {
               key: 'credentialType',
               valueType: ValueType.Text,
-              metaDataValues: [
+              metadataValues: [
                 { index: 0, textValue: 'VerifiableCredential' },
                 { index: 1, textValue: 'TestDesign' },
               ],
@@ -80,12 +80,12 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             {
               key: 'credentialFormat',
               valueType: ValueType.Text,
-              metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+              metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
             },
             {
               key: 'advancedSchema',
               valueType: ValueType.Boolean,
-              metaDataValues: [{ index: 0, booleanValue: false }],
+              metadataValues: [{ index: 0, booleanValue: false }],
             },
           ],
           schemaDefinitions: [
@@ -128,25 +128,25 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.label).toEqual(credentialDesign.name)
       expect(result.tenantId).toEqual(credentialDesign.tenantId)
 
-      expect(result.metaDataKeys).toBeDefined()
-      expect(result.metaDataKeys.length).toEqual(3)
+      expect(result.metadataKeys).toBeDefined()
+      expect(result.metadataKeys.length).toEqual(3)
 
-      const credentialTypeKey = result.metaDataKeys.find((k) => k.key === 'credentialType')
+      const credentialTypeKey = result.metadataKeys.find((k) => k.key === 'credentialType')
       expect(credentialTypeKey).toBeDefined()
       expect(credentialTypeKey!.valueType).toEqual(ValueType.Text)
-      expect(credentialTypeKey!.metaDataValues.length).toEqual(2)
-      expect(credentialTypeKey!.metaDataValues[0].textValue).toEqual('VerifiableCredential')
-      expect(credentialTypeKey!.metaDataValues[1].textValue).toEqual('TestDesign')
+      expect(credentialTypeKey!.metadataValues.length).toEqual(2)
+      expect(credentialTypeKey!.metadataValues[0].textValue).toEqual('VerifiableCredential')
+      expect(credentialTypeKey!.metadataValues[1].textValue).toEqual('TestDesign')
 
-      const credentialFormatKey = result.metaDataKeys.find((k) => k.key === 'credentialFormat')
+      const credentialFormatKey = result.metadataKeys.find((k) => k.key === 'credentialFormat')
       expect(credentialFormatKey).toBeDefined()
-      expect(credentialFormatKey!.metaDataValues.length).toEqual(1)
-      expect(credentialFormatKey!.metaDataValues[0].textValue).toEqual('jwt_vc_json')
+      expect(credentialFormatKey!.metadataValues.length).toEqual(1)
+      expect(credentialFormatKey!.metadataValues[0].textValue).toEqual('jwt_vc_json')
 
-      const advancedSchemaKey = result.metaDataKeys.find((k) => k.key === 'advancedSchema')
+      const advancedSchemaKey = result.metadataKeys.find((k) => k.key === 'advancedSchema')
       expect(advancedSchemaKey).toBeDefined()
       expect(advancedSchemaKey!.valueType).toEqual(ValueType.Boolean)
-      expect(advancedSchemaKey!.metaDataValues[0].booleanValue).toEqual(false)
+      expect(advancedSchemaKey!.metadataValues[0].booleanValue).toEqual(false)
 
       expect(result.schemaDefinitions).toBeDefined()
       expect(result.schemaDefinitions.length).toEqual(2)
@@ -191,7 +191,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       expect(result.id).toEqual(defaultCredentialDesign.id)
       expect(result.label).toEqual('DefaultDesign')
       expect(result.tenantId).toEqual('tenant-default')
-      expect(result.metaDataKeys.length).toEqual(2)
+      expect(result.metadataKeys.length).toEqual(2)
       expect(result.schemaDefinitions.length).toEqual(1)
       expect(result.branding).toBeDefined()
       expect(result.branding!.textColor).toEqual('#000000')
@@ -230,11 +230,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
         credentialDesignId: defaultCredentialDesign.id,
         name: updatedName,
         design: {
-          metaDataKeys: [
+          metadataKeys: [
             {
               key: 'credentialType',
               valueType: ValueType.Text,
-              metaDataValues: [
+              metadataValues: [
                 { index: 0, textValue: 'VerifiableCredential' },
                 { index: 1, textValue: updatedName },
               ],
@@ -242,7 +242,7 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
             {
               key: 'credentialFormat',
               valueType: ValueType.Text,
-              metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+              metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
             },
           ],
         },
@@ -251,11 +251,11 @@ export default (testContext: { getAgent: () => ConfiguredAgent; setup: () => Pro
       const result: CredentialDesign = await agent.cdmUpdateCredentialDesign(args)
 
       expect(result.label).toEqual(updatedName)
-      expect(result.metaDataKeys.length).toEqual(2)
+      expect(result.metadataKeys.length).toEqual(2)
 
-      const credentialFormatKey = result.metaDataKeys.find((k) => k.key === 'credentialFormat')
+      const credentialFormatKey = result.metadataKeys.find((k) => k.key === 'credentialFormat')
       expect(credentialFormatKey).toBeDefined()
-      expect(credentialFormatKey!.metaDataValues[0].textValue).toEqual('jwt_vc_json')
+      expect(credentialFormatKey!.metadataValues[0].textValue).toEqual('jwt_vc_json')
     })
 
     it('should throw error when updating credential design with unknown id', async (): Promise<void> => {

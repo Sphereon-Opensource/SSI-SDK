@@ -1,11 +1,11 @@
 export { ValueType } from '@sphereon/ssi-sdk.data-store-types'
 import { ValueType } from '@sphereon/ssi-sdk.data-store-types'
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { MetaDataSetEntity } from './MetaDataSetEntity'
-import { MetaDataValueEntity } from './MetaDataValueEntity'
+import { MetadataSetEntity } from './MetadataSetEntity'
+import { MetadataValueEntity } from './MetadataValueEntity'
 
 @Entity('meta_data_keys')
-export class MetaDataKeyEntity extends BaseEntity {
+export class MetadataKeyEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -15,16 +15,16 @@ export class MetaDataKeyEntity extends BaseEntity {
   @Column('text', { name: 'key', nullable: false })
   key!: string
 
-  @ManyToOne(() => MetaDataSetEntity, (set: MetaDataSetEntity) => set.metaDataKeys, {
+  @ManyToOne(() => MetadataSetEntity, (set: MetadataSetEntity) => set.metadataKeys, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'set_id' })
-  set!: MetaDataSetEntity
+  set!: MetadataSetEntity
 
-  @OneToMany(() => MetaDataValueEntity, (value: MetaDataValueEntity) => value.metaDataKey, {
+  @OneToMany(() => MetadataValueEntity, (value: MetadataValueEntity) => value.metadataKey, {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
   })
-  metaDataValues!: Array<MetaDataValueEntity>
+  metadataValues!: Array<MetadataValueEntity>
 }

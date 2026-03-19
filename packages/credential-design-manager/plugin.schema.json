@@ -24,10 +24,10 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "metaDataKeys": {
+            "metadataKeys": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/NonPersistedMetaDataKey"
+                "$ref": "#/components/schemas/NonPersistedMetadataKey"
               }
             },
             "schemaDefinitions": {
@@ -50,14 +50,14 @@
             "label"
           ]
         },
-        "NonPersistedMetaDataKey": {
+        "NonPersistedMetadataKey": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "metaDataValues": {
+            "metadataValues": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/NonPersistedMetaDataValue"
+                "$ref": "#/components/schemas/NonPersistedMetadataValue"
               }
             },
             "key": {
@@ -69,17 +69,17 @@
           },
           "required": [
             "key",
-            "metaDataValues",
+            "metadataValues",
             "valueType"
           ]
         },
-        "NonPersistedMetaDataValue": {
-          "$ref": "#/components/schemas/Omit<MetaDataValue,\"id\">"
+        "NonPersistedMetadataValue": {
+          "$ref": "#/components/schemas/Omit<MetadataValue,\"id\">"
         },
-        "Omit<MetaDataValue,\"id\">": {
-          "$ref": "#/components/schemas/Pick<MetaDataValue,Exclude<(\"id\"|\"index\"|\"textValue\"|\"numberValue\"|\"booleanValue\"|\"timestampValue\"),\"id\">>"
+        "Omit<MetadataValue,\"id\">": {
+          "$ref": "#/components/schemas/Pick<MetadataValue,Exclude<(\"id\"|\"index\"|\"textValue\"|\"numberValue\"|\"booleanValue\"|\"timestampValue\"),\"id\">>"
         },
-        "Pick<MetaDataValue,Exclude<(\"id\"|\"index\"|\"textValue\"|\"numberValue\"|\"booleanValue\"|\"timestampValue\"),\"id\">>": {
+        "Pick<MetadataValue,Exclude<(\"id\"|\"index\"|\"textValue\"|\"numberValue\"|\"booleanValue\"|\"timestampValue\"),\"id\">>": {
           "type": "object",
           "properties": {
             "index": {
@@ -210,10 +210,10 @@
             "tenantId": {
               "type": "string"
             },
-            "metaDataKeys": {
+            "metadataKeys": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/MetaDataKey"
+                "$ref": "#/components/schemas/MetadataKey"
               }
             },
             "schemaDefinitions": {
@@ -229,12 +229,12 @@
           "required": [
             "id",
             "label",
-            "metaDataKeys",
+            "metadataKeys",
             "schemaDefinitions"
           ],
           "additionalProperties": false
         },
-        "MetaDataKey": {
+        "MetadataKey": {
           "type": "object",
           "properties": {
             "id": {
@@ -246,10 +246,10 @@
             "valueType": {
               "$ref": "#/components/schemas/ValueType"
             },
-            "metaDataValues": {
+            "metadataValues": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/MetaDataValue"
+                "$ref": "#/components/schemas/MetadataValue"
               }
             }
           },
@@ -257,11 +257,11 @@
             "id",
             "key",
             "valueType",
-            "metaDataValues"
+            "metadataValues"
           ],
           "additionalProperties": false
         },
-        "MetaDataValue": {
+        "MetadataValue": {
           "type": "object",
           "properties": {
             "id": {
@@ -430,6 +430,18 @@
           ],
           "additionalProperties": false
         },
+        "RemoveCredentialDesignResult": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "result"
+          ],
+          "additionalProperties": false
+        },
         "UpdateCredentialDesignArgs": {
           "type": "object",
           "properties": {
@@ -460,10 +472,10 @@
             "tenantId": {
               "type": "string"
             },
-            "metaDataKeys": {
+            "metadataKeys": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/NonPersistedMetaDataKey"
+                "$ref": "#/components/schemas/NonPersistedMetadataKey"
               }
             },
             "schemaDefinitions": {
@@ -516,7 +528,7 @@
             "$ref": "#/components/schemas/RemoveCredentialDesignArgs"
           },
           "returnType": {
-            "type": "boolean"
+            "$ref": "#/components/schemas/RemoveCredentialDesignResult"
           }
         },
         "cdmUpdateCredentialDesign": {

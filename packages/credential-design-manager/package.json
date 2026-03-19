@@ -27,11 +27,11 @@
     "generate-plugin-schema": "tsx ../../packages/dev/bin/sphereon.js dev generate-plugin-schema"
   },
   "dependencies": {
-    "@sphereon/ssi-sdk.data-store-types": "workspace:*",
+    "@sphereon/ssi-sdk.data-store-types": "0.37.1",
     "@veramo/core": "4.2.0"
   },
   "devDependencies": {
-    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.agent-config": "0.37.1",
     "@veramo/remote-client": "4.2.0",
     "@veramo/remote-server": "4.2.0",
     "cross-fetch": "^4.1.0",

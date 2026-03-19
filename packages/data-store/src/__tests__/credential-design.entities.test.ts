@@ -2,12 +2,12 @@ import { DataSources } from '@sphereon/ssi-sdk.agent-config'
 import { NonPersistedCredentialDesign, ValueType } from '@sphereon/ssi-sdk.data-store-types'
 import { DataSource } from 'typeorm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { MetaDataSetEntity, MetaDataKeyEntity, MetaDataValueEntity } from '../entities/credentialDesign'
+import { MetadataSetEntity, MetadataKeyEntity, MetadataValueEntity } from '../entities/credentialDesign'
 import { DataStoreEntities, DataStoreMigrations } from '../index'
 import {
   credentialDesignBrandingEntityFrom,
   credentialDesignFrom,
-  metaDataKeyEntityFrom,
+  metadataKeyEntityFrom,
   schemaDefinitionEntityFrom,
 } from '../utils/credentialDesign/MappingUtils'
 
@@ -37,11 +37,11 @@ describe('Credential Design entities tests', (): void => {
     const design: NonPersistedCredentialDesign = {
       label: 'TestCredentialDesign',
       tenantId: 'tenant-entity-test',
-      metaDataKeys: [
+      metadataKeys: [
         {
           key: 'credentialType',
           valueType: ValueType.Text,
-          metaDataValues: [
+          metadataValues: [
             { index: 0, textValue: 'VerifiableCredential' },
             { index: 1, textValue: 'TestCredentialDesign' },
           ],
@@ -49,12 +49,12 @@ describe('Credential Design entities tests', (): void => {
         {
           key: 'credentialFormat',
           valueType: ValueType.Text,
-          metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+          metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
         },
         {
           key: 'advancedSchema',
           valueType: ValueType.Boolean,
-          metaDataValues: [{ index: 0, booleanValue: false }],
+          metadataValues: [{ index: 0, booleanValue: false }],
         },
       ],
       schemaDefinitions: [
@@ -90,15 +90,15 @@ describe('Credential Design entities tests', (): void => {
     }
 
     // Build entity graph using mappers
-    const metaDataSetEntity = new MetaDataSetEntity()
-    metaDataSetEntity.name = design.label
-    metaDataSetEntity.tenantId = design.tenantId
-    metaDataSetEntity.metaDataKeys = design.metaDataKeys!.map(metaDataKeyEntityFrom)
-    metaDataSetEntity.schemaDefinitions = design.schemaDefinitions!.map(schemaDefinitionEntityFrom)
-    metaDataSetEntity.credentialDesignBranding = credentialDesignBrandingEntityFrom(design.branding!)
+    const metadataSetEntity = new MetadataSetEntity()
+    metadataSetEntity.name = design.label
+    metadataSetEntity.tenantId = design.tenantId
+    metadataSetEntity.metadataKeys = design.metadataKeys!.map(metadataKeyEntityFrom)
+    metadataSetEntity.schemaDefinitions = design.schemaDefinitions!.map(schemaDefinitionEntityFrom)
+    metadataSetEntity.credentialDesignBranding = credentialDesignBrandingEntityFrom(design.branding!)
 
     // Save to DB
-    const savedEntity = await dbConnection.getRepository(MetaDataSetEntity).save(metaDataSetEntity)
+    const savedEntity = await dbConnection.getRepository(MetadataSetEntity).save(metadataSetEntity)
 
     // Map back to type
     const fromDb = credentialDesignFrom(savedEntity)
@@ -109,32 +109,32 @@ describe('Credential Design entities tests', (): void => {
     expect(fromDb.label).toEqual(design.label)
     expect(fromDb.tenantId).toEqual(design.tenantId)
 
-    // ── MetaDataKeys ──
-    expect(fromDb.metaDataKeys).toBeDefined()
-    expect(fromDb.metaDataKeys.length).toEqual(3)
+    // ── MetadataKeys ──
+    expect(fromDb.metadataKeys).toBeDefined()
+    expect(fromDb.metadataKeys.length).toEqual(3)
 
-    const credentialTypeKey = fromDb.metaDataKeys.find((k) => k.key === 'credentialType')
+    const credentialTypeKey = fromDb.metadataKeys.find((k) => k.key === 'credentialType')
     expect(credentialTypeKey).toBeDefined()
     expect(credentialTypeKey!.id).toBeDefined()
     expect(credentialTypeKey!.valueType).toEqual(ValueType.Text)
-    expect(credentialTypeKey!.metaDataValues.length).toEqual(2)
-    expect(credentialTypeKey!.metaDataValues[0].id).toBeDefined()
-    expect(credentialTypeKey!.metaDataValues[0].index).toEqual(0)
-    expect(credentialTypeKey!.metaDataValues[0].textValue).toEqual('VerifiableCredential')
-    expect(credentialTypeKey!.metaDataValues[1].index).toEqual(1)
-    expect(credentialTypeKey!.metaDataValues[1].textValue).toEqual('TestCredentialDesign')
+    expect(credentialTypeKey!.metadataValues.length).toEqual(2)
+    expect(credentialTypeKey!.metadataValues[0].id).toBeDefined()
+    expect(credentialTypeKey!.metadataValues[0].index).toEqual(0)
+    expect(credentialTypeKey!.metadataValues[0].textValue).toEqual('VerifiableCredential')
+    expect(credentialTypeKey!.metadataValues[1].index).toEqual(1)
+    expect(credentialTypeKey!.metadataValues[1].textValue).toEqual('TestCredentialDesign')
 
-    const credentialFormatKey = fromDb.metaDataKeys.find((k) => k.key === 'credentialFormat')
+    const credentialFormatKey = fromDb.metadataKeys.find((k) => k.key === 'credentialFormat')
     expect(credentialFormatKey).toBeDefined()
     expect(credentialFormatKey!.valueType).toEqual(ValueType.Text)
-    expect(credentialFormatKey!.metaDataValues.length).toEqual(1)
-    expect(credentialFormatKey!.metaDataValues[0].textValue).toEqual('jwt_vc_json')
+    expect(credentialFormatKey!.metadataValues.length).toEqual(1)
+    expect(credentialFormatKey!.metadataValues[0].textValue).toEqual('jwt_vc_json')
 
-    const advancedSchemaKey = fromDb.metaDataKeys.find((k) => k.key === 'advancedSchema')
+    const advancedSchemaKey = fromDb.metadataKeys.find((k) => k.key === 'advancedSchema')
     expect(advancedSchemaKey).toBeDefined()
     expect(advancedSchemaKey!.valueType).toEqual(ValueType.Boolean)
-    expect(advancedSchemaKey!.metaDataValues.length).toEqual(1)
-    expect(advancedSchemaKey!.metaDataValues[0].booleanValue).toEqual(false)
+    expect(advancedSchemaKey!.metadataValues.length).toEqual(1)
+    expect(advancedSchemaKey!.metadataValues[0].booleanValue).toEqual(false)
 
     // ── SchemaDefinitions ──
     expect(fromDb.schemaDefinitions).toBeDefined()
@@ -180,25 +180,25 @@ describe('Credential Design entities tests', (): void => {
     expect(fromDb.branding!.backgroundImage!.dimensions!.height).toEqual(design.branding!.backgroundImage!.dimensions!.height)
   })
 
-  it('should cascade delete keys and values when removing MetaDataSet', async (): Promise<void> => {
-    const metaDataSetEntity = new MetaDataSetEntity()
-    metaDataSetEntity.name = 'cascade_test'
-    metaDataSetEntity.metaDataKeys = [
-      metaDataKeyEntityFrom({
+  it('should cascade delete keys and values when removing MetadataSet', async (): Promise<void> => {
+    const metadataSetEntity = new MetadataSetEntity()
+    metadataSetEntity.name = 'cascade_test'
+    metadataSetEntity.metadataKeys = [
+      metadataKeyEntityFrom({
         key: 'testKey',
         valueType: ValueType.Text,
-        metaDataValues: [{ index: 0, textValue: 'test_value' }],
+        metadataValues: [{ index: 0, textValue: 'test_value' }],
       }),
     ]
-    metaDataSetEntity.schemaDefinitions = []
+    metadataSetEntity.schemaDefinitions = []
 
-    const saved = await dbConnection.getRepository(MetaDataSetEntity).save(metaDataSetEntity)
-    expect(saved.metaDataKeys.length).toEqual(1)
+    const saved = await dbConnection.getRepository(MetadataSetEntity).save(metadataSetEntity)
+    expect(saved.metadataKeys.length).toEqual(1)
 
-    await dbConnection.getRepository(MetaDataSetEntity).remove(saved)
+    await dbConnection.getRepository(MetadataSetEntity).remove(saved)
 
-    const keys = await dbConnection.getRepository(MetaDataKeyEntity).find()
-    const values = await dbConnection.getRepository(MetaDataValueEntity).find()
+    const keys = await dbConnection.getRepository(MetadataKeyEntity).find()
+    const values = await dbConnection.getRepository(MetadataValueEntity).find()
     expect(keys.length).toEqual(0)
     expect(values.length).toEqual(0)
   })

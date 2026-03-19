@@ -5,7 +5,7 @@ import {
   GetCredentialDesignArgs,
   GetCredentialDesignsArgs,
   NonPersistedCredentialDesignBranding,
-  NonPersistedMetaDataKey,
+  NonPersistedMetadataKey,
   NonPersistedSchemaDefinition,
   RemoveCredentialDesignArgs,
   UpdateCredentialDesignArgs,
@@ -13,13 +13,13 @@ import {
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, EntityManager, Repository } from 'typeorm'
-import { MetaDataSetEntity, MetaDataKeyEntity, MetaDataValueEntity, SchemaDefinitionEntity, CredentialDesignBrandingEntity } from '../entities/credentialDesign'
+import { MetadataSetEntity, MetadataKeyEntity, MetadataValueEntity, SchemaDefinitionEntity, CredentialDesignBrandingEntity } from '../entities/credentialDesign'
 import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
 import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
 import {
   credentialDesignBrandingEntityFrom,
   credentialDesignFrom,
-  metaDataKeyEntityFrom,
+  metadataKeyEntityFrom,
   schemaDefinitionEntityFrom,
 } from '../utils/credentialDesign/MappingUtils'
 
@@ -36,7 +36,7 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
   getCredentialDesign = async (args: GetCredentialDesignArgs): Promise<CredentialDesign> => {
     const { credentialDesignId } = args
     debug('getCredentialDesign', credentialDesignId)
-    const repo: Repository<MetaDataSetEntity> = (await this.dbConnection).getRepository(MetaDataSetEntity)
+    const repo: Repository<MetadataSetEntity> = (await this.dbConnection).getRepository(MetadataSetEntity)
     const result = await repo.findOne({
       where: { id: credentialDesignId },
     })
@@ -50,7 +50,7 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
 
   getCredentialDesigns = async (args?: GetCredentialDesignsArgs): Promise<Array<CredentialDesign>> => {
     debug('getCredentialDesigns', args)
-    const repo: Repository<MetaDataSetEntity> = (await this.dbConnection).getRepository(MetaDataSetEntity)
+    const repo: Repository<MetadataSetEntity> = (await this.dbConnection).getRepository(MetadataSetEntity)
     const where = args?.filter?.tenantId ? { tenantId: args.filter.tenantId } : undefined
     const results = await repo.find({ where })
     return results.map(credentialDesignFrom)
@@ -61,28 +61,28 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
     const dataSource = await this.dbConnection
 
     return dataSource.transaction(async (transactionalEntityManager) => {
-      const metaDataSet = new MetaDataSetEntity()
-      metaDataSet.name = args.name
-      metaDataSet.tenantId = args.tenantId
-      metaDataSet.metaDataKeys = []
-      metaDataSet.schemaDefinitions = []
+      const metadataSet = new MetadataSetEntity()
+      metadataSet.name = args.name
+      metadataSet.tenantId = args.tenantId
+      metadataSet.metadataKeys = []
+      metadataSet.schemaDefinitions = []
 
       const { design } = args
       if (design) {
-        if (design.metaDataKeys) {
-          metaDataSet.metaDataKeys = design.metaDataKeys.map(metaDataKeyEntityFrom)
+        if (design.metadataKeys) {
+          metadataSet.metadataKeys = design.metadataKeys.map(metadataKeyEntityFrom)
         }
 
         if (design.schemaDefinitions) {
-          metaDataSet.schemaDefinitions = design.schemaDefinitions.map(schemaDefinitionEntityFrom)
+          metadataSet.schemaDefinitions = design.schemaDefinitions.map(schemaDefinitionEntityFrom)
         }
 
         if (design.branding) {
-          metaDataSet.credentialDesignBranding = credentialDesignBrandingEntityFrom(design.branding)
+          metadataSet.credentialDesignBranding = credentialDesignBrandingEntityFrom(design.branding)
         }
       }
 
-      const saved = await transactionalEntityManager.save(MetaDataSetEntity, metaDataSet)
+      const saved = await transactionalEntityManager.save(MetadataSetEntity, metadataSet)
       return credentialDesignFrom(saved)
     })
   }
@@ -92,7 +92,7 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
     const dataSource = await this.dbConnection
 
     return dataSource.transaction(async (transactionalEntityManager) => {
-      const existing = await transactionalEntityManager.findOne(MetaDataSetEntity, {
+      const existing = await transactionalEntityManager.findOne(MetadataSetEntity, {
         where: { id: args.credentialDesignId },
       })
 
@@ -109,8 +109,8 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
 
       const { design } = args
       if (design) {
-        if (design.metaDataKeys !== undefined) {
-          await this.replaceMetaDataKeys(transactionalEntityManager, existing, design.metaDataKeys)
+        if (design.metadataKeys !== undefined) {
+          await this.replaceMetadataKeys(transactionalEntityManager, existing, design.metadataKeys)
         }
 
         if (design.schemaDefinitions !== undefined) {
@@ -122,14 +122,14 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
         }
       }
 
-      const saved = await transactionalEntityManager.save(MetaDataSetEntity, existing)
+      const saved = await transactionalEntityManager.save(MetadataSetEntity, existing)
       return credentialDesignFrom(saved)
     })
   }
 
   removeCredentialDesign = async (args: RemoveCredentialDesignArgs): Promise<void> => {
     debug('removeCredentialDesign', args)
-    const repo: Repository<MetaDataSetEntity> = (await this.dbConnection).getRepository(MetaDataSetEntity)
+    const repo: Repository<MetadataSetEntity> = (await this.dbConnection).getRepository(MetadataSetEntity)
     const existing = await repo.findOne({
       where: { id: args.credentialDesignId },
     })
@@ -141,25 +141,25 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
     await repo.remove(existing)
   }
 
-  private async replaceMetaDataKeys(
+  private async replaceMetadataKeys(
     entityManager: EntityManager,
-    existing: MetaDataSetEntity,
-    newKeys: Array<NonPersistedMetaDataKey>,
+    existing: MetadataSetEntity,
+    newKeys: Array<NonPersistedMetadataKey>,
   ): Promise<void> {
-    if (existing.metaDataKeys?.length) {
-      for (const key of existing.metaDataKeys) {
-        if (key.metaDataValues?.length) {
-          await entityManager.remove(MetaDataValueEntity, key.metaDataValues)
+    if (existing.metadataKeys?.length) {
+      for (const key of existing.metadataKeys) {
+        if (key.metadataValues?.length) {
+          await entityManager.remove(MetadataValueEntity, key.metadataValues)
         }
       }
-      await entityManager.remove(MetaDataKeyEntity, existing.metaDataKeys)
+      await entityManager.remove(MetadataKeyEntity, existing.metadataKeys)
     }
-    existing.metaDataKeys = newKeys.map(metaDataKeyEntityFrom)
+    existing.metadataKeys = newKeys.map(metadataKeyEntityFrom)
   }
 
   private async replaceSchemaDefinitions(
     entityManager: EntityManager,
-    existing: MetaDataSetEntity,
+    existing: MetadataSetEntity,
     newSchemas: Array<NonPersistedSchemaDefinition>,
   ): Promise<void> {
     if (existing.schemaDefinitions?.length) {
@@ -170,7 +170,7 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
 
   private async replaceBranding(
     entityManager: EntityManager,
-    existing: MetaDataSetEntity,
+    existing: MetadataSetEntity,
     newBranding: NonPersistedCredentialDesignBranding | undefined,
   ): Promise<void> {
     if (existing.credentialDesignBranding) {

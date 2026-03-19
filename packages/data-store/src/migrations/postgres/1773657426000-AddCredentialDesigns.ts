@@ -6,7 +6,11 @@ export class AddCredentialDesignsPostgres1773657426000 implements MigrationInter
   public async up(queryRunner: QueryRunner): Promise<void> {
 
     await queryRunner.query(`
-      CREATE TYPE IF NOT EXISTS "value_type" AS ENUM ('Text', 'Number', 'Boolean', 'Date');
+      DO $$ BEGIN
+        CREATE TYPE "value_type" AS ENUM ('Text', 'Number', 'Boolean', 'Date');
+      EXCEPTION
+        WHEN duplicate_object THEN NULL;
+      END $$;
     `)
 
     await queryRunner.query(`
