@@ -1,7 +1,9 @@
 import {
   AbstractCredentialDesignStore,
   AddCredentialDesignArgs,
+  CountCredentialDesignsArgs,
   CredentialDesign,
+  FormStepGetOrCreateArgs,
   GetCredentialDesignArgs,
   GetCredentialDesignsArgs,
   NonPersistedCredentialDesignBranding,
@@ -13,7 +15,7 @@ import {
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, EntityManager, Repository } from 'typeorm'
-import { MetadataSetEntity, MetadataKeyEntity, MetadataValueEntity, SchemaDefinitionEntity, CredentialDesignBrandingEntity } from '../entities/credentialDesign'
+import { MetadataSetEntity, MetadataKeyEntity, MetadataValueEntity, SchemaDefinitionEntity, CredentialDesignBrandingEntity, FormStepEntity } from '../entities/credentialDesign'
 import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
 import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
 import {
@@ -52,8 +54,20 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
     debug('getCredentialDesigns', args)
     const repo: Repository<MetadataSetEntity> = (await this.dbConnection).getRepository(MetadataSetEntity)
     const where = args?.filter?.tenantId ? { tenantId: args.filter.tenantId } : undefined
-    const results = await repo.find({ where })
+    const results = await repo.find({
+      where,
+      order: { name: 'ASC' },
+      take: args?.limit,
+      skip: args?.offset,
+    })
     return results.map(credentialDesignFrom)
+  }
+
+  countCredentialDesigns = async (args?: CountCredentialDesignsArgs): Promise<number> => {
+    debug('countCredentialDesigns', args)
+    const repo: Repository<MetadataSetEntity> = (await this.dbConnection).getRepository(MetadataSetEntity)
+    const where = args?.filter?.tenantId ? { tenantId: args.filter.tenantId } : undefined
+    return repo.count({ where })
   }
 
   addCredentialDesign = async (args: AddCredentialDesignArgs): Promise<CredentialDesign> => {
@@ -62,7 +76,7 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
 
     return dataSource.transaction(async (transactionalEntityManager) => {
       const metadataSet = new MetadataSetEntity()
-      metadataSet.name = args.name
+      metadataSet.name = args.identifier
       metadataSet.tenantId = args.tenantId
       metadataSet.metadataKeys = []
       metadataSet.schemaDefinitions = []
@@ -83,6 +97,17 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
       }
 
       const saved = await transactionalEntityManager.save(MetadataSetEntity, metadataSet)
+
+      if (args.formStepId && saved.schemaDefinitions?.length) {
+        const formStep = await transactionalEntityManager.findOne(FormStepEntity, {
+          where: { id: args.formStepId },
+        })
+        if (formStep) {
+          formStep.schemaDefinitions = [...(formStep.schemaDefinitions ?? []), ...saved.schemaDefinitions]
+          await transactionalEntityManager.save(FormStepEntity, formStep)
+        }
+      }
+
       return credentialDesignFrom(saved)
     })
   }
@@ -100,8 +125,8 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
         return Promise.reject(Error(`No credential design found for id: ${args.credentialDesignId}`))
       }
 
-      if (args.name !== undefined) {
-        existing.name = args.name
+      if (args.identifier !== undefined) {
+        existing.name = args.identifier
       }
       if (args.tenantId !== undefined) {
         existing.tenantId = args.tenantId
@@ -125,6 +150,21 @@ export class CredentialDesignStore extends AbstractCredentialDesignStore {
       const saved = await transactionalEntityManager.save(MetadataSetEntity, existing)
       return credentialDesignFrom(saved)
     })
+  }
+
+  formStepGetOrCreate = async (args: FormStepGetOrCreateArgs): Promise<string> => {
+    debug('formStepGetOrCreate', args)
+    const repo: Repository<FormStepEntity> = (await this.dbConnection).getRepository(FormStepEntity)
+    const existing = await repo.findOne({ where: { formId: args.formStepId } })
+    if (existing) {
+      return existing.id
+    }
+    const formStep = new FormStepEntity()
+    formStep.formId = args.formStepId
+    formStep.stepNr = 1
+    formStep.order = 1
+    const saved = await repo.save(formStep)
+    return saved.id
   }
 
   removeCredentialDesign = async (args: RemoveCredentialDesignArgs): Promise<void> => {

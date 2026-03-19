@@ -56,7 +56,7 @@ export type NonPersistedCredentialDesignBranding = Omit<CredentialDesignBranding
 
 export type CredentialDesign = {
   id: string
-  label: string
+  identifier: string
   tenantId?: string
   metadataKeys: Array<MetadataKey>
   schemaDefinitions: Array<SchemaDefinition>

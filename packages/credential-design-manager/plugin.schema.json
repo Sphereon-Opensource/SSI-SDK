@@ -5,147 +5,91 @@
         "AddCredentialDesignArgs": {
           "type": "object",
           "properties": {
-            "name": {
+            "identifier": {
               "type": "string"
             },
             "tenantId": {
-              "type": "string"
-            },
-            "design": {
-              "$ref": "#/components/schemas/NonPersistedCredentialDesign"
-            }
-          },
-          "required": [
-            "name"
-          ],
-          "additionalProperties": false
-        },
-        "NonPersistedCredentialDesign": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "metadataKeys": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NonPersistedMetadataKey"
-              }
-            },
-            "schemaDefinitions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NonPersistedSchemaDefinition"
-              }
-            },
-            "branding": {
-              "$ref": "#/components/schemas/NonPersistedCredentialDesignBranding"
-            },
-            "label": {
-              "type": "string"
-            },
-            "tenantId": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "label"
-          ]
-        },
-        "NonPersistedMetadataKey": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "metadataValues": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NonPersistedMetadataValue"
-              }
-            },
-            "key": {
-              "type": "string"
-            },
-            "valueType": {
-              "$ref": "#/components/schemas/ValueType"
-            }
-          },
-          "required": [
-            "key",
-            "metadataValues",
-            "valueType"
-          ]
-        },
-        "NonPersistedMetadataValue": {
-          "$ref": "#/components/schemas/Omit<MetadataValue,\"id\">"
-        },
-        "Omit<MetadataValue,\"id\">": {
-          "$ref": "#/components/schemas/Pick<MetadataValue,Exclude<(\"id\"|\"index\"|\"textValue\"|\"numberValue\"|\"booleanValue\"|\"timestampValue\"),\"id\">>"
-        },
-        "Pick<MetadataValue,Exclude<(\"id\"|\"index\"|\"textValue\"|\"numberValue\"|\"booleanValue\"|\"timestampValue\"),\"id\">>": {
-          "type": "object",
-          "properties": {
-            "index": {
-              "type": "number"
-            },
-            "textValue": {
-              "type": "string"
-            },
-            "numberValue": {
-              "type": "number"
-            },
-            "booleanValue": {
-              "type": "boolean"
-            },
-            "timestampValue": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          "additionalProperties": false
-        },
-        "ValueType": {
-          "type": "string",
-          "enum": [
-            "Text",
-            "Number",
-            "Boolean",
-            "Date"
-          ]
-        },
-        "NonPersistedSchemaDefinition": {
-          "$ref": "#/components/schemas/Omit<SchemaDefinition,\"id\">"
-        },
-        "Omit<SchemaDefinition,\"id\">": {
-          "$ref": "#/components/schemas/Pick<SchemaDefinition,Exclude<(\"id\"|\"tenantId\"|\"extendsId\"|\"correlationId\"|\"schemaType\"|\"entityType\"|\"schema\"),\"id\">>"
-        },
-        "Pick<SchemaDefinition,Exclude<(\"id\"|\"tenantId\"|\"extendsId\"|\"correlationId\"|\"schemaType\"|\"entityType\"|\"schema\"),\"id\">>": {
-          "type": "object",
-          "properties": {
-            "tenantId": {
-              "type": "string"
-            },
-            "extendsId": {
-              "type": "string"
-            },
-            "correlationId": {
-              "type": "string"
-            },
-            "schemaType": {
-              "type": "string"
-            },
-            "entityType": {
               "type": "string"
             },
             "schema": {
+              "$ref": "#/components/schemas/Record<string,unknown>"
+            },
+            "uiSchema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Record<string,unknown>"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Record<string,unknown>"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "$ref": "#/components/schemas/CredentialConfigurationOptions"
+            },
+            "isAdvancedSchema": {
+              "type": "boolean"
+            },
+            "branding": {
+              "$ref": "#/components/schemas/CredentialDesignBrandingInput"
+            },
+            "formStepId": {
+              "type": "string"
+            },
+            "statusListUri": {
               "type": "string"
             }
           },
           "required": [
-            "schema"
+            "identifier",
+            "schema",
+            "uiSchema",
+            "options"
           ],
           "additionalProperties": false
         },
-        "NonPersistedCredentialDesignBranding": {
+        "Record<string,unknown>": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": {}
+        },
+        "CredentialConfigurationOptions": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string"
+            },
+            "vct": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string"
+            },
+            "cryptographicBindingMethodsSupported": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "credentialSigningAlgValuesSupported": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "proofTypesSupported": {
+              "$ref": "#/components/schemas/Record<string,unknown>"
+            }
+          },
+          "required": [
+            "format"
+          ],
+          "additionalProperties": false
+        },
+        "CredentialDesignBrandingInput": {
+          "type": "object",
           "properties": {
             "logo": {
               "$ref": "#/components/schemas/IBasicImageAttributes"
@@ -159,7 +103,8 @@
             "backgroundColor": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "IBasicImageAttributes": {
           "type": "object",
@@ -204,7 +149,7 @@
             "id": {
               "type": "string"
             },
-            "label": {
+            "identifier": {
               "type": "string"
             },
             "tenantId": {
@@ -228,7 +173,7 @@
           },
           "required": [
             "id",
-            "label",
+            "identifier",
             "metadataKeys",
             "schemaDefinitions"
           ],
@@ -260,6 +205,15 @@
             "metadataValues"
           ],
           "additionalProperties": false
+        },
+        "ValueType": {
+          "type": "string",
+          "enum": [
+            "Text",
+            "Number",
+            "Boolean",
+            "Date"
+          ]
         },
         "MetadataValue": {
           "type": "object",
@@ -391,6 +345,57 @@
           ],
           "additionalProperties": false
         },
+        "CredentialDesignCountArgs": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "object",
+              "properties": {
+                "tenantId": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "CredentialDesignCountResult": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "count"
+          ],
+          "additionalProperties": false
+        },
+        "FormStepGetOrCreateArgs": {
+          "type": "object",
+          "properties": {
+            "formId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "formId"
+          ],
+          "additionalProperties": false
+        },
+        "FormStepGetOrCreateResult": {
+          "type": "object",
+          "properties": {
+            "formStepId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "formStepId"
+          ],
+          "additionalProperties": false
+        },
         "GetCredentialDesignArgs": {
           "type": "object",
           "properties": {
@@ -414,6 +419,12 @@
                 }
               },
               "additionalProperties": false
+            },
+            "limit": {
+              "type": "number"
+            },
+            "offset": {
+              "type": "number"
             }
           },
           "additionalProperties": false
@@ -448,46 +459,45 @@
             "credentialDesignId": {
               "type": "string"
             },
-            "name": {
+            "identifier": {
               "type": "string"
             },
             "tenantId": {
               "type": "string"
             },
-            "design": {
-              "$ref": "#/components/schemas/Partial<NonPersistedCredentialDesign>"
+            "schema": {
+              "$ref": "#/components/schemas/Record<string,unknown>"
+            },
+            "uiSchema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Record<string,unknown>"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Record<string,unknown>"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "$ref": "#/components/schemas/CredentialConfigurationOptions"
+            },
+            "isAdvancedSchema": {
+              "type": "boolean"
+            },
+            "branding": {
+              "$ref": "#/components/schemas/CredentialDesignBrandingInput"
             }
           },
           "required": [
-            "credentialDesignId"
+            "credentialDesignId",
+            "identifier",
+            "schema",
+            "uiSchema",
+            "options"
           ],
-          "additionalProperties": false
-        },
-        "Partial<NonPersistedCredentialDesign>": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "tenantId": {
-              "type": "string"
-            },
-            "metadataKeys": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NonPersistedMetadataKey"
-              }
-            },
-            "schemaDefinitions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NonPersistedSchemaDefinition"
-              }
-            },
-            "branding": {
-              "$ref": "#/components/schemas/NonPersistedCredentialDesignBranding"
-            }
-          },
           "additionalProperties": false
         }
       },
@@ -499,6 +509,24 @@
           },
           "returnType": {
             "$ref": "#/components/schemas/CredentialDesign"
+          }
+        },
+        "cdmCredentialDesignCount": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/CredentialDesignCountArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/CredentialDesignCountResult"
+          }
+        },
+        "cdmFormStepGetOrCreate": {
+          "description": "",
+          "arguments": {
+            "$ref": "#/components/schemas/FormStepGetOrCreateArgs"
+          },
+          "returnType": {
+            "$ref": "#/components/schemas/FormStepGetOrCreateResult"
           }
         },
         "cdmGetCredentialDesign": {

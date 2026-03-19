@@ -37,7 +37,7 @@ describe('Credential Design store tests', (): void => {
 
   it('should get a credential design by id', async (): Promise<void> => {
     const args: AddCredentialDesignArgs = {
-      name: 'GetByIdDesign',
+      identifier: 'GetByIdDesign',
       tenantId: 'tenant-get-by-id',
       design: {
         label: 'GetByIdDesign',
@@ -81,7 +81,7 @@ describe('Credential Design store tests', (): void => {
 
   it('should get all credential designs', async (): Promise<void> => {
     const design1: AddCredentialDesignArgs = {
-      name: 'Design1',
+      identifier: 'Design1',
       tenantId: 'tenant-1',
       design: {
         label: 'Design1',
@@ -107,7 +107,7 @@ describe('Credential Design store tests', (): void => {
     expect(savedDesign1).toBeDefined()
 
     const design2: AddCredentialDesignArgs = {
-      name: 'Design2',
+      identifier: 'Design2',
       tenantId: 'tenant-2',
       design: {
         label: 'Design2',
@@ -139,8 +139,8 @@ describe('Credential Design store tests', (): void => {
   })
 
   it('should get credential designs by filter', async (): Promise<void> => {
-    await store.addCredentialDesign({ name: 'FilterDesign1', tenantId: 'tenant-filter' })
-    await store.addCredentialDesign({ name: 'FilterDesign2', tenantId: 'tenant-other' })
+    await store.addCredentialDesign({ identifier: 'FilterDesign1', tenantId: 'tenant-filter' })
+    await store.addCredentialDesign({ identifier: 'FilterDesign2', tenantId: 'tenant-other' })
 
     const args: GetCredentialDesignsArgs = {
       filter: {
@@ -155,7 +155,7 @@ describe('Credential Design store tests', (): void => {
 
   it('should get whole credential design with all relations by filter', async (): Promise<void> => {
     const args: AddCredentialDesignArgs = {
-      name: 'WholeDesign',
+      identifier: 'WholeDesign',
       tenantId: 'tenant-whole',
       design: {
         label: 'WholeDesign',
@@ -220,7 +220,7 @@ describe('Credential Design store tests', (): void => {
   })
 
   it('should return no credential designs if filter does not match', async (): Promise<void> => {
-    await store.addCredentialDesign({ name: 'SomeDesign', tenantId: 'tenant-exists' })
+    await store.addCredentialDesign({ identifier: 'SomeDesign', tenantId: 'tenant-exists' })
 
     const result: Array<CredentialDesign> = await store.getCredentialDesigns({ filter: { tenantId: 'non-existent-tenant' } })
 
@@ -229,7 +229,7 @@ describe('Credential Design store tests', (): void => {
 
   it('should add credential design', async (): Promise<void> => {
     const args: AddCredentialDesignArgs = {
-      name: 'AddDesign',
+      identifier: 'AddDesign',
       tenantId: 'tenant-add',
       design: {
         label: 'AddDesign',
@@ -286,7 +286,7 @@ describe('Credential Design store tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.id).toBeDefined()
-    expect(result.label).toEqual(args.name)
+    expect(result.identifier).toEqual(args.identifier)
     expect(result.tenantId).toEqual(args.tenantId)
     expect(result.metadataKeys.length).toEqual(2)
     expect(result.schemaDefinitions.length).toEqual(2)
@@ -304,7 +304,7 @@ describe('Credential Design store tests', (): void => {
 
   it('should update credential design by id', async (): Promise<void> => {
     const created: CredentialDesign = await store.addCredentialDesign({
-      name: 'OriginalDesign',
+      identifier: 'OriginalDesign',
       tenantId: 'tenant-original',
       design: {
         label: 'OriginalDesign',
@@ -339,7 +339,7 @@ describe('Credential Design store tests', (): void => {
 
     const updateArgs: UpdateCredentialDesignArgs = {
       credentialDesignId: created.id,
-      name: 'UpdatedDesign',
+      identifier: 'UpdatedDesign',
       design: {
         metadataKeys: [
           {
@@ -387,14 +387,14 @@ describe('Credential Design store tests', (): void => {
   it('should throw error when updating credential design with unknown id', async (): Promise<void> => {
     const credentialDesignId = 'unknownCredentialDesignId'
 
-    await expect(store.updateCredentialDesign({ credentialDesignId, name: 'ShouldFail' })).rejects.toThrow(
+    await expect(store.updateCredentialDesign({ credentialDesignId, identifier: 'ShouldFail' })).rejects.toThrow(
       `No credential design found for id: ${credentialDesignId}`,
     )
   })
 
   it('should remove credential design', async (): Promise<void> => {
     const created: CredentialDesign = await store.addCredentialDesign({
-      name: 'ToBeRemoved',
+      identifier: 'ToBeRemoved',
       tenantId: 'tenant-remove',
     })
     expect(created).toBeDefined()

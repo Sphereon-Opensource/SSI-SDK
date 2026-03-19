@@ -14,13 +14,17 @@
 
 A Veramo credential design manager plugin. This plugin manages credential designs, including metadata keys, schema definitions, and branding configurations, and persists them. These designs can then be used to configure credential issuance and presentation.
 
+The manager accepts high-level arguments (schema, uiSchema, credential format options, branding) and translates them into the underlying data store format (metadata keys, schema definitions, branding entities).
+
 ## Available functions
 
 - cdmGetCredentialDesign
-- cdmGetCredentialDesigns
+- cdmGetCredentialDesigns (with pagination: limit, offset)
 - cdmAddCredentialDesign
 - cdmUpdateCredentialDesign
 - cdmRemoveCredentialDesign
+- cdmCredentialDesignCount
+- cdmFormStepGetOrCreate
 
 ## Usage
 
@@ -51,6 +55,36 @@ const agent = createAgent<ICredentialDesignManager>({
 })
 ```
 
+### Add a credential design:
+
+```typescript
+const result = await agent.cdmAddCredentialDesign({
+  identifier: 'MyCredentialDesign',
+  tenantId: 'your-tenant-id',
+  schema: { type: 'object', properties: { name: { type: 'string' } } },
+  uiSchema: { type: 'VerticalLayout', elements: [{ type: 'Control', scope: '#/properties/name' }] },
+  options: {
+    format: 'sd-jwt',
+    vct: 'MyVCT',
+    scope: 'my_scope',
+    cryptographicBindingMethodsSupported: ['did:key', 'did:jwk'],
+    credentialSigningAlgValuesSupported: ['ES256'],
+    proofTypesSupported: { jwt: { proof_signing_alg_values_supported: ['ES256'] } },
+  },
+  isAdvancedSchema: false,
+  branding: {
+    textColor: '#FFFFFF',
+    backgroundColor: '#003399',
+    logo: {
+      uri: 'https://example.com/logo.png',
+      mediaType: 'image/png',
+      alt: 'Logo',
+      dimensions: { width: 200, height: 100 },
+    },
+  },
+})
+```
+
 ### Get a credential design:
 
 ```typescript
@@ -60,58 +94,23 @@ const result = await agent.cdmGetCredentialDesign({
 })
 ```
 
-### Get credential designs:
-
-```typescript
-const result = await agent.cdmGetCredentialDesigns()
-```
-
-### Get credential designs by tenant:
+### List credential designs with pagination:
 
 ```typescript
 const result = await agent.cdmGetCredentialDesigns({
   filter: { tenantId: 'your-tenant-id' },
+  limit: 10,
+  offset: 0,
 })
 ```
 
-### Add a credential design:
+### Count credential designs:
 
 ```typescript
-const result = await agent.cdmAddCredentialDesign({
-  name: 'MyCredentialDesign',
-  tenantId: 'your-tenant-id',
-  design: {
-    label: 'MyCredentialDesign',
-    metadataKeys: [
-      {
-        key: 'credentialType',
-        valueType: ValueType.Text,
-        metadataValues: [
-          { index: 0, textValue: 'VerifiableCredential' },
-          { index: 1, textValue: 'MyCredentialDesign' },
-        ],
-      },
-    ],
-    schemaDefinitions: [
-      {
-        correlationId: 'MyCredentialDesign',
-        schemaType: 'Data',
-        entityType: 'VC',
-        schema: JSON.stringify({ type: 'object', properties: { name: { type: 'string' } } }),
-      },
-    ],
-    branding: {
-      textColor: '#FFFFFF',
-      backgroundColor: '#003399',
-      logo: {
-        uri: 'https://example.com/logo.png',
-        mediaType: 'image/png',
-        alt: 'Logo',
-        dimensions: { width: 200, height: 100 },
-      },
-    },
-  },
+const result = await agent.cdmCredentialDesignCount({
+  filter: { tenantId: 'your-tenant-id' },
 })
+console.log(result.count)
 ```
 
 ### Update a credential design:
@@ -120,15 +119,11 @@ const result = await agent.cdmAddCredentialDesign({
 const credentialDesignId = '8efb937f-4e90-4056-9a4d-7185ce8dc173'
 const result = await agent.cdmUpdateCredentialDesign({
   credentialDesignId,
-  name: 'UpdatedDesignName',
-  design: {
-    metadataKeys: [
-      {
-        key: 'credentialFormat',
-        valueType: ValueType.Text,
-        metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
-      },
-    ],
+  identifier: 'UpdatedDesignName',
+  schema: { type: 'object', properties: { age: { type: 'number' } } },
+  uiSchema: { type: 'VerticalLayout', elements: [{ type: 'Control', scope: '#/properties/age' }] },
+  options: {
+    format: 'sd-jwt',
   },
 })
 ```
@@ -138,6 +133,14 @@ const result = await agent.cdmUpdateCredentialDesign({
 ```typescript
 const credentialDesignId = 'ef6e13b2-a520-4bb6-9a13-9be529ce22b8'
 const result = await agent.cdmRemoveCredentialDesign({ credentialDesignId })
+console.log(result.result) // true
+```
+
+### Get or create a form step:
+
+```typescript
+const result = await agent.cdmFormStepGetOrCreate({ formId: 'credentialIssuanceWizard' })
+console.log(result.formStepId)
 ```
 
 ## Installation

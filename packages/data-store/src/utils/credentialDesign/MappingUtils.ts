@@ -22,7 +22,7 @@ import { imageAttributesEntityFrom } from '../issuanceBranding/MappingUtils'
 export const credentialDesignFrom = (entity: MetadataSetEntity): CredentialDesign => {
   const result: CredentialDesign = {
     id: entity.id,
-    label: entity.name,
+    identifier: entity.name,
     tenantId: entity.tenantId,
     metadataKeys: entity.metadataKeys?.map((key) => metadataKeyFrom(key)) ?? [],
     schemaDefinitions: entity.schemaDefinitions?.map((schema) => schemaDefinitionFrom(schema)) ?? [],
