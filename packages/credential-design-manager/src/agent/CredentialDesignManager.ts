@@ -103,7 +103,6 @@ export class CredentialDesignManager implements IAgentPlugin {
     return this.store
       .removeCredentialDesign({ credentialDesignId: args.credentialDesignId })
       .then(() => ({ result: true }))
-      .catch(() => ({ result: false }))
   }
 
   /** {@inheritDoc ICredentialDesignManager.cdmCredentialDesignCount} */
