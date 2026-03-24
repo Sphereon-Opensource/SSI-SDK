@@ -7,7 +7,7 @@ export enum ValueType {
   Date = 'Date',
 }
 
-export type MetaDataValue = {
+export type MetadataValue = {
   id: string
   index?: number
   textValue?: string
@@ -16,17 +16,17 @@ export type MetaDataValue = {
   timestampValue?: Date
 }
 
-export type NonPersistedMetaDataValue = Omit<MetaDataValue, 'id'>
+export type NonPersistedMetadataValue = Omit<MetadataValue, 'id'>
 
-export type MetaDataKey = {
+export type MetadataKey = {
   id: string
   key: string
   valueType: ValueType
-  metaDataValues: Array<MetaDataValue>
+  metadataValues: Array<MetadataValue>
 }
 
-export type NonPersistedMetaDataKey = Omit<MetaDataKey, 'id' | 'metaDataValues'> & {
-  metaDataValues: Array<NonPersistedMetaDataValue>
+export type NonPersistedMetadataKey = Omit<MetadataKey, 'id' | 'metadataValues'> & {
+  metadataValues: Array<NonPersistedMetadataValue>
 }
 
 export type SchemaDefinition = {
@@ -56,15 +56,15 @@ export type NonPersistedCredentialDesignBranding = Omit<CredentialDesignBranding
 
 export type CredentialDesign = {
   id: string
-  label: string
+  identifier: string
   tenantId?: string
-  metaDataKeys: Array<MetaDataKey>
+  metadataKeys: Array<MetadataKey>
   schemaDefinitions: Array<SchemaDefinition>
   branding?: CredentialDesignBranding
 }
 
-export type NonPersistedCredentialDesign = Omit<CredentialDesign, 'id' | 'metaDataKeys' | 'schemaDefinitions' | 'branding'> & {
-  metaDataKeys?: Array<NonPersistedMetaDataKey>
+export type NonPersistedCredentialDesign = Omit<CredentialDesign, 'id' | 'metadataKeys' | 'schemaDefinitions' | 'branding'> & {
+  metadataKeys?: Array<NonPersistedMetadataKey>
   schemaDefinitions?: Array<NonPersistedSchemaDefinition>
   branding?: NonPersistedCredentialDesignBranding
 }

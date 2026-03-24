@@ -8,12 +8,25 @@ export type GetCredentialDesignsArgs = {
   filter?: {
     tenantId?: string
   }
+  limit?: number
+  offset?: number
+}
+
+export type CountCredentialDesignsArgs = {
+  filter?: {
+    tenantId?: string
+  }
+}
+
+export type FormStepGetOrCreateArgs = {
+  formStepId: string
 }
 
 export type AddCredentialDesignArgs = {
-  name: string
+  identifier: string
   tenantId?: string
   design?: NonPersistedCredentialDesign
+  formStepId?: string
 }
 
 export type RemoveCredentialDesignArgs = {
@@ -22,7 +35,7 @@ export type RemoveCredentialDesignArgs = {
 
 export type UpdateCredentialDesignArgs = {
   credentialDesignId: string
-  name?: string
+  identifier?: string
   tenantId?: string
   design?: Partial<NonPersistedCredentialDesign>
 }

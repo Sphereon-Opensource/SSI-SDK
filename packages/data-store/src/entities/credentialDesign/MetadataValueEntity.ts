@@ -1,9 +1,9 @@
 import { typeOrmDateTime } from '@sphereon/ssi-sdk.agent-config'
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { MetaDataKeyEntity } from './MetaDataKeyEntity'
+import { MetadataKeyEntity } from './MetadataKeyEntity'
 
 @Entity('meta_data_values')
-export class MetaDataValueEntity extends BaseEntity {
+export class MetadataValueEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -22,9 +22,9 @@ export class MetaDataValueEntity extends BaseEntity {
   @Column({ name: 'timestamp_value', nullable: true, type: typeOrmDateTime() })
   timestampValue?: Date
 
-  @ManyToOne(() => MetaDataKeyEntity, (key: MetaDataKeyEntity) => key.metaDataValues, {
+  @ManyToOne(() => MetadataKeyEntity, (key: MetadataKeyEntity) => key.metadataValues, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'key_id' })
-  metaDataKey!: MetaDataKeyEntity
+  metadataKey!: MetadataKeyEntity
 }

@@ -2,29 +2,29 @@ import type {
   CredentialDesign,
   CredentialDesignBranding,
   IImageAttributes,
-  MetaDataKey,
-  MetaDataValue,
+  MetadataKey,
+  MetadataValue,
   NonPersistedCredentialDesignBranding,
-  NonPersistedMetaDataKey,
-  NonPersistedMetaDataValue,
+  NonPersistedMetadataKey,
+  NonPersistedMetadataValue,
   NonPersistedSchemaDefinition,
   SchemaDefinition,
 } from '@sphereon/ssi-sdk.data-store-types'
 import { CredentialDesignBrandingEntity } from '../../entities/credentialDesign'
-import { MetaDataKeyEntity, ValueType } from '../../entities/credentialDesign'
-import { MetaDataSetEntity } from '../../entities/credentialDesign'
-import { MetaDataValueEntity } from '../../entities/credentialDesign'
+import { MetadataKeyEntity, ValueType } from '../../entities/credentialDesign'
+import { MetadataSetEntity } from '../../entities/credentialDesign'
+import { MetadataValueEntity } from '../../entities/credentialDesign'
 import { SchemaDefinitionEntity } from '../../entities/credentialDesign'
 import { ImageAttributesEntity } from '../../entities/issuanceBranding/ImageAttributesEntity'
 import { replaceNullWithUndefined } from '../FormattingUtils'
 import { imageAttributesEntityFrom } from '../issuanceBranding/MappingUtils'
 
-export const credentialDesignFrom = (entity: MetaDataSetEntity): CredentialDesign => {
+export const credentialDesignFrom = (entity: MetadataSetEntity): CredentialDesign => {
   const result: CredentialDesign = {
     id: entity.id,
-    label: entity.name,
+    identifier: entity.name,
     tenantId: entity.tenantId,
-    metaDataKeys: entity.metaDataKeys?.map((key) => metaDataKeyFrom(key)) ?? [],
+    metadataKeys: entity.metadataKeys?.map((key) => metadataKeyFrom(key)) ?? [],
     schemaDefinitions: entity.schemaDefinitions?.map((schema) => schemaDefinitionFrom(schema)) ?? [],
     branding: entity.credentialDesignBranding ? credentialDesignBrandingFrom(entity.credentialDesignBranding) : undefined,
   }
@@ -32,19 +32,19 @@ export const credentialDesignFrom = (entity: MetaDataSetEntity): CredentialDesig
   return replaceNullWithUndefined(result)
 }
 
-export const metaDataKeyFrom = (entity: MetaDataKeyEntity): MetaDataKey => {
-  const result: MetaDataKey = {
+export const metadataKeyFrom = (entity: MetadataKeyEntity): MetadataKey => {
+  const result: MetadataKey = {
     id: entity.id,
     key: entity.key,
     valueType: entity.valueType,
-    metaDataValues: entity.metaDataValues?.map((value) => metaDataValueFrom(value)) ?? [],
+    metadataValues: entity.metadataValues?.map((value) => metadataValueFrom(value)) ?? [],
   }
 
   return replaceNullWithUndefined(result)
 }
 
-export const metaDataValueFrom = (entity: MetaDataValueEntity): MetaDataValue => {
-  const result: MetaDataValue = {
+export const metadataValueFrom = (entity: MetadataValueEntity): MetadataValue => {
+  const result: MetadataValue = {
     id: entity.id,
     index: entity.index,
     textValue: entity.textValue,
@@ -101,16 +101,16 @@ export const imageAttributesFrom = (entity: ImageAttributesEntity): IImageAttrib
   return replaceNullWithUndefined(result)
 }
 
-export const metaDataKeyEntityFrom = (input: NonPersistedMetaDataKey): MetaDataKeyEntity => {
-  const keyEntity = new MetaDataKeyEntity()
+export const metadataKeyEntityFrom = (input: NonPersistedMetadataKey): MetadataKeyEntity => {
+  const keyEntity = new MetadataKeyEntity()
   keyEntity.key = input.key
   keyEntity.valueType = input.valueType as ValueType
-  keyEntity.metaDataValues = input.metaDataValues.map((valInput) => metaDataValueEntityFrom(valInput))
+  keyEntity.metadataValues = input.metadataValues.map((valInput) => metadataValueEntityFrom(valInput))
   return keyEntity
 }
 
-export const metaDataValueEntityFrom = (input: NonPersistedMetaDataValue): MetaDataValueEntity => {
-  const valEntity = new MetaDataValueEntity()
+export const metadataValueEntityFrom = (input: NonPersistedMetadataValue): MetadataValueEntity => {
+  const valEntity = new MetadataValueEntity()
   valEntity.index = input.index
   valEntity.textValue = input.textValue
   valEntity.numberValue = input.numberValue

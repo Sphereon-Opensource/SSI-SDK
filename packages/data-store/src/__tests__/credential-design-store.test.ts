@@ -37,16 +37,16 @@ describe('Credential Design store tests', (): void => {
 
   it('should get a credential design by id', async (): Promise<void> => {
     const args: AddCredentialDesignArgs = {
-      name: 'GetByIdDesign',
+      identifier: 'GetByIdDesign',
       tenantId: 'tenant-get-by-id',
       design: {
-        label: 'GetByIdDesign',
+        identifier: 'GetByIdDesign',
         tenantId: 'tenant-get-by-id',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
+            metadataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
           },
         ],
         schemaDefinitions: [
@@ -67,7 +67,7 @@ describe('Credential Design store tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.id).toEqual(savedDesign.id)
-    expect(result.label).toEqual('GetByIdDesign')
+    expect(result.identifier).toEqual('GetByIdDesign')
     expect(result.tenantId).toEqual('tenant-get-by-id')
   })
 
@@ -81,16 +81,16 @@ describe('Credential Design store tests', (): void => {
 
   it('should get all credential designs', async (): Promise<void> => {
     const design1: AddCredentialDesignArgs = {
-      name: 'Design1',
+      identifier: 'Design1',
       tenantId: 'tenant-1',
       design: {
-        label: 'Design1',
+        identifier: 'Design1',
         tenantId: 'tenant-1',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
+            metadataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
           },
         ],
         schemaDefinitions: [
@@ -107,16 +107,16 @@ describe('Credential Design store tests', (): void => {
     expect(savedDesign1).toBeDefined()
 
     const design2: AddCredentialDesignArgs = {
-      name: 'Design2',
+      identifier: 'Design2',
       tenantId: 'tenant-2',
       design: {
-        label: 'Design2',
+        identifier: 'Design2',
         tenantId: 'tenant-2',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'sd-jwt' }],
+            metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
           },
         ],
         schemaDefinitions: [
@@ -139,8 +139,8 @@ describe('Credential Design store tests', (): void => {
   })
 
   it('should get credential designs by filter', async (): Promise<void> => {
-    await store.addCredentialDesign({ name: 'FilterDesign1', tenantId: 'tenant-filter' })
-    await store.addCredentialDesign({ name: 'FilterDesign2', tenantId: 'tenant-other' })
+    await store.addCredentialDesign({ identifier: 'FilterDesign1', tenantId: 'tenant-filter' })
+    await store.addCredentialDesign({ identifier: 'FilterDesign2', tenantId: 'tenant-other' })
 
     const args: GetCredentialDesignsArgs = {
       filter: {
@@ -150,21 +150,21 @@ describe('Credential Design store tests', (): void => {
     const result: Array<CredentialDesign> = await store.getCredentialDesigns(args)
 
     expect(result.length).toEqual(1)
-    expect(result[0].label).toEqual('FilterDesign1')
+    expect(result[0].identifier).toEqual('FilterDesign1')
   })
 
   it('should get whole credential design with all relations by filter', async (): Promise<void> => {
     const args: AddCredentialDesignArgs = {
-      name: 'WholeDesign',
+      identifier: 'WholeDesign',
       tenantId: 'tenant-whole',
       design: {
-        label: 'WholeDesign',
+        identifier: 'WholeDesign',
         tenantId: 'tenant-whole',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [
+            metadataValues: [
               { index: 0, textValue: 'VerifiableCredential' },
               { index: 1, textValue: 'WholeDesign' },
             ],
@@ -172,12 +172,12 @@ describe('Credential Design store tests', (): void => {
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+            metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
           },
           {
             key: 'advancedSchema',
             valueType: ValueType.Boolean,
-            metaDataValues: [{ index: 0, booleanValue: false }],
+            metadataValues: [{ index: 0, booleanValue: false }],
           },
         ],
         schemaDefinitions: [
@@ -207,12 +207,12 @@ describe('Credential Design store tests', (): void => {
       },
     }
     await store.addCredentialDesign(args)
-    await store.addCredentialDesign({ name: 'OtherDesign', tenantId: 'tenant-other' })
+    await store.addCredentialDesign({ identifier: 'OtherDesign', tenantId: 'tenant-other' })
 
     const result: Array<CredentialDesign> = await store.getCredentialDesigns({ filter: { tenantId: 'tenant-whole' } })
 
     expect(result.length).toEqual(1)
-    expect(result[0].metaDataKeys.length).toEqual(3)
+    expect(result[0].metadataKeys.length).toEqual(3)
     expect(result[0].schemaDefinitions.length).toEqual(2)
     expect(result[0].branding).toBeDefined()
     expect(result[0].branding!.logo).toBeDefined()
@@ -220,7 +220,7 @@ describe('Credential Design store tests', (): void => {
   })
 
   it('should return no credential designs if filter does not match', async (): Promise<void> => {
-    await store.addCredentialDesign({ name: 'SomeDesign', tenantId: 'tenant-exists' })
+    await store.addCredentialDesign({ identifier: 'SomeDesign', tenantId: 'tenant-exists' })
 
     const result: Array<CredentialDesign> = await store.getCredentialDesigns({ filter: { tenantId: 'non-existent-tenant' } })
 
@@ -229,16 +229,16 @@ describe('Credential Design store tests', (): void => {
 
   it('should add credential design', async (): Promise<void> => {
     const args: AddCredentialDesignArgs = {
-      name: 'AddDesign',
+      identifier: 'AddDesign',
       tenantId: 'tenant-add',
       design: {
-        label: 'AddDesign',
+        identifier: 'AddDesign',
         tenantId: 'tenant-add',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [
+            metadataValues: [
               { index: 0, textValue: 'VerifiableCredential' },
               { index: 1, textValue: 'AddDesign' },
             ],
@@ -246,7 +246,7 @@ describe('Credential Design store tests', (): void => {
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+            metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
           },
         ],
         schemaDefinitions: [
@@ -286,9 +286,9 @@ describe('Credential Design store tests', (): void => {
 
     expect(result).toBeDefined()
     expect(result.id).toBeDefined()
-    expect(result.label).toEqual(args.name)
+    expect(result.identifier).toEqual(args.identifier)
     expect(result.tenantId).toEqual(args.tenantId)
-    expect(result.metaDataKeys.length).toEqual(2)
+    expect(result.metadataKeys.length).toEqual(2)
     expect(result.schemaDefinitions.length).toEqual(2)
     expect(result.branding).toBeDefined()
     expect(result.branding!.textColor).toEqual('#FFFFFF')
@@ -304,21 +304,21 @@ describe('Credential Design store tests', (): void => {
 
   it('should update credential design by id', async (): Promise<void> => {
     const created: CredentialDesign = await store.addCredentialDesign({
-      name: 'OriginalDesign',
+      identifier: 'OriginalDesign',
       tenantId: 'tenant-original',
       design: {
-        label: 'OriginalDesign',
+        identifier: 'OriginalDesign',
         tenantId: 'tenant-original',
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
+            metadataValues: [{ index: 0, textValue: 'VerifiableCredential' }],
           },
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
+            metadataValues: [{ index: 0, textValue: 'jwt_vc_json' }],
           },
         ],
         schemaDefinitions: [
@@ -339,13 +339,13 @@ describe('Credential Design store tests', (): void => {
 
     const updateArgs: UpdateCredentialDesignArgs = {
       credentialDesignId: created.id,
-      name: 'UpdatedDesign',
+      identifier: 'UpdatedDesign',
       design: {
-        metaDataKeys: [
+        metadataKeys: [
           {
             key: 'credentialType',
             valueType: ValueType.Text,
-            metaDataValues: [
+            metadataValues: [
               { index: 0, textValue: 'VerifiableCredential' },
               { index: 1, textValue: 'UpdatedDesign' },
             ],
@@ -353,12 +353,12 @@ describe('Credential Design store tests', (): void => {
           {
             key: 'credentialFormat',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'sd-jwt' }],
+            metadataValues: [{ index: 0, textValue: 'sd-jwt' }],
           },
           {
             key: 'vct',
             valueType: ValueType.Text,
-            metaDataValues: [{ index: 0, textValue: 'https://example.com/vct' }],
+            metadataValues: [{ index: 0, textValue: 'https://example.com/vct' }],
           },
         ],
       },
@@ -368,18 +368,18 @@ describe('Credential Design store tests', (): void => {
     const result: CredentialDesign = await store.getCredentialDesign({ credentialDesignId: created.id })
 
     expect(result).toBeDefined()
-    expect(result.label).toEqual('UpdatedDesign')
-    expect(result.metaDataKeys.length).toEqual(3)
+    expect(result.identifier).toEqual('UpdatedDesign')
+    expect(result.metadataKeys.length).toEqual(3)
 
-    const credentialFormatKey = result.metaDataKeys.find((k) => k.key === 'credentialFormat')
+    const credentialFormatKey = result.metadataKeys.find((k) => k.key === 'credentialFormat')
     expect(credentialFormatKey).toBeDefined()
-    expect(credentialFormatKey!.metaDataValues[0].textValue).toEqual('sd-jwt')
+    expect(credentialFormatKey!.metadataValues[0].textValue).toEqual('sd-jwt')
 
-    const vctKey = result.metaDataKeys.find((k) => k.key === 'vct')
+    const vctKey = result.metadataKeys.find((k) => k.key === 'vct')
     expect(vctKey).toBeDefined()
-    expect(vctKey!.metaDataValues[0].textValue).toEqual('https://example.com/vct')
+    expect(vctKey!.metadataValues[0].textValue).toEqual('https://example.com/vct')
 
-    // Branding should remain untouched since we only updated metaDataKeys
+    // Branding should remain untouched since we only updated metadataKeys
     expect(result.branding).toBeDefined()
     expect(result.branding!.textColor).toEqual('#000000')
   })
@@ -387,14 +387,14 @@ describe('Credential Design store tests', (): void => {
   it('should throw error when updating credential design with unknown id', async (): Promise<void> => {
     const credentialDesignId = 'unknownCredentialDesignId'
 
-    await expect(store.updateCredentialDesign({ credentialDesignId, name: 'ShouldFail' })).rejects.toThrow(
+    await expect(store.updateCredentialDesign({ credentialDesignId, identifier: 'ShouldFail' })).rejects.toThrow(
       `No credential design found for id: ${credentialDesignId}`,
     )
   })
 
   it('should remove credential design', async (): Promise<void> => {
     const created: CredentialDesign = await store.addCredentialDesign({
-      name: 'ToBeRemoved',
+      identifier: 'ToBeRemoved',
       tenantId: 'tenant-remove',
     })
     expect(created).toBeDefined()

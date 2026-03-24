@@ -1,11 +1,11 @@
 import { BaseEntity, Column, Entity, Index, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { MetaDataKeyEntity } from './MetaDataKeyEntity'
+import { MetadataKeyEntity } from './MetadataKeyEntity'
 import { SchemaDefinitionEntity } from './SchemaDefinitionEntity'
 import { CredentialDesignBrandingEntity } from './CredentialDesignBrandingEntity'
 
 @Entity('meta_data_set')
 @Index('meta_data_set_unique_tenant', ['name', 'tenantId'], { unique: true })
-export class MetaDataSetEntity extends BaseEntity {
+export class MetadataSetEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -15,21 +15,21 @@ export class MetaDataSetEntity extends BaseEntity {
   @Column('text', { name: 'name', nullable: false })
   name!: string
 
-  @OneToMany(() => MetaDataKeyEntity, (key: MetaDataKeyEntity) => key.set, {
+  @OneToMany(() => MetadataKeyEntity, (key: MetadataKeyEntity) => key.set, {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
   })
-  metaDataKeys!: Array<MetaDataKeyEntity>
+  metadataKeys!: Array<MetadataKeyEntity>
 
-  @OneToMany(() => SchemaDefinitionEntity, (schema: SchemaDefinitionEntity) => schema.metaDataSet, {
+  @OneToMany(() => SchemaDefinitionEntity, (schema: SchemaDefinitionEntity) => schema.metadataSet, {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
   })
   schemaDefinitions!: Array<SchemaDefinitionEntity>
 
-  @OneToOne(() => CredentialDesignBrandingEntity, (branding: CredentialDesignBrandingEntity) => branding.metaDataSet, {
+  @OneToOne(() => CredentialDesignBrandingEntity, (branding: CredentialDesignBrandingEntity) => branding.metadataSet, {
     cascade: true,
     onDelete: 'CASCADE',
     eager: true,
