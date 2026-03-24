@@ -35,7 +35,7 @@ describe('Credential Design entities tests', (): void => {
 
   it('Should save credential design to database', async (): Promise<void> => {
     const design: NonPersistedCredentialDesign = {
-      label: 'TestCredentialDesign',
+      identifier: 'TestCredentialDesign',
       tenantId: 'tenant-entity-test',
       metadataKeys: [
         {
@@ -91,7 +91,7 @@ describe('Credential Design entities tests', (): void => {
 
     // Build entity graph using mappers
     const metadataSetEntity = new MetadataSetEntity()
-    metadataSetEntity.name = design.label
+    metadataSetEntity.name = design.identifier
     metadataSetEntity.tenantId = design.tenantId
     metadataSetEntity.metadataKeys = design.metadataKeys!.map(metadataKeyEntityFrom)
     metadataSetEntity.schemaDefinitions = design.schemaDefinitions!.map(schemaDefinitionEntityFrom)
@@ -106,7 +106,7 @@ describe('Credential Design entities tests', (): void => {
     // ── Root level ──
     expect(fromDb).toBeDefined()
     expect(fromDb.id).toBeDefined()
-    expect(fromDb.label).toEqual(design.label)
+    expect(fromDb.identifier).toEqual(design.identifier)
     expect(fromDb.tenantId).toEqual(design.tenantId)
 
     // ── MetadataKeys ──
