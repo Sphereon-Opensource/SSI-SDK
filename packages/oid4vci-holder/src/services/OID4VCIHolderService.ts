@@ -2,9 +2,7 @@ import { LOG } from '@sphereon/oid4vci-client'
 import {
   AuthorizationChallengeCodeResponse,
   CredentialConfigurationSupported,
-  CredentialConfigurationSupportedSdJwtVcV1_0_15,
   CredentialResponse,
-  CredentialResponseV1_0_15,
   CredentialSupportedSdJwtVc,
   getSupportedCredentials,
   getTypesFromCredentialSupported,
@@ -72,7 +70,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]): Promise<void> => {
       let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
       if (credentialsConfigSupported.format === 'dc+sd-jwt') {
-        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_15>credentialsConfigSupported).vct
+        const vct = (credentialsConfigSupported as CredentialSupportedSdJwtVc).vct
         if (vct?.startsWith('http')) {
           try {
             sdJwtTypeMetadata = await context.agent.fetchSdJwtTypeMetadataFromVctUrl({ vct })
@@ -233,7 +231,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
         ? uniformVerifiableCredential.decodedPayload.iss
         : uniformVerifiableCredential.issuer.id
 
-  const credentialResponse = credentialToAccept.credentialResponse as CredentialResponseV1_0_15
+  const credentialResponse = credentialToAccept.credentialResponse as CredentialResponse
   return {
     correlationId,
     credentialToAccept,
@@ -391,7 +389,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
-    const allSupported = client.getCredentialsSupported(undefined, format)
+    const allSupported = client.getCredentialsSupported(format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
         ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,

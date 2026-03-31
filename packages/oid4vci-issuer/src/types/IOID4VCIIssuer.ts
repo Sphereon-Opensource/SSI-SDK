@@ -11,6 +11,7 @@ import {
   CredentialResponse,
   Grant,
   JsonLdIssuerCredentialDefinition,
+  OpenId4VCIVersion,
   QRCodeOpts,
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
@@ -103,6 +104,7 @@ export interface IIssuerOptions {
   userPinRequired?: boolean
   nonceEndpoint?: string
   cNonceExpiresIn?: number
+  version?: OpenId4VCIVersion // OID4VCI spec version. Defaults to VER_1_0 (1.0 final)
 
   /**
    * Used in the callbacks for the first party flow

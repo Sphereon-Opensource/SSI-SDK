@@ -1,5 +1,5 @@
 import { DynamicRegistrationClientMetadata } from '@sphereon/oid4vc-common'
-import { OpenID4VCIClientState, OpenID4VCIClientV1_0_15 } from '@sphereon/oid4vci-client'
+import { OpenID4VCIClient, OpenID4VCIClientState } from '@sphereon/oid4vci-client'
 import {
   AuthorizationRequestOpts,
   AuthorizationResponse,
@@ -8,7 +8,6 @@ import {
   CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
   CredentialResponse,
-  CredentialResponseV1_0_15,
   CredentialsSupportedDisplay,
   EndpointMetadataResult,
   ExperimentalSubjectIssuance,
@@ -515,11 +514,11 @@ export type CredentialToAccept = {
   id?: string
   types: string[]
   issuanceOpt: IssuanceOpts
-  credentialResponse: CredentialResponseV1_0_15 | CredentialResponse
+  credentialResponse: CredentialResponse
 }
 
 export type GetCredentialConfigsSupportedArgs = {
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
   vcFormatPreferences: Array<string>
   format?: Array<string>
   types?: Array<Array<string>>
@@ -531,7 +530,7 @@ export type GetCredentialConfigsSupportedArgs = {
  * It can potentially return multiple results mainly because of different formats.
  */
 export type GetCredentialConfigsSupportedBySingleTypeOrIdArgs = {
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
   vcFormatPreferences: Array<string>
   format?: string[]
   types?: string[]
@@ -566,7 +565,7 @@ export type GetDefaultIssuanceOptsArgs = {
 }
 
 export type DefaultIssuanceOpts = {
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
 }
 
 export type GetIdentifierArgs = {
@@ -604,7 +603,7 @@ export type CreateIdentifierCreateOpts = {
 }
 
 export type GetIssuanceOptsArgs = {
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
   credentialsSupported: Record<string, CredentialConfigurationSupported>
   serverMetadata: EndpointMetadataResult
   context: RequiredContext
@@ -616,13 +615,13 @@ export type GetIssuanceOptsArgs = {
 
 export type GetIssuanceDidMethodArgs = {
   credentialSupported: CredentialConfigurationSupported
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
   didMethodPreferences: Array<SupportedDidMethodEnum>
 }
 
 export type GetIssuanceCryptoSuiteArgs = {
   credentialSupported: CredentialConfigurationSupported
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
   jwtCryptographicSuitePreferences: Array<JoseSignatureAlgorithm | JoseSignatureAlgorithmString>
   jsonldCryptographicSuitePreferences: Array<string>
 }
@@ -630,7 +629,7 @@ export type GetIssuanceCryptoSuiteArgs = {
 export type GetCredentialArgs = {
   pin?: string
   issuanceOpt: IssuanceOpts
-  client: OpenID4VCIClientV1_0_15
+  client: OpenID4VCIClient
   accessTokenOpts?: AccessTokenOpts
 }
 

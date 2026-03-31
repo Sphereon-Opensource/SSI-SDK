@@ -8,6 +8,7 @@ import {
   JWTPayload,
   JwtVerifyResult,
   type OID4VCICredentialFormat,
+  OpenId4VCIVersion,
   StatusListOpts,
 } from '@sphereon/oid4vci-common'
 import { CredentialDataSupplier, CredentialIssuanceInput, CredentialSignerCallback, VcIssuer, VcIssuerBuilder } from '@sphereon/oid4vci-issuer'
@@ -348,6 +349,7 @@ export async function createVciIssuerBuilder(
     resolver,
     audience: issuerMetadata.credential_issuer as string, // FIXME legacy version had {display: NameAndLocale | NameAndLocale[]} as credential_issuer
   }
+  builder.withVersion(issuerOpts.version ?? OpenId4VCIVersion.VER_1_0)
   builder.withIssuerMetadata(issuerMetadata)
   builder.withAuthorizationMetadata(authorizationServerMetadata)
   // builder.withUserPinRequired(issuerOpts.userPinRequired ?? false) was removed from implementers draft v1
