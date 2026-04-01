@@ -19,7 +19,6 @@ import {
   isManagedIdentifierCoseKeyResult,
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
-  isManagedIdentifierJwkResult,
   isManagedIdentifierKidResult,
   isManagedIdentifierResult,
   isManagedIdentifierX5cOpts,
@@ -160,7 +159,7 @@ export function signCallback(
     // Ensure JWK has JOSE format values, not COSE numeric values
     if (resolution.jwk && typeof resolution.jwk.kty === 'number') {
       const { coseKeyToJwk: toJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
-      const joseJwk = toJwk(resolution.jwk)
+      const joseJwk = toJwk(resolution.jwk as any)
       resolution = { ...resolution, method: 'jwk' as const, jwk: joseJwk, identifier: joseJwk }
     }
     const jwk = jwt.header.jwk ?? resolution.jwk
@@ -778,7 +777,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     let jwk = identifier.jwk
     if (jwk && typeof jwk.kty === 'number') {
       const { coseKeyToJwk: toJoseJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
-      jwk = toJoseJwk(jwk)
+      jwk = toJoseJwk(jwk as any)
     }
 
     const callbacks: ProofOfPossessionCallbacks = {
@@ -814,7 +813,7 @@ export class OID4VCIHolder implements IAgentPlugin {
           let joseJwk = identifier.jwk
           if (typeof joseJwk.kty === 'number') {
             const { coseKeyToJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
-            joseJwk = coseKeyToJwk(joseJwk)
+            joseJwk = coseKeyToJwk(joseJwk as any)
           }
           const jwkIdentifier = { ...identifier, method: 'jwk' as const, identifier: joseJwk, jwk: joseJwk }
           clientSignCallbacks = { signCallback: signCallback(jwkIdentifier, context) }
@@ -875,7 +874,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
         deferredCredentialAwait: true,
         ...(issuanceOpt.id && typeof issuanceOpt.id === 'string' ? { credentialConfigurationId: issuanceOpt.id } : undefined),
-        ...(!jwk && { kid }), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
+        ...(!jwk ? { kid } : {}), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
         jwk,
         alg,
         jti: uuidv4(),
