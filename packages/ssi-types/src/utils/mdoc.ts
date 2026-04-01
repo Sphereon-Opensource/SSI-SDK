@@ -79,36 +79,76 @@ export function decodeMdocDeviceResponse(vpToken: MdocOid4vpMdocVpToken): MdocDe
   return deviceResponse
 }
 
+function bytesToImageDataUri(value: unknown, mimeType = 'image/jpeg'): string {
+  if (typeof value === 'string') {
+    if (value.startsWith('data:image/')) return value
+    // Convert base64url to standard base64 if needed
+    let b64 = value.replace(/-/g, '+').replace(/_/g, '/')
+    const pad = b64.length % 4
+    if (pad) b64 += '='.repeat(4 - pad)
+    return `data:${mimeType};base64,${b64}`
+  }
+  // Int8Array or Uint8Array from CBOR byte string decoder
+  if (value && typeof value === 'object' && ('length' in value || Symbol.iterator in Object(value))) {
+    try {
+      const int8 = value instanceof Int8Array ? value : new Int8Array(value as ArrayLike<number>)
+      const base64 = com.sphereon.kmp.encodeTo(int8, com.sphereon.kmp.Encoding.BASE64)
+      return `data:${mimeType};base64,${base64}`
+    } catch {
+      // Fallback: try manual base64 encoding for Uint8Array
+      const bytes = value instanceof Uint8Array ? value : new Uint8Array(value as ArrayLike<number>)
+      let binary = ''
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
+      const base64 = typeof btoa === 'function' ? btoa(binary) : com.sphereon.kmp.encodeTo(new Int8Array(bytes), com.sphereon.kmp.Encoding.BASE64)
+      return `data:${mimeType};base64,${base64}`
+    }
+  }
+  return String(value)
+}
+
 // TODO naive implementation of mapping a mdoc onto a IVerifiableCredential. Needs some fixes and further implementation and needs to be moved out of ssi-types
 export const mdocDecodedCredentialToUniformCredential = (
   decoded: MdocDocument,
   // @ts-ignore
-  opts?: { maxTimeSkewInMS?: number },
+  opts?: { maxTimeSkewInMS?: number; issuer?: string },
 ): IVerifiableCredential => {
   const document = decoded.toJson()
   const json = document.toJsonDTO<DocumentJson>()
-  const type = 'Personal Identification Data'
   const MSO = document.MSO
   if (!MSO || !json.issuerSigned?.nameSpaces) {
     throw Error(`Cannot access Mobile Security Object or Issuer Signed items from the Mdoc`)
   }
   const nameSpaces = json.issuerSigned.nameSpaces as unknown as Record<string, IssuerSignedItemJson[]>
-  if (!('eu.europa.ec.eudi.pid.1' in nameSpaces)) {
-    throw Error(`Only PID supported at present`)
+  const nameSpaceKeys = Object.keys(nameSpaces)
+  if (nameSpaceKeys.length === 0) {
+    throw Error(`No namespaces found in issuer signed items`)
   }
-  const items = nameSpaces['eu.europa.ec.eudi.pid.1']
-  if (!items || items.length === 0) {
+  // Collect items from all namespaces
+  const items: IssuerSignedItemJson[] = []
+  for (const ns of nameSpaceKeys) {
+    items.push(...(nameSpaces[ns] || []))
+  }
+  if (items.length === 0) {
     throw Error(`No issuer signed items were found`)
   }
   type DisclosuresAccumulator = {
     [key: string]: any
   }
 
+  // Known image claims in ISO 18013-5
+  const IMAGE_CLAIMS = new Set(['portrait', 'signature_usual_mark'])
+
   const credentialSubject = items.reduce((acc: DisclosuresAccumulator, item: IssuerSignedItemJson) => {
     if (Array.isArray(item.value)) {
       acc[item.key] = item.value.map((val) => val.value).join(', ')
     } else {
-      acc[item.key] = item.value.value
+      const value = item.value.value
+      if (IMAGE_CLAIMS.has(item.key) && value != null) {
+        // Convert byte string to data URI for image rendering
+        acc[item.key] = bytesToImageDataUri(value)
+      } else {
+        acc[item.key] = value
+      }
     }
     return acc
   }, {})
@@ -123,11 +163,50 @@ export const mdocDecodedCredentialToUniformCredential = (
     throw Error(`JWT issuance date is required but was not present`)
   }
 
-  const credential: Omit<IVerifiableCredential, 'issuer' | 'issuanceDate'> = {
+  // Determine issuer: x5c CN > issuing_authority claim > opts.issuer fallback > docType
+  let issuer: string = opts?.issuer ?? docType
+  // Try issuing_authority from credential claims (present in mDL and some other doctypes)
+  if (credentialSubject.issuing_authority) {
+    issuer = credentialSubject.issuing_authority
+  }
+  // Try to extract CN from x5chain certificate in issuerAuth (most authoritative for mdoc)
+  try {
+    const x5chain = json.issuerSigned?.issuerAuth?.unprotectedHeader?.x5chain
+      ?? json.issuerSigned?.issuerAuth?.protectedHeader?.x5chain
+    if (x5chain && x5chain.length > 0) {
+      // x5chain[0] is base64-encoded DER certificate. Extract CN by searching for OID 2.5.4.3 (55 04 03)
+      const b64 = x5chain[0]
+      const binaryStr = typeof atob === 'function' ? atob(b64) : com.sphereon.kmp.decodeFromString(b64, com.sphereon.kmp.Encoding.BASE64)
+      const bytes = new Uint8Array(binaryStr.length)
+      for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i)
+      // Find last CN OID (55 04 03) — last occurrence is the subject CN
+      let lastCn: string | undefined
+      for (let i = 0; i < bytes.length - 5; i++) {
+        if (bytes[i] === 0x55 && bytes[i + 1] === 0x04 && bytes[i + 2] === 0x03) {
+          const tag = bytes[i + 3] // 0x0c=UTF8String, 0x13=PrintableString
+          if (tag === 0x0c || tag === 0x13) {
+            const len = bytes[i + 4]
+            if (i + 5 + len <= bytes.length) {
+              const cn = String.fromCharCode(...bytes.slice(i + 5, i + 5 + len))
+              lastCn = cn
+            }
+          }
+        }
+      }
+      if (lastCn) {
+        issuer = lastCn
+      }
+    }
+  } catch {
+    // Certificate parsing failed, keep previous issuer value
+  }
+
+  const credential: Omit<IVerifiableCredential, 'issuanceDate'> = {
     type: [docType], // Mdoc not a W3C VC, so no VerifiableCredential
     '@context': [], // Mdoc has no JSON-LD by default. Certainly not the VC DM1 default context for JSON-LD
+    issuer,
     credentialSubject: {
-      type,
+      type: docType,
       ...credentialSubject,
     },
     issuanceDate,

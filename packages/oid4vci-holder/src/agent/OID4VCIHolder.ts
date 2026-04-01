@@ -157,9 +157,16 @@ export function signCallback(
 ) {
   return async (jwt: Jwt, kid?: string, noIssPayloadUpdate?: boolean) => {
     let resolution = await context.agent.identifierManagedGet(identifier)
-    const jwk = jwt.header.jwk ?? (resolution.method === 'jwk' ? resolution.jwk : undefined)
+    // Ensure JWK has JOSE format values, not COSE numeric values
+    if (resolution.jwk && typeof resolution.jwk.kty === 'number') {
+      const { coseKeyToJwk: toJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
+      const joseJwk = toJwk(resolution.jwk)
+      resolution = { ...resolution, method: 'jwk' as const, jwk: joseJwk, identifier: joseJwk }
+    }
+    const jwk = jwt.header.jwk ?? resolution.jwk
     if (!resolution.issuer && !jwt.payload.iss) {
-      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
+      // iss is optional for JWK/cose_key binding per OID4VCI spec
+      logger.debug(`No issuer in resolution or JWT, proceeding without iss (JWK binding)`)
     }
     const header = jwt.header as JwsHeader
     const payload = jwt.payload
@@ -768,7 +775,11 @@ export class OID4VCIHolder implements IAgentPlugin {
     const alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString = await signatureAlgorithmFromKey({ key: identifier.key })
     // The VCI lib either expects a jwk or a kid
     const isCoseKey = isManagedIdentifierCoseKeyResult(identifier)
-    const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
+    let jwk = identifier.jwk
+    if (jwk && typeof jwk.kty === 'number') {
+      const { coseKeyToJwk: toJoseJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
+      jwk = toJoseJwk(jwk)
+    }
 
     const callbacks: ProofOfPossessionCallbacks = {
       signCallback: signCallback(identifier, context),
@@ -780,25 +791,50 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!client.clientId) {
         client.clientId = isManagedIdentifierDidResult(identifier) ? identifier.did : identifier.issuer
       }
+
+      // Auto-detect private_key_jwt from AS metadata
+      const serverMetadata = await client.retrieveServerMetadata()
+      const authMethods =
+        (serverMetadata as any)?.authorizationServerMetadata?.token_endpoint_auth_methods_supported ??
+        (serverMetadata as any)?.credentialIssuerMetadata?.token_endpoint_auth_methods_supported
+      const requiresPrivateKeyJwt = authMethods?.includes('private_key_jwt')
+
       let asOpts: AuthorizationServerOpts | undefined = undefined
-      let kid = accessTokenOpts?.clientOpts?.kid ?? identifier.kid
-      if (accessTokenOpts?.clientOpts) {
-        const clientId = accessTokenOpts.clientOpts.clientId ?? client.clientId ?? identifier.issuer
+      let kid = accessTokenOpts?.clientOpts?.kid ?? identifier.kid ?? identifier.jwkThumbprint ?? identifier.kmsKeyRef
+      if (accessTokenOpts?.clientOpts || requiresPrivateKeyJwt) {
+        const clientId = accessTokenOpts?.clientOpts?.clientId ?? client.clientId ?? identifier.issuer
         if (client.isEBSI() && clientId?.startsWith('http') && kid?.includes('#')) {
           kid = kid.split('#')[1]
         }
 
-        //todo: investigate if the jwk should be used here as well if present
+        // For private_key_jwt, use JWK-based sign callbacks (JWT assertions need JOSE format, not COSE)
+        let clientSignCallbacks = accessTokenOpts?.clientOpts?.signCallbacks ?? callbacks
+        if (requiresPrivateKeyJwt && !accessTokenOpts?.clientOpts?.signCallbacks && identifier.jwk) {
+          // Ensure JWK has JOSE string values, not COSE numeric values
+          let joseJwk = identifier.jwk
+          if (typeof joseJwk.kty === 'number') {
+            const { coseKeyToJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
+            joseJwk = coseKeyToJwk(joseJwk)
+          }
+          const jwkIdentifier = { ...identifier, method: 'jwk' as const, identifier: joseJwk, jwk: joseJwk }
+          clientSignCallbacks = { signCallback: signCallback(jwkIdentifier, context) }
+        }
         const clientOpts: AuthorizationServerClientOpts = {
-          ...accessTokenOpts.clientOpts,
+          ...accessTokenOpts?.clientOpts,
           clientId,
           kid,
           // @ts-ignore
-          alg: accessTokenOpts.clientOpts.alg ?? alg,
-          signCallbacks: accessTokenOpts.clientOpts.signCallbacks ?? callbacks,
+          alg: accessTokenOpts?.clientOpts?.alg ?? alg,
+          signCallbacks: clientSignCallbacks,
+          ...(requiresPrivateKeyJwt && !accessTokenOpts?.clientOpts?.clientAssertionType && {
+            clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' as const,
+          }),
         }
         asOpts = {
           clientOpts,
+        }
+        if (requiresPrivateKeyJwt) {
+          logger.info(`Auto-configured private_key_jwt client authentication for token endpoint`)
         }
       }
 

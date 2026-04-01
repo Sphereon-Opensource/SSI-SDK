@@ -356,7 +356,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
       ? uniformVerifiableCredential.issuer
       : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential)
         ? uniformVerifiableCredential.decodedPayload.iss
-        : uniformVerifiableCredential.issuer.id
+        : uniformVerifiableCredential.issuer?.id ?? uniformVerifiableCredential.type?.[0] ?? 'unknown'
 
   const credentialResponse = credentialToAccept.credentialResponse as CredentialResponse
   return {
@@ -404,14 +404,19 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
   } = issuanceOpt
   let identifier: ManagedIdentifierResult
 
+  console.log(`[getIdentifierOpts] identifierArg: ${identifierArg ? `method=${identifierArg.method}, keys=${Object.keys(identifierArg).join(',')}` : 'undefined'}, supportedBindingMethods: ${supportedBindingMethods?.join(',')}, supportedPreferredDidMethod: ${supportedPreferredDidMethod}`)
+
   if (identifierArg) {
     if (isIIdentifier(identifierArg.identifier)) {
+      console.log(`[getIdentifierOpts] Branch: identifierArg isIIdentifier`)
       identifier = await context.agent.identifierManagedGet(identifierArg)
     } else if (!identifierArg.method && issuanceOpt.supportedBindingMethods.includes('jwk')) {
+      console.log(`[getIdentifierOpts] Branch: identifierArg no method + jwk binding`)
       identifier = await managedIdentifierToJwk(identifierArg, context)
     } else if (identifierArg.method && !supportedBindingMethods.includes(identifierArg.method)) {
       throw Error(`Supplied identifier method ${identifierArg.method} not supported by the issuer: ${supportedBindingMethods.join(',')}`)
     } else {
+      console.log(`[getIdentifierOpts] Branch: identifierArg fallthrough to identifierManagedGet`)
       identifier = await context.agent.identifierManagedGet(identifierArg)
     }
   }
@@ -422,6 +427,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     supportedPreferredDidMethod &&
     (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
   ) {
+    console.log(`[getIdentifierOpts] Branch: DID`)
     // previous code for managing DIDs only
     const identifierFilter = defaultHolderIdentifier
       ? defaultHolderIdentifier.startsWith('did:')
@@ -449,11 +455,13 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
       await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
     }
   } else if (supportedBindingMethods.includes('jwk')) {
+    console.log(`[getIdentifierOpts] Branch: JWK`)
     // todo: we probably should do something similar as with DIDs for re-use/new keys
     const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
   } else if (supportedBindingMethods.includes('cose_key')) {
+    console.log(`[getIdentifierOpts] Branch: COSE_KEY`)
     const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // First resolve as JWK, then convert to COSE key
     const jwkResult = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
