@@ -761,6 +761,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
 
+    logger.info(`Issuance supportedBindingMethods: ${issuanceOpt.supportedBindingMethods?.join(', ')}, format: ${issuanceOpt.format}`)
     const identifier = await getIdentifierOpts({ issuanceOpt, context, defaultHolderIdentifier: this.defaultHolderIdentifier })
     issuanceOpt.identifier = identifier
     logger.info(`ID opts`, identifier)
@@ -809,7 +810,16 @@ export class OID4VCIHolder implements IAgentPlugin {
         ...(asOpts && { asOpts }),
       }
       logger.debug(`Acquiring access token with opts: ${JSON.stringify(acquireAccessTokenOpts, null, 2)}`)
-      const accessTokenResponse = await client.acquireAccessToken(acquireAccessTokenOpts)
+      let accessTokenResponse
+      try {
+        accessTokenResponse = await client.acquireAccessToken(acquireAccessTokenOpts)
+      } catch (tokenError: any) {
+        logger.error(`Error acquiring access token: ${tokenError.message}`)
+        if (tokenError.cause) {
+          logger.error(`Token error cause: ${JSON.stringify(tokenError.cause)}`)
+        }
+        throw tokenError
+      }
       logger.debug(`Access token response: ${JSON.stringify(accessTokenResponse, null, 2)}`)
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
