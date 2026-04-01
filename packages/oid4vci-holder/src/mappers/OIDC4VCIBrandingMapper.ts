@@ -130,8 +130,8 @@ export const oid4vciCombineDisplayLocalesFrom = async (
   const locales: Array<string> = Array.from(new Set([...issuerCredentialSubjectLocales.keys(), ...credentialDisplayLocales.keys()]))
 
   // Helper to find a fallback entry from the other map when locale keys differ by region
-  // suffix (e.g. "nl" vs "nl-NL"). Prefers the base language match over no match.
-  const findByPrefix = <V>(map: Map<string, V>, locale: string): V | undefined => {
+  // suffix (e.g. "nl" vs "nl-NL"). Falls back through: language-prefix match → no-locale entry.
+  const findByLocale = <V>(map: Map<string, V>, locale: string): V | undefined => {
     if (!locale) return undefined
     const lang = locale.split('-')[0]
     for (const [key, value] of map) {
@@ -139,13 +139,14 @@ export const oid4vciCombineDisplayLocalesFrom = async (
         return value
       }
     }
-    return undefined
+    // Fall back to no-locale entry so at least some data is used
+    return map.get('')
   }
 
   return Promise.all(
     locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-      const display = credentialDisplayLocales.get(locale) ?? findByPrefix(credentialDisplayLocales, locale)
-      const claims = issuerCredentialSubjectLocales.get(locale) ?? findByPrefix(issuerCredentialSubjectLocales, locale)
+      const display = credentialDisplayLocales.get(locale) ?? findByLocale(credentialDisplayLocales, locale)
+      const claims = issuerCredentialSubjectLocales.get(locale) ?? findByLocale(issuerCredentialSubjectLocales, locale)
 
       return {
         ...(display && (await oid4vciCredentialLocaleBrandingFrom({ credentialDisplay: display }))),
@@ -231,9 +232,21 @@ export const sdJwtCredentialLocaleBrandingFrom = async (args: SdJwtCredentialLoc
         color: credentialDisplay.rendering.simple.text_color,
       },
     }),
-    ...(credentialDisplay.rendering?.simple?.background_color && {
+    ...((credentialDisplay.rendering?.simple?.background_image || credentialDisplay.rendering?.simple?.background_color) && {
       background: {
-        color: credentialDisplay.rendering.simple.background_color,
+        ...(credentialDisplay.rendering?.simple?.background_image && {
+          image: {
+            ...(credentialDisplay.rendering.simple.background_image.uri && {
+              uri: credentialDisplay.rendering.simple.background_image.uri,
+            }),
+            ...(credentialDisplay.rendering.simple.background_image.alt_text && {
+              alt: credentialDisplay.rendering.simple.background_image.alt_text,
+            }),
+          },
+        }),
+        ...(credentialDisplay.rendering?.simple?.background_color && {
+          color: credentialDisplay.rendering.simple.background_color,
+        }),
       },
     }),
   }
@@ -246,23 +259,23 @@ export const sdJwtCombineDisplayLocalesFrom = async (args: SdJwtCombineDisplayLo
   const locales: Array<string> = Array.from(new Set([...claimsMetadata.keys(), ...credentialDisplayLocales.keys()]))
 
   // Helper to find a fallback entry from the other map when locale keys differ by region
-  // suffix (e.g. "nl" vs "nl-NL"). Prefers the base language match over no match.
-  const findByPrefix = <V>(map: Map<string, V>, locale: string): V | undefined => {
+  // suffix (e.g. "nl" vs "nl-NL"). Falls back through: language-prefix match → no-locale entry.
+  const findByLocale = <V>(map: Map<string, V>, locale: string): V | undefined => {
     if (!locale) return undefined
     const lang = locale.split('-')[0]
-    // Try exact regional variants first, then the bare language code
     for (const [key, value] of map) {
       if (key !== locale && key.split('-')[0] === lang) {
         return value
       }
     }
-    return undefined
+    // Fall back to no-locale entry so at least some data is used
+    return map.get('')
   }
 
   return Promise.all(
     locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-      const display = credentialDisplayLocales.get(locale) ?? findByPrefix(credentialDisplayLocales, locale)
-      const claims = claimsMetadata.get(locale) ?? findByPrefix(claimsMetadata, locale)
+      const display = credentialDisplayLocales.get(locale) ?? findByLocale(credentialDisplayLocales, locale)
+      const claims = claimsMetadata.get(locale) ?? findByLocale(claimsMetadata, locale)
 
       return {
         ...(display && (await sdJwtCredentialLocaleBrandingFrom({ credentialDisplay: display }))),
