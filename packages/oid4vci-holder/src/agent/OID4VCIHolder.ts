@@ -16,6 +16,7 @@ import {
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
+  isManagedIdentifierCoseKeyResult,
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
   isManagedIdentifierJwkResult,
@@ -178,6 +179,81 @@ export function signCallback(
         payload,
       })
     ).jwt
+  }
+}
+
+export function cwtSignCallback(
+  identifier: ManagedIdentifierOptsOrResult,
+  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
+) {
+  return async (args: { iss?: string; aud: string; nonce?: string; alg?: string; jwk?: unknown; kid?: string; coseKey?: unknown }): Promise<string> => {
+    const resolution = await context.agent.identifierManagedGet(identifier)
+
+    // Import CBOR utilities from KMP mdoc core
+    const mdocPkg = (await import('@sphereon/kmp-mdoc-core')).default
+    const { com, kotlin } = mdocPkg
+    const Encoding = com.sphereon.kmp.Encoding
+    const encodeTo = com.sphereon.kmp.encodeTo
+    const decodeFrom = com.sphereon.kmp.decodeFrom
+
+    const now = Math.floor(Date.now() / 1000)
+    const alg = args.alg ?? 'ES256'
+
+    // COSE algorithm label (1) and content type label (16)
+    // alg: ES256 = -7, ES384 = -35, ES512 = -36, EdDSA = -8
+    const coseAlgMap: Record<string, number> = { ES256: -7, ES384: -35, ES512: -36, EdDSA: -8 }
+    const coseAlg = coseAlgMap[alg] ?? -7
+
+    // CWT claim keys per RFC 8392: iss=1, aud=3, iat=6, nonce=10
+    const CWT_ISS = 1
+    const CWT_AUD = 3
+    const CWT_IAT = 6
+    const CWT_NONCE = 10
+
+    // Build protected header: { 1: alg, 16: "openid4vci-proof+cwt" }
+    const protectedHeaderEntries: Array<[any, any]> = [
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(1)), new com.sphereon.cbor.CborInt(com.sphereon.kmp.LongKMP.fromNumber(coseAlg))],
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(16)), new com.sphereon.cbor.CborString('openid4vci-proof+cwt')],
+    ]
+    const protectedHeader = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(protectedHeaderEntries)))
+    const protectedHeaderEncoded = com.sphereon.cbor.Cbor.encode(protectedHeader)
+
+    // Build payload claims map
+    const claimsEntries: Array<[any, any]> = [
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_ISS)), new com.sphereon.cbor.CborString(args.iss ?? resolution.issuer ?? '')],
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_AUD)), new com.sphereon.cbor.CborString(args.aud)],
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_IAT)), new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(now - 60))],
+    ]
+    if (args.nonce) {
+      claimsEntries.push([
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_NONCE)),
+        new com.sphereon.cbor.CborString(args.nonce),
+      ])
+    }
+    const claimsMap = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(claimsEntries)))
+    const claimsEncoded = com.sphereon.cbor.Cbor.encode(claimsMap)
+
+    // Sign the CBOR-encoded claims
+    const claimsBase64url = encodeTo(new Int8Array(claimsEncoded), Encoding.BASE64URL)
+    const signedCWT = await context.agent.keyManagerSign({
+      keyRef: resolution.kmsKeyRef ?? resolution.key.kid,
+      data: claimsBase64url,
+      algorithm: alg,
+    })
+
+    // Assemble COSE_Sign1: [protected_header_bytes, unprotected_header (empty map), payload_bytes, signature_bytes]
+    const signatureInt8 = decodeFrom(signedCWT, Encoding.BASE64URL)
+    const emptyMap = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map()))
+    const coseSign1Elements = [
+      new com.sphereon.cbor.CborByteString(new Int8Array(protectedHeaderEncoded)),
+      emptyMap,
+      new com.sphereon.cbor.CborByteString(new Int8Array(claimsEncoded)),
+      new com.sphereon.cbor.CborByteString(signatureInt8),
+    ]
+    const coseSign1Array = new com.sphereon.cbor.CborArray(kotlin.collections.KtMutableList.fromJsArray(coseSign1Elements))
+    const cwtEncoded = com.sphereon.cbor.Cbor.encode(coseSign1Array)
+
+    return encodeTo(new Int8Array(cwtEncoded), Encoding.BASE64URL)
   }
 }
 
@@ -690,10 +766,12 @@ export class OID4VCIHolder implements IAgentPlugin {
     logger.info(`ID opts`, identifier)
     const alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString = await signatureAlgorithmFromKey({ key: identifier.key })
     // The VCI lib either expects a jwk or a kid
+    const isCoseKey = isManagedIdentifierCoseKeyResult(identifier)
     const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
 
     const callbacks: ProofOfPossessionCallbacks = {
       signCallback: signCallback(identifier, context),
+      ...(isCoseKey && { cwtSignCallback: cwtSignCallback(identifier, context) }),
     }
 
     try {

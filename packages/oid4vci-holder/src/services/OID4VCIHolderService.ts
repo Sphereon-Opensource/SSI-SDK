@@ -19,7 +19,7 @@ import {
   ManagedIdentifierResult,
   managedIdentifierToJwk,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
+import { keyTypeFromCryptographicSuite, jwkToCoseKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store-types'
 import {
@@ -453,9 +453,12 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
-    // } else if (supportedBindingMethods.includes('cose_key')) {
-    //   // TODO COSE HERE
-    //   throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
+  } else if (supportedBindingMethods.includes('cose_key')) {
+    const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
+    // First resolve as JWK, then convert to COSE key
+    const jwkResult = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
+    const coseKey = jwkToCoseKey(jwkResult.jwk)
+    identifier = await context.agent.identifierManagedGet({ method: 'cose_key', identifier: coseKey, kmsKeyRef: key.kid })
   } else {
     throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }
@@ -695,7 +698,6 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
       signing_algs_supported = credentialSupported.proof_types_supported.ldp_vp.proof_signing_alg_values_supported
     } else if ('cwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.cwt) {
       signing_algs_supported = credentialSupported.proof_types_supported.cwt.proof_signing_alg_values_supported
-      console.error('cwt proof type not supported. Likely that errors will occur after this point')
     } else {
       return Promise.reject(Error(`Unsupported proof_types_supported`))
     }
