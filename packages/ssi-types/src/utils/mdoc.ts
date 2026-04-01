@@ -176,9 +176,15 @@ export const mdocDecodedCredentialToUniformCredential = (
     if (x5chain && x5chain.length > 0) {
       // x5chain[0] is base64-encoded DER certificate. Extract CN by searching for OID 2.5.4.3 (55 04 03)
       const b64 = x5chain[0]
-      const binaryStr = typeof atob === 'function' ? atob(b64) : com.sphereon.kmp.decodeFromString(b64, com.sphereon.kmp.Encoding.BASE64)
-      const bytes = new Uint8Array(binaryStr.length)
-      for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i)
+      let bytes: Uint8Array
+      if (typeof atob === 'function') {
+        const binaryStr = atob(b64)
+        bytes = new Uint8Array(binaryStr.length)
+        for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i)
+      } else {
+        const int8 = com.sphereon.kmp.decodeFrom(b64, com.sphereon.kmp.Encoding.BASE64)
+        bytes = new Uint8Array(int8)
+      }
       // Find last CN OID (55 04 03) — last occurrence is the subject CN
       let lastCn: string | undefined
       for (let i = 0; i < bytes.length - 5; i++) {
