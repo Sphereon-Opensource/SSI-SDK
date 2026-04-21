@@ -93,7 +93,7 @@ export function issueCredentialEndpoint(router: Router, context: IRequiredContex
 
         const dc: AddCredentialArgs = {
           credential: {
-            credentialRole: CredentialRole.HOLDER,
+            credentialRole: CredentialRole.ISSUER,
             // tenantId: 'test-tenant',
             kmsKeyRef: identifier.kmsKeyRef,
             identifierMethod: identifier.method,
