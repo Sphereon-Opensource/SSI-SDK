@@ -4,6 +4,7 @@ import { IOID4VCIStore } from '@sphereon/ssi-sdk.oid4vci-issuer-store'
 import { IAgentContext, ICredentialIssuer, ICredentialVerifier, IDIDManager, IKeyManager, IResolver } from '@veramo/core'
 import { IJwtService } from '@sphereon/ssi-sdk-ext.jwt-service'
 import { IVcdmCredentialPlugin } from '@sphereon/ssi-sdk.credential-vcdm'
+import { ICredentialStore } from '@sphereon/ssi-sdk.credential-store'
 
 export type IRequiredContext = IAgentContext<IPlugins>
 
@@ -16,4 +17,5 @@ export type IPlugins = IDIDManager &
   ICredentialVerifier &
   ICredentialIssuer &
   IJwtService &
-  IVcdmCredentialPlugin
+  IVcdmCredentialPlugin &
+  ICredentialStore
