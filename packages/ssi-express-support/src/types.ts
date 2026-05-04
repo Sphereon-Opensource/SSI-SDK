@@ -14,6 +14,7 @@ export interface IExpressServerOpts {
   existingExpress?: Express
   listenCallback?: () => void
   startListening?: boolean
+  maxRequestBodySize?: string
   // externalBaseUrl?: string // In case an external base URL needs to be exposed
 }
 
