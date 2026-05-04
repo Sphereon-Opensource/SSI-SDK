@@ -24,6 +24,8 @@ type Handler<Request extends http.IncomingMessage, Response extends http.ServerR
   callback: (err?: Error) => void,
 ) => void
 
+const DEFAULT_MAX_BODYPARSER_REQUEST_BODY_SIZE = '5mb'
+
 export class ExpressBuilder {
   private existingExpress?: Express
   private hostnameOrIP?: string
@@ -41,6 +43,7 @@ export class ExpressBuilder {
   private _server?: http.Server | undefined
   private _terminator?: HttpTerminator
   private _morgan?: Handler<any, any> | undefined
+  private _maxRequestBodySize?: string
 
   private constructor(opts?: { existingExpress?: Express; envVarPrefix?: string }) {
     const { existingExpress, envVarPrefix } = opts ?? {}
@@ -56,6 +59,9 @@ export class ExpressBuilder {
 
   public static fromServerOpts(opts: IExpressServerOpts & { envVarPrefix?: string }) {
     const builder = new ExpressBuilder({ existingExpress: opts?.existingExpress, envVarPrefix: opts?.envVarPrefix })
+    if (opts.maxRequestBodySize) {
+      builder.withMaxRequestBodySize(opts.maxRequestBodySize)
+    }
     return builder.withEnableListenOpts({ ...opts, hostnameOrIP: opts.hostname, startOnBuild: opts.startListening ?? false })
   }
 
@@ -133,6 +139,11 @@ export class ExpressBuilder {
 
   public withEnforcer(enforcer: Enforcer): this {
     this._enforcer = enforcer
+    return this
+  }
+
+  public withMaxRequestBodySize(limit: string): this {
+    this._maxRequestBodySize = limit
     return this
   }
 
@@ -261,8 +272,9 @@ export class ExpressBuilder {
     // @ts-ignore
     opts?.handlers && app.use(opts.handlers)
     //fixme: this should come from the config
-    app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(bodyParser.json({ limit: '5mb' }))
+    const limit = this._maxRequestBodySize ?? DEFAULT_MAX_BODYPARSER_REQUEST_BODY_SIZE
+    app.use(bodyParser.urlencoded({ extended: true, limit }))
+    app.use(bodyParser.json({ limit }))
     return app
   }
 }
