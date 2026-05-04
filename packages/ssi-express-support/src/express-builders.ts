@@ -24,7 +24,7 @@ type Handler<Request extends http.IncomingMessage, Response extends http.ServerR
   callback: (err?: Error) => void,
 ) => void
 
-const DEFAULT_MAX_REQUEST_BODY_SIZE = '5mb'
+const DEFAULT_MAX_BODYPARSER_REQUEST_BODY_SIZE = '5mb'
 
 export class ExpressBuilder {
   private existingExpress?: Express
@@ -272,7 +272,7 @@ export class ExpressBuilder {
     // @ts-ignore
     opts?.handlers && app.use(opts.handlers)
     //fixme: this should come from the config
-    const limit = this._maxRequestBodySize ?? DEFAULT_MAX_REQUEST_BODY_SIZE
+    const limit = this._maxRequestBodySize ?? DEFAULT_MAX_BODYPARSER_REQUEST_BODY_SIZE
     app.use(bodyParser.urlencoded({ extended: true, limit }))
     app.use(bodyParser.json({ limit }))
     return app
