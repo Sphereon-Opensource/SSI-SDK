@@ -1,7 +1,10 @@
-import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
+import { CredentialDataSupplier, CredentialSignerCallback, VcIssuer } from '@sphereon/oid4vci-issuer'
 import { getBasePath, OID4VCIServer } from '@sphereon/oid4vci-issuer-server'
 import { IOID4VCIServerOpts } from '@sphereon/oid4vci-issuer-server'
 import { ExpressSupport } from '@sphereon/ssi-express-support'
+import { isDidIdentifier, isIIdentifier } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { ensureRawDocument } from '@sphereon/ssi-sdk.data-store-types'
+import { AddCredentialArgs, CredentialCorrelationType } from '@sphereon/ssi-sdk.credential-store'
 import {
   createAuthRequestUriCallback,
   getAccessTokenSignerCallback,
@@ -9,6 +12,7 @@ import {
   IssuerInstance,
   createVerifyAuthResponseCallback,
 } from '@sphereon/ssi-sdk.oid4vci-issuer'
+import { CredentialMapper, CredentialRole, OriginalVerifiableCredential } from '@sphereon/ssi-types'
 import express, { Express, Request, Response, Router } from 'express'
 import fs from 'fs'
 import path from 'path'
@@ -19,7 +23,19 @@ import swaggerUi from 'swagger-ui-express'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {}
+export interface IOID4VCIRestAPIOpts extends IOID4VCIServerOpts {
+  /**
+   * When `true`, every credential issued through this OID4VCI REST API is persisted as a
+   * {@link CredentialRole.ISSUER} `DigitalCredential` row via the `ICredentialStore` plugin
+   * (agent method `crsAddCredential`). Requires the `credential-store` plugin to be present
+   * on the agent. Defaults to `false`.
+   *
+   * Persistence failures are surfaced (fail-fast): when this flag is enabled and the store
+   * call throws, the enclosing issuance request fails with an error rather than silently
+   * dropping the row. That is intentional — a silent drop is exactly the defect DEV-35 fixes.
+   */
+  persistIssuedCredentials?: boolean
+}
 
 export class OID4VCIRestAPI {
   private readonly _expressSupport: ExpressSupport
@@ -43,7 +59,10 @@ export class OID4VCIRestAPI {
     const opts = args.opts ?? {}
     const expressSupport = args.expressSupport
     const instance = await context.agent.oid4vciGetInstance(args.issuerInstanceArgs)
-    const issuer = await instance.get({ context, credentialDataSupplier: args.credentialDataSupplier })
+    const wrapCredentialSignerCallback = opts.persistIssuedCredentials
+      ? OID4VCIRestAPI.buildPersistenceSignerWrapper({ context, instance })
+      : undefined
+    const issuer = await instance.get({ context, credentialDataSupplier: args.credentialDataSupplier, wrapCredentialSignerCallback })
 
     if (!opts.endpointOpts) {
       opts.endpointOpts = {}
@@ -101,6 +120,73 @@ export class OID4VCIRestAPI {
     }
 
     return new OID4VCIRestAPI({ context, issuerInstanceArgs, expressSupport, opts, instance, issuer })
+  }
+
+  /**
+   * Builds a {@link CredentialSignerCallback} wrapper that persists each issued credential as a
+   * {@link CredentialRole.ISSUER} `DigitalCredential` row after delegating the actual signing to
+   * the underlying signer. Issuer identity is resolved from the *signed* credential (so any
+   * issuer normalization performed by the signer is preserved in the persisted row). The
+   * correlation type is derived from the resolved issuer id (`did:` prefix -> DID, otherwise URL),
+   * matching the pattern used by the holder-side persistence in `OID4VCIHolder`.
+   *
+   * Persistence errors propagate to the caller (fail-fast). Callers that opt into
+   * `persistIssuedCredentials` are explicitly requesting the row; a silent drop here would
+   * reproduce the DEV-35 defect.
+   */
+  private static buildPersistenceSignerWrapper(args: {
+    context: IRequiredContext
+    instance: IssuerInstance
+  }): (original: CredentialSignerCallback) => CredentialSignerCallback {
+    const { context, instance } = args
+    return (originalSigner: CredentialSignerCallback): CredentialSignerCallback => {
+      return async (signerArgs) => {
+        const signed = await originalSigner(signerArgs)
+        const rawDocument = ensureRawDocument(signed as OriginalVerifiableCredential)
+        const uniform = CredentialMapper.toUniformCredential(signed as OriginalVerifiableCredential)
+        let issuerId = CredentialMapper.issuerCorrelationIdFromIssuerType(uniform.issuer)
+        if (!issuerId) {
+          const fromIdOpts = instance.issuerOptions.idOpts?.identifier ?? instance.issuerOptions.didOpts?.idOpts?.identifier
+          if (typeof fromIdOpts === 'string') {
+            issuerId = fromIdOpts
+          }
+        }
+        if (!issuerId) {
+          return Promise.reject(Error('Cannot persist issued credential: unable to determine issuer identifier from signed credential'))
+        }
+
+        const identifier = await context.agent.identifierManagedGet({
+          identifier: issuerId,
+          issuer: issuerId,
+          vmRelationship: 'assertionMethod',
+        })
+
+        let issuerCorrelationId = identifier.issuer
+        if (!issuerCorrelationId && isDidIdentifier(identifier.identifier)) {
+          if (isIIdentifier(identifier.identifier)) {
+            issuerCorrelationId = identifier.identifier.did
+          } else if (typeof identifier.identifier === 'string') {
+            issuerCorrelationId = identifier.identifier
+          }
+        }
+        if (!issuerCorrelationId) {
+          issuerCorrelationId = issuerId
+        }
+
+        const dc: AddCredentialArgs = {
+          credential: {
+            credentialRole: CredentialRole.ISSUER,
+            kmsKeyRef: identifier.kmsKeyRef,
+            identifierMethod: identifier.method,
+            issuerCorrelationId,
+            issuerCorrelationType: issuerCorrelationId.startsWith('did:') ? CredentialCorrelationType.DID : CredentialCorrelationType.URL,
+            rawDocument,
+          },
+        }
+        await context.agent.crsAddCredential(dc)
+        return signed
+      }
+    }
   }
 
   private readonly OID4VCI_OPENAPI_FILE = path.join(__dirname, '..', 'oid4vci-openapi.yml')
