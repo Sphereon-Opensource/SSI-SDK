@@ -232,8 +232,6 @@ const checkAndUpdateDidHeader = async (
   } else if (!noIdentifierInHeader) {
     if (!isManagedIdentifierDidResult(identifier)) {
       return Promise.reject(Error('No kid header in the JWT, but mode was did and also no DID identifier was provided!'))
-    } else if (header.jwk || header.x5c) {
-      return Promise.reject(Error('did mode was chosen, but jwk or x5c headers were provided. These cannot be used together!'))
     }
     header.kid = identifier.kid
   }

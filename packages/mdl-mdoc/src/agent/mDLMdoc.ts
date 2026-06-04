@@ -52,7 +52,9 @@ export class MDLMdoc implements IAgentPlugin {
     mdocOid4vpHolderPresent: this.mdocOid4vpHolderPresent.bind(this),
     mdocOid4vpRPVerify: this.mdocOid4vpRPVerify.bind(this),
   }
-  private readonly trustAnchors: string[]
+  private readonly staticTrustAnchors: string[]
+  private readonly trustAnchorProvider?: () => string[]
+  private readonly blindlyTrustedAnchorProvider?: () => string[]
   private opts: {
     trustRootWhenNoAnchors?: boolean
     allowSingleNoCAChainElement?: boolean
@@ -61,6 +63,10 @@ export class MDLMdoc implements IAgentPlugin {
 
   constructor(args?: {
     trustAnchors?: string[]
+    // Provider returning runtime trust anchors, merged with the static (constructor) trustAnchors on every verification.
+    trustAnchorProvider?: () => string[]
+    // Provider returning runtime blindly-trusted anchors, merged with opts.blindlyTrustedAnchors on every verification.
+    blindlyTrustedAnchorProvider?: () => string[]
     opts?: {
       // Trust the supplied root from the chain, when no anchors are being passed in.
       trustRootWhenNoAnchors?: boolean
@@ -71,8 +77,19 @@ export class MDLMdoc implements IAgentPlugin {
       blindlyTrustedAnchors?: string[]
     }
   }) {
-    this.trustAnchors = args?.trustAnchors ?? []
+    this.staticTrustAnchors = args?.trustAnchors ?? []
+    this.trustAnchorProvider = args?.trustAnchorProvider
+    this.blindlyTrustedAnchorProvider = args?.blindlyTrustedAnchorProvider
     this.opts = args?.opts ?? { trustRootWhenNoAnchors: true }
+  }
+
+  // Live-merged anchors: static (constructor) + provider (runtime/user). Read on every verification.
+  private get trustAnchors(): string[] {
+    return [...this.staticTrustAnchors, ...(this.trustAnchorProvider?.() ?? [])]
+  }
+
+  private get effectiveBlindlyTrustedAnchors(): string[] {
+    return [...(this.opts.blindlyTrustedAnchors ?? []), ...(this.blindlyTrustedAnchorProvider?.() ?? [])]
   }
 
   /**
@@ -129,18 +146,46 @@ export class MDLMdoc implements IAgentPlugin {
         if (!result.error || responseUri.includes('openid.net')) {
           // TODO: We relax for the conformance suite, as the cert would be invalid
           try {
-            const cborKey = result.keyInfo?.key ? CoseKeyCbor.Static.fromDTO(result.keyInfo.key) : undefined
+            // Source the DEVICE key from the matched document's deviceKeyInfo (the mdoc MSO device key). The validation
+            // result.keyInfo is the x5chain ISSUER key, which kmp-mdoc-core does not (yet) convert to a CborKey
+            // ("we do not convert all properties to a Cborkey yet"), so result.keyInfo.key is undefined. Without a
+            // complete device keyInfo the device-response assembly later fails ("Cannot read property 'toJson' of undefined").
+            const matchDeviceKeyInfo: any = (match as any).deviceKeyInfo
+            const deviceKeyInfoSource: any = matchDeviceKeyInfo ?? result.keyInfo
+            console.log(
+              `(mdl-mdoc:deviceKey) amend: match.deviceKeyInfo present=${!!matchDeviceKeyInfo}, match.deviceKeyInfo.key present=${!!matchDeviceKeyInfo?.key}, ` +
+                `result.keyInfo present=${!!result.keyInfo}, result.keyInfo.key present=${!!result.keyInfo?.key}, source=${matchDeviceKeyInfo ? 'match.deviceKeyInfo' : 'result.keyInfo'}`,
+            )
+            const cborKey = deviceKeyInfoSource?.key ? CoseKeyCbor.Static.fromDTO(deviceKeyInfoSource.key) : undefined
             if (!cborKey) {
-              throw Error('No key found in result')
+              // Note: this is the PUBLIC device key only (the private key is hardware-backed in the KMS). We only need
+              // the public key here to look up the matching KMS key reference by thumbprint.
+              throw Error(
+                'No device (public) key found to amend: neither match.deviceKeyInfo.key nor result.keyInfo.key is populated. ' +
+                  'The mdoc MSO device public key is required to resolve the hardware-backed KMS key for signing.',
+              )
             }
             let jwk = CoseJoseKeyMappingService.toJoseJwk(cborKey).toJsonDTO<JWK>()
-            if (!result.keyInfo?.kmsKeyRef) {
-              const keyInfo = result.keyInfo!
-              const kid = jwk.kid ?? calculateJwkThumbprint({ jwk: jwk })
+            if (!deviceKeyInfoSource?.kmsKeyRef) {
+              const keyInfo = deviceKeyInfoSource
+              const thumbprint = calculateJwkThumbprint({ jwk: jwk })
+              const kid = jwk.kid ?? thumbprint
+              console.log(`(mdl-mdoc:deviceKey) amend: resolved device public jwk kid=${jwk.kid}, thumbprint=${thumbprint}`)
 
-              const key = await _context.agent.keyManagerGet({ kid })
+              // The device COSE key kid can be the (mangled) x-coordinate; the KMS resolves the key by its JWK
+              // thumbprint, so fall back to that when the kid lookup fails.
+              let key
+              try {
+                key = await _context.agent.keyManagerGet({ kid })
+              } catch (e) {
+                console.log(
+                  `(mdl-mdoc:deviceKey) amend: keyManagerGet by kid '${kid}' failed (${(e as any)?.message}); retrying by thumbprint '${thumbprint}'`,
+                )
+                key = await _context.agent.keyManagerGet({ kid: thumbprint })
+              }
               const kms = key.kms
-              const kmsKeyRef = key.meta?.kmsKeyRef
+              const kmsKeyRef = key.meta?.kmsKeyRef ?? key.kid
+              console.log(`(mdl-mdoc:deviceKey) amend: resolved hardware KMS key kms=${kms}, kmsKeyRef=${kmsKeyRef}`)
               const updateCborKey = cborKey.copy(false, cborKey.kty, cborKey.kid ?? new CborByteString(decodeFrom(kid, Encoding.UTF8)))
               const deviceKeyInfo = KeyInfo.Static.fromDTO(keyInfo).copy(
                 kid,
@@ -171,17 +216,100 @@ export class MDLMdoc implements IAgentPlugin {
       }
       return Promise.reject(Error('No matching documents found'))
     }
-    const deviceResponse = await oid4vpService.createDeviceResponse(
-      docsAndDescriptors,
-      presentationDefinition as IOid4VPPresentationDefinition,
-      clientId,
-      responseUri,
-      authorizationRequestNonce,
-    )
-    const vp_token = encodeTo(deviceResponse.cborEncode(), Encoding.BASE64URL)
-    const presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(
-      presentationDefinition as IOid4VPPresentationDefinition,
-    )
+    // Log all createDeviceResponse arguments so we can reason about the post-sign 'toJson of undefined' crash.
+    try {
+      console.log(
+        `(mdl-mdoc:deviceResponse) args: clientId=${clientId}, responseUri=${responseUri}, authorizationRequestNonce=${authorizationRequestNonce}, docCount=${docsAndDescriptors.length}`,
+      )
+      try {
+        console.log(`(mdl-mdoc:deviceResponse) presentationDefinition=${JSON.stringify(presentationDefinition)}`)
+      } catch (e: any) {
+        console.log(`(mdl-mdoc:deviceResponse) presentationDefinition stringify failed: ${e?.message}`)
+      }
+      docsAndDescriptors.forEach((d: any, idx: number) => {
+        const dk: any = d?.deviceKeyInfo
+        let docType: any = undefined
+        try {
+          docType = d?.document?.docType?.value ?? d?.document?.MSO?.value?.docType?.value ?? d?.document?.getDocType?.()
+        } catch {
+          /* ignore */
+        }
+        console.log(
+          `(mdl-mdoc:deviceResponse) doc[${idx}]: inputDescriptor.id=${d?.inputDescriptor?.id?.value ?? d?.inputDescriptor?.id}, docType=${docType}, ` +
+            `document present=${!!d?.document}, documentError present=${!!d?.documentError}, ` +
+            `deviceKeyInfo present=${!!dk}, deviceKeyInfo.key present=${!!dk?.key}, deviceKeyInfo.kid=${dk?.kid}, kmsKeyRef=${dk?.kmsKeyRef}, kms=${dk?.kms}, ` +
+            `signatureAlgorithm=${dk?.signatureAlgorithm}, x5c present=${!!dk?.x5c}`,
+        )
+        try {
+          const dkJson = dk?.toJson ? dk.toJson() : dk
+          console.log(`(mdl-mdoc:deviceResponse) doc[${idx}] deviceKeyInfo=${JSON.stringify(dkJson)}`)
+        } catch (e: any) {
+          console.log(`(mdl-mdoc:deviceResponse) doc[${idx}] deviceKeyInfo serialize failed: ${e?.message}`)
+        }
+        try {
+          const keyJson = dk?.key?.toJson ? dk.key.toJson() : dk?.key
+          console.log(`(mdl-mdoc:deviceResponse) doc[${idx}] deviceKeyInfo.key=${JSON.stringify(keyJson)}`)
+        } catch (e: any) {
+          console.log(`(mdl-mdoc:deviceResponse) doc[${idx}] deviceKeyInfo.key serialize failed: ${e?.message}`)
+        }
+      })
+    } catch (e: any) {
+      console.log(`(mdl-mdoc:deviceResponse) argument logging failed: ${e?.message}`)
+    }
+
+    let deviceResponse
+    try {
+      deviceResponse = await oid4vpService.createDeviceResponse(
+        docsAndDescriptors,
+        presentationDefinition as IOid4VPPresentationDefinition,
+        clientId,
+        responseUri,
+        authorizationRequestNonce,
+      )
+    } catch (e: any) {
+      console.log(`(mdl-mdoc:deviceResponse) createDeviceResponse failed: ${e?.message}`)
+      console.log(`(mdl-mdoc:deviceResponse) STACK: ${e?.stack}`)
+      throw e
+    }
+    // NOTE: the 'Cannot read property toJson of undefined' crash happens HERE (after createDeviceResponse returns),
+    // during cborEncode() of the assembled DeviceResponse — NOT inside createDeviceResponse. Probe + stack-log it.
+    try {
+      console.log(`(mdl-mdoc:deviceResponse) createDeviceResponse returned: present=${!!deviceResponse}, type=${typeof deviceResponse}`)
+      const dr: any = deviceResponse as any
+      try {
+        const docs = dr?.documents ?? dr?.b3p_1 ?? undefined
+        console.log(
+          `(mdl-mdoc:deviceResponse) deviceResponse.version present=${!!dr?.version}, status present=${dr?.status != null}, ` +
+            `documents present=${!!docs}, documentsCount=${docs?.length ?? docs?.size ?? 'n/a'}`,
+        )
+      } catch (e: any) {
+        console.log(`(mdl-mdoc:deviceResponse) deviceResponse structure probe failed: ${e?.message}`)
+      }
+    } catch {
+      /* ignore */
+    }
+
+    let vp_token: string
+    try {
+      const encoded = deviceResponse.cborEncode()
+      console.log(`(mdl-mdoc:deviceResponse) cborEncode OK, byteLen=${encoded?.length}`)
+      vp_token = encodeTo(encoded, Encoding.BASE64URL)
+    } catch (e: any) {
+      console.log(`(mdl-mdoc:deviceResponse) cborEncode failed: ${e?.message}`)
+      console.log(`(mdl-mdoc:deviceResponse) cborEncode STACK: ${e?.stack}`)
+      throw e
+    }
+
+    let presentation_submission
+    try {
+      presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(
+        presentationDefinition as IOid4VPPresentationDefinition,
+      )
+    } catch (e: any) {
+      console.log(`(mdl-mdoc:deviceResponse) fromPresentationDefinition failed: ${e?.message}`)
+      console.log(`(mdl-mdoc:deviceResponse) fromPresentationDefinition STACK: ${e?.stack}`)
+      throw e
+    }
     return { vp_token, presentation_submission }
   }
 
@@ -274,7 +402,7 @@ export class MDLMdoc implements IAgentPlugin {
     const validationResult = await new X509CallbackService(Array.from(mergedAnchors)).verifyCertificateChain({
       ...args,
       trustAnchors: Array.from(trustAnchors),
-      opts: { ...args?.opts, ...this.opts },
+      opts: { ...args?.opts, ...this.opts, blindlyTrustedAnchors: this.effectiveBlindlyTrustedAnchors },
     })
     console.log(
       `x509 validation for ${validationResult.error ? 'Error' : 'Success'}. message: ${validationResult.message}, details: ${validationResult.detailMessage}`,

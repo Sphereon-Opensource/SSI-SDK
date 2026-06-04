@@ -2,9 +2,7 @@ import { LOG } from '@sphereon/oid4vci-client'
 import {
   AuthorizationChallengeCodeResponse,
   CredentialConfigurationSupported,
-  CredentialConfigurationSupportedSdJwtVcV1_0_15,
   CredentialResponse,
-  CredentialResponseV1_0_15,
   CredentialSupportedSdJwtVc,
   getSupportedCredentials,
   getTypesFromCredentialSupported,
@@ -21,7 +19,7 @@ import {
   ManagedIdentifierResult,
   managedIdentifierToJwk,
 } from '@sphereon/ssi-sdk-ext.identifier-resolution'
-import { keyTypeFromCryptographicSuite } from '@sphereon/ssi-sdk-ext.key-utils'
+import { keyTypeFromCryptographicSuite, jwkToCoseKey } from '@sphereon/ssi-sdk-ext.key-utils'
 import { defaultHasher } from '@sphereon/ssi-sdk.core'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store-types'
 import {
@@ -65,6 +63,31 @@ import {
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
 
+/**
+ * Decide whether to authenticate at the token endpoint with a private_key_jwt client assertion.
+ *
+ * An AS may advertise `private_key_jwt` among its supported token-endpoint auth methods while only accepting a
+ * specific set of JWS algorithms for the assertion (`token_endpoint_auth_signing_alg_values_supported`). If our
+ * signing algorithm is not in that set, the AS cannot verify our assertion. Sending it anyway — especially in
+ * addition to another client authentication method (e.g. Basic) — is rejected by the AS as conflicting client
+ * authentication. So only use private_key_jwt when it is advertised AND our signing alg is accepted (or the AS
+ * advertises no alg restriction at all).
+ */
+export const shouldUsePrivateKeyJwt = (args: {
+  authMethodsSupported?: Array<string>
+  signingAlgValuesSupported?: Array<string>
+  assertionAlg?: string
+}): boolean => {
+  const { authMethodsSupported, signingAlgValuesSupported, assertionAlg } = args
+  if (!authMethodsSupported?.includes('private_key_jwt')) {
+    return false
+  }
+  if (signingAlgValuesSupported && signingAlgValuesSupported.length > 0) {
+    return !!assertionAlg && signingAlgValuesSupported.includes(assertionAlg)
+  }
+  return true
+}
+
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}
@@ -72,7 +95,7 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
     Object.entries(credentialsSupported).map(async ([configId, credentialsConfigSupported]): Promise<void> => {
       let sdJwtTypeMetadata: SdJwtTypeMetadata | undefined
       if (credentialsConfigSupported.format === 'dc+sd-jwt') {
-        const vct = (<CredentialSupportedSdJwtVc | CredentialConfigurationSupportedSdJwtVcV1_0_15>credentialsConfigSupported).vct
+        const vct = (credentialsConfigSupported as CredentialSupportedSdJwtVc).vct
         if (vct?.startsWith('http')) {
           try {
             sdJwtTypeMetadata = await context.agent.fetchSdJwtTypeMetadataFromVctUrl({ vct })
@@ -81,20 +104,40 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
           }
         }
       }
-      let mappedLocaleBranding: Array<IBasicCredentialLocaleBranding> = []
+
+      let vctBranding: Array<IBasicCredentialLocaleBranding> = []
+      let issuerBranding: Array<IBasicCredentialLocaleBranding> = []
+
       if (sdJwtTypeMetadata) {
-        mappedLocaleBranding = await sdJwtGetCredentialBrandingFrom({
+        vctBranding = await sdJwtGetCredentialBrandingFrom({
           credentialDisplay: sdJwtTypeMetadata.display,
           claimsMetadata: sdJwtTypeMetadata.claims,
         })
-      } else {
-        mappedLocaleBranding = await oid4vciGetCredentialBrandingFrom({
-          credentialDisplay: credentialsConfigSupported.display,
-          issuerCredentialSubject:
-            // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
-            credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
+      }
+
+      // Also retrieve issuer metadata branding so we can merge fields that the VCT metadata may not provide.
+      // OID4VCI 1.0 final (§12.2.4, #credential-issuer-parameters) nests credential-level `display` and
+      // `claims` inside `credential_metadata`, for every format. Pre-final / draft issuers placed them at
+      // the top level of the configuration instead. Be lenient: favour the 1.0 `credential_metadata`
+      // location, but fall back to the legacy top-level fields (and, for older drafts, `credentialSubject`).
+      const config = credentialsConfigSupported as Record<string, any>
+      const issuerDisplay = config.credential_metadata?.display ?? config.display
+      const issuerCredentialSubject = config.credential_metadata?.claims ?? config.claims ?? config.credentialSubject
+      if (issuerDisplay) {
+        issuerBranding = await oid4vciGetCredentialBrandingFrom({
+          credentialDisplay: issuerDisplay,
+          issuerCredentialSubject,
         })
       }
+
+      let mappedLocaleBranding: Array<IBasicCredentialLocaleBranding>
+      if (vctBranding.length > 0 && issuerBranding.length > 0) {
+        // Merge: VCT takes priority, issuer metadata fills in missing fields
+        mappedLocaleBranding = mergeCredentialLocaleBrandings(vctBranding, issuerBranding)
+      } else {
+        mappedLocaleBranding = vctBranding.length > 0 ? vctBranding : issuerBranding
+      }
+
       // TODO we should make the mapper part of the plugin, so that the logic for getting the branding becomes more clear and easier to use
       const localeBranding = await Promise.all(
         mappedLocaleBranding.map(
@@ -110,6 +153,97 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
   )
 
   return credentialBranding
+}
+
+/**
+ * Merges two arrays of locale branding, with `primary` taking priority over `secondary`.
+ * For each locale present in either source, individual fields (logo, background, text, etc.)
+ * are taken from primary when available, otherwise filled from secondary.
+ */
+export const mergeCredentialLocaleBrandings = (
+  primary: Array<IBasicCredentialLocaleBranding>,
+  secondary: Array<IBasicCredentialLocaleBranding>,
+): Array<IBasicCredentialLocaleBranding> => {
+  const normalizeLocale = (locale?: string): string => locale ?? ''
+  const langPrefix = (locale: string): string => locale.split('-')[0]
+
+  const secondaryByLocale = new Map<string, IBasicCredentialLocaleBranding>()
+  for (const branding of secondary) {
+    secondaryByLocale.set(normalizeLocale(branding.locale), branding)
+  }
+
+  const findSecondary = (locale: string): IBasicCredentialLocaleBranding | undefined => {
+    const exact = secondaryByLocale.get(locale)
+    if (exact) return exact
+    if (!locale) return undefined
+    const lang = langPrefix(locale)
+    for (const [key, value] of secondaryByLocale) {
+      if (key !== locale && langPrefix(key) === lang) {
+        return value
+      }
+    }
+    // Fall back to no-locale entry so at least some branding data is merged
+    return secondaryByLocale.get('')
+  }
+
+  const mergedLocales = new Set<string>()
+  const result: Array<IBasicCredentialLocaleBranding> = []
+
+  // Start with all primary locales, merging in secondary where fields are missing
+  for (const primaryBranding of primary) {
+    const locale = normalizeLocale(primaryBranding.locale)
+    mergedLocales.add(locale)
+
+    const secondaryBranding = findSecondary(locale)
+    if (secondaryBranding) {
+      // Also mark secondary locale as consumed so we don't duplicate it
+      mergedLocales.add(normalizeLocale(secondaryBranding.locale))
+    }
+
+    result.push(mergeSingleLocaleBranding(primaryBranding, secondaryBranding))
+  }
+
+  // Add any secondary-only locales that weren't matched
+  for (const secondaryBranding of secondary) {
+    const locale = normalizeLocale(secondaryBranding.locale)
+    if (!mergedLocales.has(locale)) {
+      mergedLocales.add(locale)
+      result.push(secondaryBranding)
+    }
+  }
+
+  return result
+}
+
+const mergeSingleLocaleBranding = (
+  primary: IBasicCredentialLocaleBranding,
+  secondary?: IBasicCredentialLocaleBranding,
+): IBasicCredentialLocaleBranding => {
+  if (!secondary) return primary
+
+  return {
+    ...primary,
+    alias: primary.alias ?? secondary.alias,
+    description: primary.description ?? secondary.description,
+    logo: primary.logo ?? secondary.logo,
+    background: mergeBackground(primary.background, secondary.background),
+    text: primary.text ?? secondary.text,
+    claims: primary.claims ?? secondary.claims,
+  }
+}
+
+const mergeBackground = (
+  primary?: IBasicCredentialLocaleBranding['background'],
+  secondary?: IBasicCredentialLocaleBranding['background'],
+): IBasicCredentialLocaleBranding['background'] => {
+  if (!primary && !secondary) return undefined
+  if (!secondary) return primary
+  if (!primary) return secondary
+
+  return {
+    image: primary.image ?? secondary.image,
+    color: primary.color ?? secondary.color,
+  }
 }
 
 export const getBasicIssuerLocaleBranding = async (args: GetBasicIssuerLocaleBrandingArgs): Promise<Array<IBasicIssuerLocaleBranding>> => {
@@ -143,13 +277,30 @@ export const selectCredentialLocaleBranding = async (
 ): Promise<IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding | undefined> => {
   const { locale, localeBranding } = args
 
-  const match = localeBranding?.find(
-    (branding: IBasicCredentialLocaleBranding | IBasicIssuerLocaleBranding) =>
-      locale ? branding.locale?.startsWith(locale) || branding.locale === undefined : branding.locale === undefined, // TODO refactor as we have duplicate code
-  )
+  if (!localeBranding || localeBranding.length === 0) {
+    return undefined
+  }
 
-  // Fallback: return first available branding so we at least get visual branding
-  return match ?? localeBranding?.[0]
+  if (!locale) {
+    // No locale preference — prefer a no-locale entry, otherwise first available
+    return localeBranding.find((b) => !b.locale) ?? localeBranding[0]
+  }
+
+  // 1. Exact match (e.g. "en-US" === "en-US")
+  const exact = localeBranding.find((b) => b.locale === locale)
+  if (exact) return exact
+
+  // 2. Language-prefix match (e.g. "en-US" matches "en-GB" or bare "en")
+  const lang = locale.split('-')[0]
+  const prefixMatch = localeBranding.find((b) => b.locale && b.locale.split('-')[0] === lang)
+  if (prefixMatch) return prefixMatch
+
+  // 3. No-locale fallback (entry without a locale acts as a default)
+  const noLocale = localeBranding.find((b) => !b.locale)
+  if (noLocale) return noLocale
+
+  // 4. First available — always show some branding rather than none
+  return localeBranding[0]
 }
 
 export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArgs): Promise<VerificationResult> => {
@@ -231,9 +382,9 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
       ? uniformVerifiableCredential.issuer
       : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential)
         ? uniformVerifiableCredential.decodedPayload.iss
-        : uniformVerifiableCredential.issuer.id
+        : (uniformVerifiableCredential.issuer?.id ?? uniformVerifiableCredential.type?.[0] ?? 'unknown')
 
-  const credentialResponse = credentialToAccept.credentialResponse as CredentialResponseV1_0_15
+  const credentialResponse = credentialToAccept.credentialResponse as CredentialResponse
   return {
     correlationId,
     credentialToAccept,
@@ -279,14 +430,21 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
   } = issuanceOpt
   let identifier: ManagedIdentifierResult
 
+  console.log(
+    `[getIdentifierOpts] identifierArg: ${identifierArg ? `method=${identifierArg.method}, keys=${Object.keys(identifierArg).join(',')}` : 'undefined'}, supportedBindingMethods: ${supportedBindingMethods?.join(',')}, supportedPreferredDidMethod: ${supportedPreferredDidMethod}`,
+  )
+
   if (identifierArg) {
     if (isIIdentifier(identifierArg.identifier)) {
+      console.log(`[getIdentifierOpts] Branch: identifierArg isIIdentifier`)
       identifier = await context.agent.identifierManagedGet(identifierArg)
     } else if (!identifierArg.method && issuanceOpt.supportedBindingMethods.includes('jwk')) {
+      console.log(`[getIdentifierOpts] Branch: identifierArg no method + jwk binding`)
       identifier = await managedIdentifierToJwk(identifierArg, context)
     } else if (identifierArg.method && !supportedBindingMethods.includes(identifierArg.method)) {
       throw Error(`Supplied identifier method ${identifierArg.method} not supported by the issuer: ${supportedBindingMethods.join(',')}`)
     } else {
+      console.log(`[getIdentifierOpts] Branch: identifierArg fallthrough to identifierManagedGet`)
       identifier = await context.agent.identifierManagedGet(identifierArg)
     }
   }
@@ -297,6 +455,7 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
     supportedPreferredDidMethod &&
     (!supportedBindingMethods || supportedBindingMethods.length === 0 || supportedBindingMethods.filter((method) => method.startsWith('did')))
   ) {
+    console.log(`[getIdentifierOpts] Branch: DID`)
     // previous code for managing DIDs only
     const identifierFilter = defaultHolderIdentifier
       ? defaultHolderIdentifier.startsWith('did:')
@@ -324,13 +483,18 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
       await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { identifier })
     }
   } else if (supportedBindingMethods.includes('jwk')) {
+    console.log(`[getIdentifierOpts] Branch: JWK`)
     // todo: we probably should do something similar as with DIDs for re-use/new keys
     const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
     // TODO. Create/move this to identifier service await agentContext.agent.emit(OID4VCIHolderEvent.IDENTIFIER_CREATED, { key })
     identifier = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
-    // } else if (supportedBindingMethods.includes('cose_key')) {
-    //   // TODO COSE HERE
-    //   throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
+  } else if (supportedBindingMethods.includes('cose_key')) {
+    console.log(`[getIdentifierOpts] Branch: COSE_KEY`)
+    const key = await context.agent.keyManagerCreate({ type: keyType, kms, meta: { keyAlias: `key_${keyType}_${Date.now()}` } })
+    // First resolve as JWK, then convert to COSE key
+    const jwkResult = await managedIdentifierToJwk({ method: 'key', identifier: key, kmsKeyRef: key.kid }, context)
+    const coseKey = jwkToCoseKey(jwkResult.jwk)
+    identifier = await context.agent.identifierManagedGet({ method: 'cose_key', identifier: coseKey, kmsKeyRef: key.kid })
   } else {
     throw Error(`Holder currently does not support binding method: ${supportedBindingMethods.join(',')}`)
   }
@@ -391,7 +555,7 @@ export const getCredentialConfigsSupportedBySingleTypeOrId = async (
   }
 
   if (configurationId) {
-    const allSupported = client.getCredentialsSupported(undefined, format)
+    const allSupported = client.getCredentialsSupported(format)
     return Object.fromEntries(
       Object.entries(allSupported).filter(
         ([id, supported]) => id === configurationId || supported.id === configurationId || createIdFromTypes(supported) === configurationId,
@@ -570,7 +734,6 @@ export const getIssuanceCryptoSuite = async (opts: GetIssuanceCryptoSuiteArgs): 
       signing_algs_supported = credentialSupported.proof_types_supported.ldp_vp.proof_signing_alg_values_supported
     } else if ('cwt' in credentialSupported.proof_types_supported && credentialSupported.proof_types_supported.cwt) {
       signing_algs_supported = credentialSupported.proof_types_supported.cwt.proof_signing_alg_values_supported
-      console.error('cwt proof type not supported. Likely that errors will occur after this point')
     } else {
       return Promise.reject(Error(`Unsupported proof_types_supported`))
     }

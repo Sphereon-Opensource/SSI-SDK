@@ -1,5 +1,6 @@
-import { CredentialDataSupplier, VcIssuer } from '@sphereon/oid4vci-issuer'
-import { createVciIssuerBuilder } from './functions'
+import { CredentialDataSupplier, CredentialSignerCallback, VcIssuer } from '@sphereon/oid4vci-issuer'
+import { legacyKeyRefsToIdentifierOpts } from '@sphereon/ssi-sdk-ext.identifier-resolution'
+import { createVciIssuerBuilder, getCredentialSignerCallback } from './functions'
 import { AuthorizationServerMetadata, IssuerMetadata } from '@sphereon/oid4vci-common'
 import { IIssuerOptions, IMetadataOptions, IRequiredContext } from './types/IOID4VCIIssuer'
 
@@ -27,7 +28,20 @@ export class IssuerInstance {
     this._authorizationServerMetadata = authorizationServerMetadata
   }
 
-  public async get(opts: { context: IRequiredContext; credentialDataSupplier?: CredentialDataSupplier }): Promise<VcIssuer> {
+  /**
+   * Returns the (lazily-built and cached) {@link VcIssuer} for this instance.
+   *
+   * When `wrapCredentialSignerCallback` is provided on first invocation, the wrapper is applied to the
+   * configured {@link CredentialSignerCallback} before `build()` is called, so the resulting issuer's
+   * signer callback is the wrapped one. This is the supported injection point for cross-cutting concerns
+   * such as persisting the issued credential server-side (see DEV-35). Avoid mutating the issuer's
+   * signer callback after construction.
+   */
+  public async get(opts: {
+    context: IRequiredContext
+    credentialDataSupplier?: CredentialDataSupplier
+    wrapCredentialSignerCallback?: (original: CredentialSignerCallback) => CredentialSignerCallback
+  }): Promise<VcIssuer> {
     if (!this._issuer) {
       const builder = await createVciIssuerBuilder(
         {
@@ -38,6 +52,11 @@ export class IssuerInstance {
         },
         opts.context,
       )
+      if (opts.wrapCredentialSignerCallback) {
+        const idOpts = legacyKeyRefsToIdentifierOpts({ didOpts: this._issuerOptions.didOpts, idOpts: this._issuerOptions.idOpts })
+        const original = await getCredentialSignerCallback(idOpts, opts.context)
+        builder.withCredentialSignerCallback(opts.wrapCredentialSignerCallback(original))
+      }
       this._issuer = builder.build()
     }
     return this._issuer
@@ -60,7 +79,7 @@ export class IssuerInstance {
     if (this._issuer?.issuerMetadata) {
       this._issuer.issuerMetadata = {
         ...this._issuer?.issuerMetadata,
-        credential_configurations_supported: value.credential_configurations_supported
+        credential_configurations_supported: value.credential_configurations_supported,
       }
     }
 

@@ -66,6 +66,34 @@ export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
     })
   }
 
+  // OID4VCI draft >= 14 / 1.0: `claims` is an ARRAY of { path: [...], display: [{ name, locale }], mandatory? }.
+  // Derive the claim key from `path` (like the SD-JWT type-metadata claims), so locale labels actually map to the claim.
+  // The legacy `credentialSubject` form is a nested object and is handled by processClaimObject below.
+  if (Array.isArray(issuerCredentialSubject)) {
+    issuerCredentialSubject.forEach((claim: any, index: number): void => {
+      const path: Array<unknown> = Array.isArray(claim?.path) ? claim.path : []
+      if (path.length === 0) {
+        return
+      }
+      const key = path.map((value: unknown) => String(value)).join('.')
+      const display: Array<NameAndLocale> = Array.isArray(claim?.display) ? claim.display : []
+      if (display.length > 0) {
+        display.forEach(({ name, locale = '' }: NameAndLocale): void => {
+          if (!localeClaims.has(locale)) {
+            localeClaims.set(locale, [])
+          }
+          localeClaims.get(locale)!.push({ key, name: name || key, order: index })
+        })
+      } else {
+        if (!localeClaims.has('')) {
+          localeClaims.set('', [])
+        }
+        localeClaims.get('')!.push({ key, name: key, order: index })
+      }
+    })
+    return localeClaims
+  }
+
   processClaimObject(issuerCredentialSubject)
   return localeClaims
 }
@@ -129,29 +157,45 @@ export const oid4vciCombineDisplayLocalesFrom = async (
 
   const locales: Array<string> = Array.from(new Set([...issuerCredentialSubjectLocales.keys(), ...credentialDisplayLocales.keys()]))
 
-  // Helper to find a fallback entry from the other map when locale keys differ by region
-  // suffix (e.g. "nl" vs "nl-NL"). Prefers the base language match over no match.
-  const findByPrefix = <V>(map: Map<string, V>, locale: string): V | undefined => {
-    if (!locale) return undefined
-    const lang = locale.split('-')[0]
-    for (const [key, value] of map) {
-      if (key !== locale && key.split('-')[0] === lang) {
-        return value
+  // Resolve the best entry for a requested locale so every combined record is self-complete, even when
+  // an issuer advertises branding/claims only under a single (e.g. region-suffixed) locale. Resolution
+  // order: exact match → language-prefix match (e.g. "nl" ↔ "nl-NL") → no-locale (issuer default) entry →
+  // first available entry as a sane default. The last two also populate the no-locale ('') record itself,
+  // so a wallet whose locale isn't advertised (which falls back to the no-locale record at display time)
+  // still gets the issuer's logo/background and claim labels.
+  const resolveByLocale = <V>(map: Map<string, V>, locale: string): V | undefined => {
+    const exact = map.get(locale)
+    if (exact !== undefined) return exact
+    if (locale) {
+      const lang = locale.split('-')[0]
+      for (const [key, value] of map) {
+        if (key && key.split('-')[0] === lang) {
+          return value
+        }
       }
     }
-    return undefined
+    const noLocale = map.get('')
+    if (noLocale !== undefined) return noLocale
+    return map.values().next().value
   }
 
   return Promise.all(
     locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-      const display = credentialDisplayLocales.get(locale) ?? findByPrefix(credentialDisplayLocales, locale)
-      const claims = issuerCredentialSubjectLocales.get(locale) ?? findByPrefix(issuerCredentialSubjectLocales, locale)
+      const display = resolveByLocale(credentialDisplayLocales, locale)
+      const claims = resolveByLocale(issuerCredentialSubjectLocales, locale)
 
-      return {
+      const branding: IBasicCredentialLocaleBranding = {
         ...(display && (await oid4vciCredentialLocaleBrandingFrom({ credentialDisplay: display }))),
-        ...(locale.length > 0 && { locale }),
         claims,
       }
+      // The record's locale must reflect the target locale, not the (possibly borrowed) display's locale.
+      // For the no-locale ('') record, ensure no locale leaks in from a borrowed localized display.
+      if (locale.length > 0) {
+        branding.locale = locale
+      } else {
+        delete branding.locale
+      }
+      return branding
     }),
   )
 }
@@ -231,9 +275,21 @@ export const sdJwtCredentialLocaleBrandingFrom = async (args: SdJwtCredentialLoc
         color: credentialDisplay.rendering.simple.text_color,
       },
     }),
-    ...(credentialDisplay.rendering?.simple?.background_color && {
+    ...((credentialDisplay.rendering?.simple?.background_image || credentialDisplay.rendering?.simple?.background_color) && {
       background: {
-        color: credentialDisplay.rendering.simple.background_color,
+        ...(credentialDisplay.rendering?.simple?.background_image && {
+          image: {
+            ...(credentialDisplay.rendering.simple.background_image.uri && {
+              uri: credentialDisplay.rendering.simple.background_image.uri,
+            }),
+            ...(credentialDisplay.rendering.simple.background_image.alt_text && {
+              alt: credentialDisplay.rendering.simple.background_image.alt_text,
+            }),
+          },
+        }),
+        ...(credentialDisplay.rendering?.simple?.background_color && {
+          color: credentialDisplay.rendering.simple.background_color,
+        }),
       },
     }),
   }
@@ -245,30 +301,40 @@ export const sdJwtCombineDisplayLocalesFrom = async (args: SdJwtCombineDisplayLo
 
   const locales: Array<string> = Array.from(new Set([...claimsMetadata.keys(), ...credentialDisplayLocales.keys()]))
 
-  // Helper to find a fallback entry from the other map when locale keys differ by region
-  // suffix (e.g. "nl" vs "nl-NL"). Prefers the base language match over no match.
-  const findByPrefix = <V>(map: Map<string, V>, locale: string): V | undefined => {
-    if (!locale) return undefined
-    const lang = locale.split('-')[0]
-    // Try exact regional variants first, then the bare language code
-    for (const [key, value] of map) {
-      if (key !== locale && key.split('-')[0] === lang) {
-        return value
+  // See oid4vciCombineDisplayLocalesFrom for the rationale. Resolution order: exact → language-prefix →
+  // no-locale (default) → first available, so every combined record (including the no-locale record a
+  // wallet falls back to when its locale isn't advertised) carries the best available branding/claims.
+  const resolveByLocale = <V>(map: Map<string, V>, locale: string): V | undefined => {
+    const exact = map.get(locale)
+    if (exact !== undefined) return exact
+    if (locale) {
+      const lang = locale.split('-')[0]
+      for (const [key, value] of map) {
+        if (key && key.split('-')[0] === lang) {
+          return value
+        }
       }
     }
-    return undefined
+    const noLocale = map.get('')
+    if (noLocale !== undefined) return noLocale
+    return map.values().next().value
   }
 
   return Promise.all(
     locales.map(async (locale: string): Promise<IBasicCredentialLocaleBranding> => {
-      const display = credentialDisplayLocales.get(locale) ?? findByPrefix(credentialDisplayLocales, locale)
-      const claims = claimsMetadata.get(locale) ?? findByPrefix(claimsMetadata, locale)
+      const display = resolveByLocale(credentialDisplayLocales, locale)
+      const claims = resolveByLocale(claimsMetadata, locale)
 
-      return {
+      const branding: IBasicCredentialLocaleBranding = {
         ...(display && (await sdJwtCredentialLocaleBrandingFrom({ credentialDisplay: display }))),
-        ...(locale.length > 0 && { locale }),
         claims,
       }
+      if (locale.length > 0) {
+        branding.locale = locale
+      } else {
+        delete branding.locale
+      }
+      return branding
     }),
   )
 }

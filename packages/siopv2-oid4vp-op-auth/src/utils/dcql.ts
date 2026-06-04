@@ -1,6 +1,7 @@
 import { UniqueDigitalCredential } from '@sphereon/ssi-sdk.credential-store'
 import {
   CredentialMapper,
+  decodeMdocIssuerSigned,
   HasherSync,
   OriginalVerifiableCredential,
   WrappedMdocCredential,
@@ -24,6 +25,12 @@ export function convertToDcqlCredentials(credential: UniqueDigitalCredential | O
 
   if (!originalVerifiableCredential) {
     throw new Error('No payload found')
+  }
+
+  // Robustness: an older ssi-types' decodeVerifiableCredential returns the raw base64url string for an mdoc
+  // instead of a decoded MdocDocument. Decode it here so the mso_mdoc branch below matches.
+  if (CredentialMapper.isMsoMdocOid4VPEncoded(originalVerifiableCredential)) {
+    originalVerifiableCredential = decodeMdocIssuerSigned(originalVerifiableCredential)
   }
 
   if (CredentialMapper.isJwtDecodedCredential(originalVerifiableCredential)) {

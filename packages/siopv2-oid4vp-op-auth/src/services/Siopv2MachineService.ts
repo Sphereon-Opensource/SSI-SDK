@@ -162,13 +162,19 @@ export const siopSendAuthorizationResponse = async (
       const credentialQuery = request.dcqlQuery.credentials.find((c) => c.id === key)
       const validCredential = value.valid_credentials[0]
       const validClaimIndexes = validCredential?.claims?.valid_claim_sets?.[0]?.valid_claim_indexes
-      logger.debug(`DCQL credential query '${key}': claims=${JSON.stringify(credentialQuery?.claims)}, validClaimIndexes=${JSON.stringify(validClaimIndexes)}`)
+      logger.debug(
+        `DCQL credential query '${key}': claims=${JSON.stringify(credentialQuery?.claims)}, validClaimIndexes=${JSON.stringify(validClaimIndexes)}`,
+      )
 
       const perCredentialContext = {
         ...presentationContext,
         ...(credentialQuery?.claims
           ? {
-              dcqlClaims: credentialQuery.claims as Array<{ path: Array<string | number | null>; id?: string; values?: Array<string | number | boolean> }>,
+              dcqlClaims: credentialQuery.claims as Array<{
+                path: Array<string | number | null>
+                id?: string
+                values?: Array<string | number | boolean>
+              }>,
               ...(validClaimIndexes ? { dcqlValidClaimIndexes: [...validClaimIndexes] } : {}),
             }
           : {}),

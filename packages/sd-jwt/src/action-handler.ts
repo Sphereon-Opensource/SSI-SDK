@@ -86,6 +86,8 @@ const matchVerificationMethodByKid = (verificationMethod: { id: string }, kid: s
 export class SDJwtPlugin implements IAgentPlugin {
   // @ts-ignore
   private readonly trustAnchorsInPEM: string[]
+  private readonly trustAnchorProvider?: () => string[]
+  private readonly blindlyTrustedAnchorProvider?: () => string[]
   private readonly registeredImplementations: SdJWTImplementation
   private _signers: Record<string, Signer>
   private _defaultSigner?: Signer
@@ -96,8 +98,11 @@ export class SDJwtPlugin implements IAgentPlugin {
       defaultSigner?: Signer
     },
     trustAnchorsInPEM?: string[],
+    providers?: { trustAnchorProvider?: () => string[]; blindlyTrustedAnchorProvider?: () => string[] },
   ) {
     this.trustAnchorsInPEM = trustAnchorsInPEM ?? []
+    this.trustAnchorProvider = providers?.trustAnchorProvider
+    this.blindlyTrustedAnchorProvider = providers?.blindlyTrustedAnchorProvider
     if (!registeredImplementations) {
       registeredImplementations = {}
     }
@@ -345,16 +350,21 @@ export class SDJwtPlugin implements IAgentPlugin {
     const x5c: string[] | undefined = header?.x5c as string[]
     let jwk: JWK | JsonWebKey | undefined = header.jwk
     if (x5c?.length) {
-      const trustAnchors = new Set<string>([...this.trustAnchorsInPEM])
+      const provided = this.trustAnchorProvider?.() ?? []
+      const trustAnchors = new Set<string>([...this.trustAnchorsInPEM, ...provided])
       if (trustAnchors.size === 0) {
         trustAnchors.add(sphereonCA)
         trustAnchors.add(funkeTestCA)
       }
+      const blindlyTrustedAnchors = this.blindlyTrustedAnchorProvider?.() ?? []
+      const baseOpts = opts?.x5cValidation ?? { trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true }
       const certificateValidationResult = await context.agent.x509VerifyCertificateChain({
         chain: x5c,
         trustAnchors: Array.from(trustAnchors),
-        // TODO: Defaults to allowing untrusted certs! Fine for now, not when wallets go mainstream
-        opts: opts?.x5cValidation ?? { trustRootWhenNoAnchors: true, allowNoTrustAnchorsFound: true },
+        opts: {
+          ...baseOpts,
+          blindlyTrustedAnchors: [...(baseOpts.blindlyTrustedAnchors ?? []), ...blindlyTrustedAnchors],
+        },
       })
 
       if (certificateValidationResult.error || !certificateValidationResult?.certificateChain) {

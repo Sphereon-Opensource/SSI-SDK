@@ -19,7 +19,6 @@ import {
   SscdType,
 } from '@sphereon/musap-react-native'
 import { AbstractKeyManagementSystem } from '@veramo/key-manager'
-import { TextDecoder } from 'text-encoding'
 import { Loggers } from '@sphereon/ssi-types'
 import { KeyMetadata } from './index'
 import {
@@ -175,7 +174,12 @@ export class MusapKeyManagementSystem extends AbstractKeyManagementSystem {
       throw new Error('key_not_found: No key ref provided')
     }
 
-    const data = new TextDecoder().decode(args.data as Uint8Array)
+    // Binary signing input (e.g. the CBOR/COSE Sig_structure for mdoc) is passed as a base64 String in
+    // `dataBase64`: the Nitro bridge mangles a JS `number[]` per-element on Android (ReadableArray.getInt
+    // returns wrong values) and UTF-8-encodes a String `data` (corrupting non-ASCII bytes). A base64 String
+    // marshals cleanly and round-trips arbitrary bytes. `data` (number[]) is kept for the iOS [Int] path.
+    const data: number[] = Array.from(args.data as Uint8Array)
+    const dataBase64: string = toString(args.data as Uint8Array, 'base64pad')
 
     const key: MusapKey = this.musapClient.getKeyById(args.keyRef.kid) as MusapKey
     if ((key.sscdType as string) === 'External Signature') {
@@ -184,6 +188,7 @@ export class MusapKeyManagementSystem extends AbstractKeyManagementSystem {
     const signatureReq: SignatureReq = {
       keyUri: key.keyUri,
       data,
+      dataBase64,
       algorithm: this.determineAlgorithm(args.algorithm, key.algorithm),
       displayText: args.displayText,
       transId: args.transId,

@@ -22,23 +22,13 @@
               "description": "Optional. Key meta data"
             }
           },
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "additionalProperties": false,
           "description": "Input arguments for  {@link ISphereonKeyManager.keyManagerCreate | keyManagerCreate }"
         },
         "TKeyType": {
           "type": "string",
-          "enum": [
-            "Ed25519",
-            "Secp256k1",
-            "Secp256r1",
-            "X25519",
-            "Bls12381G1",
-            "Bls12381G2",
-            "RSA"
-          ],
+          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
           "description": "Cryptographic key type."
         },
         "IkeyOptions": {
@@ -113,13 +103,7 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "privateKeyHex",
-            "publicKeyHex",
-            "type"
-          ]
+          "required": ["kid", "kms", "privateKeyHex", "publicKeyHex", "type"]
         },
         "ISphereonKeyManagerHandleExpirationsArgs": {
           "type": "object",
@@ -168,12 +152,7 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "type",
-            "publicKeyHex"
-          ],
+          "required": ["kid", "kms", "type", "publicKeyHex"],
           "additionalProperties": false
         },
         "MinimalImportableKey": {
@@ -242,19 +221,11 @@
             },
             "encoding": {
               "type": "string",
-              "enum": [
-                "utf-8",
-                "base16",
-                "base64",
-                "hex"
-              ],
+              "enum": ["utf-8", "base16", "base64", "hex"],
               "description": "If the data is a \"string\" then you can specify which encoding is used. Default is \"utf-8\""
             }
           },
-          "required": [
-            "data",
-            "keyRef"
-          ],
+          "required": ["data", "keyRef"],
           "description": "Input arguments for  {@link ISphereonKeyManagerSignArgs.keyManagerSign | keyManagerSign }"
         },
         "Uint8Array": {
@@ -276,13 +247,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "BYTES_PER_ELEMENT",
-            "buffer",
-            "byteLength",
-            "byteOffset",
-            "length"
-          ],
+          "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
           "additionalProperties": {
             "type": "number"
           }
@@ -297,9 +262,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "byteLength"
-          ],
+          "required": ["byteLength"],
           "additionalProperties": false
         },
         "ISphereonKeyManagerVerifyArgs": {
@@ -324,12 +287,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "publicKeyHex",
-            "type",
-            "data",
-            "signature"
-          ],
+          "required": ["publicKeyHex", "type", "data", "signature"],
           "additionalProperties": false
         }
       },

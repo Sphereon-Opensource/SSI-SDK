@@ -179,10 +179,27 @@ function getVerifyJwtCallback(
   },
   context: IRequiredContext,
 ): VerifyJwtCallback {
-  return async (_jwtVerifier, jwt) => {
+  return async (jwtVerifier, jwt) => {
     const result = await context.agent.jwtVerifyJwsSignature({ jws: jwt.raw })
-    console.log(result.message)
-    return !result.error
+    if (result.error) {
+      console.log(result.message)
+      return false
+    }
+    // When the verifier authenticates via an X.509 chain (client_id scheme x509_san_dns / x509_hash),
+    // strictly validate the request-object x5c chain against the wallet's trust anchors.
+    // x509VerifyCertificateChain uses the wallet's runtime trust-anchor registry when no anchors are passed.
+    const x5c: string[] | undefined = (jwtVerifier as any)?.x5c
+    if (Array.isArray(x5c) && x5c.length > 0) {
+      const agent: any = context.agent
+      if (typeof agent.x509VerifyCertificateChain === 'function') {
+        const x509Result = await agent.x509VerifyCertificateChain({ chain: x5c })
+        if (x509Result?.error || !x509Result?.certificateChain) {
+          console.log(`OID4VP request object x5c validation failed: ${x509Result?.message ?? 'unknown error'}`)
+          return false
+        }
+      }
+    }
+    return true
   }
 }
 

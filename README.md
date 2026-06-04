@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-_IMPORTANT the packages are still in development stage, which means that breaking changes are to be expected The current branch only supports OID4VCI draft v15, for draft v13 and lower use branch archive/draft-v13-support_
+_IMPORTANT The Typescript SDK is a legacy SDK, moving forward development will be focussed on our multiplatform [IDK](https://github.com/Sphereon-Opensource/Identity-Development-Kit), which can perform similar tasks and more_
 
 # SSI SDK with OID4VC, Presentation Exchange, MS Entra support
 

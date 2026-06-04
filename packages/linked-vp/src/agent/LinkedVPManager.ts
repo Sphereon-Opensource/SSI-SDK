@@ -120,12 +120,11 @@ export class LinkedVPManager implements IAgentPlugin {
       filter: [filter],
     })
 
-    return credentials
-      .flatMap((cred) => {
-        const uniformDocument = JSON.parse(cred.uniformDocument) as IVerifiableCredential
-        const holderDidForEntry = this.getHolderDid(uniformDocument)
-        return holderDidForEntry && holderDidForEntry.startsWith('did:web') ? [this.credentialToServiceEntry(cred, holderDidForEntry)] : []
-      })
+    return credentials.flatMap((cred) => {
+      const uniformDocument = JSON.parse(cred.uniformDocument) as IVerifiableCredential
+      const holderDidForEntry = this.getHolderDid(uniformDocument)
+      return holderDidForEntry && holderDidForEntry.startsWith('did:web') ? [this.credentialToServiceEntry(cred, holderDidForEntry)] : []
+    })
   }
 
   private async lvpGeneratePresentation(args: GeneratePresentationArgs, context: RequiredContext): Promise<LinkedVPPresentation> {

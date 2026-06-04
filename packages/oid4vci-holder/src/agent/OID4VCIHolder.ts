@@ -1,11 +1,10 @@
-import { CredentialOfferClient, MetadataClient, OpenID4VCIClient, OpenID4VCIClientV1_0_15 } from '@sphereon/oid4vci-client'
+import { CredentialOfferClient, MetadataClient, OpenID4VCIClient } from '@sphereon/oid4vci-client'
 import {
   AuthorizationDetailsV1_0_15,
   AuthorizationRequestOpts,
   AuthorizationServerClientOpts,
   AuthorizationServerOpts,
-  CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15,
-  CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15,
+  CredentialConfigurationSupported,
   CredentialOfferRequestWithBaseUrl,
   DefaultURISchemes,
   EndpointMetadataResult,
@@ -17,9 +16,9 @@ import {
 import { SupportedDidMethodEnum } from '@sphereon/ssi-sdk-ext.did-utils'
 import {
   IIdentifierResolution,
+  isManagedIdentifierCoseKeyResult,
   isManagedIdentifierDidOpts,
   isManagedIdentifierDidResult,
-  isManagedIdentifierJwkResult,
   isManagedIdentifierKidResult,
   isManagedIdentifierResult,
   isManagedIdentifierX5cOpts,
@@ -82,6 +81,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
+  shouldUsePrivateKeyJwt,
   startFirstPartApplicationMachine,
   verifyCredentialToAccept,
 } from '../services/OID4VCIHolderService'
@@ -157,9 +157,16 @@ export function signCallback(
 ) {
   return async (jwt: Jwt, kid?: string, noIssPayloadUpdate?: boolean) => {
     let resolution = await context.agent.identifierManagedGet(identifier)
-    const jwk = jwt.header.jwk ?? (resolution.method === 'jwk' ? resolution.jwk : undefined)
+    // Ensure JWK has JOSE format values, not COSE numeric values
+    if (resolution.jwk && typeof resolution.jwk.kty === 'number') {
+      const { coseKeyToJwk: toJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
+      const joseJwk = toJwk(resolution.jwk as any)
+      resolution = { ...resolution, method: 'jwk' as const, jwk: joseJwk, identifier: joseJwk }
+    }
+    const jwk = jwt.header.jwk ?? resolution.jwk
     if (!resolution.issuer && !jwt.payload.iss) {
-      return Promise.reject(Error(`No issuer could be determined from the JWT ${JSON.stringify(jwt)} or identifier resolution`))
+      // iss is optional for JWK/cose_key binding per OID4VCI spec
+      logger.debug(`No issuer in resolution or JWT, proceeding without iss (JWK binding)`)
     }
     const header = jwt.header as JwsHeader
     const payload = jwt.payload
@@ -179,6 +186,98 @@ export function signCallback(
         payload,
       })
     ).jwt
+  }
+}
+
+export function cwtSignCallback(
+  identifier: ManagedIdentifierOptsOrResult,
+  context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
+) {
+  return async (args: {
+    iss?: string
+    aud: string
+    nonce?: string
+    alg?: string
+    jwk?: unknown
+    kid?: string
+    coseKey?: unknown
+  }): Promise<string> => {
+    const resolution = await context.agent.identifierManagedGet(identifier)
+
+    // Import CBOR utilities from KMP mdoc core
+    const mdocPkg = (await import('@sphereon/kmp-mdoc-core')).default
+    const { com, kotlin } = mdocPkg
+    const Encoding = com.sphereon.kmp.Encoding
+    const encodeTo = com.sphereon.kmp.encodeTo
+    const decodeFrom = com.sphereon.kmp.decodeFrom
+
+    const now = Math.floor(Date.now() / 1000)
+    const alg = args.alg ?? 'ES256'
+
+    // COSE algorithm label (1) and content type label (16)
+    // alg: ES256 = -7, ES384 = -35, ES512 = -36, EdDSA = -8
+    const coseAlgMap: Record<string, number> = { ES256: -7, ES384: -35, ES512: -36, EdDSA: -8 }
+    const coseAlg = coseAlgMap[alg] ?? -7
+
+    // CWT claim keys per RFC 8392: iss=1, aud=3, iat=6, nonce=10
+    const CWT_ISS = 1
+    const CWT_AUD = 3
+    const CWT_IAT = 6
+    const CWT_NONCE = 10
+
+    // Build protected header: { 1: alg, 16: "openid4vci-proof+cwt" }
+    const protectedHeaderEntries: Array<[any, any]> = [
+      [
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(1)),
+        new com.sphereon.cbor.CborInt(com.sphereon.kmp.LongKMP.fromNumber(coseAlg)),
+      ],
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(16)), new com.sphereon.cbor.CborString('openid4vci-proof+cwt')],
+    ]
+    const protectedHeader = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(protectedHeaderEntries)))
+    const protectedHeaderEncoded = com.sphereon.cbor.Cbor.encode(protectedHeader)
+
+    // Build payload claims map
+    const claimsEntries: Array<[any, any]> = [
+      [
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_ISS)),
+        new com.sphereon.cbor.CborString(args.iss ?? resolution.issuer ?? ''),
+      ],
+      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_AUD)), new com.sphereon.cbor.CborString(args.aud)],
+      [
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_IAT)),
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(now - 60)),
+      ],
+    ]
+    if (args.nonce) {
+      claimsEntries.push([
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_NONCE)),
+        new com.sphereon.cbor.CborString(args.nonce),
+      ])
+    }
+    const claimsMap = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(claimsEntries)))
+    const claimsEncoded = com.sphereon.cbor.Cbor.encode(claimsMap)
+
+    // Sign the CBOR-encoded claims
+    const claimsBase64url = encodeTo(new Int8Array(claimsEncoded), Encoding.BASE64URL)
+    const signedCWT = await context.agent.keyManagerSign({
+      keyRef: resolution.kmsKeyRef ?? resolution.key.kid,
+      data: claimsBase64url,
+      algorithm: alg,
+    })
+
+    // Assemble COSE_Sign1: [protected_header_bytes, unprotected_header (empty map), payload_bytes, signature_bytes]
+    const signatureInt8 = decodeFrom(signedCWT, Encoding.BASE64URL)
+    const emptyMap = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map()))
+    const coseSign1Elements = [
+      new com.sphereon.cbor.CborByteString(new Int8Array(protectedHeaderEncoded)),
+      emptyMap,
+      new com.sphereon.cbor.CborByteString(new Int8Array(claimsEncoded)),
+      new com.sphereon.cbor.CborByteString(signatureInt8),
+    ]
+    const coseSign1Array = new com.sphereon.cbor.CborArray(kotlin.collections.KtMutableList.fromJsArray(coseSign1Elements))
+    const cwtEncoded = com.sphereon.cbor.Cbor.encode(coseSign1Array)
+
+    return encodeTo(new Int8Array(cwtEncoded), Encoding.BASE64URL)
   }
 }
 
@@ -408,10 +507,10 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (authFormats && authFormats.length > 0) {
       formats = Array.from(new Set(authFormats))
     }
-    let oid4vciClient: OpenID4VCIClientV1_0_15
+    let oid4vciClient: OpenID4VCIClient
     let offer: CredentialOfferRequestWithBaseUrl | undefined
     if (requestData.existingClientState) {
-      oid4vciClient = await OpenID4VCIClientV1_0_15.fromState({ state: requestData.existingClientState })
+      oid4vciClient = await OpenID4VCIClient.fromState({ state: requestData.existingClientState })
       offer = oid4vciClient.credentialOffer
     } else {
       offer = requestData.credentialOffer
@@ -433,7 +532,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!offer) {
         // else no offer, meaning we have an issuer URL
         logger.log(`Issuer url received (no credential offer): ${uri}`)
-        oid4vciClient = await OpenID4VCIClientV1_0_15.fromCredentialIssuer({
+        oid4vciClient = await OpenID4VCIClient.fromCredentialIssuer({
           credentialIssuer: uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
@@ -441,7 +540,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         })
       } else {
         logger.log(`Credential offer received: ${uri}`)
-        oid4vciClient = await OpenID4VCIClientV1_0_15.fromURI({
+        oid4vciClient = await OpenID4VCIClient.fromURI({
           uri,
           authorizationRequest: authorizationRequestOpts,
           clientId: authorizationRequestOpts.clientId,
@@ -501,7 +600,7 @@ export class OID4VCIHolder implements IAgentPlugin {
     if (!clientId) {
       return Promise.reject(Error(`Missing client id in contact's connectionConfig and no default authorization request clientId configured`))
     }
-    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
     const authorizationCodeURL = await client.createAuthorizationRequestUrl({
       authorizationRequest: {
         clientId: clientId,
@@ -632,7 +731,7 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error('Missing openID4VCI client state in context'))
     }
 
-    const client = await OpenID4VCIClientV1_0_15.fromState({ state: openID4VCIClientState })
+    const client = await OpenID4VCIClient.fromState({ state: openID4VCIClientState })
     const credentialsSupported = await getCredentialConfigsSupportedMerged({
       client,
       vcFormatPreferences: this.vcFormatPreferences,
@@ -686,15 +785,22 @@ export class OID4VCIHolder implements IAgentPlugin {
       return Promise.reject(Error(`Cannot get credential issuance options`))
     }
 
+    logger.info(`Issuance supportedBindingMethods: ${issuanceOpt.supportedBindingMethods?.join(', ')}, format: ${issuanceOpt.format}`)
     const identifier = await getIdentifierOpts({ issuanceOpt, context, defaultHolderIdentifier: this.defaultHolderIdentifier })
     issuanceOpt.identifier = identifier
     logger.info(`ID opts`, identifier)
     const alg: JoseSignatureAlgorithm | JoseSignatureAlgorithmString = await signatureAlgorithmFromKey({ key: identifier.key })
     // The VCI lib either expects a jwk or a kid
-    const jwk = isManagedIdentifierJwkResult(identifier) ? identifier.jwk : undefined
+    const isCoseKey = isManagedIdentifierCoseKeyResult(identifier)
+    let jwk = identifier.jwk
+    if (jwk && typeof jwk.kty === 'number') {
+      const { coseKeyToJwk: toJoseJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
+      jwk = toJoseJwk(jwk as any)
+    }
 
     const callbacks: ProofOfPossessionCallbacks = {
       signCallback: signCallback(identifier, context),
+      ...(isCoseKey && { cwtSignCallback: cwtSignCallback(identifier, context) }),
     }
 
     try {
@@ -702,25 +808,66 @@ export class OID4VCIHolder implements IAgentPlugin {
       if (!client.clientId) {
         client.clientId = isManagedIdentifierDidResult(identifier) ? identifier.did : identifier.issuer
       }
+
+      // Auto-detect private_key_jwt from AS metadata
+      const serverMetadata = await client.retrieveServerMetadata()
+      const asMetadata = (serverMetadata as any)?.authorizationServerMetadata
+      const ciMetadata = (serverMetadata as any)?.credentialIssuerMetadata
+      const authMethods = asMetadata?.token_endpoint_auth_methods_supported ?? ciMetadata?.token_endpoint_auth_methods_supported
+      const signingAlgValuesSupported =
+        asMetadata?.token_endpoint_auth_signing_alg_values_supported ?? ciMetadata?.token_endpoint_auth_signing_alg_values_supported
+      // Only use private_key_jwt when the AS advertises it AND can actually verify our assertion signature alg.
+      // (e.g. an AS that lists private_key_jwt but only accepts RS256/HS256 cannot verify our ES256 assertion;
+      // sending it alongside Basic auth then fails as "conflicting client authentication methods".)
+      const requiresPrivateKeyJwt = shouldUsePrivateKeyJwt({
+        authMethodsSupported: authMethods,
+        signingAlgValuesSupported,
+        assertionAlg: accessTokenOpts?.clientOpts?.alg ?? alg,
+      })
+
       let asOpts: AuthorizationServerOpts | undefined = undefined
-      let kid = accessTokenOpts?.clientOpts?.kid ?? identifier.kid
-      if (accessTokenOpts?.clientOpts) {
-        const clientId = accessTokenOpts.clientOpts.clientId ?? client.clientId ?? identifier.issuer
+      let kid = accessTokenOpts?.clientOpts?.kid ?? identifier.kid ?? identifier.jwkThumbprint ?? identifier.kmsKeyRef
+      if (accessTokenOpts?.clientOpts || requiresPrivateKeyJwt) {
+        const clientId = accessTokenOpts?.clientOpts?.clientId ?? client.clientId ?? identifier.issuer
         if (client.isEBSI() && clientId?.startsWith('http') && kid?.includes('#')) {
           kid = kid.split('#')[1]
         }
 
-        //todo: investigate if the jwk should be used here as well if present
+        // For private_key_jwt, use JWK-based sign callbacks (JWT assertions need JOSE format, not COSE)
+        let clientSignCallbacks = accessTokenOpts?.clientOpts?.signCallbacks ?? callbacks
+        if (requiresPrivateKeyJwt && !accessTokenOpts?.clientOpts?.signCallbacks && identifier.jwk) {
+          // Ensure JWK has JOSE string values, not COSE numeric values
+          let joseJwk = identifier.jwk
+          if (typeof joseJwk.kty === 'number') {
+            const { coseKeyToJwk } = await import('@sphereon/ssi-sdk-ext.key-utils')
+            joseJwk = coseKeyToJwk(joseJwk as any)
+          }
+          const jwkIdentifier = { ...identifier, method: 'jwk' as const, identifier: joseJwk, jwk: joseJwk }
+          clientSignCallbacks = { signCallback: signCallback(jwkIdentifier, context) }
+        }
         const clientOpts: AuthorizationServerClientOpts = {
-          ...accessTokenOpts.clientOpts,
-          clientId,
+          ...accessTokenOpts?.clientOpts,
+          ...(clientId && { clientId }),
           kid,
           // @ts-ignore
-          alg: accessTokenOpts.clientOpts.alg ?? alg,
-          signCallbacks: accessTokenOpts.clientOpts.signCallbacks ?? callbacks,
+          alg: accessTokenOpts?.clientOpts?.alg ?? alg,
+          signCallbacks: clientSignCallbacks,
+          ...(requiresPrivateKeyJwt &&
+            !accessTokenOpts?.clientOpts?.clientAssertionType && {
+              clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' as const,
+            }),
+        }
+        // Only use a JWT client assertion (private_key_jwt) when the AS actually advertises support for it. When it does
+        // not (e.g. it only supports client_secret_basic), sending a JWT assertion in addition to Basic auth is rejected
+        // by the AS as conflicting client authentication methods. So drop any preconfigured assertion type in that case.
+        if (!requiresPrivateKeyJwt && clientOpts.clientAssertionType) {
+          delete (clientOpts as { clientAssertionType?: string }).clientAssertionType
         }
         asOpts = {
           clientOpts,
+        }
+        if (requiresPrivateKeyJwt) {
+          logger.info(`Auto-configured private_key_jwt client authentication for token endpoint`)
         }
       }
 
@@ -732,7 +879,16 @@ export class OID4VCIHolder implements IAgentPlugin {
         ...(asOpts && { asOpts }),
       }
       logger.debug(`Acquiring access token with opts: ${JSON.stringify(acquireAccessTokenOpts, null, 2)}`)
-      const accessTokenResponse = await client.acquireAccessToken(acquireAccessTokenOpts)
+      let accessTokenResponse
+      try {
+        accessTokenResponse = await client.acquireAccessToken(acquireAccessTokenOpts)
+      } catch (tokenError: any) {
+        logger.error(`Error acquiring access token: ${tokenError.message}`)
+        if (tokenError.cause) {
+          logger.error(`Token error cause: ${JSON.stringify(tokenError.cause)}`)
+        }
+        throw tokenError
+      }
       logger.debug(`Access token response: ${JSON.stringify(accessTokenResponse, null, 2)}`)
 
       // FIXME: This type mapping is wrong. It should use credential_identifier in case the access token response has authorization details
@@ -752,13 +908,13 @@ export class OID4VCIHolder implements IAgentPlugin {
         // TODO: We need to update the machine and add notifications support for actual deferred credentials instead of just waiting/retrying
         deferredCredentialAwait: true,
         ...(issuanceOpt.id && typeof issuanceOpt.id === 'string' ? { credentialConfigurationId: issuanceOpt.id } : undefined),
-        ...(!jwk && { kid }), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
+        ...(!jwk ? { kid } : {}), // vci client either wants a jwk or kid. If we have used the jwk method do not provide the kid
         jwk,
         alg,
         jti: uuidv4(),
       }
-      logger.debug(`Acquiring credential with opts: ${JSON.stringify({...acquireCredentialOpts, proofCallbacks: '<<callbacks>>'}, null, 2)}`)
-      const credentialResponse = await client.acquireCredentials(acquireCredentialOpts)
+      logger.debug(`Acquiring credential with opts: ${JSON.stringify({ ...acquireCredentialOpts, proofCallbacks: '<<callbacks>>' }, null, 2)}`)
+      const credentialResponse = await client.acquireCredentials(acquireCredentialOpts as any)
       logger.debug(`Credential response: ${JSON.stringify(credentialResponse, null, 2)}`)
 
       const credential = {
@@ -1231,9 +1387,9 @@ export class OID4VCIHolder implements IAgentPlugin {
     return undefined
   }
 
-  private getCredentialDefinition(issuanceOpt: IssuanceOpts): CredentialDefinitionJwtVcJsonLdAndLdpVcV1_0_15 | undefined {
+  private getCredentialDefinition(issuanceOpt: IssuanceOpts): Record<string, unknown> | undefined {
     if (issuanceOpt.format == 'ldp_vc' || issuanceOpt.format == 'jwt_vc_json-ld') {
-      return (issuanceOpt as CredentialConfigurationSupportedJwtVcJsonLdAndLdpVcV1_0_15).credential_definition
+      return (issuanceOpt as CredentialConfigurationSupported & { credential_definition?: Record<string, unknown> }).credential_definition
     }
     return undefined
   }

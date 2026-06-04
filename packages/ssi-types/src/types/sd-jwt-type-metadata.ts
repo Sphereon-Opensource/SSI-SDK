@@ -153,6 +153,11 @@ export interface SdJwtSimpleRenderingMetadata {
   logo?: SdJwtLogoMetadata
 
   /**
+   * OPTIONAL. Metadata for the background image.
+   */
+  background_image?: SdJwtImageMetadata
+
+  /**
    * OPTIONAL. Background color for the credential.
    */
   background_color?: string
@@ -161,6 +166,26 @@ export interface SdJwtSimpleRenderingMetadata {
    * OPTIONAL. Text color for the credential.
    */
   text_color?: string
+}
+
+/**
+ * Represents metadata for an image (logo, background image, etc.).
+ */
+export interface SdJwtImageMetadata {
+  /**
+   * REQUIRED. URI pointing to the image.
+   */
+  uri: string
+
+  /**
+   * OPTIONAL. Integrity metadata string for the 'uri' field.
+   */
+  ['uri#integrity']?: string
+
+  /**
+   * OPTIONAL. Alternative text for the image.
+   */
+  alt_text?: string
 }
 
 /**

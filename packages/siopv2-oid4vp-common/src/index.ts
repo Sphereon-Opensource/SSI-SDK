@@ -39,4 +39,8 @@ export {
   ResponseType,
   ResponseMode,
   VPTokenLocation,
+  DCAPIProtocolIdentifier,
+  type RelyingPartyAttestation,
+  type TransactionData,
+  type VerifiedAuthorizationRequest,
 } from '@sphereon/did-auth-siop'

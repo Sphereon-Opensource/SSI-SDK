@@ -221,6 +221,26 @@ export async function createRPBuilder(args: {
     builder.withResponseRedirectUri(rpOpts.responseRedirectUri)
   }
 
+  // Pass through V1/D28-specific options to the builder
+  if (rpOpts.transactionData) {
+    builder.withTransactionData(rpOpts.transactionData)
+  }
+  if (rpOpts.verifierInfo) {
+    builder.withVerifierInfo(rpOpts.verifierInfo)
+  }
+  if (rpOpts.verifierAttestations) {
+    builder.withVerifierAttestations(rpOpts.verifierAttestations)
+  }
+  if (rpOpts.requestUriMethod) {
+    builder.withRequestUriMethod(rpOpts.requestUriMethod)
+  }
+  if (rpOpts.expectedOrigins) {
+    builder.withExpectedOrigins(rpOpts.expectedOrigins)
+  }
+  if (rpOpts.walletNonce) {
+    builder.withWalletNonce(rpOpts.walletNonce)
+  }
+
   //const key = resolution.key
   //fixme: this has been removed in the new version of did-auth-siop
   //builder.withSuppliedSignature(SuppliedSigner(key, context, getSigningAlgo(key.type) as unknown as KeyAlgo), did, kid, getSigningAlgo(key.type))

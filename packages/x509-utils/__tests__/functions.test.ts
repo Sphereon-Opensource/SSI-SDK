@@ -105,6 +105,30 @@ describe('functions: validateX5cCertificateChain', () => {
 
   const invalidChain = [externalTestCert, walletPEM, sphereonCA]
 
+  // EC P-256 chain verification (the path that fails for the IDK OID4VP verifier cert).
+  // sphereonTest is a P-256 leaf signed by the P-256 sphereonCA; both valid around 2024-12.
+  const ecVerificationTime = new Date('2024-12-15T00:00:00Z')
+
+  it('EC P-256: validates a full [leaf, CA] chain with the CA as trust anchor', async () => {
+    const result = await validateX509CertificateChain({
+      chain: [sphereonTest, sphereonCA],
+      trustAnchors: [sphereonCA],
+      verificationTime: ecVerificationTime,
+      opts: { trustRootWhenNoAnchors: false },
+    })
+    expect(result.error).toBe(false)
+  })
+
+  it('EC P-256: validates a single-leaf chain whose issuer CA is only a trust anchor', async () => {
+    const result = await validateX509CertificateChain({
+      chain: [sphereonTest],
+      trustAnchors: [sphereonCA],
+      verificationTime: ecVerificationTime,
+      opts: { trustRootWhenNoAnchors: false },
+    })
+    expect(result.error).toBe(false)
+  })
+
   // FIXME: These CA CERTS are not valid anymore
   it.skip('should validate a valid certificate SDJWT chain without providing a CA as trust anchor, but with trustRoot enabled', async () => {
     const chain = [

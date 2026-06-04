@@ -29,6 +29,12 @@ import { IssuerBrandingEntity } from './entities/issuanceBranding/IssuerBranding
 import { IssuerLocaleBrandingEntity } from './entities/issuanceBranding/IssuerLocaleBrandingEntity'
 import { TextAttributesEntity } from './entities/issuanceBranding/TextAttributesEntity'
 import { MachineStateInfoEntity } from './entities/machineState/MachineStateInfoEntity'
+import { MetadataSetEntity } from './entities/credentialDesign/MetadataSetEntity'
+import { MetadataKeyEntity } from './entities/credentialDesign/MetadataKeyEntity'
+import { MetadataValueEntity } from './entities/credentialDesign/MetadataValueEntity'
+import { FormStepEntity } from './entities/credentialDesign/FormStepEntity'
+import { SchemaDefinitionEntity } from './entities/credentialDesign/SchemaDefinitionEntity'
+import { CredentialDesignBrandingEntity } from './entities/credentialDesign/CredentialDesignBrandingEntity'
 
 import { Oid4vcStateEntity } from './entities/oid4vcState/Oid4vcStateEntity'
 import { DcqlQueryItemEntity } from './entities/presentationDefinition/DcqlQueryItemEntity'
@@ -45,6 +51,7 @@ export { AbstractEventLoggerStore } from '@sphereon/ssi-sdk.data-store-types'
 export { EventLoggerStore } from './eventLogger/EventLoggerStore'
 export { MachineStateStore } from './machineState/MachineStateStore'
 export { PDStore } from './presentationDefinition/PDStore'
+export { CredentialDesignStore } from './credentialDesign/CredentialDesignStore'
 export {
   DataStoreMigrations,
   DataStoreEventLoggerMigrations,
@@ -55,6 +62,7 @@ export {
   DataStoreMachineStateMigrations,
   DataStorePresentationDefinitionMigrations,
   DataStoreServiceMigrations,
+  DataStoreCredentialDesignMigrations,
   DataStoreMigrationsWithVeramo,
   VeramoDataStoreMigrations,
   VeramoDataStoreEntities,
@@ -116,6 +124,15 @@ export const DataStoreDigitalCredentialEntities = [DigitalCredentialEntity]
 
 export const DataStoreMachineStateEntities = [MachineStateInfoEntity]
 
+export const DataStoreCredentialDesignEntities = [
+  MetadataSetEntity,
+  MetadataKeyEntity,
+  MetadataValueEntity,
+  FormStepEntity,
+  SchemaDefinitionEntity,
+  CredentialDesignBrandingEntity,
+]
+
 // All entities combined if a party wants to enable them all at once
 export const DataStoreEntities = [
   ...DataStoreContactEntities,
@@ -125,15 +142,12 @@ export const DataStoreEntities = [
   ...DataStoreDigitalCredentialEntities,
   ...DataStoreMachineStateEntities,
   ...DataStorePresentationDefinitionEntities,
+  ...DataStoreCredentialDesignEntities,
   // ...DataStoreOid4vcStateEntities,
 ]
 
 // All entities combined with Veramo entities if a party wants to enable them all at once
-export const DataStoreEntitiesWithVeramo = [
-  ...VeramoDataStoreEntities,
-  ...DataStoreEntities,
-]
-
+export const DataStoreEntitiesWithVeramo = [...VeramoDataStoreEntities, ...DataStoreEntities]
 
 export {
   BaseConfigEntity,
@@ -169,4 +183,12 @@ export {
   ContactMetadataItemEntity,
   CredentialClaimsEntity,
   Oid4vcStateEntity,
+  MetadataSetEntity,
+  MetadataKeyEntity,
+  MetadataValueEntity,
+  FormStepEntity,
+  SchemaDefinitionEntity,
+  CredentialDesignBrandingEntity,
 }
+
+export { ValueType } from './entities/credentialDesign/MetadataKeyEntity'

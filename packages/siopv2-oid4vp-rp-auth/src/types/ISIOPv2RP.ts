@@ -8,7 +8,9 @@ import {
   ClientMetadataOpts,
   IRPSessionManager,
   PresentationVerificationCallback,
+  RelyingPartyAttestation,
   RequestObjectPayload,
+  RequestUriMethod,
   ResponseMode,
   ResponseURIType,
   SupportedVersion,
@@ -150,6 +152,13 @@ export interface IRPOptions {
   identifierOpts: ISIOPIdentifierOptions
   verifyJwtCallback?: VerifyJwtCallback
   responseRedirectUri?: string
+  // OID4VP V1-specific options
+  transactionData?: string[]
+  verifierInfo?: RelyingPartyAttestation[] // V1: verifier attestation objects
+  verifierAttestations?: RelyingPartyAttestation[] // D28: verifier attestation objects
+  requestUriMethod?: RequestUriMethod
+  expectedOrigins?: string[] // For DC API signed requests
+  walletNonce?: string // For request_uri_method=post flow
 }
 
 export interface IPresentationOptions {

@@ -98,9 +98,7 @@ export class IssuanceBrandingStore extends AbstractIssuanceBrandingStore {
 
     if (knownStates && Object.keys(knownStates).length > 0) {
       // First do a lightweight query selecting only id and state to determine which records are "dirty"
-      const stateQuery = repository
-        .createQueryBuilder('branding')
-        .select(['branding.id', 'branding.state'])
+      const stateQuery = repository.createQueryBuilder('branding').select(['branding.id', 'branding.state'])
       if (filter) {
         stateQuery.where(filter)
       }
