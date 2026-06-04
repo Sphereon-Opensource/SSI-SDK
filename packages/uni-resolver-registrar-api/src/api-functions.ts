@@ -293,9 +293,7 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
       // Enrich services with metadata from the database (for eInvoicing services)
       // Also remove null/undefined values from service objects
       const cleanService = (svc: Service): Service => {
-        return Object.fromEntries(
-          Object.entries(svc).filter(([_, v]) => v !== null && v !== undefined)
-        ) as Service
+        return Object.fromEntries(Object.entries(svc).filter(([_, v]) => v !== null && v !== undefined)) as Service
       }
 
       if (resolutionResult?.didDocument?.service && typeof context.agent.getServiceMetadata === 'function') {
@@ -314,7 +312,7 @@ export function didWebDomainEndpoint(router: Router, context: IRequiredContext, 
               debug(`No metadata found for service ${service.id}`)
             }
             return cleanService(service)
-          })
+          }),
         )
         resolutionResult.didDocument.service = enrichedServices as Array<Service>
       } else if (resolutionResult?.didDocument?.service) {

@@ -147,11 +147,7 @@ export const DataStoreEntities = [
 ]
 
 // All entities combined with Veramo entities if a party wants to enable them all at once
-export const DataStoreEntitiesWithVeramo = [
-  ...VeramoDataStoreEntities,
-  ...DataStoreEntities,
-]
-
+export const DataStoreEntitiesWithVeramo = [...VeramoDataStoreEntities, ...DataStoreEntities]
 
 export {
   BaseConfigEntity,

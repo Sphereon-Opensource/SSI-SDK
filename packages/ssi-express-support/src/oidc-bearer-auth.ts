@@ -109,15 +109,14 @@ export class OIDCBearerAuth {
             return done(null, payload)
           }
           return done('Bearer token not found or incorrect', null)
-        })
+        }),
       )
     } catch (error) {
       console.error('Failed to initialize OIDC Bearer Auth:', error)
       return Promise.reject(
-        new Error(
-          'Could not create JWT bearer strategy. Did you include "passport-jwt" and "jwks-rsa" dependencies in package.json?',
-          { cause: error }
-        )
+        new Error('Could not create JWT bearer strategy. Did you include "passport-jwt" and "jwks-rsa" dependencies in package.json?', {
+          cause: error,
+        }),
       )
     }
   }
@@ -128,9 +127,7 @@ export class OIDCBearerAuth {
     try {
       const response = await fetch(wellKnownUrl)
       if (!response.ok) {
-        return Promise.reject(
-          new Error(`Failed to fetch OIDC configuration from ${wellKnownUrl}: ${response.status} ${response.statusText}`)
-        )
+        return Promise.reject(new Error(`Failed to fetch OIDC configuration from ${wellKnownUrl}: ${response.status} ${response.statusText}`))
       }
 
       const config = (await response.json()) as { jwks_uri?: string }
@@ -140,9 +137,7 @@ export class OIDCBearerAuth {
 
       return config.jwks_uri
     } catch (error) {
-      return Promise.reject(
-        new Error(`Failed to discover JWKS URI from OIDC configuration at ${wellKnownUrl}`, { cause: error })
-      )
+      return Promise.reject(new Error(`Failed to discover JWKS URI from OIDC configuration at ${wellKnownUrl}`, { cause: error }))
     }
   }
 }

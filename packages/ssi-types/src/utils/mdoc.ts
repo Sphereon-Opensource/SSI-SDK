@@ -171,8 +171,7 @@ export const mdocDecodedCredentialToUniformCredential = (
   }
   // Try to extract CN from x5chain certificate in issuerAuth (most authoritative for mdoc)
   try {
-    const x5chain = json.issuerSigned?.issuerAuth?.unprotectedHeader?.x5chain
-      ?? json.issuerSigned?.issuerAuth?.protectedHeader?.x5chain
+    const x5chain = json.issuerSigned?.issuerAuth?.unprotectedHeader?.x5chain ?? json.issuerSigned?.issuerAuth?.protectedHeader?.x5chain
     if (x5chain && x5chain.length > 0) {
       // x5chain[0] is base64-encoded DER certificate. Extract CN by searching for OID 2.5.4.3 (55 04 03)
       const b64 = x5chain[0]

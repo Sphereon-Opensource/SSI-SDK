@@ -7,10 +7,7 @@ import {
   NonPersistedSchemaDefinition,
   ValueType,
 } from '@sphereon/ssi-sdk.data-store-types'
-import {
-  CredentialDesignCountResult,
-  FormStepGetOrCreateResult, RemoveCredentialDesignResult, schema
-} from '../index'
+import { CredentialDesignCountResult, FormStepGetOrCreateResult, RemoveCredentialDesignResult, schema } from '../index'
 import {
   AddCredentialDesignArgs,
   CredentialConfigurationOptions,
@@ -100,9 +97,7 @@ export class CredentialDesignManager implements IAgentPlugin {
 
   /** {@inheritDoc ICredentialDesignManager.cdmRemoveCredentialDesign} */
   private async cdmRemoveCredentialDesign(args: RemoveCredentialDesignArgs, context: RequiredContext): Promise<RemoveCredentialDesignResult> {
-    return this.store
-      .removeCredentialDesign({ credentialDesignId: args.credentialDesignId })
-      .then(() => ({ result: true }))
+    return this.store.removeCredentialDesign({ credentialDesignId: args.credentialDesignId }).then(() => ({ result: true }))
   }
 
   /** {@inheritDoc ICredentialDesignManager.cdmCredentialDesignCount} */

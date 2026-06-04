@@ -8,9 +8,7 @@ export class AddCredentialDesignsSqlite1773657426000 implements MigrationInterfa
       `CREATE TABLE IF NOT EXISTS "meta_data_set" ("id" varchar PRIMARY KEY NOT NULL, "tenant_id" varchar, "name" text NOT NULL)`,
     )
 
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX IF NOT EXISTS "meta_data_set_unique_tenant" ON "meta_data_set" ("name", "tenant_id")`,
-    )
+    await queryRunner.query(`CREATE UNIQUE INDEX IF NOT EXISTS "meta_data_set_unique_tenant" ON "meta_data_set" ("name", "tenant_id")`)
 
     await queryRunner.query(
       `CREATE TABLE IF NOT EXISTS "meta_data_keys" ("id" varchar PRIMARY KEY NOT NULL, "set_id" varchar NOT NULL, "key" text NOT NULL, "value_type" varchar CHECK( "value_type" IN ('Text','Number','Boolean','Date') ) NOT NULL, CONSTRAINT "fk_meta_data_set" FOREIGN KEY ("set_id") REFERENCES "meta_data_set" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
@@ -24,9 +22,7 @@ export class AddCredentialDesignsSqlite1773657426000 implements MigrationInterfa
       `CREATE TABLE IF NOT EXISTS "form_step" ("id" varchar PRIMARY KEY NOT NULL, "tenant_id" varchar, "form_id" text, "step_nr" integer, "order" integer)`,
     )
 
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX IF NOT EXISTS "formstep_unique_step" ON "form_step" ("step_nr", "form_id", "order")`,
-    )
+    await queryRunner.query(`CREATE UNIQUE INDEX IF NOT EXISTS "formstep_unique_step" ON "form_step" ("step_nr", "form_id", "order")`)
 
     await queryRunner.query(
       `CREATE TABLE IF NOT EXISTS "schema_definition" ("id" varchar PRIMARY KEY NOT NULL, "tenant_id" varchar, "extends_id" varchar, "correlation_id" text, "schema_type" text, "entity_type" text, "schema" text NOT NULL, "meta_data_set_id" varchar, CONSTRAINT "fk_schemadef_metadata" FOREIGN KEY ("meta_data_set_id") REFERENCES "meta_data_set" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,

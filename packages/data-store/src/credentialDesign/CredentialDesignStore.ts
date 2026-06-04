@@ -15,7 +15,14 @@ import {
 import { OrPromise } from '@sphereon/ssi-types'
 import Debug from 'debug'
 import { DataSource, EntityManager, Repository } from 'typeorm'
-import { MetadataSetEntity, MetadataKeyEntity, MetadataValueEntity, SchemaDefinitionEntity, CredentialDesignBrandingEntity, FormStepEntity } from '../entities/credentialDesign'
+import {
+  MetadataSetEntity,
+  MetadataKeyEntity,
+  MetadataValueEntity,
+  SchemaDefinitionEntity,
+  CredentialDesignBrandingEntity,
+  FormStepEntity,
+} from '../entities/credentialDesign'
 import { ImageAttributesEntity } from '../entities/issuanceBranding/ImageAttributesEntity'
 import { ImageDimensionsEntity } from '../entities/issuanceBranding/ImageDimensionsEntity'
 import {

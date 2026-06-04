@@ -79,7 +79,7 @@ export class IssuerInstance {
     if (this._issuer?.issuerMetadata) {
       this._issuer.issuerMetadata = {
         ...this._issuer?.issuerMetadata,
-        credential_configurations_supported: value.credential_configurations_supported
+        credential_configurations_supported: value.credential_configurations_supported,
       }
     }
 

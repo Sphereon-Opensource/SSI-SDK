@@ -1,10 +1,6 @@
 import { TAgent } from '@veramo/core'
 import { CredentialDesign } from '@sphereon/ssi-sdk.data-store-types'
-import {
-  AddCredentialDesignArgs,
-  ICredentialDesignManager,
-  UpdateCredentialDesignArgs,
-} from '../../src'
+import { AddCredentialDesignArgs, ICredentialDesignManager, UpdateCredentialDesignArgs } from '../../src'
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 

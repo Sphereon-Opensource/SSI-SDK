@@ -43,12 +43,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "identifier",
-            "schema",
-            "uiSchema",
-            "options"
-          ],
+          "required": ["identifier", "schema", "uiSchema", "options"],
           "additionalProperties": false
         },
         "Record<string,unknown>": {
@@ -83,9 +78,7 @@
               "$ref": "#/components/schemas/Record<string,unknown>"
             }
           },
-          "required": [
-            "format"
-          ],
+          "required": ["format"],
           "additionalProperties": false
         },
         "CredentialDesignBrandingInput": {
@@ -138,10 +131,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "height",
-            "width"
-          ]
+          "required": ["height", "width"]
         },
         "CredentialDesign": {
           "type": "object",
@@ -171,12 +161,7 @@
               "$ref": "#/components/schemas/CredentialDesignBranding"
             }
           },
-          "required": [
-            "id",
-            "identifier",
-            "metadataKeys",
-            "schemaDefinitions"
-          ],
+          "required": ["id", "identifier", "metadataKeys", "schemaDefinitions"],
           "additionalProperties": false
         },
         "MetadataKey": {
@@ -198,22 +183,12 @@
               }
             }
           },
-          "required": [
-            "id",
-            "key",
-            "valueType",
-            "metadataValues"
-          ],
+          "required": ["id", "key", "valueType", "metadataValues"],
           "additionalProperties": false
         },
         "ValueType": {
           "type": "string",
-          "enum": [
-            "Text",
-            "Number",
-            "Boolean",
-            "Date"
-          ]
+          "enum": ["Text", "Number", "Boolean", "Date"]
         },
         "MetadataValue": {
           "type": "object",
@@ -238,9 +213,7 @@
               "format": "date-time"
             }
           },
-          "required": [
-            "id"
-          ],
+          "required": ["id"],
           "additionalProperties": false
         },
         "SchemaDefinition": {
@@ -268,10 +241,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "schema"
-          ],
+          "required": ["id", "schema"],
           "additionalProperties": false
         },
         "CredentialDesignBranding": {
@@ -293,9 +263,7 @@
               "$ref": "#/components/schemas/IImageAttributes"
             }
           },
-          "required": [
-            "id"
-          ],
+          "required": ["id"],
           "additionalProperties": false
         },
         "IImageAttributes": {
@@ -320,9 +288,7 @@
               "$ref": "#/components/schemas/IImageDimensions"
             }
           },
-          "required": [
-            "id"
-          ],
+          "required": ["id"],
           "additionalProperties": false
         },
         "IImageDimensions": {
@@ -338,11 +304,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "id",
-            "width",
-            "height"
-          ],
+          "required": ["id", "width", "height"],
           "additionalProperties": false
         },
         "CredentialDesignCountArgs": {
@@ -367,9 +329,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "count"
-          ],
+          "required": ["count"],
           "additionalProperties": false
         },
         "FormStepGetOrCreateArgs": {
@@ -379,9 +339,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "formId"
-          ],
+          "required": ["formId"],
           "additionalProperties": false
         },
         "FormStepGetOrCreateResult": {
@@ -391,9 +349,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "formStepId"
-          ],
+          "required": ["formStepId"],
           "additionalProperties": false
         },
         "GetCredentialDesignArgs": {
@@ -403,9 +359,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "credentialDesignId"
-          ],
+          "required": ["credentialDesignId"],
           "additionalProperties": false
         },
         "GetCredentialDesignsArgs": {
@@ -436,9 +390,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "credentialDesignId"
-          ],
+          "required": ["credentialDesignId"],
           "additionalProperties": false
         },
         "RemoveCredentialDesignResult": {
@@ -448,9 +400,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "result"
-          ],
+          "required": ["result"],
           "additionalProperties": false
         },
         "UpdateCredentialDesignArgs": {
@@ -491,13 +441,7 @@
               "$ref": "#/components/schemas/CredentialDesignBrandingInput"
             }
           },
-          "required": [
-            "credentialDesignId",
-            "identifier",
-            "schema",
-            "uiSchema",
-            "options"
-          ],
+          "required": ["credentialDesignId", "identifier", "schema", "uiSchema", "options"],
           "additionalProperties": false
         }
       },

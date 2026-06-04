@@ -192,7 +192,15 @@ export function cwtSignCallback(
   identifier: ManagedIdentifierOptsOrResult,
   context: IAgentContext<IKeyManager & IDIDManager & IResolver & IIdentifierResolution & IJwtService>,
 ) {
-  return async (args: { iss?: string; aud: string; nonce?: string; alg?: string; jwk?: unknown; kid?: string; coseKey?: unknown }): Promise<string> => {
+  return async (args: {
+    iss?: string
+    aud: string
+    nonce?: string
+    alg?: string
+    jwk?: unknown
+    kid?: string
+    coseKey?: unknown
+  }): Promise<string> => {
     const resolution = await context.agent.identifierManagedGet(identifier)
 
     // Import CBOR utilities from KMP mdoc core
@@ -218,7 +226,10 @@ export function cwtSignCallback(
 
     // Build protected header: { 1: alg, 16: "openid4vci-proof+cwt" }
     const protectedHeaderEntries: Array<[any, any]> = [
-      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(1)), new com.sphereon.cbor.CborInt(com.sphereon.kmp.LongKMP.fromNumber(coseAlg))],
+      [
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(1)),
+        new com.sphereon.cbor.CborInt(com.sphereon.kmp.LongKMP.fromNumber(coseAlg)),
+      ],
       [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(16)), new com.sphereon.cbor.CborString('openid4vci-proof+cwt')],
     ]
     const protectedHeader = new com.sphereon.cbor.CborMap(kotlin.collections.KtMutableMap.fromJsMap(new Map(protectedHeaderEntries)))
@@ -226,9 +237,15 @@ export function cwtSignCallback(
 
     // Build payload claims map
     const claimsEntries: Array<[any, any]> = [
-      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_ISS)), new com.sphereon.cbor.CborString(args.iss ?? resolution.issuer ?? '')],
+      [
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_ISS)),
+        new com.sphereon.cbor.CborString(args.iss ?? resolution.issuer ?? ''),
+      ],
       [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_AUD)), new com.sphereon.cbor.CborString(args.aud)],
-      [new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_IAT)), new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(now - 60))],
+      [
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(CWT_IAT)),
+        new com.sphereon.cbor.CborUInt(com.sphereon.kmp.LongKMP.fromNumber(now - 60)),
+      ],
     ]
     if (args.nonce) {
       claimsEntries.push([
@@ -825,15 +842,16 @@ export class OID4VCIHolder implements IAgentPlugin {
           // @ts-ignore
           alg: accessTokenOpts?.clientOpts?.alg ?? alg,
           signCallbacks: clientSignCallbacks,
-          ...(requiresPrivateKeyJwt && !accessTokenOpts?.clientOpts?.clientAssertionType && {
-            clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' as const,
-          }),
+          ...(requiresPrivateKeyJwt &&
+            !accessTokenOpts?.clientOpts?.clientAssertionType && {
+              clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' as const,
+            }),
         }
         // Only use a JWT client assertion (private_key_jwt) when the AS actually advertises support for it. When it does
         // not (e.g. it only supports client_secret_basic), sending a JWT assertion in addition to Basic auth is rejected
         // by the AS as conflicting client authentication methods. So drop any preconfigured assertion type in that case.
         if (!requiresPrivateKeyJwt && clientOpts.clientAssertionType) {
-          delete (clientOpts as {clientAssertionType?: string}).clientAssertionType
+          delete (clientOpts as { clientAssertionType?: string }).clientAssertionType
         }
         asOpts = {
           clientOpts,
@@ -885,7 +903,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         alg,
         jti: uuidv4(),
       }
-      logger.debug(`Acquiring credential with opts: ${JSON.stringify({...acquireCredentialOpts, proofCallbacks: '<<callbacks>>'}, null, 2)}`)
+      logger.debug(`Acquiring credential with opts: ${JSON.stringify({ ...acquireCredentialOpts, proofCallbacks: '<<callbacks>>' }, null, 2)}`)
       const credentialResponse = await client.acquireCredentials(acquireCredentialOpts as any)
       logger.debug(`Credential response: ${JSON.stringify(credentialResponse, null, 2)}`)
 

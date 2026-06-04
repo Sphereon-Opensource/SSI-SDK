@@ -265,9 +265,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     } else {
       // For other algorithms (RSA, ECDSA), hash the data before signing
       // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash)
-      dataToBeSigned = isHashString(data)
-        ? data
-        : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+      dataToBeSigned = isHashString(data) ? data : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
     }
 
     const signingResult = await this.client.methods.kmsClientCreateRawSignature({
@@ -306,9 +304,7 @@ export class RestKeyManagementSystem extends AbstractKeyManagementSystem {
     } else {
       // For other algorithms (RSA, ECDSA), hash the data before verifying
       // with remote signing we are not going to send the whole data over the network, we need to hash it (unless we already get a hash)
-      dataToBeVerified = isHashString(data)
-        ? data
-        : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
+      dataToBeVerified = isHashString(data) ? data : shaHasher(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), algorithm)
     }
 
     const verification = await this.client.methods.kmsClientIsValidRawSignature({

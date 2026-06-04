@@ -6,7 +6,7 @@ import {
   FormStepGetOrCreateArgs,
   AddCredentialDesignArgs,
   UpdateCredentialDesignArgs,
-  RemoveCredentialDesignArgs
+  RemoveCredentialDesignArgs,
 } from '../types'
 
 export abstract class AbstractCredentialDesignStore {

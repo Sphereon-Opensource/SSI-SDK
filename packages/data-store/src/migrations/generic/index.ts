@@ -41,9 +41,7 @@ export const DataStoreIssuanceBrandingMigrations = [
   AddBrandingState1766000000000,
   AddCredentialClaimOrder1768000000000,
 ]
-export const DataStoreCredentialDesignMigrations = [
-  AddCredentialDesigns1773657426000,
-]
+export const DataStoreCredentialDesignMigrations = [AddCredentialDesigns1773657426000]
 export const DataStoreStatusListMigrations = [
   CreateStatusList1693866470000,
   AddBitstringStatusListEnum1741895823000,
@@ -69,10 +67,7 @@ export const DataStoreMigrations = [
 ]
 
 // All migrations combined with Veramo migrations first - use this when you need both
-export const DataStoreMigrationsWithVeramo = [
-  ...VeramoDataStoreMigrations,
-  ...DataStoreMigrations,
-]
+export const DataStoreMigrationsWithVeramo = [...VeramoDataStoreMigrations, ...DataStoreMigrations]
 
 // Re-export Veramo migrations and entities for convenience
 export { VeramoDataStoreMigrations, VeramoDataStoreEntities }

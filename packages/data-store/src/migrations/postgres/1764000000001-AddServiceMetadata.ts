@@ -14,12 +14,10 @@ export class AddServiceMetadata1764000000001 implements MigrationInterface {
       // Skip this migration as there's no service table to modify
       debug(
         'AddServiceMetadata: Skipping migration - service table does not exist. ' +
-        'This is expected if Veramo DID Manager is not being used. ' +
-        'If you need service metadata support, ensure Veramo migrations run before SSI-SDK migrations.'
+          'This is expected if Veramo DID Manager is not being used. ' +
+          'If you need service metadata support, ensure Veramo migrations run before SSI-SDK migrations.',
       )
-      console.warn(
-        '[SSI-SDK Migration] AddServiceMetadata: Skipping - service table does not exist (Veramo DID Manager not in use)'
-      )
+      console.warn('[SSI-SDK Migration] AddServiceMetadata: Skipping - service table does not exist (Veramo DID Manager not in use)')
       return
     }
 
@@ -35,7 +33,7 @@ export class AddServiceMetadata1764000000001 implements MigrationInterface {
     if (!table) {
       return
     }
-    
+
     await queryRunner.query(`
       ALTER TABLE "service"
       DROP COLUMN IF EXISTS "metadata"

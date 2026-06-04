@@ -182,12 +182,7 @@ function derEcdsaToRaw(der: Uint8Array, coordSize: number): Uint8Array {
 // The KMS/MUSAP bridge returns the signature as a base64 (or base64url) string. COSE needs raw r||s bytes.
 // Normalize to url-safe unpadded base64, decode, and DER->raw-convert when the bytes are a DER ECDSA signature.
 function decodeKmsSignatureToRaw(signature: string, coordSize: number): Uint8Array {
-  const normalized = signature
-    .trim()
-    .replace(/\s+/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/g, '')
+  const normalized = signature.trim().replace(/\s+/g, '').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
   const bytes = fromString(normalized, 'base64url') as Uint8Array
   if (bytes.length > coordSize * 2 && bytes[0] === 0x30) {
     return derEcdsaToRaw(bytes, coordSize)

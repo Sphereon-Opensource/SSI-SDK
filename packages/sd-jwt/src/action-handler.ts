@@ -98,7 +98,7 @@ export class SDJwtPlugin implements IAgentPlugin {
       defaultSigner?: Signer
     },
     trustAnchorsInPEM?: string[],
-    providers?: {trustAnchorProvider?: () => string[]; blindlyTrustedAnchorProvider?: () => string[]},
+    providers?: { trustAnchorProvider?: () => string[]; blindlyTrustedAnchorProvider?: () => string[] },
   ) {
     this.trustAnchorsInPEM = trustAnchorsInPEM ?? []
     this.trustAnchorProvider = providers?.trustAnchorProvider

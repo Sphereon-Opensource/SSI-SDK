@@ -19,7 +19,6 @@ import {
   SscdType,
 } from '@sphereon/musap-react-native'
 import { AbstractKeyManagementSystem } from '@veramo/key-manager'
-import { TextDecoder } from 'text-encoding'
 import { Loggers } from '@sphereon/ssi-types'
 import { KeyMetadata } from './index'
 import {

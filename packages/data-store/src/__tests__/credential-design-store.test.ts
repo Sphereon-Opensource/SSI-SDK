@@ -74,9 +74,7 @@ describe('Credential Design store tests', (): void => {
   it('should throw error when getting credential design with unknown id', async (): Promise<void> => {
     const credentialDesignId = 'unknownCredentialDesignId'
 
-    await expect(store.getCredentialDesign({ credentialDesignId })).rejects.toThrow(
-      `No credential design found for id: ${credentialDesignId}`,
-    )
+    await expect(store.getCredentialDesign({ credentialDesignId })).rejects.toThrow(`No credential design found for id: ${credentialDesignId}`)
   })
 
   it('should get all credential designs', async (): Promise<void> => {
@@ -412,8 +410,6 @@ describe('Credential Design store tests', (): void => {
   it('should throw error when removing credential design with unknown id', async (): Promise<void> => {
     const credentialDesignId = 'unknownCredentialDesignId'
 
-    await expect(store.removeCredentialDesign({ credentialDesignId })).rejects.toThrow(
-      `No credential design found for id: ${credentialDesignId}`,
-    )
+    await expect(store.removeCredentialDesign({ credentialDesignId })).rejects.toThrow(`No credential design found for id: ${credentialDesignId}`)
   })
 })

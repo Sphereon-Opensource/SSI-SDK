@@ -4,7 +4,6 @@ export class AddCredentialDesignsPostgres1773657426000 implements MigrationInter
   name = 'AddCredentialDesignsPostgres1773657426000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-
     await queryRunner.query(`
       DO $$ BEGIN
         CREATE TYPE "value_type" AS ENUM ('Text', 'Number', 'Boolean', 'Date');

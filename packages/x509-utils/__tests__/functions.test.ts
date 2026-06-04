@@ -114,7 +114,7 @@ describe('functions: validateX5cCertificateChain', () => {
       chain: [sphereonTest, sphereonCA],
       trustAnchors: [sphereonCA],
       verificationTime: ecVerificationTime,
-      opts: {trustRootWhenNoAnchors: false},
+      opts: { trustRootWhenNoAnchors: false },
     })
     expect(result.error).toBe(false)
   })
@@ -124,7 +124,7 @@ describe('functions: validateX5cCertificateChain', () => {
       chain: [sphereonTest],
       trustAnchors: [sphereonCA],
       verificationTime: ecVerificationTime,
-      opts: {trustRootWhenNoAnchors: false},
+      opts: { trustRootWhenNoAnchors: false },
     })
     expect(result.error).toBe(false)
   })

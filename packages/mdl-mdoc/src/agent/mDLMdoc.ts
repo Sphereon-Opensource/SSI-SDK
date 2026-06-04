@@ -178,7 +178,9 @@ export class MDLMdoc implements IAgentPlugin {
               try {
                 key = await _context.agent.keyManagerGet({ kid })
               } catch (e) {
-                console.log(`(mdl-mdoc:deviceKey) amend: keyManagerGet by kid '${kid}' failed (${(e as any)?.message}); retrying by thumbprint '${thumbprint}'`)
+                console.log(
+                  `(mdl-mdoc:deviceKey) amend: keyManagerGet by kid '${kid}' failed (${(e as any)?.message}); retrying by thumbprint '${thumbprint}'`,
+                )
                 key = await _context.agent.keyManagerGet({ kid: thumbprint })
               }
               const kms = key.kms
@@ -300,7 +302,9 @@ export class MDLMdoc implements IAgentPlugin {
 
     let presentation_submission
     try {
-      presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(presentationDefinition as IOid4VPPresentationDefinition)
+      presentation_submission = Oid4VPPresentationSubmission.Static.fromPresentationDefinition(
+        presentationDefinition as IOid4VPPresentationDefinition,
+      )
     } catch (e: any) {
       console.log(`(mdl-mdoc:deviceResponse) fromPresentationDefinition failed: ${e?.message}`)
       console.log(`(mdl-mdoc:deviceResponse) fromPresentationDefinition STACK: ${e?.stack}`)

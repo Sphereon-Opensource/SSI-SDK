@@ -90,17 +90,18 @@ export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Pr
         })
       }
 
-      // Also retrieve issuer metadata branding so we can merge fields that the VCT metadata may not provide
-      const issuerDisplay =
-        credentialsConfigSupported.display ??
-        // V1.0 issuers may nest display under credential_metadata
-        (credentialsConfigSupported as Record<string, any>).credential_metadata?.display
+      // Also retrieve issuer metadata branding so we can merge fields that the VCT metadata may not provide.
+      // OID4VCI 1.0 final (§12.2.4, #credential-issuer-parameters) nests credential-level `display` and
+      // `claims` inside `credential_metadata`, for every format. Pre-final / draft issuers placed them at
+      // the top level of the configuration instead. Be lenient: favour the 1.0 `credential_metadata`
+      // location, but fall back to the legacy top-level fields (and, for older drafts, `credentialSubject`).
+      const config = credentialsConfigSupported as Record<string, any>
+      const issuerDisplay = config.credential_metadata?.display ?? config.display
+      const issuerCredentialSubject = config.credential_metadata?.claims ?? config.claims ?? config.credentialSubject
       if (issuerDisplay) {
         issuerBranding = await oid4vciGetCredentialBrandingFrom({
           credentialDisplay: issuerDisplay,
-          issuerCredentialSubject:
-            // @ts-ignore // FIXME SPRIND-123 add proper support for type recognition as claim display can be located elsewhere for v13
-            credentialsSupported.claims !== undefined ? credentialsConfigSupported.claims : credentialsConfigSupported.credentialSubject,
+          issuerCredentialSubject,
         })
       }
 
@@ -356,7 +357,7 @@ export const mapCredentialToAccept = async (args: MapCredentialToAcceptArgs): Pr
       ? uniformVerifiableCredential.issuer
       : CredentialMapper.isSdJwtDecodedCredential(uniformVerifiableCredential)
         ? uniformVerifiableCredential.decodedPayload.iss
-        : uniformVerifiableCredential.issuer?.id ?? uniformVerifiableCredential.type?.[0] ?? 'unknown'
+        : (uniformVerifiableCredential.issuer?.id ?? uniformVerifiableCredential.type?.[0] ?? 'unknown')
 
   const credentialResponse = credentialToAccept.credentialResponse as CredentialResponse
   return {
@@ -404,7 +405,9 @@ export const getIdentifierOpts = async (args: GetIdentifierArgs): Promise<Manage
   } = issuanceOpt
   let identifier: ManagedIdentifierResult
 
-  console.log(`[getIdentifierOpts] identifierArg: ${identifierArg ? `method=${identifierArg.method}, keys=${Object.keys(identifierArg).join(',')}` : 'undefined'}, supportedBindingMethods: ${supportedBindingMethods?.join(',')}, supportedPreferredDidMethod: ${supportedPreferredDidMethod}`)
+  console.log(
+    `[getIdentifierOpts] identifierArg: ${identifierArg ? `method=${identifierArg.method}, keys=${Object.keys(identifierArg).join(',')}` : 'undefined'}, supportedBindingMethods: ${supportedBindingMethods?.join(',')}, supportedPreferredDidMethod: ${supportedPreferredDidMethod}`,
+  )
 
   if (identifierArg) {
     if (isIIdentifier(identifierArg.identifier)) {

@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  DCAPIProtocolIdentifier,
-  ResponseMode,
-  SupportedVersion,
-  type RelyingPartyAttestation,
-} from '@sphereon/did-auth-siop'
+import { DCAPIProtocolIdentifier, ResponseMode, SupportedVersion, type RelyingPartyAttestation } from '@sphereon/did-auth-siop'
 import type { IRPOptions } from '../src/types/ISIOPv2RP'
 import { getRequestVersion } from '../src/functions'
 

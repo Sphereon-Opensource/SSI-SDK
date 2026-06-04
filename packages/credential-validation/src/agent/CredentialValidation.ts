@@ -2,7 +2,6 @@ import mdocPkg from '@sphereon/kmp-mdoc-core'
 import { IVerifySdJwtVcResult } from '@sphereon/ssi-sdk.sd-jwt'
 import {
   CredentialMapper,
-  ICoseKeyJson,
   ICredentialSchemaType,
   IVerifyResult,
   OriginalVerifiableCredential,
@@ -26,6 +25,7 @@ import {
   VerifySDJWTCredentialArgs,
 } from '../index'
 import IVerifySignatureResult = mdocPkg.com.sphereon.crypto.generic.IVerifySignatureResult
+import ICoseKeyJson = mdocPkg.com.sphereon.crypto.cose.ICoseKeyJson
 import decodeFrom = mdocPkg.com.sphereon.kmp.decodeFrom
 import IssuerSignedCbor = mdocPkg.com.sphereon.mdoc.data.device.IssuerSignedCbor
 import { defaultHasher } from '@sphereon/ssi-sdk.core'

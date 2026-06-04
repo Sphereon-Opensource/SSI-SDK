@@ -241,11 +241,7 @@ export class OID4VCIRestAPI {
     })
 
     // Swagger UI
-    this._router.use(
-      apiDocsPath,
-      swaggerUi.serve,
-      swaggerUi.setup(undefined, { swaggerOptions: { url: fullSpecPath } }),
-    )
+    this._router.use(apiDocsPath, swaggerUi.serve, swaggerUi.setup(undefined, { swaggerOptions: { url: fullSpecPath } }))
   }
 
   get express(): Express {

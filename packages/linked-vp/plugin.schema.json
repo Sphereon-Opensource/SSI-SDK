@@ -9,9 +9,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "linkedVpId"
-          ],
+          "required": ["linkedVpId"],
           "additionalProperties": false
         },
         "LinkedVPPresentation": {
@@ -50,11 +48,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "id",
-            "type",
-            "serviceEndpoint"
-          ],
+          "required": ["id", "type", "serviceEndpoint"],
           "additionalProperties": false
         },
         "HasLinkedVPEntryArgs": {
@@ -64,9 +58,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "linkedVpId"
-          ],
+          "required": ["linkedVpId"],
           "additionalProperties": false
         },
         "PublishCredentialArgs": {
@@ -82,9 +74,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "digitalCredentialId"
-          ],
+          "required": ["digitalCredentialId"],
           "additionalProperties": false
         },
         "LinkedVPEntry": {
@@ -108,11 +98,7 @@
               "format": "date-time"
             }
           },
-          "required": [
-            "id",
-            "linkedVpId",
-            "createdAt"
-          ],
+          "required": ["id", "linkedVpId", "createdAt"],
           "additionalProperties": false
         },
         "UnpublishCredentialArgs": {
@@ -122,9 +108,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "linkedVpId"
-          ],
+          "required": ["linkedVpId"],
           "additionalProperties": false
         }
       },

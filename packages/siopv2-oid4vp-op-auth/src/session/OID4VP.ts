@@ -36,10 +36,7 @@ export interface PresentationBuilderContext {
  * Converts DCQL claims path descriptors into an IPresentationFrame for SD-JWT selective disclosure.
  * Only string path segments are used (numbers/null are array indices, not relevant for SD-JWT frames).
  */
-export function buildPresentationFrameFromDcqlClaims(
-  claims: DcqlClaimDescriptor[],
-  validClaimIndexes?: number[],
-): IPresentationFrame {
+export function buildPresentationFrameFromDcqlClaims(claims: DcqlClaimDescriptor[], validClaimIndexes?: number[]): IPresentationFrame {
   const frame: IPresentationFrame = {}
   const indexes = validClaimIndexes ?? claims.map((_, i) => i)
 
@@ -157,7 +154,9 @@ export async function createVerifiablePresentationForFormat(
         logger.debug(`SD-JWT presentation frame: ${JSON.stringify(presentationFrame)}`)
       }
 
-      logger.debug(`SD-JWT createSdJwtPresentation args: presentationFrame=${JSON.stringify(presentationFrame)}, dcqlClaims=${JSON.stringify(dcqlClaims)}, dcqlValidClaimIndexes=${JSON.stringify(dcqlValidClaimIndexes)}`)
+      logger.debug(
+        `SD-JWT createSdJwtPresentation args: presentationFrame=${JSON.stringify(presentationFrame)}, dcqlClaims=${JSON.stringify(dcqlClaims)}, dcqlValidClaimIndexes=${JSON.stringify(dcqlValidClaimIndexes)}`,
+      )
       const presentationResult = await agent.createSdJwtPresentation({
         presentation: decodedSdJwt.compactSdJwtVc,
         presentationFrame,

@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { OpenID4VCIClient } from '@sphereon/oid4vci-client'
-import {
-  CredentialResponse,
-  OpenId4VCIVersion,
-} from '@sphereon/oid4vci-common'
+import { CredentialResponse, OpenId4VCIVersion } from '@sphereon/oid4vci-common'
 import { extractCredentialFromResponse } from '../src/services/OID4VCIHolderService'
 
 describe('OID4VCI v1.0 final - Holder/Client', () => {
