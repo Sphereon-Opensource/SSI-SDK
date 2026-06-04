@@ -176,17 +176,34 @@ export class CredentialValidation implements IAgentPlugin {
   private async cvVerifyMdoc(args: VerifyMdocCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
     const { credential } = args
 
-    const issuerSigned = IssuerSignedCbor.Static.cborDecode(decodeFrom(credential, mdocPkg.com.sphereon.kmp.Encoding.BASE64URL))
-
-    const verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
-      console.error(error)
-      return {
-        name: 'mdoc',
-        critical: true,
-        error: true,
-        message: error.message ?? 'Mdoc Issuer Signed VC could not be verified',
-      } satisfies IVerifySignatureResult<ICoseKeyJson>
-    })
+    const rawBytes = decodeFrom(credential, mdocPkg.com.sphereon.kmp.Encoding.BASE64URL)
+    // Stash raw mdoc bytes so @sphereon/ssi-sdk.mdl-mdoc's verify1Async can rebuild Sig_structure
+    // from the untouched protected/payload bytes, working around the kmp-mdoc-core UTF-8 string
+    // round-trip that corrupts binary protected-header values (e.g. a bstr kid).
+    const u8Raw: Uint8Array =
+      rawBytes instanceof Uint8Array
+        ? rawBytes
+        : ArrayBuffer.isView(rawBytes)
+          ? new Uint8Array((rawBytes as ArrayBufferView).buffer, (rawBytes as ArrayBufferView).byteOffset, (rawBytes as ArrayBufferView).byteLength)
+          : Uint8Array.from((rawBytes as unknown as number[]).map((b) => b & 0xff))
+    const g = globalThis as unknown as { __sphereon_mdoc_raw_bytes?: Uint8Array }
+    const prevRaw = g.__sphereon_mdoc_raw_bytes
+    g.__sphereon_mdoc_raw_bytes = u8Raw
+    let verification: IVerifySignatureResult<ICoseKeyJson>
+    try {
+      const issuerSigned = IssuerSignedCbor.Static.cborDecode(rawBytes)
+      verification = await context.agent.mdocVerifyIssuerSigned({ input: issuerSigned.toJson().issuerAuth }).catch((error: Error) => {
+        console.error(error)
+        return {
+          name: 'mdoc',
+          critical: true,
+          error: true,
+          message: error.message ?? 'Mdoc Issuer Signed VC could not be verified',
+        } satisfies IVerifySignatureResult<ICoseKeyJson>
+      })
+    } finally {
+      g.__sphereon_mdoc_raw_bytes = prevRaw
+    }
 
     return {
       source: CredentialMapper.toWrappedVerifiableCredential(credential as OriginalVerifiableCredential, { hasher: defaultHasher }),

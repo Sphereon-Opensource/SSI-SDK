@@ -829,6 +829,12 @@ export class OID4VCIHolder implements IAgentPlugin {
             clientAssertionType: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' as const,
           }),
         }
+        // Only use a JWT client assertion (private_key_jwt) when the AS actually advertises support for it. When it does
+        // not (e.g. it only supports client_secret_basic), sending a JWT assertion in addition to Basic auth is rejected
+        // by the AS as conflicting client authentication methods. So drop any preconfigured assertion type in that case.
+        if (!requiresPrivateKeyJwt && clientOpts.clientAssertionType) {
+          delete (clientOpts as {clientAssertionType?: string}).clientAssertionType
+        }
         asOpts = {
           clientOpts,
         }

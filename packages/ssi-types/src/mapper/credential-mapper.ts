@@ -117,7 +117,7 @@ export class CredentialMapper {
   static decodeVerifiableCredential(
     credential: OriginalVerifiableCredential,
     hasher?: HasherSync
-  ): JwtDecodedVerifiableCredential | IVerifiableCredential | SdJwtDecodedVerifiableCredential {
+  ): JwtDecodedVerifiableCredential | IVerifiableCredential | SdJwtDecodedVerifiableCredential | MdocDocument {
     if (CredentialMapper.isJwtEncoded(credential)) {
       const payload = jwtDecode(credential as string) as JwtDecodedVerifiableCredential
       const header = jwtDecode(credential as string, { header: true }) as Record<string, any>
@@ -137,6 +137,11 @@ export class CredentialMapper {
     } else if (CredentialMapper.isSdJwtEncoded(credential)) {
       return decodeSdJwtVc(credential, hasher ?? sha256)
     } else if (CredentialMapper.isSdJwtDecodedCredential(credential)) {
+      return credential
+    } else if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
+      // ISO 18013-5/-7 mdoc IssuerSigned in base64url. Mirrors decodeVerifiablePresentation, which already handles mdoc.
+      return decodeMdocIssuerSigned(credential)
+    } else if (CredentialMapper.isMsoMdocDecodedCredential(credential)) {
       return credential
     } else {
       return credential as IVerifiableCredential

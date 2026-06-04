@@ -219,13 +219,24 @@ const validateX509CertificateChainImpl = async ({
         }
       }
     }
+    // When the issuer is not part of the provided chain (e.g. a single leaf whose issuing CA is supplied only as a
+    // trust anchor — as OID4VP verifiers do for request objects), verify against the matching trust anchor's public
+    // key instead of self-verifying the leaf (publicKey: undefined), which would always fail for a non-self-signed cert.
+    const issuerFromTrustAnchor =
+      !previousCert && currentCert.x509Certificate.issuer !== currentCert.x509Certificate.subject
+        ? trustedCerts?.find((trusted) => trusted.x509Certificate.subject === currentCert.x509Certificate.issuer)
+        : undefined
+    const issuerCert = previousCert ?? issuerFromTrustAnchor
     const result = await currentCert.x509Certificate.verify(
       {
         date: verificationTime,
-        publicKey: previousCert?.x509Certificate?.publicKey,
+        publicKey: issuerCert?.x509Certificate?.publicKey,
       },
       getCrypto()?.crypto ?? crypto ?? global.crypto,
     )
+    if (result && issuerFromTrustAnchor) {
+      foundTrustAnchor = foundTrustAnchor ?? issuerFromTrustAnchor
+    }
     if (!result) {
       // First cert needs to be self signed
       if (i == 0 && !reversed && !disallowReversedChain) {

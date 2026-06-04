@@ -66,6 +66,34 @@ export const oid4vciIssuerCredentialSubjectLocalesFrom = async (
     })
   }
 
+  // OID4VCI draft >= 14 / 1.0: `claims` is an ARRAY of { path: [...], display: [{ name, locale }], mandatory? }.
+  // Derive the claim key from `path` (like the SD-JWT type-metadata claims), so locale labels actually map to the claim.
+  // The legacy `credentialSubject` form is a nested object and is handled by processClaimObject below.
+  if (Array.isArray(issuerCredentialSubject)) {
+    issuerCredentialSubject.forEach((claim: any, index: number): void => {
+      const path: Array<unknown> = Array.isArray(claim?.path) ? claim.path : []
+      if (path.length === 0) {
+        return
+      }
+      const key = path.map((value: unknown) => String(value)).join('.')
+      const display: Array<NameAndLocale> = Array.isArray(claim?.display) ? claim.display : []
+      if (display.length > 0) {
+        display.forEach(({ name, locale = '' }: NameAndLocale): void => {
+          if (!localeClaims.has(locale)) {
+            localeClaims.set(locale, [])
+          }
+          localeClaims.get(locale)!.push({ key, name: name || key, order: index })
+        })
+      } else {
+        if (!localeClaims.has('')) {
+          localeClaims.set('', [])
+        }
+        localeClaims.get('')!.push({ key, name: key, order: index })
+      }
+    })
+    return localeClaims
+  }
+
   processClaimObject(issuerCredentialSubject)
   return localeClaims
 }

@@ -67,4 +67,13 @@ describe('mDL mdoc credential mapping', () => {
     expect(wrapped.type).toBe(OriginalType.MSO_MDOC_ENCODED)
     expect(wrapped.format).toBe('mso_mdoc')
   })
+
+  it('decodeVerifiableCredential decodes a base64url mdoc into an MdocDocument (mso_mdoc support)', () => {
+    // decodeVerifiableCredential had no mdoc branch and fell through to returning the raw base64url string,
+    // so isMsoMdocDecodedCredential() was false and DCQL credential mapping threw
+    // "Unable to map credential to DCQL credential". It now decodes the mdoc, like decodeVerifiablePresentation does.
+    const decoded = CredentialMapper.decodeVerifiableCredential(PID_CREDENTIAL)
+    expect(typeof decoded).not.toBe('string')
+    expect(CredentialMapper.isMsoMdocDecodedCredential(decoded)).toBe(true)
+  })
 })
