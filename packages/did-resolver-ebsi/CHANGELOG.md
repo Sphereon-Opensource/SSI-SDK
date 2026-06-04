@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/compare/v0.37.1...v0.38.0) (2026-06-04)
+
+### Features
+
+- oid4vp and oid4vci 1.0 support ([c446079](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/commit/c4460794060ef50d9b697b99edda01211705b954))
+
 ## [0.37.1](https://github.com/Sphereon-Opensource/SSI-SDK-crypto-extensions/compare/v0.37.0...v0.37.1) (2026-03-06)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-ext.did-resolver-ebsi
