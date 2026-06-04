@@ -63,6 +63,31 @@ import {
   VerifyCredentialToAcceptArgs,
 } from '../types/IOID4VCIHolder'
 
+/**
+ * Decide whether to authenticate at the token endpoint with a private_key_jwt client assertion.
+ *
+ * An AS may advertise `private_key_jwt` among its supported token-endpoint auth methods while only accepting a
+ * specific set of JWS algorithms for the assertion (`token_endpoint_auth_signing_alg_values_supported`). If our
+ * signing algorithm is not in that set, the AS cannot verify our assertion. Sending it anyway — especially in
+ * addition to another client authentication method (e.g. Basic) — is rejected by the AS as conflicting client
+ * authentication. So only use private_key_jwt when it is advertised AND our signing alg is accepted (or the AS
+ * advertises no alg restriction at all).
+ */
+export const shouldUsePrivateKeyJwt = (args: {
+  authMethodsSupported?: Array<string>
+  signingAlgValuesSupported?: Array<string>
+  assertionAlg?: string
+}): boolean => {
+  const { authMethodsSupported, signingAlgValuesSupported, assertionAlg } = args
+  if (!authMethodsSupported?.includes('private_key_jwt')) {
+    return false
+  }
+  if (signingAlgValuesSupported && signingAlgValuesSupported.length > 0) {
+    return !!assertionAlg && signingAlgValuesSupported.includes(assertionAlg)
+  }
+  return true
+}
+
 export const getCredentialBranding = async (args: GetCredentialBrandingArgs): Promise<Record<string, Array<IBasicCredentialLocaleBranding>>> => {
   const { credentialsSupported, context } = args
   const credentialBranding: Record<string, Array<IBasicCredentialLocaleBranding>> = {}

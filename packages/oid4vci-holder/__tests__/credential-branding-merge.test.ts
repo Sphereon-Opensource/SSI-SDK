@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store-types'
 import { SdJwtTypeDisplayMetadata } from '@sphereon/ssi-types'
-import { sdJwtCredentialLocaleBrandingFrom } from '../src/mappers/OIDC4VCIBrandingMapper'
+import { oid4vciCombineDisplayLocalesFrom, oid4vciGetCredentialBrandingFrom, sdJwtCredentialLocaleBrandingFrom } from '../src/mappers/OIDC4VCIBrandingMapper'
 import { mergeCredentialLocaleBrandings, selectCredentialLocaleBranding } from '../src/services/OID4VCIHolderService'
 
 describe('Credential branding merge logic', () => {
@@ -417,6 +417,68 @@ describe('Credential branding merge logic', () => {
       // Filled from no-locale secondary
       expect(result[0].background?.image?.uri).toBe('https://example.com/bg-default.png')
       expect(result[0].description).toBe('Default description')
+    })
+  })
+
+  describe('oid4vciCombineDisplayLocalesFrom', () => {
+    // Reproduces the ISO mDL issuer config: the credential `display` (logo + background) is only
+    // advertised under a specific locale (en-US), while the claims have no per-locale display and
+    // therefore land under the no-locale ('') bucket. The combined no-locale record must still carry
+    // the (only available) visual branding, so a wallet set to e.g. German — which falls back to the
+    // no-locale record — still renders the logo and background, not just the claim names.
+    it('applies the only available display branding to the no-locale record (mDL en-US-only display)', async () => {
+      const credentialDisplayLocales = new Map<string, any>([
+        [
+          'en-US',
+          {
+            name: 'ISO mDL',
+            locale: 'en-US',
+            logo: { uri: 'data:image/png;base64,LOGO' },
+            background_color: '#1B2838',
+            text_color: '#FFFFFF',
+          },
+        ],
+      ])
+      const issuerCredentialSubjectLocales = new Map<string, any>([
+        ['', [{ key: 'org.iso.18013.5.1.family_name', name: 'org.iso.18013.5.1.family_name', order: 0 }]],
+      ])
+
+      const result = await oid4vciCombineDisplayLocalesFrom({ credentialDisplayLocales, issuerCredentialSubjectLocales })
+
+      const noLocale = result.find((b) => b.locale === undefined)
+      expect(noLocale).toBeDefined()
+      // Visual branding must be present on the no-locale record (was the bug: only claims, no logo/bg)
+      expect(noLocale!.logo?.uri).toBe('data:image/png;base64,LOGO')
+      expect(noLocale!.background?.color).toBe('#1B2838')
+      expect(noLocale!.text?.color).toBe('#FFFFFF')
+      // Claims must still be present
+      expect(noLocale!.claims).toBeDefined()
+      // The borrowed display's locale must NOT leak onto the no-locale record
+      expect(noLocale!.locale).toBeUndefined()
+    })
+
+    it('builds a complete no-locale record end-to-end from issuer metadata with localized-only display', async () => {
+      const result = await oid4vciGetCredentialBrandingFrom({
+        credentialDisplay: [
+          {
+            name: 'ISO mDL',
+            locale: 'en-US',
+            logo: { uri: 'data:image/png;base64,LOGO' } as any,
+            background_color: '#1B2838',
+            text_color: '#FFFFFF',
+          },
+        ],
+        issuerCredentialSubject: [
+          { path: ['org.iso.18013.5.1', 'family_name'], mandatory: true },
+          { path: ['org.iso.18013.5.1', 'given_name'], mandatory: true },
+        ] as any,
+      })
+
+      const noLocale = result.find((b) => b.locale === undefined)
+      expect(noLocale).toBeDefined()
+      expect(noLocale!.logo?.uri).toBe('data:image/png;base64,LOGO')
+      expect(noLocale!.background?.color).toBe('#1B2838')
+      expect(noLocale!.claims?.length).toBeGreaterThan(0)
     })
   })
 

@@ -81,6 +81,7 @@ import {
   getIssuanceOpts,
   mapCredentialToAccept,
   selectCredentialLocaleBranding,
+  shouldUsePrivateKeyJwt,
   startFirstPartApplicationMachine,
   verifyCredentialToAccept,
 } from '../services/OID4VCIHolderService'
@@ -810,10 +811,19 @@ export class OID4VCIHolder implements IAgentPlugin {
 
       // Auto-detect private_key_jwt from AS metadata
       const serverMetadata = await client.retrieveServerMetadata()
-      const authMethods =
-        (serverMetadata as any)?.authorizationServerMetadata?.token_endpoint_auth_methods_supported ??
-        (serverMetadata as any)?.credentialIssuerMetadata?.token_endpoint_auth_methods_supported
-      const requiresPrivateKeyJwt = authMethods?.includes('private_key_jwt')
+      const asMetadata = (serverMetadata as any)?.authorizationServerMetadata
+      const ciMetadata = (serverMetadata as any)?.credentialIssuerMetadata
+      const authMethods = asMetadata?.token_endpoint_auth_methods_supported ?? ciMetadata?.token_endpoint_auth_methods_supported
+      const signingAlgValuesSupported =
+        asMetadata?.token_endpoint_auth_signing_alg_values_supported ?? ciMetadata?.token_endpoint_auth_signing_alg_values_supported
+      // Only use private_key_jwt when the AS advertises it AND can actually verify our assertion signature alg.
+      // (e.g. an AS that lists private_key_jwt but only accepts RS256/HS256 cannot verify our ES256 assertion;
+      // sending it alongside Basic auth then fails as "conflicting client authentication methods".)
+      const requiresPrivateKeyJwt = shouldUsePrivateKeyJwt({
+        authMethodsSupported: authMethods,
+        signingAlgValuesSupported,
+        assertionAlg: accessTokenOpts?.clientOpts?.alg ?? alg,
+      })
 
       let asOpts: AuthorizationServerOpts | undefined = undefined
       let kid = accessTokenOpts?.clientOpts?.kid ?? identifier.kid ?? identifier.jwkThumbprint ?? identifier.kmsKeyRef
@@ -837,7 +847,7 @@ export class OID4VCIHolder implements IAgentPlugin {
         }
         const clientOpts: AuthorizationServerClientOpts = {
           ...accessTokenOpts?.clientOpts,
-          clientId,
+          ...(clientId && { clientId }),
           kid,
           // @ts-ignore
           alg: accessTokenOpts?.clientOpts?.alg ?? alg,
