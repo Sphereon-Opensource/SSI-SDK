@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.37.1...v0.38.0) (2026-06-04)
+
+### Bug Fixes
+
+- enhance x5chain decoding logic to handle both browser and non-browser environments ([d57aaf2](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/d57aaf27275663a5e20da9ceb6addd02066f031f))
+
+### Features
+
+- add dynamic trust anchor providers, enhance x509 validation, and improve logging in mdoc verification ([639db9e](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/639db9e0a04f8b968c838aae053f56a88dd910be))
+- oid4vc 1.0, mdoc support, update dev and runtime dependencies to latest versions, and clean up imports ([ca1dded](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/ca1dded9668b2f74efa303ab47b54d9f15f97238))
+- oid4vp and oid4vci 1.0 support ([c446079](https://github.com/Sphereon-OpenSource/ssi-sdk/commit/c4460794060ef50d9b697b99edda01211705b954))
+
 ## [0.37.1](https://github.com/Sphereon-OpenSource/ssi-sdk/compare/v0.37.0...v0.37.1) (2026-03-06)
 
 **Note:** Version bump only for package @sphereon/ssi-types
