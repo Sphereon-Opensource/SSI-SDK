@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.37.1...v0.38.0) (2026-06-04)
+
+### Bug Fixes
+
+- ensure compatibility in JWK handling and schema references updates ([1ee9ecf](https://github.com/Sphereon-Opensource/SSI-SDK/commit/1ee9ecfded46e16380f9c951f1e63f69ac002dbe))
+
+### Features
+
+- add dynamic trust anchor providers, enhance x509 validation, and improve logging in mdoc verification ([639db9e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/639db9e0a04f8b968c838aae053f56a88dd910be))
+- add locale resolution enhancements, private_key_jwt selection, and improved branding logic for OIDC4VCI ([f19cac5](https://github.com/Sphereon-Opensource/SSI-SDK/commit/f19cac5ecfea9c564f576bd4efbc5aa55de6f103))
+- cwt support ([7f1b21e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7f1b21e3103e754e9e73b86b3026cb773c48aceb))
+- cwt support ([4845935](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4845935e1135fc876d9bfde11c2dfd9df90c386c))
+- oid4vc 1.0, mdoc support, update dev and runtime dependencies to latest versions, and clean up imports ([ca1dded](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca1dded9668b2f74efa303ab47b54d9f15f97238))
+- oid4vp and oid4vci 1.0 support ([c446079](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c4460794060ef50d9b697b99edda01211705b954))
+- oid4vp and oid4vci 1.0 support ([c800441](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c80044150677d862d6e30624d839f6109ab3eeab))
+
 ## [0.37.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.37.0...v0.37.1) (2026-03-06)
 
 ### Bug Fixes

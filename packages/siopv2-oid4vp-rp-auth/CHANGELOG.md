@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.38.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.37.1...v0.38.0) (2026-06-04)
+
+### Features
+
+- cwt support ([7f1b21e](https://github.com/Sphereon-Opensource/SSI-SDK/commit/7f1b21e3103e754e9e73b86b3026cb773c48aceb))
+- cwt support ([4845935](https://github.com/Sphereon-Opensource/SSI-SDK/commit/4845935e1135fc876d9bfde11c2dfd9df90c386c))
+- oid4vc 1.0, mdoc support, update dev and runtime dependencies to latest versions, and clean up imports ([ca1dded](https://github.com/Sphereon-Opensource/SSI-SDK/commit/ca1dded9668b2f74efa303ab47b54d9f15f97238))
+- oid4vp and oid4vci 1.0 support ([c446079](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c4460794060ef50d9b697b99edda01211705b954))
+- oid4vp and oid4vci 1.0 support ([c800441](https://github.com/Sphereon-Opensource/SSI-SDK/commit/c80044150677d862d6e30624d839f6109ab3eeab))
+
 ## [0.37.1](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.37.0...v0.37.1) (2026-03-06)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.siopv2-oid4vp-rp-auth
