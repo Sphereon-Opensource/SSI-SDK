@@ -18,6 +18,7 @@ import { CreateMachineStateStore1708098041262 } from './7-CreateMachineStateStor
 import { CreateContacts1708525189000 } from './8-CreateContacts'
 import { CreateContacts1715761125000 } from './9-CreateContacts'
 import { AddCredentialDesigns1773657426000 } from './18-AddCredentialDesigns'
+import { AddCredentialStatusFields1780000000000 } from './19-AddCredentialStatusFields'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
@@ -48,7 +49,11 @@ export const DataStoreStatusListMigrations = [
   CreateBitstringStatusList1741895823000,
 ]
 export const DataStoreEventLoggerMigrations = [CreateAuditEvents1701635835330]
-export const DataStoreDigitalCredentialMigrations = [CreateDigitalCredential1708525189000, AddLinkedVpFields1763387280000]
+export const DataStoreDigitalCredentialMigrations = [
+  CreateDigitalCredential1708525189000,
+  AddLinkedVpFields1763387280000,
+  AddCredentialStatusFields1780000000000,
+]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
 export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523, CreateDcqlQueryItem1726617600000]
 export const DataStoreServiceMigrations = [AddServiceMetadata1764000000000]

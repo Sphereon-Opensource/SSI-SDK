@@ -60,4 +60,5 @@ export enum CredentialStateType {
   REVOKED = 'REVOKED',
   VERIFIED = 'VERIFIED',
   EXPIRED = 'EXPIRED',
+  SUSPENDED = 'SUSPENDED',
 }
