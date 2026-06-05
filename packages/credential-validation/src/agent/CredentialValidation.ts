@@ -84,7 +84,9 @@ export class CredentialValidation implements IAgentPlugin {
     if (CredentialMapper.isMsoMdocOid4VPEncoded(credential)) {
       return await this.cvVerifyMdoc({ credential }, context)
     } else if (CredentialMapper.isSdJwtEncoded(credential)) {
-      return await this.cvVerifySDJWTCredential({ credential, hasher }, context)
+      // Honor the credentialStatus policy: when status checking is disabled (e.g. during issuance), skip the
+      // status-list token verification so an untrusted status-list signer cannot block a valid credential.
+      return await this.cvVerifySDJWTCredential({ credential, hasher, skipStatusCheck: policies?.credentialStatus === false }, context)
     } else {
       return await this.cvVerifyW3CCredential(
         {
@@ -261,14 +263,18 @@ export class CredentialValidation implements IAgentPlugin {
   }
 
   private async cvVerifySDJWTCredential(args: VerifySDJWTCredentialArgs, context: RequiredContext): Promise<VerificationResult> {
-    const { credential, hasher = defaultHasher } = args
+    const { credential, hasher = defaultHasher, skipStatusCheck } = args
 
     const verification: IVerifySdJwtVcResult | CredentialVerificationError = await context.agent
-      .verifySdJwtVc({ credential })
+      .verifySdJwtVc({ credential, opts: { skipStatusCheck } })
       .catch((error: Error): CredentialVerificationError => {
         console.error(error)
+        // Distinguish a status-list verification failure (the status-list token's signer is untrusted/invalid)
+        // from the credential's own signature failing, so the UI can show a clear, specific message. The
+        // low-level lib tags status failures with "status list".
+        const isStatusListFailure = /status list/i.test(error.message ?? '')
         return {
-          error: 'Invalid SD-JWT VC',
+          error: isStatusListFailure ? 'Invalid status list' : 'Invalid SD-JWT VC',
           errorDetails: error.message ?? 'SD-JWT VC could not be verified',
         }
       })

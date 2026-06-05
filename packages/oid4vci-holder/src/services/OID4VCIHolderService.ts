@@ -347,7 +347,15 @@ export const verifyCredentialToAccept = async (args: VerifyCredentialToAcceptArg
   })
 
   if (!verificationResult.result || verificationResult.error) {
-    return Promise.reject(Error(verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message')))
+    // Preserve the underlying detail (e.g. the actual certificate-chain / DID-resolution failure) on the
+    // rejected error so the machine and UI can surface it instead of only the generic top-level message.
+    const error: Error & { detailsMessage?: string } = new Error(
+      verificationResult.error ?? translate('oid4vci_machine_credential_verification_failed_message'),
+    )
+    if (verificationResult.errorDetails) {
+      error.detailsMessage = verificationResult.errorDetails
+    }
+    return Promise.reject(error)
   }
   return verificationResult
 }

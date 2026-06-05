@@ -304,7 +304,13 @@ export class SDJwtPlugin implements IAgentPlugin {
     const sdjwt = SDJwtVcdmInstanceFactory.create(type, { verifier, hasher: this.registeredImplementations.hasher ?? defaultGenerateDigest })
     // FIXME: Findynet. Issuer returns expired status lists, and low level lib throws errors on these. We need to fix this in our implementation by wrapping the verification function
     // For now a workaround is to ad 5 days of skew seconds, yuck
-    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, { skewSeconds: 60 * 60 * 24 * 5 })
+    // `skipStatusCheck` lets callers (e.g. issuance verification with a `credentialStatus: false` policy) avoid
+    // fetching/verifying the status-list token, so an untrusted status-list signer can't block a valid credential.
+    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, {
+      skewSeconds: 60 * 60 * 24 * 5,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      skipStatusCheck: args.opts?.skipStatusCheck,
+    } as any)
 
     return { type, header, payload, kb }
   }

@@ -19,6 +19,7 @@ import { CreateContacts1708525189000 } from './8-CreateContacts'
 import { CreateContacts1715761125000 } from './9-CreateContacts'
 import { AddCredentialDesigns1773657426000 } from './18-AddCredentialDesigns'
 import { AddCredentialStatusFields1780000000000 } from './19-AddCredentialStatusFields'
+import { AddUntrustedCredentialState1780000000010 } from './20-AddUntrustedCredentialState'
 
 /**
  * The migrations array that SHOULD be used when initializing a TypeORM database connection.
@@ -53,6 +54,7 @@ export const DataStoreDigitalCredentialMigrations = [
   CreateDigitalCredential1708525189000,
   AddLinkedVpFields1763387280000,
   AddCredentialStatusFields1780000000000,
+  AddUntrustedCredentialState1780000000010,
 ]
 export const DataStoreMachineStateMigrations = [CreateMachineStateStore1708098041262]
 export const DataStorePresentationDefinitionMigrations = [CreatePresentationDefinitions1716533767523, CreateDcqlQueryItem1726617600000]

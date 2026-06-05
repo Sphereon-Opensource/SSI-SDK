@@ -648,6 +648,7 @@ const createOID4VCIMachine = (opts?: CreateOID4VCIMachineOpts): OID4VCIStateMach
               error: (_ctx: OID4VCIMachineContext, _event: DoneInvokeEvent<Error>): ErrorDetails => ({
                 title: translate('oid4vci_machine_verify_credentials_error_title'),
                 message: _event.data.message,
+                detailsMessage: (_event.data as Error & { detailsMessage?: string }).detailsMessage,
                 stack: _event.data.stack,
               }),
             }),
