@@ -22,7 +22,7 @@
     "build": "tsup --config ../../tsup.config.ts --tsconfig ../../tsconfig.tsup.json"
   },
   "dependencies": {
-    "@sphereon/musap-react-native": "0.2.1-next.204",
+    "@sphereon/musap-react-native": "0.2.1-next.205",
     "@sphereon/ssi-sdk-ext.key-utils": "workspace:*",
     "@sphereon/ssi-sdk-ext.x509-utils": "workspace:*",
     "@sphereon/ssi-types": "workspace:*",

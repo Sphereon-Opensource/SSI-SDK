@@ -105,4 +105,7 @@ export class DigitalCredentialEntity extends BaseEntity implements DigitalCreden
 
   @Column({ name: 'revoked_at', nullable: true, type: typeOrmDateTime() })
   revokedAt?: Date
+
+  @Column({ name: 'status_last_checked_at', nullable: true, type: typeOrmDateTime() })
+  statusLastCheckedAt?: Date
 }

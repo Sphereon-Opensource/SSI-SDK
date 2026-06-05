@@ -359,6 +359,32 @@ describe('Database entities tests', (): void => {
     expect(result.verifiedState).toEqual(CredentialStateType.VERIFIED)
   })
 
+  it('should update stored digital credential state to SUSPENDED and persist statusLastCheckedAt', async (): Promise<void> => {
+    const rawCredential: string =
+      'eyJraWQiOiJkaWQ6a2V5Ono2TWtyaGt5M3B1c20yNk1laUZhWFUzbjJuZWtyYW13RlVtZ0dyZUdHa0RWNnpRaiN6Nk1rcmhreTNwdXNtMjZNZWlGYVhVM24ybmVrcmFtd0ZVbWdHcmVHR2tEVjZ6UWoiLCJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vc3BoZXJlb24tb3BlbnNvdXJjZS5naXRodWIuaW8vc3NpLW1vYmlsZS13YWxsZXQvY29udGV4dC9zcGhlcmVvbi13YWxsZXQtaWRlbnRpdHktdjEuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTcGhlcmVvbldhbGxldElkZW50aXR5Q3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJmaXJzdE5hbWUiOiJTIiwibGFzdE5hbWUiOiJLIiwiZW1haWxBZGRyZXNzIjoic0BrIn19LCJzdWIiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJqdGkiOiJ1cm46dXVpZDpkZGE3YmYyNC04ZTdhLTQxZjgtYjY2Yy1hNDhkYmM1YjEwZmEiLCJuYmYiOjE3MDg0NDA4MDgsImlzcyI6ImRpZDprZXk6ejZNa3Joa3kzcHVzbTI2TWVpRmFYVTNuMm5la3JhbXdGVW1nR3JlR0drRFY2elFqIn0.G0M84XVAxSmzGY-NQuB9NBofNrINSn6lvxW6761Vlq6ypvYgtc2xNdpiRmw8ryVNfnpzrr4Z5cB1RlrC05rJAw'
+    const digitalCredential: AddCredentialArgs = {
+      rawDocument: rawCredential,
+      kmsKeyRef: 'testRef',
+      identifierMethod: 'did',
+      issuerCorrelationType: CredentialCorrelationType.DID,
+      subjectCorrelationType: CredentialCorrelationType.DID,
+      issuerCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      subjectCorrelationId: 'did:key:z6Mkrhky3pusm26MeiFaXU3n2nekramwFUmgGreGGkDV6zQj',
+      credentialRole: CredentialRole.HOLDER,
+    }
+
+    const savedDigitalCredential: DigitalCredential = await digitalCredentialStore.addCredential(digitalCredential)
+
+    const checkedAt = new Date()
+    const result = await digitalCredentialStore.updateCredential({
+      id: savedDigitalCredential.id,
+      verifiedState: CredentialStateType.SUSPENDED,
+      statusLastCheckedAt: checkedAt,
+    })
+    expect(result.verifiedState).toEqual(CredentialStateType.SUSPENDED)
+    expect(result.statusLastCheckedAt?.getTime()).toEqual(checkedAt.getTime())
+  })
+
   // Add these test cases to digitalCredential.store.test.ts after the existing update tests
 
   it('should update digital credential fields', async (): Promise<void> => {
