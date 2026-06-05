@@ -42,6 +42,8 @@ export type VerifyMdocCredentialArgs = { credential: string }
 export type VerifySDJWTCredentialArgs = {
   credential: string
   hasher?: HasherSync
+  // When true, the status-list token is not fetched/verified (honors a `credentialStatus: false` policy).
+  skipStatusCheck?: boolean
 }
 
 export type VerifyW3CCredentialArgs = {}

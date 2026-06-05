@@ -107,7 +107,7 @@
         },
         "CredentialStateType": {
           "type": "string",
-          "enum": ["REVOKED", "VERIFIED", "EXPIRED"]
+          "enum": ["REVOKED", "VERIFIED", "EXPIRED", "SUSPENDED", "UNTRUSTED"]
         },
         "RegulationType": {
           "type": "string",

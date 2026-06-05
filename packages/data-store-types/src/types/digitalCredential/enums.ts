@@ -61,4 +61,8 @@ export enum CredentialStateType {
   VERIFIED = 'VERIFIED',
   EXPIRED = 'EXPIRED',
   SUSPENDED = 'SUSPENDED',
+  // The credential's status list could not be cryptographically trusted (bad signature, or an x5c chain
+  // that does not validate against the wallet's trust anchors). Unlike REVOKED/EXPIRED this is reversible
+  // (e.g. once a trust anchor is added it re-checks back to VERIFIED).
+  UNTRUSTED = 'UNTRUSTED',
 }

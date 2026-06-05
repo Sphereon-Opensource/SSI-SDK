@@ -200,6 +200,10 @@ export interface IVerifySdJwtVcArgs {
   credential: string
   opts?: {
     x5cValidation?: X509CertificateChainValidationOpts
+    // When true, the credential's status-list token is NOT fetched/verified as part of this call. Used to
+    // honor a `credentialStatus: false` policy at issuance time so an untrusted/invalid status-list signer
+    // cannot block accepting an otherwise validly-signed credential. Status is evaluated later by the wallet.
+    skipStatusCheck?: boolean
   }
 }
 
