@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.40.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.39.0...v0.40.0) (2026-06-05)
+
+### Features
+
+- add UNTRUSTED state and skipStatusCheck policy for credentials ([e30e5da](https://github.com/Sphereon-Opensource/SSI-SDK/commit/e30e5dac369f50784e24625e9b15adc2aa6e2a74))
+
 # [0.39.0](https://github.com/Sphereon-Opensource/SSI-SDK/compare/v0.38.0...v0.39.0) (2026-06-05)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk.credential-validation

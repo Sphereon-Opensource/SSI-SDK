@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk.oidf-metatdata-server",
-  "version": "0.39.0",
+  "version": "0.40.0",
   "source": "src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
