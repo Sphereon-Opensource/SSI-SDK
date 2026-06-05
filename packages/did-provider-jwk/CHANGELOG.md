@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.39.0](https://github.com/Sphereon-OpenSource/SSI-SDK-crypto-extensions/compare/v0.38.0...v0.39.0) (2026-06-05)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk-ext.did-provider-jwk
+
 # [0.38.0](https://github.com/Sphereon-OpenSource/SSI-SDK-crypto-extensions/compare/v0.37.1...v0.38.0) (2026-06-04)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-ext.did-provider-jwk
