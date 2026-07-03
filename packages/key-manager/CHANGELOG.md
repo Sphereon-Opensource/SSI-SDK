@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.40.1](https://github.com/Sphereon-OpenSource/SSI-SDK-crypto-extensions/compare/v0.40.0...v0.40.1) (2026-07-03)
+
+**Note:** Version bump only for package @sphereon/ssi-sdk-ext.key-manager
+
 # [0.40.0](https://github.com/Sphereon-OpenSource/SSI-SDK-crypto-extensions/compare/v0.39.0...v0.40.0) (2026-06-05)
 
 **Note:** Version bump only for package @sphereon/ssi-sdk-ext.key-manager

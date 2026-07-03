@@ -1,6 +1,6 @@
 {
   "name": "@sphereon/ssi-sdk-ext.jwt-service-test",
-  "version": "0.40.0",
+  "version": "0.40.1",
   "source": "./src/index.ts",
   "type": "module",
   "main": "./dist/index.cjs",
