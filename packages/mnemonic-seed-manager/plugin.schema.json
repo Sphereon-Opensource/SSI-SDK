@@ -34,10 +34,7 @@
             },
             "type": {
               "type": "string",
-              "enum": [
-                "Ed25519",
-                "Secp256k1"
-              ]
+              "enum": ["Ed25519", "Secp256k1"]
             },
             "persist": {
               "type": "boolean"
@@ -50,15 +47,10 @@
           "properties": {
             "raw": {},
             "affected": {
-              "type": [
-                "number",
-                "null"
-              ]
+              "type": ["number", "null"]
             }
           },
-          "required": [
-            "raw"
-          ],
+          "required": ["raw"],
           "additionalProperties": false
         },
         "ManagedKeyInfo": {
@@ -99,25 +91,12 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "type",
-            "publicKeyHex"
-          ],
+          "required": ["kid", "kms", "type", "publicKeyHex"],
           "additionalProperties": false
         },
         "TKeyType": {
           "type": "string",
-          "enum": [
-            "Ed25519",
-            "Secp256k1",
-            "Secp256r1",
-            "X25519",
-            "Bls12381G1",
-            "Bls12381G2",
-            "RSA"
-          ],
+          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
           "description": "Cryptographic key type."
         },
         "KeyMetadata": {
@@ -149,13 +128,7 @@
           "properties": {
             "bits": {
               "type": "number",
-              "enum": [
-                128,
-                160,
-                192,
-                224,
-                256
-              ]
+              "enum": [128, 160, 192, 224, 256]
             },
             "id": {
               "type": "string"
@@ -164,9 +137,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "bits"
-          ],
+          "required": ["bits"],
           "additionalProperties": false
         },
         "IMnemonicInfoResult": {
@@ -201,10 +172,7 @@
             },
             "type": {
               "type": "string",
-              "enum": [
-                "Ed25519",
-                "Secp256k1"
-              ]
+              "enum": ["Ed25519", "Secp256k1"]
             },
             "persist": {
               "type": "boolean"
@@ -228,9 +196,7 @@
               }
             }
           },
-          "required": [
-            "mnemonic"
-          ],
+          "required": ["mnemonic"],
           "additionalProperties": false
         },
         "IMnemonicVerificationArgs": {
@@ -249,9 +215,7 @@
               }
             }
           },
-          "required": [
-            "wordList"
-          ],
+          "required": ["wordList"],
           "additionalProperties": false
         },
         "IPartialMnemonicVerificationArgs": {
@@ -280,9 +244,7 @@
               }
             }
           },
-          "required": [
-            "indexedWordList"
-          ],
+          "required": ["indexedWordList"],
           "additionalProperties": false
         }
       },

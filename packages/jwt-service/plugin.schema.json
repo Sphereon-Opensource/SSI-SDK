@@ -78,17 +78,7 @@
                     },
                     "certificate": {}
                   },
-                  "required": [
-                    "certificate",
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts",
-                    "x5c"
-                  ]
+                  "required": ["certificate", "identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts", "x5c"]
                 },
                 {
                   "type": "object",
@@ -163,19 +153,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "did",
-                    "identifier",
-                    "issuer",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "keys",
-                    "kid",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["did", "identifier", "issuer", "jwk", "jwkThumbprint", "key", "keys", "kid", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -235,15 +213,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -303,16 +273,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kid",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kid", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -372,15 +333,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -440,15 +393,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -508,15 +453,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -565,9 +502,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -619,9 +554,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -692,9 +625,7 @@
                       "$ref": "#/components/schemas/DIDDocumentSection"
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -743,9 +674,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -794,9 +723,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -845,9 +772,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -896,9 +821,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 }
               ]
             },
@@ -936,22 +859,12 @@
               ]
             }
           },
-          "required": [
-            "issuer",
-            "protectedHeader",
-            "payload"
-          ],
+          "required": ["issuer", "protectedHeader", "payload"],
           "additionalProperties": false
         },
         "JwsIdentifierMode": {
           "type": "string",
-          "enum": [
-            "x5c",
-            "kid",
-            "jwk",
-            "did",
-            "auto"
-          ]
+          "enum": ["x5c", "kid", "jwk", "did", "auto"]
         },
         "JWK": {
           "type": "object",
@@ -1082,55 +995,23 @@
               "type": "string"
             }
           },
-          "required": [
-            "kty"
-          ]
+          "required": ["kty"]
         },
         "JwkKeyType": {
           "type": "string",
-          "enum": [
-            "EC",
-            "RSA",
-            "oct",
-            "OKP"
-          ]
+          "enum": ["EC", "RSA", "oct", "OKP"]
         },
         "JwkKeyTypeString": {
           "type": "string",
-          "enum": [
-            "EC",
-            "RSA",
-            "oct",
-            "OKP"
-          ]
+          "enum": ["EC", "RSA", "oct", "OKP"]
         },
         "JoseCurve": {
           "type": "string",
-          "enum": [
-            "P-256",
-            "P-384",
-            "P-521",
-            "X25519",
-            "X448",
-            "EdDSA",
-            "Ed25519",
-            "Ed448",
-            "secp256k1"
-          ]
+          "enum": ["P-256", "P-384", "P-521", "X25519", "X448", "EdDSA", "Ed25519", "Ed448", "secp256k1"]
         },
         "JoseCurveString": {
           "type": "string",
-          "enum": [
-            "P-256",
-            "P-384",
-            "P-521",
-            "X25519",
-            "X448",
-            "EdDSA",
-            "Ed25519",
-            "Ed448",
-            "secp256k1"
-          ]
+          "enum": ["P-256", "P-384", "P-521", "X25519", "X448", "EdDSA", "Ed25519", "Ed448", "secp256k1"]
         },
         "JoseSignatureAlgorithm": {
           "type": "string",
@@ -1174,41 +1055,15 @@
         },
         "JoseKeyOperation": {
           "type": "string",
-          "enum": [
-            "sign",
-            "verify",
-            "encrypt",
-            "decrypt",
-            "wrapKey",
-            "unwrapKey",
-            "deriveKey",
-            "deriveBits"
-          ]
+          "enum": ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey", "deriveBits"]
         },
         "JoseKeyOperationString": {
           "type": "string",
-          "enum": [
-            "sign",
-            "verify",
-            "encrypt",
-            "decrypt",
-            "wrapKey",
-            "unwrapKey",
-            "deriveKey",
-            "deriveBits"
-          ]
+          "enum": ["sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey", "deriveBits"]
         },
         "ManagedIdentifierMethod": {
           "type": "string",
-          "enum": [
-            "did",
-            "jwk",
-            "x5c",
-            "kid",
-            "key",
-            "cose_key",
-            "oid4vci-issuer"
-          ]
+          "enum": ["did", "jwk", "x5c", "kid", "key", "cose_key", "oid4vci-issuer"]
         },
         "ManagedIdentifierOpts": {
           "anyOf": [
@@ -1250,9 +1105,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -1295,9 +1148,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -1359,9 +1210,7 @@
                   "$ref": "#/components/schemas/DIDDocumentSection"
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -1401,9 +1250,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -1443,9 +1290,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -1485,9 +1330,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -1527,18 +1370,13 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             }
           ]
         },
         "ClientIdScheme": {
           "type": "string",
-          "enum": [
-            "x509_san_dns",
-            "x509_san_uri"
-          ]
+          "enum": ["x509_san_dns", "x509_san_uri"]
         },
         "IIdentifier": {
           "type": "object",
@@ -1574,12 +1412,7 @@
               "description": "Array of services"
             }
           },
-          "required": [
-            "did",
-            "provider",
-            "keys",
-            "services"
-          ],
+          "required": ["did", "provider", "keys", "services"],
           "additionalProperties": false,
           "description": "Identifier interface"
         },
@@ -1618,26 +1451,13 @@
               "description": "Optional. Key metadata. This should be used to determine which algorithms are supported."
             }
           },
-          "required": [
-            "kid",
-            "kms",
-            "type",
-            "publicKeyHex"
-          ],
+          "required": ["kid", "kms", "type", "publicKeyHex"],
           "additionalProperties": false,
           "description": "Cryptographic key"
         },
         "TKeyType": {
           "type": "string",
-          "enum": [
-            "Ed25519",
-            "Secp256k1",
-            "Secp256r1",
-            "X25519",
-            "Bls12381G1",
-            "Bls12381G2",
-            "RSA"
-          ],
+          "enum": ["Ed25519", "Secp256k1", "Secp256r1", "X25519", "Bls12381G1", "Bls12381G2", "RSA"],
           "description": "Cryptographic key type."
         },
         "KeyMetadata": {
@@ -1682,11 +1502,7 @@
               "description": "Optional. Description"
             }
           },
-          "required": [
-            "id",
-            "type",
-            "serviceEndpoint"
-          ],
+          "required": ["id", "type", "serviceEndpoint"],
           "additionalProperties": false,
           "description": "Identifier service"
         },
@@ -1758,66 +1574,25 @@
               }
             }
           },
-          "required": [
-            "kty"
-          ],
+          "required": ["kty"],
           "additionalProperties": {},
           "description": "See our mdl-mdoc and crypto library for more information https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform\n\nConversion functions are available in above library. Conversion functions are also available for TS in our"
         },
         "ICoseKeyType": {
           "type": "number",
-          "enum": [
-            1,
-            2,
-            3,
-            4,
-            0
-          ]
+          "enum": [1, 2, 3, 4, 0]
         },
         "ICoseSignatureAlgorithm": {
           "type": "number",
-          "enum": [
-            -7,
-            -47,
-            -35,
-            -36,
-            -8,
-            4,
-            5,
-            6,
-            7,
-            -37,
-            -38,
-            -39
-          ]
+          "enum": [-7, -47, -35, -36, -8, 4, 5, 6, 7, -37, -38, -39]
         },
         "ICoseKeyOperation": {
           "type": "number",
-          "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10
-          ]
+          "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         },
         "ICoseCurve": {
           "type": "number",
-          "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            -1
-          ]
+          "enum": [1, 2, 3, 4, 5, 6, 7, -1]
         },
         "ManagedIdentifierType": {
           "anyOf": [
@@ -1923,13 +1698,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "BYTES_PER_ELEMENT",
-            "buffer",
-            "byteLength",
-            "byteOffset",
-            "length"
-          ],
+          "required": ["BYTES_PER_ELEMENT", "buffer", "byteLength", "byteOffset", "length"],
           "additionalProperties": {
             "type": "number"
           }
@@ -1944,9 +1713,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "byteLength"
-          ],
+          "required": ["byteLength"],
           "additionalProperties": false
         },
         "JwtCompactResult": {
@@ -1963,9 +1730,7 @@
               ]
             }
           },
-          "required": [
-            "jwt"
-          ],
+          "required": ["jwt"],
           "additionalProperties": false
         },
         "JwsCompact": {
@@ -2063,17 +1828,7 @@
                     },
                     "certificate": {}
                   },
-                  "required": [
-                    "certificate",
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts",
-                    "x5c"
-                  ]
+                  "required": ["certificate", "identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts", "x5c"]
                 },
                 {
                   "type": "object",
@@ -2148,19 +1903,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "did",
-                    "identifier",
-                    "issuer",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "keys",
-                    "kid",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["did", "identifier", "issuer", "jwk", "jwkThumbprint", "key", "keys", "kid", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -2220,15 +1963,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -2288,16 +2023,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kid",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kid", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -2357,15 +2083,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -2425,15 +2143,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -2493,15 +2203,7 @@
                       "$ref": "#/components/schemas/ManagedIdentifierType"
                     }
                   },
-                  "required": [
-                    "identifier",
-                    "jwk",
-                    "jwkThumbprint",
-                    "key",
-                    "kmsKeyRef",
-                    "method",
-                    "opts"
-                  ]
+                  "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
                 },
                 {
                   "type": "object",
@@ -2550,9 +2252,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -2604,9 +2304,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -2677,9 +2375,7 @@
                       "$ref": "#/components/schemas/DIDDocumentSection"
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -2728,9 +2424,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -2779,9 +2473,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -2830,9 +2522,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 },
                 {
                   "type": "object",
@@ -2881,9 +2571,7 @@
                       ]
                     }
                   },
-                  "required": [
-                    "identifier"
-                  ]
+                  "required": ["identifier"]
                 }
               ]
             },
@@ -2921,11 +2609,7 @@
               ]
             }
           },
-          "required": [
-            "issuer",
-            "payload",
-            "protectedHeader"
-          ]
+          "required": ["issuer", "payload", "protectedHeader"]
         },
         "JwsJsonSignature": {
           "type": "object",
@@ -2940,10 +2624,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "protected",
-            "signature"
-          ],
+          "required": ["protected", "signature"],
           "additionalProperties": false
         },
         "JwsJsonFlattened": {
@@ -2962,11 +2643,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "payload",
-            "protected",
-            "signature"
-          ],
+          "required": ["payload", "protected", "signature"],
           "additionalProperties": false
         },
         "JwsJsonGeneral": {
@@ -2982,10 +2659,7 @@
               }
             }
           },
-          "required": [
-            "payload",
-            "signatures"
-          ],
+          "required": ["payload", "signatures"],
           "additionalProperties": false
         },
         "DecryptJweCompactJwtArgs": {
@@ -2998,10 +2672,7 @@
               "$ref": "#/components/schemas/ManagedIdentifierOptsOrResult"
             }
           },
-          "required": [
-            "jwe",
-            "idOpts"
-          ],
+          "required": ["jwe", "idOpts"],
           "additionalProperties": false
         },
         "ManagedIdentifierOptsOrResult": {
@@ -3065,17 +2736,7 @@
                 },
                 "certificate": {}
               },
-              "required": [
-                "certificate",
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts",
-                "x5c"
-              ]
+              "required": ["certificate", "identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts", "x5c"]
             },
             {
               "type": "object",
@@ -3144,19 +2805,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "did",
-                "identifier",
-                "issuer",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "keys",
-                "kid",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["did", "identifier", "issuer", "jwk", "jwkThumbprint", "key", "keys", "kid", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -3210,15 +2859,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -3272,16 +2913,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kid",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kid", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -3335,15 +2967,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -3397,15 +3021,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -3459,15 +3075,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -3510,9 +3118,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -3558,9 +3164,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -3625,9 +3229,7 @@
                   "$ref": "#/components/schemas/DIDDocumentSection"
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -3670,9 +3272,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -3715,9 +3315,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -3760,9 +3358,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             },
             {
               "type": "object",
@@ -3805,9 +3401,7 @@
                   ]
                 }
               },
-              "required": [
-                "identifier"
-              ]
+              "required": ["identifier"]
             }
           ]
         },
@@ -3857,13 +3451,7 @@
                       "$ref": "#/components/schemas/IParsedDID"
                     }
                   },
-                  "required": [
-                    "did",
-                    "didParsed",
-                    "didResolutionResult",
-                    "jwks",
-                    "method"
-                  ]
+                  "required": ["did", "didParsed", "didResolutionResult", "jwks", "method"]
                 },
                 {
                   "type": "object",
@@ -3898,13 +3486,7 @@
                       "items": {}
                     }
                   },
-                  "required": [
-                    "certificates",
-                    "issuerJWK",
-                    "jwks",
-                    "method",
-                    "x5c"
-                  ]
+                  "required": ["certificates", "issuerJWK", "jwks", "method", "x5c"]
                 },
                 {
                   "type": "object",
@@ -3929,11 +3511,7 @@
                       "$ref": "#/components/schemas/ExternalIdentifierX5cResult"
                     }
                   },
-                  "required": [
-                    "jwk",
-                    "jwks",
-                    "method"
-                  ]
+                  "required": ["jwk", "jwks", "method"]
                 },
                 {
                   "type": "object",
@@ -3967,12 +3545,7 @@
                       "type": "boolean"
                     }
                   },
-                  "required": [
-                    "jwks",
-                    "method",
-                    "trustEstablished",
-                    "trustedAnchors"
-                  ]
+                  "required": ["jwks", "method", "trustEstablished", "trustedAnchors"]
                 },
                 {
                   "type": "object",
@@ -3997,11 +3570,7 @@
                       "$ref": "#/components/schemas/ExternalIdentifierX5cResult"
                     }
                   },
-                  "required": [
-                    "coseKey",
-                    "jwks",
-                    "method"
-                  ]
+                  "required": ["coseKey", "jwks", "method"]
                 }
               ]
             },
@@ -4048,10 +3617,7 @@
               ]
             }
           },
-          "required": [
-            "payload",
-            "recipientKey"
-          ],
+          "required": ["payload", "recipientKey"],
           "additionalProperties": false
         },
         "JweProtectedHeader": {
@@ -4146,9 +3712,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "kty"
-          ],
+          "required": ["kty"],
           "additionalProperties": false,
           "description": "Conversion functions to Cose available for TS in our"
         },
@@ -4195,24 +3759,12 @@
               "type": "string"
             }
           },
-          "required": [
-            "kty"
-          ],
+          "required": ["kty"],
           "additionalProperties": false
         },
         "ExternalIdentifierMethod": {
           "type": "string",
-          "enum": [
-            "did",
-            "jwk",
-            "x5c",
-            "kid",
-            "cose_key",
-            "oidc-discovery",
-            "jwks-url",
-            "oid4vci-issuer",
-            "entity_id"
-          ]
+          "enum": ["did", "jwk", "x5c", "kid", "cose_key", "oidc-discovery", "jwks-url", "oid4vci-issuer", "entity_id"]
         },
         "ExternalJwkInfo": {
           "type": "object",
@@ -4230,11 +3782,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "jwk",
-            "jwkThumbprint",
-            "publicKeyHex"
-          ],
+          "required": ["jwk", "jwkThumbprint", "publicKeyHex"],
           "additionalProperties": false
         },
         "DIDDocument": {
@@ -4365,9 +3913,7 @@
               "deprecated": true
             }
           },
-          "required": [
-            "id"
-          ],
+          "required": ["id"],
           "description": "Represents a DID document."
         },
         "VerificationMethod": {
@@ -4452,11 +3998,7 @@
               }
             }
           },
-          "required": [
-            "id",
-            "type",
-            "controller"
-          ],
+          "required": ["id", "type", "controller"],
           "additionalProperties": false,
           "description": "Represents the properties of a Verification Method listed in a DID document.\n\nThis data type includes public key representations that are no longer present in the spec but are still used by several DID methods / resolvers and kept for backward compatibility."
         },
@@ -4500,9 +4042,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "kty"
-          ],
+          "required": ["kty"],
           "description": "Encapsulates a JSON web key type that includes only the public properties that can be used in DID documents.\n\nThe private properties are intentionally omitted to discourage the use (and accidental disclosure) of private keys in DID documents."
         },
         "ConditionWeightedThreshold": {
@@ -4515,10 +4055,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "condition",
-            "weight"
-          ],
+          "required": ["condition", "weight"],
           "additionalProperties": false
         },
         "Service": {
@@ -4544,11 +4081,7 @@
               ]
             }
           },
-          "required": [
-            "id",
-            "type",
-            "serviceEndpoint"
-          ],
+          "required": ["id", "type", "serviceEndpoint"],
           "description": "Represents a Service entry in a  {@link https://www.w3.org/TR/did-core/#did-document-properties | DID document } ."
         },
         "ServiceEndpoint": {
@@ -4605,14 +4138,7 @@
               }
             }
           },
-          "required": [
-            "verificationMethod",
-            "authentication",
-            "assertionMethod",
-            "keyAgreement",
-            "capabilityInvocation",
-            "capabilityDelegation"
-          ],
+          "required": ["verificationMethod", "authentication", "assertionMethod", "keyAgreement", "capabilityInvocation", "capabilityDelegation"],
           "additionalProperties": false
         },
         "Omit<DIDResolutionResult,\"didDocument\">": {
@@ -4645,10 +4171,7 @@
               "$ref": "#/components/schemas/DIDDocumentMetadata"
             }
           },
-          "required": [
-            "didResolutionMetadata",
-            "didDocumentMetadata"
-          ],
+          "required": ["didResolutionMetadata", "didDocumentMetadata"],
           "additionalProperties": false
         },
         "DIDResolutionMetadata": {
@@ -4724,12 +4247,7 @@
               }
             }
           },
-          "required": [
-            "did",
-            "didUrl",
-            "method",
-            "id"
-          ],
+          "required": ["did", "didUrl", "method", "id"],
           "additionalProperties": false
         },
         "X509ValidationResult": {
@@ -4770,19 +4288,11 @@
                   "$ref": "#/components/schemas/ClientIdScheme"
                 }
               },
-              "required": [
-                "clientId",
-                "clientIdScheme"
-              ],
+              "required": ["clientId", "clientIdScheme"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "error",
-            "critical",
-            "message",
-            "verificationTime"
-          ],
+          "required": ["error", "critical", "message", "verificationTime"],
           "additionalProperties": false
         },
         "CertificateInfo": {
@@ -4805,9 +4315,7 @@
                   "$ref": "#/components/schemas/DNInfo"
                 }
               },
-              "required": [
-                "dn"
-              ],
+              "required": ["dn"],
               "additionalProperties": false
             },
             "subject": {
@@ -4823,19 +4331,11 @@
                   }
                 }
               },
-              "required": [
-                "dn",
-                "subjectAlternativeNames"
-              ],
+              "required": ["dn", "subjectAlternativeNames"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "notBefore",
-            "notAfter",
-            "issuer",
-            "subject"
-          ],
+          "required": ["notBefore", "notAfter", "issuer", "subject"],
           "additionalProperties": false
         },
         "DNInfo": {
@@ -4848,10 +4348,7 @@
               "$ref": "#/components/schemas/Record<string,string>"
             }
           },
-          "required": [
-            "DN",
-            "attributes"
-          ],
+          "required": ["DN", "attributes"],
           "additionalProperties": false
         },
         "Record<string,string>": {
@@ -4870,20 +4367,12 @@
               "$ref": "#/components/schemas/SubjectAlternativeGeneralName"
             }
           },
-          "required": [
-            "value",
-            "type"
-          ],
+          "required": ["value", "type"],
           "additionalProperties": false
         },
         "SubjectAlternativeGeneralName": {
           "type": "number",
-          "enum": [
-            1,
-            2,
-            6,
-            7
-          ],
+          "enum": [1, 2, 6, 7],
           "description": "otherName                       [0]     OtherName,        rfc822Name                      [1]     IA5String,        dNSName                         [2]     IA5String,        x400Address                     [3]     ORAddress,        directoryName                   [4]     Name,        ediPartyName                    [5]     EDIPartyName,        uniformResourceIdentifier       [6]     IA5String,        iPAddress                       [7]     OCTET STRING,        registeredID                    [8]     OBJECT IDENTIFIER }"
         },
         "ExternalIdentifierX5cResult": {
@@ -4916,13 +4405,7 @@
               "items": {}
             }
           },
-          "required": [
-            "certificates",
-            "issuerJWK",
-            "jwks",
-            "method",
-            "x5c"
-          ],
+          "required": ["certificates", "issuerJWK", "jwks", "method", "x5c"],
           "additionalProperties": false
         },
         "TrustedAnchor": {
@@ -4998,14 +4481,7 @@
         },
         "JweEnc": {
           "type": "string",
-          "enum": [
-            "A128CBC-HS256",
-            "A192CBC-HS384",
-            "A256CBC-HS512",
-            "A128GCM",
-            "A192GCM",
-            "A256GCM"
-          ]
+          "enum": ["A128CBC-HS256", "A192CBC-HS384", "A256CBC-HS512", "A128GCM", "A192GCM", "A256GCM"]
         },
         "PreparedJwsObject": {
           "type": "object",
@@ -5023,21 +4499,14 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "payload",
-                "protectedHeader"
-              ],
+              "required": ["payload", "protectedHeader"],
               "additionalProperties": false
             },
             "identifier": {
               "$ref": "#/components/schemas/ManagedIdentifierResult"
             }
           },
-          "required": [
-            "jws",
-            "b64",
-            "identifier"
-          ],
+          "required": ["jws", "b64", "identifier"],
           "additionalProperties": false
         },
         "PreparedJws": {
@@ -5059,10 +4528,7 @@
               }
             }
           },
-          "required": [
-            "protectedHeader",
-            "payload"
-          ],
+          "required": ["protectedHeader", "payload"],
           "additionalProperties": false
         },
         "ManagedIdentifierResult": {
@@ -5123,17 +4589,7 @@
                 },
                 "certificate": {}
               },
-              "required": [
-                "certificate",
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts",
-                "x5c"
-              ]
+              "required": ["certificate", "identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts", "x5c"]
             },
             {
               "type": "object",
@@ -5199,19 +4655,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "did",
-                "identifier",
-                "issuer",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "keys",
-                "kid",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["did", "identifier", "issuer", "jwk", "jwkThumbprint", "key", "keys", "kid", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -5262,15 +4706,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -5321,16 +4757,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kid",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kid", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -5381,15 +4808,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -5440,15 +4859,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             },
             {
               "type": "object",
@@ -5499,15 +4910,7 @@
                   "$ref": "#/components/schemas/ManagedIdentifierType"
                 }
               },
-              "required": [
-                "identifier",
-                "jwk",
-                "jwkThumbprint",
-                "key",
-                "kmsKeyRef",
-                "method",
-                "opts"
-              ]
+              "required": ["identifier", "jwk", "jwkThumbprint", "key", "kmsKeyRef", "method", "opts"]
             }
           ]
         },
@@ -5533,9 +4936,7 @@
               "additionalProperties": false
             }
           },
-          "required": [
-            "jws"
-          ],
+          "required": ["jws"],
           "additionalProperties": false
         },
         "Jws": {
@@ -5585,10 +4986,7 @@
                   "$ref": "#/components/schemas/ClientIdScheme"
                 }
               },
-              "required": [
-                "clientId",
-                "clientIdScheme"
-              ],
+              "required": ["clientId", "clientIdScheme"],
               "additionalProperties": false
             },
             "method": {
@@ -5668,14 +5066,7 @@
               "description": "The date and time of the validation"
             }
           },
-          "required": [
-            "critical",
-            "error",
-            "jws",
-            "message",
-            "name",
-            "verificationTime"
-          ]
+          "required": ["critical", "error", "jws", "message", "name", "verificationTime"]
         },
         "JwsJsonGeneralWithIdentifiers": {
           "type": "object",
@@ -5690,10 +5081,7 @@
               }
             }
           },
-          "required": [
-            "payload",
-            "signatures"
-          ],
+          "required": ["payload", "signatures"],
           "additionalProperties": false
         },
         "JwsJsonSignatureWithIdentifier": {
@@ -5712,11 +5100,7 @@
               "$ref": "#/components/schemas/ExternalIdentifierResult"
             }
           },
-          "required": [
-            "identifier",
-            "protected",
-            "signature"
-          ],
+          "required": ["identifier", "protected", "signature"],
           "additionalProperties": false
         },
         "ExternalIdentifierResult": {
@@ -5750,13 +5134,7 @@
                   "$ref": "#/components/schemas/IParsedDID"
                 }
               },
-              "required": [
-                "did",
-                "didParsed",
-                "didResolutionResult",
-                "jwks",
-                "method"
-              ]
+              "required": ["did", "didParsed", "didResolutionResult", "jwks", "method"]
             },
             {
               "type": "object",
@@ -5788,13 +5166,7 @@
                   "items": {}
                 }
               },
-              "required": [
-                "certificates",
-                "issuerJWK",
-                "jwks",
-                "method",
-                "x5c"
-              ]
+              "required": ["certificates", "issuerJWK", "jwks", "method", "x5c"]
             },
             {
               "type": "object",
@@ -5816,11 +5188,7 @@
                   "$ref": "#/components/schemas/ExternalIdentifierX5cResult"
                 }
               },
-              "required": [
-                "jwk",
-                "jwks",
-                "method"
-              ]
+              "required": ["jwk", "jwks", "method"]
             },
             {
               "type": "object",
@@ -5851,12 +5219,7 @@
                   "type": "boolean"
                 }
               },
-              "required": [
-                "jwks",
-                "method",
-                "trustEstablished",
-                "trustedAnchors"
-              ]
+              "required": ["jwks", "method", "trustEstablished", "trustedAnchors"]
             },
             {
               "type": "object",
@@ -5878,11 +5241,7 @@
                   "$ref": "#/components/schemas/ExternalIdentifierX5cResult"
                 }
               },
-              "required": [
-                "coseKey",
-                "jwks",
-                "method"
-              ]
+              "required": ["coseKey", "jwks", "method"]
             }
           ]
         }
