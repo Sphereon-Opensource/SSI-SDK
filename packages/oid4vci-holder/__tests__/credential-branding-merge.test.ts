@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { IBasicCredentialLocaleBranding, IBasicIssuerLocaleBranding } from '@sphereon/ssi-sdk.data-store-types'
 import { SdJwtTypeDisplayMetadata } from '@sphereon/ssi-types'
-import { oid4vciCombineDisplayLocalesFrom, oid4vciGetCredentialBrandingFrom, sdJwtCredentialLocaleBrandingFrom } from '../src/mappers/OIDC4VCIBrandingMapper'
+import {
+  oid4vciCombineDisplayLocalesFrom,
+  oid4vciGetCredentialBrandingFrom,
+  sdJwtCredentialLocaleBrandingFrom,
+} from '../src/mappers/OIDC4VCIBrandingMapper'
 import { mergeCredentialLocaleBrandings, selectCredentialLocaleBranding } from '../src/services/OID4VCIHolderService'
 
 describe('Credential branding merge logic', () => {

@@ -306,7 +306,11 @@ export class SDJwtPlugin implements IAgentPlugin {
     // For now a workaround is to ad 5 days of skew seconds, yuck
     // `skipStatusCheck` lets callers (e.g. issuance verification with a `credentialStatus: false` policy) avoid
     // fetching/verifying the status-list token, so an untrusted status-list signer can't block a valid credential.
-    const { header = {}, payload, kb } = await sdjwt.verify(args.credential, {
+    const {
+      header = {},
+      payload,
+      kb,
+    } = await sdjwt.verify(args.credential, {
       skewSeconds: 60 * 60 * 24 * 5,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       skipStatusCheck: args.opts?.skipStatusCheck,
