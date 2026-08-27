@@ -1,35 +1,22 @@
-import { DIDResolutionOptions, DIDResolutionResult, DIDResolver, ParsedDID, Resolvable } from 'did-resolver'
-import fetch from 'cross-fetch'
-
-const resolveDidOyd: DIDResolver = async (
-  didUrl: string,
-  _parsed: ParsedDID,
-  _resolver: Resolvable,
-  options: DIDResolutionOptions,
-): Promise<DIDResolutionResult> => {
-  try {
-    const baseUrl: string = 'https://oydid-resolver.data-container.net'
-    // const didDoc = await axios.get(`${baseUrl}/1.0/identifiers/${didUrl}`);
-    const response = await fetch(`${baseUrl}/1.0/identifiers/${didUrl}`)
-    if (!response.ok) {
-      throw new Error('Network response was not ok: ' + response.statusText)
-    }
-    const didDoc = await response.json()
-    return didDoc as DIDResolutionResult
-  } catch (err: any) {
-    return {
-      didDocumentMetadata: {},
-      didResolutionMetadata: { error: 'invalidDid', message: err.toString() },
-      didDocument: null,
-    }
-  }
-}
+import type { DIDResolver } from 'did-resolver'
+import { getResolver as getOydidResolver, type OydResolverConfig } from 'oydid-did-resolver'
 
 /**
  * Provides a mapping to a did:oyd resolver, usable by {@link did-resolver#Resolver}.
  *
+ * Resolution is delegated to `oydid-did-resolver`, the library maintained
+ * alongside the did:oyd method itself. It reports failures as
+ * `didResolutionMetadata.error` instead of throwing, tells a DID that does not
+ * exist (`notFound`) apart from one that is malformed (`invalidDid`), and
+ * reports a deactivated DID as `didDocumentMetadata.deactivated` per DID Core
+ * 7.1.3 rather than as an error. It has no runtime dependencies of its own.
+ *
+ * @param config - base URL of an OYDID resolver, or a configuration object
+ *   accepting `resolverUrl`, `path`, `timeout` and `headers`. Defaults to the
+ *   public resolver at https://resolver.ownyourdata.eu.
+ *
  * @public
  */
-export function getDidOydResolver() {
-  return { oyd: resolveDidOyd }
+export function getDidOydResolver(config?: string | OydResolverConfig): Record<string, DIDResolver> {
+  return getOydidResolver(config ?? {})
 }

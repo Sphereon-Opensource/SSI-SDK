@@ -20,7 +20,12 @@ import type {
 
 const PROVIDER_NAME = 'OYD DID Provider'
 const debug = Debug('veramo:oyd-did:identifier-provider')
-const OYDID_REGISTRAR_URL = 'https://oydid-registrar.data-container.net/1.0/createIdentifier'
+const DEFAULT_OYDID_REGISTRAR_URL = 'https://oydid-registrar.data-container.net/1.0/createIdentifier'
+
+// A CMSM create takes three calls with a server-managed revocation key and four
+// when the client manages it too. The bound only guards against a registrar
+// that keeps answering 201; it is not a protocol constant.
+const MAX_CMSM_PHASES = 8
 
 type IContext = IAgentContext<IKeyManager>
 
@@ -31,11 +36,13 @@ type IContext = IAgentContext<IKeyManager>
 export class OydDIDProvider extends AbstractIdentifierProvider {
   private readonly defaultKms?: string
   private readonly cmsmCallbackOpts?: CMSMCallbackOpts
+  private readonly registrarUrl: string
 
   constructor(options?: OydConstructorOptions) {
     super()
     this.defaultKms = options?.defaultKms
     this.cmsmCallbackOpts = options?.clientManagedSecretMode
+    this.registrarUrl = options?.registrarUrl ?? DEFAULT_OYDID_REGISTRAR_URL
   }
 
   private async assertedKms(...kms: (string | undefined)[]): Promise<string> {
@@ -70,7 +77,7 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
     }
     let didDoc: any | undefined
     try {
-      const response = await fetch(OYDID_REGISTRAR_URL, {
+      const response = await fetch(this.registrarUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,87 +133,89 @@ export class OydDIDProvider extends AbstractIdentifierProvider {
 
     const assertedKms = await this.assertedKms(kms, this.defaultKms)
     const pubKey =
-      options.key ?? (await cmsmCallbackOpts.publicKeyCallback(options.kid ?? 'default', assertedKms, options.cmsm?.create !== false, options.type)) // "default" is probably not right, TODO!!
+      options.key ??
+      (await cmsmCallbackOpts.publicKeyCallback(options.kid ?? 'default', assertedKms, options.cmsm?.create !== false, options.type))
     const kid = pubKey.kid
     const keyType = pubKey.type
     const key = base58btc({ publicKeyHex: pubKey.publicKeyHex, keyType })
 
-    console.log(`Bae58 pubkey key: ${key}`)
-    let signValue: any | undefined // do the request
-    try {
-      const body_create = {
-        // specify the Identifier options for the registrar
-        key: key,
-        options: {
-          cmsm: true,
-          key_type: keyType,
-        },
-      }
-      console.log(`Create request:\n${JSON.stringify(body_create, null, 2)}\n`)
-      const response = await fetch(OYDID_REGISTRAR_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body_create),
-      })
-      if (!response.ok) {
-        debug('Error response from OydDID Registrar: ', body_create, response)
-        return Promise.reject(Error('Network response was not ok: ' + response.statusText))
-      }
-      signValue = await response.json()
-      console.log(`Create response:\n${JSON.stringify(signValue, null, 2)}\n`)
-    } catch (error: any) {
-      console.log('Unexpected error from OydDID Registrar: ', error)
-      return Promise.reject(Error('There has been a problem with the fetch operation: ' + error.toString()))
-    }
-
-    // we received our value to sign, now we sign it!
-    const { sign } = signValue
-    const signature = await cmsmCallbackOpts.signCallback(kid, sign)
-
-    console.log(`Signature: ${signature}`)
-
-    const body_signed = {
+    // Client-Managed-Secret-Mode is a challenge/response flow. Every
+    // intermediate answer is HTTP 201 and names the value to sign (`sign`), the
+    // key to sign it with (`with`) and a session handle tying the phases
+    // together; that handle has to be echoed back or the registrar starts a new
+    // flow. The closing answer is HTTP 200 and carries the DID.
+    let request: Record<string, unknown> = {
       key,
-      options: {
-        cmsm: true,
-        key_type: keyType,
-        sig: signature,
-      },
+      options: { cmsm: true, key_type: keyType },
     }
-    console.log(`Signed request:\n${JSON.stringify(body_signed, null, 2)}\n`)
+    let created: any | undefined
 
-    // Object.assign(body_signed.options, options)
-
-    let didDoc: any | undefined // do the request
-    try {
-      const response = await fetch(OYDID_REGISTRAR_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body_signed),
-      })
-      if (!response.ok) {
-        console.log(`Error response from OydDID Registrar: ${JSON.stringify(response.text)}${response.statusText}`, response)
-        debug('Error response from OydDID Registrar: ', response)
-        return Promise.reject(Error('Network response was not ok: ' + response.statusText))
+    for (let phase = 1; phase <= MAX_CMSM_PHASES && created === undefined; phase++) {
+      let response: Response
+      try {
+        response = await fetch(this.registrarUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(request),
+        })
+      } catch (error: any) {
+        debug('Unexpected error from OydDID Registrar: ', error)
+        return Promise.reject(Error('There has been a problem with the fetch operation: ' + error.toString()))
       }
-      didDoc = await response.json()
-    } catch (error: any) {
-      debug('Unexpected error from OydDID Registrar: ', error)
-      return Promise.reject(Error('There has been a problem with the fetch operation: ' + error.toString()))
+
+      const payload = await response.json().catch(() => undefined)
+
+      if (response.status === 201) {
+        if (!payload?.session || !payload?.sign) {
+          return Promise.reject(Error('did:oyd: malformed CMSM challenge from the registrar'))
+        }
+        const signature = await cmsmCallbackOpts.signCallback(this.cmsmSigningKid(payload.with, kid), payload.sign)
+        request = { options: { cmsm: true, session: payload.session, sig: signature } }
+        continue
+      }
+
+      if (!response.ok) {
+        debug('Error response from OydDID Registrar: ', payload)
+        return Promise.reject(Error(`did:oyd: registrar answered ${response.status}: ${payload?.error ?? response.statusText}`))
+      }
+
+      created = payload
     }
+
+    if (created === undefined) {
+      return Promise.reject(Error(`did:oyd: CMSM flow did not complete within ${MAX_CMSM_PHASES} phases`))
+    }
+
+    // The revocation record is the one artefact the client cannot rebuild: it
+    // was signed with a key the registrar never sees, and a secure element does
+    // not have to sign deterministically. Without it the DID can neither be
+    // updated nor revoked, so it is kept with the key it belongs to. It is a log
+    // entry, not a secret.
+    const key_with_revocation: IKey = created.log_revoke
+      ? { ...pubKey, meta: { ...(pubKey.meta ?? {}), oyd: { logRevoke: created.log_revoke } } }
+      : pubKey
 
     const identifier: Omit<IIdentifier, 'provider'> = {
-      did: didDoc.did,
+      did: created.did,
       controllerKeyId: pubKey.kid,
-      keys: [pubKey],
+      keys: [key_with_revocation],
       services: [],
     }
     debug('Created', identifier.did)
     return identifier
+  }
+
+  /**
+   * Which key the registrar is asking for. With a server-managed revocation key
+   * every challenge names `key-doc`, so this is the document key throughout.
+   * `key-rev` only appears once the client supplies a revocation key of its own,
+   * which this provider does not do yet.
+   */
+  private cmsmSigningKid(requestedKey: string | undefined, documentKid: string): string {
+    if (requestedKey === 'key-rev') {
+      throw Error('did:oyd: the registrar asked for a client-managed revocation key, which this provider does not manage')
+    }
+    return documentKid
   }
 
   async updateIdentifier(

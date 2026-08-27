@@ -31,6 +31,7 @@
     "did-resolver": "^4.1.0",
     "multibase": "^4.0.6",
     "multicodec": "^3.2.1",
+    "oydid-did-resolver": "^0.3.0",
     "uint8arrays": "^3.1.1"
   },
   "devDependencies": {

@@ -39,24 +39,21 @@ describe('@sphereon/did-provider-oyd', () => {
     expect(identifier).toBeDefined()
     expect(identifier.keys.length).toBe(1)
 
-    console.log(JSON.stringify(identifier, null, 2))
   })
 
-  // FIXME: Enabled when CMSM is working
   it('should create identifier with CMSM', { timeout: 30000 }, async () => {
-    const privateKeyHex = '82d1b2c4552923e23722b8af89c91082fcb7ef43315a22f9635d9c153fd74d3e' //generatePrivateKeyHex()
-    console.log(`Private Key HEX: ${privateKeyHex}`)
+    const privateKeyHex = generatePrivateKeyHex()
     const key = await agent.keyManagerImport({ privateKeyHex, kid: 'test', type: 'Secp256r1', kms: 'mem' })
-    console.log(`KEY:\n${JSON.stringify(key, null, 2)}`)
-    console.log(`Public Key HEX: ${key.publicKeyHex}`)
 
     const identifier: IIdentifier = await agent.didManagerCreate({
       options: { keyType: 'Secp256r1', kid: 'test-cmsm', key, cmsm: { enabled: true, create: false } },
     })
 
-    console.log(identifier)
     expect(identifier).toBeDefined()
     expect(identifier.keys.length).toBe(1)
+    expect(identifier.did).toMatch(/^did:oyd:/)
+    // the client signed the revocation record; the registrar cannot reproduce it
+    expect(identifier.keys[0].meta?.oyd?.logRevoke).toBeDefined()
   })
 })
 
@@ -75,6 +72,3 @@ function generatePrivateKeyHex() {
   // back to hex, padded to 64 chars (32 bytes)
   return d.toString(16).padStart(64, '0')
 }
-
-// Example usage:
-console.log(generatePrivateKeyHex())
