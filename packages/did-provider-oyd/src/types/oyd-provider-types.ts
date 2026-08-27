@@ -3,6 +3,11 @@ import { IKey, TKeyType } from '@veramo/core'
 export type OydConstructorOptions = {
   defaultKms?: string
   clientManagedSecretMode?: CMSMCallbackOpts
+  /**
+   * Endpoint of the OYDID registrar used to create identifiers. Defaults to the
+   * public one at https://oydid-registrar.data-container.net/1.0/createIdentifier.
+   */
+  registrarUrl?: string
 }
 
 export type OydCreateIdentifierOptions = {
